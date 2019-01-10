@@ -15,6 +15,15 @@ import { layerConflateForm }      from '../../config/domMetadata';
 class LayerConflate extends SidebarForm {
     constructor( container, d ) {
         super( container, d );
+
+        this.conflationTypes = {
+            'Reference': 'reference',
+            'Average': 'average',
+            'Cookie Cutter & Horizontal': 'horizontal',
+            'Differential': 'conflate-differential',
+            'Differential w/ Tags': 'conflate-differential-tags',
+            'Attribute': 'attribute'
+        };
     }
 
     render( layers ) {
@@ -182,7 +191,7 @@ class LayerConflate extends SidebarForm {
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.node().value;
-        data.CONFLATION_TYPE    = this.typeInput.node().value;
+        data.CONFLATION_TYPE    = this.conflationTypes[ this.typeInput.node().value ];
         data.REFERENCE_LAYER    = '1';
         data.GENERATE_REPORT    = this.generateReportInput.node().value;
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
@@ -216,6 +225,10 @@ class LayerConflate extends SidebarForm {
                 color: 'green',
                 isConflate: true
             };
+
+        console.log( data.CONFLATION_TYPE );
+        console.log( data.ADV_OPTIONS );
+        return;
 
         // remove reference layer controllers
         d3.selectAll( '.add-controller' ).remove();
