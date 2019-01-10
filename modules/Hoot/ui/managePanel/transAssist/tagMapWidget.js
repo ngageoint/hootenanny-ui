@@ -13,6 +13,8 @@ export default class TagMapWidget {
     }
 
     createTagLookup() {
+        let that = this;
+
         this.schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
 
         this.tagLookup = this.instance.tagMapContainer
@@ -27,11 +29,18 @@ export default class TagMapWidget {
             .append( 'div' )
             .classed( 'pad1 thumbnail searchtag _icon big blank search-icon keyline-right', true );
 
-        this.searchTag = this.inputWrapper.append( 'input' )
+        this.searchTag = this.inputWrapper
+            .append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'placeholder', 'Search Tag' )
             .classed( 'strong bigger pad1x pad2y reset', true )
-            .on( 'input', () => this.change.call( this ) );
+            .on( 'input', () => this.change.call( this ) )
+            .on( 'keydown', function() {
+                that.keydown( this );
+                // if ( d3.event.keyCode === 13 ) {
+                //     d3.event.preventDefault();
+                // }
+            } );
 
         this.resultsList = this.tagLookup
             .append( 'div' )
@@ -40,7 +49,7 @@ export default class TagMapWidget {
         this.searchTag.node().focus();
     }
 
-    keydown() {
+    keydown( input ) {
         switch ( d3.event.keyCode ) {
             // tab
             case 9:
@@ -52,12 +61,12 @@ export default class TagMapWidget {
                 break;
             // up arrow
             case 38:
-                scroll( 'up', this );
+                scroll( 'up', input );
                 d3.event.preventDefault();
                 break;
             // down arrow
             case 40:
-                scroll( 'down', this );
+                scroll( 'down', input );
                 d3.event.preventDefault();
                 break;
         }
@@ -121,6 +130,7 @@ export default class TagMapWidget {
     }
 
     accept() {
+        console.log( 'acceptttt' );
         let value = this.searchTag.property( 'value' );
 
         if ( value.length ) {

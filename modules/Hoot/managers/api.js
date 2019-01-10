@@ -873,8 +873,6 @@ export default class API {
             data
         };
 
-        this.getAdvancedOptions();
-
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )
             .then( resp => {
