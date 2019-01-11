@@ -50,7 +50,7 @@ export function layerConflateForm( data ) {
             label: 'Attribute Reference Layer',
             id: 'conflateRefLayer',
             inputType: 'combobox',
-            value: this.selectedLayers.primary.name,
+            value: this.selectedLayers.secondary.name,
             data: Object.values( this.selectedLayers ).map( layer => layer.name ),
 
             readonly: 'readonly'
