@@ -17,7 +17,6 @@ export default class FieldsetData {
 
         this.baseOpts       = options.base;
         this.horizontalOpts = options.horizontal;
-        this.averageOpts    = options.average;
         this.referenceOpts  = options.reference;
         this.diffOpts       = options.diff;
         this.diffTagsOpts   = options.diffTags;

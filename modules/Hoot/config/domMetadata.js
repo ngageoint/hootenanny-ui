@@ -65,19 +65,6 @@ export function layerConflateForm( data ) {
                 // var selVal = d3.selectAll( '.reset.isCollectStats' ).value();
             },
             readonly: 'readonly'
-        },
-        {
-            label: 'Generate Report?',
-            id: 'conflateGenerateReport',
-            inputType: 'combobox',
-            value: 'false',
-            data: [ 'true', 'false' ],
-            onchange: function() {
-                // var selVal = d3.selectAll( '.reset.isGenerateReport' ).value();
-                // return selVal;
-            },
-            readonly: 'readonly',
-            testmode: true
         }
     ];
 }
