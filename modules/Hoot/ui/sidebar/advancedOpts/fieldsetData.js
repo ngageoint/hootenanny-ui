@@ -18,7 +18,6 @@ export default class FieldsetData {
 
         this.baseOpts       = options.base;
         this.horizontalOpts = options.horizontal;
-        this.averageOpts    = options.average;
         this.referenceOpts  = options.reference;
         this.diffOpts       = options.diffConflator;
         this.diffTagsOpts   = options.diffTags;
@@ -52,8 +51,7 @@ export default class FieldsetData {
     getDefaultMeta() {
         let conflateType = d3.select( '#conflateType' ).node().value,
             overrideOpts = conflateType === 'Reference' ? this.referenceOpts
-                : conflateType === 'Average' ? this.averageOpts
-                    : conflateType === 'Differential' ? this.diffOpts
+                : conflateType === 'Differential' ? this.diffOpts
                         : conflateType === 'Differenatial w/ Tags' ? this.diffTagsOpts
                             : this.horizontalOpts;
 
