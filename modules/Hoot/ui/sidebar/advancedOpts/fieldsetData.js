@@ -61,9 +61,6 @@ export default class FieldsetData {
             case 'Cookie Cutter & Horizontal':
                 overrideOpts = this.horizontalOpts;
                 break;
-            case 'Average':
-                overrideOpts = this.averageOpts;
-                break;
             case 'Reference':
             case 'Differential':
             case 'Differential w/ Tags':

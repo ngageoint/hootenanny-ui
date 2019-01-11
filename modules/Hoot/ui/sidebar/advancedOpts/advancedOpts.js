@@ -15,7 +15,7 @@ import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
-        this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference', 'diff', 'diffTags', 'attribute' ];
+        this.optTypes        = [ 'custom', 'horizontal', 'reference', 'diff', 'diffTags', 'attribute' ];
         this.advancedOptions = null;
     }
 
@@ -29,11 +29,10 @@ export default class AdvancedOpts {
         this.advancedOptions = {
             base: allOpts[ 0 ],
             horizontal: allOpts[ 1 ],
-            average: allOpts[ 2 ],
-            reference: allOpts[ 3 ],
-            diff: allOpts[ 4 ],
-            diffTags: allOpts[ 5 ],
-            attribute: allOpts[ 6 ]
+            reference: allOpts[ 2 ],
+            diff: allOpts[ 3 ],
+            diffTags: allOpts[ 4 ],
+            attribute: allOpts[ 5 ]
         };
 
         this.data    = new FieldsetData( this, _cloneDeep( this.advancedOptions ) );
