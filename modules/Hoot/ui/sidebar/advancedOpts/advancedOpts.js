@@ -15,7 +15,7 @@ import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
-        this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference', 'diffConflator', 'diffTags'];
+        this.optTypes        = [ 'custom', 'horizontal', 'reference', 'diffConflator', 'diffTags'];
         this.advancedOptions = null;
     }
 
@@ -24,7 +24,6 @@ export default class AdvancedOpts {
     }
 
     async init() {
-        // this.optTypes = [ 'custom', 'horizontal', 'average', 'reference', 'diff', 'diffTags'];
         let allOpts   = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
 
         // console.log( allOpts );
@@ -32,10 +31,9 @@ export default class AdvancedOpts {
         this.advancedOptions = {
             base: allOpts[ 0 ],
             horizontal: allOpts[ 1 ],
-            average: allOpts[ 2 ],
-            reference: allOpts[ 3 ],
-            diffConflator: allOpts[ 4 ],
-            diffTags: allOpts[ 5 ]
+            reference: allOpts[ 2 ],
+            diffConflator: allOpts[ 3 ],
+            diffTags: allOpts[ 4 ]
         };
 
         this.data    = new FieldsetData( this, _cloneDeep( this.advancedOptions ) );
