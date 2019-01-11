@@ -197,6 +197,15 @@ class LayerConflate extends SidebarForm {
         return data;
     }
 
+    updateAttributeReferenceLayer() {
+        if ( this.typeInput.property('value') === 'Attribute' ) {
+            this.refLayerInput.property('value' , Hoot.layers.findLoadedBy( 'refType', 'secondary' ).name);
+        } else {
+            this.refLayerInput.property('value' , Hoot.layers.findLoadedBy( 'refType', 'primary' ).name);
+        }
+    }
+
+
     postConflation( params ) {
         let layers = Hoot.layers.loadedLayers;
 

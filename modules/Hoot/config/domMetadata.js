@@ -43,6 +43,8 @@ export function layerConflateForm( data ) {
             onChange: () => {
                 this.confAdnvOptionsFields = null;
                 this.changeAdvancedOptions();
+                this.updateAttributeReferenceLayer();
+
             },
             readonly: 'readonly'
         },
@@ -50,7 +52,10 @@ export function layerConflateForm( data ) {
             label: 'Attribute Reference Layer',
             id: 'conflateRefLayer',
             inputType: 'combobox',
-            value: this.selectedLayers.secondary.name,
+            value: this.selectedLayers.primary.name,
+            onChange: () => {
+                this.updateAttributeReferenceLayer();
+            },
             data: Object.values( this.selectedLayers ).map( layer => layer.name ),
 
             readonly: 'readonly'
