@@ -445,29 +445,20 @@ Hoot.model.REST = function (command, data, callback, option) {
                             return;
                         } else {
                             iD.data.hootConfAdvOps_horizontal = resp1;
-                            var request_ave = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=average');
-                            request_ave.get(function (error, resp2) {
+                            var request_ref = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=reference');
+                            request_ref.get(function (error, resp3) {
                                 if (error) {
-                                    _alertError(error, 'Get average conflation options failed!');
+                                    _alertError(error, 'Get reference conflation options failed!');
                                     return;
                                 } else {
-                                    iD.data.hootConfAdvOps_average = resp2;
-                                    var request_ref = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=reference');
-                                    request_ref.get(function (error, resp3) {
+                                    iD.data.hootConfAdvOps_reference = resp3;
+                                    var request_ref = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=attribute');
+                                    request_ref.get(function (error, resp4) {
                                         if (error) {
-                                            _alertError(error, 'Get reference conflation options failed!');
+                                            _alertError(error, 'Get attribute conflation options failed!');
                                             return;
                                         } else {
-                                            iD.data.hootConfAdvOps_reference = resp3;
-                                            var request_ref = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=attribute');
-                                            request_ref.get(function (error, resp4) {
-                                                if (error) {
-                                                    _alertError(error, 'Get attribute conflation options failed!');
-                                                    return;
-                                                } else {
-                                                    iD.data.hootConfAdvOps_attribute = resp4;
-                                                }
-                                            });
+                                            iD.data.hootConfAdvOps_attribute = resp4;
                                         }
                                     });
                                 }

@@ -27,7 +27,6 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
         var thisConfType = d3.selectAll('.reset.ConfType');
         var _confType = {
                 'Reference':'reference',
-                'Average':'average',
                 'Cookie Cutter & Horizontal':'horizontal',
                 'Attribute':'attribute'
             };
@@ -36,7 +35,6 @@ Hoot.control.conflate.advancedoptions.fieldsretriever = function () {
         var overrideOps;
         switch (_confType[thisConfType.value()]) {
         case 'reference': overrideOps = iD.data.hootConfAdvOps_reference; break;
-        case 'average' : overrideOps = iD.data.hootConfAdvOps_average; break;
         case 'horizontal' : overrideOps = iD.data.hootConfAdvOps_horizontal; break;
         case 'attribute' : overrideOps = iD.data.hootConfAdvOps_attribute; break;
         default: break;
