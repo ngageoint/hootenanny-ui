@@ -66,57 +66,35 @@ export default class FieldsetData {
                 overrideOpts = this.averageOpts;
                 break;
             case 'Reference':
-                overrideOpts = this.referenceOpts;
-                break;
             case 'Differential':
-                overrideOpts = [ { members: this.diffOpts } ];
-                break;
             case 'Differential w/ Tags':
-                overrideOpts = [ { members: this.diffTagsOpts } ];
+                overrideOpts = this.referenceOpts;
                 break;
             case 'Attribute':
                 overrideOpts = this.attributeOpts;
                 break;
         }
 
-        let overrideKeys = _map( _cloneDeep( overrideOpts[ 0 ] ).members, member => {
-            // member.id = member.hoot_key.indexOf( '.creators' ) > -1 ? member.id : member.hoot_key.replace( /\./g, '_' );
+        if ( overrideOpts ) {
+            let overrideKeys = _map( _cloneDeep( overrideOpts[ 0 ] ).members, member => {
+                // member.id = member.hoot_key.indexOf( '.creators' ) > -1 ? member.id : member.hoot_key.replace( /\./g, '_' );
 
-            if ( member.hoot_key ) {
-                member.id = member.hoot_key.indexOf( '.creators' ) > -1 ? member.id : member.hoot_key.replace( /\./g, '_' );
-            }
+                if ( member.hoot_key ) {
+                    member.id = member.hoot_key.indexOf( '.creators' ) > -1 ? member.id : member.hoot_key.replace( /\./g, '_' );
+                }
 
-            member.required = member.required || false;
+                member.required = member.required || false;
 
-            return member;
-        } );
+                return member;
+            } );
 
-        this.defaultMeta = this.mergeWithBase( _cloneDeep( this.baseOpts ), overrideKeys );
+            this.defaultMeta = this.mergeWithBase( _cloneDeep( this.baseOpts ), overrideKeys );
+        } else {
+            this.defaultMeta = this.baseOpts;
+        }
 
         return this.getFieldMeta( this.defaultMeta );
     }
-
-    // getOverrideKeys( overrideOpts ) {
-    //     let members;
-    //
-    //     if ( overrideOpts.length === 1 ) {
-    //         members = overrideOpts[ 0 ].members;
-    //     } else {
-    //         members = overrideOpts;
-    //     }
-    //
-    //     return _map( _cloneDeep( members ), member => {
-    //         if ( member.hoot_key ) {
-    //             if ( member.hoot_key.indexOf( '.creators' ) === -1 ) {
-    //                 member.id = member.hoot_key.replace( /\./g, '_' );
-    //             }
-    //         }
-    //
-    //         member.required = member.required || false;
-    //
-    //         return member;
-    //     } );
-    // }
 
     getFieldMeta( fieldData ) {
         return _reduce( fieldData, ( arr, item ) => {

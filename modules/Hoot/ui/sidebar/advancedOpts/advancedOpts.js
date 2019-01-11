@@ -26,8 +26,6 @@ export default class AdvancedOpts {
     async init() {
         let allOpts = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
 
-        // console.log( allOpts );
-
         this.advancedOptions = {
             base: allOpts[ 0 ],
             horizontal: allOpts[ 1 ],
