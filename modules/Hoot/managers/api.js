@@ -35,10 +35,6 @@ export default class API {
         this.mergeUrl       = Object.assign( new URL( this.host ), mergePortOrPath( this.config.mergeServerPort ) );
         this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
 
-        console.log( this.translationUrl );
-
-        // this.baseUrl = `${this.host}${this.config.path}`;
-
         this.queryInterval = this.config.queryInterval;
         this.intervals     = {};
     }
@@ -872,8 +868,6 @@ export default class API {
             method: 'POST',
             data
         };
-
-        this.getAdvancedOptions();
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )

@@ -92,7 +92,6 @@ class LayerConflate extends SidebarForm {
         } );
     }
 
-
     changeAdvancedOptions() {
         this.advancedOptions.clear();
     }
@@ -176,7 +175,6 @@ class LayerConflate extends SidebarForm {
         let data = {};
 
         data.TIME_STAMP         = '' + new Date().getTime();
-        data.CONFLATION_COMMAND = 'conflate';
         data.INPUT1             = Hoot.layers.findLoadedBy( 'refType', 'primary' ).id;
         data.INPUT2             = Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id;
         data.INPUT1_TYPE        = 'DB';
@@ -187,6 +185,14 @@ class LayerConflate extends SidebarForm {
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
         data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
         data.USER_EMAIL         = 'test@test.com';
+
+        if ( data.CONFLATION_TYPE === 'Differential' ) {
+            data.CONFLATION_COMMAND = 'conflate-differential';
+        } else if ( data.CONFLATION_TYPE === 'Differential w/ Tags' ) {
+            data.CONFLATION_COMMAND = 'conflate-differential-tags';
+        } else {
+            data.CONFLATION_COMMAND = 'conflate';
+        }
         
         return data;
     }

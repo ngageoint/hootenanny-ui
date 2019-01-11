@@ -15,7 +15,7 @@ import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
-        this.optTypes        = [ 'custom', 'horizontal', 'reference', 'diffConflator', 'diffTags'];
+        this.optTypes        = [ 'custom', 'horizontal', 'reference', 'diff', 'diffTags', 'attribute' ];
         this.advancedOptions = null;
     }
 
@@ -24,16 +24,15 @@ export default class AdvancedOpts {
     }
 
     async init() {
-        let allOpts   = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
-
-        // console.log( allOpts );
+        let allOpts = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
 
         this.advancedOptions = {
             base: allOpts[ 0 ],
             horizontal: allOpts[ 1 ],
             reference: allOpts[ 2 ],
-            diffConflator: allOpts[ 3 ],
-            diffTags: allOpts[ 4 ]
+            diff: allOpts[ 3 ],
+            diffTags: allOpts[ 4 ],
+            attribute: allOpts[ 5 ]
         };
 
         this.data    = new FieldsetData( this, _cloneDeep( this.advancedOptions ) );
@@ -70,7 +69,7 @@ export default class AdvancedOpts {
     }
 
     clear() {
-        d3.selectAll('.advanced-opts-content').remove();
+        d3.selectAll( '.advanced-opts-content' ).remove();
         this.reRender();
     }
 
@@ -87,7 +86,7 @@ export default class AdvancedOpts {
             .attr( 'id', 'advanced-opts-panel' )
             .classed( 'fill-white', true )
             .style( 'margin-left', () => this.sidebar.node().getBoundingClientRect().width = 'px' );
-            
+
         this.overlay = d3.select( '#content' ).append( 'div' )
             .classed( 'map-overlay overlay', true );
     }
