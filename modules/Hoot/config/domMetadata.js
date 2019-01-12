@@ -15,7 +15,7 @@ export function layerConflateForm( data ) {
             validate: true,
             onChange: d => this.validateTextInput( d )
         },
-        { 
+        {
             label: 'Path',
             id: 'conflateFolderPath',
             class: 'path-name',
@@ -43,6 +43,7 @@ export function layerConflateForm( data ) {
             onChange: () => {
                 this.confAdnvOptionsFields = null;
                 this.changeAdvancedOptions();
+                this.updateAttributeReferenceLayer();
             },
             readonly: 'readonly'
         },

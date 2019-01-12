@@ -181,7 +181,7 @@ class LayerConflate extends SidebarForm {
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.node().value;
         data.CONFLATION_TYPE    = this.typeInput.node().value;
-        data.REFERENCE_LAYER    = '1';
+        data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
         data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
         data.USER_EMAIL         = 'test@test.com';
@@ -193,9 +193,18 @@ class LayerConflate extends SidebarForm {
         } else {
             data.CONFLATION_COMMAND = 'conflate';
         }
-        
+
         return data;
     }
+
+    updateAttributeReferenceLayer() {
+        if ( this.typeInput.property('value') === 'Attribute' ) {
+            this.refLayerInput.property('value' , Hoot.layers.findLoadedBy( 'refType', 'secondary' ).name);
+        } else {
+            this.refLayerInput.property('value' , Hoot.layers.findLoadedBy( 'refType', 'primary' ).name);
+        }
+    }
+
 
     postConflation( params ) {
         let layers = Hoot.layers.loadedLayers;
