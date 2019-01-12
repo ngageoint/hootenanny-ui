@@ -15,7 +15,7 @@ export function layerConflateForm( data ) {
             validate: true,
             onChange: d => this.validateTextInput( d )
         },
-        { 
+        {
             label: 'Path',
             id: 'conflateFolderPath',
             class: 'path-name',
@@ -44,7 +44,6 @@ export function layerConflateForm( data ) {
                 this.confAdnvOptionsFields = null;
                 this.changeAdvancedOptions();
                 this.updateAttributeReferenceLayer();
-
             },
             readonly: 'readonly'
         },
@@ -53,9 +52,6 @@ export function layerConflateForm( data ) {
             id: 'conflateRefLayer',
             inputType: 'combobox',
             value: this.selectedLayers.primary.name,
-            onChange: () => {
-                this.updateAttributeReferenceLayer();
-            },
             data: Object.values( this.selectedLayers ).map( layer => layer.name ),
 
             readonly: 'readonly'
