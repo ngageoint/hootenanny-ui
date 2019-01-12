@@ -598,6 +598,13 @@ Hoot.control.conflate = function (context,sidebar) {
                     //reset form
                     _instance.confAdvOptionsFields = null;
                     _removeAdvancedOptionsDlg();
+
+                    //Default attribute reference to secondary layer for Attribute conflation
+                    var cType = d3.select('input.ConfType').value();
+                    d3.select('input.referenceLayer')
+                        .property('value', function() {
+                            return refLayers[(cType === 'Attribute') ? 1 : 0];
+                        });
                 },
                 readonly:'readonly'
             },
