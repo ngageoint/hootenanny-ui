@@ -35,6 +35,7 @@ pipeline {
         }
         stage("UI") {
             steps {
+                sh "vagrant ssh ${params.Box} -c 'cd hoot; source ./SetupEnv.sh; aclocal && autoconf && autoheader && automake --add-missing --copy && ./configure --quiet --with-uitests'"
                 sh "vagrant ssh ${params.Box} -c 'cd hoot; source ./SetupEnv.sh; make ui2x-build; time -p make -s ui2x-test'"
             }
         }
