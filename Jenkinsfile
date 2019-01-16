@@ -25,7 +25,7 @@ pipeline {
         }
         stage("Vagrant Up") {
             steps {
-                sh "vagrant up ${params.Box} --provider aws --no-provision"
+                sh "vagrant up ${params.Box} --provider aws --provision-with hoot"
                 sh "vagrant ssh ${params.Box} -c 'sudo yum install -y epel-release yum-utils'"
                 sh "vagrant ssh ${params.Box} -c 'sudo yum-config-manager --add-repo https://s3.amazonaws.com/hoot-repo/el7/pgdg95.repo'"
                 sh "vagrant ssh ${params.Box} -c 'sudo yum-config-manager --add-repo https://s3.amazonaws.com/hoot-repo/el7/develop/hoot.repo'"
