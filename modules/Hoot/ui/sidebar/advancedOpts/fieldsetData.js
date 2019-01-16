@@ -27,20 +27,13 @@ export default class FieldsetData {
         _forEach( group, item => {
             _forEach( item.members, member => {
                 let override = _find( overrideKeys, key => {
-                    if ( key.id === member.id
-                        || (key.id === 'conflate_post_ops' && member.id === 'unknown_2_remover') // TODO: EVIL!! Remove this when possible! IDs should be the same
-                    ) {
+                    if ( key.id.indexOf(member.id) > -1 ) {
                         return true;
                     }
                 } );
 
                 if ( override ) {
-                    if ( override.id === 'conflate_post_ops' ) { // TODO: EVIL!! Remove this when possible!
-                        member.defaultvalue = 'true';
-                    } else {
-                        member.defaultvalue = override.defaultvalue;
-                    }
-
+                    member.defaultvalue = override.defaultvalue;
                     member.required = override.required;
                 }
             } );
@@ -85,6 +78,12 @@ export default class FieldsetData {
             } );
 
             this.defaultMeta = this.mergeWithBase( _cloneDeep( this.baseOpts ), overrideKeys );
+
+            //add new group with values that are not duplicated
+            var newMembers = overrideOpts[0].members.filter(function(n) {
+                return _map(overrideKeys,'hoot_key').indexOf(n.hoot_key) !== -1;
+            });
+            this.defaultMeta.push({members: newMembers});
         } else {
             this.defaultMeta = this.baseOpts;
         }
@@ -196,7 +195,8 @@ export default class FieldsetData {
         return _reduce( selectedVals, ( str, opt ) => {
             if ( str.length > 0 ) str += ' ';
 
-            str += `-D "${ opt.name }=${ opt.value }"`;
+            //add hack to += append conflate.post.ops option
+            str += `-D "${ opt.name }${ (opt.name === 'conflate.post.ops') ? '+' : '' }=${ opt.value }"`;
 
             return str;
         }, '' );
@@ -282,6 +282,9 @@ export default class FieldsetData {
         }
 
         let selectedMember = _find( subItem.members, { name: value } );
+
+        //exit early if we can't find selectedMember
+        if (!selectedMember) return;
 
         _forEach( selectedMember.members, subMember => {
             let node     = this.form.select( `${ subMember.id }` ).node(),
