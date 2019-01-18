@@ -54,9 +54,9 @@ var oauth = osmAuth({
     done: authDone
 });
 
-// oauth.authenticated = function() {
-//     return true;
-// };
+oauth.authenticated = function() {
+    return true;
+};
 
 var _blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'];
 var _tileCache = { loaded: {}, inflight: {}, seen: {} };
@@ -360,6 +360,7 @@ async function parseXML(xml, callback, options, mapId) {
         } else {
             uid = osmEntity.id.fromOSM(child.nodeName, child.attributes.id.value);
             uid += mapId !== -1 ? '_' + mapId : '';
+
             if (options.skipSeen) {
                 if (_tileCache.seen[uid]) return null;  // avoid reparsing a "seen" entity
                 _tileCache.seen[uid] = true;
@@ -527,10 +528,12 @@ export default {
 
 
     parse( dom, mapId ) {
+        let options = { skipSeen: false };
+
         return new Promise( res => {
             parseXML( dom, function(err, entities) {
                 res( entities );
-            }, null, mapId );
+            }, options, mapId );
         } );
     },
 
@@ -1267,7 +1270,6 @@ export default {
             that.userChangesets(function() {});  // eagerly load user details/changesets
         }
 
-        return (services.hoot.hasOsmLayer()) ? oauth.authenticate(done) : done();
         return oauth.authenticate(done);
     },
 

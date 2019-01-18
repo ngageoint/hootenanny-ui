@@ -11,10 +11,11 @@ import FieldsetData     from './fieldsetData';
 import FieldsetControls from './fieldsetControls';
 import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 
+
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
-        this.optTypes        = [ 'custom', 'horizontal', 'average', 'reference', 'diffConflator', 'diffTags'];
+        this.optTypes        = [ 'custom', 'horizontal', 'reference', 'diff', 'diffTags', 'attribute' ];
         this.advancedOptions = null;
     }
 
@@ -23,16 +24,15 @@ export default class AdvancedOpts {
     }
 
     async init() {
-        // this.optTypes = [ 'custom', 'horizontal', 'average', 'reference', 'diff', 'diffTags'];
-        let allOpts   = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
+        let allOpts = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
 
         this.advancedOptions = {
             base: allOpts[ 0 ],
             horizontal: allOpts[ 1 ],
-            average: allOpts[ 2 ],
-            reference: allOpts[ 3 ],
-            diff: allOpts[ 4 ],
-            diffTags: allOpts[ 5 ]
+            reference: allOpts[ 2 ],
+            diff: allOpts[ 3 ],
+            diffTags: allOpts[ 4 ],
+            attribute: allOpts[ 5 ]
         };
 
         this.data    = new FieldsetData( this, _cloneDeep( this.advancedOptions ) );
@@ -55,9 +55,22 @@ export default class AdvancedOpts {
         this.control.defaultFields = this.control.lastSetFields;
     }
 
+    reRender() {
+
+        this.fieldsMeta = this.data.getDefaultMeta();
+
+        this.createContentDiv();
+        this.createGroups();
+
+        this.control.saveFields();
+
+        this.control.defaultFields = this.control.lastSetFields;
+
+    }
+
     clear() {
-        d3.selectAll('#advanced-opts-panel').remove();
-        this.render();
+        d3.selectAll( '.advanced-opts-content' ).remove();
+        this.reRender();
     }
 
     toggle() {
@@ -73,7 +86,7 @@ export default class AdvancedOpts {
             .attr( 'id', 'advanced-opts-panel' )
             .classed( 'fill-white', true )
             .style( 'margin-left', () => this.sidebar.node().getBoundingClientRect().width = 'px' );
-            
+
         this.overlay = d3.select( '#content' ).append( 'div' )
             .classed( 'map-overlay overlay', true );
     }
@@ -98,8 +111,15 @@ export default class AdvancedOpts {
     }
 
     createContentDiv() {
-        this.contentDiv = this.form.append( 'div' )
-            .classed( 'advanced-opts-content', true );
+        this.contentDiv = this.form
+            .append( 'div' )
+            .classed( 'advanced-opts-content', true )
+            .style( 'opacity', 0 );
+
+        this.contentDiv
+            .transition()
+            .duration( 400 )
+            .style( 'opacity', 1 );
     }
 
     createGroups() {

@@ -191,6 +191,7 @@ class Login {
             .append( 'p' )
             .html( '&#9658; Click ' )
             .append( 'a' )
+            .attr( 'href', '#!' )
             .text( 'here' )
             .on( 'click', () => window.location = this.oauthRedirectUrl );
 
@@ -254,12 +255,14 @@ class Login {
                     // close self
                     window.close();
                 } else {
-                    // force refresh.
-                    window.location.reload( true );
+                    localStorage.setItem( 'user', JSON.stringify( resp ) );
+
+                    let pathname = window.location.pathname;
+
+                    window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
                 }
             } )
             .catch( err => {
-                window.alert( 'wait error' );
                 if ( opener ) {
                     window.onbeforeunload = function() {
                         opener.oAuthDone( err, null );

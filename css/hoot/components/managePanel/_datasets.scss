@@ -47,6 +47,27 @@
     }
 }
 
+//.tooltip-old-dataset {
+//    pointer-events: none;
+//    opacity: 0;
+//    transition: opacity 0.3s;
+//}
+
+.tooltip-old-dataset {
+    position: absolute;
+    max-width: 240px;
+    padding: 5px;
+    color: white;
+    font-size: 10;
+    font-weight: normal;
+    text-align: center;
+    background: #0000008a;
+    border-radius: 4px 4px 4px 4px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
 @media only screen and (max-width: 1160px) {
 
 }

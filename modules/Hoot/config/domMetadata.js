@@ -15,7 +15,7 @@ export function layerConflateForm( data ) {
             validate: true,
             onChange: d => this.validateTextInput( d )
         },
-        { 
+        {
             label: 'Path',
             id: 'conflateFolderPath',
             class: 'path-name',
@@ -39,10 +39,11 @@ export function layerConflateForm( data ) {
             id: 'conflateType',
             inputType: 'combobox',
             value: 'Reference',
-            data: [ 'Reference', 'Average', 'Cookie Cutter & Horizontal', 'Differential', 'Differenatial w/ Tags' ],
+            data: [ 'Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/ Tags', 'Attribute' ],
             onChange: () => {
                 this.confAdnvOptionsFields = null;
                 this.changeAdvancedOptions();
+                this.updateAttributeReferenceLayer();
             },
             readonly: 'readonly'
         },
@@ -65,19 +66,6 @@ export function layerConflateForm( data ) {
                 // var selVal = d3.selectAll( '.reset.isCollectStats' ).value();
             },
             readonly: 'readonly'
-        },
-        {
-            label: 'Generate Report?',
-            id: 'conflateGenerateReport',
-            inputType: 'combobox',
-            value: 'false',
-            data: [ 'true', 'false' ],
-            onchange: function() {
-                // var selVal = d3.selectAll( '.reset.isGenerateReport' ).value();
-                // return selVal;
-            },
-            readonly: 'readonly',
-            testmode: true
         }
     ];
 }

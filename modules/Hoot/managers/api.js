@@ -28,10 +28,12 @@ export default class API {
             pathname: this.config.path
         } );
 
-        this.mergeUrl       = Object.assign( new URL( this.host ), { port: this.config.mergeServerPort } );
-        this.translationUrl = Object.assign( new URL( this.host ), { port: this.config.translationServerPort } );
+        let mergePortOrPath = function(p) {
+            return isNaN(p) ? {pathname: p + '/'} : {port: p};
+        };
 
-        this.baseUrl = `${this.host}${this.config.path}`;
+        this.mergeUrl       = Object.assign( new URL( this.host ), mergePortOrPath( this.config.mergeServerPort ) );
+        this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
 
         this.queryInterval = this.config.queryInterval;
         this.intervals     = {};
@@ -232,13 +234,18 @@ export default class API {
                 if ( !layers || !layers.length )
                     return resp.data;
 
-                return this.getMapSizes( _map( layers, 'id' ) ).then( sizeInfo => {
-                    _map( layers, layer => {
-                        _assign( layer, _find( sizeInfo.layers, { id: layer.id } ) );
-                    } );
+                return this.getMapSizes( _map( layers, 'id' ) )
+                    .then( sizeInfo => {
+                        _map( layers, layer => {
+                            _assign( layer, _find( sizeInfo.layers, { id: layer.id } ) );
+                        } );
 
-                    return layers;
-                } );
+                        return layers;
+                    } )
+                    .catch( () => {
+                        //TODO: handle this properly
+                        return layers;
+                    } );
             } )
             .catch( err => {
                 if ( err ) throw new Error( err );
@@ -862,8 +869,6 @@ export default class API {
             data
         };
 
-        this.getAdvancedOptions();
-
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )
             .then( resp => {
@@ -910,7 +915,7 @@ export default class API {
             url: `${ this.mergeUrl }elementmerge`,
             method: 'POST',
             headers: {
-                'Content-Type': 'text/plain'
+                'Content-Type': 'text/xml'
             },
             data
         };

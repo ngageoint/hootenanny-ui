@@ -14,6 +14,7 @@ import { JXON }             from '../../../util/jxon';
 import { t }                from '../../../util/locale';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions/index';
+import { osmNode }          from '../../../osm';
 
 /**
  * @class Merge
@@ -24,6 +25,11 @@ export default class Merge {
      */
     constructor( instance ) {
         this.data = instance.data;
+
+        this.mergeArrow = {
+            from: null,
+            to: null
+        };
     }
 
     /**
@@ -33,9 +39,9 @@ export default class Merge {
      */
     async mergeFeatures() {
         let features = _clone( this.data.currentFeatures ),
-            reverse  = d3.event.ctrlKey,
-            featureToUpdate,
-            featureToDelete,
+            reverse  = d3.event.ctrlKey || d3.event.metaKey,
+            featureUpdate,
+            featureDelete,
             mergedFeature,
             reviewRefs;
 
@@ -47,8 +53,13 @@ export default class Merge {
             features.reverse();
         }
 
-        featureToUpdate = features[ 0 ];
-        featureToDelete = features[ 1 ];
+        // This tag identifies the feature that is being merged into and will be removed by the server
+        // after merging is completed. The tag is not needed by POI to Polygon conflation, however,
+        // and will be ignored since POIs are always merged into polygons.
+        features[ 0 ].tags[ 'hoot:merge:target' ] = 'yes';
+
+        featureUpdate = features[ 0 ];
+        featureDelete = features[ 1 ];
 
         try {
             let mergedNode = await this.getMergedNode( features );
@@ -56,12 +67,13 @@ export default class Merge {
             mergedNode.tags[ 'hoot:status' ] = 3;
 
             Hoot.context.perform(
-                actionChangeTags( featureToUpdate.id, mergedNode.tags ),
+                actionChangeTags( featureUpdate.id, mergedNode.tags ),
                 t( 'operations.change_tags.annotation' )
             );
 
-            mergedFeature = featureToUpdate; // feature that is updated is now the new merged node
+            mergedFeature = featureUpdate; // feature that is updated is now the new merged node
         } catch ( e ) {
+            console.log( e );
             throw new Error( 'Unable to merge features' );
         }
 
@@ -78,7 +90,7 @@ export default class Merge {
             throw new Error( 'Unable to retrieve review references for merged items' );
         }
 
-        this.processMerge( reviewRefs, mergedFeature, featureToDelete );
+        this.processMerge( reviewRefs, mergedFeature, featureDelete );
     }
 
     /**
@@ -150,21 +162,14 @@ export default class Merge {
      * @returns {object} - merged node
      */
     async getMergedNode( features ) {
-        let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ],
-            reverse      = d3.event.ctrlKey,
-            mapId        = this.data.currentReviewItem.mapId,
-            osmXml;
+        let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ].join( '' ),
+            osmXml     = `<osm version="0.6" upload="true" generator="hootenanny">${ jxonFeatures }</osm>`,
+            mergedXml  = await Hoot.api.poiMerge( osmXml );
 
-        if ( reverse ) {
-            jxonFeatures = jxonFeatures.reverse();
-        }
+        let dom        = new DOMParser().parseFromString( mergedXml, 'text/xml' ),
+            mapId      = this.data.currentReviewItem.mapId,
 
-        osmXml = `<osm version="0.6" upload="true" generator="hootenanny">${ jxonFeatures.join( '' ) }</osm>`;
-
-        let mergedXml = await Hoot.api.poiMerge( osmXml ),
-            dom       = new DOMParser().parseFromString( mergedXml, 'text/xml' );
-
-        let featureOsm = await Hoot.context.connection().parse( dom, mapId );
+            featureOsm = await Hoot.context.connection().parse( dom, mapId );
 
         return featureOsm[ 0 ];
     }
@@ -255,5 +260,67 @@ export default class Merge {
      */
     toggleMergeButton( hide ) {
         d3.select( '.action-buttons .merge' ).classed( 'hidden', hide );
+    }
+
+    /**
+     * Activate merge arrow layer. Arrow appears when hovering over merge button
+     *
+     * @param feature
+     * @param againstFeature
+     */
+    activateMergeArrow( feature, againstFeature ) {
+        let that = this;
+
+        this.mergeArrow.from = feature;
+        this.mergeArrow.to   = againstFeature;
+
+        d3.select( '.action-buttons .merge' )
+            .on( 'mouseenter', function() {
+                this.focus();
+
+                if ( d3.event.ctrlKey || d3.event.metaKey ) {
+                    that.updateMergeArrow( 'reverse' );
+                } else {
+                    that.updateMergeArrow();
+                }
+
+                d3.select( this )
+                    .on( 'keydown', () => {
+                        if ( d3.event.ctrlKey || d3.event.metaKey ) {
+                            that.updateMergeArrow( 'reverse' );
+                        }
+                    } )
+                    .on( 'keyup', () => {
+                        that.updateMergeArrow();
+                    } );
+            } )
+            .on( 'mouseleave', function() {
+                this.blur();
+
+                that.updateMergeArrow( 'delete' );
+            } );
+    }
+
+    updateMergeArrow( mode ) {
+        if ( !Hoot.context.graph().entities[ this.mergeArrow.from.id ] ||
+            !Hoot.context.graph().entities[ this.mergeArrow.to.id ] ) {
+            Hoot.context.background().updateArrowLayer( {} );
+
+            return;
+        }
+
+        let pt1   = d3.geoCentroid( this.mergeArrow.to.asGeoJSON( Hoot.context.graph ) ),
+            pt2   = d3.geoCentroid( this.mergeArrow.from.asGeoJSON( Hoot.context.graph ) ),
+            coord = [ pt1, pt2 ];
+
+        if ( mode === 'reverse' ) coord = coord.reverse();
+
+        let gj = mode === 'delete' ? {} : {
+            type: 'LineString',
+            coordinates: coord
+        };
+
+
+        Hoot.context.background().updateArrowLayer( gj );
     }
 }

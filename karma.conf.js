@@ -2,6 +2,7 @@
 // Generated on Mon Oct 29 2018 14:12:47 GMT-0400 (Eastern Daylight Time)
 
 const path  = require( 'path' );
+const url = require( 'url' );
 const proxy = require( 'express-http-proxy' );
 
 const materialIconFiles = [
@@ -16,11 +17,18 @@ const materialIconFiles = [
 const webpackConfig = {
     mode: 'development',
     entry: './test/hoot/index.js',
-  
+
   module: {
         rules: [
             // instrument only testing sources with Istanbulvar fs = require('fs')
-
+            {
+                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3)$/,
+                use: [
+                    {
+                        loader: 'file-loader'
+                    }
+                ]
+            },
             {
                 test: /\.js$/,
                 use: {
@@ -41,7 +49,7 @@ const webpackConfig = {
     },
     resolve: {
         alias: {
-            img: path.resolve( __dirname, 'img' ),
+            './img': path.resolve( __dirname, 'img' ),
             lib: path.resolve( __dirname, 'modules/lib' )
         }
     }
@@ -61,8 +69,8 @@ module.exports = function( config ) {
 
         client: {
             mocha: {
-                browserDisconnectTimeout : 210000,
-                browserNoActivityTimeout : 210000,
+                // browserDisconnectTimeout : 210000,
+                // browserNoActivityTimeout : 210000,
                 timeout: 40000
             }
         },
@@ -102,18 +110,26 @@ module.exports = function( config ) {
 
 
         proxies: {
-            '/img/': '/base/img/'
+            '/img/': '/base/img/',
+            '/base/css/img/': '/base/img/',
+            '/base/css/hoot/img/': '/base/img/',
+            '/base/css/hoot/modules/img/': '/base/img/',
+            '/hoot-services': 'http://localhost:8787/hoot-services'
         },
 
 
         expressHttpServer: {
-            port: '8080',
+            port: '8787',
             appVisitor: function( app ) {
-                app.use( '/', proxy( 'http://35.174.111.201:8080', {
+                app.use( '/hoot-services', proxy( 'http://35.174.111.201:8080', {
                     limit: '1000mb',
                     proxyReqOptDecorator: function( proxyReqOpts ) {
                         proxyReqOpts.headers.cookie = 'SESSION=ff47f751-c831-41ee-800f-5ef8b9371ee3; lock=1';
+
                         return proxyReqOpts;
+                    },
+                    proxyReqPathResolver: function( req ) {
+                        return '/hoot-services' + url.parse(req.url).path;
                     }
                 } ) );
             }
@@ -156,7 +172,7 @@ module.exports = function( config ) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: [ 'Chrome' ],
+        browsers: [ 'ChromeHeadless' ],
 
 
 

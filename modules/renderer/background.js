@@ -11,6 +11,7 @@ import { data }                                           from '../../data';
 import { geoExtent, geoMetersToOffset, geoOffsetToMeters} from '../geo';
 import { rendererBackgroundSource }                       from './background_source';
 import { rendererFootprintLayer }                         from './footprint_layer';
+import { rendererArrowLayer }                             from './arrow_layer';
 import { rendererTileLayer }                              from './tile_layer';
 import { utilQsString, utilStringQs }                     from '../util';
 import { utilDetect }                                     from '../util/detect';
@@ -22,6 +23,7 @@ export function rendererBackground(context) {
     var detected = utilDetect();
     var baseLayer = rendererTileLayer(context).projection(context.projection);
     var footprintLayer = rendererFootprintLayer().projection(context.projection);
+    var arrowLayer = rendererArrowLayer().projection(context.projection);
     var _overlayLayers = [];
     var _backgroundSources = [];
     var _brightness = 1;
@@ -77,6 +79,18 @@ export function rendererBackground(context) {
             .merge( footprint );
 
         footprint.call( footprintLayer );
+
+        var arrow = selection
+            .selectAll( '.arrow-background' )
+            .data( [ 0 ] );
+
+        arrow = arrow
+            .enter()
+            .insert( 'div', '.layer-data' )
+            .attr( 'class', 'layer arrow-background' )
+            .merge( arrow );
+
+        arrow.call( arrowLayer );
 
         if (detected.cssfilters) {
             base.style('filter', baseFilter || null);
@@ -267,6 +281,7 @@ export function rendererBackground(context) {
         if (!d) return;
         baseLayer.dimensions(d);
         footprintLayer.dimensions(d);
+        arrowLayer.dimensions( d );
 
         _overlayLayers.forEach(function(layer) {
             layer.dimensions(d);
@@ -384,6 +399,12 @@ export function rendererBackground(context) {
     //Added for EGD-plugin
     background.updateFootprintLayer = function(d) {
         footprintLayer.geojson(d);
+        dispatch.call('change');
+    };
+
+    //Added for Hoot review merge tool
+    background.updateArrowLayer = function( d ) {
+        arrowLayer.geojson(d);
         dispatch.call('change');
     };
 

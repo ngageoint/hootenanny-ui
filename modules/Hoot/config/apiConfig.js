@@ -10,13 +10,12 @@ export const apiConfig = {
     port: window.location.port,
     path: '/hoot-services',
     translationServerPort: '8094',
-    mapnikServerPort: '8000',
     mergeServerPort: '8096',
     queryInterval: 2000
 };
 
 export const hootConfig = {
-  maxNodeCount: 10000
+    maxNodeCount: 10000
 };
 
 export default apiConfig;

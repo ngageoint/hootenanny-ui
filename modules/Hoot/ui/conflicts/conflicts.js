@@ -40,7 +40,8 @@ export default class Conflicts {
             currentReviewItem: null,
             currentRelation: null,
             currentFeatures: null,
-            mergedItems: []
+            mergedItems: [],
+            mergedConflicts: []
         };
 
         this.buttonEnabled = true;
