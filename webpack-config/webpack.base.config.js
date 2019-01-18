@@ -59,7 +59,8 @@ module.exports = {
     resolve: {
         alias: {
             './img': resolve( __dirname, '../img' ),
-            lib: resolve( __dirname, '../modules/lib' )
+            'lib': resolve( __dirname, '../modules/lib' ),
+            'data': resolve( __dirname, '../data' )
         }
     },
     plugins: [

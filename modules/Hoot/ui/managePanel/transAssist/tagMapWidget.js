@@ -4,8 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
 
-import { tagInfo }    from '../../../../../data/index';
-import { d3combobox } from '../../../../lib/hoot/d3.combobox';
+import { tagInfo }    from 'data/index';
+import { d3combobox } from 'lib/hoot/d3.combobox';
 
 export default class TagMapWidget {
     constructor( instance ) {
@@ -13,6 +13,8 @@ export default class TagMapWidget {
     }
 
     createTagLookup() {
+        let that = this;
+
         this.schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
 
         this.tagLookup = this.instance.tagMapContainer
@@ -31,7 +33,10 @@ export default class TagMapWidget {
             .attr( 'type', 'text' )
             .attr( 'placeholder', 'Search Tag' )
             .classed( 'strong bigger pad1x pad2y reset', true )
-            .on( 'input', () => this.change.call( this ) );
+            .on( 'input', () => this.change.call( this ) )
+            .on( 'keyup', () => that.keyup() )
+            .on( 'keydown', () => that.keydown( this ) );
+
 
         this.resultsList = this.tagLookup
             .append( 'div' )
@@ -52,12 +57,12 @@ export default class TagMapWidget {
                 break;
             // up arrow
             case 38:
-                scroll( 'up', this );
+                this.scroll( 'up' );
                 d3.event.preventDefault();
                 break;
             // down arrow
             case 40:
-                scroll( 'down', this );
+                this.scroll( 'down' );
                 d3.event.preventDefault();
                 break;
         }
@@ -74,6 +79,38 @@ export default class TagMapWidget {
             case 13:
                 this.accept();
                 break;
+        }
+    }
+
+    scroll( dir ) {
+        let resultList = d3.select( this.searchTag.node().parentNode ).node().nextSibling,
+            results    = this.resultsList.selectAll( 'div' );
+
+        if ( results.size() ) {
+            let tags = results.data().map( d => d.key );
+
+            // get index of current
+            let curIdx = tags.indexOf( this.searchTag.property( 'value' ) );
+
+            // get height of element
+            let height = results.nodes()[ 0 ].getBoundingClientRect().height;
+
+            if ( dir === 'up' ) {
+                curIdx -= 1;
+            }
+            else if ( dir === 'down' ) {
+                curIdx += 1;
+            }
+
+            curIdx = curIdx < 0 ? 0 : curIdx;
+            curIdx = curIdx > tags.length - 1 ? tags.length - 1 : curIdx;
+
+            // scroll to curIdx
+            resultList.scrollTop = curIdx * height;
+
+            this.searchTag.property( 'value', tags[ curIdx ] );
+
+            this.currentTags = tags;
         }
     }
 
@@ -113,9 +150,7 @@ export default class TagMapWidget {
             .html( d => {
                 return !d || d.key.replace( value, '<span class="match">' + value + '</span>' );
             } )
-            .on( 'click', d => {
-                this.selectTag( this.tagLookup, d );
-            } );
+            .on( 'click', d => this.selectTag( d ) );
 
         searchResult.exit().remove();
     }
@@ -123,37 +158,34 @@ export default class TagMapWidget {
     accept() {
         let value = this.searchTag.property( 'value' );
 
-        if ( value.length ) {
-            let el     = this.resultsList.select( '.search-result:first-child' );
+        if ( value.length && this.currentTags.indexOf( value ) > -1 ) {
+            let el = this.resultsList.select( '.search-result:first-child' );
 
-            //TODO: get back to this
             //If selection is empty, use the user specified value as the tag key
-            // var d      = (!el.empty() && el.text() === value) ? el.datum() : { key: value, value: [] };
-            // var lookup = d3.select( this.searchTag.node().parentNode );
-            //selectTag( lookup, d );
+            let d = (!el.empty() && el.text() === value) ? el.datum() : { key: value, value: [] };
+
+            this.selectTag( d );
         }
     }
 
     remove() {
-        this.inputWrapper.remove();
+        this.tagLookup.remove();
     }
 
-    selectTag( tagLookup, d ) {
+    selectTag( d ) {
         let tagKey = d.key,
             values = d.value;
 
         this.instance.toggleNextButton( false );
 
-        tagLookup.html( null );
+        this.tagLookup.html( null );
 
-        tagLookup
+        this.tagLookup
             .append( 'div' )
             .classed( 'translate-icon remove-tag inline thumbnail big _icon blank keyline-left', true )
-            .on( 'click', () => {
-                tagLookup.remove();
-            } );
+            .on( 'click', () => this.tagLookup.remove() );
 
-        tagLookup
+        this.tagLookup
             .append( 'div' )
             .classed( 'translate-icon map-type-icon remove-map-tag inline thumbnail big _icon blank keyline-left', true )
             .on( 'click', function() {
@@ -163,30 +195,30 @@ export default class TagMapWidget {
                     icon.classed( 'remove-map-tag', false );
                     icon.classed( 'link-tag', true );
 
-                    tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
-                    tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
+                    this.tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
+                    this.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
                 } else if ( icon.classed( 'link-tag' ) ) {
                     icon.classed( 'link-tag', false );
                     icon.classed( 'map-tag', true );
 
-                    tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
-                    tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
+                    this.tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
+                    this.tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
                 } else {
                     icon.classed( 'map-tag', false );
                     icon.classed( 'remove-map-tag', true );
 
-                    tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
-                    tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
+                    this.tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
+                    this.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
                 }
             } );
 
-        tagLookup
+        this.tagLookup
             .append( 'label' )
             .classed( 'tag-key pad1 space-bottom0 center bigger', true )
             .text( tagKey );
 
         // single
-        tagLookup
+        this.tagLookup
             .append( 'div' )
             .classed( 'mapping-wrapper mapping-single keyline-top hidden', true )
             .append( 'input' )
@@ -202,7 +234,7 @@ export default class TagMapWidget {
             } );
 
         // list
-        let attrMapList = tagLookup
+        let attrMapList = this.tagLookup
             .append( 'div' )
             .classed( 'mapping-wrapper mapping-list keyline-top hidden', true )
             .append( 'ul' );
@@ -245,17 +277,17 @@ export default class TagMapWidget {
 
             isCustomized.forEach( entry => {
                 if ( typeof entry.value === 'string' ) { //entry is a single tag value
-                    tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
+                    this.tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
 
-                    tagLookup.select( '.map-type-icon' )
+                    this.tagLookup.select( '.map-type-icon' )
                         .classed( 'remove-map-tag', false )
                         .classed( 'link-tag', true );
 
-                    tagLookup.select( '#preset-input-' + this.hashCode( tagKey ) ).property( 'value', entry.value );
+                    this.tagLookup.select( '#preset-input-' + this.hashCode( tagKey ) ).property( 'value', entry.value );
                 } else { //entry is map of attr:tag values
-                    tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
+                    this.tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
 
-                    tagLookup.select( '.map-type-icon' )
+                    this.tagLookup.select( '.map-type-icon' )
                         .classed( 'remove-map-tag', false )
                         .classed( 'map-tag', true );
 
