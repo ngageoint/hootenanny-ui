@@ -70,7 +70,7 @@ export default class Navbar {
 
             rightContainer
                 .append( 'div' )
-                .classed( 'dropdown-toggle light strong small info pad2x flex align-center text-light pointer', true )
+                .classed( 'light strong small info pad2x flex align-center text-light', true )
                 .append( 'span' )
                 .text( 'Logged in as ' + user.display_name );
 
@@ -140,7 +140,6 @@ export default class Navbar {
         managePanel.isOpen = !managePanel.isOpen;
     }
 
-    //////////////////// possibly use in the future
     initDropdown() {
         let that = this;
 
