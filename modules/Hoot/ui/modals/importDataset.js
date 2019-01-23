@@ -7,7 +7,6 @@
 import _filter  from 'lodash-es/filter';
 import _find    from 'lodash-es/find';
 import _forEach from 'lodash-es/forEach';
-import _map     from 'lodash-es/map';
 import _reject  from 'lodash-es/reject';
 import _remove  from 'lodash-es/remove';
 
@@ -16,7 +15,6 @@ import { getBrowserInfo } from '../../tools/utilities';
 
 import {
     importSingleForm,
-    importMultiForm
 }           from '../../config/domMetadata';
 import _get from 'lodash-es/get';
 
@@ -27,8 +25,7 @@ import _get from 'lodash-es/get';
  * @constructor
  */
 export default class ImportDataset {
-    constructor( type, translations ) {
-        this.formType       = type;
+    constructor( translations ) {
         this.folderList     = Hoot.folders._folders;
         this.translations   = translations;
         this.browserInfo    = getBrowserInfo();
@@ -166,7 +163,7 @@ export default class ImportDataset {
             totalFileSize += currentFile.size;
             fileNames.push( fileName );
 
-            if ( selectedType === 'FILE' || this.formType === 'multi' ) {
+            if ( selectedType === 'FILE' ) {
                 this.setFileMetadata( fileName, typeCount, fileList );
             }
         }
