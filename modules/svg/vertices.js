@@ -327,6 +327,9 @@ export function svgVertices(projection, context) {
         var mode = context.mode();
         var isMoving = mode && /^(add|draw|drag|move|rotate)/.test(mode.id);
 
+        var drawLayer = selection.selectAll('.layer-osm.points .points-group.vertices');
+        var touchLayer = selection.selectAll('.layer-touch.points');
+
         if (fullRedraw) {
             _currPersistent = {};
             _radii = {};
@@ -372,7 +375,7 @@ export function svgVertices(projection, context) {
         var filterRendered = function(d) {
             return d.id in _currPersistent || d.id in _currSelected || d.id in _currHover || filter(d);
         };
-        selection.selectAll('.layer-points .layer-points-vertices')
+        drawLayer
             .call(draw, graph, currentVisible(all), sets, filterRendered);
 
         // Draw touch targets..
@@ -380,7 +383,7 @@ export function svgVertices(projection, context) {
         var filterTouch = function(d) {
             return isMoving ? true : filterRendered(d);
         };
-        selection.selectAll('.layer-points .layer-points-targets')
+        touchLayer
             .call(drawTargets, graph, currentVisible(all), filterTouch);
 
 

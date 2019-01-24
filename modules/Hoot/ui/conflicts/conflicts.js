@@ -13,7 +13,7 @@ import GraphSync           from './graphSync';
 import Merge               from './merge';
 import Resolve             from './resolve';
 import { conflictActions } from '../../config/domMetadata';
-import { d3keybinding }    from '../../../lib/d3.keybinding';
+import { utilKeybinding }    from '../../../util/keybinding';
 import { t }               from '../../../util/locale';
 import { tooltip }         from '../../../util/tooltip';
 
@@ -145,7 +145,7 @@ export default class Conflicts {
      * Bind key press events to actions buttons
      */
     bindKeys() {
-        let keybinding = d3keybinding( 'conflicts' );
+        let keybinding = utilKeybinding( 'conflicts' );
 
         _forEach( this.buttonMeta, bt => {
             keybinding.on( bt.cmd, () => {

@@ -74,10 +74,16 @@ export function uiRawTagEditor(context) {
             _newRow = '';
         }
 
-        var selectAll = wrap.selectAll('.select-all-button')
+        var selectAllRow = wrap
+            .selectAll('.select-all-row')
             .data([0]);
+            // .selectAll('.select-all-button')
+            // .data([0]);
 
-        selectAll.enter()
+        selectAllRow
+            .enter()
+            .append('div')
+            .classed('select-all-row', true)
             .append('button')
             .attr('tab-index', -1)
             .classed('select-all-button', true)
@@ -113,10 +119,13 @@ export function uiRawTagEditor(context) {
 
         var enter = items.enter()
             .append('li')
-            .attr('class', 'tag-row cf')
+            .attr('class', 'tag-row')
             .classed('readonly', isReadOnly);
 
-        enter
+        var innerWrap = enter.append('div')
+            .attr('class', 'inner-wrap');
+
+        innerWrap
             .append('div')
             .attr('class', 'key-wrap')
             .append('input')
@@ -127,9 +136,9 @@ export function uiRawTagEditor(context) {
             .on('blur', keyChange)
             .on('change', keyChange);
 
-        enter
+        innerWrap
             .append('div')
-            .attr('class', 'input-wrap-position')
+            .attr('class', 'value-wrap')
             .append('input')
             .property('type', 'text')
             .attr('class', 'value')
@@ -139,10 +148,10 @@ export function uiRawTagEditor(context) {
             .on('change', valueChange)
             .on('keydown.push-more', pushMore);
 
-        enter
+        innerWrap
             .append('button')
             .attr('tabindex', -1)
-            .attr('class', 'remove minor')
+            .attr('class', 'form-field-button remove')
             .call(svgIcon('#iD-operation-delete'));
 
 
@@ -166,7 +175,7 @@ export function uiRawTagEditor(context) {
                     bindTypeahead(key, value);
                 }
 
-                // Override tag reference with tag copy
+                // Hoot: Override tag reference with tag copy
                 var select = uiTagSelectCopy(context);
 
                 row.call( select );

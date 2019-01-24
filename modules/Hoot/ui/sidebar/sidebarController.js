@@ -44,6 +44,8 @@ class SidebarController {
         this.createThumbnail();
         this.createText();
         this.createDeleteButton();
+
+        Hoot.ui.sidebar.adjustSize();
     }
 
     togglePanel() {

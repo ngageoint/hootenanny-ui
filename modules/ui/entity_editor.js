@@ -118,7 +118,9 @@ export function uiEntityEditor(context) {
             .attr('class', 'preset-list-button preset-reset')
             .call(tooltip().title(t('inspector.back_tooltip')).placement('bottom'))
             .append('div')
-            .attr('class', 'label');
+            .attr('class', 'label')
+            .append('div')
+            .attr('class', 'label-inner');
 
         enter
             .append('div')
@@ -163,6 +165,53 @@ export function uiEntityEditor(context) {
             .call(uiPresetIcon()
                 .geometry(context.geometry(_entityID))
                 .preset(_activePreset)
+            );
+
+
+        var label = body.select('.label-inner');
+        var nameparts = label.selectAll('.namepart')
+            .data(_activePreset.name().split(' - '), function(d) { return d; });
+
+        nameparts.exit()
+            .remove();
+
+        nameparts
+            .enter()
+            .append('div')
+            .attr('class', 'namepart')
+            .text(function(d) { return d; });
+
+
+        body.select('.preset-editor')
+            .call(presetEditor
+                .preset(_activePreset)
+                .entityID(_entityID)
+                .tags(tags)
+                .state(_state)
+            );
+
+        body.select('.raw-tag-editor')
+            .call(rawTagEditor
+                .preset(_activePreset)
+                .entityID(_entityID)
+                .tags(tags)
+                .state(_state)
+            );
+
+        if (entity.type === 'relation') {
+            body.select('.raw-member-editor')
+                .style('display', 'block')
+                .call(uiRawMemberEditor(context)
+                    .entityID(_entityID)
+                );
+        } else {
+            body.select('.raw-member-editor')
+                .style('display', 'none');
+        }
+
+        body.select('.raw-membership-editor')
+            .call(uiRawMembershipEditor(context)
+                .entityID(_entityID)
             );
 
         body.select('.key-trap')
@@ -334,6 +383,12 @@ export function uiEntityEditor(context) {
         _entityID = _;
         _base = context.graph();
         _coalesceChanges = false;
+
+        // reset the scroll to the top of the inspector
+        var body = d3_selectAll('.entity-editor-pane .inspector-body');
+        if (!body.empty()) {
+            body.node().scrollTop = 0;
+        }
 
         var presetMatch = context.presets().match(context.entity(_entityID), _base);
 

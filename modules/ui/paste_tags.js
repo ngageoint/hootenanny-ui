@@ -7,14 +7,14 @@
 import _forEach from 'lodash-es/forEach';
 import _omit    from 'lodash-es/omit';
 
-import { d3keybinding as d3_keybinding } from '../lib/d3.keybinding';
-import { t }                             from '../util/locale';
-import { tooltip }                       from '../util/tooltip';
-import { tooltipHtml }                   from '../Hoot/tools/utilities';
-import { svgIcon }                       from '../svg';
-import { modeSelect }                    from '../modes';
-import { actionChangeTags }              from '../actions';
-import { uiCmd }                         from './cmd';
+import { utilKeybinding }   from '../util/keybinding';
+import { t }                from '../util/locale';
+import { tooltip }          from '../util/tooltip';
+import { tooltipHtml }      from '../Hoot/tools/utilities';
+import { svgIcon }          from '../svg';
+import { modeSelect }       from '../modes';
+import { actionChangeTags } from '../actions';
+import { uiCmd }            from './cmd';
 
 export function uiPasteTags( context ) {
     let commands = [ {
@@ -92,7 +92,7 @@ export function uiPasteTags( context ) {
             d3.select( this ).call( svgIcon( `#${ d.icon }` ) );
         } );
 
-        let keybinding = d3_keybinding( 'paste_tags' )
+        let keybinding = utilKeybinding( 'paste_tags' )
             .on( commands[ 0 ].cmd, function() {
                 d3.event.preventDefault();
                 commands[ 0 ].action();

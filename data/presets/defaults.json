@@ -44,7 +44,7 @@
       "category-water-line",
       "category-barrier",
       "category-natural-line",
-      "power/line",
+      "category-utility",
       "mgcp/AN010",
       "mgcp/AP010",
       "mgcp/AP030",
@@ -111,8 +111,8 @@
       "point"
     ],
     "vertex": [
-      "highway/crosswalk",
-      "highway/crossing",
+      "highway/crossing/marked",
+      "highway/crossing/unmarked",
       "railway/level_crossing",
       "highway/traffic_signals",
       "highway/turning_circle",

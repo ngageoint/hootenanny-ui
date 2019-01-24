@@ -6,7 +6,7 @@
  *******************************************************************************************************/
 
 export const apiConfig = {
-    host: window.location.protocol + '//' + window.location.host, //host includes port, hostname is just host name
+    host: window.location.protocol + '//' + window.location.host, // just host name without port
     port: window.location.port,
     path: '/hoot-services',
     translationServerPort: '8094',
@@ -14,10 +14,6 @@ export const apiConfig = {
     queryInterval: 2000
 };
 
-export const hootConfig = {
-    maxNodeCount: 10000
-};
-
 export default apiConfig;
 
-export let baseUrl = `${ apiConfig.host }${ apiConfig.path }`;
+export let baseUrl = `${apiConfig.host}${apiConfig.path}`;

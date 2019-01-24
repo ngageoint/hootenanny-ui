@@ -26,17 +26,18 @@ describe('iD.svgLayers', function () {
     it('creates default data layers', function () {
         container.call(iD.svgLayers(projection, context));
         var nodes = container.selectAll('svg .data-layer').nodes();
-        expect(nodes.length).to.eql(10);
-        expect(d3.select(nodes[0]).classed('data-layer-osm')).to.be.true;
-        expect(d3.select(nodes[1]).classed('data-layer-notes')).to.be.true;
-        expect(d3.select(nodes[2]).classed('data-layer-data')).to.be.true;
-        expect(d3.select(nodes[3]).classed('data-layer-hoot')).to.be.true;
-        expect(d3.select(nodes[4]).classed('data-layer-streetside')).to.be.true;
-        expect(d3.select(nodes[5]).classed('data-layer-mapillary-images')).to.be.true;
-        expect(d3.select(nodes[6]).classed('data-layer-mapillary-signs')).to.be.true;
-        expect(d3.select(nodes[7]).classed('data-layer-measure')).to.be.true;
-        expect(d3.select(nodes[8]).classed('data-layer-openstreetcam-images')).to.be.true;
-        expect(d3.select(nodes[9]).classed('data-layer-debug')).to.be.true;
+        expect(nodes.length).to.eql(11);
+        expect(d3.select(nodes[0]).classed('osm')).to.be.true;
+        expect(d3.select(nodes[1]).classed('notes')).to.be.true;
+        expect(d3.select(nodes[2]).classed('data')).to.be.true;
+        expect(d3.select(nodes[3]).classed('hoot')).to.be.true;
+        expect(d3.select(nodes[4]).classed('streetside')).to.be.true;
+        expect(d3.select(nodes[5]).classed('mapillary-images')).to.be.true;
+        expect(d3.select(nodes[6]).classed('mapillary-signs')).to.be.true;
+        expect(d3.select(nodes[7]).classed('measure')).to.be.true;
+        expect(d3.select(nodes[8]).classed('openstreetcam-images')).to.be.true;
+        expect(d3.select(nodes[9]).classed('debug')).to.be.true;
+        expect(d3.select(nodes[10]).classed('touch')).to.be.true;
     });
 
 });

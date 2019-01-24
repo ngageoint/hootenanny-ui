@@ -12,7 +12,7 @@ export function modeClipBoundingBox( instance, context ) {
         id: 'clip-bounding-box'
     };
 
-    let svg = d3.select( '.data-layer-measure' ).select( 'svg' );
+    let svg = d3.select( '.data-layer.measure' ).select( 'svg' );
 
     let behavior = clip( context, svg )
         .on( 'finish', finish );
@@ -25,12 +25,12 @@ export function modeClipBoundingBox( instance, context ) {
     }
 
     clipBbox.enter = function() {
-        d3.select( '.data-layer-measure' ).selectAll( 'g' ).remove();
+        d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
         context.install( behavior );
     };
 
     clipBbox.exit = function() {
-        d3.select( '.data-layer-measure' ).selectAll( 'g' ).remove();
+        d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
         context.uninstall( behavior );
     };
 

@@ -23,14 +23,14 @@ export default class API {
 
         this.host = this.config.host;
 
+        let mergePortOrPath = function(p) {
+            return isNaN(p) ? {pathname: p + '/'} : {port: p};
+        };
+
         this.baseUrl = Object.assign( new URL( this.host ), {
             port: this.config.port,
             pathname: this.config.path
         } );
-
-        let mergePortOrPath = function(p) {
-            return isNaN(p) ? {pathname: p + '/'} : {port: p};
-        };
 
         this.mergeUrl       = Object.assign( new URL( this.host ), mergePortOrPath( this.config.mergeServerPort ) );
         this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );

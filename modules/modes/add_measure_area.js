@@ -13,7 +13,7 @@ export function modeAddMeasureArea( context ) {
         key: '6'
     };
 
-    let svg = d3.select( '.data-layer-measure' ).select( 'svg' );
+    let svg = d3.select( '.data-layer.measure' ).select( 'svg' );
 
     let behavior = behaviorDrawMeasureArea( context, svg )
         .on( 'cancel', addArea.cancel )
@@ -21,7 +21,7 @@ export function modeAddMeasureArea( context ) {
 
     function finish( nodeId, ptArr ) {
         if ( ptArr.length < 3 ) {
-            d3.select( '.data-layer-measure' ).selectAll( 'g' ).remove();
+            d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
         } else {
             d3.selectAll( `.measure-line-${ nodeId }` ).each( function() {
                 d3.select( this.parentNode ).remove();
@@ -30,7 +30,7 @@ export function modeAddMeasureArea( context ) {
             d3.selectAll( `.measure-vertex-${ nodeId }` ).remove();
         }
 
-        if ( d3.select( '.data-layer-measure' ).selectAll( 'g' ).size() ) {
+        if ( d3.select( '.data-layer.measure' ).selectAll( 'g' ).size() ) {
             d3.select( '.tools-toggle' ).text( 'Clear' );
         }
 
@@ -42,7 +42,7 @@ export function modeAddMeasureArea( context ) {
     };
 
     addArea.enter = function() {
-        d3.select( '.data-layer-measure' ).selectAll( 'g' ).remove();
+        d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
         context.install( behavior );
     };
 

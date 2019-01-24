@@ -94,11 +94,11 @@
     }
 }
 
-#content {
-    position: absolute;
-    width: calc(100% - 400px);
-    left: 400px;
-}
+//#content {
+//    position: absolute;
+//    width: calc(100% - 400px);
+//    left: 400px;
+//}
 
 path.line {
     &.stroke {
@@ -201,7 +201,7 @@ path.line {
     }
 }
 
-.data-layer-hoot {
+.data-layer.hoot {
     .layer-hoot {
         fill-opacity: 0;
         pointer-events: none;
@@ -222,16 +222,16 @@ path.line {
     }
 }
 
-@media only screen and (max-width: 1160px) {
-    #content {
-        width: calc(100% - 300px);
-        left: 300px;
-    }
-}
-
-@media only screen and (max-width: 900px) {
-    #content {
-        width: calc(100% - 250px);
-        left: 250px;
-    }
-}
+//@media only screen and (max-width: 1160px) {
+//    #content {
+//        width: calc(100% - 300px);
+//        left: 300px;
+//    }
+//}
+//
+//@media only screen and (max-width: 900px) {
+//    #content {
+//        width: calc(100% - 250px);
+//        left: 250px;
+//    }
+//}
