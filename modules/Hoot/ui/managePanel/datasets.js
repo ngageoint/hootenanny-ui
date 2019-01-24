@@ -9,10 +9,11 @@ import _map from 'lodash-es/map';
 import FolderTree from '../../tools/folderTree';
 import Tab        from './tab';
 
-import ImportDataset from '../modals/importDataset';
-import AddFolder     from '../modals/addFolder';
-import ModifyDataset from '../modals/modifyDataset';
-import ModifyFolder  from '../modals/modifyFolder';
+import ImportDataset      from '../modals/importDataset';
+import ImportMultiDataset from '../modals/ImportMultiDatasets';
+import AddFolder          from '../modals/addFolder';
+import ModifyDataset      from '../modals/modifyDataset';
+import ModifyFolder       from '../modals/modifyFolder';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -96,7 +97,7 @@ export default class Datasets extends Tab {
                     case 'import-datasets-single': {
                         let translations = await Hoot.api.getTranslations();
 
-                        this.importSingleModal = new ImportDataset( 'single', translations ).render();
+                        this.importSingleModal = new ImportDataset( translations ).render();
 
                         Hoot.events.once( 'modal-closed', () => delete this.importSingleModal );
                         break;
@@ -104,7 +105,7 @@ export default class Datasets extends Tab {
                     case 'import-datasets-directory': {
                         let translations = await Hoot.api.getTranslations();
 
-                        this.importMultiModal = new ImportDataset( 'multi', translations ).render();
+                        this.importMultiModal = new ImportMultiDataset( translations ).render();
 
                         Hoot.events.once( 'modal-closed', () => delete this.importMultiModal );
                         break;
