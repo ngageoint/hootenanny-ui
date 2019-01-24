@@ -1,61 +1,33 @@
 /** ****************************************************************************************************
- * File: importDatasets
+ * File: ImportMultiDatasets
  * Project: hootenanny-ui
- * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/12/18
+ * @author Matt Putipong on 1/23/19
  *******************************************************************************************************/
 
-import _filter  from 'lodash-es/filter';
-import _find    from 'lodash-es/find';
-import _forEach from 'lodash-es/forEach';
-import _reject  from 'lodash-es/reject';
-import _remove  from 'lodash-es/remove';
+import { importMultiForm } from '../../config/domMetadata';
+import _reject             from 'lodash-es/reject';
+import FormFactory         from '../../tools/formFactory';
+import _filter             from 'lodash-es/filter';
+import _find               from 'lodash-es/find';
+import _get                from 'lodash-es/get';
+import _map                from 'lodash-es/map';
+import _forEach            from 'lodash-es/forEach';
 
-import FormFactory        from '../../tools/formFactory';
-import { getBrowserInfo } from '../../tools/utilities';
-
-import {
-    importSingleForm,
-}           from '../../config/domMetadata';
-import _get from 'lodash-es/get';
-
-/**
- * Form that allows user to import datasets into hoot
- *
- * @param translations - All translations from database
- * @constructor
- */
-export default class ImportDataset {
+export default class ImportMultiDatasets {
     constructor( translations ) {
         this.folderList     = Hoot.folders._folders;
         this.translations   = translations;
-        this.browserInfo    = getBrowserInfo();
         this.formFactory    = new FormFactory();
         this.processRequest = null;
 
-        // Add "NONE" option to beginning of array
-        this.translations.unshift( {
-            NAME: 'NONE',
-            PATH: 'NONE',
-            DESCRIPTION: 'No Translations',
-            NONE: 'true'
-        } );
-
         this.importTypes = [
             {
-                title: 'File (shp, zip, gdb.zip)',
+                title: 'Shapefile',
                 value: 'FILE'
             },
             {
-                title: 'File (osm, osm.zip, pbf)',
+                title: 'OSM or PBF',
                 value: 'OSM'
-            },
-            {
-                title: 'File (geonames, txt)',
-                value: 'GEONAMES'
-            },
-            {
-                title: 'Directory (FGDB)',
-                value: 'DIR'
             }
         ];
     }
@@ -64,15 +36,11 @@ export default class ImportDataset {
      * Set form parameters and create the form using the form factory
      */
     render() {
-        if ( this.browserInfo.name.substring( 0, 6 ) !== 'Chrome' ) {
-            _remove( this.importTypes, o => o.value === 'DIR' );
-        }
-
-        this.form           = importSingleForm.call( this );
+        this.form           = importMultiForm.call( this );
         this.form[ 0 ].data = this.importTypes;
 
         let metadata = {
-            title: 'Import Dataset',
+            title: 'Import Multiple Datasets',
             form: this.form,
             button: {
                 text: 'Import',
@@ -86,12 +54,19 @@ export default class ImportDataset {
 
         this.typeInput          = this.container.select( '#importType' );
         this.fileInput          = this.container.select( '#importFile' );
-        this.layerNameInput     = this.container.select( '#importLayerName' );
+        this.fileListInput      = this.container.select( '#importFileList' );
         this.pathNameInput      = this.container.select( '#importPathName' );
         this.newFolderNameInput = this.container.select( '#importNewFolderName' );
         this.schemaInput        = this.container.select( '#importSchema' );
+        this.customSuffixInput  = this.container.select( '#importCustomSuffix' );
         this.fileIngest         = this.container.select( '#ingestFileUploader' );
         this.submitButton       = this.container.select( '#importSubmitBtn' );
+
+        this.progressContainer = this.container
+            .select( '.modal.hoot-menu' )
+            .append( 'div' )
+            .attr( 'id', 'importProgressBar' )
+            .classed( 'progress-bar hidden', true );
 
         return this;
     }
@@ -108,10 +83,9 @@ export default class ImportDataset {
 
         // clear values
         this.fileInput.property( 'value', '' );
-        this.layerNameInput.property( 'value', '' );
         this.schemaInput.property( 'value', '' );
 
-        // enable input
+        // enable input if a type is selected
         if ( !selectedType ) {
             this.fileInput.node().disabled   = true;
             this.schemaInput.node().disabled = true;
@@ -120,12 +94,8 @@ export default class ImportDataset {
             this.schemaInput.node().disabled = false;
         }
 
-        // filter translations for selected type
-        if ( selectedType === 'GEONAMES' ) {
-            translationsList = _filter( this.translations, o => o.NAME === 'GEONAMES' );
-        } else {
-            translationsList = _reject( this.translations, o => o.NAME === 'GEONAMES' );
-        }
+        // filter out geoname translations
+        translationsList = _reject( this.translations, o => o.NAME === 'GEONAMES' );
 
         schemaCombo.data = translationsList;
 
@@ -140,6 +110,8 @@ export default class ImportDataset {
      * Update the file input's value with the name of the selected file
      */
     async handleMultipartChange() {
+        this.fileListInput.selectAll( 'option' ).remove();
+
         let selectedVal  = this.typeInput.property( 'value' ),
             selectedType = this.getTypeName( selectedVal ),
             files        = this.fileIngest.node().files,
@@ -163,9 +135,7 @@ export default class ImportDataset {
             totalFileSize += currentFile.size;
             fileNames.push( fileName );
 
-            if ( selectedType === 'FILE' ) {
-                this.setFileMetadata( fileName, typeCount, fileList );
-            }
+            this.setFileMetadata( fileName, typeCount, fileList );
         }
 
         let valid = await this.validateLoaded( selectedType, fileList, totalFileSize );
@@ -180,19 +150,20 @@ export default class ImportDataset {
         if ( selectedType === 'DIR' ) {
             //TODO: get back to this
         } else {
-            let firstFile = fileNames[ 0 ],
-                saveName  = firstFile.indexOf( '.' ) ? firstFile.substring( 0, firstFile.indexOf( '.' ) ) : firstFile;
-
             this.fileInput.property( 'value', fileNames.join( '; ' ) );
 
-            this.layerNameInput.property( 'value', saveName );
+            _forEach( fileList, file => {
+                this.fileListInput
+                    .append( 'option' )
+                    .classed( 'file-import-option', true )
+                    .attr( 'value', file.name )
+                    .text( file.name );
+            } );
         }
 
         this.formValid = true;
         this.updateButtonState();
     }
-
-    //TODO: get translation description and show checkbox for appending fcode description
 
     setFileMetadata( fileName, typeCount, fileList ) {
         let fName = fileName.substring( 0, fileName.length - 4 );
@@ -231,9 +202,6 @@ export default class ImportDataset {
         } else if ( fileName.lastIndexOf( '.osm' ) > -1 ) {
             typeCount.osm++;
             fObj.isOSM = true;
-        } else if ( fileName.lastIndexOf( '.zip' ) > -1 ) {
-            typeCount.zip++;
-            fObj.isZIP = true;
         }
     }
 
@@ -304,8 +272,7 @@ export default class ImportDataset {
      * Submit form data
      */
     async handleSubmit() {
-        let layerName     = this.layerNameInput.property( 'value' ),
-            pathName      = this.pathNameInput.property( 'value' ),
+        let pathName      = this.pathNameInput.property( 'value' ),
             newFolderName = this.newFolderNameInput.property( 'value' ),
             pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0,
 
@@ -321,8 +288,10 @@ export default class ImportDataset {
             translationName,
             folderId;
 
-        if ( translation.DEFAULT && ( translation.IMPORTPATH && translation.IMPORTPATH.length ) ) {
-            translationName = translation.IMPORTPATH;
+        if ( translation.DEFAULT ) {
+            if ( translation.IMPORTPATH && translation.IMPORTPATH.length ) {
+                translationName = translation.IMPORTPATH;
+            }
         } else {
             translationName = translation.NAME + '.js';
         }
@@ -333,26 +302,74 @@ export default class ImportDataset {
             folderId = pathId;
         }
 
-        let data = {
-            NONE_TRANSLATION: translation.NONE === 'true',
-            TRANSLATION: translationName,
-            INPUT_TYPE: importType.value,
-            INPUT_NAME: layerName,
-            formData: this.getFormData( this.fileIngest.node().files )
-        };
+        let fileNames = [];
 
-        this.loadingState();
+        this.fileListInput
+            .selectAll( 'option' )
+            .each( function() {
+                fileNames.push( this.value );
+            } );
 
-        this.processRequest = Hoot.api.uploadDataset( data )
-            .then( resp => Hoot.message.alert( resp ) )
+        this.loadingState( fileNames.length );
+
+        let proms = _map( fileNames, name => {
+            return new Promise( resolve => {
+                let importFiles = _filter( this.fileIngest.node().files, file => {
+                    let fName = file.name.substring( 0, file.name.length - 4 );
+
+                    if ( file.name.toLowerCase().indexOf( '.shp.xml' ) > -1 ) {
+                        fName = file.name.substring( 0, file.name.length - 8 );
+                    }
+
+                    return fName === name;
+                } );
+
+                let params = {
+                    NONE_TRANSLATION: translation.NONE === 'true',
+                    TRANSLATION: translationName,
+                    INPUT_TYPE: importType.value,
+                    INPUT_NAME: name,
+                    formData: this.getFormData( importFiles )
+                };
+
+                Hoot.api.uploadDataset( params )
+                    .then( () => resolve( name ) );
+            } );
+        } );
+
+        this.processRequest = this.allProgress( proms, ( n, fileName ) => {
+                this.progressBar.property( 'value', n );
+                this.fileListInput
+                    .select( `option[value="${fileName}"]` )
+                    .classed( 'import-success', true );
+            } )
+            .then( () => Hoot.message.alert( {
+                message: 'All datasets successfully imported',
+                type: 'success'
+            } ) )
             .then( () => Hoot.layers.refreshLayers() )
-            .then( () => this.updateLinks( layerName, folderId ) )
+            .then( () => Promise.all( _map( fileNames, name => this.updateLinks( name, folderId ) ) ) )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => Hoot.message.alert( err ) )
             .finally( () => {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
             } );
+    }
+
+    allProgress( proms, cb ) {
+        let n = 0;
+
+        cb( 0 );
+
+        proms.forEach( p => {
+            p.then( fileName => {
+                n++;
+                cb( n, fileName );
+            } );
+        } );
+
+        return Promise.all( proms );
     }
 
     updateLinks( layerName, folderId ) {
@@ -375,7 +392,7 @@ export default class ImportDataset {
         return formData;
     }
 
-    loadingState() {
+    loadingState( fileCount ) {
         this.submitButton
             .select( 'span' )
             .text( 'Uploading...' );
@@ -389,6 +406,15 @@ export default class ImportDataset {
             .each( function() {
                 d3.select( this ).node().disabled = true;
             } );
+
+        this.progressContainer.classed( 'hidden', false );
+
+        this.progressBar = this.progressContainer
+            .append( 'span' )
+            .append( 'progress' )
+            .classed( 'form-field', true )
+            .property( 'value', 0 )
+            .attr( 'max', fileCount );
     }
 
     /**
@@ -437,25 +463,9 @@ export default class ImportDataset {
             .attr( 'webkitdirectory', null )
             .attr( 'directory', null );
 
-        if ( typeVal === 'DIR' ) {
-            if ( this.browserInfo.name.substring( 0, 6 ) === 'Chrome' ) {
-                uploader
-                    .property( 'multiple', false )
-                    .attr( 'accept', null )
-                    .attr( 'webkitdirectory', '' )
-                    .attr( 'directory', '' );
-            } else {
-                uploader
-                    .property( 'multiple', false )
-                    .attr( 'accept', '.zip' );
-            }
-        } else if ( typeVal === 'GEONAMES' ) {
+        if ( typeVal === 'OSM' ) {
             uploader
-                .property( 'multiple', false )
-                .attr( 'accept', '.geonames, .txt' );
-        } else if ( typeVal === 'OSM' ) {
-            uploader
-                .property( 'multiple', false )
+                .property( 'multiple', true )
                 .attr( 'accept', '.osm, .osm.zip, .pbf' );
         } else if ( typeVal === 'FILE' ) {
             uploader

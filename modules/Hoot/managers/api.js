@@ -563,7 +563,6 @@ export default class API {
                 };
             } )
             .catch( err => {
-                console.log( err );
                 return Promise.reject( {
                     data: err.data,
                     message: 'Failed to import dataset!',
