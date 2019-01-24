@@ -86,7 +86,6 @@
     }
 }
 
-
 .hoot-form-field {
     width: 100%;
     margin-bottom: 10px;
@@ -162,3 +161,15 @@
         right: 0;
     }
 }
+
+.progress-bar {
+    margin: 10px auto 0;
+}
+
+.file-import-option {
+    &.import-success {
+        background-color: rgba(51, 204, 51, 1);
+        font-weight: bold;
+    }
+}
+

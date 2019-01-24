@@ -1,4 +1,4 @@
- /***********************************************************************************************************
+/***********************************************************************************************************
  * File: fieldsetData.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/24/18 (edited by Jack Grossman on 11/20/17)
@@ -6,7 +6,6 @@
 
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _includes  from 'lodash-es/includes';
-import _filter    from 'lodash-es/filter';
 import _find      from 'lodash-es/find';
 import _forEach   from 'lodash-es/forEach';
 import _map       from 'lodash-es/map';
@@ -18,72 +17,78 @@ export default class FieldsetData {
 
         this.baseOpts       = options.base;
         this.horizontalOpts = options.horizontal;
-        this.averageOpts    = options.average;
         this.referenceOpts  = options.reference;
-        this.diffOpts       = options.diffConflator;
+        this.diffOpts       = options.diff;
         this.diffTagsOpts   = options.diffTags;
+        this.attributeOpts  = options.attribute;
     }
 
-    mergeWithBase( members, overrideKeys ) {
-        _forEach( members, item => {
-            let memberIds = _map( item.members, 'id' ),
-                replacers = _filter( overrideKeys, key => _includes( memberIds, key.id ) );
+    mergeWithBase( group, overrideKeys ) {
+        _forEach( group, item => {
+            _forEach( item.members, member => {
+                let override = _find( overrideKeys, key => {
+                    if ( key.id.indexOf(member.id) > -1 ) {
+                        return true;
+                    }
+                } );
 
-            _forEach( replacers, replaceItem => {
-                let match = _find( item.members, { id: replaceItem.id } );
-
-                if ( match ) {
-                    match.defaultvalue = replaceItem.defaultvalue;
-                    match.required     = replaceItem.required;
+                if ( override ) {
+                    member.defaultvalue = override.defaultvalue;
+                    member.required = override.required;
                 }
             } );
 
-            // recursively check if children members are overridden
-            _forEach( item.members, subItem => {
-                if ( subItem.members && subItem.members.length ) {
-                    subItem.members = this.mergeWithBase( subItem.members, overrideKeys );
-                }
-            } );
+            if ( item.members ) {
+                this.mergeWithBase( item.members, overrideKeys );
+            }
         } );
 
-        return members;
+        return group;
     }
 
     getDefaultMeta() {
         let conflateType = d3.select( '#conflateType' ).node().value,
-            overrideOpts = conflateType === 'Reference' ? this.referenceOpts
-                : conflateType === 'Average' ? this.averageOpts
-                    : conflateType === 'Differential' ? this.diffOpts
-                        : conflateType === 'Differenatial w/ Tags' ? this.diffTagsOpts
-                            : this.horizontalOpts;
+            overrideOpts;
 
-        let overrideKeys = this.getOverrideKeys( overrideOpts );
-
-        this.defaultMeta = this.mergeWithBase( _cloneDeep( this.baseOpts ), overrideKeys );
-
-        return this.getFieldMeta( this.defaultMeta );
-    }
-
-    getOverrideKeys( overrideOpts ) {
-        let members;
-
-        if ( overrideOpts.length === 1 ) {
-            members = overrideOpts[ 0 ].members;
-        } else {
-            members = overrideOpts;
+        switch ( conflateType ) {
+            case 'Cookie Cutter & Horizontal':
+                overrideOpts = this.horizontalOpts;
+                break;
+            case 'Reference':
+            case 'Differential':
+            case 'Differential w/ Tags':
+                overrideOpts = this.referenceOpts;
+                break;
+            case 'Attribute':
+                overrideOpts = this.attributeOpts;
+                break;
         }
 
-        return _map( _cloneDeep( members ), member => {
-            if ( member.hoot_key ) {
-                if ( member.hoot_key.indexOf( '.creators' ) === -1 ) {
-                    member.id = member.hoot_key.replace( /\./g, '_' );
+        if ( overrideOpts ) {
+            let overrideKeys = _map( _cloneDeep( overrideOpts[ 0 ] ).members, member => {
+                // member.id = member.hoot_key.indexOf( '.creators' ) > -1 ? member.id : member.hoot_key.replace( /\./g, '_' );
+
+                if ( member.hoot_key ) {
+                    member.id = member.hoot_key.indexOf( '.creators' ) > -1 ? member.id : member.hoot_key.replace( /\./g, '_' );
                 }
-            }
 
-            member.required = member.required || false;
+                member.required = member.required || false;
 
-            return member;
-        } );
+                return member;
+            } );
+
+            this.defaultMeta = this.mergeWithBase( _cloneDeep( this.baseOpts ), overrideKeys );
+
+            //add new group with values that are not duplicated
+            var newMembers = overrideOpts[0].members.filter(function(n) {
+                return _map(overrideKeys,'hoot_key').indexOf(n.hoot_key) !== -1;
+            });
+            this.defaultMeta.push({members: newMembers});
+        } else {
+            this.defaultMeta = this.baseOpts;
+        }
+
+        return this.getFieldMeta( this.defaultMeta );
     }
 
     getFieldMeta( fieldData ) {
@@ -190,7 +195,8 @@ export default class FieldsetData {
         return _reduce( selectedVals, ( str, opt ) => {
             if ( str.length > 0 ) str += ' ';
 
-            str += `-D "${ opt.name }=${ opt.value }"`;
+            //add hack to += append conflate.post.ops option
+            str += `-D "${ opt.name }${ (opt.name === 'conflate.post.ops') ? '+' : '' }=${ opt.value }"`;
 
             return str;
         }, '' );
@@ -276,6 +282,9 @@ export default class FieldsetData {
         }
 
         let selectedMember = _find( subItem.members, { name: value } );
+
+        //exit early if we can't find selectedMember
+        if (!selectedMember) return;
 
         _forEach( selectedMember.members, subMember => {
             let node     = this.form.select( `${ subMember.id }` ).node(),

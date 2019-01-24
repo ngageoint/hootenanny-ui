@@ -563,7 +563,6 @@ export default class API {
                 };
             } )
             .catch( err => {
-                console.log( err );
                 return Promise.reject( {
                     data: err.data,
                     message: 'Failed to import dataset!',
@@ -868,8 +867,6 @@ export default class API {
             method: 'POST',
             data
         };
-
-        this.getAdvancedOptions();
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )

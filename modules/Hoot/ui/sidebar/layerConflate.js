@@ -40,7 +40,6 @@ class LayerConflate extends SidebarForm {
         this.typeInput           = d3.select( '#conflateType' );
         this.refLayerInput       = d3.select( '#conflateRefLayer' );
         this.collectStatsInput   = d3.select( '#conflateCollectStats' );
-        this.generateReportInput = d3.select( '#conflateGenerateReport' );
     }
 
     createFieldset() {
@@ -92,7 +91,6 @@ class LayerConflate extends SidebarForm {
             }
         } );
     }
-
 
     changeAdvancedOptions() {
         this.advancedOptions.clear();
@@ -177,21 +175,36 @@ class LayerConflate extends SidebarForm {
         let data = {};
 
         data.TIME_STAMP         = '' + new Date().getTime();
-        data.CONFLATION_COMMAND = 'conflate';
         data.INPUT1             = Hoot.layers.findLoadedBy( 'refType', 'primary' ).id;
         data.INPUT2             = Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id;
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.node().value;
         data.CONFLATION_TYPE    = this.typeInput.node().value;
-        data.REFERENCE_LAYER    = '1';
-        data.GENERATE_REPORT    = this.generateReportInput.node().value;
+        data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
         data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
         data.USER_EMAIL         = 'test@test.com';
-        
+
+        if ( data.CONFLATION_TYPE === 'Differential' ) {
+            data.CONFLATION_COMMAND = 'conflate-differential';
+        } else if ( data.CONFLATION_TYPE === 'Differential w/ Tags' ) {
+            data.CONFLATION_COMMAND = 'conflate-differential-tags';
+        } else {
+            data.CONFLATION_COMMAND = 'conflate';
+        }
+
         return data;
     }
+
+    updateAttributeReferenceLayer() {
+        if ( this.typeInput.property('value') === 'Attribute' ) {
+            this.refLayerInput.property('value' , Hoot.layers.findLoadedBy( 'refType', 'secondary' ).name);
+        } else {
+            this.refLayerInput.property('value' , Hoot.layers.findLoadedBy( 'refType', 'primary' ).name);
+        }
+    }
+
 
     postConflation( params ) {
         let layers = Hoot.layers.loadedLayers;
