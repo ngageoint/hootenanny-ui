@@ -158,7 +158,7 @@ export default class TagMapWidget {
     accept() {
         let value = this.searchTag.property( 'value' );
 
-        if ( value.length && this.currentTags.indexOf( value ) > -1 ) {
+        if ( value.length ) {
             let el = this.resultsList.select( '.search-result:first-child' );
 
             //If selection is empty, use the user specified value as the tag key
@@ -174,7 +174,8 @@ export default class TagMapWidget {
 
     selectTag( d ) {
         let tagKey = d.key,
-            values = d.value;
+            values = d.value,
+            that   = this;
 
         this.instance.toggleNextButton( false );
 
@@ -195,20 +196,20 @@ export default class TagMapWidget {
                     icon.classed( 'remove-map-tag', false );
                     icon.classed( 'link-tag', true );
 
-                    this.tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
-                    this.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
+                    that.tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
+                    that.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
                 } else if ( icon.classed( 'link-tag' ) ) {
                     icon.classed( 'link-tag', false );
                     icon.classed( 'map-tag', true );
 
-                    this.tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
-                    this.tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
+                    that.tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
+                    that.tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
                 } else {
                     icon.classed( 'map-tag', false );
                     icon.classed( 'remove-map-tag', true );
 
-                    this.tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
-                    this.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
+                    that.tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
+                    that.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
                 }
             } );
 

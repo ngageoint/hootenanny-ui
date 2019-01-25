@@ -252,14 +252,10 @@ export default class TagMapForm {
                 let values = Hoot.config.tagInfo[ schemaOption ]
                     .filter( val => val.key && val.key.toLowerCase() === tagKey.toLowerCase() );
 
-                let tagLookup = this.tagMapContainer
-                    .insert( 'div', '.add-mapping-button' )
-                    .classed( 'tag-lookup round fill-white keyline-all', true );
-
                 let tagMap = new TagMapWidget( this );
 
                 tagMap.createTagLookup();
-                tagMap.selectTag( tagLookup, values.length ? values[ 0 ] : { key: tagKey, value: [] } );
+                tagMap.selectTag( values.length ? values[ 0 ] : { key: tagKey, value: [] } );
             } );
         }
 
