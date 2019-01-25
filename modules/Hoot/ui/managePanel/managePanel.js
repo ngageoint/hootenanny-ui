@@ -51,7 +51,7 @@ export default class ManagePanel {
 
         this.panelSidebar
             .append( 'h3' )
-            .classed( 'manage-header pad1y pointer strong center', true )
+            .classed( 'manage-header pad1y strong center', true )
             .append( 'label' )
             .text( 'Manage Panel' );
 

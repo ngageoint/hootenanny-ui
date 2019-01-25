@@ -12,6 +12,11 @@
 .ta-attribute-mapping {
     box-shadow: 0 3px 10px $dark-opacity10;
 
+    .layer-select input {
+        font-size: 15px;
+        border: none;
+    }
+
     .attributes-nav {
         & > div {
             display: inline-block;
@@ -189,6 +194,11 @@
 
     .preset-row {
         display: flex;
+        border-bottom: 1px solid $light2;
+
+        &:last-child, &:only-child {
+            border-bottom: none;
+        }
 
         & > div {
             width: 50%;

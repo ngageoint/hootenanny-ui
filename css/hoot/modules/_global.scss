@@ -52,7 +52,7 @@ input {
 }
 
 .pointer {
-    cursor: pointer !important;
+    cursor: pointer;
 }
 
 .hidden {
@@ -65,6 +65,10 @@ input {
 
 .contain {
     position: relative;
+}
+
+.wait {
+    cursor: wait !important;
 }
 
 .flex {

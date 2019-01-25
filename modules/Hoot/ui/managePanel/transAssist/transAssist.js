@@ -32,7 +32,11 @@ export default class TransAssist extends Tab {
     }
 
     initMapping( valuesMap ) {
-        new TagMapForm( this ).render( valuesMap );
+        if ( !this.tagMapForm ) {
+            this.tagMapForm = new TagMapForm( this );
+        }
+
+        this.tagMapForm.render( valuesMap );
     }
 
     openSaveForm( output ) {

@@ -24,12 +24,17 @@ export default class Upload {
             {
                 title: 'Upload File(s)',
                 icon: 'play_for_work',
-                uploadType: 'FILE'
+                uploadType: 'FILE',
+                multiple: true,
+                accept: '.shp, .shx, .dbf, .zip'
             },
             {
                 title: 'Upload Folder',
                 icon: 'move_to_inbox',
-                uploadType: 'DIR'
+                uploadType: 'DIR',
+                multiple: false,
+                webkitdirectory: '',
+                directory: ''
             }
         ];
     }
@@ -63,7 +68,8 @@ export default class Upload {
             .append( 'span' )
             .classed( 'inline pad0', true );
 
-        schemaOpts.append( 'input' )
+        schemaOpts
+            .append( 'input' )
             .classed( 'inline schema-option', true )
             .attr( 'type', 'radio' )
             .attr( 'name', 'schema' )
@@ -72,7 +78,8 @@ export default class Upload {
             .property( 'disabled', d => !d.enabled )
             .property( 'checked', d => d.checked );
 
-        schemaOpts.append( 'label' )
+        schemaOpts
+            .append( 'label' )
             .classed( 'inline', true )
             .attr( 'for', d => d.name )
             .html( d => d.name );
@@ -100,8 +107,10 @@ export default class Upload {
             .append( 'input' )
             .attr( 'type', 'file' )
             .attr( 'name', 'taFiles' )
-            .attr( 'multiple', true )
-            .attr( 'accept', '.shp, .shx, .dbf, .zip' )
+            .attr( 'multiple', d => d.multiple )
+            .attr( 'accept', d => d.accept && d.accept )
+            .attr( 'webkitdirectory', d => d.webkitdirectory && d.webkitdirectory )
+            .attr( 'directory', d => d.directory && d.directory )
             .classed( 'hidden', true )
             .on( 'click', () => d3.event.stopPropagation() )
             .on( 'change', function( d ) {
@@ -133,8 +142,12 @@ export default class Upload {
             // if the same files/folder is selected twice in a row
             input.value = null;
 
+            d3.selectAll( 'div, button, a, label' ).classed( 'wait', true );
+
             let resp       = await Hoot.api.uploadSchemaData( type, formData ),
                 attrValues = await Hoot.api.getSchemaAttrValues( resp.jobId );
+
+            d3.selectAll( '.wait' ).classed( 'wait', false );
 
             Hoot.message.alert( resp );
 
@@ -153,7 +166,7 @@ export default class Upload {
                 let map = d3.map();
 
                 d3.entries( e.value ).forEach( a => {
-                    //Omit empty fields
+                    // Omit empty fields
                     if ( a.value.length ) {
                         map.set( a.key, d3.set( a.value ) );
                     }
