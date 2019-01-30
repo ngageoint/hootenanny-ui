@@ -50,7 +50,8 @@ const webpackConfig = {
     resolve: {
         alias: {
             './img': path.resolve( __dirname, 'img' ),
-            lib: path.resolve( __dirname, 'modules/lib' )
+            'lib': path.resolve( __dirname, 'modules/lib' ),
+            'data': path.resolve( __dirname, 'data' )
         }
     }
 };
