@@ -29,7 +29,10 @@ export default class FormFactory {
             form      = this.createForm( container, formModal, metadata.title );
 
         this.createFieldSets( form, metadata.form );
-        this.createButton( formModal, metadata.button );
+
+        if ( metadata.button ) {
+            this.createButton( formModal, metadata.button );
+        }
 
         return container;
     }
@@ -262,6 +265,7 @@ export default class FormFactory {
             .append( 'textarea' )
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
+            .attr( 'readonly', d => d.readOnly )
             .text( d => d.data || '' )
             .on( 'keyup', d => d.onChange && d.onChange( d ) )
             .on( 'drop', d => d.onDrop && d.onDrop() );

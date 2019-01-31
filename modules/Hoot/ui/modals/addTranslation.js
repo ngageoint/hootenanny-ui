@@ -8,9 +8,8 @@ import FormFactory            from '../../tools/formFactory';
 import { translationAddForm } from '../../config/domMetadata';
 
 export default class AddTranslation {
-    constructor( instance, templateText ) {
-        this.instance     = instance;
-        this.templateText = templateText;
+    constructor( instance ) {
+        this.instance = instance;
 
         this.form = translationAddForm.call( this );
     }
@@ -63,7 +62,8 @@ export default class AddTranslation {
         };
 
         Hoot.api.postTranslation( data )
-            .then( () => {
+            .then( () => this.instance.loadTranslations() )
+            .finally( () => {
                 this.container.remove();
 
                 if ( this.instance.id === 'manage-translations-assistant' ) {

@@ -4,10 +4,11 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Tab            from './tab';
-import AddTranslation from '../modals/addTranslation';
-import { tooltip }    from '../../../util/tooltip';
-import { saveAs }     from '../../../lib/hoot/FileSaver';
+import Tab             from './tab';
+import AddTranslation  from '../modals/addTranslation';
+import ViewTranslation from '../modals/viewTranslation';
+import { tooltip }     from '../../../util/tooltip';
+import { saveAs }      from '../../../lib/hoot/FileSaver';
 
 /**
  * Creates the translations tab in the settings panel
@@ -78,7 +79,7 @@ export default class Translations extends Tab {
 
         let rows = this.translationTable
             .selectAll( '.translation-item' )
-            .data( translations, d => d.NAME );
+            .data( translations, d => d );
 
         rows.exit().remove();
 
@@ -100,11 +101,11 @@ export default class Translations extends Tab {
 
                 return d.NAME;
             } )
-            .on( 'click', () => {
+            .on( 'click', d => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
-                //TODO: open translations edit form
+                this.translationPopup( d );
             } );
 
         let translationTooltip = tooltip()
@@ -159,6 +160,18 @@ export default class Translations extends Tab {
                     d3.select( this ).classed( 'keyline-left _icon trash', true );
                 }
             } );
+    }
+
+    async translationPopup( d ) {
+        let translationText;
+
+        if ( d.DEFAULT ) {
+            translationText = await Hoot.api.getDefaultTranslation( d.PATH );
+        } else {
+            translationText = await Hoot.api.getTranslation( d.NAME );
+        }
+
+        new ViewTranslation( this, d, translationText ).render();
     }
 
     async exportTranslation( d ) {
