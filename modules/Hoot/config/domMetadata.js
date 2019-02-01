@@ -266,6 +266,24 @@ export function translationAddForm() {
     ];
 }
 
+export function translationViewForm() {
+    return [
+        {
+            label: 'Description',
+            id: 'translationSaveDescription',
+            inputType: 'text',
+            onChange: d => this.validateFields( d )
+        },
+        {
+            label: 'Paste New Translations in Box (or drag .js file into text area)',
+            id: 'translationTemplate',
+            inputType: 'textarea',
+            data: this.templateText || null,
+            onChange: d => this.validateFields( d )
+        }
+    ];
+}
+
 export function basemapAddForm() {
     return [
         {
