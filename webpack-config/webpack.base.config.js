@@ -23,7 +23,7 @@ const
 
 // get git info from command line
 const commitHash = require('child_process')
-  .execSync('git describe --tags')
+  .execSync('git describe --always')
   .toString();
 
 module.exports = {
