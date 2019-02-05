@@ -13,9 +13,6 @@
     <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent'/>
 </head>
 <body>
-<div id='id-container'>
-    <div id="id-sink"></div>
-</div>
 <script src='./login.min.js'></script>
 <script src='./vendors~iD~login.min.js'></script>
 <script>
@@ -24,9 +21,7 @@
     let oauthToken    = login.findGetParameter( 'oauth_token' ),
         oauthVerifier = login.findGetParameter( 'oauth_verifier' );
 
-    console.log( 'HWSLFHSDJKLGN' );
     if ( oauthToken && oauthVerifier ) {
-        console.log( 'yes' );
         // if we have these tokens, this is the spawned popup-
         login.verifyOAuth( oauthToken, oauthVerifier );
     } else {
