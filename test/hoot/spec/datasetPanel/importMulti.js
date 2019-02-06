@@ -40,7 +40,7 @@ module.exports = () => {
                 customSuffixInput = importModal.customSuffixInput,
                 fileIngest        = importModal.fileIngest,
                 submitButton      = importModal.submitButton,
-                importSchema      = importModal.importSchema;
+                schemaInput      = importModal.schemaInput;
 
             expect( typeInput.property( 'value' ) ).to.be.empty;
             expect( fileInput.property( 'disabled' ) ).to.be.true;
@@ -95,9 +95,14 @@ module.exports = () => {
             expect( folderNameInput.classed( 'invalid' ) ).to.be.false;
             expect( submitButton.property( 'disabled' ) ).to.be.false;
 
-            importSchema
-                .property( 'value', 'Multinational Geospatial Co-production Program (MGCP) TRD3&4' )
+            let mgcp = 'Multinational Geospatial Co-production Program (MGCP) TRD3&4';
+            schemaInput
+                .property( 'value', mgcp )
                 .dispatch( 'keyup' );
+
+            expect( schemaInput.property( 'value' ) ).to.have.string( mgcp );
+
+
         } );
 
         it( 'imports a new layer from Shapefile', async () => {
