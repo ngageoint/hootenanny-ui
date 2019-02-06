@@ -14,9 +14,9 @@ module.exports = () => {
             importModal;
 
         after( async () => {
-            if ( Hoot.layers.findBy( 'name', 'UnitTestImportMulti' ) ) {
-                console.log( 'Deleting layer: "UnitTestImportMulti"');
-                await Hoot.api.deleteLayer( 'UnitTestImportMulti' );
+            if ( Hoot.layers.findBy( 'name', 'LAP030' ) ) {
+                console.log( 'Deleting layer: "LAP030"');
+                await Hoot.api.deleteLayer( 'LAP030' );
             }
         } );
 
@@ -39,7 +39,8 @@ module.exports = () => {
                 folderNameInput   = importModal.newFolderNameInput,
                 customSuffixInput = importModal.customSuffixInput,
                 fileIngest        = importModal.fileIngest,
-                submitButton      = importModal.submitButton;
+                submitButton      = importModal.submitButton,
+                importSchema      = importModal.importSchema;
 
             expect( typeInput.property( 'value' ) ).to.be.empty;
             expect( fileInput.property( 'disabled' ) ).to.be.true;
@@ -56,9 +57,9 @@ module.exports = () => {
             let dT = new ClipboardEvent( '' ).clipboardData || new DataTransfer();
 
             let fileNames = [
-                'base/test/data/UnitTestImportMulti.dbf',
-                'base/test/data/UnitTestImportMulti.shp',
-                'base/test/data/UnitTestImportMulti.shx',
+                'base/test/data/LAP030.dbf',
+                'base/test/data/LAP030.shp',
+                'base/test/data/LAP030.shx',
             ];
 
             await Promise.all( _map( fileNames, async name => {
@@ -71,10 +72,10 @@ module.exports = () => {
 
             await fileIngest.dispatch( 'change' );
 
-            expect( fileInput.property( 'value' ) ).to.have.string( 'UnitTestImportMulti.dbf' );
-            expect( fileInput.property( 'value' ) ).to.have.string( 'UnitTestImportMulti.shp' );
-            expect( fileInput.property( 'value' ) ).to.have.string( 'UnitTestImportMulti.shx' );
-            expect( fileListInput.select( 'option' ).property( 'value' ) ).to.equal( 'UnitTestImportMulti' );
+            expect( fileInput.property( 'value' ) ).to.have.string( 'LAP030.dbf' );
+            expect( fileInput.property( 'value' ) ).to.have.string( 'LAP030.shp' );
+            expect( fileInput.property( 'value' ) ).to.have.string( 'LAP030.shx' );
+            expect( fileListInput.select( 'option' ).property( 'value' ) ).to.equal( 'LAP030' );
             expect( submitButton.property( 'disabled' ) ).to.be.false;
 
             // check for invalid character in text field
@@ -93,13 +94,17 @@ module.exports = () => {
             expect( customSuffixInput.classed( 'invalid' ) ).to.be.false;
             expect( folderNameInput.classed( 'invalid' ) ).to.be.false;
             expect( submitButton.property( 'disabled' ) ).to.be.false;
+
+            importSchema
+                .property( 'value', 'Multinational Geospatial Co-production Program (MGCP) TRD3&4' )
+                .dispatch( 'keyup' );
         } );
 
         it( 'imports a new layer from Shapefile', async () => {
             let importSubmit = importModal.submitButton;
 
             expect( importSubmit.select( 'span' ).text() ).to.equal( 'Import' );
-            expect( Hoot.layers.findBy( 'name', 'UnitTestImportMulti' ) ).to.be.undefined;
+            expect( Hoot.layers.findBy( 'name', 'LAP030' ) ).to.be.undefined;
 
             importSubmit.dispatch( 'click' );
 
@@ -108,8 +113,8 @@ module.exports = () => {
             await importModal.processRequest;
 
             expect( datasets.importMultiModal ).to.be.undefined;
-            expect( Hoot.layers.findBy( 'name', 'UnitTestImportMulti' ) ).to.be.ok;
-            expect( d3.select( '#dataset-table' ).select( 'g[data-name="UnitTestImportMulti"]' ).size() ).to.equal( 1 );
+            expect( Hoot.layers.findBy( 'name', 'LAP030' ) ).to.be.ok;
+            expect( d3.select( '#dataset-table' ).select( 'g[data-name="LAP030"]' ).size() ).to.equal( 1 );
         } ).timeout( 15000 );
     } );
 };
