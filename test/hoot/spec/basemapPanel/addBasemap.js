@@ -4,7 +4,7 @@
  * @author Jack Grossman on 11/26/18 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 describe( 'Basemap component rendered', () => {
-    it( ' Activates basemap selector ', done => {
+    it( 'Activates basemap selector ', done => {
         d3.select('div.menu-button').dispatch('click');
         var basemapNode = d3.select('#manage-sidebar-menu div.tab-header:nth-child(3)')
         basemapNode.dispatch('click');
