@@ -26,7 +26,7 @@
     "lint": "eslint *.js test/spec modules",
     "production": "npm-run-all -p dist:** && webpack --env.NODE_ENV=prod",
     "start": "webpack-dev-server --env.NODE_ENV=dev",
-    "test": "npm-run-all -s build test:**",
+    "test": "npm-run-all -s lint build test:**",
     "test:hoot": "karma start",
     "testgui:hoot": "karma start --no-single-run --auto-watch --browsers Chrome",
     "test:phantom": "phantomjs --web-security=no node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/index.html spec",
