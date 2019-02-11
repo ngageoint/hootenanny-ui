@@ -9,7 +9,8 @@
         "happen": false,
         "iD": false,
         "sinon": false,
-        "Hoot": false
+        "Hoot": false,
+        "__COMMIT_HASH__": false
     },
     "rules": {
         "no-unused-expressions": "off"

@@ -102,8 +102,6 @@ export default class ImportMultiDatasets {
         // set parameters for uploader and repopulate translations list
         this.setMultipartForType( selectedType );
         this.formFactory.populateCombobox( this.schemaInput );
-
-        this.schemaInput.property( 'value', translationsList[ 0 ].DESCRIPTION );
     }
 
     /**
@@ -288,9 +286,16 @@ export default class ImportMultiDatasets {
             translationName,
             folderId;
 
+        //if no translation, set NONE
+        if ( !translation ) {
+            translation = { NONE: 'true' };
+            translationName = '';
+        }
         if ( translation.DEFAULT ) {
-            if ( translation.IMPORTPATH && translation.IMPORTPATH.length ) {
-                translationName = translation.IMPORTPATH;
+            if ( translation.PATH && translation.PATH.length || translation.IMPORTPATH && translation.IMPORTPATH.length ) {
+                translationName = translation.PATH;
+            } else {
+                translationName = translation.NAME + '.js';
             }
         } else {
             translationName = translation.NAME + '.js';
