@@ -488,7 +488,7 @@ module.exports = () => {
                 expect( form.selectAll( '.hoot-form-field' ).size() ).to.equal( 3 );
                 expect( folderNameInput.property( 'value' ) ).to.equal( 'UnitTestFolder1' );
                 expect( pathNameInput.property( 'value' ) ).to.equal( 'root' );
-                expect( folderVisibilityInput.property( 'checked' ) ).to.equal( 'false' );
+                expect( folderVisibilityInput.property( 'checked' ) ).to.be.false;
             } );
 
             it( 'validates form field', () => {
