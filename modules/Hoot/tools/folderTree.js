@@ -432,13 +432,13 @@ export default class FolderTree extends EventEmitter {
         let { data } = d;
 
         if ( data.type === 'folder' ) {
-            return '#7092ff';
+            return (data.public) ? '#7092ff' : '#efefef';
         }
         else if ( data.type === 'dataset' ) {
             if ( data.selected ) {
                 return '#ffff99';
             }
-            return '#efefef';
+            return (data.public) ? '#7092ff' : '#efefef';
         }
         else {
             return '#ffffff';
@@ -455,10 +455,10 @@ export default class FolderTree extends EventEmitter {
         let { data } = d;
 
         if ( data.type === 'folder' ) {
-            return '#ffffff';
+            return (data.public) ? '#ffffff' : '#7092ff';
         }
         else if ( data.type === 'dataset' ) {
-            return '#7092ff';
+            return (data.public) ? '#ffffff' : '#7092ff';
         }
         else {
             return '#ffffff';
