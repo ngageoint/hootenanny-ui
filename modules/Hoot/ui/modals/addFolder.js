@@ -8,8 +8,9 @@ import FormFactory       from '../../tools/formFactory';
 import { addFolderForm } from '../../config/domMetadata';
 
 export default class AddFolder {
-    constructor() {
+    constructor(parentId = 0) {
         this.form = addFolderForm.call( this );
+        this.parentId = parentId;
     }
 
     render() {
@@ -73,7 +74,7 @@ export default class AddFolder {
         let name = this.folderNameInput.property( 'value' );
 
         let params = {
-            parentId: 0, // eventually needs to change when path is specified
+            parentId: this.parentId, 
             folderName: name
         };
 
