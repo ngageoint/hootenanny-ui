@@ -140,6 +140,12 @@
             opacity: 0;
         }
 
+        &[type="checkbox"] {
+            width: auto;
+            margin-top: 9px;
+            margin-left: 9px;
+        }
+
         &.disabled {
             background-color: white;
         }

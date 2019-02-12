@@ -432,13 +432,13 @@ export default class FolderTree extends EventEmitter {
         let { data } = d;
 
         if ( data.type === 'folder' ) {
-            return '#7092ff';
+            return (data.public) ? '#7092ff' : '#efefef';
         }
         else if ( data.type === 'dataset' ) {
             if ( data.selected ) {
                 return '#ffff99';
             }
-            return '#efefef';
+            return (data.public) ? '#7092ff' : '#efefef';
         }
         else {
             return '#ffffff';
@@ -454,11 +454,13 @@ export default class FolderTree extends EventEmitter {
     fontColor( d ) {
         let { data } = d;
 
+        if ( data.selected ) return '#7092ff';
+
         if ( data.type === 'folder' ) {
-            return '#ffffff';
+            return (data.public) ? '#ffffff' : '#7092ff';
         }
         else if ( data.type === 'dataset' ) {
-            return '#7092ff';
+            return (data.public) ? '#ffffff' : '#7092ff';
         }
         else {
             return '#ffffff';
@@ -582,7 +584,7 @@ export default class FolderTree extends EventEmitter {
         } else if ( data.type === 'folder' ) {
             opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
             opts.splice( 1, 0, {
-                title: `Move/Rename ${ data.name }`,
+                title: `Modify Folder ${ data.name }`,
                 icon: 'info',
                 click: 'modifyFolder'
             } );

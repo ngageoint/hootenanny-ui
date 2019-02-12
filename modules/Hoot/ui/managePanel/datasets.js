@@ -194,10 +194,20 @@ export default class Datasets extends Tab {
                 if ( children && children.length ) {
                     return this.deleteItems( children )
                         .then( () => Hoot.api.deleteFolder( data.id ) )
-                        .then( () => Hoot.folders.removeFolder( data.id ) );
+                        .then( () => Hoot.folders.removeFolder( data.id ) )
+                        .catch( ( err ) => {
+                            err.message = err.data;
+                            delete err.data;
+                            Hoot.message.alert( err );
+                        });
                 } else {
                     return Hoot.api.deleteFolder( data.id )
-                        .then( () => Hoot.folders.removeFolder( data.id ) );
+                        .then( () => Hoot.folders.removeFolder( data.id ) )
+                        .catch( ( err ) => {
+                            err.message = err.data;
+                            delete err.data;
+                            Hoot.message.alert( err );
+                        });
                 }
             }
         } ) );

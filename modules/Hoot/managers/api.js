@@ -178,7 +178,7 @@ export default class API {
      */
     getJobStatus( id ) {
         const params = {
-            path: `/job/status/${ id }`,
+            path: `/job/status/${ id }?includeCommandDetail=true`,
             method: 'GET'
         };
 
@@ -564,7 +564,9 @@ export default class API {
             } )
             .catch( err => {
                 return Promise.reject( {
-                    data: err.data,
+                    data: {
+                        details: err.data.commandDetail[0].stderr
+                    },
                     message: 'Failed to import dataset!',
                     status: err.status,
                     type: err.type
@@ -622,6 +624,31 @@ export default class API {
 
                 return {
                     message: `Failed to update folder: ${ folderId }`,
+                    status: 500,
+                    type: 'success'
+                };
+            } );
+    }
+
+    updateVisibility( { folderId, visibility } ) {
+        const params = {
+            path: `/osm/api/0.6/map/folders/${ folderId }/visibility/${ visibility }`,
+            method: 'PUT'
+        };
+
+        return this.request( params )
+            .then( () => {
+                return {
+                    message: `Successfully updated visibility of folder: ${ folderId } to ${ visibility }`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                console.log( err );
+
+                return {
+                    message: `Failed to change visibility of folder: ${ folderId } to ${ visibility }`,
                     status: 500,
                     type: 'success'
                 };
@@ -735,7 +762,7 @@ export default class API {
             method: 'POST'
         };
 
-        if ( isPublic ) {
+        if ( !isPublic ) {
             params.path += '?isPublic=false';
         }
 

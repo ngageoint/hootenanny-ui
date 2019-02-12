@@ -76,9 +76,14 @@ export default class AddFolder {
         let isPublic = this.folderVisibilityInput.property( 'checked' );
 
         let params = {
+<<<<<<< HEAD
             parentId: this.parentId, 
+            folderName: name
+=======
+            parentId: 0, // eventually needs to change when path is specified
             folderName: name,
-	        isPublic: isPublic
+            isPublic: isPublic
+>>>>>>> hoot2x
         };
 
         this.processRequest = Hoot.api.addFolder( params )
