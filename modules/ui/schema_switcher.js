@@ -14,7 +14,6 @@ export function uiSchemaSwitcher() {
     let dispatch = d3_dispatch( 'change' );
 
     function schemaSwitcher( selection, callback ) {
-        console.log( Hoot.translations.availableTranslations );
         let switcher = selection.classed( 'tag-schema', true );
 
         switcher
