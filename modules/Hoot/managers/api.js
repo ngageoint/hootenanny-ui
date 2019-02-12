@@ -178,7 +178,7 @@ export default class API {
      */
     getJobStatus( id ) {
         const params = {
-            path: `/job/status/${ id }`,
+            path: `/job/status/${ id }?includeCommandDetail=true`,
             method: 'GET'
         };
 
@@ -564,7 +564,9 @@ export default class API {
             } )
             .catch( err => {
                 return Promise.reject( {
-                    data: err.data,
+                    data: {
+                        details: err.data.commandDetail[0].stderr
+                    },
                     message: 'Failed to import dataset!',
                     status: err.status,
                     type: err.type
