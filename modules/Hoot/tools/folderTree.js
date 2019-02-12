@@ -454,6 +454,8 @@ export default class FolderTree extends EventEmitter {
     fontColor( d ) {
         let { data } = d;
 
+        if ( data.selected ) return '#7092ff';
+
         if ( data.type === 'folder' ) {
             return (data.public) ? '#ffffff' : '#7092ff';
         }
@@ -582,7 +584,7 @@ export default class FolderTree extends EventEmitter {
         } else if ( data.type === 'folder' ) {
             opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
             opts.splice( 1, 0, {
-                title: `Move/Rename ${ data.name }`,
+                title: `Modify Folder ${ data.name }`,
                 icon: 'info',
                 click: 'modifyFolder'
             } );

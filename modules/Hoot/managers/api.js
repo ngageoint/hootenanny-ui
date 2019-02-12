@@ -628,6 +628,31 @@ export default class API {
             } );
     }
 
+    updateVisibility( { folderId, visibility } ) {
+        const params = {
+            path: `/osm/api/0.6/map/folders/${ folderId }/visibility/${ visibility }`,
+            method: 'PUT'
+        };
+
+        return this.request( params )
+            .then( () => {
+                return {
+                    message: `Successfully updated visibility of folder: ${ folderId } to ${ visibility }`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                console.log( err );
+
+                return {
+                    message: `Failed to change visibility of folder: ${ folderId } to ${ visibility }`,
+                    status: 500,
+                    type: 'success'
+                };
+            } );
+    }
+
     /**
      * Upload imported schema files to the database for processing
      *
