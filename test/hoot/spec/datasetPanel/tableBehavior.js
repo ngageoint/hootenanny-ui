@@ -478,15 +478,17 @@ module.exports = () => {
 
                 modifyModal = datasetsPanel.modifyFolderModal;
 
-                let form            = d3.select( '#modify-folder-form' ),
-                    folderNameInput = modifyModal.folderNameInput,
-                    pathNameInput   = modifyModal.pathNameInput;
+                let form                  = d3.select( '#modify-folder-form' ),
+                    folderNameInput       = modifyModal.folderNameInput,
+                    pathNameInput         = modifyModal.pathNameInput,
+                    folderVisibilityInput = modifyModal.folderVisibilityInput;
 
                 expect( form.size() ).to.equal( 1 );
                 expect( form.select( '.modal-header h3' ).text() ).to.equal( 'Modify Folder' );
-                expect( form.selectAll( '.hoot-form-field' ).size() ).to.equal( 2 );
+                expect( form.selectAll( '.hoot-form-field' ).size() ).to.equal( 3 );
                 expect( folderNameInput.property( 'value' ) ).to.equal( 'UnitTestFolder1' );
                 expect( pathNameInput.property( 'value' ) ).to.equal( 'root' );
+                expect( folderVisibilityInput.property( 'checked' ) ).to.equal( 'false' );
             } );
 
             it( 'validates form field', () => {
