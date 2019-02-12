@@ -220,20 +220,11 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'addDataset': {
-                let params = {
-                    name: d.data.name,
-                    id: d.data.id
-                };
+                let translations = await Hoot.api.getTranslations();
 
-                Hoot.ui.sidebar.forms[ item.formId ].submitLayer( params )
-                    .then( () => {
-                        let refType = item.formId.charAt( 0 ).toUpperCase() + item.formId.substr( 1 ),
-                            message = `${refType} layer added to map: <u>${d.data.name}</u>`,
-                            type    = 'info';
+                this.importMultiModal = new ImportMultiDataset( translations, d.data.name ).render();
 
-                        Hoot.message.alert( { message, type } );
-                    } );
-
+                Hoot.events.once( 'modal-closed', () => delete this.importMultiModal );
                 break;
             }
             case 'addFolder':
