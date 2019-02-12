@@ -207,6 +207,14 @@ export function addFolderForm() {
             inputType: 'text',
             onChange: d => this.validateTextInput( d )
         },
+        {
+            label: 'Folder Visibility',
+            id: 'addFolderVisibility',
+            inputType: 'checkbox',
+            value: 'Public',
+            checked: false,
+            class: 'folder-checkbox'
+        }
     ];
 }
 

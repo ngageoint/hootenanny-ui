@@ -27,6 +27,7 @@ export default class AddFolder {
         this.container = new FormFactory().generateForm( 'body', 'add-folder-form', metadata );
 
         this.folderNameInput = this.container.select( '#addFolderName' );
+        this.folderVisibilityInput = this.container.select( '#addFolderVisibility' );
         this.submitButton    = this.container.select( '#addSubmitBtn' );
 
         return this;
@@ -71,10 +72,12 @@ export default class AddFolder {
 
     handleSubmit() {
         let name = this.folderNameInput.property( 'value' );
+        let isPublic = this.folderVisibilityInput.property( 'checked' );
 
         let params = {
             parentId: 0, // eventually needs to change when path is specified
-            folderName: name
+            folderName: name,
+            isPublic: isPublic
         };
 
         this.processRequest = Hoot.api.addFolder( params )

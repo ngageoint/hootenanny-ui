@@ -735,7 +735,7 @@ export default class API {
             method: 'POST'
         };
 
-        if ( isPublic ) {
+        if ( !isPublic ) {
             params.path += '?isPublic=false';
         }
 
