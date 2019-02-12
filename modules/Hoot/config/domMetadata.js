@@ -207,13 +207,21 @@ export function addFolderForm() {
             inputType: 'text',
             onChange: d => this.validateTextInput( d )
         },
+        {
+            label: 'Folder Visibility',
+            id: 'addFolderVisibility',
+            inputType: 'checkbox',
+            value: 'Public',
+            checked: false,
+            class: 'folder-checkbox'
+        }
     ];
 }
 
 export function modifyDatasetForm() {
     return [
         {
-            label: 'Output Name',
+            label: 'Name',
             id: 'modifyName',
             class: 'layer-name',
             inputType: 'text',
@@ -237,6 +245,14 @@ export function modifyDatasetForm() {
             class: 'new-folder-name',
             inputType: 'text',
             onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Visibility',
+            id: 'modifyVisibility',
+            inputType: 'checkbox',
+            value: 'Public',
+            checked: false,
+            class: 'folder-checkbox'
         }
     ];
 }
