@@ -183,12 +183,14 @@ class LayerConflate extends SidebarForm {
         data.CONFLATION_TYPE    = this.typeInput.node().value;
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
-        data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
+        // data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
+        // data.HOOT2_OPTIONS      = 
         data.USER_EMAIL         = 'test@test.com';
 
         if ( data.CONFLATION_TYPE === 'Differential' ) {
             data.CONFLATION_COMMAND = 'conflate-differential';
         } else if ( data.CONFLATION_TYPE === 'Differential w/ Tags' ) {
+            data.CONFLATION_TYPE = 'Differential';
             data.CONFLATION_COMMAND = 'conflate-differential-tags';
         } else {
             data.CONFLATION_COMMAND = 'conflate';
