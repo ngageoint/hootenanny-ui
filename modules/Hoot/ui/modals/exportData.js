@@ -83,6 +83,15 @@ export default class ExportData {
         return this.translations.find( t => t.NAME === selectedTranslation ).PATH;
     }
 
+    getOutputType() {
+        return {
+            'Shapefile': 'shp',
+            'File Geodatabase': 'gdb',
+            'OpenStreetMap (OSM)': 'osm',
+            'OpenStreetMap (PBF)': 'osm.pbf'
+        }[this.exportFormatCombo.node().value];
+    }
+
     handleSubmit() {
         let self = this,
             data =  {
@@ -91,10 +100,11 @@ export default class ExportData {
                 append: false,
                 includehoottags: false,
                 outputname: self.dataExportNameTextInput.node().value,
-                outputtype: self.exportFormatCombo.node().value,
+                outputtype: self.getOutputType(),
                 tagoverrides: {},
                 textstatus: false,
-                translation: self.getTranslationPath()
+                translation: self.getTranslationPath(), 
+                userId: Hoot.user().id
             };
 
         this.processRequest = Hoot.api.exportDataset( data )

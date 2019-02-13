@@ -25,7 +25,7 @@ class Hoot {
         this.folders      = new FolderManager( this );
         this.translations = new TranslationManager( this );
         this.events       = new EventManager();
-
+        // this.user
         this.config = {
             tagInfo,
             appInfo: [],
@@ -87,8 +87,16 @@ class Hoot {
     }
 
     init( context ) {
-        this.context = context;
+        let user;
 
+        this.context = context;
+        this.user = function () {
+            if (!user) {
+                user = JSON.parse( context.storage( 'user' ) );
+            }
+
+            return user;
+        };
         Promise.all( [
             this.getAboutData(),
             this.getAllUsers(),

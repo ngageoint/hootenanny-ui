@@ -9,7 +9,7 @@ import _find   from 'lodash-es/find';
 import _map    from 'lodash-es/map';
 
 import axios         from 'axios/dist/axios';
-import { apiConfig } from '../config/apiConfig';
+import { apiConfig, baseUrl } from '../config/apiConfig';
 
 /**
  * API calls to backend services
@@ -605,6 +605,24 @@ export default class API {
             } );
     }
 
+    saveDataset( id, name ) {
+        const baseUrl = this.baseUrl;
+        return new Promise(( res, rej ) => {
+            try {
+                const link = document.createElement('a');
+                const resourceQs = `${id}?outputname=${name}&removecache=true`;
+                link.href = `${baseUrl}/job/export/${resourceQs}`;
+                link.download = resourceQs;
+                link.click();
+                link.remove();
+                res();
+            } catch (e) {
+                rej( new Error('failed to save dataset') );
+            }
+
+        })
+    }
+
     exportDataset( data ) {
         data.tagoverrides =  JSON.stringify(
             Object.assign(data.tagoverrides || {}, {
@@ -623,7 +641,7 @@ export default class API {
                 'hoot:score:uuid':''
             })
         );
-        
+
         const requiredKeys = [
             'append',
             'includehoottags',
@@ -634,6 +652,7 @@ export default class API {
             'tagoverrides',
             'textstatus' ,
             'translation',
+            'userId'
         ];
 
         if (!requiredKeys.every( k => data.hasOwnProperty(k) )) {
@@ -645,11 +664,17 @@ export default class API {
             method: 'POST',
             data: data
         };
+        
+        let jobId;
 
         return this.request( params )
+            .then( (resp) => { 
+                jobId = resp.data.jobid; })
+            .then( () =>  this.statusInterval( jobId ))
+            .then( () => this.saveDataset( jobId, data.outputname ))
             .then( () => {
                 return {
-                    message: `Successfully exported dataset: ${ data.input }`,
+                    message: 'Dataset Exported',
                     status: 200,
                     type: 'success'
                 };
