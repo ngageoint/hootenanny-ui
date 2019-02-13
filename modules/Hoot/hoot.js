@@ -64,7 +64,7 @@ class Hoot {
 
             this.config.users = {};
 
-            _forEach( resp.users, user => {
+            _forEach( resp, user => {
                 this.config.users[ user.id ] = user;
             } );
         } catch ( err ) {
