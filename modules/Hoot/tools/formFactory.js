@@ -156,6 +156,10 @@ export default class FormFactory {
                     }
                     break;
                 }
+                case 'checkbox': {
+                    self.createCheckbox( field );
+                    break;
+                }
                 case 'text': {
                     self.createTextField( field );
                     break;
@@ -253,6 +257,24 @@ export default class FormFactory {
                     d.onChange( d, this );
                 }
             } );
+    }
+
+    /**
+     * Create a checkbox input
+     *
+     * @param field - field div
+     */
+    createCheckbox( field ) {
+        field
+            .append( 'input' )
+            .attr( 'type', 'checkbox' )
+            .attr( 'id', d => d.id )
+            .attr( 'class', d => d.class )
+            .property( 'checked', d => d.checked );
+        field
+            .append( 'label' )
+            .attr( 'for', d => d.id)
+            .text( d => d.value );
     }
 
     /**
