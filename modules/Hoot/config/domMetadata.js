@@ -257,6 +257,36 @@ export function modifyDatasetForm() {
     ];
 }
 
+export function exportDataForm( ) {
+    const exportComboId = 'exportTranslationCombo',
+          exportFormatId = 'exportFormatCombo',
+          exportNameId = 'dataExportNameTextInput';
+
+    return [
+        {
+            label: 'Translation Schema',
+            id: exportComboId,
+            inputType: 'combobox',
+            readonly: 'readonly',
+            data: this.translations.map(t => t.NAME),
+            onChange: () => this.validate( exportComboId )
+        },
+        {
+            label: 'Export Format',
+            id: exportFormatId,
+            inputType: 'combobox',
+            data: [ 'File Geodatabase', 'Shapefile', 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
+            onChange: () => this.validate( exportFormatId )
+        },
+        {
+            label: 'Output Name',
+            id: exportNameId,
+            inputType: 'text',
+            onChange: () => this.validate( exportNameId ) 
+        }
+    ];
+}
+
 export function translationAddForm() {
     return [
         {

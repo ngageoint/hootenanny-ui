@@ -605,6 +605,67 @@ export default class API {
             } );
     }
 
+    exportDataset( data ) {
+        data.tagoverrides =  JSON.stringify(
+            Object.assign(data.tagoverrides || {}, {
+                'error:circular':'',
+                'hoot:building:match':'',
+                'hoot:status':'',
+                'hoot:review:members':'',
+                'hoot:review:score':'',
+                'hoot:review:note':'',
+                'hoot:review:sort_order':'',
+                'hoot:review:type':'',
+                'hoot:review:needs':'',
+                'hoot:score:match':'',
+                'hoot:score:miss':'',
+                'hoot:score:review':'',
+                'hoot:score:uuid':''
+            })
+        );
+        
+        const requiredKeys = [
+            'append',
+            'includehoottags',
+            'input',
+            'inputtype',
+            'outputname',
+            'outputtype',
+            'tagoverrides',
+            'textstatus' ,
+            'translation',
+        ];
+
+        if (!requiredKeys.every( k => data.hasOwnProperty(k) )) {
+            return Promise.reject( new Error( ' invalid request payload' ) );
+        }
+
+        const params = {
+            path: '/job/export/execute',
+            method: 'POST',
+            data: data
+        };
+
+        return this.request( params )
+            .then( () => {
+                return {
+                    message: `Successfully exported dataset: ${ data.input }`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( (err) => {
+                console.log( err );
+
+                return {
+                    message: `Failed to update dataset: ${ data.input }`,
+                    status: 500,
+                    type: 'success'
+                };
+            } );
+        
+    }
+
     updateFolder( { folderId, parentId } ) {
         const params = {
             path: `/osm/api/0.6/map/folders/${ folderId }/move/${ parentId }`,

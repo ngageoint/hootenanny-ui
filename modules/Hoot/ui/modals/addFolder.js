@@ -9,7 +9,7 @@ import { addFolderForm } from '../../config/domMetadata';
 
 export default class AddFolder {
     constructor(parentId = 0) {
-        this.form = addFolderForm.call( this );
+        this.form     = addFolderForm.call( this );
         this.parentId = parentId;
     }
 
@@ -78,7 +78,7 @@ export default class AddFolder {
         let params = {
             parentId: this.parentId, 
             folderName: name,
-	        isPublic: isPublic
+            isPublic: isPublic
         };
 
         this.processRequest = Hoot.api.addFolder( params )

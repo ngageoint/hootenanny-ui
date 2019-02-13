@@ -14,6 +14,7 @@ import ImportMultiDataset from '../modals/ImportMultiDatasets';
 import AddFolder          from '../modals/addFolder';
 import ModifyDataset      from '../modals/modifyDataset';
 import ModifyFolder       from '../modals/modifyFolder';
+import ExportData from '../modals/exportData';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -235,6 +236,13 @@ export default class Datasets extends Tab {
                 this.importMultiModal = new ImportMultiDataset( translations, d.data.name ).render();
 
                 Hoot.events.once( 'modal-closed', () => delete this.importMultiModal );
+                break;
+            }
+            case 'exportDataset': {
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT );
+
+                this.exportDatasetModal = new ExportData( translations, d.data.name ).render();
+                Hoot.events.once('modal-closed', () => delete this.exportDatasetModal);    
                 break;
             }
             case 'addFolder':
