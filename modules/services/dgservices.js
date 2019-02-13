@@ -8,7 +8,7 @@ import { t } from '../util/locale';
 
 export default function() {
     var dg                = {},
-        evwhs_proxy       = '/hoot-services/evwhs',
+        evwhs_proxy       = '../hoot-services/evwhs',
         evwhs_host        = 'https://{switch:a,b,c,d,e}-evwhs.digitalglobe.com',
         evwhs_connectId,
         default_connectId = evwhs_connectId = '68fc9933-7b40-4462-9c6d-51566f39b5af', //68fc9933-7b40-4462-9c6d-51566f39b5af

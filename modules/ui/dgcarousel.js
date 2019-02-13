@@ -89,7 +89,7 @@ export function uiDgcarousel( context ) {
 
                     dg.wfs.getFeatureInRaster( null, activeProfile, extent, size, ( error, data ) => {
                         if ( error ) {
-                            window.console.warn( error );
+                            window.window.console.warn( error );
                         } else {
                             //Update dgservices letiables tracking visible image metadata
                             //The first feature in the response is the top (visible) image
@@ -100,9 +100,9 @@ export function uiDgcarousel( context ) {
 
                     dg.wfs.getFeature( null, activeProfile, extent, size, ( error, data ) => {
                         if ( error ) {
-                            window.console.warn( error );
+                            window.window.console.warn( error );
                         } else {
-                            //window.console.log(data.totalFeatures);
+                            //window.window.console.log(data.totalFeatures);
                             //display available images in carousel
 
                             //remove image thumbnails already selected

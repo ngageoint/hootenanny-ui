@@ -159,7 +159,7 @@ export function modeSave(context) {
                         result.push.apply(result, _map(_filter(children, 'version'), 'id'));
                     } catch (err) {
                         /* eslint-disable no-console */
-                        if (typeof console !== 'undefined') console.error(err);
+                        if (typeof console !== 'undefined') window.console.error(err);
                         /* eslint-enable no-console */
                     }
                 }

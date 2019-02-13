@@ -162,7 +162,7 @@ export function utilKeybinding(namespace) {
             };
 
             if (_keybindings[id]) {
-                console.warn('warning: duplicate keybinding for "' + id + '"'); // eslint-disable-line no-console
+                window.console.warn('warning: duplicate keybinding for "' + id + '"'); // eslint-disable-line no-console
             }
 
             _keybindings[id] = binding;

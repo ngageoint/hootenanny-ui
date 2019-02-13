@@ -595,7 +595,7 @@ export default class API {
                 };
             } )
             .catch( err => {
-                console.log( err );
+                window.console.log( err );
 
                 return {
                     message: `Failed to modify item: ${ modName }`,
@@ -620,7 +620,7 @@ export default class API {
                 };
             } )
             .catch( err => {
-                console.log( err );
+                window.console.log( err );
 
                 return {
                     message: `Failed to update folder: ${ folderId }`,
@@ -645,7 +645,7 @@ export default class API {
                 };
             } )
             .catch( err => {
-                console.log( err );
+                window.console.log( err );
 
                 return {
                     message: `Failed to change visibility of folder: ${ folderId } to ${ visibility }`,
@@ -683,7 +683,7 @@ export default class API {
                 };
             } )
             .catch( err => {
-                console.log( err );
+                window.console.log( err );
                 let message, status, type;
 
                 status = err.status;
@@ -1002,7 +1002,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => console.log( err ) );
+            .catch( err => window.console.log( err ) );
     }
 
     translateFromXml( xml, translation ) {
@@ -1020,7 +1020,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => console.log( err ) );
+            .catch( err => window.console.log( err ) );
     }
 
     translateToXml( xml, translation ) {
@@ -1038,7 +1038,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => console.log( err ) );
+            .catch( err => window.console.log( err ) );
     }
 
     translateToJson( p ) {
@@ -1052,6 +1052,6 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => console.log( err ) );
+            .catch( err => window.console.log( err ) );
     }
 }
