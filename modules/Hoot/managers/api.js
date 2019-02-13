@@ -668,9 +668,8 @@ export default class API {
         let jobId;
 
         return this.request( params )
-            .then( (resp) => { 
-                jobId = resp.data.jobid; })
-            .then( () =>  this.statusInterval( jobId ))
+            .then( (resp) => { jobId = resp.data.jobid; } )
+            .then( () =>  this.statusInterval( jobId ) )
             .then( () => this.saveDataset( jobId, data.outputname ))
             .then( () => {
                 return {

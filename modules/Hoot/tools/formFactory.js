@@ -356,6 +356,9 @@ export default class FormFactory {
         let buttonContainer = container
             .append( 'div' )
             .classed( 'modal-footer', true );
+        
+        buttonContainer.append('div')
+            .classed( 'sideContainer', true );
 
         let button = buttonContainer
             .append( 'button' )
@@ -367,5 +370,28 @@ export default class FormFactory {
         button
             .append( 'span' )
             .text( buttonMeta.text );
+
+        buttonContainer.append( 'div' )
+            .attr( 'class', 'sideContainer processWaiter' );
+    }
+
+    createProcessSpinner( container ) {
+        let spinnerContainer = container.select( '.processWaiter' );
+
+        let spinner = spinnerContainer.append('img')
+            .attr( 'id', 'processSpinner' )
+            .attr( 'src', Hoot.context.imagePath('loader-white.gif') )
+            .style( 'opacity', 0);
+
+        spinner.transition().style( 'opacity', 1);
+    }
+
+    removeProcessSpinner( container ) {
+        let spinnerContainer = container.select( '.processWaiter' ),
+            spinner          = spinnerContainer.select( '#processSpinner' );
+
+
+        spinner.transition().style( 'opacity', 0 );
+        spinnerContainer.remove();
     }
 }

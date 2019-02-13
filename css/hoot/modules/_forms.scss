@@ -60,6 +60,13 @@
     }
 
     .modal-footer {
+        display: flex;
+
+        .sideContainer {
+            display: initial;
+            width: 25%;
+        }
+
         button {
             display: flex;
             align-items: center;
@@ -70,6 +77,13 @@
 
             ._icon {
                 margin-left: 10px;
+            }
+        }
+        .processWaiter {
+            display: flex;
+            justify-content: flex-end;
+            #processSpinner {
+                align-self: flex-end;
             }
         }
     }

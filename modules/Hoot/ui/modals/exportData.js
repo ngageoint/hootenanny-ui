@@ -26,7 +26,8 @@ export default class ExportData {
             }
         };
 
-        this.container = new FormFactory().generateForm( 'body', 'export-data-form', metadata );
+        this.formFactory = new FormFactory();
+        this.container = this.formFactory.generateForm( 'body', 'export-data-form', metadata );
         this.translationSchemaCombo = this.container.select( '#exportTranslationCombo' );
         this.exportFormatCombo = this.container.select( '#exportFormatCombo' );
         this.dataExportNameTextInput = this.container.select( '#dataExportNameTextInput' );
@@ -106,12 +107,15 @@ export default class ExportData {
                 translation: self.getTranslationPath(), 
                 userId: Hoot.user().id
             };
+        
 
+        this.formFactory.createProcessSpinner( this.container.select( '.modal-footer' ) );
         this.processRequest = Hoot.api.exportDataset( data )
             .catch( err => {
 
             } )
             .finally( () => {
+                this.formFactory.removeProcessSpinner( this.container.select( '.modal-footer' ) );
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
             });
