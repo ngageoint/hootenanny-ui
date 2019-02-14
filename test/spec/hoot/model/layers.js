@@ -8,7 +8,7 @@ describe('Layers', function(){
         testContext.config = {};
         testContext.config.JobStatusQueryInterval = 10000;
         testContext.config.defaultScript = "TDS.js";
-        testContext.config.url = "/hoot-services/osm";
+        testContext.config.url = "../hoot-services/osm";
         iD.data.config = testContext.config;
         var hoot_model = Hoot.model(testContext);
         layer = hoot_model.layers;
@@ -29,7 +29,7 @@ describe('Layers', function(){
             var callback = sinon.spy();
             layer.refresh(callback);
 
-            this.server.respondWith("GET", "/hoot-services/osm/api/0.6/map/layers",
+            this.server.respondWith("GET", "../hoot-services/osm/api/0.6/map/layers",
                   [200, {"Content-Type": "text/plain"}, resp]);
             this.server.respond();
         });
@@ -66,18 +66,18 @@ describe('Layers', function(){
 
     describe('.refresh', function(){
         it('should update available layers', function() {
-         
+
             var resp = JSON.stringify({"layers":[{"id":1, "name":"test name 1"},
                         {"id":2, "name":"test name 2"}]});
 
             var expectedResp = [{"id":1, "name":"test name 1"},
                         {"id":2, "name":"test name 2"}];
-           
+
             var callback = sinon.spy();
             //Hoot.model.REST('getAvailLayers', callback);
             layer.refresh(callback);
 
-            this.server.respondWith("GET", "/hoot-services/osm/api/0.6/map/layers",
+            this.server.respondWith("GET", "../hoot-services/osm/api/0.6/map/layers",
                   [200, {"Content-Type": "text/plain"}, resp]);
             this.server.respond();
 

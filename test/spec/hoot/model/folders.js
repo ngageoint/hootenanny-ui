@@ -8,7 +8,7 @@ describe('Folders', function(){
         testContext.config = {};
         testContext.config.JobStatusQueryInterval = 10000;
         testContext.config.defaultScript = "TDS.js";
-        testContext.config.url = "/hoot-services/osm";
+        testContext.config.url = "../hoot-services/osm";
         iD.data.config = testContext.config;
         var hoot_model = Hoot.model(testContext);
         folder = hoot_model.folders;
@@ -20,17 +20,17 @@ describe('Folders', function(){
 
     describe('.refresh', function(){
         it('should update available folders', function() {
-         
+
             var resp = JSON.stringify({"folders":[{"id":1, "name":"parent folder", "parentId":0},
                         {"id":2, "name":"child folder", "parentId":1}]});
 
             var expectedResp = [{"id":1, "name":"parent folder", "parentId": 0},
                         {"id":2, "name":"child folder", "parentId": 1}];
-           
+
             var callback = sinon.spy();
             folder.refresh(callback);
 
-            this.server.respondWith("GET", "/hoot-services/osm/api/0.6/map/folders",
+            this.server.respondWith("GET", "../hoot-services/osm/api/0.6/map/folders",
                   [200, {"Content-Type": "text/plain"}, resp]);
             this.server.respond();
 
