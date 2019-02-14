@@ -16,6 +16,7 @@ import TranslationManager from './managers/translationManager';
 import EventManager       from './managers/eventManager';
 import UI                 from './ui/init';
 import { tagInfo }        from '../../data/index';
+import buildInfo          from './config/buildInfo.json';
 
 class Hoot {
     constructor() {
@@ -51,11 +52,7 @@ class Hoot {
         }
 
         // build info will always be available
-        this.config.appInfo.push( {
-            name: 'Hootenanny iD Editor',
-            version: __COMMIT_HASH__,
-            user: 'webpack'
-        });
+        this.config.appInfo.push( buildInfo );
     }
 
     async getAllUsers() {
