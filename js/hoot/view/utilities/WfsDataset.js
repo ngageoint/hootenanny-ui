@@ -51,7 +51,7 @@
 
 
                     var wfsTrashBtn = this;
-                    d3.json('/hoot-services/job/export/wfs/remove/' + wfsId,
+                    d3.json('../hoot-services/job/export/wfs/remove/' + wfsId,
                             function (error, json) {
                                 if(error){
                                     iD.ui.Alert(error.responseText,'error',new Error().stack);

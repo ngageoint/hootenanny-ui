@@ -10,7 +10,7 @@
 
     hoot_control_utilities_wfsdataset.wfsDetailPopup = function (e) {
 
-      var capaUrl = location.origin + '/hoot-services/ogc/' +
+      var capaUrl = location.origin + '../hoot-services/ogc/' +
         e.id + '?service=WFS&version=1.1.0&request=GetCapabilities';
 
         var d_form = [{

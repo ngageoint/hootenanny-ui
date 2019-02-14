@@ -297,10 +297,10 @@ Hoot.model.layers = function (context)
             }
 
             if(deleteDataset){
-                d3.xhr('/hoot-services/osm/api/0.6/map/' + params.dataset.name)
+                d3.xhr('../hoot-services/osm/api/0.6/map/' + params.dataset.name)
                     .header('Content-Type', 'text/plain')
                     .send('DELETE', function (error, data) {
-                        var statusUrl = '/hoot-services/job/status/' + data.jobid;
+                        var statusUrl = '../hoot-services/job/status/' + data.jobid;
                         var statusTimer = setInterval(function () {
                             d3.json(statusUrl, function (error, result) {
                                 if (result.status !== 'running') {

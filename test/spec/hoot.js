@@ -6,7 +6,7 @@ describe('Hoot.hoot', function(){
         testContext.config = {};
         testContext.config.JobStatusQueryInterval = 10000;
         testContext.config.defaultScript = "TDS.js";
-        testContext.config.url = "/hoot-services/osm";
+        testContext.config.url = "../hoot-services/osm";
         hoot = Hoot.hoot(testContext);
     });
 

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 describe('iD.Hoot.Model.Export', function(){
@@ -8,23 +8,23 @@ describe('iD.Hoot.Model.Export', function(){
     var e;
     var requests = [];
 
-    
+
     before(function () {
         xhr = sinon.useFakeXMLHttpRequest();
-        
-        xhr.onCreate = function (req) { 
-            requests.push(req); 
+
+        xhr.onCreate = function (req) {
+            requests.push(req);
         };
         var testContext = {};
         testContext.config = {};
         testContext.config.JobStatusQueryInterval = 10000;
         testContext.config.defaultScript = "TDS.js";
-        testContext.config.url = "/hoot-services/osm";
+        testContext.config.url = "../hoot-services/osm";
         iD.data.config = testContext.config;
         var hoot_model = Hoot.model(testContext);
         e = hoot_model.export;
     });
-    
+
     after(function() {
         xhr.restore();
     })
@@ -44,7 +44,7 @@ describe('iD.Hoot.Model.Export', function(){
                         return null;
                     };
                     return mockMethods;
-                    
+
                 } else if(field == '.reset.fileExportFileType') {
                     var mockMethods = {};
                     mockMethods.value = function(){
@@ -55,7 +55,7 @@ describe('iD.Hoot.Model.Export', function(){
                         return null;
                     };
                     return mockMethods;
-                    
+
                 }  else if(field == '.reset.fileExportTranslation') {
                     var mockMethods = {};
                     mockMethods.value = function(){
@@ -79,13 +79,13 @@ describe('iD.Hoot.Model.Export', function(){
 
                     return mockMethods;
                 }
-                
+
             };
-            
+
             var mockData = {};
             mockData.name = 'test_input_name';
             e.exportData(mockContainer, mockData, sinon.spy());
-            
+
             expect(requests.length).to.eql(1);
             var reqStr = requests[0].requestBody;
             var oReq = JSON.parse(reqStr);
@@ -94,7 +94,7 @@ describe('iD.Hoot.Model.Export', function(){
             expect(oReq.input).to.eql("test_input_name");
             expect(oReq.outputtype).to.eql("gdb");
             expect(oReq.outputname).to.eql("out_name_123");
-            expect(requests[0].url).to.eql("/hoot-services/job/export/execute");
+            expect(requests[0].url).to.eql("../hoot-services/job/export/execute");
             done();
           });
     });
