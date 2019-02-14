@@ -68,7 +68,7 @@ Hoot.control.TranslationAssistant = function (context) {
     schema.append('div')
         .classed('preset-input-access hidden', true);
 
-    var hootServices = '/hoot-services';
+    var hootServices = '../hoot-services';
 
     var openfile = sidebar.append('div');
     openfile.append('a')

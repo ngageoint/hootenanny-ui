@@ -70,7 +70,7 @@ Hoot.view.versioninfo = function(){
             .classed('dark fr button loud pad2x big _icon plus', true)
             .on('click', function () {
 
-                var sUrl = '/hoot-services/info/document/export';
+                var sUrl = '../hoot-services/info/document/export';
                 var link = document.createElement('a');
                 link.href = sUrl;
                 if (link.download !== undefined) {
@@ -155,7 +155,7 @@ Hoot.view.versioninfo = function(){
 
 
     versioninfo.downloadUserGuide = function() {
-        var sUrl = '/hoot-services/info/document/export';
+        var sUrl = '../hoot-services/info/document/export';
         var link = document.createElement('a');
         link.href = sUrl;
         if (link.download !== undefined) {

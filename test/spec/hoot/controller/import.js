@@ -13,7 +13,7 @@ describe('iD.Hoot.control.import', function(){
         testContext.config = {};
         testContext.config.JobStatusQueryInterval = 10000;
         testContext.config.defaultScript = "TDS.js";
-        testContext.config.url = "/hoot-services/osm";
+        testContext.config.url = "../hoot-services/osm";
         iD.data.config = testContext.config;
         var hoot_control = Hoot.control(testContext);
         imprt = Hoot.control.import(testContext, null);

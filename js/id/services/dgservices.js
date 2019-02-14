@@ -1,6 +1,6 @@
 iD.dgservices  = function() {
     var dg = {},
-        evwhs_proxy = '/hoot-services/evwhs',
+        evwhs_proxy = '../hoot-services/evwhs',
         evwhs_host = 'https://{switch:a,b,c,d,e}-evwhs.digitalglobe.com',
         evwhs_connectId,
         default_connectId = evwhs_connectId = 'REPLACE_ME',

@@ -15,7 +15,7 @@ describe('iD.Hoot.Model.Import', function(){
         testContext.config = {};
         testContext.config.JobStatusQueryInterval = 10000;
         testContext.config.defaultScript = "TDS.js";
-        testContext.config.url = "/hoot-services/osm";
+        testContext.config.url = "../hoot-services/osm";
         iD.data.config = testContext.config;
         var hoot_model = Hoot.model(testContext);
         imprt = hoot_model.import;
@@ -98,7 +98,7 @@ describe('iD.Hoot.Model.Import', function(){
             var reqUrl = requests[0].url;
 
             expect(reqStr).to.eql("test_body_123");
-            expect(reqUrl).to.eql("/hoot-services/ingest/ingest/upload?TRANSLATION=TDSv61.js&INPUT_TYPE=FILE&INPUT_NAME=test_layer_name");
+            expect(reqUrl).to.eql("../hoot-services/ingest/ingest/upload?TRANSLATION=TDSv61.js&INPUT_TYPE=FILE&INPUT_NAME=test_layer_name");
 
           });
     });
