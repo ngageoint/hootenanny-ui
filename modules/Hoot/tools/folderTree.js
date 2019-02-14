@@ -301,20 +301,22 @@ export default class FolderTree extends EventEmitter {
             .append( 'tspan' ).text( d => d.data.name );
 
         // Render node owner
-        nodeElement
-            .append( 'text' )
-            .style( 'fill', this.fontColor )
-            .classed( 'dnameTxt', true )
-            .attr( 'dy', 3.5 )
-            .attr( 'dx', '30%' )
-            .attr( 'text-anchor', 'start' )
-            .append( 'tspan' ).text( d => {
-                // if (user.id === d.data.userId) return ''; //don't show owner for logged in user
+        if ( this.isDatasetTable ) {
+            nodeElement
+                .append( 'text' )
+                .style( 'fill', this.fontColor )
+                .classed( 'dnameTxt', true )
+                .attr( 'dy', 3.5 )
+                .attr( 'dx', '30%' )
+                .attr( 'text-anchor', 'start' )
+                .append( 'tspan' ).text( d => {
+                    // if (user.id === d.data.userId) return ''; //don't show owner for logged in user
 
-                return (Hoot.config.users[ d.data.userId ]) ?
-                    Hoot.config.users[ d.data.userId ].display_name :
-                    'No user for ' + d.data.userId;
-            } );
+                    return (Hoot.config.users[ d.data.userId ]) ?
+                        Hoot.config.users[ d.data.userId ].display_name :
+                        'No user for ' + d.data.userId;
+                } );
+        }
 
         // Transition nodes to their new position
         nodeElement.transition()
