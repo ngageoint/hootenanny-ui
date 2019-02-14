@@ -260,7 +260,8 @@ export function modifyDatasetForm() {
 export function exportDataForm( ) {
     const exportComboId = 'exportTranslationCombo',
           exportFormatId = 'exportFormatCombo',
-          exportNameId = 'dataExportNameTextInput';
+          exportNameId = 'dataExportNameTextInput',
+          exportFgdbId = 'exportAppendFgdb';
 
     return [
         {
@@ -272,12 +273,24 @@ export function exportDataForm( ) {
             onChange: () => this.validate( exportComboId )
         },
         {
+            label: 'ESRI FGDB Template',
+            id: exportFgdbId,
+            inputType: 'checkbox',
+            value: 'append',
+            checked: false
+        },
+        {
             label: 'Export Format',
             id: exportFormatId,
             inputType: 'combobox',
             data: [ 'File Geodatabase', 'Shapefile', 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
             onChange: () => this.validate( exportFormatId )
         },
+        // {
+        //     label: 'Tag Overrides',
+        //     id: 'exportTagOverrideId',
+        //     inputType: 'custom'
+        // },
         {
             label: 'Output Name',
             id: exportNameId,

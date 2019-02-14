@@ -241,8 +241,14 @@ export default class Datasets extends Tab {
             case 'exportDataset': {
                 let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT );
 
-                this.exportDatasetModal = new ExportData( translations, d.data.name ).render();
-                Hoot.events.once('modal-closed', () => delete this.exportDatasetModal);    
+                this.exportDatasetModal = new ExportData( translations, d, 'Dataset' ).render();
+                Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);    
+                break;
+            }
+            case 'exportFolder': {
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT);
+                this.exportDatasetModal = new ExportData( translations, d, 'Folder' ).render();
+                Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
                 break;
             }
             case 'addFolder':

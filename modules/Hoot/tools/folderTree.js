@@ -47,16 +47,6 @@ export default class FolderTree extends EventEmitter {
                     title: 'Export',
                     icon: 'export',
                     click: 'exportDataset'
-                },
-                {
-                    title: 'Prepare for Validation',
-                    icon: 'sprocket',
-                    click: 'prepValidation'
-                },
-                {
-                    title: 'Filter non-HGIS POIs',
-                    icon: 'sprocket',
-                    click: 'filter'
                 }
             ],
             addDatasetOpts: [
