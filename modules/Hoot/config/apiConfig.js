@@ -8,7 +8,7 @@
 export const apiConfig = {
     host: window.location.protocol + '//' + window.location.host, // just host name without port
     port: window.location.port,
-    path: '/hoot-services',
+    path: window.location.pathname + '../hoot-services',
     translationServerPort: '8094',
     mergeServerPort: '8096',
     queryInterval: 2000
