@@ -184,7 +184,8 @@ class LayerConflate extends SidebarForm {
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
         // data.ADV_OPTIONS        = this.advancedOptions.data.getParsedValues();
-        // data.HOOT2_OPTIONS      = 
+        data.HOOT_2             = true; 
+        data.HOOT_2_COMMANDS    = '';
         data.USER_EMAIL         = 'test@test.com';
 
         if ( data.CONFLATION_TYPE === 'Differential' ) {
