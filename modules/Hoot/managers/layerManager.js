@@ -63,6 +63,10 @@ export default class Layers {
         return _find( this.loadedLayers, layer => layer[ key ] === val );
     }
 
+    noApi() {
+        return Object.keys(this.loadedLayers).every( id => id > -1);
+    }
+
     exists( layerName, pathId ) {
         let idsInDestination = _reduce( _filter( this.hoot.folders._links, link => link.folderId === pathId ), ( arr, obj ) => {
             let o = { id: obj.mapId };
