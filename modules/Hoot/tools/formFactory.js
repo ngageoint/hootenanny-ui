@@ -270,7 +270,7 @@ export default class FormFactory {
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
-            .property( 'checked', d => d.checked );
+            .property( 'checked', d => d.checked )
         field
             .append( 'label' )
             .attr( 'for', d => d.id)

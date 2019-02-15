@@ -408,11 +408,7 @@ export function advancedOptions() {
                     key: 'add.review.tags.to.features',
                     inputType: 'checkbox',
                     value: 'add',
-                    checked: false,
-                    onChange: (d) => {
-                        // ADD TAG REVIEWS
-                        this.addOpt(d.key, 'true');
-                    }
+                    checked: false
                 }
             ]
         },

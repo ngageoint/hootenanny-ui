@@ -23,21 +23,8 @@ export default class AdvancedOpts {
     get isOpen() {
         return this.form.classed( 'visible' );
     }
-
+    
     init() {
-        // let allOpts = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
-
-        // this.advancedOptions = {
-        //     base: allOpts[ 0 ],
-        //     horizontal: allOpts[ 1 ],
-        //     reference: allOpts[ 2 ],
-        //     diff: allOpts[ 3 ],
-        //     diffTags: allOpts[ 4 ],
-        //     attribute: allOpts[ 5 ]
-        // };
-
-        // this.data    = new FieldsetData( this, _cloneDeep( this.advancedOptions ) );
-        // this.control = new FieldsetControls( this );
         this.render();
     }
 
@@ -157,46 +144,64 @@ export default class AdvancedOpts {
         } );
     }
 
-        createFormFields( members, group ) {
-            let factory = new FormFactory();
+    createFormFields( members, group ) {
+        let factory = new FormFactory();
 
-            let fieldContainer = group.selectAll( '.hoot-form-field' )
-                .data( members ).enter()
-                .append( 'div' )
-                .classed( 'hoot-form-field small contain', true )
-                .classed( 'hidden', d => d.required === 'true' );
-                // .on( 'change', d => this.control.handleFieldChange( d ) );
+        let fieldContainer = group.selectAll( '.hoot-form-field' )
+            .data( members ).enter()
+            .append( 'div' )
+            .classed( 'hoot-form-field small contain', true )
+            .classed( 'hidden', d => d.required === 'true' );
+            // .on( 'change', d => this.control.handleFieldChange( d ) );
 
-            let fieldHeader = fieldContainer
-                .append( 'div' )
-                .classed( 'form-field-header keyline-bottom', true);
+        let fieldHeader = fieldContainer
+            .append( 'div' )
+            .classed( 'form-field-header keyline-bottom', true);
 
-            fieldHeader
-                .append( 'label' )
-                .append( 'span' )
-                .text( d => d.label );
+        fieldHeader
+            .append( 'label' )
+            .append( 'span' )
+            .text( d => d.label );
 
-            fieldContainer.select( function( d ) {
-                let field = d3.select( this );
+        fieldContainer.select( function( d ) {
+            let field = d3.select( this );
+            switch ( d.inputType ) {
+                case 'combobox': {
+                    factory.createCombobox( field );
+                    break;
+                }
+                case 'checkbox': {
+                    factory.createCheckbox( field );
+                    break;
+                }
+                case 'slider': {
+                    break;
+                }
+                case 'text': {
+                    factory.createTextField ( field );
+                }
+            }
+        });
+    }
+    
+    getOptions() {
+        let options = '';
+        this.contentDiv.selectAll( '.form-group .hoot-form-field' )
+            .each( d => {
+                const field = this.contentDiv.select( `#${d.id}` );
                 switch ( d.inputType ) {
-                    case 'combobox': {
-                        factory.createCombobox( field );
-                        break;
-                    }
                     case 'checkbox': {
-                        factory.createCheckbox( field );
+                        if (field.property('checked')) {
+                            options += `-D "${d.key}=true" `;
+                        }
                         break;
-                    }
-                    case 'slider': {
-                        break;
-                    }
-                    case 'text': {
-                        factory.createTextField ( field );
                     }
                 }
             });
-        }
-        
+
+        return options;
+    }
+
         // createCheckbox( field ) {
         //     field.select( 'label' )
         //         .insert( 'input', ':first-child' )
