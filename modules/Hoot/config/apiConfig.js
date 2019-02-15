@@ -10,7 +10,7 @@
 
 function relativePath() {
     let path = window.location.pathname;
-    let pathWithoutFile = path.substr(0, path.lastIndexOf("/"));
+    let pathWithoutFile = path.substr(0, path.lastIndexOf('/'));
     let pathRelative = ( (pathWithoutFile === '') ? '' : (pathWithoutFile + '..')) + '/hoot-services';
 
     return pathRelative;
