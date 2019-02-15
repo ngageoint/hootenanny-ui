@@ -310,7 +310,6 @@ export default class FolderTree extends EventEmitter {
                 .attr( 'dx', '30%' )
                 .attr( 'text-anchor', 'start' )
                 .append( 'tspan' ).text( d => {
-                    // if (user.id === d.data.userId) return ''; //don't show owner for logged in user
 
                     return (Hoot.config.users[ d.data.userId ]) ?
                         Hoot.config.users[ d.data.userId ].display_name :
