@@ -8,10 +8,10 @@ import { t } from '../util/locale';
 
 export default function() {
     var dg                = {},
-        evwhs_proxy       = '/hoot-services/evwhs',
+        evwhs_proxy       = '../hoot-services/evwhs',
         evwhs_host        = 'https://{switch:a,b,c,d,e}-evwhs.digitalglobe.com',
         evwhs_connectId,
-        default_connectId = evwhs_connectId = '68fc9933-7b40-4462-9c6d-51566f39b5af', //68fc9933-7b40-4462-9c6d-51566f39b5af
+        default_connectId = evwhs_connectId = 'REPLACE_ME',
         wmts_template       = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0'
             + '&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png'
             + '&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{zoom}&TileRow={y}&TileCol={x}',

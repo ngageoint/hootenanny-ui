@@ -231,6 +231,7 @@ export default class FolderTree extends EventEmitter {
      */
     createNodeElement( nodes, source ) {
         const self = this;
+        let user = JSON.parse( localStorage.getItem( 'user' ) );
 
         let nodeElement = nodes.enter().append( 'g' )
             .attr( 'data-name', d => d.data.name )
@@ -298,6 +299,23 @@ export default class FolderTree extends EventEmitter {
                 return 25.5 + (11 * dd);
             } )
             .append( 'tspan' ).text( d => d.data.name );
+
+        // Render node owner
+        if ( this.isDatasetTable ) {
+            nodeElement
+                .append( 'text' )
+                .style( 'fill', this.fontColor )
+                .classed( 'dnameTxt', true )
+                .attr( 'dy', 3.5 )
+                .attr( 'dx', '30%' )
+                .attr( 'text-anchor', 'start' )
+                .append( 'tspan' ).text( d => {
+
+                    return (Hoot.config.users[ d.data.userId ]) ?
+                        Hoot.config.users[ d.data.userId ].display_name :
+                        'No user for ' + d.data.userId;
+                } );
+        }
 
         // Transition nodes to their new position
         nodeElement.transition()
@@ -367,14 +385,14 @@ export default class FolderTree extends EventEmitter {
             nodes.append( 'text' )
                 .style( 'fill', this.fontColor )
                 .attr( 'dy', 3.5 )
-                .attr( 'dx', '80%' )
+                .attr( 'dx', '85%' )
                 .attr( 'text-anchor', 'end' )
                 .text( d => d.data.date );
 
             nodes.append( 'text' )
                 .style( 'fill', this.fontColor )
                 .attr( 'dy', 3.5 )
-                .attr( 'dx', '45%' )
+                .attr( 'dx', '65%' )
                 .attr( 'text-anchor', 'end' )
                 .text( function( d ) {
                     let lastAccessed = d.data.lastAccessed,
@@ -415,7 +433,7 @@ export default class FolderTree extends EventEmitter {
             .append( 'g' )
             .append( 'svg' )
             .attr( 'y', '-9px' )
-            .attr( 'x', '38%' )
+            .attr( 'x', '56%' )
             .append( 'image' )
             .attr( 'href', './img/timer.png' )
             .style( 'width', '18px' )

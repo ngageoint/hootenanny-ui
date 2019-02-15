@@ -53,7 +53,7 @@ export default class Basemaps extends Tab {
 
             this.populateBasemaps( basemaps );
         } catch ( e ) {
-            console.log( 'Unable to retrieve basemaps' );
+            window.console.log( 'Unable to retrieve basemaps' );
             throw new Error( e );
         }
     }
@@ -118,9 +118,9 @@ export default class Basemaps extends Tab {
 
                 if ( d.status === 'processing' ) {
                     //TODO: get back to this
-                    console.log( 'processing' );
+                    window.console.log( 'processing' );
                 } else if ( d.status === 'failed' ) {
-                    console.log( 'failed' );
+                    window.console.log( 'failed' );
                 } else if ( d.status === 'disabled' ) {
                     button.classed( 'closedeye', true );
                     button.classed( 'openeye', false );

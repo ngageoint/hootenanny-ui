@@ -57,7 +57,7 @@ export function t(s, o, loc) {
     }
 
     var missing = 'Missing ' + loc + ' translation: ' + s;
-    if (typeof console !== 'undefined') console.error(missing); // eslint-disable-line
+    if (typeof console !== 'undefined') window.console.error(missing); // eslint-disable-line
 
     return missing;
 }
