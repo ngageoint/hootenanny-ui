@@ -385,3 +385,152 @@ export function conflictActions() {
         }
     ];
 }
+
+export function advancedOptions() {
+// Road Options -  unify/network engine, Road search radius
+// Building Options - these are all good to have access to, tweak as needed
+// POI to Poly options - I think some of these were added with planetSense use case in mind, I would keep these exposed as that capability develops and users look to hoot as way of further automating that workflow.
+// Railway/Powerlines/Waterways - I disable these since they are on by default to help with processing time but havent done to much conflating with these features types yet but options look very complex
+    return [
+        // {
+        //     name: 'Cleaning Options',
+        //     id: 'cleaningOptions',
+        //     key: 'map.cleaner.transforms',
+        //     members: []
+        // },
+        {
+            label: 'General Options',
+            id: 'generalOptions',
+            children: [
+                {
+                    label: 'Add Tag Reviews',
+                    id: 'addTagReviews',
+                    key: 'add.review.tags.to.features',
+                    inputType: 'checkbox',
+                    value: 'add',
+                    checked: false,
+                    onChange: (d) => {
+                        // ADD TAG REVIEWS
+                        this.addOpt(d.key, 'true');
+                    }
+                }
+            ]
+        },
+        // {
+        //     label: 'Road Options',
+        //     id: 'roadOptions',
+        //     children: [
+        //         {
+        //             label: 'Road Search Radius',
+        //             id: 'roadSearchRadius',
+        //             key: 'search.radius.highway',
+        //             inputType: 'text',
+        //             value: -1.0,
+        //             onChange: () => {
+        //                 // update opts value...
+        //             }
+        //         },
+        //         {
+        //             label: 'Engines',
+        //             inputType: 'combobox',
+        //             itemKey: 'display',
+        //             valueKey: 'value',
+        //             data: [ 'Unify', 'Network' ],
+        //             value: 'Network',
+        //             children: [
+        //                 'matchHighwayClassifier',
+        //                 'roadMatchCreator',
+        //                 'roadMergerCreator',
+        //                 'roadOnlyMergeTags',
+        //                 'highwayMatcherHeadingDelta'
+        //             ],
+        //             onChange: () => {
+        //                 // show children? render children?...
+        //             }
+        //         },
+        //         {
+        //             label: 'Match Highway Classifier',
+        //             id: 'matchHighwayClassifier',
+        //             key: 'conflate.match.highway.classifier',
+        //             inputType: 'checkbox',
+        //             hidden: true,
+        //             onChange: () => {
+        //                 // add hoot::HighwayRfClassifier
+        //             }
+        //         },
+        //         {
+        //             label: 'Match Creator',
+        //             id: 'roadMatchCreator',
+        //             key: 'match.creator',
+        //             inputType: 'checkbox',
+        //             value: false,
+        //             onChange: () => {
+        //                 // add hoot::HighwayMatchCreator
+        //             }
+        //         },
+        //         {
+        //             label: 'Merger Creator',
+        //             id: 'roadMergerCreator',
+        //             key: 'merger.creators',
+        //             inputType: 'checkbox',
+        //             value: false,
+        //             onChange: () => {
+        //                 // add hoot::HighwayMergerCreator
+        //             }
+        //         },
+        //         {
+        //             label: 'Only Merge Tags',
+        //             id: 'roadOnlyMergeTags',
+        //             key: 'highway.merge.tags.only',
+        //             inputType: 'checkbox',
+        //             value: false,
+        //             onChange: () => {
+        //                 // add key...
+        //             }
+        //         },
+        //         {
+        //             label: 'Highway Matcher Heading Delta',
+        //             id: 'highwayMatcherHeadingDelta',
+        //             value: 5.0,
+        //             onChange: () => {
+        //                 // update opts value..
+        //             }
+        //         },
+        //         {
+        //             label: 'Highway Matcher Heading Delta',
+        //             id: 'highwayMatcherMaxAngle',
+        //             key: 'highway.matcher.max.angle',
+        //             inputType: 'slider',
+        //             extrema: [0.0, 360.0],
+        //             value: 60.0,
+        //             onChange: () => {
+        //                 // update delta...
+        //             }
+        //         },
+        //         {
+        //             label: 'Highway Max Enum Diff',
+        //             id: 'highwayMaxEnumDiff',
+        //             key: 'highway.max.enum.diff',
+        //             inputType: 'slider',
+        //             extrema: [0.01, 1.6],
+        //             value: 0.6,
+        //             onChange: () => {
+        //                 // update enum...
+        //             }
+        //         }
+        //     ]
+        // },
+        // {
+        //     name: 'Building Options',
+        //     id: 'buildingOptions'
+        // },
+        // {
+        //     name: 'Point to Polygon Options',
+        //     id: 'pointToPolyOptions'
+        // },
+        // {
+        //     name: 'Railway, Power, Waterway Options',
+        //     id: 'railPowerWaterOptions'
+        // }
+    ];
+}

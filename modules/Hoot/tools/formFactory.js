@@ -215,9 +215,9 @@ export default class FormFactory {
         input.select( d => {
             let combobox = d3combobox()
                 .data( _map( d.data, n => {
-                    n = d.itemKey ? n[ d.itemKey ] : n;
-
-                    return { value: n, title: n };
+                    const t = d.itemKey ? n[ d.itemKey ] : n,
+                          v = d.valueKey ? n[ d.valueKey ] : t;
+                    return { value: v, title: t };
                 } ) );
 
             if ( d.sort ) {

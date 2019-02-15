@@ -9,62 +9,62 @@ import _map       from 'lodash-es/map';
 
 import FieldsetData     from './fieldsetData';
 import FieldsetControls from './fieldsetControls';
+import { advancedOptions } from '../../../config/domMetadata';
 import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
+import FormFactory from '../../../tools/formFactory';
 
 
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
-        this.optTypes        = [ 'custom', 'horizontal', 'reference', 'diff', 'diffTags', 'attribute' ];
-        this.advancedOptions = null;
+        this.advancedOptions = advancedOptions(this);
     }
 
     get isOpen() {
         return this.form.classed( 'visible' );
     }
 
-    async init() {
-        let allOpts = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
+    init() {
+        // let allOpts = await Promise.all( _map( this.optTypes, type => Hoot.api.getAdvancedOptions( type ) ) );
 
-        this.advancedOptions = {
-            base: allOpts[ 0 ],
-            horizontal: allOpts[ 1 ],
-            reference: allOpts[ 2 ],
-            diff: allOpts[ 3 ],
-            diffTags: allOpts[ 4 ],
-            attribute: allOpts[ 5 ]
-        };
+        // this.advancedOptions = {
+        //     base: allOpts[ 0 ],
+        //     horizontal: allOpts[ 1 ],
+        //     reference: allOpts[ 2 ],
+        //     diff: allOpts[ 3 ],
+        //     diffTags: allOpts[ 4 ],
+        //     attribute: allOpts[ 5 ]
+        // };
 
-        this.data    = new FieldsetData( this, _cloneDeep( this.advancedOptions ) );
-        this.control = new FieldsetControls( this );
-
+        // this.data    = new FieldsetData( this, _cloneDeep( this.advancedOptions ) );
+        // this.control = new FieldsetControls( this );
         this.render();
     }
 
     render() {
-        this.fieldsMeta = this.data.getDefaultMeta();
+        // this.fieldsMeta = this.data.getDefaultMeta();
 
         this.createContainer();
         this.createHeader();
         this.createContentDiv();
         this.createGroups();
-        this.createButtons();
+        // this.createButtons();
 
-        this.control.saveFields();
+        // this.control.saveFields();
 
-        this.control.defaultFields = this.control.lastSetFields;
+        // this.control.defaultFields = this.control.lastSetFields;
     }
 
     reRender() {
 
-        this.fieldsMeta = this.data.getDefaultMeta();
+        // this.fieldsMeta = this.data.getDefaultMeta();
 
         this.createContentDiv();
         this.createGroups();
 
-        this.control.saveFields();
+        // this.control.saveFields();
 
-        this.control.defaultFields = this.control.lastSetFields;
+        // this.control.defaultFields = this.control.lastSetFields;
 
     }
 
@@ -126,7 +126,7 @@ export default class AdvancedOpts {
         let instance = this;
 
         let group = this.contentDiv.selectAll( '.form-group' )
-            .data( this.fieldsMeta ).enter()
+            .data( this.advancedOptions ).enter()
             .append( 'div' )
             .attr( 'id', d => d.id + '_group' )
             .classed( 'form-group', true );
@@ -157,154 +157,151 @@ export default class AdvancedOpts {
         } );
     }
 
-    createFormFields( members, group ) {
-        let instance = this;
+        createFormFields( members, group ) {
+            let factory = new FormFactory();
 
-        let fieldContainer = group.selectAll( '.hoot-form-field' )
-            .data( members ).enter()
-            .append( 'div' )
-            .classed( 'hoot-form-field small contain', true )
-            .classed( 'hidden', d => d.required === 'true' )
-            .on( 'change', d => this.control.handleFieldChange( d ) );
+            let fieldContainer = group.selectAll( '.hoot-form-field' )
+                .data( members ).enter()
+                .append( 'div' )
+                .classed( 'hoot-form-field small contain', true )
+                .classed( 'hidden', d => d.required === 'true' );
+                // .on( 'change', d => this.control.handleFieldChange( d ) );
 
-        fieldContainer
-            .append( 'label' )
-            .append( 'span' )
-            .text( d => d.label );
+            let fieldHeader = fieldContainer
+                .append( 'div' )
+                .classed( 'form-field-header keyline-bottom', true);
 
-        fieldContainer.select( function( d ) {
-            let field = d3.select( this );
+            fieldHeader
+                .append( 'label' )
+                .append( 'span' )
+                .text( d => d.label );
 
-            switch ( d.type ) {
-                case 'checkbox': {
-                    instance.createCheckbox( field );
-                    break;
+            fieldContainer.select( function( d ) {
+                let field = d3.select( this );
+                switch ( d.inputType ) {
+                    case 'combobox': {
+                        factory.createCombobox( field );
+                        break;
+                    }
+                    case 'checkbox': {
+                        factory.createCheckbox( field );
+                        break;
+                    }
+                    case 'slider': {
+                        break;
+                    }
+                    case 'text': {
+                        factory.createTextField ( field );
+                    }
                 }
-                case 'checkplus': {
-                    instance.createCheckplus( field );
-                    break;
-                }
-                case 'bool':
-                case 'list': {
-                    instance.createCombobox( field );
-                    break;
-                }
-                case 'long':
-                case 'int':
-                case 'double':
-                case 'string': {
-                    instance.createTextField( field );
-                    break;
-                }
-            }
-        } );
-    }
+            });
+        }
+        
+        // createCheckbox( field ) {
+        //     field.select( 'label' )
+        //         .insert( 'input', ':first-child' )
+        //         .attr( 'type', 'checkbox' )
+        //         .attr( 'id', d => d.id )
+        //         .classed( 'reset', true )
+        //         .classed( 'checkbox-input', d => d.type === 'checkbox' )
+        //         .classed( 'checkplus-input', d => d.type === 'checkplus' )
+        //         .select( function( d ) {
+        //             this.checked = d.placeholder === 'true';
+        //         } );
+        // }
 
-    createCheckbox( field ) {
-        field.select( 'label' )
-            .insert( 'input', ':first-child' )
-            .attr( 'type', 'checkbox' )
-            .attr( 'id', d => d.id )
-            .classed( 'reset', true )
-            .classed( 'checkbox-input', d => d.type === 'checkbox' )
-            .classed( 'checkplus-input', d => d.type === 'checkplus' )
-            .select( function( d ) {
-                this.checked = d.placeholder === 'true';
-            } );
-    }
+        // createCheckplus( field ) {
+        //     let instance = this;
 
-    createCheckplus( field ) {
-        let instance = this;
+        //     this.createCheckbox( field );
 
-        this.createCheckbox( field );
+        //     field.select( function( d ) {
+        //         if ( d.subchecks && d.subchecks.length ) {
+        //             d3.select( this ).classed( 'has-children', true );
+        //             instance.createFormFields( d.subchecks, field );
 
-        field.select( function( d ) {
-            if ( d.subchecks && d.subchecks.length ) {
-                d3.select( this ).classed( 'has-children', true );
-                instance.createFormFields( d.subchecks, field );
+        //             field.selectAll( '.hoot-form-field' ).classed( d.id + '_child', true );
+        //         }
+        //     } );
+        // }
 
-                field.selectAll( '.hoot-form-field' ).classed( d.id + '_child', true );
-            }
-        } );
-    }
+        // createTextField( field ) {
+        //     field.select( 'label' )
+        //         .append( 'input' )
+        //         .attr( 'type', 'text' )
+        //         .attr( 'id', d => d.id )
+        //         .attr( 'placeholder', d => d.placeholder )
+        //         .attr( 'min', d => d.minvalue > 0 ? d.minvalue : 'na' )
+        //         .attr( 'max', d => d.maxvalue > 0 ? d.maxvalue : 'na' )
+        //         .on( 'input', d => this.control.handleFieldInput( d ) );
+        // }
 
-    createTextField( field ) {
-        field.select( 'label' )
-            .append( 'input' )
-            .attr( 'type', 'text' )
-            .attr( 'id', d => d.id )
-            .attr( 'placeholder', d => d.placeholder )
-            .attr( 'min', d => d.minvalue > 0 ? d.minvalue : 'na' )
-            .attr( 'max', d => d.maxvalue > 0 ? d.maxvalue : 'na' )
-            .on( 'input', d => this.control.handleFieldInput( d ) );
-    }
+        // createCombobox( field ) {
+        //     let instance = this;
 
-    createCombobox( field ) {
-        let instance = this;
+        //     field.select( 'label' )
+        //         .append( 'input' )
+        //         .attr( 'id', d => d.id )
+        //         .attr( 'type', 'text' )
+        //         .attr( 'placeholder', d => d.placeholder )
+        //         .select( function( d ) {
+        //             if ( d.combobox ) {
+        //                 let combobox = d3combobox()
+        //                     .data( _map( d.combobox, n => {
+        //                         return {
+        //                             value: n.name,
+        //                             title: n.name,
+        //                             id: n.id
+        //                         };
+        //                     } ) );
 
-        field.select( 'label' )
-            .append( 'input' )
-            .attr( 'id', d => d.id )
-            .attr( 'type', 'text' )
-            .attr( 'placeholder', d => d.placeholder )
-            .select( function( d ) {
-                if ( d.combobox ) {
-                    let combobox = d3combobox()
-                        .data( _map( d.combobox, n => {
-                            return {
-                                value: n.name,
-                                title: n.name,
-                                id: n.id
-                            };
-                        } ) );
+        //                 d3.select( this )
+        //                     .attr( 'readonly', true )
+        //                     .call( combobox );
 
-                    d3.select( this )
-                        .attr( 'readonly', true )
-                        .call( combobox );
+        //                 instance.createSubGroup( field, d );
+        //             }
+        //         } );
+        // }
 
-                    instance.createSubGroup( field, d );
-                }
-            } );
-    }
+        // createSubGroup( field, d ) {
+        //     let instance  = this,
+        //         fieldData = this.data.getFieldMeta( d.combobox );
 
-    createSubGroup( field, d ) {
-        let instance  = this,
-            fieldData = this.data.getFieldMeta( d.combobox );
+        //     field.selectAll( '.form-group' )
+        //         .data( fieldData )
+        //         .enter()
+        //         .append( 'div' )
+        //         .attr( 'id', s => s.label + '_engine_group' )
+        //         .classed( `form-group contain ${d.id}_group`, true )
+        //         .classed( 'hidden', s => s.label !== d.placeholder )
+        //         .select( function( s ) {
+        //             if ( s.children && s.children.length ) {
+        //                 field.classed( 'has-children', true );
 
-        field.selectAll( '.form-group' )
-            .data( fieldData )
-            .enter()
-            .append( 'div' )
-            .attr( 'id', s => s.label + '_engine_group' )
-            .classed( `form-group contain ${d.id}_group`, true )
-            .classed( 'hidden', s => s.label !== d.placeholder )
-            .select( function( s ) {
-                if ( s.children && s.children.length ) {
-                    field.classed( 'has-children', true );
+        //                 instance.createFormFields( s.children, d3.select( this ) );
+        //             }
+        //         } );
+        // }
 
-                    instance.createFormFields( s.children, d3.select( this ) );
-                }
-            } );
-    }
+        // createButtons() {
+        //     let actionsContainer = this.form.append( 'div' )
+        //         .classed( 'advanced-opts-actions keyline-top', true );
 
-    createButtons() {
-        let actionsContainer = this.form.append( 'div' )
-            .classed( 'advanced-opts-actions keyline-top', true );
+        //     actionsContainer.append( 'button' )
+        //         .classed( 'button primary round strong', true )
+        //         .text( 'Apply' )
+        //         .on( 'click', () => {
+        //             let saved = this.control.saveFields();
 
-        actionsContainer.append( 'button' )
-            .classed( 'button primary round strong', true )
-            .text( 'Apply' )
-            .on( 'click', () => {
-                let saved = this.control.saveFields();
+        //             if ( saved ) {
+        //                 this.toggle();
+        //             }
+        //         } );
 
-                if ( saved ) {
-                    this.toggle();
-                }
-            } );
-
-        actionsContainer.append( 'button' )
-            .classed( 'button alert round strong', true )
-            .text( 'Cancel' )
-            .on( 'click', () => this.control.cancel() );
-    }
+        //     actionsContainer.append( 'button' )
+        //         .classed( 'button alert round strong', true )
+        //         .text( 'Cancel' )
+        //         .on( 'click', () => this.control.cancel() );
+    // }
 }
