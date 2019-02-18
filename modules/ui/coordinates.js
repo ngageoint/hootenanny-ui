@@ -48,17 +48,22 @@ export function uiCoordinates(context) {
         return degrees[0] + '°' + leadingZeros(minutes[0]) + '\'' + leadingZeros(seconds[0]) + '.' + leadingZeros(hundreths[0]) + '" ' + LatCardinal + '  '
             + degrees[1] + '°' + leadingZeros(minutes[1]) + '\'' + leadingZeros(seconds[1]) + '.' + leadingZeros(hundreths[1]) + '" ' + LngCardinal;
     }
-
-    function formatDD(coords){
+    function formatDD(coords) {
         // Format to 4 decimal places
         var lat = coords[1];
         var lng = coords[0];
 
-        var latDD = lat.toFixed(4);
-        var lngDD = lng.toFixed(4);
+        function latDD() {
+            return Math.abs(lat).toFixed(4);
+        }
+        function lngDD() {
 
-        return latDD + ', ' + lngDD;
+            return Math.abs(lng).toFixed(4);
+
+        }
+        return latDD() + ',' + lngDD();
     }
+
 
     function DDtoUTM(coords){
         //http://gis.stackexchange.com/questions/62281/converting-utm-decimal-degrees-with-javascript-or-using-a-web-service
@@ -143,8 +148,17 @@ export function uiCoordinates(context) {
         return zone.toString() + sn + ' ' + Xutm.toString() + 'm E ' + Yutm.toString() + 'm N';
     }
 
+    function invaildCoordinates(coords) {
+        var lat = coords[1];
+        var lng = coords[0];
+        return (lat && (lat < -85 || lat > 85)) || (lng && (lng < -180 || lng > 180));
+    }
+
 
     function update(selection) {
+        if (invaildCoordinates(coords)) {
+            return;
+        }
         switch (format) {
             case 'DMS': selection.text(DDtoDMS(coords)); break;
             case 'DD': selection.text(formatDD(coords)); break;

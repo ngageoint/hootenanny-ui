@@ -251,6 +251,11 @@ export function uiInit(context) {
 
         aboutList
             .append('li')
+            .attr('class', 'info-block')
+            .call(uiCoordinates(context));
+
+        aboutList
+            .append('li')
             .attr('class', 'version')
             .call(uiVersion(context));
 
