@@ -196,6 +196,22 @@ export default class FormFactory {
      * @param field - field div
      */
     createCombobox( field ) {
+        const data = field.node().__data__;
+        let comboData = _map(data.data, n => {
+            const t = data.itemKey ? n[ data.itemKey ] : n,
+                  v = data.valueKey ? n[ data.valueKey ] : t;
+            return { value: v, title: t };
+        } );
+        
+        if (data.sort) {
+            comboData = comboData.sort((a, b) => {
+                let textA = a.value.toLowerCase(),
+                    textB = b.value.toLowerCase();
+
+                return textA < textB ? -1 : textA > textB ? 1 : 0;
+            } ).unshift( { value: 'root', title: 0 } );
+        }
+
         field
             .append( 'input' )
             .attr( 'type', 'text' )
@@ -206,10 +222,11 @@ export default class FormFactory {
             .attr( 'value', d => d.value )
             .attr( 'disabled', d => d.disabled )
             .attr( 'readonly', d => d.readonly )
-            .call( this.populateCombobox )
+            .call(d3combobox().data(comboData))
             .on( 'change', d => d.onChange && d.onChange(d) )
             .on( 'keyup', d => d.onChange && d.onChange(d) );
     }
+
 
     populateCombobox( input ) {
         input.select( d => {

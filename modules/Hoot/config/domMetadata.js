@@ -401,7 +401,7 @@ export function advancedOptions() {
         {
             label: 'General Options',
             id: 'generalOptions',
-            children: [
+            members: [
                 {
                     label: 'Add Tag Reviews',
                     id: 'addTagReviews',
@@ -415,14 +415,14 @@ export function advancedOptions() {
         {
             label: 'Road Options',
             id: 'roadOptions',
-            children: [
+            members: [
                 {
                     label: 'Engines',
                     id: 'roadConflationEngines',
                     inputType: 'combobox',
                     data: [ 'Unify', 'Network' ],
                     value: 'Network',
-                    children: {
+                    members: {
                         all: [
                             'matchHighwayClassifier',
                             'roadMatchCreator',
@@ -439,14 +439,18 @@ export function advancedOptions() {
                         ]
                     },
                     onChange: (d) => {
-                        const children = d.children;
-                        d.value = d3.select( `#${d.id}` ).node().value;
+                        const members = d.members,
+                              value = d3.select( `#${d.id}` ).node().__data__.value;
 
-                        const updateChild = (id, hidden) => {
-                            const child = d3.select( `#${id}` );
-                            if ( !child.empty() ) {
-                                child.classed('hidden', hidden); // show only relevent children
-                                let data = child.node().__data__;
+                        if (!value) return;
+
+                        d.value = value;
+
+                        const updateMember = (id, hidden) => {
+                            const member = d3.select( `#${id}` );
+                            if ( !member.empty() ) {
+                                member.classed('hidden', hidden); // show only relevent children
+                                let data = member.node().__data__;
                                 data.hidden = hidden; // reset each value...
                                 if (data.hasOwnProperty( 'default' ) ) {
                                     if (data.hasOwnProperty( 'value' )) {
@@ -460,15 +464,12 @@ export function advancedOptions() {
                             }
                         };
 
-                        Object.keys(children).forEach(key => {
+                        Object.keys(members).forEach(key => {
                            const hidden = key !== d.value && key !== 'all';
-                           children[key].forEach(child => updateChild( child, hidden ) );
+                           members[key].forEach(member => updateMember( member, hidden ) );
                         });
 
-                        Hoot.events.emit( 'roadOptions-changed' );
-
-                        // emit change event to re-render?
-
+                        Hoot.events.emit( 'advancedOptions-changed', d);
                     }
                 },
                 {
@@ -555,6 +556,7 @@ export function advancedOptions() {
                     // inputType: 'slider',
                     // units: 'degrees',
                     // extrema: [0.0, 360.0],
+                    inputType: 'text',
                     default: 60.0,
                     value: 60.0,
                     hidden: true
