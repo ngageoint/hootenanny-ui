@@ -412,110 +412,175 @@ export function advancedOptions() {
                 }
             ]
         },
-        // {
-        //     label: 'Road Options',
-        //     id: 'roadOptions',
-        //     children: [
-        //         {
-        //             label: 'Road Search Radius',
-        //             id: 'roadSearchRadius',
-        //             key: 'search.radius.highway',
-        //             inputType: 'text',
-        //             value: -1.0,
-        //             onChange: () => {
-        //                 // update opts value...
-        //             }
-        //         },
-        //         {
-        //             label: 'Engines',
-        //             inputType: 'combobox',
-        //             itemKey: 'display',
-        //             valueKey: 'value',
-        //             data: [ 'Unify', 'Network' ],
-        //             value: 'Network',
-        //             children: [
-        //                 'matchHighwayClassifier',
-        //                 'roadMatchCreator',
-        //                 'roadMergerCreator',
-        //                 'roadOnlyMergeTags',
-        //                 'highwayMatcherHeadingDelta'
-        //             ],
-        //             onChange: () => {
-        //                 // show children? render children?...
-        //             }
-        //         },
-        //         {
-        //             label: 'Match Highway Classifier',
-        //             id: 'matchHighwayClassifier',
-        //             key: 'conflate.match.highway.classifier',
-        //             inputType: 'checkbox',
-        //             hidden: true,
-        //             onChange: () => {
-        //                 // add hoot::HighwayRfClassifier
-        //             }
-        //         },
-        //         {
-        //             label: 'Match Creator',
-        //             id: 'roadMatchCreator',
-        //             key: 'match.creator',
-        //             inputType: 'checkbox',
-        //             value: false,
-        //             onChange: () => {
-        //                 // add hoot::HighwayMatchCreator
-        //             }
-        //         },
-        //         {
-        //             label: 'Merger Creator',
-        //             id: 'roadMergerCreator',
-        //             key: 'merger.creators',
-        //             inputType: 'checkbox',
-        //             value: false,
-        //             onChange: () => {
-        //                 // add hoot::HighwayMergerCreator
-        //             }
-        //         },
-        //         {
-        //             label: 'Only Merge Tags',
-        //             id: 'roadOnlyMergeTags',
-        //             key: 'highway.merge.tags.only',
-        //             inputType: 'checkbox',
-        //             value: false,
-        //             onChange: () => {
-        //                 // add key...
-        //             }
-        //         },
-        //         {
-        //             label: 'Highway Matcher Heading Delta',
-        //             id: 'highwayMatcherHeadingDelta',
-        //             value: 5.0,
-        //             onChange: () => {
-        //                 // update opts value..
-        //             }
-        //         },
-        //         {
-        //             label: 'Highway Matcher Heading Delta',
-        //             id: 'highwayMatcherMaxAngle',
-        //             key: 'highway.matcher.max.angle',
-        //             inputType: 'slider',
-        //             extrema: [0.0, 360.0],
-        //             value: 60.0,
-        //             onChange: () => {
-        //                 // update delta...
-        //             }
-        //         },
-        //         {
-        //             label: 'Highway Max Enum Diff',
-        //             id: 'highwayMaxEnumDiff',
-        //             key: 'highway.max.enum.diff',
-        //             inputType: 'slider',
-        //             extrema: [0.01, 1.6],
-        //             value: 0.6,
-        //             onChange: () => {
-        //                 // update enum...
-        //             }
-        //         }
-        //     ]
-        // },
+        {
+            label: 'Road Options',
+            id: 'roadOptions',
+            children: [
+                {
+                    label: 'Engines',
+                    id: 'roadConflationEngines',
+                    inputType: 'combobox',
+                    data: [ 'Unify', 'Network' ],
+                    value: 'Network',
+                    children: {
+                        all: [
+                            'matchHighwayClassifier',
+                            'roadMatchCreator',
+                            'roadMergerCreator',
+                            'roadOnlyMergeTags',
+                        ],
+                        unify: [
+                            'highwayMatcherHeadingDelta',
+                            'highwayMatcherMaxAngle',
+                            'highwayMaxEnumDiff'
+                        ],
+                        network: [
+                            'networkMatcher'
+                        ]
+                    },
+                    onChange: (d) => {
+                        const children = d.children;
+                        d.value = d3.select( `#${d.id}` ).node().value;
+
+                        const updateChild = (id, hidden) => {
+                            const child = d3.select( `#${id}` );
+                            if ( !child.empty() ) {
+                                child.classed('hidden', hidden); // show only relevent children
+                                let data = child.node().__data__;
+                                data.hidden = hidden; // reset each value...
+                                if (data.hasOwnProperty( 'default' ) ) {
+                                    if (data.hasOwnProperty( 'value' )) {
+                                        data.value = data.default;
+                                    }
+                                    data.hootVal = data.default;
+                                }
+                                if (data.hasOwnProperty( 'checked' ) ) {
+                                    data.checked = false;
+                                }
+                            }
+                        };
+
+                        Object.keys(children).forEach(key => {
+                           const hidden = key !== d.value && key !== 'all';
+                           children[key].forEach(child => updateChild( child, hidden ) );
+                        });
+
+                        Hoot.events.emit( 'roadOptions-changed' );
+
+                        // emit change event to re-render?
+
+                    }
+                },
+                {
+                    label: 'Road Search Radius',
+                    id: 'roadSearchRadius',
+                    key: 'search.radius.highway',
+                    inputType: 'text',
+                    default: -1.0,
+                    value: -1.0,
+                    hootVal: -1.0,
+                    onChange: () => {
+                        // update opts value...
+                    },
+                    hidden: true
+                },
+                {
+                    label: 'Match Highway Classifier',
+                    id: 'matchHighwayClassifier',
+                    key: 'conflate.match.highway.classifier',
+                    checked: false,
+                    inputType: 'checkbox',
+                    hidden: true,
+                    hootVal: 'hoot::HighwayRfClassifier'
+                },
+                {
+                    label: 'Match Creator',
+                    id: 'roadMatchCreator',
+                    key: 'match.creator',
+                    inputType: 'checkbox',
+                    default: null,
+                    hidden: true,
+                    creators: {
+                        network: 'hoot::NetworkMatchCreator',
+                        unify: 'hoot::HighwayMatchCreator'
+                    },
+                    checked: false,
+                    hootVal: null,
+                    onChange: (d) => {
+                        const engine = d3.select('#roadConflationEngines').node().value.toLowerCase();
+                        d.hootVal = d.creators[engine];
+                    }
+                },
+                {
+                    label: 'Merger Creator',
+                    id: 'roadMergerCreator',
+                    key: 'merger.creators',
+                    inputType: 'checkbox',
+                    hidden: true,
+                    checked: false,
+                    mergers: {
+                        network: 'hoot::NetworkMergerCreator',
+                        unify: 'hoot::HighwayMergerCreator'
+                    },
+                    default: null,
+                    hootVal: null,
+                    onChange: (d) => {
+                        const engine = d3.select('#roadConflationEngines').node().value.toLowerCase();
+                        d.hootVal = d.mergers[engine];
+                    }
+                },
+                {
+                    label: 'Only Merge Tags',
+                    id: 'roadOnlyMergeTags',
+                    key: 'highway.merge.tags.only',
+                    inputType: 'checkbox',
+                    hidden: true,
+                    checked: false,
+                },
+                {
+                    label: 'Highway Matcher Heading Delta',
+                    id: 'highwayMatcherHeadingDelta',
+                    inputType: 'text',
+                    // inputType: 'slider',
+                    // units: 'degrees',
+                    default: 5.0,
+                    value: 5.0,
+                    // extrema: [0.0, 360.0],
+                    hidden: true
+                },
+                {
+                    label: 'Highway Matcher Max Angle',
+                    id: 'highwayMatcherMaxAngle',
+                    key: 'highway.matcher.max.angle',
+                    // inputType: 'slider',
+                    // units: 'degrees',
+                    // extrema: [0.0, 360.0],
+                    default: 60.0,
+                    value: 60.0,
+                    hidden: true
+                },
+                {
+                    label: 'Highway Max Enum Diff',
+                    id: 'highwayMaxEnumDiff',
+                    key: 'highway.max.enum.diff',
+                    inputType: 'text',
+                    // inputType: 'slider',
+                    // units: 'degrees',
+                    // extrema: [0.01, 1.6],
+                    default: 0.6,
+                    value: 0.6,
+                    hidden: true
+                },
+                {
+                    label: 'Network Matcher',
+                    id: 'networkMatcher',
+                    key: 'network.matcher',
+                    inputType: 'checkbox',
+                    checked: false,
+                    hootVal: 'hoot::ConflictsNetworkMatcher'
+                }
+            ]
+        },
         // {
         //     name: 'Building Options',
         //     id: 'buildingOptions'

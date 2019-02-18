@@ -16,9 +16,29 @@ import FormFactory from '../../../tools/formFactory';
 
 export default class AdvancedOpts {
     constructor() {
+        let self = this;
         this.sidebar         = d3.select( '#hoot-sidebar' );
         this.advancedOptions = advancedOptions(this);
+        // rerender only relevant group...
+        this.advancedOptions.forEach(opt => {
+            Hoot.events.on( `${opt.id}-changed`, () => {
+                let groupBody = self.form.select( `#${opt.id}_group` );
+
+                groupBody.select( function( d ) {
+                    self.createFormFields( opt.children, d3.select( this ) );
+                } );
+
+            });
+        });
     }
+
+    getFactory() {
+        if (!this.hasOwnProperty( 'factory' )) {
+            this.factory = new FormFactory();
+        }
+        return this.factory;
+    }
+
 
     get isOpen() {
         return this.form.classed( 'visible' );
@@ -29,30 +49,16 @@ export default class AdvancedOpts {
     }
 
     render() {
-        // this.fieldsMeta = this.data.getDefaultMeta();
-
         this.createContainer();
         this.createHeader();
         this.createContentDiv();
         this.createGroups();
         // this.createButtons();
-
-        // this.control.saveFields();
-
-        // this.control.defaultFields = this.control.lastSetFields;
     }
 
     reRender() {
-
-        // this.fieldsMeta = this.data.getDefaultMeta();
-
         this.createContentDiv();
         this.createGroups();
-
-        // this.control.saveFields();
-
-        // this.control.defaultFields = this.control.lastSetFields;
-
     }
 
     clear() {
@@ -135,7 +141,8 @@ export default class AdvancedOpts {
             .text( d => d.label );
 
         let groupBody = group.append( 'div' )
-            .classed( 'group-body fill-white hidden', true );
+            .classed( 'group-body fill-white hidden', true )
+            .attr('id', d => `${d.id}-body`);
 
         groupBody.select( function( d ) {
             if ( d.children && d.children.length ) {
@@ -145,20 +152,30 @@ export default class AdvancedOpts {
     }
 
     createFormFields( members, group ) {
-        let factory = new FormFactory();
+        let factory = this.getFactory();
 
         let fieldContainer = group.selectAll( '.hoot-form-field' )
-            .data( members ).enter()
+            .data( members );
+            
+        fieldContainer.exit()
+            .remove();
+        
+        fieldContainer = fieldContainer.enter()
             .append( 'div' )
+            .merge(fieldContainer)
             .classed( 'hoot-form-field small contain', true )
-            .classed( 'hidden', d => d.required === 'true' );
-            // .on( 'change', d => this.control.handleFieldChange( d ) );
+            .classed( 'hidden', d => d.hidden );
 
-        let fieldHeader = fieldContainer
+        let fieldHeader = fieldContainer.selectAll( '.form-field-header' )
+            .data( [ 0 ] );
+
+        fieldHeader.exit()
+            .remove();
+        
+        fieldHeader.enter()
             .append( 'div' )
-            .classed( 'form-field-header keyline-bottom', true);
-
-        fieldHeader
+            .merge(fieldHeader)
+            .classed( 'form-field-header keyline-bottom', true)
             .append( 'label' )
             .append( 'span' )
             .text( d => d.label );
@@ -175,6 +192,7 @@ export default class AdvancedOpts {
                     break;
                 }
                 case 'slider': {
+                    factory.createSlider( field, d.extrema, d.value, d.units );
                     break;
                 }
                 case 'text': {
@@ -192,10 +210,13 @@ export default class AdvancedOpts {
                 switch ( d.inputType ) {
                     case 'checkbox': {
                         if (field.property('checked')) {
-                            options += `-D "${d.key}=true" `;
+                            options += `-D "${d.key}=${d.hootVal ? d.hootVal : 'true'}" `;
                         }
                         break;
                     }
+                    // case 'slider': {
+                    //     if ()
+                    // }
                 }
             });
 

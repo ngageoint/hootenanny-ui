@@ -207,8 +207,8 @@ export default class FormFactory {
             .attr( 'disabled', d => d.disabled )
             .attr( 'readonly', d => d.readonly )
             .call( this.populateCombobox )
-            .on( 'change', d => d.onChange && d.onChange() )
-            .on( 'keyup', d => d.onChange && d.onChange() );
+            .on( 'change', d => d.onChange && d.onChange(d) )
+            .on( 'keyup', d => d.onChange && d.onChange(d) );
     }
 
     populateCombobox( input ) {
@@ -270,7 +270,7 @@ export default class FormFactory {
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
-            .property( 'checked', d => d.checked )
+            .property( 'checked', d => d.checked );
         field
             .append( 'label' )
             .attr( 'for', d => d.id)
@@ -345,6 +345,80 @@ export default class FormFactory {
             .classed( 'pointer pin-top datasets-file-upload', true )
             .on( 'change', d => d.onChange() );
     }
+
+
+    /**
+     * Create a slider field
+     * 
+     * @param field - field-ui
+     * @param extrema  - min and max values for input
+     * @param defaultValue - start slider value
+     */
+    // createSlider( field, extrema, defaultValue, units ) {
+
+
+    //     let width = field.node().clientWidth, // since style uses % for dimensions...
+    //         height = field.node().clientHeight,
+    //         notation;
+
+    //     switch (units) {
+    //         case 'degrees': {
+    //             notation = '°';
+    //             break;
+    //         }
+    //     }
+
+
+    //     let x = d3.scaleLinear()
+    //         .domain(field.__data__.extrema)
+    //         .range([0, width])
+    //         .clamp(true);
+
+    //     let slider = field.append('div')
+    //         .class('class', d => d.class )
+    //         .append( 'svg' )
+    //         .attr( 'width', width )
+    //         .attr( 'height', height )
+    //         .append('g')
+    //         .attr( 'transform', `translate(${ width / 10 }, ${ height / 2 })` );
+
+    //     slider.append( 'line' ) // slider line...
+    //         .class( 'track' )
+    //         .attr( 'x1', x.range()[0] )
+    //         .attr( 'x2', x.range()[1] )
+    //         .select( () => this.parentNode.appendChild( this.cloneNode(true) ) )
+    //         .attr( 'class', 'track-inset' )
+    //         .select( () => this.parentNode.appendChild(this.cloneNode(true)) )
+    //         .attr( 'class', 'track-overlay' )
+    //         .call(d3.drag()
+    //             .on( 'start.interrupt', () => slider.interrupt() )
+    //             .on( 'start drag', () => console.log(d3.event.x) ));
+
+
+    //     slider.insert('g', '.track-overlay')
+    //         .attr( 'class', 'ticks' )
+    //         .attr( 'transform', 'translate(0, 18)' )
+    //         .selectAll( 'text' )
+    //         .data( x.ticks( 10 ) )
+    //         .enter().append( 'text' )
+    //         .attr( 'x', x )
+    //         .attr( 'text-anchor', 'middle' )
+    //         .text( d => `${d} ${notation}` );
+
+    //     let handle = slider.insert( 'circle', '.track-overlay' )
+    //         .attr( 'class', 'handle' )
+    //         .attr( 'r', 9 );
+
+    //     slider.transition()
+    //         .duration( 750 )
+    //         .tween( 'hue', () => {
+    //             return (t) => {
+    //                 let interp = d3.interpolate( 0, 70 );
+    //                 handle.attr( 'cx', x( interp (t) ) );
+    //             };
+    //         } );
+            
+    // }
 
     /**
      * Create a submit button
