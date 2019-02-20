@@ -1,14 +1,5 @@
 export function uiCoordinates(context) {
     var projection = context.projection;
-    var formats = ['DMS', 'DD', 'UTM'];
-    var format = cycleFormats();
-    var coords;
-
-    function cycleFormats() {
-        format = formats.shift();
-        formats.push(format);
-        return format;
-    }
 
     function leadingZeros(num) {
         return ('0' + num.toString()).slice(-2);
@@ -54,12 +45,14 @@ export function uiCoordinates(context) {
         var lng = coords[0];
 
         function latDD() {
-            return Math.abs(lat).toFixed(4);
+            if (lat && (lat > -85 || lat < 85)) {
+                return (lat).toFixed(4);
+            }
         }
         function lngDD() {
-
-            return Math.abs(lng).toFixed(4);
-
+            if (lng &&(lng > -180 || lng < 180)) {
+                return (lng).toFixed(4);
+            }
         }
         return latDD() + ',' + lngDD();
     }
@@ -148,38 +141,54 @@ export function uiCoordinates(context) {
         return zone.toString() + sn + ' ' + Xutm.toString() + 'm E ' + Yutm.toString() + 'm N';
     }
 
-    function invaildCoordinates(coords) {
+        
+    function UTMtoMGRS(coords, DDtoUTM){
         var lat = coords[1];
-        var lng = coords[0];
-        return (lat && (lat < -85 || lat > 85)) || (lng && (lng < -180 || lng > 180));
+        var UTM = DDtoUTM(coords).split(' ');
+        var zone = Number((UTM[0]).slice(0, -1));
+        var utmEasting = Number((UTM[1]).slice(0, -1));
+        var utmNorthing = Number((UTM[3]).slice(0, -1));
+        var latBands = 'CDEFGHJKLMNPQRSTUVWXX';
+        var e100kLetters = [ 'ABCDEFGH', 'JKLMNPQR', 'STUVWXYZ' ];
+        var n100kLetters = ['ABCDEFGHJKLMNPQRSTUV', 'FGHJKLMNPQRSTUVABCDE'];
+        var band = latBands.charAt(Math.floor(lat/8+10));
+        var col = Math.floor(utmEasting / 100e3);
+        var e100k = e100kLetters[(zone-1)%3].charAt(col-1);
+        var row = Math.floor(utmNorthing / 100e3) % 20;
+        var n100k = n100kLetters[(zone-1)%2].charAt(row);
+        var easting = utmEasting % 100e3;
+        var northing = utmNorthing % 100e3;
+        
+        function correctCoordinates(coords) {
+            coords = String(coords);
+            if (coords.length < 5) {
+                coords = new Array(5 - coords.length + 1).join('0') + coords;
+            }
+            return coords;
+        }
+
+        return String(zone + band + ' ' + e100k + n100k + ' ' + correctCoordinates(easting) + ' ' + correctCoordinates(northing));
     }
 
-
-    function update(selection) {
-        if (invaildCoordinates(coords)) {
-            return;
-        }
-        switch (format) {
+    function update(selection, coords) {
+        if (!context.coordinateDisplay) {context.coordinateDisplay='DMS';}
+        switch (context.coordinateDisplay) {
             case 'DMS': selection.text(DDtoDMS(coords)); break;
             case 'DD': selection.text(formatDD(coords)); break;
             case 'UTM': selection.text(DDtoUTM(coords)); break;
+            case 'MGRS': selection.text(UTMtoMGRS(coords, DDtoUTM)); break;
             default: break;
         }
     }
 
 
     return function(selection){
-        coords = projection.invert(context.map().center());
-        update(selection);
-
-        selection.on('click', function() {
-            cycleFormats();
-            update(selection);
-        });
+        var center = projection.invert(context.map().center());
+        update(selection, center);
 
         context.map().surface.on('mousemove', function() {
-            coords = projection.invert(context.map().mouse());
-            update(selection);
+            var coords = projection.invert(context.map().mouse());
+            update(selection, coords);
         });
     };
 }

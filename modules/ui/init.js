@@ -1,6 +1,7 @@
 import {
     event as d3_event,
-    select as d3_select
+    select as d3_select,
+    selectAll as d3_selectAll
 } from 'd3-selection';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
@@ -238,6 +239,62 @@ export function uiInit(context) {
             .attr('id', 'scale-block')
             .call(uiScale(context));
 
+        footerWrap.append('ul')
+            .attr('class', 'coords')
+            .on('click', function () {
+                d3_event.stopPropagation();
+                d3_event.preventDefault();                
+
+                //Create context menu to offer bulk option
+                var items = ['DD', 'DMS', 'UTM', 'MGRS'];
+                d3_select('html .coords').append('div').classed('coordinates-options-menu', true);
+
+                var menuItem = d3_selectAll('.coordinates-options-menu')
+                    .html('')
+                    .append('ul')
+                    .selectAll('li')
+                    .data(items).enter()
+                    .append('li')
+                    .attr('class', function () { return ' coordinate-option'; })
+                    .on('click', function (item) {
+                        d3_event.stopPropagation();
+                        d3_event.preventDefault();
+                        context.coordinateDisplay = item;
+                        d3_select('.coordinates-options-menu').remove();
+                    });
+
+                menuItem.append('span').text(function (item) { return item; });
+
+                menuItem.on('mouseover', function() {
+                    d3_event.stopPropagation();
+                    d3_event.preventDefault();
+                    d3_select('.tooltip.tooltip-113.top.in').remove();
+                });
+
+
+                d3_select('.coordinates-options-menu').style('display', 'none');
+
+                // show the context menu
+                d3_select('.coordinates-options-menu')
+                    .style('text-align', 'center')
+                    .style('position', 'absolute')
+                    .style('bottom', '33px')
+                    .style('display', 'block');
+
+                //close menu
+                var firstOpen = true;
+                d3_select('html .coords').on('click.coordinates-options-menu', function () {
+                    if (firstOpen) {
+                        firstOpen = false;
+                    } else {
+                        d3_select('.coordinates-options-menu').style('display', 'none');
+                    }
+                });
+            }) 
+            .call(tooltip().title('Click to select coordinate system.').placement('top'))
+            .append('span')
+            .call(uiCoordinates(context));
+
         var aboutList = footerWrap
             .append('div')
             .attr('id', 'info-block')
@@ -248,11 +305,6 @@ export function uiInit(context) {
             aboutList
                 .call(uiAccount(context));
         }
-
-        aboutList
-            .append('li')
-            .attr('class', 'info-block')
-            .call(uiCoordinates(context));
 
         aboutList
             .append('li')
@@ -283,13 +335,6 @@ export function uiInit(context) {
             .attr('class', 'feature-warning')
             .attr('tabindex', -1)
             .call(uiFeatureInfo(context));
-
-        aboutList
-            .append('li')
-            .attr('class', 'user-list')
-            .attr('tabindex', -1)
-            .call(uiContributors(context));
-
 
         // Setup map dimensions and move map to initial center/zoom.
         // This should happen after #content and toolbars exist.
