@@ -19,13 +19,15 @@ export default class AdvancedOpts {
         let self = this;
         this.sidebar         = d3.select( '#hoot-sidebar' );
         this.advancedOptions = advancedOptions(this);
-        Hoot.events.on( 'advancedOptions-changed', (updatedOpt) => {
-            for (let i = 0; i < self.advancedOptions; i++) { // update advanced options..
-                if (self.advancedOptions[i].id === updatedOpt.id) {
-                   self.advancedOptions[i] = updatedOpt; 
-                }
-            }
-            self.createGroups(); // re-render...
+        Hoot.events.on( 'advancedOptions-changed', () => {
+            // for (let i = 0; i < self.advancedOptions; i++) { // update advanced options..
+            //     for (let j = 0; j < self.advancedOptions[i].members; j++) {
+            //         if (self.advancedOptions[i].members[j].id === updatedOpt.id) {
+            //             self.advancedOptions[i].members[j] = updatedOpt;
+            //         }
+            //     }
+            // }
+            // self.createGrou  ps(); // re-render...
         });
     }
 
@@ -191,7 +193,7 @@ export default class AdvancedOpts {
                                 return { value: v, title: t };
                             } );
                             
-                            if (comboData.sort) {
+                            if ( data.sort ) {
                                 comboData = comboData.sort((a, b) => {
                                     let textA = a.value.toLowerCase(),
                                         textB = b.value.toLowerCase();
@@ -219,7 +221,8 @@ export default class AdvancedOpts {
                                 .attr( 'readonly', d => d.readonly )
                                 .call(d3combobox().data(comboData))
                                 .on( 'change', d => d.onChange && d.onChange(d) )
-                                .on( 'keyup', d => d.onChange && d.onChange(d) );
+                                .on( 'change.conflation', d => d.onChange && d.onChange(d) );
+                                // .on( 'keyup', d => d.onChange && d.onChange(d) );
 
                             break;
                         }
