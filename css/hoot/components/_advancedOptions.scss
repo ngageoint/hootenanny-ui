@@ -109,6 +109,14 @@
         .inner-wrapper {
             padding: 5px 15px;
         }
+        .toggle-disabled {
+            display: none;
+        }
+        .adv-opts-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
     }
 
     .group-body {

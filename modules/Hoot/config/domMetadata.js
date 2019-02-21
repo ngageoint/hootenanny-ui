@@ -39,18 +39,20 @@ export function layerConflateForm( data ) {
             id: 'conflateType',
             inputType: 'combobox',
             value: 'Reference',
-            data: [ 'Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/ Tags', 'Attribute' ],
+            data: [ 'Reference', 'Network', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/ Tags', 'Attribute' ],
             onChange: (d) => {
                 const selection = d3.select( `#${d.id}` ),
                       type = !selection.empty() && selection.property( 'value' );
                 
-                if (type && type === 'Reference') { // when reference selected, make road option network...
-                    let engineInput = d3.select( '#roadConflationEngines' )
-                        .select( 'input' );
+                if (type && type === 'Network') { // when reference selected, make road option network...
+                    d3.selectAll( '.conflate-type-toggle' ).each(function() {
+                        let selection = d3.select( this );
 
-                    engineInput
-                        .property( 'value', 'Network')
-                        .dispatch( 'change' );
+                        if (selection) {
+                            let checked = selection.datum().id === 'roadOptions';
+                            selection.property( 'checked', checked );
+                        }
+                    });
                 }
             },
             readonly: 'readonly'
@@ -401,247 +403,214 @@ export function advancedOptions() {
 // Railway/Powerlines/Waterways - I disable these since they are on by default to help with processing time but havent done to much conflating with these features types yet but options look very complex
     return [
         {
-            label: 'General Options',
-            id: 'generalOptions',
-            members: [
-                {
-                    label: 'Add Tag Reviews',
-                    id: 'addTagReviews',
-                    key: 'add.review.tags.to.features',
-                    inputType: 'checkbox',
-                    checked: false
-                }
-            ]
-        },
-        {
-            label: 'Road Options',
-            id: 'roadOptions',
-            members: [
-                {
-                    label: 'Engines',
-                    id: 'roadConflationEngines',
-                    inputType: 'combobox',
-                    data: [ 'Unify', 'Network' ],
-                    value: 'Network',
-                    members: {
-                        all: [
-                            'matchHighwayClassifier',
-                            'roadMatchCreator',
-                            'roadMergerCreator',
-                            'roadOnlyMergeTags',
-                        ],
-                        unify: [
-                            'highwayMatcherHeadingDelta',
-                            'highwayMatcherMaxAngle',
-                            'highwayMaxEnumDiff'
-                        ],
-                        network: [
-                            'networkMatcher'
-                        ]
-                    },
-                    onChange: (d) => {
-                        const members = d.members,
-                              selection = d3.select( `#${d.id}` ),
-                              value = selection.select( 'input' ).property( 'value' );
-
-                        if (!value) return;
-                        if (d.value === value ) return;
-
-                        d.value = value;
-
-                        const updateMember = (id, hidden) => {
-                            const member = d3.select( `#${id}` );
-                            if ( !member.empty() ) {
-                                member.classed('hidden', hidden); // show only relevent children
-                                let data = member.node().__data__;
-                                data.hidden = hidden; // reset each value...
-                                if (data.hasOwnProperty( 'default' ) ) {
-                                    if (data.hasOwnProperty( 'value' )) {
-                                        data.value = data.default;
-                                    }
-                                    data.hootVal = data.default;
-                                }
-                                if (data.hasOwnProperty( 'checked' ) ) {
-                                    data.checked = false;
-                                }
-                            }
-                        };
-
-                        Object.keys(members).forEach(key => {
-                           const hidden = key !== d.value.toLowerCase() && key !== 'all';
-                           members[key].forEach(member => updateMember( member, hidden ) );
-                        });
-
-                        Hoot.events.emit( 'advancedOptions-changed' );
-                    }
-                },
-                {
-                    label: 'Road Search Radius',
-                    id: 'roadSearchRadius',
-                    key: 'search.radius.highway',
-                    inputType: 'text',
-                    default: null,
-                    onChange: (d) => {
-                        // update opts value...
-                    },
-                    hidden: true
-                },
-                {
-                    label: 'Match Highway Classifier',
-                    id: 'matchHighwayClassifier',
-                    key: 'conflate.match.highway.classifier',
-                    checked: false,
-                    inputType: 'checkbox',
-                    hidden: false,
-                    hootVal: 'hoot::HighwayRfClassifier'
-                },
-                {
-                    label: 'Match Creator',
-                    id: 'roadMatchCreator',
-                    key: 'match.creator',
-                    inputType: 'checkbox',
-                    default: null,
-                    hidden: false,
-                    creators: {
-                        network: 'hoot::NetworkMatchCreator',
-                        unify: 'hoot::HighwayMatchCreator'
-                    },
-                    checked: false,
-                    hootVal: null,
-                    onChange: (d) => {
-                        const engine = d3.select('#roadConflationEngines').node().value.toLowerCase();
-                        d.hootVal = d.creators[engine];
-                    }
-                },
-                {
-                    label: 'Merger Creator',
-                    id: 'roadMergerCreator',
-                    key: 'merger.creators',
-                    inputType: 'checkbox',
-                    hidden: false,
-                    checked: false,
-                    mergers: {
-                        network: 'hoot::NetworkMergerCreator',
-                        unify: 'hoot::HighwayMergerCreator'
-                    },
-                    default: null,
-                    hootVal: null,
-                    onChange: (d) => {
-                        const engine = d3.select('#roadConflationEngines').node().value.toLowerCase();
-                        d.hootVal = d.mergers[engine];
-                    }
-                },
-                {
-                    label: 'Only Merge Tags',
-                    id: 'roadOnlyMergeTags',
-                    key: 'highway.merge.tags.only',
-                    inputType: 'checkbox',
-                    hidden: true,
-                    checked: false,
-                },
-                {
-                    label: 'Highway Matcher Heading Delta',
-                    id: 'highwayMatcherHeadingDelta',
-                    key: 'highway.matcher.heading.delta',
-                    inputType: 'text',
-                    default: null,
-                    extrema: [ 0.0, 360.0 ],
-                    hidden: true
-                },
-                {
-                    label: 'Highway Matcher Max Angle',
-                    id: 'highwayMatcherMaxAngle',
-                    key: 'highway.matcher.max.angle',
-                    extrema: [0.0, 360.0],
-                    inputType: 'text',
-                    default: null,
-                    hidden: true
-                },
-                {
-                    label: 'Highway Max Enum Diff',
-                    id: 'highwayMaxEnumDiff',
-                    key: 'highway.max.enum.diff',
-                    inputType: 'text',
-                    extrema: [ 0.0, 1.6 ],
-                    default: null,
-                    hidden: true
-                },
-                {
-                    label: 'Network Matcher',
-                    id: 'networkMatcher',
-                    key: 'network.matcher',
-                    inputType: 'checkbox',
-                    checked: false,
-                    hidden: false,
-                    hootVal: 'hoot::ConflictsNetworkMatcher'
-                }
-            ]
-        },
-        {
             label: 'Building Options',
             id: 'buildingOptions',
+            matcher: 'hoot::BuildingMatchCreator',
+            merger: 'hoot::BuildingMergerCreator',
             members: [
-                {
-                    label: 'Review if secondary layer building is newer',
-                    id: 'reviewSecondaryBuildingLayer',
-                    key: 'building.review.if.secondary.newer',
-                    inputType: 'checkbox',
-                    checked: false
-                },
-                {
-                    label: 'Date format',
-                    id: 'buildingDateFormat',
-                    key: 'building.date.format',
-                    inputType: 'text'
-                },
-                {
-                    label: 'Date tag key',
-                    id: 'buildingDateTagKey',
-                    key: 'building.date.tag.key',
-                    inputType: 'text'
-                },
-                {
-                    label: 'Keep complex geometry when auto merging',
-                    id: 'buildingKeepComplexGeom',
-                    key: 'building.keep.more.complex.geometry.when.auto.merging',
-                    inputType: 'checkbox',
-                    checked: false
-                },
-                {
-                    label: 'Match Creator',
-                    id: 'buildingMatchCreator',
-                    key: 'match.creators',
-                    inputType: 'checkbox',
-                    hootVal: null,
-                    checked: false,
-                    onChange: (d) => {
-                        d.hootVal = d3.select( `#${d.id}` ).property( 'checked' ) 
-                            ? 'hoot::BuildingMatchCreator' 
-                            : null;
-                    }
-                },
-                {
-                    label: 'Merger Creator',
-                    id: 'buildingMergeCreator',
-                    key: 'merger.creators',
-                    onChange: (d) => {
-                        d.hootVal = d3.select( `#${d.id}` ).property( 'checked' )
-                            ? 'hoot::BuildingMergerCreator'
-                            : null;
-                    }
-                },
-                {
-                    label: 'Review non 1:1 Building Matches',
-                    id: 'reviewNonOneOneBuildingMatches',
-                    key: 'building.review.matched.other.than.one.to.one',
-                    inputType: 'checkbox',
-                    checked: false
-                }
+            //     {
+            //         label: 'Review if secondary layer building is newer',
+            //         id: 'reviewSecondaryBuildingLayer',
+            //         key: 'building.review.if.secondary.newer',
+            //         inputType: 'checkbox',
+            //         checked: false
+            //     },
+            //     {
+            //         label: 'Date format',
+            //         id: 'buildingDateFormat',
+            //         key: 'building.date.format',
+            //         inputType: 'text'
+            //     },
+            //     {
+            //         label: 'Date tag key',
+            //         id: 'buildingDateTagKey',
+            //         key: 'building.date.tag.key',
+            //         inputType: 'text'
+            //     },
+            //     {
+            //         label: 'Keep complex geometry when auto merging',
+            //         id: 'buildingKeepComplexGeom',
+            //         key: 'building.keep.more.complex.geometry.when.auto.merging',
+            //         inputType: 'checkbox',
+            //         checked: false
+            //     },
+            //     {
+            //         label: 'Match Creator',
+            //         id: 'buildingMatchCreator',
+            //         key: 'match.creators',
+            //         inputType: 'checkbox',
+            //         hootVal: 'hoot::BuildingMatchCreator',
+            //         checked: false
+            //     },
+            //     {
+            //         label: 'Merger Creator',
+            //         id: 'buildingMergeCreator',
+            //         key: 'merger.creators',
+            //         hootVal: 'hoot::BuildingMergerCreator'
+            //     },
+            //     {
+            //         label: 'Review non 1:1 Building Matches',
+            //         id: 'reviewNonOneOneBuildingMatches',
+            //         key: 'building.review.matched.other.than.one.to.one',
+            //         inputType: 'checkbox',
+            //         checked: false
+            //     }
             ]
         },
         {
-            label: 'Point to Polygon Options',
+            label: 'Poi Generic',
+            id: 'poiGenericOptions',
+            matcher: 'hoot::ScriptMatchCreator,PoiGeneric.js',
+            merger: 'hoot::ScriptMergerCreator',
+            members: []
+        },   
+        {
+            label: 'Road',
+            id: 'roadOptions',
+            matcher: 'hoot::HighwayMatchCreator',
+            merger: 'hoot::HighwayMergerCreator',
+            members: [
+                // {
+                //     'label',
+                // }
+                // {
+                //     label: 'Engines',
+                //     id: 'roadConflationEngines',
+                //     inputType: 'combobox',
+                //     data: [ 'Unify', 'Network' ],
+                //     value: 'Network',
+                //     members: {
+                //         all: [
+                //             'matchHighwayClassifier',
+                //             'roadMatchCreator',
+                //             'roadMergerCreator',
+                //             'roadOnlyMergeTags',
+                //         ],
+                //         unify: [
+                //             'highwayMatcherHeadingDelta',
+                //             'highwayMatcherMaxAngle',
+                //             'highwayMaxEnumDiff'
+                //         ],
+                //         network: [
+                //             'networkMatcher'
+                //         ]
+                //     },
+                //     matchersMergers: {
+                //         network: [ 
+                //             'hoot::NetworkMatchCreator',
+                //             'hoot::NetworkMergerCreator'
+                //         ],
+                //         unify: [
+                //             'hoot::HighwayMatchCreator',
+                //             'hoot::HighwayMergerCreator'
+                //         ]
+                //     },
+                //     onChange: (d) => {
+                //         if (!d.changed) d.changed = true;
+                //         const members = d.members,
+                //               selection = d3.select( `#${d.id}` ),
+                //               value = selection.select( 'input' ).property( 'value' );
+
+                //         if ( !value ) return;
+                //         if ( d.value === value ) return;
+
+                //         d.value = value;
+
+                //         const updateMember = (id, hidden) => {
+                //             const member = d3.select( `#${id}` );
+                //             if ( !member.empty() ) {
+                //                 member.classed('hidden', hidden); // show only relevent children
+                //                 let data = member.datum();
+                //                 data.hidden = hidden; // reset each value...
+                //                 if (data.hasOwnProperty( 'default' ) ) {
+                //                     if (data.hasOwnProperty( 'value' )) {
+                //                         data.value = data.default;
+                //                     }
+                //                     data.hootVal = data.default;
+                //                 }
+                //                 if (data.hasOwnProperty( 'checked' ) ) {
+                //                     data.checked = false;
+                //                 }
+                //             }
+                //         };
+
+                //         Object.keys(members).forEach(key => {
+                //            const hidden = key !== d.value.toLowerCase() && key !== 'all';
+                //            members[key].forEach(member => updateMember( member, hidden ) );
+                //         });
+                //     }
+                // },
+                // {
+                //     label: 'Road Search Radius',
+                //     id: 'roadSearchRadius',
+                //     key: 'search.radius.highway',
+                //     inputType: 'text',
+                //     hidden: false
+                // },
+                // {
+                //     label: 'Match Highway Classifier',
+                //     id: 'matchHighwayClassifier',
+                //     key: 'conflate.match.highway.classifier',
+                //     checked: false,
+                //     inputType: 'checkbox',
+                //     hidden: false,
+                //     hootVal: 'hoot::HighwayRfClassifier'
+                // },
+                // {
+                //     label: 'Only Merge Tags',
+                //     id: 'roadOnlyMergeTags',
+                //     key: 'highway.merge.tags.only',
+                //     inputType: 'checkbox',
+                //     hidden: true,
+                //     checked: false,
+                // },
+                // {
+                //     label: 'Highway Matcher Heading Delta',
+                //     id: 'highwayMatcherHeadingDelta',
+                //     key: 'highway.matcher.heading.delta',
+                //     inputType: 'text',
+                //     extrema: [ 0.0, 360.0 ],
+                //     hidden: true
+                // },
+                // {
+                //     label: 'Highway Matcher Max Angle',
+                //     id: 'highwayMatcherMaxAngle',
+                //     key: 'highway.matcher.max.angle',
+                //     extrema: [0.0, 360.0],
+                //     inputType: 'text',
+                //     hidden: true
+                // },
+                // {
+                //     label: 'Highway Max Enum Diff',
+                //     id: 'highwayMaxEnumDiff',
+                //     key: 'highway.max.enum.diff',
+                //     inputType: 'text',
+                //     extrema: [ 0.0, 1.6 ],
+                //     hidden: true
+                // },
+                // {
+                //     label: 'Network Matcher',
+                //     id: 'networkMatcher',
+                //     key: 'network.matcher',
+                //     inputType: 'checkbox',
+                //     checked: false,
+                //     hidden: false,
+                //     hootVal: 'hoot::ConflictsNetworkMatcher'
+                // }
+            ]
+        },
+        {
+            label: 'Waterway',
+            id: 'waterwayOptions',
+            matcher: 'hoot::ScriptMatchCreator,LinearWaterway.js',
+            merger: 'hoot::ScriptMergerCreator',
+            members: []
+        },
+        {
+            label: 'Point to Polygon',
             id: 'pointToPolyOptions',
+            matcher: 'hoot::PoiPolygonMatchCreator',
+            merger: 'hoot::PoiPolygonMergerCreator',
             members: [
                 {
                     label: 'Match Creator',
@@ -649,11 +618,8 @@ export function advancedOptions() {
                     key: 'match.creators',
                     inputType: 'checkbox',
                     checked: false,
-                    onChange: (d) => {
-                        d.hootVal = d3.select( `#${d.id}` ).property( 'checked' )
-                            ? 'hoot::PoiPolygonMatchCreator'
-                            : null;
-                    }
+                    hootType: 'list',
+                    hootVal: 'hoot::PoiPolygonMatchCreator'
                 },
                 {
                     label: 'Merger Creator',
@@ -661,11 +627,8 @@ export function advancedOptions() {
                     key: 'merger.creators',
                     inputType: 'checkbox',
                     checked: false,
-                    onChange: (d) => {
-                        d.hootVal = d3.select( `#${d.id}` ).property( 'checked' )
-                            ? 'hoot::PoiPolygonMergerCreator'
-                            : null;
-                    }
+                    hootType: 'list',
+                    hootVal: 'hoot::PoiPolygonMergerCreator'
                 },
                 {
                     label: 'Address Additional Tags',
@@ -723,7 +686,6 @@ export function advancedOptions() {
                     key:'poi.polygon.match.evidence.threshold',
                     inputType: 'text',
                     extrema: [ 1, 4 ],
-                    default: null,
                 },
                 {
                     
@@ -732,42 +694,36 @@ export function advancedOptions() {
                     inputType: 'text',
                     key:'poi.polygon.name.score.threshold',
                     extrema: [ -1, 1 ],
-                    default: null
                 },
                 {
                     label: 'Phone Number Additional Tag Keys',
                     id:'poiPolyNumberAdditionalTagKeys',
                     inputType: 'checkbox',
                     key:'phone.number.additional.tag.keys',
-                    checked: false
                 },
                 {
                     label:'Phone Number Match Enabled',
                     id: 'poiPolyPhoneNumberMatchEnabled',
                     key:'poi.polygon.phone.number.match.enabled',
                     inputType: 'checkbox',
-                    checked: false
                 },
                 {
                     label: 'Phone Number Region Code',
                     id: 'poiPolyPhoneNumberRegionCode',
                     inputType: 'checkbox',
                     key: 'phone.number.region.code',
-                    checked: false
                 },
                 {
                     label:'Phone Number Search In Text',
                     id:'poiPolyPhoneNumberSearchInText',
                     inputType: 'checkbox',
                     key:'phone.number.search.in.text',
-                    checked: false
                 },
                 {
                     label:'Promote Points With Addresses to POIs',
                     id: 'PoiPolyPromotePointsWithAddressesToPois',
                     inputType: 'checkbox',
                     key:'poi.polygon.promote.points.with.addresses.to.pois',
-                    checked: false
                 },
                 {
                     label: 'Review Distance Threshold',
@@ -775,7 +731,6 @@ export function advancedOptions() {
                     key:'poi.polygon.review.distance.threshold',
                     inputType: 'text',
                     extrema: [ 0, Infinity ],
-                    default: null
                 },
                 {
                     label:'Review Evidence Threshold',
@@ -783,37 +738,53 @@ export function advancedOptions() {
                     inputType: 'text',
                     key:'poi.polygon.review.evidence.threshold',
                     extrema: [ 0, 3 ],
-                    default: null
                 },
                 {
                     label:'Review If Types Match',
                     id: 'poiPolyReviewIfMatchedTags',
                     key:'poi.polygon.review.if.matched.types',
                     inputType: 'checkbox',
-                    checked: false,
                 },
                 {
                     label:'Review Matches Against Multi-Use Buildings',
                     id: 'poiPolygReviewMultiuseBuildings',
                     key:'poi.polygon.review.multiuse.buildings',
                     inputType: 'checkbox',
-                    checked: false
                 },
                 {
                     label:'Source Tag Key',
                     id:'poiPolySourceTagKey',
                     key:'poi.polygon.source.tag.key',
                     inputType: 'checkbox',
-                    checked: false
                 },
                 {
                     label:'Type Score Threshold',
                     id:'poiPolyTypeScoreThreshold',
                     key:'poi.polygon.type.score.threshold',
                     extrema: [ 0, 1 ],
-                    default: null
                 }
             ]
+        },
+        {
+            label: 'Area',
+            id: 'areaOptions',
+            matcher: 'hoot::ScriptMatchCreator,Area.js',
+            merger: 'hoot::ScriptMergerCreator',
+            members: []
+        },
+        {
+            label: 'Railway',
+            id: 'railwayOptions',
+            matcher: 'hoot::ScriptMatchCreator,Railway.js',
+            merger: 'hoot::ScriptMergerCreator',
+            members: []
+        },
+        {
+            label: 'Powerline',
+            id: 'powerlineOptions',
+            matcher: 'hoot::ScriptMatchCreator,PowerLine.js',
+            merger: 'hoot::ScriptMergerCreator',
+            members: []
         }
     ];
 }
