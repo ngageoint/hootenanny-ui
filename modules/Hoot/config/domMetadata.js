@@ -403,7 +403,7 @@ export function advancedOptions() {
 // Railway/Powerlines/Waterways - I disable these since they are on by default to help with processing time but havent done to much conflating with these features types yet but options look very complex
     return [
         {
-            label: 'Building Options',
+            label: 'Building',
             id: 'buildingOptions',
             matcher: 'hoot::BuildingMatchCreator',
             merger: 'hoot::BuildingMergerCreator',

@@ -131,7 +131,9 @@ export default class AdvancedOpts {
 
         
         let groupHeader = groupToggle.append( 'div' )
-            .classed( 'inner-wrapper strong fill-light keyline-top keyline-bottom adv-opts-toggle', true );
+            .attr( 'class', (d) => {
+                return `inner-wrapper strong fill-light keyline-bottom adv-opts-toggle ${ d.id === 'buildingOptions' ? 'keyline-top' : '' }`;
+            });
 
 
         // let conflateToggle = groupHeader
