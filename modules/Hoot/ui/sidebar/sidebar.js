@@ -11,6 +11,11 @@ import LayerAdd      from './layerAdd';
 import LayerConflate from './layerConflate';
 import LayerReview   from './layerReview';
 
+import {
+    utilQsString,
+    utilStringQs
+} from '../../../util';
+
 /**
  * Create the sidebar
  *
@@ -147,6 +152,11 @@ export default class Sidebar {
         } else {
             this.forms[ d.id ].render( d );
             this.conflateCheck();
+
+            //update url hash
+            var q = utilStringQs(window.location.hash.substring(1));
+            delete q[d.refType];
+            window.location.replace('#' + utilQsString(q, true));
         }
 
         this.adjustSize();
