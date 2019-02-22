@@ -6,7 +6,7 @@
 describe( 'Basemap component rendered', () => {
     it( 'Activates basemap selector ', done => {
         d3.select('div.menu-button').dispatch('click');
-        var basemapNode = d3.select('#manage-sidebar-menu div.tab-header:nth-child(3)')
+        var basemapNode = d3.select('#manage-sidebar-menu div.tab-header:nth-child(3)');
         basemapNode.dispatch('click');
         setTimeout(() => {
             var selectBasemap = d3.selectAll('#util-basemaps').attr('id');

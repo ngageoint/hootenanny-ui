@@ -1,9 +1,7 @@
 const { generateAdvOptsLayerParams } = require( '../../helpers' );
 
 
-describe( 'Toggle on and off certain conflation types', () => {
-    let advancedOptions, options;
-
+describe( 'Advanced Options', () => {
     before( async function () { // upload 2 datasets and have conflate ui showing...
         try {
             let generateCount = 2,
@@ -68,51 +66,53 @@ describe( 'Toggle on and off certain conflation types', () => {
             return Promise.resolve();
         }
     } );
-
-    it( 'has all conflation types toggled initially', () => {
-        advancedOptions = Hoot.ui.sidebar.forms.conflate.advancedOptions;
-        d3.selectAll( '#advanced-opts-panel .advanced-opts-content .form-group')
-            .each(function(d) {
-                const input = d3.select( this ).select( 'input' );
-                expect( input.property( 'checked' ) ).to.be.true;
-            })
-
-        options = advancedOptions.getOptions();
-
-        expect( options.includes( 'match.creators' )  ).to.be.true;
-        expect( options.includes( 'merger.creators' )  ).to.be.true;
-
-    } );
-
-    it ( 'removes specific merger and match creators when relevant conflation types are unchecked', () => {
-        d3.select( '#roadOptions_group input' ).property( 'checked', false );
-
-        options = advancedOptions.getOptions();
-        
-        expect( options.includes( 'hoot::HighwayMatchCreator' ) ).to.be.false;
-        expect( options.includes( 'hoot::HighwayMergerCreator' ) ).to.be.false;
-    });
-    
-    it ( 'makes only road input checked and users network matcher/merger when network selected', () => {
-        d3.select( '#conflateType').property( 'value', 'Network');
-        setTimeout(() => {
-            d3.selectAll( '.advanced-opts-content .form-group')
+    describe( 'Toggle on and off certain conflation types', () => {
+        let advancedOptions, options;
+        it( 'has all conflation types toggled initially', () => {
+            advancedOptions = Hoot.ui.sidebar.forms.conflate.advancedOptions;
+            d3.selectAll( '#advanced-opts-panel .advanced-opts-content .form-group')
                 .each(function(d) {
                     const input = d3.select( this ).select( 'input' );
-                    if ( d.id === 'roadOptions' ) {
-                        expect( input.property( 'checked' ) ).to.be.true
-                    } else {
-                        expect( input.property( 'checked' ) ).to.be.false;
-                    }
+                    expect( input.property( 'checked' ) ).to.be.true;
                 })
 
             options = advancedOptions.getOptions();
 
-            expect( options.includes( 'hoot::NetworkMatchCreator' )).to.be.true
-            expect( options.includes( 'hoot::NetworkMergerCreator' )).to.be.true
+            expect( options.includes( 'match.creators' )  ).to.be.true;
+            expect( options.includes( 'merger.creators' )  ).to.be.true;
+
+        } );
+
+        it ( 'removes specific merger and match creators when relevant conflation types are unchecked', () => {
+            d3.select( '#roadOptions_group input' ).property( 'checked', false );
+
+            options = advancedOptions.getOptions();
+            
             expect( options.includes( 'hoot::HighwayMatchCreator' ) ).to.be.false;
             expect( options.includes( 'hoot::HighwayMergerCreator' ) ).to.be.false;
-        }, 200)
-    });
+        } );
+        
+        it ( 'makes only road input checked and users network matcher/merger when network selected', () => {
+            d3.select( '#conflateType').property( 'value', 'Network');
+            setTimeout(() => {
+                d3.selectAll( '.advanced-opts-content .form-group')
+                    .each(function(d) {
+                        const input = d3.select( this ).select( 'input' );
+                        if ( d.id === 'roadOptions' ) {
+                            expect( input.property( 'checked' ) ).to.be.true
+                        } else {
+                            expect( input.property( 'checked' ) ).to.be.false;
+                        }
+                    })
+
+                options = advancedOptions.getOptions();
+
+                expect( options.includes( 'hoot::NetworkMatchCreator' )).to.be.true
+                expect( options.includes( 'hoot::NetworkMergerCreator' )).to.be.true
+                expect( options.includes( 'hoot::HighwayMatchCreator' ) ).to.be.false;
+                expect( options.includes( 'hoot::HighwayMergerCreator' ) ).to.be.false;
+            }, 200)
+        } );
+    } );
 } );
   

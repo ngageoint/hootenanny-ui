@@ -64,7 +64,7 @@ function generateOsmLayerParams( count ) {
 }
 
 function generateAdvOptsLayerParams() {
-    return Promise.all( [ 'UndividedHighway', 'highwayTest2' ].map( async (layer, index) => {
+    return Promise.all( [ 'highwayTest2', 'UndividedHighway' ].map( async (layer, index) => {
         let dT = new ClipboardEvent( '' ).clipboardData || new DataTransfer(),
             file = await retrieveFile( `base/test/data/${layer}.osm` );
 

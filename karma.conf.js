@@ -86,6 +86,7 @@ module.exports = function( config ) {
             { pattern: 'img/**/*.gif', included: false },
 
             { pattern: 'test/data/UndividedHighway.osm', included: false },
+            { pattern: 'test/data/highwayTest2.osm', included: false },
             { pattern: 'test/data/LAP030.dbf', included: false },
             { pattern: 'test/data/LAP030.shp', included: false },
             { pattern: 'test/data/LAP030.shx', included: false },
@@ -123,7 +124,7 @@ module.exports = function( config ) {
         expressHttpServer: {
             port: '8787',
             appVisitor: function( app ) {
-                app.use( '/hoot-services', proxy( 'http://localhost:8080', {
+                app.use( '/hoot-services', proxy( 'http://localhost:8888', {
                     limit: '1000mb',
                     proxyReqOptDecorator: function( proxyReqOpts ) {
                         proxyReqOpts.headers.cookie = 'SESSION=ff47f751-c831-41ee-800f-5ef8b9371ee3; lock=1';
