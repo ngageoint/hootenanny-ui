@@ -30,7 +30,7 @@ export default class Sidebar {
                 tableId: 'add-ref-table',
                 refType: 'primary',
                 color: 'violet',
-                toggleButtonText: 'Add Reference Datasets'
+                toggleButtonText: 'Add Reference Dataset'
             },
             {
                 type: 'add',
@@ -39,7 +39,7 @@ export default class Sidebar {
                 tableId: 'add-secondary-table',
                 refType: 'secondary',
                 color: 'orange',
-                toggleButtonText: 'Add Secondary Datasets'
+                toggleButtonText: 'Add Secondary Dataset'
             },
             {
                 type: 'conflate',
@@ -104,10 +104,10 @@ export default class Sidebar {
             } );
     }
 
-    layerLoaded( layerName ) {
+    layerLoaded() {
         _forEach( this.forms, form => {
-            if ( form.loadingLayerName === layerName ) {
-                let loadedLayer = Hoot.layers.findLoadedBy( 'name', layerName );
+            let loadedLayer = Hoot.layers.findLoadedBy( 'name', form.loadingLayerName );
+            if ( loadedLayer != null ) {
 
                 if ( loadedLayer.merged ) {
                     Hoot.layers.mergedLayer = loadedLayer;
