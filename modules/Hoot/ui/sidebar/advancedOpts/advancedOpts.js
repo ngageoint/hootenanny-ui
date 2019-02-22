@@ -345,51 +345,47 @@ export default class AdvancedOpts {
                 if ( checked ) {
                     mergers.push(d.merger);
                     matchers.push(d.matcher);
-                    // options += `-D "match.creators-=${ d.matcher }"`;
-                    // options += `-D "merger.creators-=${ d.merger }"`;
                 }
             } );
 
-        if (mergers.length && (mergers.length === matchers.length)) {
+        if (mergers.length) {
+            if (mergers.length !== matchers.length) {
+                Hoot.message.alert( new Error ('Unable to conflate, matchers & mergers are not of equal length') );
+                return;
+            }
             options += `-D "match.creators=${ matchers.join(';') }" `;
             options += `-D "merger.creators=${ mergers.join(';') }" `;
         }
 
-            // .selectAll( '.form-group .hoot-form-field' )
-            // .each( function(d) {
-            //     const input = d3.select( this ).select( 'input' );
-            //     switch ( d.inputType ) {
-            //         case 'checkbox': {
-            //             if (input.property( 'checked' )) {
-            //                 let sign = d.hootType === 'list' ? '+=' : '=';
-            //                 options += `-D "${ d.key }${ sign }${ d.hootVal ? d.hootVal: 'true' }" `;
-            //             }
-            //             break;
-            //         }
-            //         case 'text': {
-            //             let value = input.property( 'value' );
+
+        this.contentDiv
+            .selectAll( '.form-group .hoot-form-field' )
+            .each( function(d) {
+                const input = d3.select( this ).select( 'input' );
+                switch ( d.inputType ) {
+                    case 'checkbox': {
+                        if (input.property( 'checked' )) {
+                            let sign = d.hootType === 'list' ? '+=' : '=';
+                            options += `-D "${ d.key }${ sign }${ d.hootVal ? d.hootVal: 'true' }" `;
+                        }
+                        break;
+                    }
+                    case 'text': {
+                        let value = input.property( 'value' );
                         
-            //             if (!value) break;
+                        if (!value) break;
 
-            //             if (d.extrema) {
-            //                 value = Number(value);
-            //                 let [ min, max ] = d.extrema;
-            //                 if ( value < min || max < value ) break;
-            //             }
+                        if ( d.extrema ) {
+                            value = Number(value);
+                            let [ min, max ] = d.extrema;
+                            if ( value < min || max < value ) break;
+                        }
 
-            //             options += `-D "${ d.key }=${ value }" `;
-            //             break;
-            //         }
-            //     }
-
-            //     if ( d.matchersMergers && d.changed ) {
-            //         let value = input.property( 'value' ).toLowerCase();
-            //         let [ matcher, merger ] = d.matchersMergers[value];
-            //         options += `-D "match.creators+=${ matcher }" `;
-            //         options += `-D "merger.creators+=${ merger }" `;
-            //     }
-
-            // });
+                        options += `-D "${ d.key }=${ value }" `;
+                        break;
+                    }
+                }
+            });
 
         return options.trim();
     }

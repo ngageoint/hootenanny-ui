@@ -80,16 +80,9 @@ class LayerConflate extends SidebarForm {
     createAdvancedOptions() {
         this.advancedOptions = new AdvancedOpts();
         this.advancedOptions.init();
-
-        let advancedOptionsToggle = d3.select( '#advanced-opts-toggle' );
-
-        advancedOptionsToggle.on( 'click', () => {
-            if ( this.advancedOptions.isOpen ) {
-                this.advancedOptions.control.saveOrCancel();
-            } else {
-                this.advancedOptions.toggle();
-            }
-        } );
+        
+        d3.select( '#advanced-opts-toggle' )
+            .on( 'click', () => this.advancedOptions.toggle() );
     }
 
     changeAdvancedOptions() {

@@ -309,8 +309,8 @@ export default class Merge {
             return;
         }
 
-        let pt1   = d3.geoCentroid( this.mergeArrow.to.asGeoJSON( Hoot.context.graph ) ),
-            pt2   = d3.geoCentroid( this.mergeArrow.from.asGeoJSON( Hoot.context.graph ) ),
+        let pt1   = d3.geoCentroid( this.mergeArrow.to.asGeoJSON( Hoot.context.graph() ) ),
+            pt2   = d3.geoCentroid( this.mergeArrow.from.asGeoJSON( Hoot.context.graph() ) ),
             coord = [ pt1, pt2 ];
 
         if ( mode === 'reverse' ) coord = coord.reverse();
