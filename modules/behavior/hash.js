@@ -103,6 +103,13 @@ export function behaviorHash(context) {
                 context.zoomToEntity(q.id.split(',')[0], !q.map);
             }
 
+            if (q.primary) {
+                Hoot.layers.hashLayer('reference', q.primary);
+            }
+            if (q.secondary) {
+                Hoot.layers.hashLayer('secondary', q.secondary);
+            }
+
             if (q.comment) {
                 context.storage('comment', q.comment);
                 context.storage('commentDate', Date.now());
