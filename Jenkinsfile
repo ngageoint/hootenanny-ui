@@ -40,8 +40,10 @@ pipeline {
                 expression { return params.UI }
             }
             steps {
-                sh "vagrant ssh ${params.Box} -c 'cd hoot; source ./SetupEnv.sh; aclocal && autoconf && autoheader && automake --add-missing --copy && ./configure --quiet --with-uitests'"
-                sh "vagrant ssh ${params.Box} -c 'cd hoot; source ./SetupEnv.sh; make ui2x-build; time -p make -s ui2x-test'"
+                // Build ui-2x
+                sh "vagrant ssh ${params.Box} -c 'cd hoot/hoot-ui-2x; npm i -s; npm run production -s'"
+                // Run ui-2x tests
+                sh "vagrant ssh ${params.Box} -c 'cd hoot; ./scripts/database/AddKarmaTestUser.sh; cd hoot-ui-2x; npm test'"
             }
         }
     }
