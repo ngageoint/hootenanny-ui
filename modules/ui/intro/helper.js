@@ -62,7 +62,7 @@ function checkKey(key, text) {
         if (missingStrings.hasOwnProperty(key)) return;  // warn once
         missingStrings[key] = text;
         var missing = key + ': ' + text;
-        if (typeof console !== 'undefined') console.log(missing); // eslint-disable-line
+        if (typeof console !== 'undefined') window.console.log(missing); // eslint-disable-line
     }
 }
 

@@ -20,14 +20,14 @@ module.exports = Merge( CommonConfig, {
             timings: true
         },
         proxy: {
-            '/hoot-services': 'http://35.174.111.201:8080',
-            '/capabilities': 'http://35.174.111.201:8094',
+            '/hoot-services': 'http://localhost:8888',
+            '/capabilities': 'http://localhost:8094',
             '/switcher': {
-                target: 'http://35.174.111.201:8094',
+                target: 'http://localhost:8094',
                 pathRewrite: { '^/switcher': '' }
             },
             '/p2p': {
-                target: 'http://35.174.111.201:8096',
+                target: 'http://localhost:8096',
                 pathRewrite: { '^/p2p': '' }
             }
         }

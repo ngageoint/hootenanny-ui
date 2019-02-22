@@ -80,7 +80,7 @@ export function coreContext() {
         } catch (e) {
             // localstorage quota exceeded
             /* eslint-disable no-console */
-            if (typeof console !== 'undefined') console.error('localStorage quota exceeded');
+            if (typeof console !== 'undefined') window.console.error('localStorage quota exceeded');
             /* eslint-enable no-console */
         }
     };

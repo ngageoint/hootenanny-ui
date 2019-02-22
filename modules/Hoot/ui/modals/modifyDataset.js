@@ -21,6 +21,9 @@ export default class ModifyDataset {
     }
 
     render() {
+        // remove layer name input
+        this.form.splice( 3, 1 );
+
         let formTitle;
 
         if ( this.formType === 'single' ) {

@@ -203,18 +203,18 @@ export default class Login extends EventEmitter {
         window.open( this.oauthRedirectUrl, 'hootenannyLoginRedirect', 'width=500,height=800,toolbar=no,status=no,menubar=no' );
 
         window.oAuthDone = ( e, user_object ) => {
-            console.log( user_object );
+            window.console.log( user_object );
             if ( e ) {
-                console.log( 'fail' );
-                console.warn( 'failed to verify oauth tokens w/ provider:' );
-                console.warn( 'XMLHttpRequest.status', e.status || null );
-                console.warn( 'XMLHttpRequest.responseText ', e.responseText || null );
+                window.console.log( 'fail' );
+                window.console.warn( 'failed to verify oauth tokens w/ provider:' );
+                window.console.warn( 'XMLHttpRequest.status', e.status || null );
+                window.console.warn( 'XMLHttpRequest.responseText ', e.responseText || null );
 
                 window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
                 window.history.pushState( {}, document.title, window.location.pathname );
 
             } else {
-                console.log( 'success' );
+                window.console.log( 'success' );
                 if ( localStorage ) {
                     localStorage.setItem( 'user', JSON.stringify( user_object ) );
                 }

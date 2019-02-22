@@ -44,7 +44,7 @@ import { baseUrl as hootBaseUrl } from '../Hoot/config/apiConfig';
 
 var tiler = utilTiler();
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded', 'loadedNotes');
-//var urlroot = 'https://www.openstreetmap.org';
+// var urlroot = 'https://www.openstreetmap.org';
 var urlroot = hootBaseUrl + '/osm';
 var oauth = osmAuth({
     url: urlroot,
@@ -54,9 +54,9 @@ var oauth = osmAuth({
     done: authDone
 });
 
-oauth.authenticated = function() {
-    return true;
-};
+// oauth.authenticated = function() {
+//     return true;
+// };
 
 var _blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'];
 var _tileCache = { loaded: {}, inflight: {}, seen: {} };
@@ -727,7 +727,7 @@ export default {
                         changedRel.members.push( newMember );
                     }
 
-                    //console.log( 'NEW changed relation: ', changedRel );
+                    //window.console.log( 'NEW changed relation: ', changedRel );
 
                     if ( changedRel.members.length < 2 ) {
                         changedRel.tags[ 'hoot:review:needs' ] = 'no';

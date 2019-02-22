@@ -37,10 +37,12 @@ export default class ModifyFolder {
 
         this.folderNameInput     = this.container.select( '#modifyName' );
         this.pathNameInput = this.container.select( '#modifyPathName' );
+        this.folderVisibilityInput = this.container.select( '#modifyVisibility' );
         this.submitButton        = this.container.select( '#modifySubmitBtn' );
 
         this.folderNameInput.property( 'value', this.data.name );
         this.pathNameInput.property( 'value', this.pathName );
+        this.folderVisibilityInput.property( 'checked', this.data.public );
         this.submitButton.node().disabled = false;
 
         return this;
@@ -73,9 +75,10 @@ export default class ModifyFolder {
     async handleSubmit() {
         let folderName = this.folderNameInput.property( 'value' ),
             pathName   = this.pathNameInput.property( 'value' ),
+            isPublic   = this.folderVisibilityInput.property( 'checked' ),
             folderId   = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
 
-        if ( Hoot.folders.exists( folderName, folderId ) ) {
+        if ( ( folderName !== this.data.name || pathName !== this.pathName ) && Hoot.folders.exists( folderName, folderId ) ) {
             let message = 'A folder already exists with this name in the destination path. Please remove the old folder or select a new name for this folder.',
                 type    = 'warn';
 
@@ -94,22 +97,36 @@ export default class ModifyFolder {
             parentId: folderId
         };
 
-        this.processRequest = Hoot.api.modify( modParams )
-            .then( () => Hoot.api.updateFolder( updateParams ) )
+        let visibilityParams = {
+            folderId: this.data.id,
+            visibility: (isPublic) ? 'public' : 'private'
+        };
+
+        let requests = [];
+        let message = 'Successfully ';
+
+        if ( folderName !== this.data.name ) {
+            requests.push( Hoot.api.modify( modParams ) );
+            message += 'renamed folder';
+        }
+
+        if ( pathName !== this.pathName ) {
+            requests.push( Hoot.api.updateFolder( updateParams ) );
+            if (message.substr(-1) !== ' ') message += ' & ';
+            message += 'moved folder';
+        }
+
+        if ( this.data.public !== isPublic ) {
+            requests.push( Hoot.api.updateVisibility( visibilityParams ) );
+            if (message.substr(-1) !== ' ') message += ' & ';
+            message += `changed visibility to ${ visibilityParams.visibility }`;
+        }
+
+        this.processRequest = Promise.all(requests)
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( () => {
-                let type = 'success',
-                    message;
-
-                if ( folderName !== this.data.name && pathName !== this.pathName ) {
-                    message = 'Successfully moved and renamed folder';
-                } else if ( folderName !== this.data.name ) {
-                    message = 'Successfully renamed folder';
-                } else {
-                    message = 'Successfully moved folder';
-                }
-
+                let type = 'success';
                 Hoot.message.alert( { message, type } );
             } )
             .finally( () => {

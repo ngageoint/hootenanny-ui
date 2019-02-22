@@ -15,8 +15,8 @@ import LayerManager       from './managers/layerManager';
 import TranslationManager from './managers/translationManager';
 import EventManager       from './managers/eventManager';
 import UI                 from './ui/init';
-import buildInfo          from './config/buildInfo.json';
 import { tagInfo }        from '../../data/index';
+import buildInfo          from './config/buildInfo.json';
 
 class Hoot {
     constructor() {
@@ -61,7 +61,7 @@ class Hoot {
 
             this.config.users = {};
 
-            _forEach( resp.users, user => {
+            _forEach( resp, user => {
                 this.config.users[ user.id ] = user;
             } );
         } catch ( err ) {

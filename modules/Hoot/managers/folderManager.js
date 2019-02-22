@@ -139,7 +139,9 @@ export default class FolderManager {
                 path : folder.folderPath,
                 name : folder.name,
                 id : folder.id,
-                parentId : folder.parentId
+                parentId : folder.parentId,
+                public : folder.public,
+                userId: folder.userId
             };
         } );
     }
