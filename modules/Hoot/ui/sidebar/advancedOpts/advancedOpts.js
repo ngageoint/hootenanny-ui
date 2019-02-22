@@ -119,26 +119,12 @@ export default class AdvancedOpts {
         let groupEnter = group.enter()
             .append( 'div' )
             .classed( 'form-group', true );
+
         let groupToggle = groupEnter.append( 'div' )
             .classed( 'group-toggle', true );
-            // .on( 'click', function() {
-            //     let parent    = d3.select( this ).node().parentNode,
-            //         body      = d3.select( parent ).select( '.group-body' ),
-            //         bodyState = body.classed( 'hidden' );
-
-            //     body.classed( 'hidden', !bodyState );
-            // } );
-
         
         let groupHeader = groupToggle.append( 'div' )
-            .attr( 'class', (d) => {
-                return `inner-wrapper strong fill-light keyline-bottom adv-opts-toggle ${ d.id === 'buildingOptions' ? 'keyline-top' : '' }`;
-            });
-
-
-        // let conflateToggle = groupHeader
-        //     .append( 'div' )
-        //     .classed( 'adv-opts-toggle-member conflate-type-toggle-wrap', true );
+            .attr( 'class', 'inner-wrapper strong fill-light keyline-bottom adv-opts-toggle-wrap');
 
         let groupLeftInnerWrap = groupHeader
             .append( 'div' )
@@ -153,12 +139,19 @@ export default class AdvancedOpts {
             .on( 'click', function(d) {
                 let selection = d3.select( this ),
                     checked = selection.property( 'checked' ),
-                    parent = d3.select( selection.node().parentNode.parentNode );
+                    parent = d3.select( `#${d.id}_group` );
                 
-                parent.select( '.group-toggle-caret-wrap span' )
+                parent.select( '.group-toggle-caret-wrap' )
                     .classed( 'toggle-disabled', !checked );
+
+                if (!checked) {
+                    parent.select( '.group-body' )
+                        .classed( 'hidden', true );
+                }
+
             } );
-        
+
+
         groupLeftInnerWrap
             .append( 'div' )
             .append( 'span' )
@@ -166,18 +159,21 @@ export default class AdvancedOpts {
             .classed( 'adv-opt-title', true)
             .text( d => d.label );
 
-        // groupHeader
-        //     .append( 'div' )
-        //     .classed( 'adv-opts-inner-wrap group-toggle-caret-wrap', true )
-        //     .append( 'div' )
-        //     .classed( 'adv-opt-toggle combobox-caret', true )
-        //     .on( 'click', function() {            
-        //         let id        = d3.select( this ).datum().id,
-        //             body      = d3.select( `#${ id }_group` ).select( '.group-body' ),
-        //             bodyState = body.classed( 'hidden' );
+        groupHeader
+            .append( 'div' )
+            .classed( 'adv-opts-inner-wrap group-toggle-caret-wrap', true )
+            .append( 'div' )
+            .attr( 'class', d => `adv-opt-toggle ${ d.members.length ? 'combobox-caret': '' }` )
+            .on( 'click', function(d) {
+                if (d.members.length) {
+                    let id        = d3.select( this ).datum().id,
+                        body      = d3.select( `#${ id }_group` ).select( '.group-body' ),
+                        bodyState = body.classed( 'hidden' );
 
-        //         body.classed( 'hidden', !bodyState );
-        //     });
+                    body.classed( 'hidden', !bodyState );
+                    body.classed( 'keyline-bottom', bodyState );
+                }
+            });
 
 
         let groupBody = groupEnter.append( 'div' )
@@ -199,124 +195,130 @@ export default class AdvancedOpts {
 
             // add header
 
-            let fieldHeader = field.selectAll( '.form-field-header' )
-                .data( [ 0 ] );
-
-            fieldHeader.exit()
-                .remove();
-
-            let fieldHeaderEnter = fieldHeader.enter()
-                .append( 'div' )
-                .classed( 'form-field-header keyline-bottom', true);
-
-            fieldHeader
-                .merge(fieldHeaderEnter)
-                .append( 'label' )
-                .append( 'span' )
-                .text( d.label );
+            if ( d.inputType === 'checkbox' ) {
+                let datum = field.datum();
 
 
-            field.append( 'div' )
-                .classed( '.form-field-control', true )
-                .call((selection) => {
-                    let datum = selection.datum();
-                    switch ( datum.inputType ) {
-                        case 'combobox': {
-                            let comboData = _map(datum.data, n => {
-                                const t = datum.itemKey ? n[ datum.itemKey ] : n,
-                                    v = datum.valueKey ? n[ datum.valueKey ] : t;
-                                return { value: v, title: t };
-                            } );
-                            
-                            if ( datum.sort ) {
-                                comboData = comboData.sort((a, b) => {
-                                    let textA = a.value.toLowerCase(),
-                                        textB = b.value.toLowerCase();
+                let checkboxWrap = field.selectAll( '.form-field-checkbox-wrap')
+                    .data( [ 0 ] );
 
-                                    return textA < textB ? -1 : textA > textB ? 1 : 0;
-                                } ).unshift( { value: 'root', title: 0 } );
+                checkboxWrap.exit()
+                    .remove();
+                
+                let checkboxWrapEnter = checkboxWrap.enter()
+                    .append( 'div' )
+                    .attr( 'class', 'form-field-checkbox-wrap round keyline-all' );
+
+                checkboxWrapEnter.append( 'div' )
+                    .attr( 'class', 'form-field-checkbox-title-wrap fill-light keyline-right' )
+                    .append( 'label' )
+                    .attr( 'class', 'adv-opts-header')
+                    .text( datum.label );
+
+                checkboxWrapEnter.append( 'div' )
+                    .attr( 'class', 'form-field-checkbox-input-wrap' )
+                    .append( 'input' )
+                    .attr( 'type', 'checkbox' )
+                    .attr( 'id', `${ datum.id }-checkbox-input` )
+                    .classed( 'form-field-checkbox', true );
+
+                checkboxWrap.merge(checkboxWrapEnter);
+            } else {
+                let fieldHeader = field.selectAll( '.form-field-header' )
+                    .data( [ 0 ] );
+
+                fieldHeader.exit()
+                    .remove();
+
+                let fieldHeaderEnter = fieldHeader.enter()
+                    .append( 'div' )
+                    .classed( 'form-field-header fill-light round-top keyline-all', true);
+
+                fieldHeader
+                    .merge(fieldHeaderEnter)
+                    .append( 'label' )
+                    .append( 'span' )
+                    .attr( 'class', 'adv-opts-header')
+                    .text( d.label );
+
+
+                field.append( 'div' )
+                    .classed( 'form-field-control keyline-left keyline-bottom keyline-right round-bottom', true )
+                    .call((selection) => {
+                        let datum = selection.datum();
+                        switch ( datum.inputType ) {
+                            case 'combobox': {
+                                let comboData = _map(datum.data, n => {
+                                    const t = datum.itemKey ? n[ datum.itemKey ] : n,
+                                        v = datum.valueKey ? n[ datum.valueKey ] : t;
+                                    return { value: v, title: t };
+                                } );
+                                
+                                if ( datum.sort ) {
+                                    comboData = comboData.sort((a, b) => {
+                                        let textA = a.value.toLowerCase(),
+                                            textB = b.value.toLowerCase();
+
+                                        return textA < textB ? -1 : textA > textB ? 1 : 0;
+                                    } ).unshift( { value: 'root', title: 0 } );
+                                }
+
+                                let combo = selection.selectAll( '.form-field-combo' )
+                                    .data( [ 0 ] );
+
+                                combo.exit()
+                                    .remove();
+
+                                let comboEnter = combo.enter()
+                                    .append( 'input' )
+                                    .attr( 'class', 'form-field-combo-input' );
+                                    // .attr( 'id', d => `d.id );
+
+                                comboEnter
+                                    .attr( 'type', 'text' )
+                                    // .attr( 'id', d => d.id )
+                                    // .attr( 'class', datum.class )
+                                    .attr( 'autocomplete', 'off' )
+                                    .attr( 'placeholder', datum.placeholder )
+                                    .attr( 'value', datum.value )
+                                    .attr( 'disabled', datum.disabled )
+                                    .attr( 'readonly', datum.readonly )
+                                    .call(d3combobox().data(comboData))
+                                    .on( 'change', () => datum.onChange && datum.onChange(datum) )
+                                    .on( 'change.conflation', () => datum.onChange && datum.onChange(datum) );
+                                    // .on( 'keyup', d => d.onChange && d.onChange(d) );
+
+                                combo.merge(comboEnter);
+
+                                break;
                             }
+                            case 'text': {
+                                let textField = selection.selectAll( '.form-field-textinput' )
+                                    .data( [ 0 ] );
 
-                            let combo = selection.selectAll( '.form-field-combo' )
-                                .data( [ 0 ] );
+                                textField.exit()
+                                    .remove();
 
-                            combo.exit()
-                                .remove();
+                                let textFieldEnter = textField.enter()
+                                    .append( 'input' )
+                                    .attr('class', 'form-field-textinput');
+                                    
+                                textFieldEnter
+                                    .attr( 'type', 'text' )
+                                    .attr( 'placeholder', datum.placeholder )
+                                    .attr( 'value', datum.value )
+                                    .attr( 'readonly', datum.readOnly )
+                                    .attr( 'disabled', datum.disabled )
+                                    .classed( 'text-input', true )
+                                    .on( 'keyup', () => datum.onChange && datum.onChange( datum, this ) );
 
-                            let comboEnter = combo.enter()
-                                .append( 'input' )
-                                .attr( 'class', 'form-field-combo-input' );
-                                // .attr( 'id', d => `d.id );
-
-                            comboEnter
-                                .attr( 'type', 'text' )
-                                // .attr( 'id', d => d.id )
-                                // .attr( 'class', datum.class )
-                                .attr( 'autocomplete', 'off' )
-                                .attr( 'placeholder', datum.placeholder )
-                                .attr( 'value', datum.value )
-                                .attr( 'disabled', datum.disabled )
-                                .attr( 'readonly', datum.readonly )
-                                .call(d3combobox().data(comboData))
-                                .on( 'change', () => datum.onChange && datum.onChange(datum) )
-                                .on( 'change.conflation', () => datum.onChange && datum.onChange(datum) );
-                                // .on( 'keyup', d => d.onChange && d.onChange(d) );
-
-                            combo.merge(comboEnter);
-
-                            break;
-                        }
-                        case 'checkbox': {
-                            let checkbox = selection.selectAll( '.form-field-checkbox' )
-                                .data( [ 0 ] );
-
-                            checkbox.exit()
-                                .remove();
-
-                            let checkboxEnter = checkbox = checkbox.enter()
-                                .append( 'input' )
-                                .attr( 'id', `${datum.id}-checkbox-input` )
-                                .attr( 'class', '' );
+                                textField.merge(textFieldEnter);
                                 
-                            checkboxEnter
-                                .attr( 'type', 'checkbox' )
-                                .property( 'checked', datum.checked );
-
-                            checkbox
-                                .append( 'label' )
-                                .attr( 'for', `${datum.id}-checkbox-input`) 
-                                .text( datum.value );
-
-                            checkbox.merge(checkboxEnter);
-
-                            break;
+                                break;
+                            }
                         }
-                        case 'text': {
-                            let textField = selection.selectAll( '.form-field-textinput' )
-                                .data( [ 0 ] );
-
-                            textField.exit()
-                                .remove();
-
-                            let textFieldEnter = textField.enter()
-                                .append( 'input' )
-                                .attr('class', 'form-field-textinput');
-                                
-                            textFieldEnter
-                                .attr( 'type', 'text' )
-                                .attr( 'placeholder', datum.placeholder )
-                                .attr( 'value', datum.value )
-                                .attr( 'readonly', datum.readOnly )
-                                .attr( 'disabled', datum.disabled )
-                                .classed( 'text-input', true )
-                                .on( 'keyup', () => datum.onChange && datum.onChange( datum, this ) );
-
-                            textField.merge(textFieldEnter);
-                            
-                            break;
-                        }
-                    }
-                } );
+                    } );
+            }
         });
 
         

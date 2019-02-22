@@ -408,53 +408,39 @@ export function advancedOptions() {
             matcher: 'hoot::BuildingMatchCreator',
             merger: 'hoot::BuildingMergerCreator',
             members: [
-            //     {
-            //         label: 'Review if secondary layer building is newer',
-            //         id: 'reviewSecondaryBuildingLayer',
-            //         key: 'building.review.if.secondary.newer',
-            //         inputType: 'checkbox',
-            //         checked: false
-            //     },
-            //     {
-            //         label: 'Date format',
-            //         id: 'buildingDateFormat',
-            //         key: 'building.date.format',
-            //         inputType: 'text'
-            //     },
-            //     {
-            //         label: 'Date tag key',
-            //         id: 'buildingDateTagKey',
-            //         key: 'building.date.tag.key',
-            //         inputType: 'text'
-            //     },
-            //     {
-            //         label: 'Keep complex geometry when auto merging',
-            //         id: 'buildingKeepComplexGeom',
-            //         key: 'building.keep.more.complex.geometry.when.auto.merging',
-            //         inputType: 'checkbox',
-            //         checked: false
-            //     },
-            //     {
-            //         label: 'Match Creator',
-            //         id: 'buildingMatchCreator',
-            //         key: 'match.creators',
-            //         inputType: 'checkbox',
-            //         hootVal: 'hoot::BuildingMatchCreator',
-            //         checked: false
-            //     },
-            //     {
-            //         label: 'Merger Creator',
-            //         id: 'buildingMergeCreator',
-            //         key: 'merger.creators',
-            //         hootVal: 'hoot::BuildingMergerCreator'
-            //     },
-            //     {
-            //         label: 'Review non 1:1 Building Matches',
-            //         id: 'reviewNonOneOneBuildingMatches',
-            //         key: 'building.review.matched.other.than.one.to.one',
-            //         inputType: 'checkbox',
-            //         checked: false
-            //     }
+                {
+                    label: 'Review if secondary layer building is newer',
+                    id: 'reviewSecondaryBuildingLayer',
+                    key: 'building.review.if.secondary.newer',
+                    inputType: 'checkbox',
+                    checked: false
+                },
+                {
+                    label: 'Date format',
+                    id: 'buildingDateFormat',
+                    key: 'building.date.format',
+                    inputType: 'text'
+                },
+                {
+                    label: 'Date tag key',
+                    id: 'buildingDateTagKey',
+                    key: 'building.date.tag.key',
+                    inputType: 'text'
+                },
+                {
+                    label: 'Keep complex geometry when auto merging',
+                    id: 'buildingKeepComplexGeom',
+                    key: 'building.keep.more.complex.geometry.when.auto.merging',
+                    inputType: 'checkbox',
+                    checked: false
+                },
+                {
+                    label: 'Review non 1:1 Building Matches',
+                    id: 'reviewNonOneOneBuildingMatches',
+                    key: 'building.review.matched.other.than.one.to.one',
+                    inputType: 'checkbox',
+                    checked: false
+                }
             ]
         },
         {
@@ -613,24 +599,6 @@ export function advancedOptions() {
             merger: 'hoot::PoiPolygonMergerCreator',
             members: [
                 {
-                    label: 'Match Creator',
-                    id: 'poiToPolyMatchCreator',
-                    key: 'match.creators',
-                    inputType: 'checkbox',
-                    checked: false,
-                    hootType: 'list',
-                    hootVal: 'hoot::PoiPolygonMatchCreator'
-                },
-                {
-                    label: 'Merger Creator',
-                    id: 'poiToPolyMergerCreator',
-                    key: 'merger.creators',
-                    inputType: 'checkbox',
-                    checked: false,
-                    hootType: 'list',
-                    hootVal: 'hoot::PoiPolygonMergerCreator'
-                },
-                {
                     label: 'Address Additional Tags',
                     id: 'poiToPolyAdditionalTags',
                     key: 'address.additional.tag.keys',
@@ -761,6 +729,7 @@ export function advancedOptions() {
                     label:'Type Score Threshold',
                     id:'poiPolyTypeScoreThreshold',
                     key:'poi.polygon.type.score.threshold',
+                    inputType: 'text',
                     extrema: [ 0, 1 ],
                 }
             ]

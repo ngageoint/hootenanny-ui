@@ -80,9 +80,7 @@
     }
 
     .advanced-opts-content {
-        top: 65px;
-        bottom: 150px;
-        padding: 10px 0;
+        top: 60px;
         overflow-x: hidden;
         overflow-y: auto;
     }
@@ -112,25 +110,37 @@
         .toggle-disabled {
             display: none;
         }
-        .adv-opts-toggle {
+        .adv-opts-toggle-wrap {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            height: 40px;
+        }
+        .adv-opt-toggle:hover::after {
+            border-top-color: #777;
         }
     }
 
     .group-body {
-        padding: 10px 0;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        height: 300px;
+        padding: 10px;
     }
 
     .hoot-form-field {
         padding: 0 15px;
+        margin-top: 5px;
+
+        .adv-opts-header {
+            font-weight: bold;
+        }
 
         label {
             width: 100%;
             display: inline-block;
             white-space: initial;
-            margin-bottom: 5px;
             padding: 0;
 
             span {
@@ -146,6 +156,41 @@
 
         input.combobox-input {
             display: inline-block;
+        }
+
+        .form-field-control {
+            display: flex;
+        
+            input[type="text"] {
+                align-self: center;
+                border: none;
+            }
+
+        }
+    }
+
+    .form-field-checkbox-wrap {
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        height: 50px;
+
+        .form-field-checkbox-title-wrap {
+            display: flex;
+            height: inherit;
+            width: 85%;
+            label {
+                align-self: center;
+                margin: 10px;
+                padding: 10px 0;
+            }
+        }
+        .form-field-checkbox-input-wrap {
+            width: 15%; 
+            display: flex;
+            input {
+                margin: auto;
+            }
         }
     }
 
