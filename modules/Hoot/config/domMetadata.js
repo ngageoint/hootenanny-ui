@@ -455,6 +455,8 @@ export function advancedOptions() {
             id: 'roadOptions',
             matcher: 'hoot::HighwayMatchCreator',
             merger: 'hoot::HighwayMergerCreator',
+            networkMatcher: 'hoot::NetworkMatchCreator',
+            networkMerger: 'hoot::NetworkMergerCreator',
             members: [
                 // {
                 //     'label',

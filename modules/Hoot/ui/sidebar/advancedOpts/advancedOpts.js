@@ -128,7 +128,7 @@ export default class AdvancedOpts {
 
         let groupLeftInnerWrap = groupHeader
             .append( 'div' )
-            .classed( 'adv-opts-inner-wrap adv-opts-input', true )
+            .classed( 'adv-opts-inner-wrap adv-opts-input', true );
 
         groupLeftInnerWrap
             .append( 'input' )
@@ -334,17 +334,29 @@ export default class AdvancedOpts {
     getOptions() {
         let options = '',
             mergers = [],
-            matchers = [];
+            matchers = [],
+            isNetwork = d3.select( '#conflateType' ).property( 'value' ) === 'Network';
 
-        this.contentDiv
+        // create list of matchers/mergers that are interpretable as the 
+        // conflation types the user chose...
+        this.contentDiv 
             .selectAll( '.conflate-type-toggle' )
             .each(function(d) {
                 let selection = d3.select( this ),
                     checked = selection.property( 'checked' );
 
                 if ( checked ) {
-                    mergers.push(d.merger);
-                    matchers.push(d.matcher);
+                    let merger, matcher;
+                    if ( d.id === 'roadOptions' && isNetwork ) {
+                        matcher = d.networkMatcher;
+                        merger = d.networkMerger;
+                    } else {
+                        matcher = d.matcher;
+                        merger = d.merger;
+                    }
+
+                    mergers.push(merger);
+                    matchers.push(matcher);
                 }
             } );
 
@@ -358,34 +370,36 @@ export default class AdvancedOpts {
         }
 
         
-        this.contentDiv
-            .selectAll( '.form-group .hoot-form-field' )
-            .each( function(d) {
-                const input = d3.select( this ).select( 'input' );
-                switch ( d.inputType ) {
-                    case 'checkbox': {
-                        if (input.property( 'checked' )) {
-                            let sign = d.hootType === 'list' ? '+=' : '=';
-                            options += `-D "${ d.key }${ sign }${ d.hootVal ? d.hootVal: 'true' }" `;
-                        }
-                        break;
-                    }
-                    case 'text': {
-                        let value = input.property( 'value' );
+        // add additional advanced options that the user changed...
+        // /* these options will be toggle-able in future release...
+        // this.contentDiv
+        //     .selectAll( '.form-group .hoot-form-field' )
+        //     .each( function(d) {
+        //         const input = d3.select( this ).select( 'input' );
+        //         switch ( d.inputType ) {
+        //             case 'checkbox': {
+        //                 if (input.property( 'checked' )) {
+        //                     let sign = d.hootType === 'list' ? '+=' : '=';
+        //                     options += `-D "${ d.key }${ sign }${ d.hootVal ? d.hootVal: 'true' }" `;
+        //                 }
+        //                 break;
+        //             }
+        //             case 'text': {
+        //                 let value = input.property( 'value' );
                         
-                        if (!value) break;
+        //                 if (!value) break;
 
-                        if ( d.extrema ) {
-                            value = Number(value);
-                            let [ min, max ] = d.extrema;
-                            if ( value < min || max < value ) break;
-                        }
+        //                 if ( d.extrema ) {
+        //                     value = Number(value);
+        //                     let [ min, max ] = d.extrema;
+        //                     if ( value < min || max < value ) break;
+        //                 }
 
-                        options += `-D "${ d.key }=${ value }" `;
-                        break;
-                    }
-                }
-            });
+        //                 options += `-D "${ d.key }=${ value }" `;
+        //                 break;
+        //             }
+        //         }
+        //     });
 
         return options.trim();
     }

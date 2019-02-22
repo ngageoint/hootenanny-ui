@@ -63,6 +63,25 @@ function generateOsmLayerParams( count ) {
     } ) );
 }
 
+function generateAdvOptsLayerParams() {
+    return Promise.all( [ 'UndividedHighway', 'highwayTest2' ].map( async (layer, index) => {
+        let dT = new ClipboardEvent( '' ).clipboardData || new DataTransfer(),
+            file = await retrieveFile( `base/test/data/${layer}.osm` );
+
+        dT.items.add( file );
+
+        let params = {
+            NONE_TRANSLATION: 'true',
+            TRANSLATION: 'NONE.js',
+            INPUT_TYPE: 'OSM',
+            INPUT_NAME: `advOpts_${layer}`,
+            formData: getFormData( dT.files )
+        };
+        return params;
+
+    } ) );
+}
+
 function getFormData( files ) {
     let formData = new FormData();
 
@@ -75,5 +94,6 @@ function getFormData( files ) {
 
 module.exports = {
     retrieveFile,
-    generateOsmLayerParams
+    generateOsmLayerParams,
+    generateAdvOptsLayerParams
 };
