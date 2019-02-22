@@ -178,7 +178,6 @@ class LayerConflate extends SidebarForm {
         data.COLLECT_STATS      = this.collectStatsInput.node().value;
         data.ADV_OPTIONS        = this.advancedOptions.getOptions();
         data.HOOT_2             = true; 
-        data.HOOT_2_COMMANDS    = '';
         data.USER_EMAIL         = 'test@test.com';
 
         if ( data.CONFLATION_TYPE === 'Differential' ) {

@@ -162,7 +162,7 @@ export default class AdvancedOpts {
         groupHeader
             .append( 'div' )
             .classed( 'adv-opts-inner-wrap group-toggle-caret-wrap', true );
-            // .append( 'div' )
+            // .append( 'div' ) /* IGNORE ADDITIONAL OPTIONS FOR TIME BEING */
             // .attr( 'class', d => `adv-opt-toggle ${ d.members.length ? 'combobox-caret': '' }` )
             // .on( 'click', function(d) {
             //     if (d.members.length) {
@@ -179,7 +179,7 @@ export default class AdvancedOpts {
         let groupBody = groupEnter.append( 'div' )
             .classed( 'group-body fill-white hidden', true );
 
-        // let fieldContainer = groupBody.selectAll( '.hoot-form-field' )
+        // let fieldContainer = groupBody.selectAll( '.hoot-form-field' ) /* IGNORE ADDITIONAL OPTIONS FOR TIME BEING */
         //     .data(d => d.members);
         
         // fieldContainer.exit()
@@ -389,112 +389,4 @@ export default class AdvancedOpts {
 
         return options.trim();
     }
-
-        // createCheckbox( field ) {
-        //     field.select( 'label' )
-        //         .insert( 'input', ':first-child' )
-        //         .attr( 'type', 'checkbox' )
-        //         .attr( 'id', d => d.id )
-        //         .classed( 'reset', true )
-        //         .classed( 'checkbox-input', d => d.type === 'checkbox' )
-        //         .classed( 'checkplus-input', d => d.type === 'checkplus' )
-        //         .select( function( d ) {
-        //             this.checked = d.placeholder === 'true';
-        //         } );
-        // }
-
-        // createCheckplus( field ) {
-        //     let instance = this;
-
-        //     this.createCheckbox( field );
-
-        //     field.select( function( d ) {
-        //         if ( d.subchecks && d.subchecks.length ) {
-        //             d3.select( this ).classed( 'has-children', true );
-        //             instance.createFormFields( d.subchecks, field );
-
-        //             field.selectAll( '.hoot-form-field' ).classed( d.id + '_child', true );
-        //         }
-        //     } );
-        // }
-
-        // createTextField( field ) {
-        //     field.select( 'label' )
-        //         .append( 'input' )
-        //         .attr( 'type', 'text' )
-        //         .attr( 'id', d => d.id )
-        //         .attr( 'placeholder', d => d.placeholder )
-        //         .attr( 'min', d => d.minvalue > 0 ? d.minvalue : 'na' )
-        //         .attr( 'max', d => d.maxvalue > 0 ? d.maxvalue : 'na' )
-        //         .on( 'input', d => this.control.handleFieldInput( d ) );
-        // }
-
-        // createCombobox( field ) {
-        //     let instance = this;
-
-        //     field.select( 'label' )
-        //         .append( 'input' )
-        //         .attr( 'id', d => d.id )
-        //         .attr( 'type', 'text' )
-        //         .attr( 'placeholder', d => d.placeholder )
-        //         .select( function( d ) {
-        //             if ( d.combobox ) {
-        //                 let combobox = d3combobox()
-        //                     .data( _map( d.combobox, n => {
-        //                         return {
-        //                             value: n.name,
-        //                             title: n.name,
-        //                             id: n.id
-        //                         };
-        //                     } ) );
-
-        //                 d3.select( this )
-        //                     .attr( 'readonly', true )
-        //                     .call( combobox );
-
-        //                 instance.createSubGroup( field, d );
-        //             }
-        //         } );
-        // }
-
-        // createSubGroup( field, d ) {
-        //     let instance  = this,
-        //         fieldData = this.data.getFieldMeta( d.combobox );
-
-        //     field.selectAll( '.form-group' )
-        //         .data( fieldData )
-        //         .enter()
-        //         .append( 'div' )
-        //         .attr( 'id', s => s.label + '_engine_group' )
-        //         .classed( `form-group contain ${d.id}_group`, true )
-        //         .classed( 'hidden', s => s.label !== d.placeholder )
-        //         .select( function( s ) {
-        //             if ( s.children && s.children.length ) {
-        //                 field.classed( 'has-children', true );
-
-        //                 instance.createFormFields( s.children, d3.select( this ) );
-        //             }
-        //         } );
-        // }
-
-        // createButtons() {
-        //     let actionsContainer = this.form.append( 'div' )
-        //         .classed( 'advanced-opts-actions keyline-top', true );
-
-        //     actionsContainer.append( 'button' )
-        //         .classed( 'button primary round strong', true )
-        //         .text( 'Apply' )
-        //         .on( 'click', () => {
-        //             let saved = this.control.saveFields();
-
-        //             if ( saved ) {
-        //                 this.toggle();
-        //             }
-        //         } );
-
-        //     actionsContainer.append( 'button' )
-        //         .classed( 'button alert round strong', true )
-        //         .text( 'Cancel' )
-        //         .on( 'click', () => this.control.cancel() );
-    // }
 }
