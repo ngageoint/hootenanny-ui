@@ -1,5 +1,7 @@
 export function uiCoordinates(context) {
     var projection = context.projection;
+    var formats = ['DMS', 'DD', 'UTM', 'MGRS'];
+    var coordinateFormat = context.storage('coordinate-format') || 'DMS';
 
     function leadingZeros(num) {
         return ('0' + num.toString()).slice(-2);
@@ -39,24 +41,20 @@ export function uiCoordinates(context) {
         return degrees[0] + '°' + leadingZeros(minutes[0]) + '\'' + leadingZeros(seconds[0]) + '.' + leadingZeros(hundreths[0]) + '" ' + LatCardinal + '  '
             + degrees[1] + '°' + leadingZeros(minutes[1]) + '\'' + leadingZeros(seconds[1]) + '.' + leadingZeros(hundreths[1]) + '" ' + LngCardinal;
     }
+
     function formatDD(coords) {
         // Format to 4 decimal places
         var lat = coords[1];
         var lng = coords[0];
 
         function latDD() {
-            if (lat && (lat > -85 || lat < 85)) {
-                return (lat).toFixed(4);
-            }
+            return (lat).toFixed(4);
         }
         function lngDD() {
-            if (lng &&(lng > -180 || lng < 180)) {
-                return (lng).toFixed(4);
-            }
+            return (lng).toFixed(4);
         }
-        return latDD() + ',' + lngDD();
+        return latDD() + ', ' + lngDD();
     }
-
 
     function DDtoUTM(coords){
         //http://gis.stackexchange.com/questions/62281/converting-utm-decimal-degrees-with-javascript-or-using-a-web-service
@@ -141,7 +139,6 @@ export function uiCoordinates(context) {
         return zone.toString() + sn + ' ' + Xutm.toString() + 'm E ' + Yutm.toString() + 'm N';
     }
 
-        
     function UTMtoMGRS(coords, DDtoUTM){
         var lat = coords[1];
         var UTM = DDtoUTM(coords).split(' ');
@@ -158,7 +155,7 @@ export function uiCoordinates(context) {
         var n100k = n100kLetters[(zone-1)%2].charAt(row);
         var easting = utmEasting % 100e3;
         var northing = utmNorthing % 100e3;
-        
+
         function correctCoordinates(coords) {
             coords = String(coords);
             if (coords.length < 5) {
@@ -170,14 +167,31 @@ export function uiCoordinates(context) {
         return String(zone + band + ' ' + e100k + n100k + ' ' + correctCoordinates(easting) + ' ' + correctCoordinates(northing));
     }
 
+    function validCoords(coords) {
+        var lon = coords[0];
+        var lat = coords[1];
+        return lon > -180 && lon < 180 && lat > -85 && lat < 85;
+    }
+
     function update(selection, coords) {
-        if (!context.coordinateDisplay) {context.coordinateDisplay='DMS';}
-        switch (context.coordinateDisplay) {
-            case 'DMS': selection.text(DDtoDMS(coords)); break;
-            case 'DD': selection.text(formatDD(coords)); break;
-            case 'UTM': selection.text(DDtoUTM(coords)); break;
-            case 'MGRS': selection.text(UTMtoMGRS(coords, DDtoUTM)); break;
-            default: break;
+        if (validCoords(coords)) {
+            var formatted;
+            switch (coordinateFormat) {
+                case 'DD':
+                    formatted = formatDD(coords);
+                    break;
+                case 'UTM':
+                    formatted = DDtoUTM(coords);
+                    break;
+                case 'MGRS':
+                    formatted = UTMtoMGRS(coords, DDtoUTM);
+                    break;
+                case 'DMS':
+                default:
+                    formatted = DDtoDMS(coords);
+                    break;
+            }
+            selection.text(coordinateFormat + ': ' + formatted);
         }
     }
 
@@ -185,6 +199,15 @@ export function uiCoordinates(context) {
     return function(selection){
         var center = projection.invert(context.map().center());
         update(selection, center);
+
+        selection.on('click', function(d) {
+            var currIndex = formats.indexOf(coordinateFormat);
+            var newIndex = (currIndex < (formats.length - 1)) ? currIndex + 1 : 0;
+            coordinateFormat = formats[newIndex];
+            context.storage('coordinate-format', coordinateFormat);
+            var coords = projection.invert(context.map().mouse());
+            update(selection, coords);
+        })
 
         context.map().surface.on('mousemove', function() {
             var coords = projection.invert(context.map().mouse());

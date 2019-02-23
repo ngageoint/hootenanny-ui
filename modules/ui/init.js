@@ -239,61 +239,11 @@ export function uiInit(context) {
             .attr('id', 'scale-block')
             .call(uiScale(context));
 
-        footerWrap.append('ul')
-            .attr('class', 'coords')
-            .on('click', function () {
-                d3_event.stopPropagation();
-                d3_event.preventDefault();                
-
-                //Create context menu to offer bulk option
-                var items = ['DD', 'DMS', 'UTM', 'MGRS'];
-                d3_select('html .coords').append('div').classed('coordinates-options-menu', true);
-
-                var menuItem = d3_selectAll('.coordinates-options-menu')
-                    .html('')
-                    .append('ul')
-                    .selectAll('li')
-                    .data(items).enter()
-                    .append('li')
-                    .attr('class', function () { return ' coordinate-option'; })
-                    .on('click', function (item) {
-                        d3_event.stopPropagation();
-                        d3_event.preventDefault();
-                        context.coordinateDisplay = item;
-                        d3_select('.coordinates-options-menu').remove();
-                    });
-
-                menuItem.append('span').text(function (item) { return item; });
-
-                menuItem.on('mouseover', function() {
-                    d3_event.stopPropagation();
-                    d3_event.preventDefault();
-                    d3_select('.tooltip.tooltip-113.top.in').remove();
-                });
-
-
-                d3_select('.coordinates-options-menu').style('display', 'none');
-
-                // show the context menu
-                d3_select('.coordinates-options-menu')
-                    .style('text-align', 'center')
-                    .style('position', 'absolute')
-                    .style('bottom', '33px')
-                    .style('display', 'block');
-
-                //close menu
-                var firstOpen = true;
-                d3_select('html .coords').on('click.coordinates-options-menu', function () {
-                    if (firstOpen) {
-                        firstOpen = false;
-                    } else {
-                        d3_select('.coordinates-options-menu').style('display', 'none');
-                    }
-                });
-            }) 
-            .call(tooltip().title('Click to select coordinate system.').placement('top'))
-            .append('span')
-            .call(uiCoordinates(context));
+        footerWrap
+            .append('div')
+            .attr('id', 'coord-block')
+            .call(uiCoordinates(context))
+            .call(tooltip().title('Click to change format').placement('top'));
 
         var aboutList = footerWrap
             .append('div')
@@ -318,17 +268,9 @@ export function uiInit(context) {
             .append('a')
             .attr('target', '_blank')
             .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD/issues')
+            .attr('href', 'https://github.com/ngageoint/hootenanny-ui/issues')
             .call(svgIcon('#iD-icon-bug', 'light'))
             .call(tooltip().title(t('report_a_bug')).placement('top'));
-
-        issueLinks
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD/blob/master/CONTRIBUTING.md#translating')
-            .call(svgIcon('#iD-icon-translate', 'light'))
-            .call(tooltip().title(t('help_translate')).placement('top'));
 
         aboutList
             .append('li')
