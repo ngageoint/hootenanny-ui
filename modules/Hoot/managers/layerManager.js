@@ -131,7 +131,7 @@ export default class Layers {
     }
 
     hashLayer( type, mapId ) {
-        this.hashLayers[type] = parseInt(mapId);
+        this.hashLayers[type] = parseInt(mapId, 10);
     }
 
     async loadLayer( params ) {
