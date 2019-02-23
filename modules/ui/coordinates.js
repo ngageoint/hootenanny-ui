@@ -200,14 +200,14 @@ export function uiCoordinates(context) {
         var center = projection.invert(context.map().center());
         update(selection, center);
 
-        selection.on('click', function(d) {
+        selection.on('click', function() {
             var currIndex = formats.indexOf(coordinateFormat);
             var newIndex = (currIndex < (formats.length - 1)) ? currIndex + 1 : 0;
             coordinateFormat = formats[newIndex];
             context.storage('coordinate-format', coordinateFormat);
             var coords = projection.invert(context.map().mouse());
             update(selection, coords);
-        })
+        });
 
         context.map().surface.on('mousemove', function() {
             var coords = projection.invert(context.map().mouse());
