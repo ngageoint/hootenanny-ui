@@ -27,7 +27,12 @@ pipeline {
         stage("Vagrant Up") {
             steps {
                 // TODO: Vagrant up --noprovision, install hoot from daily develop RPMs
-                sh "vagrant up ${params.Box} --provider aws"
+                sh "vagrant up ${params.Box} --provider aws --provision-with hoot"
+                sh "vagrant ssh ${params.Box} -c 'sudo yum install -y epel-release yum-utils'"
+                sh "vagrant ssh ${params.Box} -c 'sudo yum-config-manager --add-repo https://s3.amazonaws.com/hoot-repo/el7/pgdg95.repo'"
+                sh "vagrant ssh ${params.Box} -c 'sudo yum-config-manager --add-repo https://s3.amazonaws.com/hoot-repo/el7/develop/hoot.repo'"
+                sh "vagrant ssh ${params.Box} -c 'sudo yum makecache -y'"
+                sh "vagrant ssh ${params.Box} -c 'sudo yum install -y hootenanny-autostart'"
             }       
         }
         stage("UI") {
@@ -35,7 +40,10 @@ pipeline {
                 expression { return params.UI }
             }
             steps {
-                sh "vagrant ssh ${params.Box} -c 'cd hoot; source ./SetupEnv.sh; time -p make -s ui2x-test'"
+                // Build ui-2x
+                sh "vagrant ssh ${params.Box} -c 'cd hoot/hoot-ui-2x; npm i -s; npm run production -s'"
+                // Run ui-2x tests
+                sh "vagrant ssh ${params.Box} -c 'cd hoot; ./scripts/database/AddKarmaTestUser.sh; cd hoot-ui-2x; npm test'"
             }
         }
     }
