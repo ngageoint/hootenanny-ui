@@ -26,7 +26,7 @@ module.exports = () => {
             setTimeout( () => {
                 expect( d3.select( '#datasets-import-form' ).size() ).to.equal( 1 );
                 done();
-            }, 400 );
+            }, 500 );
         } );
 
         it( 'performs validation on form fields', async () => {
