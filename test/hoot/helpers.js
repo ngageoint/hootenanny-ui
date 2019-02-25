@@ -74,7 +74,7 @@ function generateAdvOptsLayerParams() {
             NONE_TRANSLATION: 'true',
             TRANSLATION: 'NONE.js',
             INPUT_TYPE: 'OSM',
-            INPUT_NAME: `advOpts_${layer}`,
+            INPUT_NAME: `advOpts_${layer}_${uuidv4()}`,
             formData: getFormData( dT.files )
         };
         return params;
@@ -90,6 +90,13 @@ function getFormData( files ) {
     } );
 
     return formData;
+}
+
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
 }
 
 module.exports = {

@@ -4,6 +4,10 @@
  * @author Jack Grossman on 11/26/18 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 describe( 'Basemap component rendered', () => {
+    after(done => {
+        d3.select( '.menu-button' ).dispatch( 'click' );
+        setTimeout(() => { done(); }, 500);
+    });
     it( 'Activates basemap selector ', done => {
         d3.select('div.menu-button').dispatch('click');
         var basemapNode = d3.select('#manage-sidebar-menu div.tab-header:nth-child(3)');
@@ -31,11 +35,11 @@ describe( 'Basemap component rendered', () => {
             done();
         }, 1000);
     } );
-    it( 'Basemap table contains buttons', done => {
-        setTimeout(() => {
-            var basemapFormButtons = d3.select('div.button-container.fr');
-            expect(basemapFormButtons.size() ).to.equal( 1 );
-            done();
-        }, 1000);
-    } );
+    // it( 'Basemap table contains buttons', done => {
+    //     setTimeout(() => {
+    //         var basemapFormButtons = d3.select('div.button-container.fr');
+    //         expect(basemapFormButtons.size() ).to.equal( 1 );
+    //         done();
+    //     }, 1000);
+    // } );
   } );
