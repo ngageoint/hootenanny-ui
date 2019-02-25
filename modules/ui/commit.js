@@ -117,19 +117,19 @@ export function uiCommit(context) {
 
 
         // Changeset Section
-        var changesetSection = body.selectAll('.changeset-editor')
-            .data([0]);
+        // var changesetSection = body.selectAll('.changeset-editor')
+        //     .data([0]);
 
-        changesetSection = changesetSection.enter()
-            .append('div')
-            .attr('class', 'modal-section changeset-editor')
-            .merge(changesetSection);
+        // changesetSection = changesetSection.enter()
+        //     .append('div')
+        //     .attr('class', 'modal-section changeset-editor')
+        //     .merge(changesetSection);
 
-        changesetSection
-            .call(changesetEditor
-                .changesetID(_changeset.id)
-                .tags(tags)
-            );
+        // changesetSection
+        //     .call(changesetEditor
+        //         .changesetID(_changeset.id)
+        //         .tags(tags)
+        //     );
 
 
         // Warnings
@@ -181,35 +181,35 @@ export function uiCommit(context) {
         });
 
 
-        // Request Review
-        var requestReview = saveSection.selectAll('.request-review')
-            .data([0]);
+        // // Request Review
+        // var requestReview = saveSection.selectAll('.request-review')
+        //     .data([0]);
 
-        // Enter
-        var requestReviewEnter = requestReview.enter()
-            .append('div')
-            .attr('class', 'request-review');
+        // // Enter
+        // var requestReviewEnter = requestReview.enter()
+        //     .append('div')
+        //     .attr('class', 'request-review');
 
-        var labelEnter = requestReviewEnter
-            .append('label')
-            .attr('for', 'commit-input-request-review');
+        // var labelEnter = requestReviewEnter
+        //     .append('label')
+        //     .attr('for', 'commit-input-request-review');
 
-        labelEnter
-            .append('input')
-            .attr('type', 'checkbox')
-            .attr('id', 'commit-input-request-review');
+        // labelEnter
+        //     .append('input')
+        //     .attr('type', 'checkbox')
+        //     .attr('id', 'commit-input-request-review');
 
-        labelEnter
-            .append('span')
-            .text(t('commit.request_review'));
+        // labelEnter
+        //     .append('span')
+        //     .text(t('commit.request_review'));
 
-        // Update
-        requestReview = requestReview
-            .merge(requestReviewEnter);
+        // // Update
+        // requestReview = requestReview
+        //     .merge(requestReviewEnter);
 
-        var requestReviewInput = requestReview.selectAll('input')
-            .property('checked', isReviewRequested(_changeset.tags))
-            .on('change', toggleRequestReview);
+        // var requestReviewInput = requestReview.selectAll('input')
+        //     .property('checked', isReviewRequested(_changeset.tags))
+        //     .on('change', toggleRequestReview);
 
 
         // Buttons
