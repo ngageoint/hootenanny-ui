@@ -116,7 +116,7 @@ class SidebarController {
 
                 return `block float-left keyline-right ${ activeClass } ${ osmClass }`;
             } )
-            .attr( 'href', '#' )
+            // .attr( 'href', '#' )
             .attr( 'data-color', p => p.name )
             .style( 'background', p => p.hex )
             .on( 'click', function( p ) {

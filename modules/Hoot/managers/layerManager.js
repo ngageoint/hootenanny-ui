@@ -9,6 +9,7 @@ import _intersectionBy from 'lodash-es/intersectionBy';
 import _filter         from 'lodash-es/filter';
 import _find           from 'lodash-es/find';
 import _forEach        from 'lodash-es/forEach';
+import _isEmpty        from 'lodash-es/isEmpty';
 import _map            from 'lodash-es/map';
 import _reduce         from 'lodash-es/reduce';
 import _remove         from 'lodash-es/remove';
@@ -26,12 +27,18 @@ import {
     actionNoop
 } from '../../actions';
 
+import {
+    utilQsString,
+    utilStringQs
+} from '../../util';
+
 export default class Layers {
     constructor( hoot ) {
         this.hoot = hoot;
 
         this.allLayers          = [];
         this.loadedLayers       = {};
+        this.hashLayers         = {};
         this.recentlyUsedLayers = null;
         this.mergedLayer        = null;
         this.mergedConflicts    = null;
@@ -49,10 +56,26 @@ export default class Layers {
             this.syncRecentlyUsedLayers();
             this.hoot.events.emit( 'recent-layers-retrieved' );
 
+            //load hash layers if set
+            if (!_isEmpty(this.hashLayers)) {
+                Object.keys(this.hashLayers).forEach(k => {
+                    this.addHashLayer(k, this.hashLayers[k]);
+                });
+
+                this.hashLayers = {};
+            }
+
             return this.allLayers;
         } catch ( err ) {
-            this.hoot.response.alert( err );
+            Hoot.message.alert( err );
         }
+    }
+
+    async addHashLayer(type, mapId) {
+        Hoot.ui.sidebar.forms[ type ].submitLayer( {
+            id: mapId,
+            name: this.findBy( 'id', mapId).name
+        } );
     }
 
     findBy( key, val ) {
@@ -107,6 +130,10 @@ export default class Layers {
         return new GeoExtent( min, max );
     }
 
+    hashLayer( type, mapId ) {
+        this.hashLayers[type] = parseInt(mapId, 10);
+    }
+
     async loadLayer( params ) {
         try {
             let mapId       = params.id,
@@ -125,6 +152,11 @@ export default class Layers {
                 tags: tags,
                 visible: true
             };
+
+            //update url hash
+            var q = utilStringQs(window.location.hash.substring(1));
+            q[params.refType] = mapId;
+            window.location.replace('#' + utilQsString(q, true));
 
             if ( tags.input1 || tags.input2 ) {
                 layer = await this.checkForReview( layer );

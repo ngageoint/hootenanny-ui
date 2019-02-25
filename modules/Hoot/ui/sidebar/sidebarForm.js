@@ -94,7 +94,7 @@ export default class SidebarForm {
      */
     createToggleButton() {
         this.button = this.form.append( 'a' )
-            .attr( 'href', '#' )
+            // .attr( 'href', '#' )
             .attr( 'class', d => {
                 let iconClass = d.type === 'add' ? 'plus' : d.type === 'conflate' ? 'conflate' : 'check';
 

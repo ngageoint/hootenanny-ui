@@ -191,7 +191,7 @@ class Login {
             .append( 'p' )
             .html( '&#9658; Click ' )
             .append( 'a' )
-            .attr( 'href', '#!' )
+            // .attr( 'href', '#!' )
             .text( 'here' )
             .on( 'click', () => window.location = this.oauthRedirectUrl );
 
