@@ -21,11 +21,6 @@ const
         jQuery: 'jquery'
     } );
 
-// get git info from command line
-const commitHash = require('child_process')
-  .execSync('git describe --always')
-  .toString();
-
 module.exports = {
     context: resolve( __dirname, '../' ),
     entry: {
@@ -74,10 +69,7 @@ module.exports = {
         new MiniCssExtractPlugin( {
             filename: '[name].css'
         } ),
-        new webpack.EnvironmentPlugin( [ 'NODE_ENV' ] ),
-        new webpack.DefinePlugin({
-          __COMMIT_HASH__: JSON.stringify(commitHash),
-        })
+        new webpack.EnvironmentPlugin( [ 'NODE_ENV' ] )
     ],
     node: {
         dns: 'empty',

@@ -9,7 +9,6 @@
 /dist/img/
 /dist/mapillary-js/
 /dist/pannellum-streetside/
-/modules/Hoot/config/buildInfo.json
 /node_modules/
 /.tx/tmp/
 npm-debug.log

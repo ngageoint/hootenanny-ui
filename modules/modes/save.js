@@ -159,7 +159,7 @@ export function modeSave(context) {
                         result.push.apply(result, _map(_filter(children, 'version'), 'id'));
                     } catch (err) {
                         /* eslint-disable no-console */
-                        if (typeof console !== 'undefined') console.error(err);
+                        if (typeof console !== 'undefined') window.console.error(err);
                         /* eslint-enable no-console */
                     }
                 }
@@ -304,7 +304,7 @@ export function modeSave(context) {
             var history = context.history();
             var changes = history.changes(actionDiscardTags(history.difference()));
             if (changes.modified.length || changes.created.length || changes.deleted.length) {
-                loadLocation();  // so it is ready when we display the save screen
+                //loadLocation();  // so it is ready when we display the save screen
                 osm.putChangeset(changeset, changes, uploadCallback);
             } else {        // changes were insignificant or reverted by user
                 d3_select('.inspector-wrap *').remove();
@@ -527,7 +527,7 @@ export function modeSave(context) {
             return;
         }
 
-        if (osm.authenticated()) {
+        if (Hoot.layers.noApi() || osm.authenticated()) {
             done();
         } else {
             osm.authenticate(function(err) {

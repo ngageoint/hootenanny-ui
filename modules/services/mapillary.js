@@ -426,7 +426,7 @@ export default {
             this.initViewer(imageKey, context);
         } else {
             _mlyViewer.moveToKey(imageKey)
-                .catch(function(e) { console.error('mly3', e); });  // eslint-disable-line no-console
+                .catch(function(e) { window.console.error('mly3', e); });  // eslint-disable-line no-console
         }
 
         return this;
@@ -465,7 +465,7 @@ export default {
             _mlyViewer.on('nodechanged', nodeChanged);
             _mlyViewer.on('bearingchanged', bearingChanged);
             _mlyViewer.moveToKey(imageKey)
-                .catch(function(e) { console.error('mly3', e); });  // eslint-disable-line no-console
+                .catch(function(e) { window.console.error('mly3', e); });  // eslint-disable-line no-console
         }
 
         // nodeChanged: called after the viewer has changed images and is ready.
