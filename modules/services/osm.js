@@ -60,7 +60,7 @@ var oauth = osmAuth({
 // for the time being, we probably want to restore
 // the functionality from https://github.com/ngageoint/hootenanny-ui/blob/007797598b97d66456c4c852d054c780ab3d062e/modules/services/osm.js#L491-L547
 if (!window.mocha) {
-        oauth.authenticated = function() {
+    oauth.authenticated = function() {
         return true;
     };
 }
