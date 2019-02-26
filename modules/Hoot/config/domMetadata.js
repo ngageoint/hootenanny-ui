@@ -444,7 +444,7 @@ export function advancedOptions() {
             ]
         },
         {
-            label: 'Poi Generic',
+            label: 'POI',
             id: 'poiGenericOptions',
             matcher: 'hoot::ScriptMatchCreator,PoiGeneric.js',
             merger: 'hoot::ScriptMergerCreator',

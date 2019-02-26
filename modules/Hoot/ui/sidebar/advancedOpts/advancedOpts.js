@@ -92,8 +92,7 @@ export default class AdvancedOpts {
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
             .on( 'click', () => { 
-                self.advancedOptions = advancedOptions(self); 
-                self.createGroups();
+                d3.selectAll( '.form-group input' ).property( 'checked', true );
             });
     }
 
@@ -109,9 +108,23 @@ export default class AdvancedOpts {
             .style( 'opacity', 1 );
     }
 
+    toggleOption(id, checked) {
+        let parent = d3.select( `#${id}_group` );
+    
+        parent.select( '.group-toggle-caret-wrap' )
+            .classed( 'toggle-disabled', !checked );
+
+        if (!checked) {
+            parent.select( '.group-body' )
+                .classed( 'hidden', true );
+        }
+
+    }
+
     createGroups() {
-        let group = this.contentDiv.selectAll( '.form-group' )
-            .data( this.advancedOptions );
+        let toggleOption = this.toggleOption,
+            group = this.contentDiv.selectAll( '.form-group' )
+                .data( this.advancedOptions );
 
         group.exit()
             .remove();
@@ -137,18 +150,8 @@ export default class AdvancedOpts {
             .classed( 'conflate-type-toggle', true )
             .property( 'checked', true )
             .on( 'click', function(d) {
-                let selection = d3.select( this ),
-                    checked = selection.property( 'checked' ),
-                    parent = d3.select( `#${d.id}_group` );
-                
-                parent.select( '.group-toggle-caret-wrap' )
-                    .classed( 'toggle-disabled', !checked );
-
-                if (!checked) {
-                    parent.select( '.group-body' )
-                        .classed( 'hidden', true );
-                }
-
+                let checked = d3.select( this ).property( 'checked' );
+                toggleOption( d.id, checked ); 
             } );
 
 
@@ -157,7 +160,15 @@ export default class AdvancedOpts {
             .append( 'span' )
             .attr( 'id', d => `${ d.id }_label` )
             .classed( 'adv-opt-title', true)
-            .text( d => d.label );
+            .text( d => d.label )
+            .on( 'click', function(d) { 
+                let toggle = d3.select( `#${d.id}-toggle`),
+                    checked = toggle.property( 'checked' );
+
+                toggle.property( 'checked', !checked );
+
+                toggleOption( d.id, checked );
+            } );
 
         groupHeader
             .append( 'div' )
