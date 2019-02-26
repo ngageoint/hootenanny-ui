@@ -278,8 +278,10 @@ export function exportDataForm( ) {
             inputType: 'combobox',
             data: [ 'File Geodatabase', 'Shapefile', 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
             onChange: () => {
-                const isFgdb = d3.select( `#${exportFormatId}` ).property( 'value') === 'File Geodatabase';
-                d3.select( `#${exportFgdbId}` ).classed( 'hidden', isFgdb );
+                const isFgdb = d3.select( `#${exportFormatId}` ).property( 'value' ) === 'File Geodatabase',
+                      fgdbWrap = d3.select( d3.select( `#${exportFgdbId}` ).node().parentNode );
+
+                fgdbWrap.classed( 'hidden', !isFgdb );
                 this.validate( exportFormatId );
             }
         },

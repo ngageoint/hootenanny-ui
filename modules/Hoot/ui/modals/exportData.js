@@ -119,7 +119,6 @@ export default class ExportData {
 
     handleSubmit() {
         let self = this,
-            req  = Hoot.api[`export${this.type}`], // either folder or dataset...
             data = {
                 input: self.input,
                 append: self.appendToFgdbCheckbox.property('checked'),
@@ -135,7 +134,7 @@ export default class ExportData {
         data = Object.assign(data, this.addInputs());
 
         this.formFactory.createProcessSpinner( this.container.select( '.modal-footer' ) );
-        this.processRequest = req(data).catch( err => {
+        this.processRequest = Hoot.api[`export${this.type}`](data).catch( err => {
                 Hoot.message.alert( err );
             } )
             .finally( () => {
