@@ -278,18 +278,18 @@ export function uiCommit(context) {
         body.call(commitChanges);
 
 
-        function toggleRequestReview() {
-            var rr = requestReviewInput.property('checked');
-            updateChangeset({ review_requested: (rr ? 'yes' : undefined) });
+        // function toggleRequestReview() {
+        //     var rr = requestReviewInput.property('checked');
+        //     updateChangeset({ review_requested: (rr ? 'yes' : undefined) });
 
-            var expanded = !tagSection.selectAll('a.hide-toggle.expanded').empty();
-            tagSection
-                .call(rawTagEditor
-                    .expanded(expanded)
-                    .readOnlyTags(readOnlyTags)
-                    .tags(_clone(_changeset.tags))
-                );
-        }
+        //     var expanded = !tagSection.selectAll('a.hide-toggle.expanded').empty();
+        //     tagSection
+        //         .call(rawTagEditor
+        //             .expanded(expanded)
+        //             .readOnlyTags(readOnlyTags)
+        //             .tags(_clone(_changeset.tags))
+        //         );
+        // }
     }
 
 
