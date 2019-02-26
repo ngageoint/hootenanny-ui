@@ -119,6 +119,9 @@
         .adv-opt-toggle:hover::after {
             border-top-color: #777;
         }
+        .adv-opt-title-disabled {
+            opacity: .5;
+        }
     }
 
     .group-body {

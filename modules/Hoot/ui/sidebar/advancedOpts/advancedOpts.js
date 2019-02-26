@@ -108,17 +108,21 @@ export default class AdvancedOpts {
             .style( 'opacity', 1 );
     }
 
-    toggleOption(id, checked) {
-        let parent = d3.select( `#${id}_group` );
-    
-        parent.select( '.group-toggle-caret-wrap' )
+    toggleOption(d, checked) {
+        let label = d3.select( `#${d.id}_label` ),
+            parent = d3.select( `#${d.id}_group` );
+
+        parent
+            .select( '.group-toggle-caret-wrap' )
             .classed( 'toggle-disabled', !checked );
+                
+        label
+            .classed( 'adv-opt-title-disabled', !label.classed( 'adv-opt-title-disabled' ) );
 
         if (!checked) {
             parent.select( '.group-body' )
                 .classed( 'hidden', true );
         }
-
     }
 
     createGroups() {
@@ -149,26 +153,23 @@ export default class AdvancedOpts {
             .attr( 'id', d => `${d.id}-toggle` )
             .classed( 'conflate-type-toggle', true )
             .property( 'checked', true )
-            .on( 'click', function(d) {
-                let checked = d3.select( this ).property( 'checked' );
-                toggleOption( d.id, checked ); 
-            } );
+            .on( 'click', d => toggleOption(d) );
 
 
         groupLeftInnerWrap
             .append( 'div' )
+            .on('click', d => {
+                let toggle = d3.select( `#${d.id}-toggle`),
+                    checked = toggle.property( 'checked' );
+                    
+                toggle.property( 'checked', !checked );
+
+                toggleOption( d, checked ); 
+            } )
             .append( 'span' )
             .attr( 'id', d => `${ d.id }_label` )
             .classed( 'adv-opt-title', true)
-            .text( d => d.label )
-            .on( 'click', function(d) { 
-                let toggle = d3.select( `#${d.id}-toggle`),
-                    checked = toggle.property( 'checked' );
-
-                toggle.property( 'checked', !checked );
-
-                toggleOption( d.id, checked );
-            } );
+            .text( d => d.label );
 
         groupHeader
             .append( 'div' )
