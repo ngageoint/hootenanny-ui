@@ -265,16 +265,23 @@ export default class FormFactory {
      * @param field - field div
      */
     createCheckbox( field ) {
+        if ( field.datum().hidden ) {
+            field.attr('class', 'hidden');
+        }
+
         field
             .append( 'input' )
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
-            .property( 'checked', d => d.checked );
+            .property( 'checked', d => d.checked )
+            .on( 'change', d => d.onChange && d.onChange(d) );
+
         field
             .append( 'label' )
             .attr( 'for', d => d.id)
             .text( d => d.value );
+
     }
 
     /**

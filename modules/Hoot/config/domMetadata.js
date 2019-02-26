@@ -273,18 +273,23 @@ export function exportDataForm( ) {
             onChange: () => this.validate( exportComboId )
         },
         {
-            label: 'ESRI FGDB Template',
-            id: exportFgdbId,
-            inputType: 'checkbox',
-            value: 'append',
-            checked: false
-        },
-        {
             label: 'Export Format',
             id: exportFormatId,
             inputType: 'combobox',
             data: [ 'File Geodatabase', 'Shapefile', 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
-            onChange: () => this.validate( exportFormatId )
+            onChange: () => {
+                const isFgdb = d3.select( `#${exportFormatId}` ).property( 'value') === 'File Geodatabase';
+                d3.select( `#${exportFgdbId}` ).classed( 'hidden', isFgdb );
+                this.validate( exportFormatId );
+            }
+        },
+        {
+            label: 'ESRI FGDB Template',
+            id: exportFgdbId,
+            inputType: 'checkbox',
+            value: 'append',
+            checked: false,
+            hidden: true
         },
         // {
         //     label: 'Tag Overrides',
