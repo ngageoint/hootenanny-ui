@@ -27,4 +27,4 @@ export const apiConfig = {
 
 export default apiConfig;
 
-export let baseUrl = `${apiConfig.host}${apiConfig.path}`;
+export let baseUrl = `${apiConfig.path}`;
