@@ -426,7 +426,7 @@
             "rateLimit": "The API is limiting anonymous connections.  You can fix this by logging in."
         },
         "commit": {
-            "title": "Upload to OpenStreetMap",
+            "title": "Upload to Hootenanny",
             "upload_explanation": "The changes you upload will be visible on all maps that use OpenStreetMap data.",
             "upload_explanation_with_user": "The changes you upload as {user} will be visible on all maps that use OpenStreetMap data.",
             "request_review": "I would like someone to review my edits.",
@@ -744,7 +744,7 @@
             "error": "Errors occurred while trying to save",
             "status_code": "Server returned status code {code}",
             "unknown_error_details": "Please ensure you are connected to the internet.",
-            "uploading": "Uploading changes to OpenStreetMap...",
+            "uploading": "Uploading changes to Hootenanny...",
             "conflict_progress": "Checking for conflicts: {num} of {total}",
             "unsaved_changes": "You have unsaved changes",
             "conflict": {
@@ -8017,6 +8017,13 @@
                 },
                 "description": "Japan GSI airphoto Imagery. Not fully orthorectified, but a bit newer and/or differently covered than GSI ortho Imagery.",
                 "name": "Japan GSI airphoto Imagery"
+            },
+            "gsi.go.jp_seamlessphoto": {
+                "attribution": {
+                    "text": "GSI Japan seamless photo"
+                },
+                "description": "Japan GSI seamlessphoto Imagery. The collection of latest imageries of GSI ortho, airphoto, post disaster and others.",
+                "name": "Japan GSI seamlessphoto Imagery"
             },
             "gsi.go.jp_std_map": {
                 "attribution": {

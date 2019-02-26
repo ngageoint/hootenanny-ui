@@ -145,40 +145,40 @@ export function uiCommit(context) {
             .attr('class','modal-section save-section fillL cf')
             .merge(saveSection);
 
-        var prose = saveSection.selectAll('.commit-info')
-            .data([0]);
+        // var prose = saveSection.selectAll('.commit-info')
+        //     .data([0]);
 
-        prose = prose.enter()
-            .append('p')
-            .attr('class', 'commit-info')
-            .text(t('commit.upload_explanation'))
-            .merge(prose);
+        // prose = prose.enter()
+        //     .append('p')
+        //     .attr('class', 'commit-info')
+        //     .text(t('commit.upload_explanation'))
+        //     .merge(prose);
 
-        osm.userDetails(function(err, user) {
-            if (err) return;
+        // osm.userDetails(function(err, user) {
+        //     if (err) return;
 
-            var userLink = d3_select(document.createElement('div'));
+        //     var userLink = d3_select(document.createElement('div'));
 
-            _userDetails = user;
+        //     _userDetails = user;
 
-            if (user.image_url) {
-                userLink
-                    .append('img')
-                    .attr('src', user.image_url)
-                    .attr('class', 'icon pre-text user-icon');
-            }
+        //     if (user.image_url) {
+        //         userLink
+        //             .append('img')
+        //             .attr('src', user.image_url)
+        //             .attr('class', 'icon pre-text user-icon');
+        //     }
 
-            userLink
-                .append('a')
-                .attr('class', 'user-info')
-                .text(user.display_name)
-                .attr('href', osm.userURL(user.display_name))
-                .attr('tabindex', -1)
-                .attr('target', '_blank');
+        //     userLink
+        //         .append('a')
+        //         .attr('class', 'user-info')
+        //         .text(user.display_name)
+        //         .attr('href', osm.userURL(user.display_name))
+        //         .attr('tabindex', -1)
+        //         .attr('target', '_blank');
 
-            prose
-                .html(t('commit.upload_explanation_with_user', { user: userLink.html() }));
-        });
+        //     prose
+        //         .html(t('commit.upload_explanation_with_user', { user: userLink.html() }));
+        // });
 
 
         // // Request Review
@@ -246,10 +246,10 @@ export function uiCommit(context) {
             });
 
         buttonSection.selectAll('.save-button')
-            .attr('disabled', function() {
-                var n = d3_select('#preset-input-comment').node();
-                return (n && n.value.length) ? null : true;
-            })
+            // .attr('disabled', function() {
+            //     var n = d3_select('#preset-input-comment').node();
+            //     return (n && n.value.length) ? null : true;
+            // })
             .on('click.save', function() {
                 this.blur();    // avoid keeping focus on the button - #4641
                 dispatch.call('save', this, _changeset);
