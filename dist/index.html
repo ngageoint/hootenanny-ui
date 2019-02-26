@@ -15,6 +15,7 @@
         <!--[if !IE]>-->
         <script src='iD.min.js'></script>
         <script src='vendors~iD.min.js'></script>
+        <script src='vendors~iD~login.min.js'></script>
         <!--<![endif]-->
     </head>
     <body>
@@ -45,8 +46,9 @@
                     }
                 } )
                 .catch( err => {
+                    console.error(err);
                     // user not logged in - redirect to login page
-                    window.location.replace( 'login.html' ); // no slash appends relative URI to end of base path
+                    //window.location.replace( 'login.html' ); // no slash appends relative URI to end of base path
                 } );
         </script>
     </body>
