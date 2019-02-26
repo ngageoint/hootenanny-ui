@@ -2,24 +2,18 @@ import {
     event as d3_event,
     select as d3_select
 } from 'd3-selection';
-import { dispatch as d3_dispatch } from 'd3-dispatch';
-
-import { utilKeybinding } from '../util/keybinding';
 
 import { t, textDirection } from '../util/locale';
 import { tooltip } from '../util/tooltip';
 
 import { behaviorHash } from '../behavior';
 import { modeBrowse } from '../modes';
-import { services } from '../services';
 import { svgDefs, svgIcon } from '../svg';
 import { utilGetDimensions } from '../util/dimensions';
-import { utilRebind } from '../util';
 
 import { uiAccount } from './account';
 import { uiAttribution } from './attribution';
 import { uiBackground } from './background';
-import { uiContributors } from './contributors';
 import { uiCoordinates } from './coordinates';
 import { uiDgcarousel } from './dgcarousel';
 import { uiFeatureInfo } from './feature_info';
@@ -49,6 +43,7 @@ import { uiUndoRedo } from './undo_redo';
 import { uiVersion } from './version';
 import { uiZoom } from './zoom';
 import { uiCmd } from './cmd';
+
 
 export function uiInit(context) {
     var _initCounter = 0;
@@ -238,6 +233,12 @@ export function uiInit(context) {
             .attr('id', 'scale-block')
             .call(uiScale(context));
 
+        footerWrap
+            .append('div')
+            .attr('id', 'coord-block')
+            .call(uiCoordinates(context))
+            .call(tooltip().title('Click to change format').placement('top'));
+
         var aboutList = footerWrap
             .append('div')
             .attr('id', 'info-block')
@@ -261,30 +262,15 @@ export function uiInit(context) {
             .append('a')
             .attr('target', '_blank')
             .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD/issues')
+            .attr('href', 'https://github.com/ngageoint/hootenanny-ui/issues')
             .call(svgIcon('#iD-icon-bug', 'light'))
             .call(tooltip().title(t('report_a_bug')).placement('top'));
-
-        issueLinks
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .attr('href', 'https://github.com/openstreetmap/iD/blob/master/CONTRIBUTING.md#translating')
-            .call(svgIcon('#iD-icon-translate', 'light'))
-            .call(tooltip().title(t('help_translate')).placement('top'));
 
         aboutList
             .append('li')
             .attr('class', 'feature-warning')
             .attr('tabindex', -1)
             .call(uiFeatureInfo(context));
-
-        aboutList
-            .append('li')
-            .attr('class', 'user-list')
-            .attr('tabindex', -1)
-            .call(uiContributors(context));
-
 
         // Setup map dimensions and move map to initial center/zoom.
         // This should happen after #content and toolbars exist.
@@ -377,6 +363,7 @@ export function uiInit(context) {
 
         function pan(d) {
             return function() {
+                if (d3_select('.combobox').size()) return;
                 d3_event.preventDefault();
                 context.pan(d, 100);
             };
@@ -388,10 +375,8 @@ export function uiInit(context) {
     }
 
 
-    var renderCallback;
-
     function ui(node, callback) {
-        renderCallback = callback;
+        _initCallback = callback;
         var container = d3_select(node);
         context.container(container);
         context.loadLocale(function(err) {
@@ -406,19 +391,19 @@ export function uiInit(context) {
 
 
     ui.restart = function(arg) {
+        context.keybinding().clear();
         context.locale(arg);
         context.loadLocale(function(err) {
             if (!err) {
                 context.container().selectAll('*').remove();
                 render(context.container());
-                if (renderCallback) renderCallback();
+                if (_initCallback) _initCallback();
             }
         });
     };
 
 
     ui.sidebar = uiSidebar(context);
-
 
     ui.photoviewer = uiPhotoviewer(context);
 
@@ -475,6 +460,6 @@ export function uiInit(context) {
         }
     };
 
-    // return utilRebind(ui, dispatch, 'on');
+
     return ui;
 }

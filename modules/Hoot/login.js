@@ -191,7 +191,7 @@ class Login {
             .append( 'p' )
             .html( '&#9658; Click ' )
             .append( 'a' )
-            .attr( 'href', '#!' )
+            // .attr( 'href', '#!' )
             .text( 'here' )
             .on( 'click', () => window.location = this.oauthRedirectUrl );
 
@@ -223,9 +223,9 @@ class Login {
 
         window.oAuthDone = ( e, user_object ) => {
             if ( e ) {
-                console.warn( 'Failed to verify oauth tokens w/ provider:' );
-                console.warn( 'XMLHttpRequest.status', e.status || null );
-                console.warn( 'XMLHttpRequest.responseText ', e.responseText || null );
+                window.console.warn( 'Failed to verify oauth tokens w/ provider:' );
+                window.console.warn( 'XMLHttpRequest.status', e.status || null );
+                window.console.warn( 'XMLHttpRequest.responseText ', e.responseText || null );
 
                 window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
                 window.history.pushState( {}, document.title, window.location.pathname );

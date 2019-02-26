@@ -38,7 +38,7 @@ export default class LayerReview extends SidebarForm {
         this.acceptAll = this.fieldset.append( 'div' )
             .classed( 'hoot-form-field', true )
             .append( 'a' )
-            .attr( 'href', '!#' )
+            // .attr( 'href', '!#' )
             .text( 'Resolve all remaining reviews' )
             .on( 'click', () => {
                 d3.event.stopPropagation();

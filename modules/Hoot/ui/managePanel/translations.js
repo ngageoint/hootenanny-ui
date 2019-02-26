@@ -69,7 +69,7 @@ export default class Translations extends Tab {
             this.populateTranslations( translations );
         } catch ( e ) {
             // TODO: show alert
-            // console.log( 'Unable to retrieve translations' );
+            // window.console.log( 'Unable to retrieve translations' );
             throw new Error( e );
         }
     }
@@ -189,7 +189,7 @@ export default class Translations extends Tab {
 
         } catch ( e ) {
             //TODO: show warning
-            // console.log( 'Unable to get translations text' );
+            // window.console.log( 'Unable to get translations text' );
             throw new Error( e );
         }
     }

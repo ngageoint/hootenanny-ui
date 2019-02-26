@@ -1,14 +1,7 @@
 export function uiCoordinates(context) {
     var projection = context.projection;
-    var formats = ['DMS', 'DD', 'UTM'];
-    var format = cycleFormats();
-    var coords;
-
-    function cycleFormats() {
-        format = formats.shift();
-        formats.push(format);
-        return format;
-    }
+    var formats = ['DMS', 'DD', 'UTM', 'MGRS'];
+    var coordinateFormat = context.storage('coordinate-format') || 'DMS';
 
     function leadingZeros(num) {
         return ('0' + num.toString()).slice(-2);
@@ -49,15 +42,18 @@ export function uiCoordinates(context) {
             + degrees[1] + '°' + leadingZeros(minutes[1]) + '\'' + leadingZeros(seconds[1]) + '.' + leadingZeros(hundreths[1]) + '" ' + LngCardinal;
     }
 
-    function formatDD(coords){
+    function formatDD(coords) {
         // Format to 4 decimal places
         var lat = coords[1];
         var lng = coords[0];
 
-        var latDD = lat.toFixed(4);
-        var lngDD = lng.toFixed(4);
-
-        return latDD + ', ' + lngDD;
+        function latDD() {
+            return (lat).toFixed(4);
+        }
+        function lngDD() {
+            return (lng).toFixed(4);
+        }
+        return latDD() + ', ' + lngDD();
     }
 
     function DDtoUTM(coords){
@@ -143,29 +139,79 @@ export function uiCoordinates(context) {
         return zone.toString() + sn + ' ' + Xutm.toString() + 'm E ' + Yutm.toString() + 'm N';
     }
 
+    function UTMtoMGRS(coords, DDtoUTM){
+        var lat = coords[1];
+        var UTM = DDtoUTM(coords).split(' ');
+        var zone = Number((UTM[0]).slice(0, -1));
+        var utmEasting = Number((UTM[1]).slice(0, -1));
+        var utmNorthing = Number((UTM[3]).slice(0, -1));
+        var latBands = 'CDEFGHJKLMNPQRSTUVWXX';
+        var e100kLetters = [ 'ABCDEFGH', 'JKLMNPQR', 'STUVWXYZ' ];
+        var n100kLetters = ['ABCDEFGHJKLMNPQRSTUV', 'FGHJKLMNPQRSTUVABCDE'];
+        var band = latBands.charAt(Math.floor(lat/8+10));
+        var col = Math.floor(utmEasting / 100e3);
+        var e100k = e100kLetters[(zone-1)%3].charAt(col-1);
+        var row = Math.floor(utmNorthing / 100e3) % 20;
+        var n100k = n100kLetters[(zone-1)%2].charAt(row);
+        var easting = utmEasting % 100e3;
+        var northing = utmNorthing % 100e3;
 
-    function update(selection) {
-        switch (format) {
-            case 'DMS': selection.text(DDtoDMS(coords)); break;
-            case 'DD': selection.text(formatDD(coords)); break;
-            case 'UTM': selection.text(DDtoUTM(coords)); break;
-            default: break;
+        function correctCoordinates(coords) {
+            coords = String(coords);
+            if (coords.length < 5) {
+                coords = new Array(5 - coords.length + 1).join('0') + coords;
+            }
+            return coords;
+        }
+
+        return String(zone + band + ' ' + e100k + n100k + ' ' + correctCoordinates(easting) + ' ' + correctCoordinates(northing));
+    }
+
+    function validCoords(coords) {
+        var lon = coords[0];
+        var lat = coords[1];
+        return lon > -180 && lon < 180 && lat > -85 && lat < 85;
+    }
+
+    function update(selection, coords) {
+        if (validCoords(coords)) {
+            var formatted;
+            switch (coordinateFormat) {
+                case 'DD':
+                    formatted = formatDD(coords);
+                    break;
+                case 'UTM':
+                    formatted = DDtoUTM(coords);
+                    break;
+                case 'MGRS':
+                    formatted = UTMtoMGRS(coords, DDtoUTM);
+                    break;
+                case 'DMS':
+                default:
+                    formatted = DDtoDMS(coords);
+                    break;
+            }
+            selection.text(coordinateFormat + ': ' + formatted);
         }
     }
 
 
     return function(selection){
-        coords = projection.invert(context.map().center());
-        update(selection);
+        var center = projection.invert(context.map().center());
+        update(selection, center);
 
         selection.on('click', function() {
-            cycleFormats();
-            update(selection);
+            var currIndex = formats.indexOf(coordinateFormat);
+            var newIndex = (currIndex < (formats.length - 1)) ? currIndex + 1 : 0;
+            coordinateFormat = formats[newIndex];
+            context.storage('coordinate-format', coordinateFormat);
+            var coords = projection.invert(context.map().mouse());
+            update(selection, coords);
         });
 
         context.map().surface.on('mousemove', function() {
-            coords = projection.invert(context.map().mouse());
-            update(selection);
+            var coords = projection.invert(context.map().mouse());
+            update(selection, coords);
         });
     };
 }

@@ -3631,6 +3631,19 @@ img.tile-debug {
     margin-right: 0;
 }
 
+#coord-block {
+    float: right;
+    border-left: 1px solid rgba(255,255,255,.5);
+    padding: 8px 0 0px 8px;
+    margin-left: 5px;
+    font: 12px sans-serif;
+    color: #ccc;
+
+}
+#coord-block:hover {
+    cursor: pointer;
+}
+
 #about-list li {
     float: right;
     border-left: 1px solid rgba(255,255,255,.5);

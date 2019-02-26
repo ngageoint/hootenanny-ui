@@ -63,8 +63,8 @@ export default class Navbar {
         let rightContainer = this.navbar
             .append( 'div' )
             .classed( 'nav-item', true);
-        
-        
+
+
         if ( this.isLoggedIn ) {
             let user = JSON.parse( localStorage.getItem( 'user' ) );
 
@@ -97,7 +97,7 @@ export default class Navbar {
                 .classed( 'dropdown-item pad2x strong pointer', true )
                 .on( 'click', () => this.openAboutModal() )
                 .append( 'a' )
-                .attr( 'href', '#!' )
+                // .attr( 'href', '#!' )
                 .text( 'About' );
 
             dropdownContent
@@ -111,7 +111,7 @@ export default class Navbar {
                         } );
                 } )
                 .append( 'a' )
-                .attr( 'href', '#!' )
+                // .attr( 'href', '#!' )
                 .text( 'Logout' );
 
             this.initDropdown();
@@ -120,7 +120,7 @@ export default class Navbar {
             rightContainer
                 .append( 'div' )
                 .attr( 'id', 'logoutTabBtn' )
-                .attr( 'href', '#logout' )
+                // .attr( 'href', '#logout' )
                 .classed( '_icon light strong small info pad2x flex align-center text-light pointer', true )
                 .text( 'Launch Login' )
                 .on( 'click', () => this.login.launchOAuthLogin() );

@@ -59,6 +59,10 @@ export default class Datasets extends Tab {
                 width: '9%'
             },
             {
+                title: 'Owner',
+                width: '9%'
+            },
+            {
                 title: 'Last Accessed',
                 width: '6%'
             },

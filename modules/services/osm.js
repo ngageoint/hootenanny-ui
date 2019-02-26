@@ -727,7 +727,7 @@ export default {
                         changedRel.members.push( newMember );
                     }
 
-                    //console.log( 'NEW changed relation: ', changedRel );
+                    //window.console.log( 'NEW changed relation: ', changedRel );
 
                     if ( changedRel.members.length < 2 ) {
                         changedRel.tags[ 'hoot:review:needs' ] = 'no';
