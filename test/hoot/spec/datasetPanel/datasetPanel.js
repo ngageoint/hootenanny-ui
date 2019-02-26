@@ -8,7 +8,7 @@ const { retrieveFile } = require('../../helpers');
 
 describe( 'dataset panel', () => {
     before(function(done) {
-        this.enableTimeouts(false);
+        // this.enableTimeouts(false);
         let menuButton = d3.select( '#navbar .menu-button' );
         
         if ( !menuButton.classed( 'active' ) ) menuButton.dispatch( 'click' );

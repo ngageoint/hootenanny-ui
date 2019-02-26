@@ -35,11 +35,11 @@ describe( 'Basemap component rendered', () => {
             done();
         }, 1000);
     } );
-    // it( 'Basemap table contains buttons', done => {
-    //     setTimeout(() => {
-    //         var basemapFormButtons = d3.select('div.button-container.fr');
-    //         expect(basemapFormButtons.size() ).to.equal( 1 );
-    //         done();
-    //     }, 1000);
-    // } );
+    it( 'Basemap table contains buttons', done => {
+        setTimeout(() => {
+            var basemapFormButtons = d3.select('div.button-container.fr');
+            expect(basemapFormButtons.size() ).to.equal( 1 );
+            done();
+        }, 1000);
+    } );
   } );
