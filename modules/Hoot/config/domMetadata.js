@@ -48,9 +48,13 @@ export function layerConflateForm( data ) {
                     d3.selectAll( '.conflate-type-toggle' ).each(function() {
                         let selection = d3.select( this );
 
-                        if (selection) {
-                            let checked = selection.datum().id === 'roadOptions';
+                        if ( !selection.empty() ) {
+                            let datum = selection.datum(),
+                                checked = datum.id === 'roadOptions';
                             selection.property( 'checked', checked );
+
+                            d3.select( `#${datum.id}_group .adv-opt-title` )
+                                .classed( 'adv-opt-title-disabled', !checked );
                         }
                     });
                 }

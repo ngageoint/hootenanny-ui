@@ -92,7 +92,11 @@ export default class AdvancedOpts {
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
             .on( 'click', () => { 
-                d3.selectAll( '.form-group input' ).property( 'checked', true );
+                d3.selectAll( '.form-group input' )
+                    .property( 'checked', true );
+                
+                d3.selectAll( '.form-group .adv-opt-title')
+                    .classed( 'adv-opt-title-disabled', false);
             });
     }
 
