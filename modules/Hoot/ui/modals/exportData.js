@@ -117,13 +117,29 @@ export default class ExportData {
             : { inputtype: 'folder', inputs: this.getInputs( this.id ) }; 
     }
 
+    loadingState() {
+        this.submitButton
+            .select( 'span' )
+            .text( 'Exporting...' );
+
+        this.submitButton
+            .append( 'div' )
+            .classed( '_icon _loading float-right', true )
+            .attr( 'id', 'importSpin' );
+
+        this.container.selectAll( 'input' )
+            .each( function() {
+                d3.select( this ).node().disabled = true;
+            } );
+    }
+
     handleSubmit() {
         let self = this,
             data = {
                 input: self.input,
                 append: self.appendToFgdbCheckbox.property('checked'),
                 includehoottags: false,
-                outputname: self.dataExportNameTextInput,
+                outputname: self.dataExportNameTextInput.property( 'value' ),
                 outputtype: self.getOutputType(),
                 tagoverrides: {},
                 textstatus: false,
@@ -133,8 +149,11 @@ export default class ExportData {
        
         data = Object.assign(data, this.addInputs());
 
-        this.formFactory.createProcessSpinner( this.container.select( '.modal-footer' ) );
-        this.processRequest = Hoot.api[`export${this.type}`](data).catch( err => {
+        this.loadingState();
+
+        // this.formFactory.createProcessSpinner( this.container.select( '.modal-footer' ) );
+        this.processRequest = Hoot.api[`export${this.type}`](data)
+            .catch( err => {
                 Hoot.message.alert( err );
             } )
             .finally( () => {
