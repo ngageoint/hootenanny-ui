@@ -98,23 +98,27 @@ export default class ExportData {
         }[this.exportFormatCombo.node().value];
     }
 
-    getInputs( id ) {
-        let self                 = this,
-            children             = Hoot.folders.getFolderChildren( id ),
-          { folders, datasets }  = children,
-            inputs               = datasets;
+    getInputs(input) {
 
-        if ( folders.length ) {
-            inputs = inputs.concat( folders.map( f => self.getInputs( f.id ) ) );
+        switch (this.type.toLowerCase()) {
+            case 'files': {
+                input = this.type.trim()
+                    .split(',')
+                    .map(name => Hoot.layers.findBy('name', name ).id )
+                    .join(',');
+
+                break;
+            }
+            case 'folder': {
+                input = Hoot.folders.findBy('name', input).id;
+                break;
+            }
+            default: {
+                input = Hoot.layers.findBy('name', this.input ).name;
+                break;
+            }
         }
-        
-        return _flattenDeep( inputs );
-    }
-
-    addInputs() {
-        return this.type === 'Dataset' 
-            ? { inputtype: 'db' }
-            : { inputtype: 'folder', inputs: this.getInputs( this.id ) }; 
+        return input;
     }
 
     loadingState() {
@@ -133,34 +137,41 @@ export default class ExportData {
             } );
     }
 
+    getInputType() {
+        return this.type === 'Dataset' ? 'db' : this.type.toLowerCase();
+    }
+
+    getOutputName() {
+        return this.getInputType() === 'folder'
+            ? this.input
+            : this.dataExportNameTextInput.property( 'value' );
+    }
+
     handleSubmit() {
         let self = this,
             data = {
-                input: self.input,
-                append: self.appendToFgdbCheckbox.property('checked'),
+                hoot2: true,
+                input: self.getInputs(self.input),
+                inputtype: self.getInputType(),
+                append: self.appendToFgdbCheckbox.property( 'checked' ),
                 includehoottags: false,
-                outputname: self.dataExportNameTextInput.property( 'value' ),
+                outputname: self.getOutputName(),
                 outputtype: self.getOutputType(),
                 tagoverrides: {},
                 textstatus: false,
                 translation: self.getTranslationPath(),
                 userId: Hoot.user().id
             }; 
-       
-        data = Object.assign(data, this.addInputs());
 
         this.loadingState();
 
-        // this.formFactory.createProcessSpinner( this.container.select( '.modal-footer' ) );
-        this.processRequest = Hoot.api[`export${this.type}`](data)
+        this.processRequest = Hoot.api.exportDataset(data)
             .catch( err => {
                 Hoot.message.alert( err );
             } )
             .finally( () => {
-                this.formFactory.removeProcessSpinner( this.container.select( '.modal-footer' ) );
-                this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
-            });
+            } );
     }
 
 }

@@ -620,7 +620,7 @@ export default class API {
                 rej( new Error('failed to save dataset') );
             }
 
-        })
+        });
     }
 
     exportDataset( data ) {
@@ -664,13 +664,17 @@ export default class API {
             method: 'POST',
             data: data
         };
-        
+
+        if ( data.inputtype === 'folder' ) {
+            params.path = `${params.path}?ext=zip`;
+        }
+
         let jobId;
 
         return this.request( params )
             .then( (resp) => { jobId = resp.data.jobid; } )
             .then( () =>  this.statusInterval( jobId ) )
-            .then( () => this.saveDataset( jobId, data.outputname ))
+            .then( () => this.saveDataset( jobId, data.outputname ) )
             .then( () => {
                 return {
                     message: 'Dataset Exported',
