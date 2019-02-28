@@ -27,10 +27,7 @@ export default class API {
             return isNaN(p) ? {pathname: p + '/'} : {port: p};
         };
 
-        this.baseUrl = Object.assign( new URL( this.host ), {
-            port: this.config.port,
-            pathname: this.config.path
-        } );
+        this.baseUrl = this.config.path;
 
         this.mergeUrl       = Object.assign( new URL( this.host ), mergePortOrPath( this.config.mergeServerPort ) );
         this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
