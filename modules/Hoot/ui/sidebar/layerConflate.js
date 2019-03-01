@@ -31,13 +31,14 @@ class LayerConflate extends SidebarForm {
 
         this.createFieldset();
         this.createLayerRefThumbnails( layers );
-        this.createAdvancedOptions();
+        // this.createAdvancedOptions();
         this.createButtons();
 
         this.saveAsInput         = d3.select( '#conflateSaveAs' );
         this.folderPathInput     = d3.select( '#conflateFolderPath' );
         this.newFolderNameInput  = d3.select( '#conflateNewFolderName' );
         this.typeInput           = d3.select( '#conflateType' );
+        this.algorithmInput       = d3.select( '#conflateAlgorithm' ); 
         this.refLayerInput       = d3.select( '#conflateRefLayer' );
         this.collectStatsInput   = d3.select( '#conflateCollectStats' );
     }
@@ -166,7 +167,6 @@ class LayerConflate extends SidebarForm {
 
     preConflation() {
         let data = {};
-        let conflation = this.typeInput.property( 'value' ).replace(/Cookie Cutter & /,'');
 
         data.TIME_STAMP         = '' + new Date().getTime();
         data.INPUT1             = Hoot.layers.findLoadedBy( 'refType', 'primary' ).id;
@@ -176,7 +176,8 @@ class LayerConflate extends SidebarForm {
         data.OUTPUT_NAME        = this.saveAsInput.property( 'value' );
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
-        data.ADV_OPTIONS        = this.advancedOptions.getOptions();
+        // data.ADV_OPTIONS        = this.advancedOptions.getOptions();
+        data.CONFLATION_TYPE    = this.typeInput.property( 'value' );
         data.HOOT_2             = true; 
         data.USER_EMAIL         = 'test@test.com';
 
@@ -195,7 +196,9 @@ class LayerConflate extends SidebarForm {
             }
         }
         
-        data[conflation === 'Network' ? 'CONFLATION_ALGORITHM' : 'CONFLATION_TYPE'] = conflation;
+        if (this.algorithmInput.property( 'value' ) === 'Network' ) {
+            data.CONFLATION_ALGORITHM = 'Network';
+        }
 
         return data;
     }
@@ -237,9 +240,9 @@ class LayerConflate extends SidebarForm {
         // remove reference layer controllers
         d3.selectAll( '.add-controller' ).remove();
 
-        if ( this.advancedOptions.isOpen ) {
-            this.advancedOptions.toggle();
-        }
+        // if ( this.advancedOptions.isOpen ) {
+        //     this.advancedOptions.toggle();
+        // }
 
         this.loadingState( params );
 

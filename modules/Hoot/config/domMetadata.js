@@ -51,6 +51,7 @@ export function layerConflateForm( data ) {
                         if ( !selection.empty() ) {
                             let datum = selection.datum(),
                                 checked = datum.id === 'roadOptions';
+                                
                             selection.property( 'checked', checked );
 
                             d3.select( `#${datum.id}_group .adv-opt-title` )
@@ -60,6 +61,13 @@ export function layerConflateForm( data ) {
                 }
             },
             readonly: 'readonly'
+        },
+        {
+            label: 'Algorithm',
+            id: 'conflateAlgorithm',
+            inputType: 'combobox',
+            value: 'Unfiy',
+            data: [ 'Unify', 'Network' ]
         },
         {
             label: 'Attribute Reference Layer',
