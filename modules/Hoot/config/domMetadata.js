@@ -39,7 +39,7 @@ export function layerConflateForm( data ) {
             id: 'conflateType',
             inputType: 'combobox',
             value: 'Reference',
-            data: [ 'Reference', 'Network', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/ Tags', 'Attribute' ],
+            data: [ 'Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/ Tags', 'Attribute' ],
             onChange: (d) => {
                 const selection = d3.select( `#${d.id}` ),
                       type = !selection.empty() && selection.property( 'value' );
