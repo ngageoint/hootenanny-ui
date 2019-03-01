@@ -166,28 +166,36 @@ class LayerConflate extends SidebarForm {
 
     preConflation() {
         let data = {};
+        let conflation = this.typeInput.property( 'value' ).replace(/Cookie Cutter & /,'');
 
         data.TIME_STAMP         = '' + new Date().getTime();
         data.INPUT1             = Hoot.layers.findLoadedBy( 'refType', 'primary' ).id;
         data.INPUT2             = Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id;
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
-        data.OUTPUT_NAME        = this.saveAsInput.node().value;
-        data.CONFLATION_TYPE    = this.typeInput.node().value;
+        data.OUTPUT_NAME        = this.saveAsInput.property( 'value' );
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
-        data.COLLECT_STATS      = this.collectStatsInput.node().value;
+        data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
         data.ADV_OPTIONS        = this.advancedOptions.getOptions();
         data.HOOT_2             = true; 
         data.USER_EMAIL         = 'test@test.com';
 
-        if ( data.CONFLATION_TYPE === 'Differential' ) {
-            data.CONFLATION_COMMAND = 'conflate-differential';
-        } else if ( data.CONFLATION_TYPE === 'Differential w/ Tags' ) {
-            data.CONFLATION_TYPE = 'Differential';
-            data.CONFLATION_COMMAND = 'conflate-differential-tags';
-        } else {
-            data.CONFLATION_COMMAND = 'conflate';
+        switch ( data.CONFLATION_TYPE ) {
+            case 'Differential': {
+                data.CONFLATION_COMMAND = 'conflate-differential';
+                break;
+            }
+            case 'Differential w/ Tags': {
+                data.CONFLATION_TYPE = 'Differential';
+                data.CONFLATION_COMMAND = 'conflate-differential-tags';
+                break;
+            }
+            default: {
+                data.CONFLATION_COMMAND = 'conflate';
+            }
         }
+        
+        data[conflation === 'Network' ? 'CONFLATION_ALGORITHM' : 'CONFLATION_TYPE'] = conflation;
 
         return data;
     }

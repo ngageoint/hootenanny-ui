@@ -362,17 +362,12 @@ export default class AdvancedOpts {
                     checked = selection.property( 'checked' );
 
                 if ( checked ) {
-                    let merger, matcher;
                     if ( d.id === 'roadOptions' && isNetwork ) {
-                        matcher = d.networkMatcher;
-                        merger = d.networkMerger;
-                    } else {
-                        matcher = d.matcher;
-                        merger = d.merger;
+                        return; 
                     }
-
-                    mergers.push(merger);
-                    matchers.push(matcher);
+            
+                    mergers.push(d.merger);
+                    matchers.push(d.matcher);
                 }
             } );
 
