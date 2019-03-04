@@ -8,10 +8,10 @@ let iD        = require( '../../modules/index' ),
     Hoot      = require( '../../modules/Hoot/hoot' ).default,
     $         = require( 'jquery' ),
     _         = require( 'lodash-es' ),
-    chai      = require( 'chai' ),
-    sinonChai = require( 'sinon-chai' );
+    chai      = require( 'chai' );
+    // sinonChai = require( 'sinon-chai' );
 
-chai.use( sinonChai );
+// chai.use( sinonChai );
 
 let id = iD.Context();
 

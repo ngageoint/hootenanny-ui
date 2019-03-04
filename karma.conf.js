@@ -86,6 +86,7 @@ module.exports = function( config ) {
             { pattern: 'img/**/*.gif', included: false },
 
             { pattern: 'test/data/UndividedHighway.osm', included: false },
+            { pattern: 'test/data/highwayTest2.osm', included: false },
             { pattern: 'test/data/LAP030.dbf', included: false },
             { pattern: 'test/data/LAP030.shp', included: false },
             { pattern: 'test/data/LAP030.shx', included: false },
