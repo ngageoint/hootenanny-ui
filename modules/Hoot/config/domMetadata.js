@@ -7,20 +7,6 @@
 // import Hoot from '../hoot';
 
 export function layerConflateForm( data ) {
-    function networkDiffCheck (input) {
-        if ( 
-            /differential/gi.test( d3.select('#conflateType' ).property( 'value' ) ) &&
-            !/network/gi.test( input.property( 'value' ) ) ) {
-            
-            let message = 'Differential conflation requires the Network Algorithm', 
-                type ='error';
-            
-            Hoot.message.alert( { message, type } );
-
-        }
-    }
-
-
     return [
         {
             label: 'Save As',
@@ -56,15 +42,6 @@ export function layerConflateForm( data ) {
             inputType: 'combobox',
             value: 'Reference',
             data: [ 'Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/ Tags', 'Attribute' ],
-            onChange: (d) => {
-                const selection = d3.select( `#${d.id}` ),
-                      type = !selection.empty() && selection.property( 'value' ),
-                      input = d3.select( '#conflateAlgorithm' );
-                      
-                if ( /differential/gi.test( type ) ) {
-                    input.property( 'value', 'Network' );
-                }
-            },
             readonly: 'readonly'
         },
         {
@@ -72,10 +49,7 @@ export function layerConflateForm( data ) {
             id: 'conflateAlgorithm',
             inputType: 'combobox',
             value: 'Unfiy',
-            data: [ 'Unify', 'Network' ],
-            onChange: function(d) { 
-                networkDiffCheck( d3.select( '#conflateAlgorithm' ) ); 
-            }
+            data: [ 'Unify', 'Network' ]
         },
         {
             label: 'Attribute Reference Layer',
