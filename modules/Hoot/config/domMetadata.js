@@ -4,7 +4,23 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/15/18
  *******************************************************************************************************/
 
+// import Hoot from '../hoot';
+
 export function layerConflateForm( data ) {
+    function networkDiffCheck (input) {
+        if ( 
+            /differential/gi.test( d3.select('#conflateType' ).property( 'value' ) ) &&
+            !/network/gi.test( input.property( 'value' ) ) ) {
+            
+            let message = 'Differential conflation requires the Network Algorithm', 
+                type ='error';
+            
+            Hoot.message.alert( { message, type } );
+
+        }
+    }
+
+
     return [
         {
             label: 'Save As',
@@ -42,22 +58,11 @@ export function layerConflateForm( data ) {
             data: [ 'Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/ Tags', 'Attribute' ],
             onChange: (d) => {
                 const selection = d3.select( `#${d.id}` ),
-                      type = !selection.empty() && selection.property( 'value' );
-                
-                if (type && type === 'Network') { // when reference selected, make road option network...
-                    d3.selectAll( '.conflate-type-toggle' ).each(function() {
-                        let selection = d3.select( this );
-
-                        if ( !selection.empty() ) {
-                            let datum = selection.datum(),
-                                checked = datum.id === 'roadOptions';
-                                
-                            selection.property( 'checked', checked );
-
-                            d3.select( `#${datum.id}_group .adv-opt-title` )
-                                .classed( 'adv-opt-title-disabled', !checked );
-                        }
-                    });
+                      type = !selection.empty() && selection.property( 'value' ),
+                      input = d3.select( '#conflateAlgorithm' );
+                      
+                if ( /differential/gi.test( type ) ) {
+                    input.property( 'value', 'Network' );
                 }
             },
             readonly: 'readonly'
@@ -67,7 +72,10 @@ export function layerConflateForm( data ) {
             id: 'conflateAlgorithm',
             inputType: 'combobox',
             value: 'Unfiy',
-            data: [ 'Unify', 'Network' ]
+            data: [ 'Unify', 'Network' ],
+            onChange: function(d) { 
+                networkDiffCheck( d3.select( '#conflateAlgorithm' ) ); 
+            }
         },
         {
             label: 'Attribute Reference Layer',
