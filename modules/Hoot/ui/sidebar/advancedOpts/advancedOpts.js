@@ -9,7 +9,7 @@ import _map       from 'lodash-es/map';
 
 import FieldsetData     from './fieldsetData';
 import FieldsetControls from './fieldsetControls';
-import { advancedOptions } from '../../../config/domMetadata';
+// import { advancedOptions } from '../../../config/domMetadata';
 import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 import FormFactory from '../../../tools/formFactory';
 
@@ -18,7 +18,8 @@ export default class AdvancedOpts {
     constructor() {
         let self = this;
         this.sidebar         = d3.select( '#hoot-sidebar' );
-        this.advancedOptions = advancedOptions(this);
+        // this.advancedOptions = advancedOptions(this);
+        this.advancedOptions = [];
     }
 
     getFactory() {
