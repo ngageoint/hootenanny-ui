@@ -45,10 +45,10 @@ export function layerConflateForm( data ) {
             readonly: 'readonly'
         },
         {
-            label: 'Algorithm',
+            label: 'Road Algorithm',
             id: 'conflateAlgorithm',
             inputType: 'combobox',
-            value: 'Unfiy',
+            value: 'Unify',
             data: [ 'Unify', 'Network' ]
         },
         {
@@ -390,68 +390,64 @@ export function conflictActions() {
     ];
 }
 
-export function advancedOptions() {
-// Road Options -  unify/network engine, Road search radius
-// Building Options - these are all good to have access to, tweak as needed
-// POI to Poly options - I think some of these were added with planetSense use case in mind, I would keep these exposed as that capability develops and users look to hoot as way of further automating that workflow.
-// Railway/Powerlines/Waterways - I disable these since they are on by default to help with processing time but havent done to much conflating with these features types yet but options look very complex
-    return [
-        {
-            label: 'Building',
-            id: 'buildingOptions',
-            matcher: 'hoot::BuildingMatchCreator',
-            merger: 'hoot::BuildingMergerCreator',
-            members: [
-                {
-                    label: 'Review if secondary layer building is newer',
-                    id: 'reviewSecondaryBuildingLayer',
-                    key: 'building.review.if.secondary.newer',
-                    inputType: 'checkbox',
-                    checked: false
-                },
-                {
-                    label: 'Date format',
-                    id: 'buildingDateFormat',
-                    key: 'building.date.format',
-                    inputType: 'text'
-                },
-                {
-                    label: 'Date tag key',
-                    id: 'buildingDateTagKey',
-                    key: 'building.date.tag.key',
-                    inputType: 'text'
-                },
-                {
-                    label: 'Keep complex geometry when auto merging',
-                    id: 'buildingKeepComplexGeom',
-                    key: 'building.keep.more.complex.geometry.when.auto.merging',
-                    inputType: 'checkbox',
-                    checked: false
-                },
-                {
-                    label: 'Review non 1:1 Building Matches',
-                    id: 'reviewNonOneOneBuildingMatches',
-                    key: 'building.review.matched.other.than.one.to.one',
-                    inputType: 'checkbox',
-                    checked: false
-                }
-            ]
-        },
-        {
-            label: 'POI',
-            id: 'poiGenericOptions',
-            matcher: 'hoot::ScriptMatchCreator,PoiGeneric.js',
-            merger: 'hoot::ScriptMergerCreator',
-            members: []
-        },   
-        {
-            label: 'Road',
-            id: 'roadOptions',
-            matcher: 'hoot::HighwayMatchCreator',
-            merger: 'hoot::HighwayMergerCreator',
-            networkMatcher: 'hoot::NetworkMatchCreator',
-            networkMerger: 'hoot::NetworkMergerCreator',
-            members: [
+// export function advancedOptions() {
+//     return [
+//         {
+//             label: 'Building',
+//             id: 'buildingOptions',
+//             matcher: 'hoot::BuildingMatchCreator',
+//             merger: 'hoot::BuildingMergerCreator',
+//             members: [
+//                 {
+//                     label: 'Review if secondary layer building is newer',
+//                     id: 'reviewSecondaryBuildingLayer',
+//                     key: 'building.review.if.secondary.newer',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Date format',
+//                     id: 'buildingDateFormat',
+//                     key: 'building.date.format',
+//                     inputType: 'text'
+//                 },
+//                 {
+//                     label: 'Date tag key',
+//                     id: 'buildingDateTagKey',
+//                     key: 'building.date.tag.key',
+//                     inputType: 'text'
+//                 },
+//                 {
+//                     label: 'Keep complex geometry when auto merging',
+//                     id: 'buildingKeepComplexGeom',
+//                     key: 'building.keep.more.complex.geometry.when.auto.merging',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Review non 1:1 Building Matches',
+//                     id: 'reviewNonOneOneBuildingMatches',
+//                     key: 'building.review.matched.other.than.one.to.one',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 }
+//             ]
+//         },
+//         {
+//             label: 'POI',
+//             id: 'poiGenericOptions',
+//             matcher: 'hoot::ScriptMatchCreator,PoiGeneric.js',
+//             merger: 'hoot::ScriptMergerCreator',
+//             members: []
+//         },   
+//         {
+//             label: 'Road',
+//             id: 'roadOptions',
+//             matcher: 'hoot::HighwayMatchCreator',
+//             merger: 'hoot::HighwayMergerCreator',
+//             networkMatcher: 'hoot::NetworkMatchCreator',
+//             networkMerger: 'hoot::NetworkMergerCreator',
+//             members: [
                 // {
                 //     'label',
                 // }
@@ -579,177 +575,177 @@ export function advancedOptions() {
                 //     hidden: false,
                 //     hootVal: 'hoot::ConflictsNetworkMatcher'
                 // }
-            ]
-        },
-        {
-            label: 'Waterway',
-            id: 'waterwayOptions',
-            matcher: 'hoot::ScriptMatchCreator,LinearWaterway.js',
-            merger: 'hoot::ScriptMergerCreator',
-            members: []
-        },
-        {
-            label: 'Point to Polygon',
-            id: 'pointToPolyOptions',
-            matcher: 'hoot::PoiPolygonMatchCreator',
-            merger: 'hoot::PoiPolygonMergerCreator',
-            members: [
-                {
-                    label: 'Address Additional Tags',
-                    id: 'poiToPolyAdditionalTags',
-                    key: 'address.additional.tag.keys',
-                    inputType: 'checkbox',
-                    checked: false
-                },
-                {
-                    label: 'Address Match Enabled',
-                    id: 'poiToPolyAddressMatchEnabled',
-                    key: 'poi.polygon.address.match.enabled',
-                    inputType: 'checkbox',
-                    checked: false
-                },
-                {
-                    label: 'Merge Many POI to Single Polygon Matches',
-                    id: 'poiToPolyMergeManyPOIToSinglePoly',
-                    key: 'poi.polygon.auto.merge.many.poi.to.one.poly.matches',
-                    inputType: 'checkbox',
-                    checked: false
-                },
-                {
-                    label: 'Disable Same Source Conflation',
-                    id: 'poiPolyDisableSameSourceConflation',
-                    key: 'poi.polygon.disable.same.source.conflation',
-                    inputType: 'checkbox',
-                    checked: false
-                },
-                {
-                    label: 'Disable Same Source Conflation Match Tag Key Prefix Only',
-                    id: 'poiPolyDisableSameSourceConflationTagKeyPrefixOnly',
-                    key: 'poi.polygon.disable.same.source.conflation.match.tag.key.prefix.only',
-                    inputType: 'checkbox',
-                    checked: false
-                },
-                {
-                    label: 'Keep Closest Match Only',
-                    id: 'poiPolyKeepClosestMatchOnly',
-                    key: 'poi.polygon.keep.closest.matches.only',
-                    inputType: 'checkbox',
-                    checked: false
-                },
-                {
-                    label:'Match Distance Threshold',
-                    id: 'poiPolyMatchDistance',
-                    key:'poi.polygon.match.distance.threshold',
-                    inputType: 'text',
-                    extrema: [ 0, Infinity ],
-                    default: null
-                },
-                {
-                    label: 'Match Evidence Threshold',
-                    id: 'poiPolyMatchEvidenceThreshold',
-                    key:'poi.polygon.match.evidence.threshold',
-                    inputType: 'text',
-                    extrema: [ 1, 4 ],
-                },
-                {
+//             ]
+//         },
+//         {
+//             label: 'Waterway',
+//             id: 'waterwayOptions',
+//             matcher: 'hoot::ScriptMatchCreator,LinearWaterway.js',
+//             merger: 'hoot::ScriptMergerCreator',
+//             members: []
+//         },
+//         {
+//             label: 'Point to Polygon',
+//             id: 'pointToPolyOptions',
+//             matcher: 'hoot::PoiPolygonMatchCreator',
+//             merger: 'hoot::PoiPolygonMergerCreator',
+//             members: [
+//                 {
+//                     label: 'Address Additional Tags',
+//                     id: 'poiToPolyAdditionalTags',
+//                     key: 'address.additional.tag.keys',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Address Match Enabled',
+//                     id: 'poiToPolyAddressMatchEnabled',
+//                     key: 'poi.polygon.address.match.enabled',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Merge Many POI to Single Polygon Matches',
+//                     id: 'poiToPolyMergeManyPOIToSinglePoly',
+//                     key: 'poi.polygon.auto.merge.many.poi.to.one.poly.matches',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Disable Same Source Conflation',
+//                     id: 'poiPolyDisableSameSourceConflation',
+//                     key: 'poi.polygon.disable.same.source.conflation',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Disable Same Source Conflation Match Tag Key Prefix Only',
+//                     id: 'poiPolyDisableSameSourceConflationTagKeyPrefixOnly',
+//                     key: 'poi.polygon.disable.same.source.conflation.match.tag.key.prefix.only',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Keep Closest Match Only',
+//                     id: 'poiPolyKeepClosestMatchOnly',
+//                     key: 'poi.polygon.keep.closest.matches.only',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label:'Match Distance Threshold',
+//                     id: 'poiPolyMatchDistance',
+//                     key:'poi.polygon.match.distance.threshold',
+//                     inputType: 'text',
+//                     extrema: [ 0, Infinity ],
+//                     default: null
+//                 },
+//                 {
+//                     label: 'Match Evidence Threshold',
+//                     id: 'poiPolyMatchEvidenceThreshold',
+//                     key:'poi.polygon.match.evidence.threshold',
+//                     inputType: 'text',
+//                     extrema: [ 1, 4 ],
+//                 },
+//                 {
                     
-                    label: 'Name Score Threshold',
-                    id: 'poiPolyNameScoreThreshold',
-                    inputType: 'text',
-                    key:'poi.polygon.name.score.threshold',
-                    extrema: [ -1, 1 ],
-                },
-                {
-                    label: 'Phone Number Additional Tag Keys',
-                    id:'poiPolyNumberAdditionalTagKeys',
-                    inputType: 'checkbox',
-                    key:'phone.number.additional.tag.keys',
-                },
-                {
-                    label:'Phone Number Match Enabled',
-                    id: 'poiPolyPhoneNumberMatchEnabled',
-                    key:'poi.polygon.phone.number.match.enabled',
-                    inputType: 'checkbox',
-                },
-                {
-                    label: 'Phone Number Region Code',
-                    id: 'poiPolyPhoneNumberRegionCode',
-                    inputType: 'checkbox',
-                    key: 'phone.number.region.code',
-                },
-                {
-                    label:'Phone Number Search In Text',
-                    id:'poiPolyPhoneNumberSearchInText',
-                    inputType: 'checkbox',
-                    key:'phone.number.search.in.text',
-                },
-                {
-                    label:'Promote Points With Addresses to POIs',
-                    id: 'PoiPolyPromotePointsWithAddressesToPois',
-                    inputType: 'checkbox',
-                    key:'poi.polygon.promote.points.with.addresses.to.pois',
-                },
-                {
-                    label: 'Review Distance Threshold',
-                    id: 'poiPolyReviewDistanceThreshold',
-                    key:'poi.polygon.review.distance.threshold',
-                    inputType: 'text',
-                    extrema: [ 0, Infinity ],
-                },
-                {
-                    label:'Review Evidence Threshold',
-                    id: 'poiPolyReviewEvidenceThreshold',
-                    inputType: 'text',
-                    key:'poi.polygon.review.evidence.threshold',
-                    extrema: [ 0, 3 ],
-                },
-                {
-                    label:'Review If Types Match',
-                    id: 'poiPolyReviewIfMatchedTags',
-                    key:'poi.polygon.review.if.matched.types',
-                    inputType: 'checkbox',
-                },
-                {
-                    label:'Review Matches Against Multi-Use Buildings',
-                    id: 'poiPolygReviewMultiuseBuildings',
-                    key:'poi.polygon.review.multiuse.buildings',
-                    inputType: 'checkbox',
-                },
-                {
-                    label:'Source Tag Key',
-                    id:'poiPolySourceTagKey',
-                    key:'poi.polygon.source.tag.key',
-                    inputType: 'checkbox',
-                },
-                {
-                    label:'Type Score Threshold',
-                    id:'poiPolyTypeScoreThreshold',
-                    key:'poi.polygon.type.score.threshold',
-                    inputType: 'text',
-                    extrema: [ 0, 1 ],
-                }
-            ]
-        },
-        {
-            label: 'Area',
-            id: 'areaOptions',
-            matcher: 'hoot::ScriptMatchCreator,Area.js',
-            merger: 'hoot::ScriptMergerCreator',
-            members: []
-        },
-        {
-            label: 'Railway',
-            id: 'railwayOptions',
-            matcher: 'hoot::ScriptMatchCreator,Railway.js',
-            merger: 'hoot::ScriptMergerCreator',
-            members: []
-        },
-        {
-            label: 'Powerline',
-            id: 'powerlineOptions',
-            matcher: 'hoot::ScriptMatchCreator,PowerLine.js',
-            merger: 'hoot::ScriptMergerCreator',
-            members: []
-        }
-    ];
-}
+//                     label: 'Name Score Threshold',
+//                     id: 'poiPolyNameScoreThreshold',
+//                     inputType: 'text',
+//                     key:'poi.polygon.name.score.threshold',
+//                     extrema: [ -1, 1 ],
+//                 },
+//                 {
+//                     label: 'Phone Number Additional Tag Keys',
+//                     id:'poiPolyNumberAdditionalTagKeys',
+//                     inputType: 'checkbox',
+//                     key:'phone.number.additional.tag.keys',
+//                 },
+//                 {
+//                     label:'Phone Number Match Enabled',
+//                     id: 'poiPolyPhoneNumberMatchEnabled',
+//                     key:'poi.polygon.phone.number.match.enabled',
+//                     inputType: 'checkbox',
+//                 },
+//                 {
+//                     label: 'Phone Number Region Code',
+//                     id: 'poiPolyPhoneNumberRegionCode',
+//                     inputType: 'checkbox',
+//                     key: 'phone.number.region.code',
+//                 },
+//                 {
+//                     label:'Phone Number Search In Text',
+//                     id:'poiPolyPhoneNumberSearchInText',
+//                     inputType: 'checkbox',
+//                     key:'phone.number.search.in.text',
+//                 },
+//                 {
+//                     label:'Promote Points With Addresses to POIs',
+//                     id: 'PoiPolyPromotePointsWithAddressesToPois',
+//                     inputType: 'checkbox',
+//                     key:'poi.polygon.promote.points.with.addresses.to.pois',
+//                 },
+//                 {
+//                     label: 'Review Distance Threshold',
+//                     id: 'poiPolyReviewDistanceThreshold',
+//                     key:'poi.polygon.review.distance.threshold',
+//                     inputType: 'text',
+//                     extrema: [ 0, Infinity ],
+//                 },
+//                 {
+//                     label:'Review Evidence Threshold',
+//                     id: 'poiPolyReviewEvidenceThreshold',
+//                     inputType: 'text',
+//                     key:'poi.polygon.review.evidence.threshold',
+//                     extrema: [ 0, 3 ],
+//                 },
+//                 {
+//                     label:'Review If Types Match',
+//                     id: 'poiPolyReviewIfMatchedTags',
+//                     key:'poi.polygon.review.if.matched.types',
+//                     inputType: 'checkbox',
+//                 },
+//                 {
+//                     label:'Review Matches Against Multi-Use Buildings',
+//                     id: 'poiPolygReviewMultiuseBuildings',
+//                     key:'poi.polygon.review.multiuse.buildings',
+//                     inputType: 'checkbox',
+//                 },
+//                 {
+//                     label:'Source Tag Key',
+//                     id:'poiPolySourceTagKey',
+//                     key:'poi.polygon.source.tag.key',
+//                     inputType: 'checkbox',
+//                 },
+//                 {
+//                     label:'Type Score Threshold',
+//                     id:'poiPolyTypeScoreThreshold',
+//                     key:'poi.polygon.type.score.threshold',
+//                     inputType: 'text',
+//                     extrema: [ 0, 1 ],
+//                 }
+//             ]
+//         },
+//         {
+//             label: 'Area',
+//             id: 'areaOptions',
+//             matcher: 'hoot::ScriptMatchCreator,Area.js',
+//             merger: 'hoot::ScriptMergerCreator',
+//             members: []
+//         },
+//         {
+//             label: 'Railway',
+//             id: 'railwayOptions',
+//             matcher: 'hoot::ScriptMatchCreator,Railway.js',
+//             merger: 'hoot::ScriptMergerCreator',
+//             members: []
+//         },
+//         {
+//             label: 'Powerline',
+//             id: 'powerlineOptions',
+//             matcher: 'hoot::ScriptMatchCreator,PowerLine.js',
+//             merger: 'hoot::ScriptMergerCreator',
+//             members: []
+//         }
+//     ];
+// }
