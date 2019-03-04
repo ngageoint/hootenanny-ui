@@ -175,22 +175,46 @@ export default class Translations extends Tab {
     }
 
     async exportTranslation( d ) {
+        // try {
+        //     let translationText;
+
+
+
+        //     let transBlob = new Blob( [ translationText ], { type: 'text/javascript' } );
+            
+        //     Hoot.api.saveDataset( transBlob, d.NAME + '.js' );
+
+        // } catch ( e ) {
+        //     //TODO: show warning
+        //     window.console.log( 'Unable to get translations text' );
+        //     throw new Error( e );
+        // }
+
+        //http://localhost:8080/hoot-services/ingest/customscript/getdefaultscript?SCRIPT_PATH=translations/GeoNames
+
+        let translationText;
+        if ( d.DEFAULT ) {
+            translationText = await Hoot.api.getDefaultTranslation( d.PATH );
+        } else {
+            translationText = await Hoot.api.getTranslation( d.NAME );
+        }
+
+        function downloadTranslation( text, name, type ) {
+            var link = document.createElement('a');
+            var file = new Blob([translationText], { type: 'text/javascript'});
+            link.href =  URL.createObjectURL(file);
+            link.download = name;
+            link.click();
+            link.remove();
+        }
+
         try {
-            let translationText;
 
-            if ( d.DEFAULT ) {
-                translationText = await Hoot.api.getDefaultTranslation( d.PATH );
-            } else {
-                translationText = await Hoot.api.getTranslation( d.NAME );
-            }
-
-            let transBlob = new Blob( [ translationText ], { type: 'text/javascript' } );
-            saveAs( transBlob, d.NAME + '.js' );
-
-        } catch ( e ) {
-            //TODO: show warning
-            // window.console.log( 'Unable to get translations text' );
+            downloadTranslation(translationText, d.NAME, 'text/javascript');
+        } catch (e) {
+            window.console.log( 'Unable to get translations text' );
             throw new Error( e );
         }
+        
     }
 }
