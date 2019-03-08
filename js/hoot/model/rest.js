@@ -24,7 +24,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         if (!data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME) {
             return false;
         }
-        var url = '/hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
+        var url = '../hoot-services/ingest/ingest/upload?TRANSLATION=' + data.TRANSLATION + '&INPUT_TYPE=' +
                 data.INPUT_TYPE + '&INPUT_NAME=' + data.INPUT_NAME + '&NONE_TRANSLATION=' + data.NONE_TRANSLATION;
 
         if(data.FGDB_FC) {
@@ -49,7 +49,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             iD.ui.Alert('Modify name failed: malformed request!', 'error', new Error().stack);
             return;
         }
-        var baseUrl = '/hoot-services/osm/api/0.6/map';
+        var baseUrl = '../hoot-services/osm/api/0.6/map';
         if(data.inputType === 'folder') { baseUrl += '/folders'; }
 
         d3.xhr(baseUrl + '/' + data.mapid + '/rename/' + data.modifiedName)
@@ -63,7 +63,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getFolderVisibility = function(data, callback) {
-        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + data.id + '/visibility')
+        d3.xhr('../hoot-services/osm/api/0.6/map/folders/' + data.id + '/visibility')
         .send('GET', function(e, r) {
             if(e) {
                 callback(e, null);
@@ -73,7 +73,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
     rest.setFolderVisibility = function(data, isPublic, callback) {
-        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + data.id + '/visibility/' + (isPublic ? 'public' : 'private'))
+        d3.xhr('../hoot-services/osm/api/0.6/map/folders/' + data.id + '/visibility/' + (isPublic ? 'public' : 'private'))
         .send('PUT', function(e, r) {
             if(e) {
                 callback(e, null);
@@ -89,7 +89,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             return;
         }
 
-        d3.xhr('/hoot-services/osm/api/0.6/map/' + data.mapid + '/move/' + data.folderId)
+        d3.xhr('../hoot-services/osm/api/0.6/map/' + data.mapid + '/move/' + data.folderId)
         .send('PUT', function (e, r) { callback(e, r); });
     };
 
@@ -99,7 +99,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + data.folderId + '/move/' + data.parentId)
+        d3.xhr('../hoot-services/osm/api/0.6/map/folders/' + data.folderId + '/move/' + data.parentId)
             .send('put', function(e, r) { callback(e, r); });
     };
 
@@ -108,7 +108,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(false);
             return false;
         }
-        var url = '/hoot-services/osm/api/0.6/map/folders/add/' + data.parentId + '/' + data.folderName;
+        var url = '../hoot-services/osm/api/0.6/map/folders/add/' + data.parentId + '/' + data.folderName;
         // API Default is public folder
         // toggle to private only when explicitly specified `false`
         if(data.isPublic === false) {
@@ -131,7 +131,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             return false;
         }
 
-        d3.xhr('/hoot-services/osm/api/0.6/map/folders/' + folderId)
+        d3.xhr('../hoot-services/osm/api/0.6/map/folders/' + folderId)
         .send('DELETE', function (error, json) {
             if(error && error.responseText) {
                 iD.ui.Alert('Error: ' + error.responseText, 'error', new Error().stack);
@@ -145,7 +145,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         if (!data.formData) {
             return false;
         }
-        d3.xhr('/hoot-services/ingest/basemap/upload?' + 'INPUT_NAME=' + data.INPUT_NAME)
+        d3.xhr('../hoot-services/ingest/basemap/upload?' + 'INPUT_NAME=' + data.INPUT_NAME)
                         .header('access-control-allow-origin', '*')
             .post(data.formData, function (error, json) {
                 if (json.response.indexOf('<html>') !== -1) {
@@ -160,7 +160,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getAvailLinks = function (callback) {
-        var request = d3.json('/hoot-services/osm/api/0.6/map/folders/linked');
+        var request = d3.json('../hoot-services/osm/api/0.6/map/folders/linked');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get available links failed!'));
@@ -170,7 +170,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getAvailLayers = function (callback) {
-        var request = d3.json('/hoot-services/osm/api/0.6/map/layers');
+        var request = d3.json('../hoot-services/osm/api/0.6/map/layers');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get available layers failed!'));
@@ -196,7 +196,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getMapTags = function (data, callback) {
-        var request = d3.json('/hoot-services/osm/api/0.6/map/' + data.mapId + '/tags');
+        var request = d3.json('../hoot-services/osm/api/0.6/map/' + data.mapId + '/tags');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get tags failed!'));
@@ -206,7 +206,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getAvailFolders = function (callback) {
-        var request = d3.json('/hoot-services/osm/api/0.6/map/folders');
+        var request = d3.json('../hoot-services/osm/api/0.6/map/folders');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get available folders failed!'));
@@ -216,7 +216,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.enableBaseMap = function (data, callback) {
-        var request = d3.json('/hoot-services/ingest/basemap/enable?NAME=' + data.name + '&ENABLE=true');
+        var request = d3.json('../hoot-services/ingest/basemap/enable?NAME=' + data.name + '&ENABLE=true');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Enable Basemap failed!'));
@@ -226,7 +226,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.disableBaseMap = function (data, callback) {
-        var request = d3.json('/hoot-services/ingest/basemap/enable?NAME=' + data.name + '&ENABLE=false');
+        var request = d3.json('../hoot-services/ingest/basemap/enable?NAME=' + data.name + '&ENABLE=false');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Disable Basemap failed!'));
@@ -236,7 +236,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getMapSize = function (mapId, callback) {
-        var request = d3.json('/hoot-services/info/map/size?mapid=' + mapId);
+        var request = d3.json('../hoot-services/info/map/size?mapid=' + mapId);
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get map size failed!'));
@@ -246,7 +246,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getMapSizeThresholds = function (callback) {
-        var request = d3.json('/hoot-services/info/map/thresholds');
+        var request = d3.json('../hoot-services/info/map/thresholds');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get map size thresholds failed!'));
@@ -260,7 +260,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(null);
             return;
         }
-        var request = d3.json('/hoot-services/info/map/sizes?mapid=' + mapIds);
+        var request = d3.json('../hoot-services/info/map/sizes?mapid=' + mapIds);
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get map sizes failed!'));
@@ -295,7 +295,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         // Commented out section below placeholder for future alpha-shape clipping
         /*if(option === 'bbox'){*/
             //Clip to bounding box
-            d3.json('/hoot-services/job/clipdataset/execute')
+            d3.json('../hoot-services/job/clipdataset/execute')
                 .header('Content-Type', 'application/json')
                 .post(JSON.stringify(data), function (error, resp) {
                     if (error) {
@@ -323,7 +323,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
         data.CONFLATION_COMMAND = data.CONFLATION_COMMAND || 'conflate';
 
-        d3.json('/hoot-services/job/conflation/execute')
+        d3.json('../hoot-services/job/conflation/execute')
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(data), function (error, resp) {
                 if(callback){
@@ -353,7 +353,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.statusWithResponse = function(jobStatus, callback) {
         var status = function() {
-            d3.json('/hoot-services/job/status/' + jobStatus, function (error, resp) {
+            d3.json('../hoot-services/job/status/' + jobStatus, function (error, resp) {
                 if (error) {
                     return error;
                 }
@@ -376,7 +376,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.status = function(jobStatus, callback) {
         var status = function() {
-            d3.json('/hoot-services/job/status/' + jobStatus + '?includeCommandDetail=true', function (error, resp) {
+            d3.json('../hoot-services/job/status/' + jobStatus + '?includeCommandDetail=true', function (error, resp) {
                 if (error) {
                     JobStatusStopTimer();
                     return error;
@@ -420,7 +420,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.cancel = function(data, callback) {
-        d3.json('/hoot-services/job/cancel')
+        d3.json('../hoot-services/job/cancel')
         .header('Content-Type', 'application/json')
         .post(JSON.stringify(data), function (error, resp) {
             if (error) {
@@ -432,27 +432,27 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.getConflationCustomOpts = function(confType,callback){
         // Doing the stacked load to prevent race condition in loading data
-        var request = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=custom');
+        var request = d3.json('../hoot-services/info/advancedopts/getoptions?conftype=custom');
         request.get(function (error, resp) {
                 if (error) {
                     return callback(_alertError(error, 'Get custom conflation options failed!'));
                 } else {
                     iD.data.hootConfAdvOps = resp;
-                    var request_hrz = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=horizontal');
+                    var request_hrz = d3.json('../hoot-services/info/advancedopts/getoptions?conftype=horizontal');
                     request_hrz.get(function (error, resp1) {
                         if (error) {
                             _alertError(error, 'Get horizontal conflation options failed!');
                             return;
                         } else {
                             iD.data.hootConfAdvOps_horizontal = resp1;
-                            var request_ref = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=reference');
+                            var request_ref = d3.json('../hoot-services/info/advancedopts/getoptions?conftype=reference');
                             request_ref.get(function (error, resp3) {
                                 if (error) {
                                     _alertError(error, 'Get reference conflation options failed!');
                                     return;
                                 } else {
                                     iD.data.hootConfAdvOps_reference = resp3;
-                                    var request_ref = d3.json('/hoot-services/info/advancedopts/getoptions?conftype=attribute');
+                                    var request_ref = d3.json('../hoot-services/info/advancedopts/getoptions?conftype=attribute');
                                     request_ref.get(function (error, resp4) {
                                         if (error) {
                                             _alertError(error, 'Get attribute conflation options failed!');
@@ -470,7 +470,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getBaseMapsList = function(callback) {
-        var request = d3.json('/hoot-services/ingest/basemap/getlist');
+        var request = d3.json('../hoot-services/ingest/basemap/getlist');
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get Base Maps List failed!'));
@@ -483,7 +483,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     {
       var request = {};
       request.mapId = mapId;
-      d3.json('/hoot-services/job/review/resolveall')
+      d3.json('../hoot-services/job/review/resolveall')
         .header('Content-Type', 'application/json')
         .send(
           'PUT',
@@ -502,7 +502,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     {
         var request = {};
         request.queryElements = queryElements;
-        d3.json('/hoot-services/job/review/refs')
+        d3.json('../hoot-services/job/review/refs')
           .header('Content-Type', 'application/json')
           .post(JSON.stringify(request),
           function(error, response)
@@ -521,7 +521,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         var seq = data.sequence;
         var direction = data.direction;
 
-        d3.json('/hoot-services/job/review/next?mapid='+ mapId + '&offsetseqid=' + seq
+        d3.json('../hoot-services/job/review/next?mapid='+ mapId + '&offsetseqid=' + seq
             + '&direction=' + direction,
            function(error, response)
                 {
@@ -540,7 +540,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         var mapId = data.mapId;
         var seq = data.sequence;
 
-        d3.json('/hoot-services/job/review/reviewable?mapid='+ mapId + '&offsetseqid=' + seq,
+        d3.json('../hoot-services/job/review/reviewable?mapid='+ mapId + '&offsetseqid=' + seq,
                 function(error, resp)
                 {
                    if (error) {
@@ -553,13 +553,13 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.ReviewGetStatistics = function (mapId, callback) {
 
-        d3.json('/hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {
+        d3.json('../hoot-services/job/review/statistics?mapId=' + mapId, function (error, resp) {
                 return callback(error,resp);
         });
     };
 
     rest.getTranslations = function(callback) {
-        d3.json('/hoot-services/ingest/customscript/getlist', function (error, resp) {
+        d3.json('../hoot-services/ingest/customscript/getlist', function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get Translations failed!'));
             }
@@ -569,7 +569,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getExportResources = function(name,callback) {
-        d3.text('/hoot-services/job/export/resources', function (error, resp) {
+        d3.text('../hoot-services/job/export/resources', function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get Exports failed!'));
             }
@@ -579,7 +579,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
 
     rest.ReviewGetGeoJson = function (mapId, extent, callback) {
-        d3.json('/hoot-services/job/review/allreviewables?mapid=' + mapId
+        d3.json('../hoot-services/job/review/allreviewables?mapid=' + mapId
             + '&minlon=' + (extent[0][0]).toFixed(6)
             + '&minlat=' + (extent[0][1]).toFixed(6)
             + '&maxlon=' + (extent[1][0]).toFixed(6)
@@ -596,7 +596,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getTranslation = function(name,callback) {
-        d3.text('/hoot-services/ingest/customscript/getscript?SCRIPT_NAME='+ name, function (error, resp) {
+        d3.text('../hoot-services/ingest/customscript/getscript?SCRIPT_NAME='+ name, function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get Translation failed!'));
             }
@@ -605,7 +605,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getDefaultTranslation = function(path,callback) {
-        d3.text('/hoot-services/ingest/customscript/getdefaultscript?SCRIPT_PATH='+ path, function (error, resp) {
+        d3.text('../hoot-services/ingest/customscript/getdefaultscript?SCRIPT_PATH='+ path, function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get Translation failed!'));
             }
@@ -614,7 +614,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.deleteTranslation = function(name,callback) {
-        d3.text('/hoot-services/ingest/customscript/deletescript?SCRIPT_NAME='+name, function (error, resp) {
+        d3.text('../hoot-services/ingest/customscript/deletescript?SCRIPT_NAME='+name, function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get Translation failed!'));
             }
@@ -623,7 +623,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.postTranslation = function(data,callback) {
-        d3.json('/hoot-services/ingest/customscript/save?SCRIPT_NAME='+data.NAME+'&SCRIPT_DESCRIPTION='+data.DESCRIPTION)
+        d3.json('../hoot-services/ingest/customscript/save?SCRIPT_NAME='+data.NAME+'&SCRIPT_DESCRIPTION='+data.DESCRIPTION)
                     .header('Content-Type', 'text/plain')
                     .post(data.data, function (error, resp) {
                         if (error) {
@@ -636,7 +636,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.servicesVersionInfo = function(callback)
     {
-        d3.json('/hoot-services/info/about/servicesVersionInfo', function(error, resp)
+        d3.json('../hoot-services/info/about/servicesVersionInfo', function(error, resp)
         {
             if (error) {
                 return callback(_alertError(error, 'Get service version info failed!'));
@@ -647,7 +647,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.coreVersionInfo = function(callback)
     {
-        d3.json('/hoot-services/info/about/coreVersionInfo', function(error, resp)
+        d3.json('../hoot-services/info/about/coreVersionInfo', function(error, resp)
         {
             if (error) {
                 return callback(_alertError(error, 'Get core version info failed!'));
@@ -658,7 +658,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.coreVersionDetail = function(callback)
     {
-        d3.json('/hoot-services/info/about/coreVersionDetail', function(error, resp)
+        d3.json('../hoot-services/info/about/coreVersionDetail', function(error, resp)
         {
             if (error) {
                 return callback(_alertError(error, 'Get core version detail failed!'));
@@ -668,7 +668,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.jobStatusLegacy = function (data, callback) {
-            d3.json('/hoot-services/job/status/' + data, function (error, resp) {
+            d3.json('../hoot-services/job/status/' + data, function (error, resp) {
                 if (error) {
                     return error;
                 }
@@ -678,7 +678,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.createValidationMap = function (data, callback) {
 
-        d3.json('/hoot-services/job/review/custom/HGIS/preparevalidation')
+        d3.json('../hoot-services/job/review/custom/HGIS/preparevalidation')
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(data), function (error, resp) {
 
@@ -691,7 +691,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
     rest.createFilteredMap = function (data, callback) {
 
-        d3.json('/hoot-services/job/filter/custom/HGIS/filternonhgispois')
+        d3.json('../hoot-services/job/filter/custom/HGIS/filternonhgispois')
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(data), function (error, resp) {
 
@@ -703,7 +703,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.saveReviewBookmark = function(data, callback) {
-        d3.json('/hoot-services/job/review/bookmarks/save')
+        d3.json('../hoot-services/job/review/bookmarks/save')
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(data), function (error, resp) {
 
@@ -715,7 +715,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getAllReviewBookmarks = function(data, callback) {
-        var url = '/hoot-services/job/review/bookmarks/getall?orderBy=' + data.orderBy + '&asc=' + data.asc +
+        var url = '../hoot-services/job/review/bookmarks/getall?orderBy=' + data.orderBy + '&asc=' + data.asc +
             '&limit=' + data.limit + '&offset=' + data.offset;
         if(data.createFilterVal){
             url += '&createFilterVal=' + data.createFilterVal;
@@ -733,7 +733,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getReviewBookmark = function(data, callback) {
-         d3.json('/hoot-services/job/review/bookmarks/get?bookmarkId=' + data.bookmarkId, function (error, resp) {
+         d3.json('../hoot-services/job/review/bookmarks/get?bookmarkId=' + data.bookmarkId, function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get bookmark failed!'));
             }
@@ -742,7 +742,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getReviewBookmarkStat = function(data, callback) {
-         d3.json('/hoot-services/job/review/bookmarks/stat', function (error, resp) {
+         d3.json('../hoot-services/job/review/bookmarks/stat', function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get bookmark failed!'));
             }
@@ -751,7 +751,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.deleteReviewBookmark = function(data, callback) {
-        d3.json('/hoot-services/job/review/bookmarks/delete?bookmarkId=' + data.bookmarkId)
+        d3.json('../hoot-services/job/review/bookmarks/delete?bookmarkId=' + data.bookmarkId)
         .send('DELETE',function (error, resp) {
 
                 if (error) {
@@ -765,7 +765,7 @@ Hoot.model.REST = function (command, data, callback, option) {
 
 
     rest.getSaveUser = function(data, callback) {
-        d3.json('/hoot-services/osm/user?userEmail=' + data.email)
+        d3.json('../hoot-services/osm/user?userEmail=' + data.email)
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(data), function (error, resp) {
 
@@ -777,7 +777,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getAllUsers = function(callback) {
-        d3.json('/hoot-services/osm/user/all', function (error, resp) {
+        d3.json('../hoot-services/osm/user/all', function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get all users failed!'), null);
             }
@@ -785,7 +785,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
     rest.getOAuthRedirectURL = function(callback) {
-        d3.text('/hoot-services/auth/oauth1/request', function(error, resp) {
+        d3.text('../hoot-services/auth/oauth1/request', function(error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Failed to get redirect URL for oauth provider!'));
             }
@@ -793,7 +793,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
     rest.logout = function(callback) {
-        d3.text('/hoot-services/auth/oauth1/logout', function(err) {
+        d3.text('../hoot-services/auth/oauth1/logout', function(err) {
             if (err) {
                 return callback(_alertError(err, 'Failed to logout!'));
             } else {

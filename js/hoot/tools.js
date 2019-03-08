@@ -201,7 +201,7 @@ Hoot.tools = function (context) {
                 if(advOptionsStr.length > 0){
                     advOptionsStr += ' ';
                 }
-                advOptionsStr += '-D "' + opt.name + ( (opt.name === 'conflate.post.ops') ? '+=' : '=' ) + opt.value + '"';
+                advOptionsStr += '-D "' + opt.name + ( (opt.name === 'conflate.post.ops' || opt.name === 'conflate.pre.ops') ? '+=' : '=' ) + opt.value + '"';
             });
             data.ADV_OPTIONS = advOptionsStr;
         }/* else {

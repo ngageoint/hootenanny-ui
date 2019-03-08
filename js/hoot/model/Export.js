@@ -151,7 +151,7 @@ Hoot.model.export = function (context)
         param.includehoottags = exportHootTags.toString();
         param.tagoverrides = (exportHootTags) ? JSON.stringify(tagoverrides) : JSON.stringify(Object.assign(context.hoot().control.utilities.settagoverrides.getHootTagList, tagoverrides));
 
-        d3.json('/hoot-services/job/export/execute')
+        d3.json('../hoot-services/job/export/execute')
             .header('Content-Type', 'application/json')
             .post(JSON.stringify(param), function (error, data) {
                 if(error){
@@ -161,7 +161,7 @@ Hoot.model.export = function (context)
 
 
                 var exportJobId = data.jobid;
-                var statusUrl = '/hoot-services/job/status/' + exportJobId;
+                var statusUrl = '../hoot-services/job/status/' + exportJobId;
                 statusTimer = setInterval(function () {
                     d3.json(statusUrl, _exportResultHandler);
                 }, iD.data.hootConfig.JobStatusQueryInterval);
@@ -185,7 +185,7 @@ Hoot.model.export = function (context)
             if(result.status !== 'failed'){
                 //Huh?
                 // if(removeConflationRes === 'true'){
-                //     d3.json('/hoot-services/osm/api/0.6/map/delete/' + mapId)
+                //     d3.json('../hoot-services/osm/api/0.6/map/delete/' + mapId)
                 //     .header('Content-Type', 'text/plain')
                 //     .post('', function (error, data) {
 
@@ -193,7 +193,7 @@ Hoot.model.export = function (context)
                 // }
 
 /*                if(selectedOutType === 'wfs'){
-                    // var capaUrl = location.origin + '/hoot-services/ogc/' + result.jobId +
+                    // var capaUrl = location.origin + '../hoot-services/ogc/' + result.jobId +
                     //     '?service=WFS&version=1.1.0&request=GetCapabilities';
                     //alert('WFS Resource URL:\n' + capaUrl);
                     var param = {};
@@ -214,7 +214,7 @@ Hoot.model.export = function (context)
                     alert('Successful export to an OSM API database:\n\n' + summary);
                 }
                 else {
-                    var sUrl = '/hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
+                    var sUrl = '../hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
                     if (selectedOutType === 'osm.pbf') {
                         // specify the file ext since the default is zip and there is no need to zip a pbf file
                         sUrl = sUrl + '&ext=osm.pbf';

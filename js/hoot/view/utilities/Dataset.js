@@ -483,7 +483,7 @@ Hoot.view.utilities.dataset = function(context)
                 MAX_NODE_COUNT_PER_TILE: 5000,
                 PIXEL_SIZE: 0.001
             };
-            d3.json('/hoot-services/job/export/execute')
+            d3.json('../hoot-services/job/export/execute')
                 .header('Content-Type', 'application/json')
                 .post(JSON.stringify(param), function (error, data) {
                     if (error) {
@@ -495,7 +495,7 @@ Hoot.view.utilities.dataset = function(context)
                     d3.selectAll('a, div').classed('wait', true);
 
                     var exportJobId = data.jobid;
-                    var statusUrl = '/hoot-services/job/status/' + exportJobId;
+                    var statusUrl = '../hoot-services/job/status/' + exportJobId;
                     var statusTimer = setInterval(function () {
                         d3.json(statusUrl, function(error, result)
                             {
@@ -507,7 +507,7 @@ Hoot.view.utilities.dataset = function(context)
                                     if (result.status === 'failed') {
                                         Hoot.model.REST.WarningHandler(result.statusDetail);
                                     } else {
-                                        var resultUrl = '/hoot-services/job/export/geojson/' + exportJobId + '?ext=tiles.geojson';
+                                        var resultUrl = '../hoot-services/job/export/geojson/' + exportJobId + '?ext=tiles.geojson';
                                         d3.json(resultUrl, function(error, json) {
                                             var project = {
                                                 geometry: bbox2multipolygon([mbr.minlon, mbr.minlat, mbr.maxlon, mbr.maxlat]),

@@ -388,7 +388,7 @@
             var oauth_verifier = findGetParameter('oauth_verifier');
             if(oauth_token && oauth_verifier) {
                 // if we have these tokens, this is the spawned popup-
-                d3.json('/hoot-services/auth/oauth1/verify?oauth_verifier=' + oauth_verifier + '&oauth_token=' + oauth_token, function(e, r) {
+                d3.json('../hoot-services/auth/oauth1/verify?oauth_verifier=' + oauth_verifier + '&oauth_token=' + oauth_token, function(e, r) {
                     if(e) {
                         console.warn('failed to verify oauth tokens w/ provider:');
                         console.warn('XMLHttpRequest.status', e.status || null);
