@@ -99,7 +99,7 @@ export default class Datasets extends Tab {
 
                 switch ( item.onClick ) {
                     case 'import-datasets-single': {
-                        let translations = await Hoot.api.getTranslations();
+                        let translations = await Hoot.api.getTranslations(); 
 
                         this.importSingleModal = new ImportDataset( translations ).render();
 
