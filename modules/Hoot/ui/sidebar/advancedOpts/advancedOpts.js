@@ -175,21 +175,21 @@ export default class AdvancedOpts {
             .classed( 'adv-opt-title', true)
             .text( d => `${d.name} Options` );
 
-        // groupHeader
-        //     .append( 'div' )
-        //     .classed( 'adv-opts-inner-wrap group-toggle-caret-wrap', true )
-        //     .append( 'div' )
-        //     .attr( 'class', d => `adv-opt-toggle ${ d.members.length ? 'combobox-caret': '' }` )
-        //     .on( 'click', function(d) {
-        //         if (d.members.length) {
-        //             let id        = d3.select( this ).datum().id,
-        //                 body      = d3.select( `#${ id }_group` ).select( '.group-body' ),
-        //                 bodyState = body.classed( 'hidden' );
+        groupHeader
+            .append( 'div' )
+            .classed( 'adv-opts-inner-wrap group-toggle-caret-wrap', true )
+            .append( 'div' )
+            .attr( 'class', d => `adv-opt-toggle ${ d.members.length ? 'combobox-caret': '' }` )
+            .on( 'click', function(d) {
+                if (d.members.length) {
+                    let name      = d3.select( this ).datum().name,
+                        body      = d3.select( `#${ name }_group` ).select( '.group-body' ),
+                        bodyState = body.classed( 'hidden' );
 
-        //             body.classed( 'hidden', !bodyState );
-        //             body.classed( 'keyline-bottom', bodyState );
-        //         }
-        //     });
+                    body.classed( 'hidden', !bodyState );
+                    body.classed( 'keyline-bottom', bodyState );
+                }
+            });
 
 
         // let groupBody = groupEnter.append( 'div' )
