@@ -1,0 +1,33 @@
+@import '../../modules/variables';
+
+.jobs-table {
+    height: 400px;
+    margin-top: 20px;
+    overflow-y: auto;
+    box-shadow: 0 3px 10px $dark-opacity10;
+}
+
+.jobs-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+
+    &:hover {
+        background-color: $light;
+    }
+
+    span {
+        padding: 0 10px;
+    }
+
+    .button-container {
+        height: 100%;
+
+        button {
+            height: inherit;
+            padding: 0 20px;
+            border-radius: 0;
+        }
+    }
+}
