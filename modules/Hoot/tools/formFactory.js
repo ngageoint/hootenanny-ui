@@ -202,7 +202,7 @@ export default class FormFactory {
                   v = data.valueKey ? n[ data.valueKey ] : t;
             return { value: v, title: t };
         } );
-        
+
         if (data.sort) {
             comboData = comboData.sort((a, b) => {
                 let textA = a.value.toLowerCase(),
