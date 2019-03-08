@@ -176,8 +176,8 @@ export default class Translations extends Tab {
 
     async exportTranslation( d ) {
         try {
-
             let translationText;
+
             if ( d.DEFAULT ) {
                 translationText = await Hoot.api.getDefaultTranslation( d.PATH );
             } else {
@@ -185,14 +185,12 @@ export default class Translations extends Tab {
             }
 
             let transBlob = new Blob( [ translationText ], { type: 'text/javascript' } );
-
-           saveAs( transBlob, d.NAME + '.js' );
+            saveAs( transBlob, d.NAME + '.js' );
 
         } catch ( e ) {
             //TODO: show warning
             // window.console.log( 'Unable to get translations text' );
             throw new Error( e );
         }
-
     }
 }
