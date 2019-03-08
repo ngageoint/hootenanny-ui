@@ -183,6 +183,16 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    getJobs() {
+        const params = {
+            path: `/jobs/recent`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     getCoreVersionInfo() {
         const params = {
             path: '/info/about/coreVersionInfo',
@@ -314,16 +324,6 @@ export default class API {
     getBasemaps() {
         const params = {
             path: '/ingest/basemap/getlist',
-            method: 'GET'
-        };
-
-        return this.request( params )
-            .then( resp => resp.data );
-    }
-
-    getJobs() {
-        const params = {
-            path: '/jobs/recent',
             method: 'GET'
         };
 

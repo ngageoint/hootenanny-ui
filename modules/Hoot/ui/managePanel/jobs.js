@@ -1,5 +1,5 @@
 
-import Tab                        from './tab';
+import Tab from './tab';
 
 /**
  * Creates the jobs tab in the settings panel
@@ -18,27 +18,27 @@ export default class Jobs extends Tab {
     render() {
         super.render();
 
-        // this.createNewBasemapButton();
-        // this.createBasemapTable();
+        this.createJobsTable();
 
-        // this.loadBasemaps();
+        // window.setInterval(this.loadJobs, 90000);
+        this.loadJobs();
 
         return this;
     }
 
-    // createNewBasemapButton() {
-    //     this.panelWrapper
-    //         .append( 'button' )
-    //         .classed( 'add-basemap-button button primary _icon big light plus', true )
-    //         .text( 'Add New Basemaps' )
-    //         .on( 'click', () => new AddBasemap( this ).render() );
-    // }
+    activate() {
+        console.log('active');
+    }
 
-    // createBasemapTable() {
-    //     this.basemapTable = this.panelWrapper
-    //         .append( 'div' )
-    //         .classed( 'basemap-table keyline-all fill-white', true );
-    // }
+    deactivate() {
+        console.log('deactive');
+    }
+
+    createJobsTable() {
+        this.jobsTable = this.panelWrapper
+            .append( 'div' )
+            .classed( 'jobs-table keyline-all fill-white', true );
+    }
 
     async loadJobs() {
         try {
@@ -54,22 +54,22 @@ export default class Jobs extends Tab {
     populateJobs( jobs ) {
         let instance = this;
 
-        // let rows = this.basemapTable
-        //     .selectAll( '.basemap-item' )
-        //     .data( basemaps, d => d.name );
+        let rows = this.jobsTable
+            .selectAll( '.jobs-item' )
+            .data( jobs, d => d.name );
 
-        // rows.exit().remove();
+        rows.exit().remove();
 
-        // let basemapItem = rows
-        //     .enter()
-        //     .append( 'div' )
-        //     .classed( 'basemap-item keyline-bottom', true );
+        let jobItem = rows
+            .enter()
+            .append( 'div' )
+            .classed( 'jobs-item keyline-bottom', true );
 
-        // rows.merge( basemapItem );
+        rows = rows.merge( jobItem );
 
-        // basemapItem
-        //     .append( 'span' )
-        //     .text( d => d.name );
+        jobItem
+            .append( 'span' )
+            .text( d => d.jobId );
 
         // let buttonContainer = basemapItem
         //     .append( 'div' )
