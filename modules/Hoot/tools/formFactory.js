@@ -209,9 +209,9 @@ export default class FormFactory {
                     textB = b.value.toLowerCase();
 
                 return textA < textB ? -1 : textA > textB ? 1 : 0;
-            } )
+            } );
             
-            if (data.class === 'path-name') {
+            if ( data.class === 'path-name' ) {
                 comboData = [ { value: 'root', title: 0 } ].concat(comboData);
             }
         }
