@@ -419,7 +419,7 @@ export function coreContext() {
         return context.asset('img/' + _);
     };
 
-    var imperial =  (utilDetect().locale.toLowerCase() === 'en-us')
+    var imperial =  (utilDetect().locale.toLowerCase() === 'en-us');
     context.imperial = function(_) {
         if (!arguments.length) return imperial;
         imperial = _;
