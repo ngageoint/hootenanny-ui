@@ -22,6 +22,22 @@ import {
     tooltipHtml
 } from '../../tools/utilities';
 
+
+const privateMethods = {
+    initData() {
+        return {
+            layer: null,
+            mapId: null,
+            reviewStats: null,
+            currentReviewItem: null,
+            currentRelation: null,
+            currentFeatures: null,
+            mergedItems: [],
+            mergedConflicts: []
+        };
+    }
+}
+
 /**
  * @class Conflicts
  */
@@ -33,16 +49,7 @@ export default class Conflicts {
         this.contentContainer = contentContainer;
 
         // data store for all conflicts components
-        this.data = {
-            layer: null,
-            mapId: null,
-            reviewStats: null,
-            currentReviewItem: null,
-            currentRelation: null,
-            currentFeatures: null,
-            mergedItems: [],
-            mergedConflicts: []
-        };
+        this.data = privateMethods.initData();
 
         this.buttonEnabled = true;
     }
@@ -54,6 +61,7 @@ export default class Conflicts {
         Hoot.context.map().on( 'drawn', null );
         this.map.unsetHighlight();
         this.container.remove();
+        this.data = privateMethods.initData();
     }
 
     /**

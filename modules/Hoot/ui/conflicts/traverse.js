@@ -27,7 +27,7 @@ export default class Traverse {
     async jumpTo( direction ) {
         let hasChanges = Hoot.context.history().hasChanges(),
             reviewData = {},
-            reviewItem = null;
+            reviewItem;
 
         if ( hasChanges ) {
             let message = 'Please resolve or undo the current feature changes before proceeding to the next review.',
