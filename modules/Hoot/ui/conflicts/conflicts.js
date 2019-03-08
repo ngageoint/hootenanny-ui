@@ -36,7 +36,7 @@ const privateMethods = {
             mergedConflicts: []
         };
     }
-}
+};
 
 /**
  * @class Conflicts
