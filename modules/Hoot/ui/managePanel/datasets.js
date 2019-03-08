@@ -76,13 +76,6 @@ export default class Datasets extends Tab {
         ];
     }
 
-    // puts default before custom translations
-    sortTranslations(translations) {
-        return translations.sort(function(translation) { 
-            return translation.hasOwnProperty('DEFAULT') ? -1 : 0; 
-        } );
-    }
-
     /**
      * Render view inside tab body
      */
@@ -91,8 +84,6 @@ export default class Datasets extends Tab {
 
         // automatically show this panel on first load
         this.toggle();
-
-        let sortTranslations = this.sortTranslations;
 
         let buttonContainer = this.panelWrapper
             .append( 'div' )
@@ -108,10 +99,9 @@ export default class Datasets extends Tab {
 
                 switch ( item.onClick ) {
                     case 'import-datasets-single': {
-                        let translations = await Hoot.api.getTranslations();
-                        // 
+                        let translations = await Hoot.api.getTranslations(); 
 
-                        this.importSingleModal = new ImportDataset( sortTranslations(translations) ).render();
+                        this.importSingleModal = new ImportDataset( translations ).render();
 
                         Hoot.events.once( 'modal-closed', () => delete this.importSingleModal );
                         break;
@@ -119,7 +109,7 @@ export default class Datasets extends Tab {
                     case 'import-datasets-directory': {
                         let translations = await Hoot.api.getTranslations();
 
-                        this.importMultiModal = new ImportMultiDataset( sortTranslations(translations) ).render();
+                        this.importMultiModal = new ImportMultiDataset( translations ).render();
 
                         Hoot.events.once( 'modal-closed', () => delete this.importMultiModal );
                         break;
