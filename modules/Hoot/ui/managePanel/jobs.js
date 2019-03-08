@@ -20,18 +20,17 @@ export default class Jobs extends Tab {
 
         this.createJobsTable();
 
-        // window.setInterval(this.loadJobs, 90000);
         this.loadJobs();
 
         return this;
     }
 
     activate() {
-        console.log('active');
+        this.poller = window.setInterval( this.loadJobs, 5000 );
     }
 
     deactivate() {
-        console.log('deactive');
+        window.clearInterval(this.poller);
     }
 
     createJobsTable() {
