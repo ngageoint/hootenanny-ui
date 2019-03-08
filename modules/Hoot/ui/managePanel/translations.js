@@ -8,7 +8,7 @@ import Tab             from './tab';
 import AddTranslation  from '../modals/addTranslation';
 import ViewTranslation from '../modals/viewTranslation';
 import { tooltip }     from '../../../util/tooltip';
-import { saveAs }      from '../../../lib/hoot/FileSaver';
+import { saveAs }      from 'file-saver';
 
 /**
  * Creates the translations tab in the settings panel
