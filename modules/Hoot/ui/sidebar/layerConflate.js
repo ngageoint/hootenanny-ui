@@ -31,7 +31,7 @@ class LayerConflate extends SidebarForm {
 
         this.createFieldset();
         this.createLayerRefThumbnails( layers );
-        // this.createAdvancedOptions();
+        this.createAdvancedOptions();
         this.createButtons();
 
         this.saveAsInput         = d3.select( '#conflateSaveAs' );
@@ -78,9 +78,9 @@ class LayerConflate extends SidebarForm {
             .on( 'click', () => this.handleSubmit() );
     }
 
-    createAdvancedOptions() {
+    async createAdvancedOptions() {
         this.advancedOptions = new AdvancedOpts();
-        this.advancedOptions.init();
+        await this.advancedOptions.init();
         
         d3.select( '#advanced-opts-toggle' )
             .on( 'click', () => this.advancedOptions.toggle() );
@@ -176,10 +176,12 @@ class LayerConflate extends SidebarForm {
         data.OUTPUT_NAME        = this.saveAsInput.property( 'value' );
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
-        // data.ADV_OPTIONS        = this.advancedOptions.getOptions();
+        data.ADV_OPTIONS        = this.advancedOptions.getOptions();
+        data.DISABLED_FEATURES  = this.advancedOptions.getDisabledFeatures();
         data.CONFLATION_TYPE    = this.typeInput.property( 'value' ).replace( /(Cookie Cutter & | w\/ Tags)/, '' );
         data.HOOT_2             = true; 
         data.USER_EMAIL         = 'test@test.com';
+
 
         switch ( data.CONFLATION_TYPE ) {
             case 'Differential': {
@@ -240,9 +242,9 @@ class LayerConflate extends SidebarForm {
         // remove reference layer controllers
         d3.selectAll( '.add-controller' ).remove();
 
-        // if ( this.advancedOptions.isOpen ) {
-        //     this.advancedOptions.toggle();
-        // }
+        if ( this.advancedOptions.isOpen ) {
+            this.advancedOptions.toggle();
+        }
 
         this.loadingState( params );
 

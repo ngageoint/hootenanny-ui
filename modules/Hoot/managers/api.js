@@ -815,14 +815,15 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getAdvancedOptions( confType = 'custom' ) {
+    getAdvancedOptions() {
         const params = {
-            path: `/info/advancedopts/getoptions?conftype=${ confType }`,
+            path: '/info/advancedopts/getoptions?conftype=hoot2',
             method: 'GET'
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp =>  resp.data );
+            
     }
 
     /**

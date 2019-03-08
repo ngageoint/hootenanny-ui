@@ -9,17 +9,15 @@ import _map       from 'lodash-es/map';
 
 import FieldsetData     from './fieldsetData';
 import FieldsetControls from './fieldsetControls';
-// import { advancedOptions } from '../../../config/domMetadata';
+import { advancedOptions } from '../../../config/domMetadata';
 import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 import FormFactory from '../../../tools/formFactory';
 
 
 export default class AdvancedOpts {
     constructor() {
-        let self = this;
         this.sidebar         = d3.select( '#hoot-sidebar' );
-        // this.advancedOptions = advancedOptions(this);
-        this.advancedOptions = [];
+        this.advancedOptions = {};
     }
 
     getFactory() {
@@ -34,7 +32,8 @@ export default class AdvancedOpts {
         return this.form.classed( 'visible' );
     }
     
-    init() {
+    async init() {
+        this.advancedOptions = await Hoot.api.getAdvancedOptions();
         this.render();
     }
 
@@ -114,8 +113,8 @@ export default class AdvancedOpts {
     }
 
     toggleOption(d, checked) {
-        let label = d3.select( `#${d.id}_label` ),
-            parent = d3.select( `#${d.id}_group` );
+        let label = d3.select( `#${d.name}_label` ),
+            parent = d3.select( `#${d.name}_group` );
 
         parent
             .select( '.group-toggle-caret-wrap' )
@@ -155,7 +154,7 @@ export default class AdvancedOpts {
         groupLeftInnerWrap
             .append( 'input' )
             .attr( 'type', 'checkbox' )
-            .attr( 'id', d => `${d.id}-toggle` )
+            .attr( 'id', d => `${d.name}-toggle` )
             .classed( 'conflate-type-toggle', true )
             .property( 'checked', true )
             .on( 'click', d => toggleOption(d) );
@@ -164,7 +163,7 @@ export default class AdvancedOpts {
         groupLeftInnerWrap
             .append( 'div' )
             .on('click', d => {
-                let toggle = d3.select( `#${d.id}-toggle`),
+                let toggle = d3.select( `#${d.name}-toggle`),
                     checked = toggle.property( 'checked' );
                     
                 toggle.property( 'checked', !checked );
@@ -172,29 +171,29 @@ export default class AdvancedOpts {
                 toggleOption( d, checked ); 
             } )
             .append( 'span' )
-            .attr( 'id', d => `${ d.id }_label` )
+            .attr( 'id', d => `${ d.name }_label` )
             .classed( 'adv-opt-title', true)
-            .text( d => d.label );
+            .text( d => `${d.name} Options` );
 
-        groupHeader
-            .append( 'div' )
-            .classed( 'adv-opts-inner-wrap group-toggle-caret-wrap', true );
-            // .append( 'div' ) /* IGNORE ADDITIONAL OPTIONS FOR TIME BEING */
-            // .attr( 'class', d => `adv-opt-toggle ${ d.members.length ? 'combobox-caret': '' }` )
-            // .on( 'click', function(d) {
-            //     if (d.members.length) {
-            //         let id        = d3.select( this ).datum().id,
-            //             body      = d3.select( `#${ id }_group` ).select( '.group-body' ),
-            //             bodyState = body.classed( 'hidden' );
+        // groupHeader
+        //     .append( 'div' )
+        //     .classed( 'adv-opts-inner-wrap group-toggle-caret-wrap', true )
+        //     .append( 'div' )
+        //     .attr( 'class', d => `adv-opt-toggle ${ d.members.length ? 'combobox-caret': '' }` )
+        //     .on( 'click', function(d) {
+        //         if (d.members.length) {
+        //             let id        = d3.select( this ).datum().id,
+        //                 body      = d3.select( `#${ id }_group` ).select( '.group-body' ),
+        //                 bodyState = body.classed( 'hidden' );
 
-            //         body.classed( 'hidden', !bodyState );
-            //         body.classed( 'keyline-bottom', bodyState );
-            //     }
-            // });
+        //             body.classed( 'hidden', !bodyState );
+        //             body.classed( 'keyline-bottom', bodyState );
+        //         }
+        //     });
 
 
-        let groupBody = groupEnter.append( 'div' )
-            .classed( 'group-body fill-white hidden', true );
+        // let groupBody = groupEnter.append( 'div' )
+        //     .classed( 'group-body fill-white hidden', true );
 
         // let fieldContainer = groupBody.selectAll( '.hoot-form-field' ) /* IGNORE ADDITIONAL OPTIONS FOR TIME BEING */
         //     .data(d => d.members);
@@ -345,45 +344,31 @@ export default class AdvancedOpts {
         //     .attr( 'class', d => `hoot-form-field small contain ${d.hidden ? 'hidden': ''}` );
         
         group.merge(groupEnter)
-            .attr( 'id', d => d.id + '_group');
+            .attr( 'id', d => d.name + '_group');
     }
-    
-    getOptions() {
-        let options = '',
-            mergers = [],
-            matchers = [],
-            isNetwork = d3.select( '#conflateType' ).property( 'value' ) === 'Network';
 
-        // create list of matchers/mergers that are interpretable as the 
-        // conflation types the user chose...
-        this.contentDiv 
+    /**
+     * Returns list of all conflation types with unchecked (disabled) checkboxes...
+     */
+    getDisabledFeatures() {
+        let disabledFeatures = [];
+        this.contentDiv
             .selectAll( '.conflate-type-toggle' )
             .each(function(d) {
-                let selection = d3.select( this ),
-                    checked = selection.property( 'checked' );
-
-                if ( checked ) {
-                    if ( d.id === 'roadOptions' && isNetwork ) {
-                        return; 
-                    }
-            
-                    mergers.push(d.merger);
-                    matchers.push(d.matcher);
+                let selection = d3.select( this );
+                
+                if ( !selection.property( 'checked' ) ) {
+                    disabledFeatures.push(selection.datum().label.replace(/ to /, ''))
                 }
             } );
 
-        if (mergers.length) {
-            if (mergers.length !== matchers.length) {
-                Hoot.message.alert( new Error ('Unable to conflate, matchers & mergers are not of equal length') );
-                return;
-            }
-            options += `-D "match.creators=${ matchers.join(';') }" `;
-            options += `-D "merger.creators=${ mergers.join(';') }" `;
-        }
+        return disabledFeatures;
+    }
 
+    getOptions() {
+        let options = '';
         
         // add additional advanced options that the user changed...
-        // /* these options will be toggle-able in future release...
         // this.contentDiv
         //     .selectAll( '.form-group .hoot-form-field' )
         //     .each( function(d) {
