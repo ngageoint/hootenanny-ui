@@ -67,8 +67,10 @@ export default class ManagePanel {
                 this.transAssist     = modules[ 4 ];
                 this.reviewBookmarks = modules[ 5 ];
                 this.bookmarkNotes   = modules[ 6 ];
+                this.tabs = modules;
             } );
 
         return this;
     }
+
 }
