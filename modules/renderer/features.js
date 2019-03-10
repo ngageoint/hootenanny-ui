@@ -9,8 +9,8 @@ import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { osmEntity } from '../osm';
 import { utilRebind } from '../util/rebind';
 import {
-	utilQsString,
-	utilStringQs
+    utilQsString,
+    utilStringQs
 } from '../util';
 
 

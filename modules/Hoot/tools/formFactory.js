@@ -202,7 +202,7 @@ export default class FormFactory {
                   v = data.valueKey ? n[ data.valueKey ] : t;
             return { value: v, title: t };
         } );
-        
+
         if (data.sort) {
             comboData = comboData.sort((a, b) => {
                 let textA = a.value.toLowerCase(),
@@ -210,7 +210,7 @@ export default class FormFactory {
 
                 return textA < textB ? -1 : textA > textB ? 1 : 0;
             } );
-            
+
             if ( data.class === 'path-name' ) {
                 comboData = [ { value: 'root', title: 0 } ].concat(comboData);
             }

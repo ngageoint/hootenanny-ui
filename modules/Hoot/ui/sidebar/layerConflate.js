@@ -38,7 +38,7 @@ class LayerConflate extends SidebarForm {
         this.folderPathInput     = d3.select( '#conflateFolderPath' );
         this.newFolderNameInput  = d3.select( '#conflateNewFolderName' );
         this.typeInput           = d3.select( '#conflateType' );
-        this.algorithmInput       = d3.select( '#conflateAlgorithm' ); 
+        this.algorithmInput      = d3.select( '#conflateAlgorithm' );
         this.refLayerInput       = d3.select( '#conflateRefLayer' );
         this.collectStatsInput   = d3.select( '#conflateCollectStats' );
     }
@@ -81,7 +81,7 @@ class LayerConflate extends SidebarForm {
     createAdvancedOptions() {
         this.advancedOptions = new AdvancedOpts();
         this.advancedOptions.init();
-        
+
         d3.select( '#advanced-opts-toggle' )
             .on( 'click', () => this.advancedOptions.toggle() );
     }
@@ -178,7 +178,7 @@ class LayerConflate extends SidebarForm {
         data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
         // data.ADV_OPTIONS        = this.advancedOptions.getOptions();
         data.CONFLATION_TYPE    = this.typeInput.property( 'value' ).replace( /(Cookie Cutter & | w\/ Tags)/, '' );
-        data.HOOT_2             = true; 
+        data.HOOT_2             = true;
         data.USER_EMAIL         = 'test@test.com';
 
         switch ( data.CONFLATION_TYPE ) {
@@ -195,7 +195,7 @@ class LayerConflate extends SidebarForm {
                 data.CONFLATION_COMMAND = 'conflate';
             }
         }
-        
+
         if (this.algorithmInput.property( 'value' ) === 'Network' ) {
             data.CONFLATION_ALGORITHM = 'Network';
         }

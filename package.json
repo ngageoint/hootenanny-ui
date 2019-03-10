@@ -24,6 +24,7 @@
     "dist:svg:temaki": "svg-sprite --symbol --symbol-dest . --shape-id-generator \"temaki-%s\" --symbol-sprite img/temaki-sprite.svg node_modules/temaki/icons/*.svg",
     "imagery": "node data/update_imagery",
     "lint": "eslint *.js test/spec modules",
+    "lintfix": "eslint --fix *.js test/spec modules",
     "production": "npm-run-all -p dist:** && webpack --env.NODE_ENV=prod",
     "start": "webpack-dev-server --env.NODE_ENV=dev",
     "test": "npm-run-all -s lint build test:**",
