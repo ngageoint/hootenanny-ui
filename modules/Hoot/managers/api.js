@@ -288,7 +288,7 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => 
+            .then( resp =>
                 resp.data.sort( ( a, b ) => {
                     // Set undefined to false
                     if ( !a.DEFAULT ) a.DEFAULT = false;
