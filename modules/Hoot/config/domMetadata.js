@@ -45,13 +45,6 @@ export function layerConflateForm( data ) {
             readonly: 'readonly'
         },
         {
-            label: 'Road Algorithm',
-            id: 'conflateAlgorithm',
-            inputType: 'combobox',
-            value: 'Unify',
-            data: [ 'Unify', 'Network' ]
-        },
-        {
             label: 'Attribute Reference Layer',
             id: 'conflateRefLayer',
             inputType: 'combobox',
