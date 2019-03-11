@@ -100,5 +100,5 @@ export const isNaN = x => {
 };
 
 export const titleCase = text => {
-    return text[0].toUppercase() + text.slice(1);
+    return text[0].toUpperCase() + text.slice(1);
 };

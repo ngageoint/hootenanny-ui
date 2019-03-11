@@ -12,6 +12,7 @@ import {
 import { svgIcon } from '../svg';
 
 import ClipSelectBbox from '../Hoot/tools/clipSelectBbox';
+// import grailSelectBbox from '../Hoot/tools/grailSelectBbox';
 
 export function uiTools( context ) {
     let menuItemMeta = [
@@ -58,6 +59,21 @@ export function uiTools( context ) {
                     type: 'area',
                     icon: 'iD-operation-split',
                     action: 'clipData'
+                }
+            ]
+        },
+        {
+            title: 'Grail Tools',
+            icon: 'line',
+            group: 'grail',
+            items: [
+                {
+                    title: 'Grail Pull OSM',
+                    tooltip: 'Shortcut: 9',
+                    group: 'grail',
+                    type: 'area',
+                    icon: 'iD-icon-layers',
+                    action: 'grailPull'
                 }
             ]
         }
@@ -146,15 +162,19 @@ export function uiTools( context ) {
                         clipSelectBbox.render();
                     } else {
                         let message = 'Add a layer before clipping',
-                            type = 'warn';
+                            type    = 'warn';
 
-                        Hoot.message.alert( { message , type } );
+                        Hoot.message.alert( { message, type } );
                     }
                 } else if ( d.action === 'measureHelp' ) {
                     let message = 'Click anywhere on the map to start measuring.  Double-click to end measurement. Clicking on the Tools menu will clear the vectors from the screen.',
-                        type = 'info';
+                        type    = 'info';
 
                     Hoot.message.alert( { message, type } );
+                } else if ( d.action === 'grailPull' ) {
+                    // let clipSelectBbox = new SelectBbox( context );
+                    //
+                    // clipSelectBbox.render();
                 }
             } );
 

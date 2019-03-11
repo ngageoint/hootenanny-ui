@@ -19,9 +19,9 @@ export default class ClipDataset {
     }
 
     render() {
-        let titleText = this.instance.clipType === 'visualExtent'
+        let titleText = this.instance.bboxSelectType === 'visualExtent'
             ? 'Clip Data to Visual Extent'
-            : this.instance.clipType === 'boundingBox'
+            : this.instance.bboxSelectType === 'boundingBox'
                 ? 'Clip Data to Bounding Box'
                 : 'Clip Data';
 
