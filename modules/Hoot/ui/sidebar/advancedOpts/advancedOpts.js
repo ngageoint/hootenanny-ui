@@ -173,13 +173,110 @@ export default class AdvancedOpts {
             : 'text';
     }
 
+    innerWrap(toggleInput, toggleOption) {
+        let d = toggleInput.datum(),
+            innerWrap = toggleInput.selectAll( '.adv-opts-inner-wrap' )
+                .data([ 0 ]);
+
+        innerWrap.exit().remove();
+
+        let innerWrapEnter = innerWrap.enter()
+            .append( 'div' )
+            .classed( 'adv-opts-inner-wrap adv-opts-input' , true);
+
+        innerWrap = innerWrap.merge(innerWrapEnter);
+
+        let innerInput = innerWrap.selectAll( '.conflate-type-toggle' )
+            .data( [ d ] );
+
+        innerInput.exit().remove();
+
+        let innerInputEnter = innerInput.enter()
+            .append( 'input' )
+            .attr( 'type', 'checkbox' )
+            .attr( 'id', d => `${d.name}-toggle` )
+            .classed( 'conflate-type-toggle', true );
+
+
+        innerInput.merge(innerInputEnter)
+            .property( 'checked', true )
+            .on( 'click', toggleOption );
+
+        let innerLabelWrap = innerWrap.selectAll( '.adv-opt-title-wrap' )
+            .data( [ d ] );
+        
+        innerLabelWrap.exit().remove();
+
+        let innerLabelWrapEnter = innerLabelWrap.enter()
+            .append( 'div' )
+            .classed( 'adv-opt-title-wrap', true );
+            
+
+        innerLabelWrap = innerLabelWrap.merge(innerLabelWrapEnter)
+        
+        innerLabelWrap
+            .on('click', d => {
+                let toggle = d3.select( `#${d.name}-toggle`),
+                    checked = toggle.property( 'checked' );
+                        
+                toggle.property( 'checked', !checked );
+
+                toggleOption( d, checked ); 
+            } );
+
+        let innerLabel = innerLabelWrap.selectAll( '.adv-opt-title' )
+            .data([ d ]);
+
+        innerLabel.exit().remove();
+
+        let innerLabelEnter = innerLabel.enter()
+            .append( 'span' )
+            .classed( 'adv-opt-title', true );
+
+        innerLabel.merge(innerLabelEnter)
+            .attr( 'id', d => `${ d.name }_label` )
+            .classed( 'adv-opt-title-disabled', false )
+            .text( d => `${d.label} Options` );
+    }
+
+    caretWrap(toggleInput) {
+        let d = toggleInput.datum(),
+            caretWrap = toggleInput
+                .selectAll( 'group-toggle-caret-wrap' )
+                .data( [ d ] );
+
+        caretWrap.exit().remove();
+
+        let caretWrapEnter = caretWrap.enter()
+            .append( 'div' )
+            .classed( 'group-toggle-caret-wrap', true);
+
+        caretWrap = caretWrap.merge(caretWrapEnter);
+
+        caretWrap
+            .append( 'div' )
+            .attr( 'class', 'adv-opt-toggle' )
+            .classed( 'combobox-caret', d => d.members.length )
+            .on( 'click', function(d) {
+                if (d.members.length) {
+                    let body      = d3.select( `#${ d.name }_group` ).select( '.group-body' ),
+                        bodyState = body.classed( 'hidden' );
+
+                    body.classed( 'hidden', !bodyState );
+                    body.classed( 'keyline-bottom', bodyState );
+                }
+            });
+    }
+
     createGroups() {
         let toggleOption = this.toggleOption,
-            shouldSend = this.shouldSend,
             setType = this.setType,
-            group = d3.select( '.advanced-opts-content' )
+            innerWrap = this.innerWrap,
+            caretWrap = this.caretWrap,
+            advOpts = _cloneDeep( this.advancedOptions ),
+            group = this.contentDiv
                 .selectAll( '.form-group' )
-                .data( _cloneDeep( this.advancedOptions ) );
+                .data( advOpts );
 
         group.exit()
             .remove();
@@ -187,77 +284,72 @@ export default class AdvancedOpts {
         let groupEnter = group.enter()
             .append( 'div' )
             .classed( 'form-group', true )
-            .attr( 'id', d => d.name + '_group');
+            .attr( 'id', d => `${d.name}_group`);
 
-
-        let groupToggle = groupEnter
-            .append( 'div' )
-            .classed( 'group-toggle', true );
-            
-        let groupHeader = groupToggle.append( 'div' )
-            .attr( 'class', 'inner-wrapper strong fill-light keyline-bottom adv-opts-toggle-wrap');
-
-        groupHeader
-            .append( 'div' )
-            .classed( 'adv-opts-inner-wrap adv-opts-input', true );
-
-        // above, do once
         group = group.merge(groupEnter);
 
-        // below, update each time...
-
-        let groupLeftInnerWrap = group.selectAll( '.adv-opts-inner-wrap .adv-opts-input' )
-            .data([ d ]);
-
-        groupLeftInnerWrap.exit()
-            .remove();
-
-        let groupLeftInnerWrapEnter = groupLeftInnerWrap.enter()
-            .append( 'input' )
-            .attr( 'type', 'checkbox' )
-            .attr( 'id', d => `${d.name}-toggle` )
-            .classed( 'conflate-type-toggle', true )
-            .property( 'checked', true )
-            .on( 'click', d => toggleOption(d) );
-
-
-        groupLeftInnerWrapEnter
-            .append( 'div' )
-            .on('click', d => {
-                let toggle = d3.select( `#${d.name}-toggle`),
-                    checked = toggle.property( 'checked' );
-                    
-                toggle.property( 'checked', !checked );
-
-                toggleOption( d, checked ); 
-            } )
-            .append( 'span' )
-            .attr( 'id', d => `${ d.name }_label` )
-            .classed( 'adv-opt-title', true )
-            .text( d => `${d.label} Options` );
-
-        groupLeftInnerWrap = groupLeftInnerWrap.merge(groupLeftInnerWrapEnter);
-
-        // groupHeader
-        //     .append( 'div' )
-        //     .classed( 'adv-opts-inner-wrap group-toggle-caret-wrap', true )
-        //     .append( 'div' )
-        //     .attr( 'class', d => `adv-opt-toggle ${ d.members.length ? 'combobox-caret': '' }` )
-        //     .on( 'click', function(d) {
-        //         if (d.members.length) {
-        //             let name      = d3.select( this ).datum().name,
-        //                 body      = d3.select( `#${ name }_group` ).select( '.group-body' ),
-        //                 bodyState = body.classed( 'hidden' );
-
-        //             body.classed( 'hidden', !bodyState );
-        //             body.classed( 'keyline-bottom', bodyState );
-        //         }
-        //     });
-
-
+        group.each(function(d) {
+            let group = d3.select( this ),
+                groupToggle = group.selectAll( '.group-toggle' )
+                    .data( [ 0 ] );
             
-        // groupEnter.append( 'div' )
-        //     .classed( 'group-body fill-white hidden', true );
+            groupToggle.exit().remove();
+
+            let groupToggleEnter = groupToggle.enter()
+                .append( 'div' )
+                .classed( 'group-toggle', true );
+
+            groupToggle = groupToggle.merge(groupToggleEnter);
+
+            let toggleWrap = groupToggle.selectAll( '.inner-wrapper' )
+                .data( [ d ] );
+
+            toggleWrap.exit().remove();
+
+            let toggleWrapEnter = toggleWrap.enter()
+                .append( 'div' )
+                .attr( 'class', 'inner-wrapper strong fill-light keyline-bottom adv-opts-toggle-wrap' )
+                .attr( 'id', d => `${d.name}-wrap` );
+
+            toggleWrap.merge(toggleWrapEnter)
+                .call(innerWrap, toggleOption)
+                .call(caretWrap);
+
+            let groupBody = group.selectAll( 'group-body' )
+                .data( [ d ] );
+
+            groupBody.exit().remove();
+
+            let groupBodyEnter = groupBody.enter()
+                .append( 'div' )
+                .classed( 'group-body fill-white hidden', true );
+
+            groupBody = groupBody.merge(groupBodyEnter);
+
+
+            let fieldContainer = groupBody.selectAll( '.hoot-form-fields' )
+                .data( d => d.members );
+
+            fieldContainer.exit().remove();
+
+            let fieldContainerEnter = fieldContainer.enter()
+                .append( 'div' )
+                .attr( 'id', d => d.id )
+                .attr( 'class', d => `hoot-form-field small contain ${d.hidden ? 'hidden': ''}` );
+
+            fieldContainer = fieldContainer.merge(fieldContainerEnter);
+
+            fieldContainer
+                .append( 'div' )
+                .append( 'label' )
+                .text( d => d.label );
+
+            fieldContainer
+                .append( 'input' )
+                .attr( 'type', setType )
+                .property( 'value', d => d.default );
+
+        });
             
         // let fieldContainer = groupEnter.selectAll( '.group-body' )
         //     .selectAll( '.hoot-form-field' )
@@ -267,9 +359,7 @@ export default class AdvancedOpts {
         //     .remove();
 
         // let fieldContainerEnter = fieldContainer.enter()
-        //     .append( 'div' )
-        //     .attr( 'id', d => d.id )
-        //     .attr( 'class', d => `hoot-form-field small contain ${d.hidden ? 'hidden': ''}` );
+   
 
 
         // fieldContainerEnter
@@ -284,7 +374,7 @@ export default class AdvancedOpts {
 
 
         // fieldContainer = fieldContainer.merge( fieldContainerEnter );
-        group = group.merge(groupEnter);
+        // groupToggle = groupToggle.merge(groupToggleEnter);
         
         // fieldContainerEnter.each(function(d) {
         //     let field = d3.select( this );
@@ -427,7 +517,7 @@ export default class AdvancedOpts {
                 let selection = d3.select( this );
                 
                 if ( !selection.property( 'checked' ) ) {
-                    disabledFeatures.push(selection.datum().label.replace(/ to /, ''))
+                    disabledFeatures.push(selection.datum().label.replace(/ to /, ''));
                 }
             } );
 
