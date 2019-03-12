@@ -162,7 +162,7 @@ export default class AdvancedOpts {
                 .classed( 'hidden', true );
         }
     }
-    
+
     innerWrap(toggleInput, toggleOption) {
         let d = toggleInput.datum(),
             innerWrap = toggleInput.selectAll( '.adv-opts-inner-wrap' )
@@ -271,7 +271,7 @@ export default class AdvancedOpts {
         fieldLabelWrap = fieldLabelWrap.merge(fieldLabelWrapEnter);
 
         fieldLabelWrap
-            .classed( 'adv-opts-header fill-light keyline-bottom', true )
+            .classed( 'adv-opts-header fill-light keyline-bottom round-top', true )
             .classed( 'keyline-all round-left rou hoot-field-checkbox-title-wrap', 
                 d => d.input === 'checkbox' );
 
@@ -304,7 +304,7 @@ export default class AdvancedOpts {
         fieldInputWrap = fieldInputWrap.merge(fieldInputWrapEnter);
 
         fieldInputWrap
-            .classed('keyline-top keyline-right keyline-bottom round-right hoot-field-checkbox-input-wrap', 
+            .classed( 'keyline-top keyline-right keyline-bottom round-right hoot-field-checkbox-input-wrap', 
                 d => d.input === 'checkbox' );
 
         let fieldInput = fieldInputWrap.selectAll( '.hoot-field-input' )
