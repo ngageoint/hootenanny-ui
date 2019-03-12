@@ -453,136 +453,6 @@ export default class AdvancedOpts {
             });
             
         });
-            
-      
-        // fieldContainerEnter.each(function(d) {
-        //     let field = d3.select( this );
-        //     // add header
-        //     if ( d.input === 'check' ) {
-
-        //         // let checkboxWrap = field.selectAll( '.form-field-checkbox-wrap' )
-        //         //     .data( [ 0 ] );
-
-        //         // checkboxWrap.exit()
-        //         //     .remove();
-                
-        //         // let checkboxWrapEnter = checkboxWrap.enter()
-        //         //     .append( 'div' )
-        //         //     .attr( 'class', 'form-field-checkbox-wrap round keyline-all' );
-
-        //         // checkboxWrapEnter.append( 'div' )
-        //         //     .attr( 'class', 'form-field-checkbox-title-wrap fill-light keyline-right' )
-        //         //     .append( 'label' )
-        //         //     .attr( 'class', 'adv-opts-header')
-        //         //     .text( d.label );
-
-        //         // checkboxWrapEnter.append( 'div' )
-        //         //     .attr( 'class', 'form-field-checkbox-input-wrap' )
-        //         //     .append( 'input' )
-        //         //     .attr( 'type', 'checkbox' )
-        //         //     .attr( 'id', `${ d.id }-checkbox-input` )
-        //         //     .classed( 'form-field-checkbox', true );
-
-        //         // checkboxWrap = checkboxWrap.merge(checkboxWrapEnter);
-        //     } else {
-        //         let fieldHeader = field.selectAll( '.form-field-header' )
-        //             .data( [ 0 ] );
-
-        //         fieldHeader.exit()
-        //             .remove();
-
-        //         let fieldHeaderEnter = fieldHeader.enter()
-        //             .append( 'div' )
-        //             .classed( 'form-field-header fill-light round-top keyline-all', true);
-
-
-        //         fieldHeaderEnter
-        //             .append( 'label' )
-        //             .append( 'span' )
-        //             .attr( 'class', 'adv-opts-header')
-        //             .text( d.label );
-
-        //         fieldHeader = fieldHeader.merge(fieldHeaderEnter);
-
-        //         field.append( 'div' )
-        //             .classed( 'form-field-control keyline-left keyline-bottom keyline-right round-bottom', true )
-        //             .call((selection) => {
-        //                 switch ( d.input ) {
-        //                     case 'combo': {
-        //                         let comboData = _map(d.data, n => {
-        //                             const t = d.itemKey ? n[ d.itemKey ] : n,
-        //                                 v = d.valueKey ? n[ d.valueKey ] : t;
-        //                             return { value: v, title: t };
-        //                         } );
-                                
-        //                         if ( d.sort ) {
-        //                             comboData = comboData.sort((a, b) => {
-        //                                 let textA = a.value.toLowerCase(),
-        //                                     textB = b.value.toLowerCase();
-
-        //                                 return textA < textB ? -1 : textA > textB ? 1 : 0;
-        //                             } );
-                                    
-        //                             if ( d.class === 'path-name' ) {
-        //                                 comboData = [ { value: 'root', title: 0 } ].concat(comboData);
-        //                             }
-        //                         }
-
-        //                         let combo = selection.selectAll( '.form-field-combo' )
-        //                             .data( [ d ] );
-
-        //                         combo.exit()
-        //                             .remove();
-
-        //                         let comboEnter = combo.enter()
-        //                             .append( 'input' )
-        //                             .attr( 'class', 'form-field-combo-input' )
-        //                             .attr( 'id', d => `${d.id}-combo-input`)
-        //                             .property( 'value', d => d.default );
-
-
-        //                         comboEnter
-        //                             .attr( 'type', 'text' )
-        //                             .attr( 'autocomplete', 'off' )
-        //                             .attr( 'placeholder', d => d.placeholder )
-        //                             .attr( 'disabled', d => d.disabled )
-        //                             .attr( 'readonly', d => d.readonly )
-        //                             .call(d3combobox().data(comboData))
-        //                             .on( 'change', shouldSend );
-                                
-        //                         combo = combo.merge(comboEnter);
-        //                         break;
-        //                     }
-        //                     // case 'text': {
-        //                     //     let textField = selection.selectAll( '.form-field-textinput' )
-        //                     //         .data( [ d ] );
-
-        //                     //     textField.exit()
-        //                     //         .remove();
-
-        //                     //     let textFieldEnter = textField.enter()
-        //                     //         .append( 'input' )
-        //                     //         .attr('class', 'form-field-textinput');
-                                    
-        //                     //     textFieldEnter
-        //                     //         .attr( 'type', 'text' )
-        //                     //         .attr( 'placeholder', d => d.placeholder )
-        //                     //         .attr( 'value', d => d.value )
-        //                     //         .attr( 'readonly', d => d.readOnly )
-        //                     //         .attr( 'disabled', d => d.disabled )
-        //                     //         .classed( 'text-input', true )
-        //                     //         .on( 'keyup', shouldSend);
-
-        //                     //     textField = textField.merge(textFieldEnter);
-        //                     //     break;
-        //                     // }
-        //                 }
-        //             } );
-        //     }
-        // });
-        
-        //     .attr( 'id', d => d.id )
-        //     .attr( 'class', d => `hoot-form-field small contain ${d.hidden ? 'hidden': ''}` );
     }
 
     /**
@@ -610,13 +480,13 @@ export default class AdvancedOpts {
 
             if ( !selection.empty() ) {
                 switch ( d.input ) {
-                    case 'check': {
+                    case 'checkbox': {
                         if ( selection.property( 'checked' ) ) {
                             options[ d.id ] = true;
                         }
                         break;
                     }
-                    case 'combo': {
+                    case 'combobox': {
                         if ( !d.send ) break;
                         
                         let value = selection.property( 'value' );
