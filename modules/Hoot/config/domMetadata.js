@@ -381,4 +381,3 @@ export function conflictActions() {
             action: () => this.resolve.retainFeature()
         }
     ];
-}

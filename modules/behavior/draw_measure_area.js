@@ -197,7 +197,7 @@ export function behaviorDrawMeasureArea( context, svg ) {
     }
 
     function displayArea( m2 ) {
-        let imperial = context.imperial;
+        let imperial = context.imperial();
 
         let d = m2 * (imperial ? 10.7639111056 : 1),
             d1, d2, p1, p2, unit1, unit2;

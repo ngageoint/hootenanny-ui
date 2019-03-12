@@ -288,7 +288,19 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp =>
+                resp.data.sort( ( a, b ) => {
+                    // Set undefined to false
+                    if ( !a.DEFAULT ) a.DEFAULT = false;
+                    if ( !b.DEFAULT ) b.DEFAULT = false;
+                    // We check DEFAULT property, putting true first
+                    if ( a.DEFAULT !== b.DEFAULT ) {
+                        return ( a.DEFAULT ) ? -1 : 1;
+                    } else {
+                        // We only get here if the DEFAULT prop is equal
+                        return d3.ascending( a.NAME.toLowerCase(), b.NAME.toLowerCase() );
+                    }
+                } ));
     }
 
     getTranslation( name ) {
@@ -1052,4 +1064,5 @@ export default class API {
             .then( resp => resp.data )
             .catch( err => window.console.log( err ) );
     }
+
 }

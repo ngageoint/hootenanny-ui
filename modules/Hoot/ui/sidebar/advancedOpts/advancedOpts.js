@@ -7,6 +7,9 @@
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 
+import FieldsetData     from './fieldsetData';
+import FieldsetControls from './fieldsetControls';
+// import { advancedOptions } from '../../../config/domMetadata';
 import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
 import FormFactory from '../../../tools/formFactory';
 
@@ -46,32 +49,6 @@ export default class AdvancedOpts {
             // this.reset();
             this.createGroups();
         }
-    }
-
-    reset() {
-        this.contentDiv
-            .selectAll( '.conflate-type-toggle' )
-            .property( 'checked', true );
-
-        this.contentDiv
-            .selectAll( '.adv-opt-title' )
-            .classed( 'adv-opt-title-disabled', false );
-            
-        this.contentDiv
-            .selectAll( '.group-toggle-caret-wrap' )
-            .classed( 'toggle-disabled', false );
-
-
-        this.contentDiv.selectAll( '.hoot-form-field' ).each(function(d) {
-            if (d.send) delete d.send;
-            let input = d3.select( this ).select( 'input' );
-            input.property( 'value', d.defualt );
-        });
-
-    }
-
-    rendered() {
-        return !d3.select( '#advanced-opts-panel' ).empty();
     }
 
     render() {
@@ -125,10 +102,10 @@ export default class AdvancedOpts {
             .append( 'button' )
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
-            .on( 'click', () => { 
+            .on( 'click', () => {
                 d3.selectAll( '.form-group input' )
                     .property( 'checked', true );
-                
+
                 d3.selectAll( '.form-group .adv-opt-title')
                     .classed( 'adv-opt-title-disabled', false);
             });
@@ -299,7 +276,6 @@ export default class AdvancedOpts {
         let fieldInputWrapEnter = fieldInputWrap.enter()
             .append('div')
             .classed( 'hoot-field-input-wrap', true);
-
 
         fieldInputWrap = fieldInputWrap.merge(fieldInputWrapEnter);
 
