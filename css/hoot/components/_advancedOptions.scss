@@ -129,15 +129,16 @@
         flex-direction: column;
         overflow: auto;
         height: 300px;
-        padding: 10px;
+        align-items: center;
+        padding: 15px 10px;
     }
 
     .hoot-form-field {
-        padding: 0 15px;
-        margin-top: 5px;
+        margin: 10px 15px;
 
         .adv-opts-header {
             font-weight: bold;
+            padding: 5px 15px;
         }
 
         label {
@@ -159,44 +160,41 @@
 
         input.combobox-input {
             display: inline-block;
-        }
+        }    
+    }
 
-        .form-field-control {
-            display: flex;
-        
-            input[type="text"] {
-                align-self: center;
-                border: none;
-            }
 
+    .hoot-field-control {
+        input[type="text"] {
+            align-self: center;
+            border: none;
         }
     }
 
-    .form-field-checkbox-wrap {
+    .hoot-field-checkbox {        
         display: flex;
+        flex-direction: row;
         align-items: center;
-        overflow: hidden;
         height: 50px;
+        margin: 35px;
 
-        .form-field-checkbox-title-wrap {
+        .hoot-field-checkbox-title-wrap {
             display: flex;
             height: inherit;
             width: 85%;
             label {
                 align-self: center;
-                margin: 10px;
-                padding: 10px 0;
             }
         }
-        .form-field-checkbox-input-wrap {
+        .hoot-field-checkbox-input-wrap {
             width: 15%; 
+            height: inherit;
             display: flex;
             input {
                 margin: auto;
             }
         }
     }
-
     .hoot-form-field.has-children {
         .hoot-form-field {
             padding: 0 20px;

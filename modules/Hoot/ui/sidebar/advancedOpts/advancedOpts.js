@@ -164,13 +164,7 @@ export default class AdvancedOpts {
     }
 
     shouldSend(d) {
-        d.send = d3.select( this ).property( 'value' ) !== d.default;
-    }
-
-    setType(d) {
-        return d.type === 'check' 
-            ? 'checkbox'
-            : 'text';
+        
     }
 
     innerWrap(toggleInput, toggleOption) {
@@ -266,11 +260,85 @@ export default class AdvancedOpts {
         caretWrap.merge(caretWrapEnter);
     }
 
+    fieldLabel(fieldContainer) {
+        let d = fieldContainer.datum(),
+            fieldLabelWrap = fieldContainer
+                .selectAll( '.hoot-field-label-wrap' )
+                .data([ d ]);
+
+        fieldLabelWrap.exit().remove();
+
+        let fieldLabelWrapEnter = fieldLabelWrap.enter()
+            .append( 'div' )
+            .classed('hoot-field-label-wrap', true);
+        
+        fieldLabelWrap = fieldLabelWrap.merge(fieldLabelWrapEnter);
+
+        fieldLabelWrap
+            .classed( 'adv-opts-header fill-light keyline-bottom', true )
+            .classed( 'keyline-all round-left rou hoot-field-checkbox-title-wrap', 
+                d => d.input === 'checkbox' );
+
+        let fieldLabel = fieldLabelWrap.selectAll( '.hoot-field-label' )
+            .data( [ d ] );
+
+        fieldLabel.exit().remove();
+
+        let fieldLabelEnter = fieldLabel.enter()
+            .append( 'label' )
+            .classed( 'hoot-field-label', true )
+            .text( d => d.label );
+
+        fieldLabel.merge(fieldLabelEnter);
+    }
+
+    fieldInput(fieldContainer) {
+        let d = fieldContainer.datum(),
+            fieldInputWrap = fieldContainer
+                .selectAll( '.hoot-field-input-wrap' )
+                .data([ d ]);
+
+        fieldInputWrap.exit().remove();
+
+        let fieldInputWrapEnter = fieldInputWrap.enter()
+            .append('div')
+            .classed( 'hoot-field-input-wrap', true);
+
+
+        fieldInputWrap = fieldInputWrap.merge(fieldInputWrapEnter);
+
+        fieldInputWrap
+            .classed('keyline-top keyline-right keyline-bottom round-right hoot-field-checkbox-input-wrap', 
+                d => d.input === 'checkbox' );
+
+        let fieldInput = fieldInputWrap.selectAll( '.hoot-field-input' )
+            .data( [ d ] );
+
+        fieldInput.exit().remove();
+
+        let fieldInputEnter = fieldInput.enter()
+            .append( 'input' )
+            .attr( 'class', 'hoot-field-input' )
+            .attr( 'type', d => d.input === 'checkbox' ?  'checkbox' : 'text' );
+
+        fieldInput = fieldInput.merge(fieldInputEnter);
+        
+        if ( fieldInput.attr( 'type ') !== 'checkbox' ) {
+            fieldInput
+                .property( 'value', d => d.default )
+                .on( 'change', function(d) {
+                    d.send = d3.select( this ).property( 'value' ) !== d.default;
+                } );
+        }
+
+    }
+
     createGroups() {
         let toggleOption = this.toggleOption,
-            setType = this.setType,
             innerWrap = this.innerWrap,
             caretWrap = this.caretWrap,
+            fieldLabel = this.fieldLabel,
+            fieldInput = this.fieldInput,
             advOpts = _cloneDeep( this.advancedOptions ),
             group = this.contentDiv
                 .selectAll( '.form-group' )
@@ -341,46 +409,18 @@ export default class AdvancedOpts {
 
             fieldContainer = fieldContainer.merge(fieldContainerEnter);
             
+            fieldContainer
+                .classed( 'round hoot-field-control', true )
+                .classed( 'hoot-field-checkbox', d => d.input === 'checkbox' )
+                .classed( 'keyline-all', d => d.input !== 'checkbox' );
+
             fieldContainer.each(function(d) {
                 let fieldContainer = d3.select( this );
-                
-                let fieldLabelWrap = fieldContainer.selectAll( '.hoot-field-label-wrap' )
-                    .data([ 0 ]);
 
-                fieldLabelWrap.exit().remove();
-
-                let fieldLabelWrapEnter = fieldLabelWrap.enter()
-                    .append( 'div' )
-                    .classed('hoot-field-label-wrap', true);
-                
-                fieldLabelWrap = fieldLabelWrap.merge(fieldLabelWrapEnter);
-
-                let fieldLabel = fieldLabelWrap.selectAll( '.hoot-field-label' )
-                    .data( [ d ] );
-
-                fieldLabel.exit().remove();
-
-                let fieldLabelEnter = fieldLabel.enter()
-                    .append( 'label' )
-                    .classed( 'hoot-field-label', true )
-                    .text( d => d.label );
-
-                fieldLabel.merge(fieldLabelEnter);
-
-                let fieldInput = fieldContainer.selectAll( '.hoot-field-input' )
-                    .data([ d ]);
-
-                fieldInput.exit().remove();
-
-                let fieldInputEnter = fieldInput.enter()
-                    .append( 'input' )
-                    .attr( 'class', 'hoot-field-input' )
-                    .attr( 'type', setType );
-        
-                fieldInput = fieldInput.merge(fieldInputEnter);
-                
-                fieldInput
-                    .property( 'value', d => d.default );
+                fieldContainer
+                    .call(fieldLabel)
+                    .call(fieldInput);
+               
             });
             
         });
