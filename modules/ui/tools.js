@@ -11,8 +11,7 @@ import {
 
 import { svgIcon } from '../svg';
 
-import ClipSelectBbox from '../Hoot/tools/clipSelectBbox';
-// import grailSelectBbox from '../Hoot/tools/grailSelectBbox';
+import selectBbox from '../Hoot/tools/selectBbox';
 
 export function uiTools( context ) {
     let menuItemMeta = [
@@ -157,9 +156,9 @@ export function uiTools( context ) {
                     context.enter( d.mode );
                 } else if ( d.action === 'clipData' ) {
                     if ( Object.keys( Hoot.layers.loadedLayers ).length ) {
-                        let clipSelectBbox = new ClipSelectBbox( context );
+                        let clipSelectBbox = new selectBbox( context );
 
-                        clipSelectBbox.render();
+                        clipSelectBbox.render( 'clipData' );
                     } else {
                         let message = 'Add a layer before clipping',
                             type    = 'warn';
@@ -172,9 +171,9 @@ export function uiTools( context ) {
 
                     Hoot.message.alert( { message, type } );
                 } else if ( d.action === 'grailPull' ) {
-                    // let clipSelectBbox = new SelectBbox( context );
-                    //
-                    // clipSelectBbox.render();
+                    let grailSelectBbox = new selectBbox( context );
+
+                    grailSelectBbox.render( 'grailPull' );
                 }
             } );
 

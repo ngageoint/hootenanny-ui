@@ -8,7 +8,8 @@ import EventEmitter from 'events';
 import FormFactory  from './formFactory';
 
 import { modeDrawBoundingBox } from '../../modes';
-import { titleCase }           from './utilities';
+import ClipDataset             from './clipDataset';
+import GrailPull               from './grailPull';
 
 export default class SelectBbox extends EventEmitter {
     constructor( context ) {
@@ -24,12 +25,23 @@ export default class SelectBbox extends EventEmitter {
         this.operationName  = '';
     }
 
-    render( formInfo ) {
-        let formId = 'select' + titleCase( this.operationName ) + 'Bbox';
+    render( operationName ) {
+        this.operationName = operationName;
 
-        this.container  = new FormFactory().generateForm( 'body', formId, formInfo.metadata );
+        const metadata = {
+            title: 'Enter Coordinates for Bounding Box',
+            button: {
+                text: 'Next',
+                id: 'bboxNextBtn',
+                onClick: () => this.handleNext()
+            }
+        };
+
+        const formId = 'drawBboxForm';
+
+        this.container  = new FormFactory().generateForm( 'body', formId, metadata );
         this.form       = d3.select( `#${formId}` );
-        this.nextButton = d3.select( `#${formInfo.metadata.button.id}` );
+        this.nextButton = d3.select( `#${metadata.button.id}` );
 
         this.nextButton.property( 'disabled', false );
 
@@ -158,4 +170,20 @@ export default class SelectBbox extends EventEmitter {
         }, 100 );
     }
 
+    handleNext() {
+        this.bbox = this.minLonInput.property( 'value' ) + ',' +
+            this.minLatInput.property( 'value' ) + ',' +
+            this.maxLonInput.property( 'value' ) + ',' +
+            this.maxLatInput.property( 'value' );
+
+        this.container.remove();
+        this.nextButton = null;
+
+        if ( this.operationName === 'clipData' ) {
+            new ClipDataset( this ).render();
+        } else if ( this.operationName === 'grailPull' ) {
+            new GrailPull( this ).render();
+        }
+
+    }
 }
