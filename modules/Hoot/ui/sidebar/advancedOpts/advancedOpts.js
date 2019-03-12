@@ -242,18 +242,14 @@ export default class AdvancedOpts {
     caretWrap(toggleInput) {
         let d = toggleInput.datum(),
             caretWrap = toggleInput
-                .selectAll( 'group-toggle-caret-wrap' )
+                .selectAll( '.group-toggle-caret-wrap' )
                 .data( [ d ] );
 
         caretWrap.exit().remove();
 
         let caretWrapEnter = caretWrap.enter()
             .append( 'div' )
-            .classed( 'group-toggle-caret-wrap', true);
-
-        caretWrap = caretWrap.merge(caretWrapEnter);
-
-        caretWrap
+            .classed( 'group-toggle-caret-wrap', true)
             .append( 'div' )
             .attr( 'class', 'adv-opt-toggle' )
             .classed( 'combobox-caret', d => d.members.length )
@@ -266,6 +262,8 @@ export default class AdvancedOpts {
                     body.classed( 'keyline-bottom', bodyState );
                 }
             });
+
+        caretWrap.merge(caretWrapEnter);
     }
 
     createGroups() {
@@ -311,23 +309,27 @@ export default class AdvancedOpts {
                 .attr( 'class', 'inner-wrapper strong fill-light keyline-bottom adv-opts-toggle-wrap' )
                 .attr( 'id', d => `${d.name}-wrap` );
 
-            toggleWrap.merge(toggleWrapEnter)
+            toggleWrap = toggleWrap.merge(toggleWrapEnter);
+            
+            toggleWrap
                 .call(innerWrap, toggleOption)
                 .call(caretWrap);
 
-            let groupBody = group.selectAll( 'group-body' )
+            let groupBody = group.selectAll( '.group-body' )
                 .data( [ d ] );
 
             groupBody.exit().remove();
 
             let groupBodyEnter = groupBody.enter()
                 .append( 'div' )
-                .classed( 'group-body fill-white hidden', true );
+                .classed( 'group-body fill-white', true );
 
             groupBody = groupBody.merge(groupBodyEnter);
 
+            groupBody
+                .classed( 'hidden', true );
 
-            let fieldContainer = groupBody.selectAll( '.hoot-form-fields' )
+            let fieldContainer = groupBody.selectAll( '.hoot-form-field' )
                 .data( d => d.members );
 
             fieldContainer.exit().remove();
@@ -338,44 +340,52 @@ export default class AdvancedOpts {
                 .attr( 'class', d => `hoot-form-field small contain ${d.hidden ? 'hidden': ''}` );
 
             fieldContainer = fieldContainer.merge(fieldContainerEnter);
+            
+            fieldContainer.each(function(d) {
+                let fieldContainer = d3.select( this );
+                
+                let fieldLabelWrap = fieldContainer.selectAll( '.hoot-field-label-wrap' )
+                    .data([ 0 ]);
 
-            fieldContainer
-                .append( 'div' )
-                .append( 'label' )
-                .text( d => d.label );
+                fieldLabelWrap.exit().remove();
 
-            fieldContainer
-                .append( 'input' )
-                .attr( 'type', setType )
-                .property( 'value', d => d.default );
+                let fieldLabelWrapEnter = fieldLabelWrap.enter()
+                    .append( 'div' )
+                    .classed('hoot-field-label-wrap', true);
+                
+                fieldLabelWrap = fieldLabelWrap.merge(fieldLabelWrapEnter);
 
+                let fieldLabel = fieldLabelWrap.selectAll( '.hoot-field-label' )
+                    .data( [ d ] );
+
+                fieldLabel.exit().remove();
+
+                let fieldLabelEnter = fieldLabel.enter()
+                    .append( 'label' )
+                    .classed( 'hoot-field-label', true )
+                    .text( d => d.label );
+
+                fieldLabel.merge(fieldLabelEnter);
+
+                let fieldInput = fieldContainer.selectAll( '.hoot-field-input' )
+                    .data([ d ]);
+
+                fieldInput.exit().remove();
+
+                let fieldInputEnter = fieldInput.enter()
+                    .append( 'input' )
+                    .attr( 'class', 'hoot-field-input' )
+                    .attr( 'type', setType );
+        
+                fieldInput = fieldInput.merge(fieldInputEnter);
+                
+                fieldInput
+                    .property( 'value', d => d.default );
+            });
+            
         });
             
-        // let fieldContainer = groupEnter.selectAll( '.group-body' )
-        //     .selectAll( '.hoot-form-field' )
-        //     .data(d => d.members);
-        
-        // fieldContainer.exit()
-        //     .remove();
-
-        // let fieldContainerEnter = fieldContainer.enter()
-   
-
-
-        // fieldContainerEnter
-        //     .append( 'div' )
-        //     .append( 'label' )
-        //     .text( d => d.label );
-
-        // fieldContainerEnter
-        //     .append( 'input' )
-        //     .attr( 'type', setType )
-        //     .property( 'value', d => d.default );
-
-
-        // fieldContainer = fieldContainer.merge( fieldContainerEnter );
-        // groupToggle = groupToggle.merge(groupToggleEnter);
-        
+      
         // fieldContainerEnter.each(function(d) {
         //     let field = d3.select( this );
         //     // add header

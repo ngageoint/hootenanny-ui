@@ -10,15 +10,10 @@ import {
 import { t } from '../../util/locale';
 import { displayArea, displayLength, decimalCoordinatePair, dmsCoordinatePair } from '../../util/units';
 import { geoExtent } from '../../geo';
-import { utilDetect } from '../../util/detect';
 import { services } from '../../services';
 
 
 export function uiPanelMeasurement(context) {
-    var locale = utilDetect().locale,
-        isImperial = (locale.toLowerCase() === 'en-us');
-
-
     function radiansToMeters(r) {
         // using WGS84 authalic radius (6371007.1809 m)
         return r * 6371007.1809;
@@ -134,7 +129,7 @@ export function uiPanelMeasurement(context) {
                     .append('li')
                     .text(t('info_panels.measurement.area') + ':')
                     .append('span')
-                    .text(displayArea(area, isImperial));
+                    .text(displayArea(area, context.imperial()));
             }
 
 
@@ -142,7 +137,7 @@ export function uiPanelMeasurement(context) {
                 .append('li')
                 .text(lengthLabel + ':')
                 .append('span')
-                .text(displayLength(length, isImperial));
+                .text(displayLength(length, context.imperial()));
 
             coordItem = list
                 .append('li')
@@ -152,7 +147,7 @@ export function uiPanelMeasurement(context) {
             coordItem.append('span')
                 .text(decimalCoordinatePair(centroid));
 
-            var toggle  = isImperial ? 'imperial' : 'metric';
+            var toggle  = context.imperial() ? 'imperial' : 'metric';
 
             selection
                 .append('a')
@@ -161,7 +156,7 @@ export function uiPanelMeasurement(context) {
                 .attr('class', 'button button-toggle-units')
                 .on('click', function() {
                     d3_event.preventDefault();
-                    isImperial = !isImperial;
+                    context.imperial(!context.imperial());
                     selection.call(redraw);
                 });
 
