@@ -162,11 +162,7 @@ export default class AdvancedOpts {
                 .classed( 'hidden', true );
         }
     }
-
-    shouldSend(d) {
-        
-    }
-
+    
     innerWrap(toggleInput, toggleOption) {
         let d = toggleInput.datum(),
             innerWrap = toggleInput.selectAll( '.adv-opts-inner-wrap' )
@@ -323,22 +319,56 @@ export default class AdvancedOpts {
 
         fieldInput = fieldInput.merge(fieldInputEnter);
         
-        if ( fieldInput.attr( 'type ') !== 'checkbox' ) {
+        fieldInput
+            .attr( 'placeholder', d => d.placeholder )
+            .attr( 'disabled', d => d.disabled )
+            .attr( 'readonly', d => d.readonly );
+
+        const type = fieldInput.datum().input;
+        if ( type !== 'checkbox' ) {
             fieldInput
                 .property( 'value', d => d.default )
                 .on( 'change', function(d) {
                     d.send = d3.select( this ).property( 'value' ) !== d.default;
                 } );
+
+            if ( type === 'combobox' ) {
+                let d = fieldInput.datum(),
+                    comboData = _map(d.data, n => {
+                    const t = d.itemKey ? n[ d.itemKey ] : n,
+                        v = d.valueKey ? n[ d.valueKey ] : t;
+                        return { value: v, title: t };
+                } );
+
+                if ( d.sort ) {
+                    comboData = comboData.sort((a, b) => {
+                        let textA = a.value.toLowerCase(),
+                            textB = b.value.toLowerCase();
+            
+                        return textA < textB ? -1 : textA > textB ? 1 : 0;
+                    } );
+                }
+
+                if ( d.class === 'path-name' ) {
+                    comboData = [ { value: 'root', title: 0 } ].concat(comboData);
+                }
+
+                fieldInput
+                    .classed( 'form-field-combo-input', true )
+                    .attr( 'autocomplete', 'off' )
+                    .call(d3combobox().data( comboData ));
+
+            } else { // text input...
+                fieldInput
+                    .classed( 'text-input', true);
+            }
+
         }
 
     }
 
     createGroups() {
-        let toggleOption = this.toggleOption,
-            innerWrap = this.innerWrap,
-            caretWrap = this.caretWrap,
-            fieldLabel = this.fieldLabel,
-            fieldInput = this.fieldInput,
+        let self = this,
             advOpts = _cloneDeep( this.advancedOptions ),
             group = this.contentDiv
                 .selectAll( '.form-group' )
@@ -380,8 +410,8 @@ export default class AdvancedOpts {
             toggleWrap = toggleWrap.merge(toggleWrapEnter);
             
             toggleWrap
-                .call(innerWrap, toggleOption)
-                .call(caretWrap);
+                .call(self.innerWrap, self.toggleOption)
+                .call(self.caretWrap);
 
             let groupBody = group.selectAll( '.group-body' )
                 .data( [ d ] );
@@ -418,9 +448,8 @@ export default class AdvancedOpts {
                 let fieldContainer = d3.select( this );
 
                 fieldContainer
-                    .call(fieldLabel)
-                    .call(fieldInput);
-               
+                    .call(self.fieldLabel)
+                    .call(self.fieldInput);
             });
             
         });
