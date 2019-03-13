@@ -1,4 +1,4 @@
-    import _filter from 'lodash-es/filter';
+import _filter from 'lodash-es/filter';
 
 import { event as d3_event } from 'd3-selection';
 
