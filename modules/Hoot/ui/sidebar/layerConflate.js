@@ -86,10 +86,6 @@ class LayerConflate extends SidebarForm {
             .on( 'click', () => this.advancedOptions.toggle() );
     }
 
-    changeAdvancedOptions() {
-        this.advancedOptions.clear();
-    }
-
     getSaveName( data ) {
         let newName = this.subCompare( data, 4 );
 

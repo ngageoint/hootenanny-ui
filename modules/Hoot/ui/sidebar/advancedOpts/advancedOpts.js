@@ -41,8 +41,8 @@ export default class AdvancedOpts {
     async init() {
         if (!this.advancedOptions.length) {
             this.advancedOptions = await Hoot.api.getAdvancedOptions();
+            this.render();
         }
-        this.render();
     }
 
     render() {
@@ -50,11 +50,6 @@ export default class AdvancedOpts {
         this.createHeader();
         this.createContentDiv();
         this.createGroups();
-    }
-
-    clear() {
-        d3.selectAll( '.advanced-opts-content' ).remove();
-        this.reRender();
     }
 
     toggle() {
@@ -77,8 +72,8 @@ export default class AdvancedOpts {
 
     createHeader() {
         let header = this.form
-            .append( 'div' )
-            .classed( 'advanced-opts-header big keyline-bottom flex justify-between align-center', true );
+                .append( 'div' )
+                .classed( 'advanced-opts-header big keyline-bottom flex justify-between align-center', true );
 
         header
             .append( 'div' )
@@ -91,13 +86,7 @@ export default class AdvancedOpts {
             .append( 'button' )
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
-            .on( 'click', () => {
-                d3.selectAll( '.form-group input' )
-                    .property( 'checked', true );
-
-                d3.selectAll( '.form-group .adv-opt-title')
-                    .classed( 'adv-opt-title-disabled', false);
-            });
+            .on( 'click', () => this.createGroups() );
     }
 
     createContentDiv() {
