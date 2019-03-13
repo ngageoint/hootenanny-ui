@@ -7,10 +7,9 @@
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 
-import FieldsetData     from './fieldsetData';
-import FieldsetControls from './fieldsetControls';
-// import { advancedOptions } from '../../../config/domMetadata';
 import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
+import { svgIcon } from '../../../../svg';
+import { tooltip } from '../../../../util/tooltip';
 import FormFactory from '../../../tools/formFactory';
 
 let instance = null;
@@ -43,22 +42,12 @@ export default class AdvancedOpts {
         if (!this.advancedOptions.length) {
             this.advancedOptions = await Hoot.api.getAdvancedOptions();
         }
-        if ( !this.rendered() ) {
-            this.render();
-        } else {
-            // this.reset();
-            this.createGroups();
-        }
+        this.render();
     }
 
     render() {
         this.createContainer();
         this.createHeader();
-        this.createContentDiv();
-        this.createGroups();
-    }
-
-    reRender() {
         this.createContentDiv();
         this.createGroups();
     }
@@ -244,12 +233,13 @@ export default class AdvancedOpts {
         let fieldLabelWrapEnter = fieldLabelWrap.enter()
             .append( 'div' )
             .classed('hoot-field-label-wrap', true);
-        
+       
         fieldLabelWrap = fieldLabelWrap.merge(fieldLabelWrapEnter);
 
         fieldLabelWrap
+            .attr( 'id', d => `${d.id}-label-wrap`)
             .classed( 'adv-opts-header fill-light keyline-bottom round-top', true )
-            .classed( 'keyline-all round-left rou hoot-field-checkbox-title-wrap', 
+            .classed( 'keyline-all round-left rou hoot-field-checkbox-title-wrap',
                 d => d.input === 'checkbox' );
 
         let fieldLabel = fieldLabelWrap.selectAll( '.hoot-field-label' )
@@ -303,10 +293,7 @@ export default class AdvancedOpts {
         const type = fieldInput.datum().input;
         if ( type !== 'checkbox' ) {
             fieldInput
-                .property( 'value', d => d.default )
-                .on( 'change', function(d) {
-                    d.send = d3.select( this ).property( 'value' ) !== d.default;
-                } );
+                .property( 'value', d => d.default );
 
             if ( type === 'combobox' ) {
                 let d = fieldInput.datum(),
@@ -332,11 +319,47 @@ export default class AdvancedOpts {
                 fieldInput
                     .classed( 'form-field-combo-input', true )
                     .attr( 'autocomplete', 'off' )
-                    .call(d3combobox().data( comboData ));
+                    .call(d3combobox().data( comboData ))
+                    .on( 'change', d => d.send =  d3.select( this ).property( 'value' ) !== d.default )
+                    .on( 'keyup', d => d.send =  d3.select( this ).property( 'value' ) !== d.default );
 
             } else { // text input...
                 fieldInput
-                    .classed( 'text-input', true);
+                    .classed( 'text-input', true)
+                    .on( 'keyup', function(d) {
+                        let value = d3.select( this ).property( 'value' );
+                        d.send = value !== d.default;
+                        if ([ 'double', 'int', 'long' ].indexOf ( d.type ) !== -1 ) {
+                            let isNumber = !isNaN( value ),
+                                notNumber = d3.select( `#${d.id}-label-wrap`)
+                                    .selectAll( '.not-number-warning' )
+                                    .data([ 0 ]);
+    
+                            let notNumberEnter = notNumber.enter()
+                                .append( 'span' )
+                                .classed( 'not-number-warning', true );
+    
+                            notNumber = notNumber.merge(notNumberEnter);
+
+                            notNumber.classed( 'hidden', isNumber );
+
+                            if ( notNumber.selectAll( '.tooltip' ).empty() ) {
+                                notNumber
+                                    .call(svgIcon('#iD-icon-alert', 'deleted'))
+                                    .call(tooltip().title('this option must be a number!'));
+
+                                notNumber.selectAll( '.tooltip-arrow' )
+                                    .classed( 'hidden', true );
+                                
+                                notNumber.selectAll( '.tooltip-inner' )
+                                    .style( 'background-color', 'rgba(0,0,0,0)')
+                                    .style( 'border', 'none');
+                                
+                            }
+
+                            notNumber.dispatch( isNumber ? 'mouseleave' : 'mouseenter' );
+                        }
+                    });
             }
 
         }

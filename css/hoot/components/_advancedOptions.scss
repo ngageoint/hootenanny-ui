@@ -142,7 +142,6 @@
         }
 
         label {
-            width: 100%;
             display: inline-block;
             white-space: initial;
             padding: 0;
@@ -163,6 +162,11 @@
         }    
     }
 
+
+    .hoot-field-label-wrap {
+        display: flex;
+        justify-content: space-between;
+    }
 
     .hoot-field-control {
         input[type="text"] {
