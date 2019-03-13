@@ -28,8 +28,7 @@ export default class GrailPull {
 
         let formId = 'grailPullTable';
 
-        this.container    = new FormFactory().generateForm( 'body', formId, metadata );
-        this.form         = d3.select( `#${formId}` );
+        this.form         = new FormFactory().generateForm( 'body', formId, metadata );
         this.submitButton = d3.select( `#${metadata.button.id}` );
 
         this.submitButton.property( 'disabled', false );
@@ -154,13 +153,13 @@ export default class GrailPull {
         params.OSM_NAME     = osmData.property( 'value' ) || osmData.attr( 'placeholder' );
         params.MAPEDIT_NAME = mapEditData.property( 'value' ) || mapEditData.attr( 'placeholder' );
         params.PATH_NAME    = path.property( 'value' ) || path.attr( 'placeholder' ) || 'root';
-        params.BBOX         = formatBbox( bbox ); //'-72.774897,19.243837,-72.773116,19.245610';
+        params.BBOX         = formatBbox( bbox );
 
         Hoot.api.grailPullOsmToDb( params )
             .then( ( resp ) => Hoot.message.alert( resp ) )
             .then( () => Hoot.folders.refreshDatasets() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) );
 
-        this.container.remove();
+        this.form.remove();
     }
 }

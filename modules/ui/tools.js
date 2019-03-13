@@ -11,7 +11,9 @@ import {
 
 import { svgIcon } from '../svg';
 
-import selectBbox from '../Hoot/tools/selectBbox';
+import selectBbox       from '../Hoot/tools/selectBbox';
+import { tooltip }      from '../util/tooltip';
+import ConflationUpload from '../Hoot/tools/conflationUpload';
 
 export function uiTools( context ) {
     let menuItemMeta = [
@@ -35,14 +37,6 @@ export function uiTools( context ) {
                     type: 'area',
                     icon: 'iD-icon-area',
                     mode: modeAddMeasureArea( context )
-                },
-                {
-                    title: 'Measure Help',
-                    tooltip: '',
-                    group: 'measure',
-                    type: 'help',
-                    icon: 'iD-icon-help',
-                    action: 'measureHelp'
                 }
             ]
         },
@@ -67,12 +61,28 @@ export function uiTools( context ) {
             group: 'grail',
             items: [
                 {
-                    title: 'Grail Pull OSM',
-                    tooltip: 'Shortcut: 9',
+                    title: 'Pull from OSM and MapEdit',
+                    tooltip: 'Pull data from OSM and MapEdit',
                     group: 'grail',
                     type: 'area',
                     icon: 'iD-icon-layers',
                     action: 'grailPull'
+                },
+                {
+                    title: 'Differential Upload',
+                    tooltip: 'Get data from OSM and add new features to MapEdit',
+                    group: 'grail',
+                    type: 'area',
+                    icon: 'iD-icon-layers',
+                    action: 'diffUpload'
+                },
+                {
+                    title: 'Conflation Upload',
+                    tooltip: 'Upload the difference between the two datasets',
+                    group: 'grail',
+                    type: 'area',
+                    icon: 'iD-icon-layers',
+                    action: 'conflationUpload'
                 }
             ]
         }
@@ -165,20 +175,29 @@ export function uiTools( context ) {
 
                         Hoot.message.alert( { message, type } );
                     }
-                } else if ( d.action === 'measureHelp' ) {
-                    let message = 'Click anywhere on the map to start measuring.  Double-click to end measurement. Clicking on the Tools menu will clear the vectors from the screen.',
-                        type    = 'info';
-
-                    Hoot.message.alert( { message, type } );
-                } else if ( d.action === 'grailPull' ) {
+                } else if ( d.action === 'grailPull' || d.action === 'diffUpload' ) {
                     let grailSelectBbox = new selectBbox( context );
 
-                    grailSelectBbox.render( 'grailPull' );
+                    grailSelectBbox.render( d.action );
+                } else if ( d.action === 'conflationUpload' ) {
+                    if ( Object.keys( Hoot.layers.loadedLayers ).length === 2 ) {
+                        new ConflationUpload( this ).render();
+                    } else {
+                        let message = 'Add mapedit layer and conflation layer',
+                            type    = 'warn';
+
+                        Hoot.message.alert( { message, type } );
+                    }
+
                 }
             } );
 
         item.each( function( d ) {
-            d3.select( this ).call( svgIcon( `#${ d.icon }`, 'pre-text' ) );
+            d3.select( this )
+                .call( svgIcon( `#${ d.icon }`, 'pre-text' ) )
+                .call( tooltip()
+                    .title( d.tooltip )
+                    .placement( 'top' ) );
         } );
 
         item.append( 'span' )

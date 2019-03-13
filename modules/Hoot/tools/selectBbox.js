@@ -10,6 +10,7 @@ import FormFactory  from './formFactory';
 import { modeDrawBoundingBox } from '../../modes';
 import ClipDataset             from './clipDataset';
 import GrailPull               from './grailPull';
+import DifferentialUpload      from './differentialUpload';
 
 export default class SelectBbox extends EventEmitter {
     constructor( context ) {
@@ -183,6 +184,8 @@ export default class SelectBbox extends EventEmitter {
             new ClipDataset( this ).render();
         } else if ( this.operationName === 'grailPull' ) {
             new GrailPull( this ).render();
+        } else if ( this.operationName === 'diffUpload' ) {
+            new DifferentialUpload( this ).render();
         }
 
     }

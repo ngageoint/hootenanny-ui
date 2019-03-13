@@ -1006,10 +1006,63 @@ export default class API {
                 };
             } )
             .catch( err => {
-                console.log( 'fail' );
                 return {
                     data: err.data,
                     message: 'Error doing pull!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+    differentialUpload( data ) {
+        const params = {
+            path: '/grail/everythingbybox',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Differential Upload has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing pull!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+    conflationUpload( data ) {
+        const params = {
+            path: '/grail/conflatepush',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Conflation Upload has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing Conflation Upload!',
                     status: err.status,
                     type: 'error'
                 };

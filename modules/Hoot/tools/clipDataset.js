@@ -34,8 +34,7 @@ export default class ClipDataset {
             }
         };
 
-        this.container    = new FormFactory().generateForm( 'body', 'clipDataset', metadata );
-        this.form         = d3.select( '#clipDataset' );
+        this.form    = new FormFactory().generateForm( 'body', 'clipDataset', metadata );
         this.submitButton = d3.select( '#clipSubmitBtn' );
 
         this.submitButton.property( 'disabled', false );
@@ -114,7 +113,7 @@ export default class ClipDataset {
                     if ( d.name === 'datasetName' ) {
                         d3.select( this )
                             .attr( 'placeholder', layer.name )
-                            .attr( 'readonly', true );
+                            .attr( 'readonly', false );
                     } else if ( d.name === 'doClip' ) {
                         let parent = d3.select( this.parentElement );
 
@@ -220,6 +219,6 @@ export default class ClipDataset {
                 .then( () => Hoot.events.emit( 'render-dataset-table' ) );
         } );
 
-        this.container.remove();
+        this.form.remove();
     }
 }

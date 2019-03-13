@@ -112,3 +112,24 @@
         padding-right: 10px;
     }
 }
+
+#differentialTable .hoot-menu {
+    max-width: unset;
+    width: 20%;
+}
+
+#differentialTable {
+    th {
+        width: 20px;
+    }
+
+    td {
+        padding-top: 10px;
+        padding-right: 10px;
+    }
+
+    input[type="text"] {
+        border: none;
+        padding: 0;
+    }
+}
