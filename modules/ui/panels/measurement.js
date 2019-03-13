@@ -1,4 +1,4 @@
-import _filter from 'lodash-es/filter';
+    import _filter from 'lodash-es/filter';
 
 import { event as d3_event } from 'd3-selection';
 
@@ -10,10 +10,15 @@ import {
 import { t } from '../../util/locale';
 import { displayArea, displayLength, decimalCoordinatePair, dmsCoordinatePair } from '../../util/units';
 import { geoExtent } from '../../geo';
+import { utilDetect } from '../../util/detect';
 import { services } from '../../services';
 
 
 export function uiPanelMeasurement(context) {
+    var locale = utilDetect().locale,
+        isImperial = (locale.toLowerCase() === 'en-us');
+
+
     function radiansToMeters(r) {
         // using WGS84 authalic radius (6371007.1809 m)
         return r * 6371007.1809;
@@ -129,7 +134,7 @@ export function uiPanelMeasurement(context) {
                     .append('li')
                     .text(t('info_panels.measurement.area') + ':')
                     .append('span')
-                    .text(displayArea(area, context.imperial()));
+                    .text(displayArea(area, isImperial));
             }
 
 
@@ -137,7 +142,7 @@ export function uiPanelMeasurement(context) {
                 .append('li')
                 .text(lengthLabel + ':')
                 .append('span')
-                .text(displayLength(length, context.imperial()));
+                .text(displayLength(length, isImperial));
 
             coordItem = list
                 .append('li')
@@ -147,7 +152,7 @@ export function uiPanelMeasurement(context) {
             coordItem.append('span')
                 .text(decimalCoordinatePair(centroid));
 
-            var toggle  = context.imperial() ? 'imperial' : 'metric';
+            var toggle  = isImperial ? 'imperial' : 'metric';
 
             selection
                 .append('a')
@@ -156,7 +161,7 @@ export function uiPanelMeasurement(context) {
                 .attr('class', 'button button-toggle-units')
                 .on('click', function() {
                     d3_event.preventDefault();
-                    context.imperial(!context.imperial());
+                    isImperial = !isImperial;
                     selection.call(redraw);
                 });
 

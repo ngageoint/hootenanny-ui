@@ -121,7 +121,7 @@ export function importSingleForm() {
             placeholder: 'Select Data Translations Schema',
             disabled: true,
             data: this.translations,
-            itemKey: 'DESCRIPTION'
+            itemKey: 'NAME'
         }
     ];
 }
@@ -178,7 +178,7 @@ export function importMultiForm() {
             placeholder: 'Select Data Translations Schema',
             disabled: true,
             data: this.translations,
-            itemKey: 'DESCRIPTION'
+            itemKey: 'NAME'
         },
         {
             label: 'Append FCODE Descriptions',

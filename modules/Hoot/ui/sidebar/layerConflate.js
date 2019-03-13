@@ -179,7 +179,7 @@ class LayerConflate extends SidebarForm {
         data.HOOT2_ADV_OPTIONS  = this.advancedOptions.getOptions();
         data.DISABLED_FEATURES  = this.advancedOptions.getDisabledFeatures();
         data.CONFLATION_TYPE    = this.typeInput.property( 'value' ).replace( /(Cookie Cutter & | w\/ Tags)/, '' );
-        data.HOOT_2             = true; 
+        data.HOOT_2             = true;
         data.USER_EMAIL         = 'test@test.com';
 
         switch ( data.CONFLATION_TYPE ) {
@@ -197,15 +197,15 @@ class LayerConflate extends SidebarForm {
             }
         }
 
-        if ( data.HOOT2_ADV_OPTIONS.hasOwnProperty( 'RoadEngines' ) ) {
-            if ( data.HOOT2_ADV_OPTIONS.RoadEngines === 'Network') data.CONFLATION_ALGORITHM = 'Network';
+        if ( data.HOOT2_ADV_OPTIONS.hasOwnProperty( 'RoadEngines' ) && data.HOOT2_ADV_OPTIONS.RoadEngines === 'Network' ) {
+            data.CONFLATION_ALGORITHM = 'Network';
             delete data.HOOT2_ADV_OPTIONS.RoadEngines;
         }
 
         return data;
     }
 
-    updateAttributeReferenceLayer() {   
+    updateAttributeReferenceLayer() {
         if ( this.typeInput.property('value') === 'Attribute' ) {
             this.refLayerInput.property('value' , Hoot.layers.findLoadedBy( 'refType', 'secondary' ).name);
         } else {
