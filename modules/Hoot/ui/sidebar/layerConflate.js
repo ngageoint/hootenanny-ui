@@ -8,7 +8,7 @@ import _find    from 'lodash-es/find';
 import _forEach from 'lodash-es/forEach';
 
 import SidebarForm                from './sidebarForm';
-import AdvancedOpts               from './advancedOpts/advancedOpts';
+import AdvancedOpts               from './advancedOpts';
 import FormFactory                from '../../tools/formFactory';
 import { layerConflateForm }      from '../../config/domMetadata';
 
@@ -81,7 +81,7 @@ class LayerConflate extends SidebarForm {
     async createAdvancedOptions() {
         this.advancedOptions = AdvancedOpts.getInstance();
         await this.advancedOptions.init();
-        
+
         d3.select( '#advanced-opts-toggle' )
             .on( 'click', () => this.advancedOptions.toggle() );
     }

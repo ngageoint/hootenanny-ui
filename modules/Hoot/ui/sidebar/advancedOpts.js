@@ -7,10 +7,10 @@
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 
-import { d3combobox }   from '../../../../lib/hoot/d3.combobox';
-import { svgIcon } from '../../../../svg';
-import { tooltip } from '../../../../util/tooltip';
-import FormFactory from '../../../tools/formFactory';
+import { d3combobox }   from '../../../lib/hoot/d3.combobox';
+import { svgIcon } from '../../../svg';
+import { tooltip } from '../../../util/tooltip';
+import FormFactory from '../../tools/formFactory';
 
 let instance = null;
 export default class AdvancedOpts {
@@ -37,7 +37,7 @@ export default class AdvancedOpts {
     get isOpen() {
         return this.form.classed( 'visible' );
     }
-    
+
     async init() {
         if (!this.advancedOptions.length) {
             this.advancedOptions = await Hoot.api.getAdvancedOptions();
@@ -108,7 +108,7 @@ export default class AdvancedOpts {
         parent
             .select( '.group-toggle-caret-wrap' )
             .classed( 'toggle-disabled', shouldHide );
-                
+
         label
             .classed( 'adv-opt-title-disabled', !label.classed( 'adv-opt-title-disabled' ) );
 
@@ -149,24 +149,24 @@ export default class AdvancedOpts {
 
         let innerLabelWrap = innerWrap.selectAll( '.adv-opt-title-wrap' )
             .data( [ d ] );
-        
+
         innerLabelWrap.exit().remove();
 
         let innerLabelWrapEnter = innerLabelWrap.enter()
             .append( 'div' )
             .classed( 'adv-opt-title-wrap', true );
-            
 
-        innerLabelWrap = innerLabelWrap.merge(innerLabelWrapEnter)
-        
+
+        innerLabelWrap = innerLabelWrap.merge(innerLabelWrapEnter);
+
         innerLabelWrap
             .on('click', d => {
                 let toggle = d3.select( `#${d.name}-toggle`),
                     checked = toggle.property( 'checked' );
-                        
+
                 toggle.property( 'checked', !checked );
 
-                toggleOption( d, checked ); 
+                toggleOption( d, checked );
             } );
 
         let innerLabel = innerLabelWrap.selectAll( '.adv-opt-title' )
@@ -222,7 +222,7 @@ export default class AdvancedOpts {
         let fieldLabelWrapEnter = fieldLabelWrap.enter()
             .append( 'div' )
             .classed('hoot-field-label-wrap', true);
-       
+
         fieldLabelWrap = fieldLabelWrap.merge(fieldLabelWrapEnter);
 
         fieldLabelWrap
@@ -259,7 +259,7 @@ export default class AdvancedOpts {
         fieldInputWrap = fieldInputWrap.merge(fieldInputWrapEnter);
 
         fieldInputWrap
-            .classed( 'keyline-top keyline-right keyline-bottom round-right hoot-field-checkbox-input-wrap', 
+            .classed( 'keyline-top keyline-right keyline-bottom round-right hoot-field-checkbox-input-wrap',
                 d => d.input === 'checkbox' );
 
         let fieldInput = fieldInputWrap.selectAll( '.hoot-field-input' )
@@ -273,7 +273,7 @@ export default class AdvancedOpts {
             .attr( 'type', d => d.input === 'checkbox' ?  'checkbox' : 'text' );
 
         fieldInput = fieldInput.merge(fieldInputEnter);
-        
+
         fieldInput
             .attr( 'placeholder', d => d.placeholder )
             .attr( 'disabled', d => d.disabled )
@@ -296,7 +296,7 @@ export default class AdvancedOpts {
                     comboData = comboData.sort((a, b) => {
                         let textA = a.value.toLowerCase(),
                             textB = b.value.toLowerCase();
-            
+
                         return textA < textB ? -1 : textA > textB ? 1 : 0;
                     } );
                 }
@@ -323,11 +323,11 @@ export default class AdvancedOpts {
                                 notNumber = d3.select( `#${d.id}-label-wrap`)
                                     .selectAll( '.not-number-warning' )
                                     .data([ 0 ]);
-    
+
                             let notNumberEnter = notNumber.enter()
                                 .append( 'span' )
                                 .classed( 'not-number-warning', true );
-    
+
                             notNumber = notNumber.merge(notNumberEnter);
 
                             notNumber.classed( 'hidden', isNumber );
@@ -339,11 +339,11 @@ export default class AdvancedOpts {
 
                                 notNumber.selectAll( '.tooltip-arrow' )
                                     .classed( 'hidden', true );
-                                
+
                                 notNumber.selectAll( '.tooltip-inner' )
                                     .style( 'background-color', 'rgba(0,0,0,0)')
                                     .style( 'border', 'none');
-                                
+
                             }
 
                             notNumber.dispatch( isNumber ? 'mouseleave' : 'mouseenter' );
@@ -364,7 +364,7 @@ export default class AdvancedOpts {
 
         group.exit()
             .remove();
-            
+
         let groupEnter = group.enter()
             .append( 'div' )
             .classed( 'form-group', true )
@@ -376,7 +376,7 @@ export default class AdvancedOpts {
             let group = d3.select( this ),
                 groupToggle = group.selectAll( '.group-toggle' )
                     .data( [ 0 ] );
-            
+
             groupToggle.exit().remove();
 
             let groupToggleEnter = groupToggle.enter()
@@ -396,7 +396,7 @@ export default class AdvancedOpts {
                 .attr( 'id', d => `${d.name}-wrap` );
 
             toggleWrap = toggleWrap.merge(toggleWrapEnter);
-            
+
             toggleWrap
                 .call(self.innerWrap, self.toggleOption)
                 .call(self.caretWrap);
@@ -426,7 +426,7 @@ export default class AdvancedOpts {
                 .attr( 'class', d => `hoot-form-field small contain ${d.hidden ? 'hidden': ''}` );
 
             fieldContainer = fieldContainer.merge(fieldContainerEnter);
-            
+
             fieldContainer
                 .classed( 'round hoot-field-control', true )
                 .classed( 'hoot-field-checkbox', d => d.input === 'checkbox' )
@@ -439,7 +439,7 @@ export default class AdvancedOpts {
                     .call(self.fieldLabel)
                     .call(self.fieldInput);
             });
-            
+
         });
     }
 
@@ -452,7 +452,7 @@ export default class AdvancedOpts {
             .selectAll( '.conflate-type-toggle' )
             .each(function(d) {
                 let selection = d3.select( this );
-                
+
                 if ( !selection.property( 'checked' ) ) {
                     disabledFeatures.push(selection.datum().label.replace(/ to /, ''));
                 }
@@ -476,7 +476,7 @@ export default class AdvancedOpts {
                     }
                     case 'combobox': {
                         if ( !d.send ) break;
-                        
+
                         let value = selection.property( 'value' );
                         if ( value ) {
                             options[ d.id ] = value;
