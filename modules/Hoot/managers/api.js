@@ -834,7 +834,7 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp =>  resp.data );
+            .then( resp => resp.data );
     }
 
     /**
