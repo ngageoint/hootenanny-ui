@@ -183,9 +183,29 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getJobs() {
+    deleteJobStatus( id ) {
         const params = {
-            path: `/jobs/recent`,
+            path: `/job/${ id }`,
+            method: 'DELETE'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getJobsHistory() {
+        const params = {
+            path: `/jobs/history`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getJobsRunning() {
+        const params = {
+            path: `/jobs/running`,
             method: 'GET'
         };
 

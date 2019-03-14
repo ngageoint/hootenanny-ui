@@ -1,5 +1,6 @@
 
-import Tab from './tab';
+import Tab          from './tab';
+import moment       from 'moment';
 
 /**
  * Creates the jobs tab in the settings panel
@@ -41,64 +42,60 @@ export default class Jobs extends Tab {
 
     async loadJobs() {
         try {
-            let jobs = await Hoot.api.getJobs();
-
-            this.populateJobs( jobs );
+            let jobsHistory = await Hoot.api.getJobsHistory();
+            await Hoot.layers.refreshLayers();
+            this.populateJobsHistory( jobsHistory );
         } catch ( e ) {
             window.console.log( 'Unable to retrieve jobs' );
             throw new Error( e );
         }
     }
 
-/*
-{
-"jobId": "bb266d64-5251-4c67-a2ca-347f26892055",
-"jobType": "delete",
-"userId": 2631622,
-"mapId": 8,
-"start": 1552411634022,
-"end": 1552411634144,
-"status": "complete",
-"percentcomplete": 100
-}
-*/
-    populateJobs( jobs ) {
+    populateJobsHistory( jobs ) {
         let table = this.jobsTable
             .selectAll('table')
             .data([0]);
-        table = table.enter()
-                .append('table')
-                .merge(table);
+        let tableEnter = table.enter()
+                .append('table');
 
-        table.selectAll('tr.head')
+        let thead = tableEnter
+            .append('thead');
+        thead.selectAll('tr')
             .data([0])
             .enter().append('tr')
-            .classed('head', true)
             .selectAll('th')
             .data([
                 'Job Type',
                 'Output',
-                'Owner',
                 'Status',
                 'Started',
                 'Duration',
-                'Percent Complete',
-                // 'Actions'
+                'Actions'
                 ])
             .enter().append('th')
             .text(d => d);
 
-        let rows = table
+        table = table.merge(tableEnter);
+
+        let tbody = table.selectAll('tbody')
+            .data([0]);
+        tbody.exit().remove();
+        tbody = tbody.enter()
+            .append('tbody')
+            .merge(tbody);
+
+        let rows = tbody
             .selectAll( 'tr.jobs-item' )
             .data( jobs, d => d.jobId );
 
         rows.exit().remove();
 
-        rows = rows
+        let rowsEnter = rows
             .enter()
             .append( 'tr' )
-            .classed( 'jobs-item keyline-bottom', true )
-            .merge(rows);
+            .classed( 'jobs-item keyline-bottom', true );
+
+        rows = rows.merge(rowsEnter);
 
         let cells = rows.selectAll( 'td' )
             .data(d => {
@@ -106,28 +103,85 @@ export default class Jobs extends Tab {
 
                 let map = Hoot.layers.findBy( 'id', d.mapId );
 
-                props.push(d.jobType);
-                props.push(map ? map.name : 'Unknown');
-                props.push(
-                    (Hoot.config.users[ d.userId ]) ?
-                        Hoot.config.users[ d.userId ].display_name :
-                        'No user for ' + d.userId);
-                props.push(d.status);
-                //props.push(moment( d.start ).fromNow());
-                //props.push(moment.duration( ((d.end) ? d.end : )
-                props.push(d.start);
-                props.push(d.end);
-                props.push(d.percentcomplete);
+                let typeIcon;
+                switch(d.jobType) {
+                    case 'import':
+                        typeIcon = 'publish';
+                        break;
+                    case 'export':
+                        typeIcon = 'get_app';
+                        break;
+                    case 'conflate':
+                        typeIcon = 'layers';
+                        break;
+                    case 'clip':
+                        typeIcon = 'crop';
+                        break;
+                    case 'attributes':
+                        typeIcon = 'list_alt';
+                        break;
+                    case 'basemap':
+                        typeIcon = 'map';
+                        break;
+                    case 'delete':
+                        typeIcon = 'delete';
+                        break;
+                    case 'unknown':
+                    default:
+                        typeIcon = 'help';
+                        break;
+                }
+
+                let statusIcon;
+                switch(d.status) {
+                    case 'running':
+                        statusIcon = 'autorenew';
+                        break;
+                    case 'complete':
+                        statusIcon = 'check_circle_outline';
+                        break;
+                    case 'failed':
+                        statusIcon = 'error';
+                        break;
+                    case 'cancelled':
+                        statusIcon = 'cancel';
+                        break;
+                    case 'unknown':
+                    default:
+                        statusIcon = 'help';
+                        break;
+                }
+
+                props.push({icon: typeIcon, text: d.jobType.toUpperCase()});
+                props.push({text: map ? map.name : 'Map no longer exists'});
+                props.push({icon: statusIcon});
+                props.push({text: moment( d.start ).fromNow()});
+                props.push({text: moment.duration( d.end - d.start ).humanize()});
+                props.push({icon: 'clear', action: () => {
+                    Hoot.api.deleteJobStatus(d.jobId)
+                        .then( resp => this.loadJobs() )
+                        .catch( err => {
+                            // TODO: response - unable to create new folder
+                        } );
+                }});
 
                 return props;
             });
 
         cells.exit().remove();
 
-        cells = cells
-            .enter().append( 'td' )
-            .merge(cells);
-        cells.text( d => d );
+        let cellsEnter = cells
+            .enter().append( 'td' );
+        cellsEnter.append('i')
+            .classed( 'material-icons', true );
+        cellsEnter.append('span');
+        cells = cells.merge(cellsEnter);
+
+        cells.selectAll('i')
+            .text( d => d.icon )
+            .on('click', d => d.action());
+        cells.selectAll('span')
+            .text( d => d.text );
 
     }
 
