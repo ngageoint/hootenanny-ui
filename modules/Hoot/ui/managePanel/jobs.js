@@ -27,6 +27,7 @@ export default class Jobs extends Tab {
     }
 
     activate() {
+        this.loadJobs();
         this.poller = window.setInterval( this.loadJobs.bind(this), 5000 );
     }
 
@@ -41,6 +42,7 @@ export default class Jobs extends Tab {
     }
 
     async loadJobs() {
+
         try {
             let jobsHistory = await Hoot.api.getJobsHistory();
             await Hoot.layers.refreshLayers();
@@ -101,7 +103,11 @@ export default class Jobs extends Tab {
             .data(d => {
                 let props = [];
 
-                let map = Hoot.layers.findBy( 'id', d.mapId );
+                //this data is an array of objects
+                //  {
+                //    i: [{/* array of icon props */ }],
+                //    span: [{/* array of text props */ }]
+                //  `}
 
                 let typeIcon;
                 switch(d.jobType) {
@@ -132,6 +138,70 @@ export default class Jobs extends Tab {
                         break;
                 }
 
+                props.push({
+                    i: [{icon: typeIcon, action: () => {} }],
+                    span: [{text: d.jobType.toUpperCase()}]
+                });
+
+                //Handle the map name & add to map icon
+                let map = Hoot.layers.findBy( 'id', d.mapId );
+
+                if (map) {
+                    let refLayer = Hoot.layers.findLoadedBy('refType', 'reference');
+                    let secLayer = Hoot.layers.findLoadedBy('refType', 'secondary');
+                    let refType;
+                    switch(loadedLayerCount) {
+                        case 0:
+                            refType = 'reference';
+                            break;
+                        case 1:
+                            refType = 'secondary';
+                            break;
+                        case 2:
+                        default:
+                            refType = null;
+                            break;
+                    }
+
+                    if (refType) {
+                        props.push({
+                            i: [{
+                                title: `add to map as ${refType}`,
+                                icon: 'add_circle_outline',
+                                action: () => {
+                                    let params = {
+                                        name: map.name,
+                                        id: d.mapId
+                                    };
+
+                                    Hoot.ui.sidebar.forms[ refType ].submitLayer( params )
+                                        .then( () => {
+                                            let message = `${refType} layer added to map: <u>${map.name}</u>`,
+                                                type    = 'info';
+
+                                            Hoot.message.alert( { message, type } );
+
+                                            this.loadJobs();
+                                        } );
+                                    }
+                            }],
+                            span: [{text: map.name}]
+                        });
+                    } else {
+                        props.push({
+                            i: [],
+                            span: [{text: map.name}]
+                        });
+                    }
+
+                } else {
+                    props.push({
+                        i: [],
+                        span: [{text: 'Map no longer exists'}]
+                    });
+                }
+
+
                 let statusIcon;
                 switch(d.status) {
                     case 'running':
@@ -152,18 +222,47 @@ export default class Jobs extends Tab {
                         break;
                 }
 
-                props.push({icon: typeIcon, text: d.jobType.toUpperCase()});
-                props.push({text: map ? map.name : 'Map no longer exists'});
-                props.push({icon: statusIcon});
-                props.push({text: moment( d.start ).fromNow()});
-                props.push({text: moment.duration( d.end - d.start ).humanize()});
-                props.push({icon: 'clear', action: () => {
-                    Hoot.api.deleteJobStatus(d.jobId)
-                        .then( resp => this.loadJobs() )
-                        .catch( err => {
-                            // TODO: response - unable to create new folder
-                        } );
-                }});
+                props.push({
+                    i: [{
+                        icon: statusIcon,
+                        action: () => {
+                            if (d.status === 'failed') {
+                                Hoot.api.getJobError(d.jobId)
+                                    .then( resp => {
+                                        let type = 'error';
+                                        let message = resp.errors.join('\n');
+                                        Hoot.message.alert( { message, type } );
+                                    } )
+                                    .catch( err => {
+                                        // TODO: response - unable to get error
+                                    } );
+                            }
+                        }
+                    }],
+                    span: []
+                });
+                props.push({
+                    i: [],
+                    span: [{text: moment( d.start ).fromNow()}]
+                });
+                props.push({
+                    i: [],
+                    span: [{text: moment.duration( d.end - d.start ).humanize()}]
+                });
+                props.push({
+                    i: [{
+                        title: 'clear job',
+                        icon: 'clear',
+                        action: () => {
+                            Hoot.api.deleteJobStatus(d.jobId)
+                                .then( resp => this.loadJobs() )
+                                .catch( err => {
+                                    // TODO: response - unable to clear job
+                                } );
+                        }
+                    }],
+                    span: []
+                });
 
                 return props;
             });
@@ -172,15 +271,24 @@ export default class Jobs extends Tab {
 
         let cellsEnter = cells
             .enter().append( 'td' );
-        cellsEnter.append('i')
-            .classed( 'material-icons', true );
-        cellsEnter.append('span');
+
         cells = cells.merge(cellsEnter);
 
-        cells.selectAll('i')
+        let i = cells.selectAll( 'i' )
+            .data( d => d.i );
+        i.exit().remove();
+        i.enter().insert('i', 'span')
+            .classed( 'material-icons', true )
+            .merge(i)
             .text( d => d.icon )
+            .attr('title', d => d.title )
             .on('click', d => d.action());
-        cells.selectAll('span')
+
+        let span = cells.selectAll('span')
+            .data( d => d.span);
+        span.exit().remove();
+        span.enter().append('span')
+            .merge(span)
             .text( d => d.text );
 
     }

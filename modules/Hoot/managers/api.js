@@ -183,6 +183,16 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    getJobError( id ) {
+        const params = {
+            path: `/job/error/${ id }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     deleteJobStatus( id ) {
         const params = {
             path: `/job/${ id }`,
