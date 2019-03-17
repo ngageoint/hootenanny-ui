@@ -29,7 +29,7 @@ export default class GrailPull {
         let formId = 'grailPullTable';
 
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
-        this.submitButton = d3.select( `#${metadata.button.id}` );
+        this.submitButton = d3.select( `#${ metadata.button.id }` );
 
         this.submitButton.property( 'disabled', false );
 
@@ -37,8 +37,7 @@ export default class GrailPull {
     }
 
     createTable() {
-        let folderList = Hoot.folders.folderPaths,
-            that       = this;
+        let that = this;
 
         let columns = [
             {
@@ -50,12 +49,6 @@ export default class GrailPull {
                 label: 'MapEdit layer Name',
                 placeholder: 'Save As',
                 name: 'mapeditName'
-            },
-            {
-                label: 'Path',
-                placeholder: 'root',
-                combobox: folderList,
-                name: 'outputPath'
             }
         ];
 
@@ -84,8 +77,8 @@ export default class GrailPull {
 
         let tableBody    = table.append( 'tbody' ),
             ingestLayers = {
-                osmName: `OpenStreetMap_${uuidv4().replace( /-/g, '' ).substring( 0, 10 )}`,
-                mapeditName: `mapEdit_${uuidv4().replace( /-/g, '' ).substring( 0, 10 )}`
+                osmName: `OpenStreetMap_${ uuidv4().replace( /-/g, '' ).substring( 0, 10 ) }`,
+                mapeditName: `mapEdit_${ uuidv4().replace( /-/g, '' ).substring( 0, 10 ) }`
             };
 
         tableBody
@@ -147,12 +140,10 @@ export default class GrailPull {
         }
 
         let osmData     = this.form.select( '.osmName' ),
-            mapEditData = this.form.select( '.mapeditName' ),
-            path        = this.form.select( '.outputPath' );
+            mapEditData = this.form.select( '.mapeditName' );
 
         params.OSM_NAME     = osmData.property( 'value' ) || osmData.attr( 'placeholder' );
         params.MAPEDIT_NAME = mapEditData.property( 'value' ) || mapEditData.attr( 'placeholder' );
-        params.PATH_NAME    = path.property( 'value' ) || path.attr( 'placeholder' ) || 'root';
         params.BBOX         = formatBbox( bbox );
 
         Hoot.api.grailPullOsmToDb( params )
