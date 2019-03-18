@@ -36,25 +36,188 @@ export default class Jobs extends Tab {
     }
 
     createJobsTable() {
-        this.jobsTable = this.panelWrapper
+        this.panelWrapper
+            .append( 'h3' )
+            .text( 'Running Jobs' );
+        this.jobsRunningTable = this.panelWrapper
             .append( 'div' )
-            .classed( 'jobs-table keyline-all fill-white', true );
+            .classed( 'jobs-table jobs-running keyline-all fill-white', true );
+        this.panelWrapper
+            .append( 'h3' )
+            .classed( 'jobs-history', true )
+            .text( 'Jobs History' );
+        this.jobsHistoryTable = this.panelWrapper
+            .append( 'div' )
+            .classed( 'jobs-table jobs-history keyline-all fill-white', true );
     }
 
     async loadJobs() {
 
         try {
+            let jobsRunning = await Hoot.api.getJobsRunning();
             let jobsHistory = await Hoot.api.getJobsHistory();
             await Hoot.layers.refreshLayers();
             this.populateJobsHistory( jobsHistory );
+            this.populateJobsRunning( jobsRunning );
         } catch ( e ) {
             window.console.log( 'Unable to retrieve jobs' );
             throw new Error( e );
         }
     }
 
+    populateJobsRunning( jobs ) {
+        let table = this.jobsRunningTable
+            .selectAll('table')
+            .data([0]);
+        let tableEnter = table.enter()
+                .append('table');
+
+        let thead = tableEnter
+            .append('thead');
+        thead.selectAll('tr')
+            .data([0])
+            .enter().append('tr')
+            .selectAll('th')
+            .data([
+                'Job Type',
+                'Owner',
+                'Started',
+                'Duration',
+                'Percent Complete',
+                'Actions'
+                ])
+            .enter().append('th')
+            .text(d => d);
+
+        table = table.merge(tableEnter);
+
+        let tbody = table.selectAll('tbody')
+            .data([0]);
+        tbody.exit().remove();
+        tbody = tbody.enter()
+            .append('tbody')
+            .merge(tbody);
+
+        let rows = tbody
+            .selectAll( 'tr.jobs-item' )
+            .data( jobs, d => d.jobId );
+
+        rows.exit().remove();
+
+        let rowsEnter = rows
+            .enter()
+            .append( 'tr' )
+            .classed( 'jobs-item keyline-bottom', true );
+
+        rows = rows.merge(rowsEnter);
+
+        let cells = rows.selectAll( 'td' )
+            .data(d => {
+                let props = [];
+
+                //this data is an array of objects
+                //  {
+                //    i: [{/* array of icon props */ }],
+                //    span: [{/* array of text props */ }]
+                //  `}
+
+                let typeIcon;
+                switch(d.jobType) {
+                    case 'import':
+                        typeIcon = 'publish';
+                        break;
+                    case 'export':
+                        typeIcon = 'get_app';
+                        break;
+                    case 'conflate':
+                        typeIcon = 'layers';
+                        break;
+                    case 'clip':
+                        typeIcon = 'crop';
+                        break;
+                    case 'attributes':
+                        typeIcon = 'list_alt';
+                        break;
+                    case 'basemap':
+                        typeIcon = 'map';
+                        break;
+                    case 'delete':
+                        typeIcon = 'delete';
+                        break;
+                    case 'unknown':
+                    default:
+                        typeIcon = 'help';
+                        break;
+                }
+
+                props.push({
+                    i: [{icon: typeIcon, action: () => {} }],
+                    span: [{text: d.jobType.toUpperCase()}]
+                });
+
+                let owner = Hoot.users.getNameForId(d.userId);
+                props.push({
+                    i: [],
+                    span: [{text: owner}]
+                });
+
+                props.push({
+                    i: [],
+                    span: [{text: moment( d.start ).fromNow()}]
+                });
+                props.push({
+                    i: [],
+                    span: [{text: moment.duration( d.end - d.start ).humanize()}]
+                });
+
+
+                props.push({
+                    i: [{
+                        title: 'cancel job',
+                        icon: 'cancel',
+                        action: () => {
+                            Hoot.api.cancelJob(d.jobId)
+                                .then( resp => this.loadJobs() )
+                                .catch( err => {
+                                    // TODO: response - unable to cancel job
+                                } );
+                        }
+                    }],
+                    span: []
+                });
+
+                return props;
+            });
+
+        cells.exit().remove();
+
+        let cellsEnter = cells
+            .enter().append( 'td' );
+
+        cells = cells.merge(cellsEnter);
+
+        let i = cells.selectAll( 'i' )
+            .data( d => d.i );
+        i.exit().remove();
+        i.enter().insert('i', 'span')
+            .classed( 'material-icons', true )
+            .merge(i)
+            .text( d => d.icon )
+            .attr('title', d => d.title )
+            .on('click', d => d.action());
+
+        let span = cells.selectAll('span')
+            .data( d => d.span);
+        span.exit().remove();
+        span.enter().append('span')
+            .merge(span)
+            .text( d => d.text );
+
+    }
+
+
     populateJobsHistory( jobs ) {
-        let table = this.jobsTable
+        let table = this.jobsHistoryTable
             .selectAll('table')
             .data([0]);
         let tableEnter = table.enter()
@@ -147,17 +310,19 @@ export default class Jobs extends Tab {
                 let map = Hoot.layers.findBy( 'id', d.mapId );
 
                 if (map) {
-                    let refLayer = Hoot.layers.findLoadedBy('refType', 'reference');
-                    let secLayer = Hoot.layers.findLoadedBy('refType', 'secondary');
+                    let refLayer = Hoot.layers.findLoadedBy('refType', 'primary') ? 2 : 0;
+                    let secLayer = Hoot.layers.findLoadedBy('refType', 'secondary') ? 1 : 0;
                     let refType;
-                    switch(loadedLayerCount) {
+                    //use bitwise comparison to see which layers are already loaded
+                    switch(refLayer | secLayer) {
                         case 0:
+                        case 1:
                             refType = 'reference';
                             break;
-                        case 1:
+                        case 2:
                             refType = 'secondary';
                             break;
-                        case 2:
+                        case 3:
                         default:
                             refType = null;
                             break;
