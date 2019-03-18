@@ -10,6 +10,7 @@ import _map    from 'lodash-es/map';
 
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
+import moment       from 'moment';
 
 /**
  * API calls to backend services
@@ -203,9 +204,19 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    cancelJob( id ) {
+        const params = {
+            path: `/job/cancel/${ id }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     getJobsHistory() {
         const params = {
-            path: `/jobs/history`,
+            path: '/jobs/history',
             method: 'GET'
         };
 
@@ -214,13 +225,31 @@ export default class API {
     }
 
     getJobsRunning() {
-        const params = {
-            path: `/jobs/running`,
-            method: 'GET'
-        };
+        // const params = {
+        //     path: '/jobs/running',
+        //     method: 'GET'
+        // };
 
-        return this.request( params )
-            .then( resp => resp.data );
+        // return this.request( params )
+        //     .then( resp => resp.data );
+
+let running = [
+{
+"jobId": "ex_1a939fbecd51424aa00ddad4399500d1",
+"jobType": "export",
+"start": moment().subtract(5, 'minutes'),
+"percentcomplete": 33.3,
+"userId": 8964869
+},
+{
+"jobId": "592110bd-5670-41ad-addb-8b6cec812abd",
+"jobType": "conflate",
+"start": moment().subtract(1, 'hour'),
+"percentcomplete": 58.7,
+"userId": 2631622
+}
+];
+       return running;
     }
 
     getCoreVersionInfo() {
