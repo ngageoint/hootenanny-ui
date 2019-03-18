@@ -1,14 +1,10 @@
 @import '../../modules/variables';
 
 .jobs-table {
-    height: 400px;
+    /*height: 400px;*/
     margin-top: 20px;
     overflow-y: auto;
     box-shadow: 0 3px 10px $dark-opacity10;
-
-    /*table {
-        margin: 10px;
-    }*/
 
     thead {
         color: #fff;
@@ -24,6 +20,11 @@
         padding-left: 10px;
     }
 }
+
+h3.jobs-history {
+    padding-top: 50px;
+}
+
 
 .jobs-item {
     justify-content: space-between;
@@ -41,11 +42,7 @@
         vertical-align: bottom;
         cursor: pointer;
     }
-/*
-    span {
-        padding: 0 10px;
-    }
-*/
+
     .button-container {
         height: 100%;
 
