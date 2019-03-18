@@ -8,8 +8,9 @@ import FormFactory            from '../../tools/formFactory';
 import { translationAddForm } from '../../config/domMetadata';
 
 export default class AddTranslation {
-    constructor( instance ) {
+    constructor( instance, templateText ) {
         this.instance = instance;
+        this.templateText = templateText;
 
         this.form = translationAddForm.call( this );
     }
@@ -31,6 +32,7 @@ export default class AddTranslation {
         this.descriptionInput = d3.select( '#translationSaveDescription' );
         this.templateInput    = d3.select( '#translationTemplate' );
         this.submitButton     = d3.select( '#addTranslationBtn' );
+        
     }
 
     handleFileDrop() {
