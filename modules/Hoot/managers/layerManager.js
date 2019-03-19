@@ -316,6 +316,7 @@ export default class Layers {
 
             this.hoot.context.flush();
         }
+        this.hoot.events.emit( 'loaded-layer-removed' );
     }
 
     removeAllLoadedLayers() {

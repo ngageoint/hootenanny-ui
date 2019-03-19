@@ -33,7 +33,7 @@ export default class AdvancedOpts {
     get isOpen() {
         return this.form.classed( 'visible' );
     }
-    
+
     init() {
         this.render();
     }
@@ -92,10 +92,10 @@ export default class AdvancedOpts {
             .append( 'button' )
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
-            .on( 'click', () => { 
+            .on( 'click', () => {
                 d3.selectAll( '.form-group input' )
                     .property( 'checked', true );
-                
+
                 d3.selectAll( '.form-group .adv-opt-title')
                     .classed( 'adv-opt-title-disabled', false);
             });
@@ -120,7 +120,7 @@ export default class AdvancedOpts {
         parent
             .select( '.group-toggle-caret-wrap' )
             .classed( 'toggle-disabled', !checked );
-                
+
         label
             .classed( 'adv-opt-title-disabled', !label.classed( 'adv-opt-title-disabled' ) );
 
@@ -137,14 +137,14 @@ export default class AdvancedOpts {
 
         group.exit()
             .remove();
-            
+
         let groupEnter = group.enter()
             .append( 'div' )
             .classed( 'form-group', true );
 
         let groupToggle = groupEnter.append( 'div' )
             .classed( 'group-toggle', true );
-        
+
         let groupHeader = groupToggle.append( 'div' )
             .attr( 'class', 'inner-wrapper strong fill-light keyline-bottom adv-opts-toggle-wrap');
 
@@ -166,10 +166,10 @@ export default class AdvancedOpts {
             .on('click', d => {
                 let toggle = d3.select( `#${d.id}-toggle`),
                     checked = toggle.property( 'checked' );
-                    
+
                 toggle.property( 'checked', !checked );
 
-                toggleOption( d, checked ); 
+                toggleOption( d, checked );
             } )
             .append( 'span' )
             .attr( 'id', d => `${ d.id }_label` )
@@ -198,7 +198,7 @@ export default class AdvancedOpts {
 
         // let fieldContainer = groupBody.selectAll( '.hoot-form-field' ) /* IGNORE ADDITIONAL OPTIONS FOR TIME BEING */
         //     .data(d => d.members);
-        
+
         // fieldContainer.exit()
         //     .remove();
 
@@ -221,7 +221,7 @@ export default class AdvancedOpts {
 
         //         checkboxWrap.exit()
         //             .remove();
-                
+
         //         let checkboxWrapEnter = checkboxWrap.enter()
         //             .append( 'div' )
         //             .attr( 'class', 'form-field-checkbox-wrap round keyline-all' );
@@ -270,7 +270,7 @@ export default class AdvancedOpts {
         //                                 v = datum.valueKey ? n[ datum.valueKey ] : t;
         //                             return { value: v, title: t };
         //                         } );
-                                
+
         //                         if ( datum.sort ) {
         //                             comboData = comboData.sort((a, b) => {
         //                                 let textA = a.value.toLowerCase(),
@@ -319,7 +319,7 @@ export default class AdvancedOpts {
         //                         let textFieldEnter = textField.enter()
         //                             .append( 'input' )
         //                             .attr('class', 'form-field-textinput');
-                                    
+
         //                         textFieldEnter
         //                             .attr( 'type', 'text' )
         //                             .attr( 'placeholder', datum.placeholder )
@@ -330,7 +330,7 @@ export default class AdvancedOpts {
         //                             .on( 'keyup', () => datum.onChange && datum.onChange( datum, this ) );
 
         //                         textField.merge(textFieldEnter);
-                                
+
         //                         break;
         //                     }
         //                 }
@@ -338,25 +338,25 @@ export default class AdvancedOpts {
         //     }
         // });
 
-        
+
         // fieldContainer
         //     .merge( fieldContainerEnter )
         //     .attr( 'id', d => d.id )
         //     .attr( 'class', d => `hoot-form-field small contain ${d.hidden ? 'hidden': ''}` );
-        
+
         group.merge(groupEnter)
             .attr( 'id', d => d.id + '_group');
     }
-    
+
     getOptions() {
         let options = '',
             mergers = [],
             matchers = [],
             isNetwork = d3.select( '#conflateType' ).property( 'value' ) === 'Network';
 
-        // create list of matchers/mergers that are interpretable as the 
+        // create list of matchers/mergers that are interpretable as the
         // conflation types the user chose...
-        this.contentDiv 
+        this.contentDiv
             .selectAll( '.conflate-type-toggle' )
             .each(function(d) {
                 let selection = d3.select( this ),
@@ -364,9 +364,9 @@ export default class AdvancedOpts {
 
                 if ( checked ) {
                     if ( d.id === 'roadOptions' && isNetwork ) {
-                        return; 
+                        return;
                     }
-            
+
                     mergers.push(d.merger);
                     matchers.push(d.matcher);
                 }
@@ -381,7 +381,7 @@ export default class AdvancedOpts {
             options += `-D "merger.creators=${ mergers.join(';') }" `;
         }
 
-        
+
         // add additional advanced options that the user changed...
         // /* these options will be toggle-able in future release...
         // this.contentDiv
@@ -398,7 +398,7 @@ export default class AdvancedOpts {
         //             }
         //             case 'text': {
         //                 let value = input.property( 'value' );
-                        
+
         //                 if (!value) break;
 
         //                 if ( d.extrema ) {
