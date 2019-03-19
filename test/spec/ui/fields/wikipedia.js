@@ -160,7 +160,7 @@ describe('iD.uiFieldWikipedia', function() {
             expect(spy.getCall(2)).to.have.been.calledWith({ wikipedia: 'de:Title' });  // 'Title' on change +10ms
             expect(spy.getCall(3)).to.have.been.calledWith({ wikipedia: 'de:Title' });  // 'Title' on blur   +10ms
             done();
-        }, 100);
+        }, 200);
 
     });
 });
