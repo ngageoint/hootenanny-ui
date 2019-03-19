@@ -1,6 +1,9 @@
 
 import Tab          from './tab';
 import moment       from 'moment';
+import ProgressBar  from 'progressbar.js';
+
+const getJobTypeIcon = Symbol('getJobTypeIcon');
 
 /**
  * Creates the jobs tab in the settings panel
@@ -53,16 +56,48 @@ export default class Jobs extends Tab {
 
     async loadJobs() {
 
-        try {
+        // try {
             let jobsRunning = await Hoot.api.getJobsRunning();
             let jobsHistory = await Hoot.api.getJobsHistory();
             await Hoot.layers.refreshLayers();
             this.populateJobsHistory( jobsHistory );
             this.populateJobsRunning( jobsRunning );
-        } catch ( e ) {
-            window.console.log( 'Unable to retrieve jobs' );
-            throw new Error( e );
+        // } catch ( e ) {
+        //     window.console.log( 'Unable to retrieve jobs' );
+        //     // throw new Error( e );
+        // }
+    }
+
+    [getJobTypeIcon](type) {
+        let typeIcon;
+        switch(type) {
+            case 'import':
+                typeIcon = 'publish';
+                break;
+            case 'export':
+                typeIcon = 'get_app';
+                break;
+            case 'conflate':
+                typeIcon = 'layers';
+                break;
+            case 'clip':
+                typeIcon = 'crop';
+                break;
+            case 'attributes':
+                typeIcon = 'list_alt';
+                break;
+            case 'basemap':
+                typeIcon = 'map';
+                break;
+            case 'delete':
+                typeIcon = 'delete';
+                break;
+            case 'unknown':
+            default:
+                typeIcon = 'help';
+                break;
         }
+        return typeIcon;
     }
 
     populateJobsRunning( jobs ) {
@@ -82,7 +117,6 @@ export default class Jobs extends Tab {
                 'Job Type',
                 'Owner',
                 'Started',
-                'Duration',
                 'Percent Complete',
                 'Actions'
                 ])
@@ -121,37 +155,8 @@ export default class Jobs extends Tab {
                 //    span: [{/* array of text props */ }]
                 //  `}
 
-                let typeIcon;
-                switch(d.jobType) {
-                    case 'import':
-                        typeIcon = 'publish';
-                        break;
-                    case 'export':
-                        typeIcon = 'get_app';
-                        break;
-                    case 'conflate':
-                        typeIcon = 'layers';
-                        break;
-                    case 'clip':
-                        typeIcon = 'crop';
-                        break;
-                    case 'attributes':
-                        typeIcon = 'list_alt';
-                        break;
-                    case 'basemap':
-                        typeIcon = 'map';
-                        break;
-                    case 'delete':
-                        typeIcon = 'delete';
-                        break;
-                    case 'unknown':
-                    default:
-                        typeIcon = 'help';
-                        break;
-                }
-
                 props.push({
-                    i: [{icon: typeIcon, action: () => {} }],
+                    i: [{icon: this[getJobTypeIcon](d.jobType), action: () => {} }],
                     span: [{text: d.jobType.toUpperCase()}]
                 });
 
@@ -165,9 +170,18 @@ export default class Jobs extends Tab {
                     i: [],
                     span: [{text: moment( d.start ).fromNow()}]
                 });
+
                 props.push({
                     i: [],
-                    span: [{text: moment.duration( d.end - d.start ).humanize()}]
+                    span: [],
+                    //{
+                    //        text: d.percentcomplete,
+                            // call: (d) => {
+                            //     console.log('foo');
+                            //     //var line = new ProgressBar.Line('#container');
+                            // }
+                    //}],
+                    progress: [{ percent: d.percentcomplete }]
                 });
 
 
@@ -212,6 +226,35 @@ export default class Jobs extends Tab {
         span.enter().append('span')
             .merge(span)
             .text( d => d.text );
+
+        let progressbar = cells.selectAll('div')
+            .data( d => (d.progress) ? d.progress : []);
+        progressbar.exit().remove();
+        let pgEnter = progressbar.enter().append('div')
+            .classed('job-progress', true);
+        pgEnter.each(function(d) {
+            console.log(this);
+            let pb = new ProgressBar.Circle(this, {
+                color: '#FCB03C',
+                strokeWidth: 3,
+                trailWidth: 1,
+                text: {
+                    value: '0'
+                }
+           });
+            pb.animate(d.percent / 100, {
+                text: {
+                    value: d.percent + '%'
+                }
+            });
+            // d.pb = pb;
+        });
+
+        progressbar.merge(pgEnter)
+            .each( d => {
+                console.log(d);
+                // this.animate(d.percentcomplete);
+            });
 
     }
 
@@ -272,37 +315,8 @@ export default class Jobs extends Tab {
                 //    span: [{/* array of text props */ }]
                 //  `}
 
-                let typeIcon;
-                switch(d.jobType) {
-                    case 'import':
-                        typeIcon = 'publish';
-                        break;
-                    case 'export':
-                        typeIcon = 'get_app';
-                        break;
-                    case 'conflate':
-                        typeIcon = 'layers';
-                        break;
-                    case 'clip':
-                        typeIcon = 'crop';
-                        break;
-                    case 'attributes':
-                        typeIcon = 'list_alt';
-                        break;
-                    case 'basemap':
-                        typeIcon = 'map';
-                        break;
-                    case 'delete':
-                        typeIcon = 'delete';
-                        break;
-                    case 'unknown':
-                    default:
-                        typeIcon = 'help';
-                        break;
-                }
-
                 props.push({
-                    i: [{icon: typeIcon, action: () => {} }],
+                    i: [{icon: this[getJobTypeIcon](d.jobType), action: () => {} }],
                     span: [{text: d.jobType.toUpperCase()}]
                 });
 
