@@ -66,10 +66,6 @@ export default class AddTranslation {
             .then( () => this.instance.loadTranslations() )
             .finally( () => {
                 this.container.remove();
-
-                if ( this.instance.id === 'manage-translations-assistant' ) {
-                    this.instance.showTranslations();
-                }
             } );
     }
 
