@@ -162,43 +162,37 @@ export default class Jobs extends Tab {
 
                 let owner = Hoot.users.getNameForId(d.userId);
                 props.push({
-                    i: [],
                     span: [{text: owner}]
                 });
 
                 props.push({
-                    i: [],
                     span: [{text: moment( d.start ).fromNow()}]
                 });
 
                 props.push({
-                    i: [],
-                    span: [],
-                    //{
-                    //        text: d.percentcomplete,
-                            // call: (d) => {
-                            //     console.log('foo');
-                            //     //var line = new ProgressBar.Line('#container');
-                            // }
-                    //}],
+                    span: [{ text: d.percentcomplete + '%' }],
                     progress: [{ percent: d.percentcomplete }]
                 });
 
+                let user = JSON.parse( localStorage.getItem( 'user' ) );
 
-                props.push({
-                    i: [{
-                        title: 'cancel job',
-                        icon: 'cancel',
-                        action: () => {
-                            Hoot.api.cancelJob(d.jobId)
-                                .then( resp => this.loadJobs() )
-                                .catch( err => {
-                                    // TODO: response - unable to cancel job
-                                } );
-                        }
-                    }],
-                    span: []
-                });
+                if (d.userId === user.id) {
+                    props.push({
+                        i: [{
+                            title: 'cancel job',
+                            icon: 'cancel',
+                            action: () => {
+                                Hoot.api.cancelJob(d.jobId)
+                                    .then( resp => this.loadJobs() )
+                                    .catch( err => {
+                                        // TODO: response - unable to cancel job
+                                    } );
+                            }
+                        }]
+                    });
+                } else {
+                    props.push({});
+                }
 
                 return props;
             });
@@ -206,12 +200,13 @@ export default class Jobs extends Tab {
         cells.exit().remove();
 
         let cellsEnter = cells
-            .enter().append( 'td' );
+            .enter().append( 'td' )
+            .classed('progress', d => d.progress);
 
         cells = cells.merge(cellsEnter);
 
         let i = cells.selectAll( 'i' )
-            .data( d => d.i );
+            .data( d => (d.i) ? d.i : [] );
         i.exit().remove();
         i.enter().insert('i', 'span')
             .classed( 'material-icons', true )
@@ -220,41 +215,35 @@ export default class Jobs extends Tab {
             .attr('title', d => d.title )
             .on('click', d => d.action());
 
-        let span = cells.selectAll('span')
-            .data( d => d.span);
-        span.exit().remove();
-        span.enter().append('span')
-            .merge(span)
-            .text( d => d.text );
-
         let progressbar = cells.selectAll('div')
-            .data( d => (d.progress) ? d.progress : []);
+            .data( d => (d.progress) ? d.progress : [] );
         progressbar.exit().remove();
         let pgEnter = progressbar.enter().append('div')
             .classed('job-progress', true);
         pgEnter.each(function(d) {
-            console.log(this);
-            let pb = new ProgressBar.Circle(this, {
-                color: '#FCB03C',
+            let pb = new ProgressBar.Line(this, {
+                color: 'rgb(112, 146, 255)',
                 strokeWidth: 3,
                 trailWidth: 1,
-                text: {
-                    value: '0'
-                }
-           });
-            pb.animate(d.percent / 100, {
-                text: {
-                    value: d.percent + '%'
-                }
             });
-            // d.pb = pb;
+            pb.animate(d.percent / 100);
+            //I feel yucky doing this, but need
+            //the ref in the merge below
+            this.pb = pb;
         });
 
         progressbar.merge(pgEnter)
-            .each( d => {
-                console.log(d);
-                // this.animate(d.percentcomplete);
+            .each( function(d) {
+                this.pb.animate(d.percent / 100);
             });
+
+
+        let span = cells.selectAll('span')
+            .data( d => (d.span) ? d.span : [] );
+        span.exit().remove();
+        span.enter().append('span')
+            .merge(span)
+            .text( d => d.text );
 
     }
 
@@ -368,14 +357,12 @@ export default class Jobs extends Tab {
                         });
                     } else {
                         props.push({
-                            i: [],
                             span: [{text: map.name}]
                         });
                     }
 
                 } else {
                     props.push({
-                        i: [],
                         span: [{text: 'Map no longer exists'}]
                     });
                 }
@@ -401,11 +388,12 @@ export default class Jobs extends Tab {
                         break;
                 }
 
-                props.push({
-                    i: [{
-                        icon: statusIcon,
-                        action: () => {
-                            if (d.status === 'failed') {
+                if (d.status === 'failed') {
+                    props.push({
+                        i: [{
+                            icon: statusIcon,
+                            title: 'show error',
+                            action: () => {
                                 Hoot.api.getJobError(d.jobId)
                                     .then( resp => {
                                         let type = 'error';
@@ -416,16 +404,17 @@ export default class Jobs extends Tab {
                                         // TODO: response - unable to get error
                                     } );
                             }
-                        }
-                    }],
-                    span: []
-                });
+                        }]
+                    });
+                } else {
+                    props.push({
+                        i: [{ icon: statusIcon }]
+                    });
+                }
                 props.push({
-                    i: [],
                     span: [{text: moment( d.start ).fromNow()}]
                 });
                 props.push({
-                    i: [],
                     span: [{text: moment.duration( d.end - d.start ).humanize()}]
                 });
                 props.push({
@@ -439,8 +428,7 @@ export default class Jobs extends Tab {
                                     // TODO: response - unable to clear job
                                 } );
                         }
-                    }],
-                    span: []
+                    }]
                 });
 
                 return props;
@@ -454,7 +442,7 @@ export default class Jobs extends Tab {
         cells = cells.merge(cellsEnter);
 
         let i = cells.selectAll( 'i' )
-            .data( d => d.i );
+            .data( d => (d.i) ? d.i : [] );
         i.exit().remove();
         i.enter().insert('i', 'span')
             .classed( 'material-icons', true )
@@ -464,7 +452,7 @@ export default class Jobs extends Tab {
             .on('click', d => d.action());
 
         let span = cells.selectAll('span')
-            .data( d => d.span);
+            .data( d => (d.span) ? d.span : [] );
         span.exit().remove();
         span.enter().append('span')
             .merge(span)

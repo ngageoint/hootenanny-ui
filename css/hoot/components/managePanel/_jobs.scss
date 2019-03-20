@@ -1,14 +1,13 @@
 @import '../../modules/variables';
 
 .jobs-table {
-    /*height: 400px;*/
     margin-top: 20px;
     overflow-y: auto;
     box-shadow: 0 3px 10px $dark-opacity10;
 
     thead {
-        color: #fff;
-        background: #444;
+        color: $light;
+        background: $dark1;
     }
 
     th {
@@ -19,15 +18,11 @@
     th:first-child {
         padding-left: 10px;
     }
+
 }
 
 h3.jobs-history {
     padding-top: 50px;
-}
-
-div.job-progress {
-    width: 100px;
-    height: 100px;
 }
 
 .jobs-item {
@@ -40,6 +35,11 @@ div.job-progress {
 
     td:first-child {
         padding-left: 10px;
+    }
+
+    td.progress {
+        display: flex;
+        align-items: baseline;
     }
 
     i {
