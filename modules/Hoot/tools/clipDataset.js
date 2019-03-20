@@ -4,14 +4,16 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/1/18
  *******************************************************************************************************/
 
-import _isEmpty    from 'lodash-es/isEmpty';
-import _forEach    from 'lodash-es/forEach';
-import _map        from 'lodash-es/map';
+import _isEmpty from 'lodash-es/isEmpty';
+import _forEach from 'lodash-es/forEach';
+import _map     from 'lodash-es/map';
 
 import FormFactory from './formFactory';
 
 import { checkForUnallowedChar } from './utilities';
 import { d3combobox }            from '../../lib/hoot/d3.combobox';
+import _get                      from 'lodash-es/get';
+import _find                     from 'lodash-es/find';
 
 export default class ClipDataset {
     constructor( instance ) {
@@ -208,11 +210,12 @@ export default class ClipDataset {
             let row         = d3.select( `#row-${ mapId }` ),
                 datasetName = row.select( '.datasetName' ),
                 outputName  = row.select( '.outputName' ),
-                pathName    = row.select( '.outputPath' );
+                pathName    = row.select( '.outputPath' ).property( 'value' ),
+                pathId      = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = outputName.property( 'value' ) || outputName.attr( 'placeholder' );
-            params.PATH_NAME   = pathName.property( 'value' ) || pathName.attr( 'placeholder' ) || 'root';
+            params.FOLDER_ID   = pathId;
             params.BBOX        = bbox;
 
             Hoot.api.clipDataset( params )
