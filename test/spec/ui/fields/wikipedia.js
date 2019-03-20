@@ -162,5 +162,6 @@ describe('iD.uiFieldWikipedia', function() {
             done();
         }, 100);
 
-    });
+    })
+    .timeout(200);
 });
