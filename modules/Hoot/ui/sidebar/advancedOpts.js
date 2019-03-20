@@ -453,7 +453,7 @@ export default class AdvancedOpts {
             fieldContainer
                 .classed( 'hoot-form-field-checkbox', d => d.input === 'checkbox' )
                 .classed( 'hoot-form-field-input', d => d.input !== 'checkbox' );
-                
+
             const isCleaning = d.name === 'Cleaning';
 
             fieldContainer.each(function(d) {
