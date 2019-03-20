@@ -88,7 +88,7 @@ Hoot.control.utilities.clipdataset = function(context) {
             .classed('col6', true).style('border','1px solid #ccc')
             .append('div')
             .append('span')
-            .classed('label',true)            
+            .classed('label',true)
             .attr('id','clip2ve')
             .text('Use Visual Extent')
             .on('click',function(){
@@ -118,7 +118,7 @@ Hoot.control.utilities.clipdataset = function(context) {
                 }
             });
 
-        return _modalcoord; 
+        return _modalcoord;
     };
 
     /**
@@ -256,7 +256,7 @@ Hoot.control.utilities.clipdataset = function(context) {
     _instance.populateCoordinates = function(maxCoords,minCoords) {
         // populate coordinates with bbox
         var maxlon = maxCoords[0].toFixed(6);
-        var maxlat = maxCoords[1].toFixed(6);        
+        var maxlat = maxCoords[1].toFixed(6);
         var minlon = minCoords[0].toFixed(6);
         var minlat = minCoords[1].toFixed(6);
 
@@ -392,6 +392,8 @@ Hoot.control.utilities.clipdataset = function(context) {
             else{param.BBOX= _rect;}
 
             param.PATH_NAME = d3.select('#row-' + d.id).select('div .PathName').value() || d3.select('#row-' + d.id).select('div .PathName').attr('placeholder') || 'root';
+
+            param.FOLDER_ID = context.hoot().model.folders.getfolderIdByName(param.PATH_NAME) || 0;
 
             params.push(param);
         });
