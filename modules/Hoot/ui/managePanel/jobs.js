@@ -117,7 +117,7 @@ export default class Jobs extends Tab {
                 'Job Type',
                 'Owner',
                 'Started',
-                'Percent Complete',
+                'Progress',
                 'Actions'
                 ])
             .enter().append('th')
@@ -155,25 +155,30 @@ export default class Jobs extends Tab {
                 //    span: [{/* array of text props */ }]
                 //  `}
 
+                //Job Type
                 props.push({
                     i: [{icon: this[getJobTypeIcon](d.jobType), action: () => {} }],
                     span: [{text: d.jobType.toUpperCase()}]
                 });
 
+                //Owner
                 let owner = Hoot.users.getNameForId(d.userId);
                 props.push({
                     span: [{text: owner}]
                 });
 
+                //Start
                 props.push({
                     span: [{text: moment( d.start ).fromNow()}]
                 });
 
+                //Progress bar
                 props.push({
                     span: [{ text: d.percentcomplete + '%' }],
                     progress: [{ percent: d.percentcomplete }]
                 });
 
+                //Actions
                 let user = JSON.parse( localStorage.getItem( 'user' ) );
 
                 if (d.userId === user.id) {
@@ -304,70 +309,26 @@ export default class Jobs extends Tab {
                 //    span: [{/* array of text props */ }]
                 //  `}
 
+                //Job Type
                 props.push({
                     i: [{icon: this[getJobTypeIcon](d.jobType), action: () => {} }],
                     span: [{text: d.jobType.toUpperCase()}]
                 });
 
-                //Handle the map name & add to map icon
+                //Output
                 let map = Hoot.layers.findBy( 'id', d.mapId );
 
                 if (map) {
-                    let refLayer = Hoot.layers.findLoadedBy('refType', 'primary') ? 2 : 0;
-                    let secLayer = Hoot.layers.findLoadedBy('refType', 'secondary') ? 1 : 0;
-                    let refType;
-                    //use bitwise comparison to see which layers are already loaded
-                    switch(refLayer | secLayer) {
-                        case 0:
-                        case 1:
-                            refType = 'reference';
-                            break;
-                        case 2:
-                            refType = 'secondary';
-                            break;
-                        case 3:
-                        default:
-                            refType = null;
-                            break;
-                    }
-
-                    if (refType) {
-                        props.push({
-                            i: [{
-                                title: `add to map as ${refType}`,
-                                icon: 'add_circle_outline',
-                                action: () => {
-                                    let params = {
-                                        name: map.name,
-                                        id: d.mapId
-                                    };
-
-                                    Hoot.ui.sidebar.forms[ refType ].submitLayer( params )
-                                        .then( () => {
-                                            let message = `${refType} layer added to map: <u>${map.name}</u>`,
-                                                type    = 'info';
-
-                                            Hoot.message.alert( { message, type } );
-
-                                            this.loadJobs();
-                                        } );
-                                    }
-                            }],
-                            span: [{text: map.name}]
-                        });
-                    } else {
-                        props.push({
-                            span: [{text: map.name}]
-                        });
-                    }
-
+                    props.push({
+                        span: [{text: map.name}]
+                    });
                 } else {
                     props.push({
                         span: [{text: 'Map no longer exists'}]
                     });
                 }
 
-
+                //Status
                 let statusIcon;
                 switch(d.status) {
                     case 'running':
@@ -411,24 +372,80 @@ export default class Jobs extends Tab {
                         i: [{ icon: statusIcon }]
                     });
                 }
+
+                //Start
                 props.push({
                     span: [{text: moment( d.start ).fromNow()}]
                 });
+
+                //Duration
                 props.push({
                     span: [{text: moment.duration( d.end - d.start ).humanize()}]
                 });
+
+                //Actions
+                let actions = []
+
+                if (map) {
+
+                    let refLayer = Hoot.layers.findLoadedBy('refType', 'primary') ? 2 : 0;
+                    let secLayer = Hoot.layers.findLoadedBy('refType', 'secondary') ? 1 : 0;
+                    let refType;
+                    //use bitwise comparison to see which layers are already loaded
+                    switch(refLayer | secLayer) {
+                        case 0:
+                        case 1:
+                            refType = 'reference';
+                            break;
+                        case 2:
+                            refType = 'secondary';
+                            break;
+                        case 3:
+                        default:
+                            refType = null;
+                            break;
+                    }
+
+                    if (refType) {
+                        //Add to map
+                        actions.push({
+                            title: `add to map as ${refType}`,
+                            icon: 'add_circle_outline',
+                            action: () => {
+                                let params = {
+                                    name: map.name,
+                                    id: d.mapId
+                                };
+
+                                Hoot.ui.sidebar.forms[ refType ].submitLayer( params )
+                                    .then( () => {
+                                        let message = `${refType} layer added to map: <u>${map.name}</u>`,
+                                            type    = 'info';
+
+                                        Hoot.message.alert( { message, type } );
+
+                                        this.loadJobs();
+                                    } );
+                            }
+                        });
+                    }
+                }
+
+                //Clear job
+                actions.push({
+                    title: 'clear job',
+                    icon: 'clear',
+                    action: () => {
+                        Hoot.api.deleteJobStatus(d.jobId)
+                            .then( resp => this.loadJobs() )
+                            .catch( err => {
+                                // TODO: response - unable to clear job
+                            } );
+                    }
+                });
+
                 props.push({
-                    i: [{
-                        title: 'clear job',
-                        icon: 'clear',
-                        action: () => {
-                            Hoot.api.deleteJobStatus(d.jobId)
-                                .then( resp => this.loadJobs() )
-                                .catch( err => {
-                                    // TODO: response - unable to clear job
-                                } );
-                        }
-                    }]
+                    i: actions
                 });
 
                 return props;
