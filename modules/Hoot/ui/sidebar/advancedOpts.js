@@ -243,8 +243,8 @@ export default class AdvancedOpts {
         fieldLabelWrap
             .attr( 'id', d => `${d.id}-label-wrap`)
             .classed( 'adv-opts-header fill-light keyline-bottom round-top', true )
-            .classed( 'keyline-all round-left rou hoot-field-checkbox-title-wrap',
-                d => d.input === 'checkbox' );
+            .classed( 'keyline-bottom', d => d.input !== 'checkbox' )
+            .classed( 'round-left hoot-field-checkbox-title-wrap keyline-right', d => d.input === 'checkbox' );
 
         let fieldLabel = fieldLabelWrap.selectAll( '.hoot-field-label' )
             .data( [ d ] );
@@ -274,8 +274,7 @@ export default class AdvancedOpts {
         fieldInputWrap = fieldInputWrap.merge(fieldInputWrapEnter);
 
         fieldInputWrap
-            .classed( 'keyline-top keyline-right keyline-bottom round-right hoot-field-checkbox-input-wrap',
-                d => d.input === 'checkbox' );
+            .classed( 'hoot-field-checkbox-input-wrap', d => d.input === 'checkbox' );
 
         let fieldInput = fieldInputWrap.selectAll( '.hoot-field-input' )
             .data( [ d ] );
@@ -443,17 +442,14 @@ export default class AdvancedOpts {
             let fieldContainerEnter = fieldContainer.enter()
                 .append( 'div' )
                 .attr( 'id', d => d.id )
-                .attr( 'class', d => `hoot-form-field small contain ${d.hidden ? 'hidden': ''}` )
-                .classed( 'hoot-form-field-checkbox', d => d.input === 'checkbox' )
-                .classed( 'hoot-form-field-input', d => d.type !== 'checkbox' );
+                .classed( 'hoot-form-field small contain keyline-all round', true );
 
             fieldContainer = fieldContainer.merge(fieldContainerEnter);
 
             fieldContainer
-                .classed( 'round hoot-field-control', true )
-                .classed( 'hoot-field-checkbox', d => d.input === 'checkbox' )
-                .classed( 'keyline-all', d => d.input !== 'checkbox' );
-
+                .classed( 'hoot-form-field-checkbox', d => d.input === 'checkbox' )
+                .classed( 'hoot-form-field-input', d => d.input !== 'checkbox' );
+                
             const isCleaning = d.name === 'Cleaning';
 
             fieldContainer.each(function(d) {

@@ -138,16 +138,21 @@
         display: flex;
         flex-direction: column;
         overflow: auto;
-        max-height: 300px;
         align-items: center;
+        max-height: 500px;
         padding: 15px 10px;
     }
 
     .hoot-form-field {
         display: flex;
+        overflow: hidden;
+        margin: 10px;
+        min-height: min-content;
+
         .adv-opts-header {
             font-weight: bold;
             padding: 5px 15px;
+            flex: none;
         }
 
         label {
@@ -160,12 +165,6 @@
             }
         }
 
-        input[type="text"] {
-            border: 1px solid $dark-opacity20;
-            border-radius: 4px;
-            display: block;
-        }
-
         input.combobox-input {
             display: inline-block;
         }    
@@ -173,12 +172,30 @@
 
     .hoot-form-field-checkbox {
         flex-direction: row;
+        align-items: center;
+        
+        .hoot-field-checkbox-title-wrap {
+            display: flex;
+            height: inherit;
+            width: 85%;
+            label {
+                align-self: center;
+            }
+        }
+        .hoot-field-checkbox-input-wrap {
+            width: 15%; 
+            height: inherit;
+            display: flex;
+            justify-content: center;
+            input {
+                margin: initial;
+            }
+        }
     }
 
     .hoot-form-field-input {
         flex-direction: column;
     }
-
 
     .hoot-field-label-wrap {
         display: flex;
@@ -192,29 +209,6 @@
         }
     }
 
-    .hoot-field-checkbox {        
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-
-        .hoot-field-checkbox-title-wrap {
-            display: flex;
-            height: inherit;
-            width: 85%;
-            label {
-                align-self: center;
-            }
-        }
-        .hoot-field-checkbox-input-wrap {
-            padding: 8px 14px;
-            width: 15%; 
-            height: inherit;
-            display: flex;
-            input {
-                margin: initial;
-            }
-        }
-    }
     .hoot-form-field.has-children {
         .hoot-form-field {
             padding: 0 20px;
