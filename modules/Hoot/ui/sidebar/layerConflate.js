@@ -172,11 +172,14 @@ class LayerConflate extends SidebarForm {
         data.OUTPUT_NAME        = this.saveAsInput.property( 'value' );
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
-        data.HOOT2_ADV_OPTIONS  = this.advancedOptions.getOptions();
         data.DISABLED_FEATURES  = this.advancedOptions.getDisabledFeatures();
         data.CONFLATION_TYPE    = this.typeInput.property( 'value' ).replace( /(Cookie Cutter & | w\/ Tags)/, '' );
         data.HOOT_2             = true;
         data.USER_EMAIL         = 'test@test.com';
+
+        let { advanced, cleaning } = this.advancedOptions.getOptions();
+        data.HOOT2_ADV_OPTIONS = advanced;
+        data.CLEANING_OPTIONS = cleaning;
 
         switch ( data.CONFLATION_TYPE ) {
             case 'Differential': {

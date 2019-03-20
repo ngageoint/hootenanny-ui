@@ -131,21 +131,36 @@ export default class AdvancedOpts {
 
         innerWrap = innerWrap.merge(innerWrapEnter);
 
-        let innerInput = innerWrap.selectAll( '.conflate-type-toggle' )
-            .data( [ d ] );
+        let innerWrapLeft = innerWrap.selectAll( '.adv-opts-inner-wrap-left' )
+            .data([ 0 ]);
 
-        innerInput.exit().remove();
+        innerWrapLeft.exit().remove();
 
-        let innerInputEnter = innerInput.enter()
-            .append( 'input' )
-            .attr( 'type', 'checkbox' )
-            .attr( 'id', d => `${d.name}-toggle` )
-            .classed( 'conflate-type-toggle', true );
+        let innerWrapLeftEnter = innerWrapLeft.enter()
+            .append( 'div' )
+            .classed( 'adv-opts-inner-wrap-left', true );
 
 
-        innerInput.merge(innerInputEnter)
-            .property( 'checked', true )
-            .on( 'click', toggleOption );
+        innerWrapLeft = innerWrapLeft.merge(innerWrapLeftEnter);
+
+        if ( d.name !== 'Cleaning' && d.name !== 'General' ) {
+            let innerInput = innerWrapLeft.selectAll( '.conflate-type-toggle' )
+                .data( [ d ] );
+
+            innerInput.exit().remove();
+
+            let innerInputEnter = innerInput.enter()
+                .append( 'input' )
+                .attr( 'type', 'checkbox' )
+                .attr( 'id', d => `${d.name}-toggle` )
+                .classed( 'conflate-type-toggle', true );
+
+
+            innerInput.merge(innerInputEnter)
+                .property( 'checked', true )
+                .on( 'click', toggleOption );
+        }
+
 
         let innerLabelWrap = innerWrap.selectAll( '.adv-opt-title-wrap' )
             .data( [ d ] );
@@ -244,7 +259,7 @@ export default class AdvancedOpts {
         fieldLabel.merge(fieldLabelEnter);
     }
 
-    fieldInput(fieldContainer) {
+    fieldInput(fieldContainer, isCleaning) {
         let d = fieldContainer.datum(),
             fieldInputWrap = fieldContainer
                 .selectAll( '.hoot-field-input-wrap' )
@@ -277,7 +292,8 @@ export default class AdvancedOpts {
         fieldInput
             .attr( 'placeholder', d => d.placeholder )
             .attr( 'disabled', d => d.disabled )
-            .attr( 'readonly', d => d.readonly );
+            .attr( 'readonly', d => d.readonly )
+            .property( 'checked', isCleaning );
 
         const type = fieldInput.datum().input;
         if ( type !== 'checkbox' ) {
@@ -319,40 +335,44 @@ export default class AdvancedOpts {
                         let value = d3.select( this ).property( 'value' );
                         d.send = value !== d.default;
                         if ([ 'double', 'int', 'long' ].indexOf ( d.type ) !== -1 ) {
-                            let isNumber = !isNaN( value ),
-                                notNumber = d3.select( `#${d.id}-label-wrap`)
-                                    .selectAll( '.not-number-warning' )
-                                    .data([ 0 ]);
-
-                            let notNumberEnter = notNumber.enter()
-                                .append( 'span' )
-                                .classed( 'not-number-warning', true );
-
-                            notNumber = notNumber.merge(notNumberEnter);
-
-                            notNumber.classed( 'hidden', isNumber );
-
-                            if ( notNumber.selectAll( '.tooltip' ).empty() ) {
-                                notNumber
-                                    .call(svgIcon('#iD-icon-alert', 'deleted'))
-                                    .call(tooltip().title('this option must be a number!'));
-
-                                notNumber.selectAll( '.tooltip-arrow' )
-                                    .classed( 'hidden', true );
-
-                                notNumber.selectAll( '.tooltip-inner' )
-                                    .style( 'background-color', 'rgba(0,0,0,0)')
-                                    .style( 'border', 'none');
-
-                            }
-
-                            notNumber.dispatch( isNumber ? 'mouseleave' : 'mouseenter' );
+                            d3.select( `#${d.id}-label-wrao` )
+                                .call(self.notNumber, value);
                         }
                     });
             }
 
         }
 
+    }
+
+    notNumber(selection, value) {
+        let isNumber = !isNaN( value ),
+            notNumber = selection
+                .selectAll( '.not-number-warning' )
+                .data([ 0 ]);
+
+        let notNumberEnter = notNumber.enter()
+            .append( 'span' )
+            .classed( 'not-number-warning', true );
+
+        notNumber = notNumber.merge(notNumberEnter);
+        notNumber.classed( 'hidden', isNumber );
+
+        if ( notNumber.selectAll( '.tooltip' ).empty() ) {
+            notNumber
+                .call(svgIcon('#iD-icon-alert', 'deleted'))
+                .call(tooltip().title('this option must be a number!'));
+
+            notNumber.selectAll( '.tooltip-arrow' )
+                .classed( 'hidden', true );
+
+            notNumber.selectAll( '.tooltip-inner' )
+                .style( 'background-color', 'rgba(0,0,0,0)')
+                .style( 'border', 'none');
+
+        }
+
+        notNumber.dispatch( isNumber ? 'mouseleave' : 'mouseenter' );
     }
 
     createGroups() {
@@ -423,7 +443,9 @@ export default class AdvancedOpts {
             let fieldContainerEnter = fieldContainer.enter()
                 .append( 'div' )
                 .attr( 'id', d => d.id )
-                .attr( 'class', d => `hoot-form-field small contain ${d.hidden ? 'hidden': ''}` );
+                .attr( 'class', d => `hoot-form-field small contain ${d.hidden ? 'hidden': ''}` )
+                .classed( 'hoot-form-field-checkbox', d => d.input === 'checkbox' )
+                .classed( 'hoot-form-field-input', d => d.type !== 'checkbox' );
 
             fieldContainer = fieldContainer.merge(fieldContainerEnter);
 
@@ -432,12 +454,14 @@ export default class AdvancedOpts {
                 .classed( 'hoot-field-checkbox', d => d.input === 'checkbox' )
                 .classed( 'keyline-all', d => d.input !== 'checkbox' );
 
+            const isCleaning = d.name === 'Cleaning';
+
             fieldContainer.each(function(d) {
                 let fieldContainer = d3.select( this );
 
                 fieldContainer
                     .call(self.fieldLabel)
-                    .call(self.fieldInput);
+                    .call(self.fieldInput, isCleaning );
             });
 
         });
@@ -462,44 +486,51 @@ export default class AdvancedOpts {
     }
 
     getOptions() {
-        let options = {};
-        this.contentDiv.selectAll( '.form-group .hoot-form-field' ).each( function(d) {
+        let options = { advanced: {}, cleaning: [] };
+        this.contentDiv.selectAll( '.form-group' ).each( function(d) {
+            let selection = d3.select( this ),
+                isCleaning = d.name === 'Cleaning';
+
+            selection.selectAll( '.hoot-form-field' ).each( function(d) {
             const selection = d3.select( this ).select( 'input' );
-
-            if ( !selection.empty() ) {
-                switch ( d.input ) {
-                    case 'checkbox': {
-                        if ( selection.property( 'checked' ) ) {
-                            options[ d.id ] = true;
+                if ( !isCleaning ) {
+                    switch ( d.input ) {
+                        case 'checkbox': {
+                            if ( selection.property( 'checked' ) ) {
+                                options.advanced[ d.id ] = true;
+                            }
+                            break;
                         }
-                        break;
-                    }
-                    case 'combobox': {
-                        if ( !d.send ) break;
+                        case 'combobox': {
+                            if ( !d.send ) break;
 
-                        let value = selection.property( 'value' );
-                        if ( value ) {
-                            options[ d.id ] = value;
+                            let value = selection.property( 'value' );
+                            if ( value ) {
+                                options.advanced[ d.id ] = value;
+                            }
+                            break;
                         }
-                        break;
-                    }
-                    case 'text': {
-                        if ( !d.send ) break;
+                        case 'text': {
+                            if ( !d.send ) break;
 
-                        let value = selection.property( 'value' );
-                        if ( !value ) break;
-                        if ( d.extrema ) {
-                            value = Number(value);
-                            if ( isNaN( value ) ) break;
-                            let [ min, max ] = d.extrema;
-                            if ( value < min || max < value ) break;
+                            let value = selection.property( 'value' );
+                            if ( !value ) break;
+                            if ( d.extrema ) {
+                                value = Number(value);
+                                if ( isNaN( value ) ) break;
+                                let [ min, max ] = d.extrema;
+                                if ( value < min || max < value ) break;
+                            }
+
+                            options.advanced[ d.id ] = value;
+                            break;
                         }
-
-                        options[ d.id ] = value;
-                        break;
                     }
+                } else if (!selection.property( 'checked' )) {
+                    options.cleaning.push(d.id);
                 }
-            }
+
+            });
         });
 
         return options;
