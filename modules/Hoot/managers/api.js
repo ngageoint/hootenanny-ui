@@ -936,7 +936,27 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) );
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Clip job complete',
+                    status: 200,
+                    type: resp.type
+                };
+            } )
+            .catch( err => {
+                let message, status, type;
+
+                status = err.status;
+
+                if ( status >= 500 ) {
+                    message = 'Error during Clip! Please try again later.';
+                    type    = err.type;
+                }
+
+                return Promise.reject( { message, status, type } );
+            } );
     }
 
     /**

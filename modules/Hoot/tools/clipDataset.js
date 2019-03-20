@@ -219,8 +219,14 @@ export default class ClipDataset {
             params.BBOX        = bbox;
 
             Hoot.api.clipDataset( params )
+                .then( resp => Hoot.message.alert( resp ) )
                 .then( () => Hoot.folders.refreshDatasets() )
-                .then( () => Hoot.events.emit( 'render-dataset-table' ) );
+                .then( () => Hoot.folders.refreshLinks() )
+                .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+                .catch( err => {
+                    Hoot.message.alert( err );
+                    return false;
+                } );
         } );
 
         this.container.remove();
