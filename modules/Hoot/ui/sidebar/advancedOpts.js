@@ -324,8 +324,12 @@ export default class AdvancedOpts {
                     .classed( 'form-field-combo-input', true )
                     .attr( 'autocomplete', 'off' )
                     .call(d3combobox().data( comboData ))
-                    .on( 'change', d => d.send =  d3.select( this ).property( 'value' ) !== d.default )
-                    .on( 'keyup', d => d.send =  d3.select( this ).property( 'value' ) !== d.default );
+                    .on( 'change', function(d) {
+                        d.send =  d3.select( this ).property( 'value' ) !== d.default;
+                    })
+                    .on( 'keyup', function(d) {
+                        d.send =  d3.select( this ).property( 'value' ) !== d.default;
+                    });
 
             } else { // text input...
                 fieldInput
@@ -484,15 +488,15 @@ export default class AdvancedOpts {
     getOptions() {
         let options = { advanced: {}, cleaning: [] };
         this.contentDiv.selectAll( '.form-group' ).each( function(d) {
-            let selection = d3.select( this ),
-                isCleaning = d.name === 'Cleaning';
+            let selection = d3.select( this );
+            let isCleaning = d.name === 'Cleaning';
 
             selection.selectAll( '.hoot-form-field' ).each( function(d) {
-            const selection = d3.select( this ).select( 'input' );
+                const field = d3.select( this ).select( 'input' );
                 if ( !isCleaning ) {
                     switch ( d.input ) {
                         case 'checkbox': {
-                            if ( selection.property( 'checked' ) ) {
+                            if ( field.property( 'checked' ) ) {
                                 options.advanced[ d.id ] = true;
                             }
                             break;
@@ -500,7 +504,7 @@ export default class AdvancedOpts {
                         case 'combobox': {
                             if ( !d.send ) break;
 
-                            let value = selection.property( 'value' );
+                            let value = field.property( 'value' );
                             if ( value ) {
                                 options.advanced[ d.id ] = value;
                             }
@@ -509,7 +513,7 @@ export default class AdvancedOpts {
                         case 'text': {
                             if ( !d.send ) break;
 
-                            let value = selection.property( 'value' );
+                            let value = field.property( 'value' );
                             if ( !value ) break;
                             if ( d.extrema ) {
                                 value = Number(value);
@@ -522,7 +526,7 @@ export default class AdvancedOpts {
                             break;
                         }
                     }
-                } else if (!selection.property( 'checked' )) {
+                } else if (!field.property( 'checked' )) {
                     options.cleaning.push(d.id);
                 }
 
