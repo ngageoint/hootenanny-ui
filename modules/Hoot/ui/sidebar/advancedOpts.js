@@ -504,7 +504,7 @@ export default class AdvancedOpts {
 
             selection.selectAll( '.hoot-form-field' ).each( function(d) {
                 const field = d3.select( this ).select( 'input' );
-                if ( !isCleaning ) {
+                if ( !isCleaning ) { // for all args of form '-D ${name.of.option}=${value}'
                     switch ( d.input ) {
                         case 'checkbox': {
                             if ( field.property( 'checked' ) ) {
@@ -537,8 +537,8 @@ export default class AdvancedOpts {
                             break;
                         }
                     }
-                } else if (!field.property( 'checked' )) {
-                    options.cleaning.push(d.id);
+                } else if (!field.property( 'checked' )) { // for the cleaning options...
+                    options.cleaning.push( d.id );
                 }
 
             });
