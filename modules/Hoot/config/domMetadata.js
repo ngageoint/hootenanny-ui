@@ -42,7 +42,20 @@ export function layerConflateForm( data ) {
             inputType: 'combobox',
             value: 'Reference',
             data: [ 'Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/ Tags', 'Attribute' ],
-            readonly: 'readonly'
+            readonly: 'readonly',
+            onChange: function(d) {
+                let attributeGroup = d3.select( '.advanced-opts-content #Attribute_group' ),
+                    isAttribute = d3.select( '#conflateType' ).property( 'value' ) === 'Attribute';
+
+                attributeGroup.select( '.adv-opt-title' )
+                    .classed( 'adv-opt-title-disabled', !isAttribute );
+
+                attributeGroup.select( '.adv-opt-toggle' )
+                    .classed( 'toggle-disabled', !isAttribute );
+
+                attributeGroup
+                    .select( '.group-body', true );
+            }
         },
         {
             label: 'Attribute Reference Layer',
