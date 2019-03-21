@@ -194,3 +194,17 @@
     }
 }
 
+.hoot-field-checkbox {
+    display: flex;
+
+    .form-field-header {
+        width: 90%;
+    }
+
+    .hoot-checkbox-wrap {
+        width: 10%;
+        display: flex;
+        justify-content: center;
+    }
+
+}

@@ -116,11 +116,19 @@ export default class FormFactory {
             .selectAll( '.hoot-form-field' )
             .data( formMeta ).enter()
             .append( 'div' )
-            .classed( 'hoot-form-field fill-white small keyline-all round', true );
+            .classed( 'hoot-form-field fill-white small keyline-all round', true )
+            .classed( 'hoot-field-checkbox', d => d.inputType === 'checkbox' )
+            .classed('hidden', d => d.class === 'hidden' );
+
+        if ( fieldContainer.datum().id ) {
+            fieldContainer.attr( 'id', d => `${d.id}_container` );
+        }
 
         let fieldHeader = fieldContainer
             .append( 'div' )
-            .classed( 'form-field-header fill-light round-top keyline-bottom', true );
+            .classed( 'form-field-header fill-light', true )
+            .classed( 'round-top keyline-bottom', d => d.inputType !== 'checkbox' )
+            .classed( 'keline-right', d => d.inputType === 'checkbox' );
 
         fieldHeader
             .append( 'label' )
@@ -286,23 +294,14 @@ export default class FormFactory {
      * @param field - field div
      */
     createCheckbox( field ) {
-        if ( field.datum().hidden ) {
-            field.attr('class', 'hidden');
-        }
-
-        field
+        return field
+            .append( 'div' )
+            .classed( 'hoot-checkbox-wrap', true )
             .append( 'input' )
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
-            .attr( 'class', d => d.class )
             .property( 'checked', d => d.checked )
             .on( 'change', d => d.onChange && d.onChange(d) );
-
-        field
-            .append( 'label' )
-            .attr( 'for', d => d.id)
-            .text( d => d.value );
-
     }
 
     /**

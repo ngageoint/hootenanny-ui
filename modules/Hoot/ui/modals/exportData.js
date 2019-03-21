@@ -8,6 +8,7 @@ import FormFactory       from '../../tools/formFactory';
 import { exportDataForm } from '../../config/domMetadata';
 
 import _flattenDeep from 'lodash-es/flattenDeep';
+import _isEmpty from 'lodash-es/isEmpty';
 
 export default class ExportData {
     constructor( translations, d, type ) {
@@ -53,8 +54,7 @@ export default class ExportData {
 
     validate ( name ) {
         this.formValid = this.validateFields( this.translationSchemaCombo.node(), name ) &&
-            this.validateFields( this.exportFormatCombo.node(), name ) &&
-            (this.type === 'dbs' ? this.validateTextInput( this.dataExportNameTextInput.node(), name ) : true);
+            this.validateFields( this.exportFormatCombo.node(), name );
 
         this.updateButtonState();
     }
@@ -110,7 +110,6 @@ export default class ExportData {
     }
 
     getInputs(input) {
-
         switch (this.type.toLowerCase()) {
             case 'datasets': {
                 input = this.input;
@@ -165,9 +164,19 @@ export default class ExportData {
     }
 
     getOutputName() {
-        return this.getInputType() === 'dbs'
-            ? this.dataExportNameTextInput.property( 'value' )
-            : this.input;
+        let output;
+        switch (this.type) {
+            case 'Datasets': {
+                let input = this.dataExportNameTextInput.property( 'value' );
+                output = _isEmpty( input ) ? this.dataExportNameTextInput.attr( 'placeholder' ) : input;
+                break;
+            }
+            default: {
+                output = this.input;
+                break;
+            }
+        }
+        return output;
     }
 
     handleSubmit() {
