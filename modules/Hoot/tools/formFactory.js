@@ -128,7 +128,7 @@ export default class FormFactory {
             .append( 'div' )
             .classed( 'form-field-header fill-light', true )
             .classed( 'round-top keyline-bottom', d => d.inputType !== 'checkbox' )
-            .classed( 'keline-right', d => d.inputType === 'checkbox' );
+            .classed( 'keyline-right', d => d.inputType === 'checkbox' );
 
         fieldHeader
             .append( 'label' )
