@@ -685,8 +685,9 @@ export default class API {
             .then( () =>  this.statusInterval( jobId ) )
             .then( () => this.saveDataset( jobId, data.outputname ) )
             .then( () => {
+                const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
                 return {
-                    message: 'Dataset Exported',
+                    message: `'${data.outputname}' ${dataType} Exported`,
                     status: 200,
                     type: 'success'
                 };
@@ -700,7 +701,6 @@ export default class API {
                     type: 'success'
                 };
             } );
-        
     }
 
     updateFolder( { folderId, parentId } ) {

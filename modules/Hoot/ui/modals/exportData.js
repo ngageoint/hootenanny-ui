@@ -37,6 +37,13 @@ export default class ExportData {
         this.appendToFgdbCheckbox = this.container.select( '#exportAppendFgdb' );
         this.dataExportNameTextInput = this.container.select( '#dataExportNameTextInput' );
         this.submitButton = this.container.select( '#exportDatasetBtn' );
+
+
+        let container = this.container;
+        Hoot.events.once( 'modal-closed', () => {
+            container.remove();
+        });
+
         return this;
     }
 
@@ -44,7 +51,7 @@ export default class ExportData {
         this.formValid = this.validateFields( this.translationSchemaCombo.node(), name ) &&
             this.validateFields( this.exportFormatCombo.node(), name ) &&
             this.validateTextInput( this.dataExportNameTextInput.node(), name );
-            
+
         this.updateButtonState();
     }
 
@@ -76,7 +83,7 @@ export default class ExportData {
         if ( id === name ) {
             target.classed( 'invalid', !valid );
         }
-        
+
         return valid;
     }
 
@@ -161,17 +168,18 @@ export default class ExportData {
                 textstatus: false,
                 translation: self.getTranslationPath(),
                 userId: Hoot.user().id
-            }; 
+            };
 
         this.loadingState();
 
         this.processRequest = Hoot.api.exportDataset(data)
+            .then( (message) => {
+                Hoot.events.emit( 'modal-closed' );
+                Hoot.message.alert( message );
+            })
             .catch( err => {
                 Hoot.message.alert( err );
-            } )
-            .finally( () => {
-                Hoot.events.emit( 'modal-closed' );
             } );
-    }
+        }
 
 }
