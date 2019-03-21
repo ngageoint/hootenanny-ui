@@ -77,7 +77,6 @@ export default class ExportData {
             node             = target.node(),
             str              = node.value,
 
-            // reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ], // implement once I know of reserved words...
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
