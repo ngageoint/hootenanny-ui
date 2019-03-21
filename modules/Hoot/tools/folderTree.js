@@ -40,15 +40,13 @@ export default class FolderTree extends EventEmitter {
             multiDatasetOpts: {
                 title: 'Export Selected Datasets',
                 icon: 'export',
-                click: 'bulkexportDataset'
+                click: 'exportMultiDataset'
             },
-            singleDatasetOpts: [
-                {
-                    title: 'Export',
-                    icon: 'export',
-                    click: 'exportDataset'
-                }
-            ],
+            singleDatasetOpts: {
+                title: 'Export',
+                icon: 'export',
+                click: 'exportDataset'
+            },
             addDatasetOpts: [
                 {
                     title: 'Add as Reference Dataset',

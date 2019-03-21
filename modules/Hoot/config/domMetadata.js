@@ -261,13 +261,13 @@ export function modifyDatasetForm() {
     ];
 }
 
-export function exportDataForm( ) {
+export function exportDataForm( zipOutput ) {
     const exportComboId = 'exportTranslationCombo',
           exportFormatId = 'exportFormatCombo',
           exportNameId = 'dataExportNameTextInput',
           exportFgdbId = 'exportAppendFgdb';
 
-    return [
+    let meta = [
         {
             label: 'Translation Schema',
             id: exportComboId,
@@ -302,13 +302,18 @@ export function exportDataForm( ) {
         //     id: 'exportTagOverrideId',
         //     inputType: 'custom'
         // },
-        {
-            label: 'Output Name',
+    ];
+
+    if ( zipOutput ) {
+        meta.push({
+            label: 'Output Zip Name',
             id: exportNameId,
             inputType: 'text',
-            onChange: () => this.validate( exportNameId ) 
-        }
-    ];
+            onChange: () => this.validate( exportNameId )
+        });
+    }
+
+    return meta;
 }
 
 export function translationAddForm() {

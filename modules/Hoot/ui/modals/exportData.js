@@ -11,11 +11,12 @@ import _flattenDeep from 'lodash-es/flattenDeep';
 
 export default class ExportData {
     constructor( translations, d, type ) {
+        const isDatasets = type === 'Datasets';
         this.translations = translations;
-        this.input = d.data.name;
-        this.id = d.data.id;
+        this.input = isDatasets ? d.map(n => n.data.name).join(',') : d.data.name;
+        this.id = isDatasets ? d.map(n => n.data.id).join(',') : d.data.id;
         this.type = type;
-        this.form = exportDataForm.call(this);
+        this.form = exportDataForm.call(this, isDatasets );
     }
 
     render() {
@@ -38,6 +39,9 @@ export default class ExportData {
         this.dataExportNameTextInput = this.container.select( '#dataExportNameTextInput' );
         this.submitButton = this.container.select( '#exportDatasetBtn' );
 
+        if ( this.type === 'Datasets' ) {
+            this.dataExportNameTextInput.attr( 'placeholder', this.input.split(',').join('_') );
+        }
 
         let container = this.container;
         Hoot.events.once( 'modal-closed', () => {
@@ -50,7 +54,7 @@ export default class ExportData {
     validate ( name ) {
         this.formValid = this.validateFields( this.translationSchemaCombo.node(), name ) &&
             this.validateFields( this.exportFormatCombo.node(), name ) &&
-            this.validateTextInput( this.dataExportNameTextInput.node(), name );
+            (this.type === 'dbs' ? this.validateTextInput( this.dataExportNameTextInput.node(), name ) : true);
 
         this.updateButtonState();
     }
@@ -108,12 +112,8 @@ export default class ExportData {
     getInputs(input) {
 
         switch (this.type.toLowerCase()) {
-            case 'files': {
-                input = this.type.trim()
-                    .split(',')
-                    .map(name => Hoot.layers.findBy('name', name ).id )
-                    .join(',');
-
+            case 'datasets': {
+                input = this.input;
                 break;
             }
             case 'folder': {
@@ -145,13 +145,29 @@ export default class ExportData {
     }
 
     getInputType() {
-        return this.type === 'Dataset' ? 'db' : this.type.toLowerCase();
+        let type;
+        switch ( this.type ) {
+            case 'Dataset': {
+                type = 'db';
+                break;
+            }
+            case 'Datasets': {
+                type = 'dbs';
+                break;
+            }
+            case 'Folder' : {
+                type = 'folder';
+                break;
+            }
+            default: break;
+        }
+        return type;
     }
 
     getOutputName() {
-        return this.getInputType() === 'folder'
-            ? this.input
-            : this.dataExportNameTextInput.property( 'value' );
+        return this.getInputType() === 'dbs'
+            ? this.dataExportNameTextInput.property( 'value' )
+            : this.input;
     }
 
     handleSubmit() {
