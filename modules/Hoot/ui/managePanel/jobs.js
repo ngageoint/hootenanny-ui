@@ -187,11 +187,13 @@ export default class Jobs extends Tab {
                             title: 'cancel job',
                             icon: 'cancel',
                             action: () => {
+                                d3.select('#util-jobs').classed('wait', true);
                                 Hoot.api.cancelJob(d.jobId)
                                     .then( resp => this.loadJobs() )
                                     .catch( err => {
                                         // TODO: response - unable to cancel job
-                                    } );
+                                    } )
+                                    .finally( () => d3.select('#util-jobs').classed('wait', false));
                             }
                         }]
                     });
@@ -355,6 +357,7 @@ export default class Jobs extends Tab {
                             icon: statusIcon,
                             title: 'show error',
                             action: () => {
+                                d3.select('#util-jobs').classed('wait', true);
                                 Hoot.api.getJobError(d.jobId)
                                     .then( resp => {
                                         let type = 'error';
@@ -363,7 +366,8 @@ export default class Jobs extends Tab {
                                     } )
                                     .catch( err => {
                                         // TODO: response - unable to get error
-                                    } );
+                                    } )
+                                    .finally( () => d3.select('#util-jobs').classed('wait', false));
                             }
                         }]
                     });
@@ -435,12 +439,28 @@ export default class Jobs extends Tab {
                 actions.push({
                     title: 'clear job',
                     icon: 'clear',
-                    action: () => {
-                        Hoot.api.deleteJobStatus(d.jobId)
-                            .then( resp => this.loadJobs() )
-                            .catch( err => {
-                                // TODO: response - unable to clear job
-                            } );
+                    action: async () => {
+
+                        function deleteJob(id) {
+                            d3.select('#util-jobs').classed('wait', true);
+                            Hoot.api.deleteJobStatus(id)
+                                .then( resp => this.loadJobs() )
+                                .catch( err => {
+                                    // TODO: response - unable to clear job
+                                } )
+                                .finally( () => d3.select('#util-jobs').classed('wait', false));
+                        }
+                        if (d3.event.shiftKey) { //omit confirm prompt
+                            deleteJob(d.jobId);
+                        } else {
+                            let message = 'Are you sure you want to clear this job record?',
+                            confirm = await Hoot.message.confirm( message );
+
+                            if ( confirm ) {
+                                deleteJob(d.jobId);
+                            }
+                        }
+
                     }
                 });
 
