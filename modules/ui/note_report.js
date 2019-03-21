@@ -7,7 +7,7 @@ import {
 
 export function uiNoteReport() {
     var _note;
-    var url = 'https://www.openstreetmap.org/reports/new?reportable_id=';
+    var url = 'https://fo.ob.ar/reports/new?reportable_id=';
 
     function noteReport(selection) {
 

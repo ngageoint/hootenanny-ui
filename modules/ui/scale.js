@@ -1,17 +1,16 @@
 import { displayLength } from '../util/units';
 import { geoLonToMeters, geoMetersToLon } from '../geo';
-import { utilDetect } from '../util/detect';
 
 
 export function uiScale(context) {
     var projection = context.projection,
-        isImperial = (utilDetect().locale.toLowerCase() === 'en-us'),
         maxLength = 180,
         tickHeight = 8;
 
 
     function scaleDefs(loc1, loc2) {
-        var lat = (loc2[1] + loc1[1]) / 2,
+        var isImperial = context.imperial(),
+            lat = (loc2[1] + loc1[1]) / 2,
             conversion = (isImperial ? 3.28084 : 1),
             dist = geoLonToMeters(loc2[0] - loc1[0], lat) * conversion,
             scale = { dist: 0, px: 0, text: '' },
@@ -63,7 +62,7 @@ export function uiScale(context) {
 
     return function(selection) {
         function switchUnits() {
-            isImperial = !isImperial;
+            context.imperial(!context.imperial());
             selection.call(update);
         }
 

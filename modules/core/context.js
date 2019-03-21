@@ -419,6 +419,13 @@ export function coreContext() {
         return context.asset('img/' + _);
     };
 
+    var imperial =  (utilDetect().locale.toLowerCase() === 'en-us');
+    context.imperial = function(_) {
+        if (!arguments.length) return imperial;
+        imperial = _;
+        return imperial;
+    };
+
 
     /* locales */
     // `locale` variable contains a "requested locale".
@@ -535,7 +542,6 @@ export function coreContext() {
     features.init();
     presets.init();
     areaKeys = presets.areaKeys();
-
 
     return utilRebind(context, dispatch, 'on');
 }

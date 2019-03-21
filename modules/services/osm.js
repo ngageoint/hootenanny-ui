@@ -54,9 +54,16 @@ var oauth = osmAuth({
     done: authDone
 });
 
-// oauth.authenticated = function() {
-//     return true;
-// };
+// short circuit osm oauth when
+// not in mocha test mode
+// This makes Hoot unable to write to an OSM API
+// for the time being, we probably want to restore
+// the functionality from https://github.com/ngageoint/hootenanny-ui/blob/007797598b97d66456c4c852d054c780ab3d062e/modules/services/osm.js#L491-L547
+if (!window.mocha) {
+    oauth.authenticated = function() {
+        return true;
+    };
+}
 
 var _blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'];
 var _tileCache = { loaded: {}, inflight: {}, seen: {} };

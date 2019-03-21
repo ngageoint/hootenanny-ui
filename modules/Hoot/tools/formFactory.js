@@ -132,16 +132,16 @@ export default class FormFactory {
                 let header = d3.select( this )
                     .classed( 'conflate-type-header', true );
 
-                let advOpts = header.append( 'a' )
-                    .attr( 'id', 'advanced-opts-toggle' );
+                // let advOpts = header.append( 'a' )
+                //     .attr( 'id', 'advanced-opts-toggle' );
 
-                advOpts.append( 'span' )
-                    .classed( 'toggle-text', true )
-                    .text( 'Advanced Options' );
+                // advOpts.append( 'span' )
+                //     .classed( 'toggle-text', true )
+                //     .text( 'Advanced Options' );
 
-                advOpts.append( 'span' )
-                    .classed( 'toggle-caret inline strong', true )
-                    .text( '►' );
+                // advOpts.append( 'span' )
+                //     .classed( 'toggle-caret inline strong', true )
+                //     .text( '►' );
             }
         } );
 
@@ -196,6 +196,26 @@ export default class FormFactory {
      * @param field - field div
      */
     createCombobox( field ) {
+        const data = field.node().__data__;
+        let comboData = _map(data.data, n => {
+            const t = data.itemKey ? n[ data.itemKey ] : n,
+                  v = data.valueKey ? n[ data.valueKey ] : t;
+            return { value: v, title: t };
+        } );
+
+        if (data.sort) {
+            comboData = comboData.sort((a, b) => {
+                let textA = a.value.toLowerCase(),
+                    textB = b.value.toLowerCase();
+
+                return textA < textB ? -1 : textA > textB ? 1 : 0;
+            } );
+
+            if ( data.class === 'path-name' ) {
+                comboData = [ { value: 'root', title: 0 } ].concat(comboData);
+            }
+        }
+
         field
             .append( 'input' )
             .attr( 'type', 'text' )
@@ -206,18 +226,19 @@ export default class FormFactory {
             .attr( 'value', d => d.value )
             .attr( 'disabled', d => d.disabled )
             .attr( 'readonly', d => d.readonly )
-            .call( this.populateCombobox )
-            .on( 'change', d => d.onChange && d.onChange() )
-            .on( 'keyup', d => d.onChange && d.onChange() );
+            .call(d3combobox().data(comboData))
+            .on( 'change', d => d.onChange && d.onChange(d) )
+            .on( 'keyup', d => d.onChange && d.onChange(d) );
     }
+
 
     populateCombobox( input ) {
         input.select( d => {
             let combobox = d3combobox()
                 .data( _map( d.data, n => {
-                    n = d.itemKey ? n[ d.itemKey ] : n;
-
-                    return { value: n, title: n };
+                    const t = d.itemKey ? n[ d.itemKey ] : n,
+                          v = d.valueKey ? n[ d.valueKey ] : t;
+                    return { value: v, title: t };
                 } ) );
 
             if ( d.sort ) {

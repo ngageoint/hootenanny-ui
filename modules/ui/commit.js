@@ -117,19 +117,19 @@ export function uiCommit(context) {
 
 
         // Changeset Section
-        var changesetSection = body.selectAll('.changeset-editor')
-            .data([0]);
+        // var changesetSection = body.selectAll('.changeset-editor')
+        //     .data([0]);
 
-        changesetSection = changesetSection.enter()
-            .append('div')
-            .attr('class', 'modal-section changeset-editor')
-            .merge(changesetSection);
+        // changesetSection = changesetSection.enter()
+        //     .append('div')
+        //     .attr('class', 'modal-section changeset-editor')
+        //     .merge(changesetSection);
 
-        changesetSection
-            .call(changesetEditor
-                .changesetID(_changeset.id)
-                .tags(tags)
-            );
+        // changesetSection
+        //     .call(changesetEditor
+        //         .changesetID(_changeset.id)
+        //         .tags(tags)
+        //     );
 
 
         // Warnings
@@ -145,71 +145,71 @@ export function uiCommit(context) {
             .attr('class','modal-section save-section fillL cf')
             .merge(saveSection);
 
-        var prose = saveSection.selectAll('.commit-info')
-            .data([0]);
+        // var prose = saveSection.selectAll('.commit-info')
+        //     .data([0]);
 
-        prose = prose.enter()
-            .append('p')
-            .attr('class', 'commit-info')
-            .text(t('commit.upload_explanation'))
-            .merge(prose);
+        // prose = prose.enter()
+        //     .append('p')
+        //     .attr('class', 'commit-info')
+        //     .text(t('commit.upload_explanation'))
+        //     .merge(prose);
 
-        osm.userDetails(function(err, user) {
-            if (err) return;
+        // osm.userDetails(function(err, user) {
+        //     if (err) return;
 
-            var userLink = d3_select(document.createElement('div'));
+        //     var userLink = d3_select(document.createElement('div'));
 
-            _userDetails = user;
+        //     _userDetails = user;
 
-            if (user.image_url) {
-                userLink
-                    .append('img')
-                    .attr('src', user.image_url)
-                    .attr('class', 'icon pre-text user-icon');
-            }
+        //     if (user.image_url) {
+        //         userLink
+        //             .append('img')
+        //             .attr('src', user.image_url)
+        //             .attr('class', 'icon pre-text user-icon');
+        //     }
 
-            userLink
-                .append('a')
-                .attr('class', 'user-info')
-                .text(user.display_name)
-                .attr('href', osm.userURL(user.display_name))
-                .attr('tabindex', -1)
-                .attr('target', '_blank');
+        //     userLink
+        //         .append('a')
+        //         .attr('class', 'user-info')
+        //         .text(user.display_name)
+        //         .attr('href', osm.userURL(user.display_name))
+        //         .attr('tabindex', -1)
+        //         .attr('target', '_blank');
 
-            prose
-                .html(t('commit.upload_explanation_with_user', { user: userLink.html() }));
-        });
+        //     prose
+        //         .html(t('commit.upload_explanation_with_user', { user: userLink.html() }));
+        // });
 
 
-        // Request Review
-        var requestReview = saveSection.selectAll('.request-review')
-            .data([0]);
+        // // Request Review
+        // var requestReview = saveSection.selectAll('.request-review')
+        //     .data([0]);
 
-        // Enter
-        var requestReviewEnter = requestReview.enter()
-            .append('div')
-            .attr('class', 'request-review');
+        // // Enter
+        // var requestReviewEnter = requestReview.enter()
+        //     .append('div')
+        //     .attr('class', 'request-review');
 
-        var labelEnter = requestReviewEnter
-            .append('label')
-            .attr('for', 'commit-input-request-review');
+        // var labelEnter = requestReviewEnter
+        //     .append('label')
+        //     .attr('for', 'commit-input-request-review');
 
-        labelEnter
-            .append('input')
-            .attr('type', 'checkbox')
-            .attr('id', 'commit-input-request-review');
+        // labelEnter
+        //     .append('input')
+        //     .attr('type', 'checkbox')
+        //     .attr('id', 'commit-input-request-review');
 
-        labelEnter
-            .append('span')
-            .text(t('commit.request_review'));
+        // labelEnter
+        //     .append('span')
+        //     .text(t('commit.request_review'));
 
-        // Update
-        requestReview = requestReview
-            .merge(requestReviewEnter);
+        // // Update
+        // requestReview = requestReview
+        //     .merge(requestReviewEnter);
 
-        var requestReviewInput = requestReview.selectAll('input')
-            .property('checked', isReviewRequested(_changeset.tags))
-            .on('change', toggleRequestReview);
+        // var requestReviewInput = requestReview.selectAll('input')
+        //     .property('checked', isReviewRequested(_changeset.tags))
+        //     .on('change', toggleRequestReview);
 
 
         // Buttons
@@ -246,10 +246,10 @@ export function uiCommit(context) {
             });
 
         buttonSection.selectAll('.save-button')
-            .attr('disabled', function() {
-                var n = d3_select('#preset-input-comment').node();
-                return (n && n.value.length) ? null : true;
-            })
+            // .attr('disabled', function() {
+            //     var n = d3_select('#preset-input-comment').node();
+            //     return (n && n.value.length) ? null : true;
+            // })
             .on('click.save', function() {
                 this.blur();    // avoid keeping focus on the button - #4641
                 dispatch.call('save', this, _changeset);
@@ -278,18 +278,18 @@ export function uiCommit(context) {
         body.call(commitChanges);
 
 
-        function toggleRequestReview() {
-            var rr = requestReviewInput.property('checked');
-            updateChangeset({ review_requested: (rr ? 'yes' : undefined) });
+        // function toggleRequestReview() {
+        //     var rr = requestReviewInput.property('checked');
+        //     updateChangeset({ review_requested: (rr ? 'yes' : undefined) });
 
-            var expanded = !tagSection.selectAll('a.hide-toggle.expanded').empty();
-            tagSection
-                .call(rawTagEditor
-                    .expanded(expanded)
-                    .readOnlyTags(readOnlyTags)
-                    .tags(_clone(_changeset.tags))
-                );
-        }
+        //     var expanded = !tagSection.selectAll('a.hide-toggle.expanded').empty();
+        //     tagSection
+        //         .call(rawTagEditor
+        //             .expanded(expanded)
+        //             .readOnlyTags(readOnlyTags)
+        //             .tags(_clone(_changeset.tags))
+        //         );
+        // }
     }
 
 

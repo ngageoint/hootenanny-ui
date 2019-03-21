@@ -4,6 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/15/18
  *******************************************************************************************************/
 
+// import Hoot from '../hoot';
+
 export function layerConflateForm( data ) {
     return [
         {
@@ -40,12 +42,14 @@ export function layerConflateForm( data ) {
             inputType: 'combobox',
             value: 'Reference',
             data: [ 'Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/ Tags', 'Attribute' ],
-            onChange: () => {
-                this.confAdnvOptionsFields = null;
-                this.changeAdvancedOptions();
-                this.updateAttributeReferenceLayer();
-            },
             readonly: 'readonly'
+        },
+        {
+            label: 'Road Algorithm',
+            id: 'conflateAlgorithm',
+            inputType: 'combobox',
+            value: 'Unify',
+            data: [ 'Unify', 'Network' ]
         },
         {
             label: 'Attribute Reference Layer',
@@ -124,7 +128,7 @@ export function importSingleForm() {
             placeholder: 'Select Data Translations Schema',
             disabled: true,
             data: this.translations,
-            itemKey: 'DESCRIPTION'
+            itemKey: 'NAME'
         }
     ];
 }
@@ -181,7 +185,7 @@ export function importMultiForm() {
             placeholder: 'Select Data Translations Schema',
             disabled: true,
             data: this.translations,
-            itemKey: 'DESCRIPTION'
+            itemKey: 'NAME'
         },
         {
             label: 'Append FCODE Descriptions',
@@ -435,3 +439,363 @@ export function conflictActions() {
         }
     ];
 }
+
+// export function advancedOptions() {
+//     return [
+//         {
+//             label: 'Building',
+//             id: 'buildingOptions',
+//             matcher: 'hoot::BuildingMatchCreator',
+//             merger: 'hoot::BuildingMergerCreator',
+//             members: [
+//                 {
+//                     label: 'Review if secondary layer building is newer',
+//                     id: 'reviewSecondaryBuildingLayer',
+//                     key: 'building.review.if.secondary.newer',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Date format',
+//                     id: 'buildingDateFormat',
+//                     key: 'building.date.format',
+//                     inputType: 'text'
+//                 },
+//                 {
+//                     label: 'Date tag key',
+//                     id: 'buildingDateTagKey',
+//                     key: 'building.date.tag.key',
+//                     inputType: 'text'
+//                 },
+//                 {
+//                     label: 'Keep complex geometry when auto merging',
+//                     id: 'buildingKeepComplexGeom',
+//                     key: 'building.keep.more.complex.geometry.when.auto.merging',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Review non 1:1 Building Matches',
+//                     id: 'reviewNonOneOneBuildingMatches',
+//                     key: 'building.review.matched.other.than.one.to.one',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 }
+//             ]
+//         },
+//         {
+//             label: 'POI',
+//             id: 'poiGenericOptions',
+//             matcher: 'hoot::ScriptMatchCreator,PoiGeneric.js',
+//             merger: 'hoot::ScriptMergerCreator',
+//             members: []
+//         },
+//         {
+//             label: 'Road',
+//             id: 'roadOptions',
+//             matcher: 'hoot::HighwayMatchCreator',
+//             merger: 'hoot::HighwayMergerCreator',
+//             networkMatcher: 'hoot::NetworkMatchCreator',
+//             networkMerger: 'hoot::NetworkMergerCreator',
+//             members: [
+                // {
+                //     'label',
+                // }
+                // {
+                //     label: 'Engines',
+                //     id: 'roadConflationEngines',
+                //     inputType: 'combobox',
+                //     data: [ 'Unify', 'Network' ],
+                //     value: 'Network',
+                //     members: {
+                //         all: [
+                //             'matchHighwayClassifier',
+                //             'roadMatchCreator',
+                //             'roadMergerCreator',
+                //             'roadOnlyMergeTags',
+                //         ],
+                //         unify: [
+                //             'highwayMatcherHeadingDelta',
+                //             'highwayMatcherMaxAngle',
+                //             'highwayMaxEnumDiff'
+                //         ],
+                //         network: [
+                //             'networkMatcher'
+                //         ]
+                //     },
+                //     matchersMergers: {
+                //         network: [
+                //             'hoot::NetworkMatchCreator',
+                //             'hoot::NetworkMergerCreator'
+                //         ],
+                //         unify: [
+                //             'hoot::HighwayMatchCreator',
+                //             'hoot::HighwayMergerCreator'
+                //         ]
+                //     },
+                //     onChange: (d) => {
+                //         if (!d.changed) d.changed = true;
+                //         const members = d.members,
+                //               selection = d3.select( `#${d.id}` ),
+                //               value = selection.select( 'input' ).property( 'value' );
+
+                //         if ( !value ) return;
+                //         if ( d.value === value ) return;
+
+                //         d.value = value;
+
+                //         const updateMember = (id, hidden) => {
+                //             const member = d3.select( `#${id}` );
+                //             if ( !member.empty() ) {
+                //                 member.classed('hidden', hidden); // show only relevent children
+                //                 let data = member.datum();
+                //                 data.hidden = hidden; // reset each value...
+                //                 if (data.hasOwnProperty( 'default' ) ) {
+                //                     if (data.hasOwnProperty( 'value' )) {
+                //                         data.value = data.default;
+                //                     }
+                //                     data.hootVal = data.default;
+                //                 }
+                //                 if (data.hasOwnProperty( 'checked' ) ) {
+                //                     data.checked = false;
+                //                 }
+                //             }
+                //         };
+
+                //         Object.keys(members).forEach(key => {
+                //            const hidden = key !== d.value.toLowerCase() && key !== 'all';
+                //            members[key].forEach(member => updateMember( member, hidden ) );
+                //         });
+                //     }
+                // },
+                // {
+                //     label: 'Road Search Radius',
+                //     id: 'roadSearchRadius',
+                //     key: 'search.radius.highway',
+                //     inputType: 'text',
+                //     hidden: false
+                // },
+                // {
+                //     label: 'Match Highway Classifier',
+                //     id: 'matchHighwayClassifier',
+                //     key: 'conflate.match.highway.classifier',
+                //     checked: false,
+                //     inputType: 'checkbox',
+                //     hidden: false,
+                //     hootVal: 'hoot::HighwayRfClassifier'
+                // },
+                // {
+                //     label: 'Only Merge Tags',
+                //     id: 'roadOnlyMergeTags',
+                //     key: 'highway.merge.tags.only',
+                //     inputType: 'checkbox',
+                //     hidden: true,
+                //     checked: false,
+                // },
+                // {
+                //     label: 'Highway Matcher Heading Delta',
+                //     id: 'highwayMatcherHeadingDelta',
+                //     key: 'highway.matcher.heading.delta',
+                //     inputType: 'text',
+                //     extrema: [ 0.0, 360.0 ],
+                //     hidden: true
+                // },
+                // {
+                //     label: 'Highway Matcher Max Angle',
+                //     id: 'highwayMatcherMaxAngle',
+                //     key: 'highway.matcher.max.angle',
+                //     extrema: [0.0, 360.0],
+                //     inputType: 'text',
+                //     hidden: true
+                // },
+                // {
+                //     label: 'Highway Max Enum Diff',
+                //     id: 'highwayMaxEnumDiff',
+                //     key: 'highway.max.enum.diff',
+                //     inputType: 'text',
+                //     extrema: [ 0.0, 1.6 ],
+                //     hidden: true
+                // },
+                // {
+                //     label: 'Network Matcher',
+                //     id: 'networkMatcher',
+                //     key: 'network.matcher',
+                //     inputType: 'checkbox',
+                //     checked: false,
+                //     hidden: false,
+                //     hootVal: 'hoot::ConflictsNetworkMatcher'
+                // }
+//             ]
+//         },
+//         {
+//             label: 'Waterway',
+//             id: 'waterwayOptions',
+//             matcher: 'hoot::ScriptMatchCreator,LinearWaterway.js',
+//             merger: 'hoot::ScriptMergerCreator',
+//             members: []
+//         },
+//         {
+//             label: 'Point to Polygon',
+//             id: 'pointToPolyOptions',
+//             matcher: 'hoot::PoiPolygonMatchCreator',
+//             merger: 'hoot::PoiPolygonMergerCreator',
+//             members: [
+//                 {
+//                     label: 'Address Additional Tags',
+//                     id: 'poiToPolyAdditionalTags',
+//                     key: 'address.additional.tag.keys',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Address Match Enabled',
+//                     id: 'poiToPolyAddressMatchEnabled',
+//                     key: 'poi.polygon.address.match.enabled',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Merge Many POI to Single Polygon Matches',
+//                     id: 'poiToPolyMergeManyPOIToSinglePoly',
+//                     key: 'poi.polygon.auto.merge.many.poi.to.one.poly.matches',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Disable Same Source Conflation',
+//                     id: 'poiPolyDisableSameSourceConflation',
+//                     key: 'poi.polygon.disable.same.source.conflation',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Disable Same Source Conflation Match Tag Key Prefix Only',
+//                     id: 'poiPolyDisableSameSourceConflationTagKeyPrefixOnly',
+//                     key: 'poi.polygon.disable.same.source.conflation.match.tag.key.prefix.only',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label: 'Keep Closest Match Only',
+//                     id: 'poiPolyKeepClosestMatchOnly',
+//                     key: 'poi.polygon.keep.closest.matches.only',
+//                     inputType: 'checkbox',
+//                     checked: false
+//                 },
+//                 {
+//                     label:'Match Distance Threshold',
+//                     id: 'poiPolyMatchDistance',
+//                     key:'poi.polygon.match.distance.threshold',
+//                     inputType: 'text',
+//                     extrema: [ 0, Infinity ],
+//                     default: null
+//                 },
+//                 {
+//                     label: 'Match Evidence Threshold',
+//                     id: 'poiPolyMatchEvidenceThreshold',
+//                     key:'poi.polygon.match.evidence.threshold',
+//                     inputType: 'text',
+//                     extrema: [ 1, 4 ],
+//                 },
+//                 {
+
+//                     label: 'Name Score Threshold',
+//                     id: 'poiPolyNameScoreThreshold',
+//                     inputType: 'text',
+//                     key:'poi.polygon.name.score.threshold',
+//                     extrema: [ -1, 1 ],
+//                 },
+//                 {
+//                     label: 'Phone Number Additional Tag Keys',
+//                     id:'poiPolyNumberAdditionalTagKeys',
+//                     inputType: 'checkbox',
+//                     key:'phone.number.additional.tag.keys',
+//                 },
+//                 {
+//                     label:'Phone Number Match Enabled',
+//                     id: 'poiPolyPhoneNumberMatchEnabled',
+//                     key:'poi.polygon.phone.number.match.enabled',
+//                     inputType: 'checkbox',
+//                 },
+//                 {
+//                     label: 'Phone Number Region Code',
+//                     id: 'poiPolyPhoneNumberRegionCode',
+//                     inputType: 'checkbox',
+//                     key: 'phone.number.region.code',
+//                 },
+//                 {
+//                     label:'Phone Number Search In Text',
+//                     id:'poiPolyPhoneNumberSearchInText',
+//                     inputType: 'checkbox',
+//                     key:'phone.number.search.in.text',
+//                 },
+//                 {
+//                     label:'Promote Points With Addresses to POIs',
+//                     id: 'PoiPolyPromotePointsWithAddressesToPois',
+//                     inputType: 'checkbox',
+//                     key:'poi.polygon.promote.points.with.addresses.to.pois',
+//                 },
+//                 {
+//                     label: 'Review Distance Threshold',
+//                     id: 'poiPolyReviewDistanceThreshold',
+//                     key:'poi.polygon.review.distance.threshold',
+//                     inputType: 'text',
+//                     extrema: [ 0, Infinity ],
+//                 },
+//                 {
+//                     label:'Review Evidence Threshold',
+//                     id: 'poiPolyReviewEvidenceThreshold',
+//                     inputType: 'text',
+//                     key:'poi.polygon.review.evidence.threshold',
+//                     extrema: [ 0, 3 ],
+//                 },
+//                 {
+//                     label:'Review If Types Match',
+//                     id: 'poiPolyReviewIfMatchedTags',
+//                     key:'poi.polygon.review.if.matched.types',
+//                     inputType: 'checkbox',
+//                 },
+//                 {
+//                     label:'Review Matches Against Multi-Use Buildings',
+//                     id: 'poiPolygReviewMultiuseBuildings',
+//                     key:'poi.polygon.review.multiuse.buildings',
+//                     inputType: 'checkbox',
+//                 },
+//                 {
+//                     label:'Source Tag Key',
+//                     id:'poiPolySourceTagKey',
+//                     key:'poi.polygon.source.tag.key',
+//                     inputType: 'checkbox',
+//                 },
+//                 {
+//                     label:'Type Score Threshold',
+//                     id:'poiPolyTypeScoreThreshold',
+//                     key:'poi.polygon.type.score.threshold',
+//                     inputType: 'text',
+//                     extrema: [ 0, 1 ],
+//                 }
+//             ]
+//         },
+//         {
+//             label: 'Area',
+//             id: 'areaOptions',
+//             matcher: 'hoot::ScriptMatchCreator,Area.js',
+//             merger: 'hoot::ScriptMergerCreator',
+//             members: []
+//         },
+//         {
+//             label: 'Railway',
+//             id: 'railwayOptions',
+//             matcher: 'hoot::ScriptMatchCreator,Railway.js',
+//             merger: 'hoot::ScriptMergerCreator',
+//             members: []
+//         },
+//         {
+//             label: 'Powerline',
+//             id: 'powerlineOptions',
+//             matcher: 'hoot::ScriptMatchCreator,PowerLine.js',
+//             merger: 'hoot::ScriptMergerCreator',
+//             members: []
+//         }
+//     ];
+// }

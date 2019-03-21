@@ -27,10 +27,7 @@ export default class API {
             return isNaN(p) ? {pathname: p + '/'} : {port: p};
         };
 
-        this.baseUrl = Object.assign( new URL( this.host ), {
-            port: this.config.port,
-            pathname: this.config.path
-        } );
+        this.baseUrl = this.config.path;
 
         this.mergeUrl       = Object.assign( new URL( this.host ), mergePortOrPath( this.config.mergeServerPort ) );
         this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
@@ -291,7 +288,19 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp =>
+                resp.data.sort( ( a, b ) => {
+                    // Set undefined to false
+                    if ( !a.DEFAULT ) a.DEFAULT = false;
+                    if ( !b.DEFAULT ) b.DEFAULT = false;
+                    // We check DEFAULT property, putting true first
+                    if ( a.DEFAULT !== b.DEFAULT ) {
+                        return ( a.DEFAULT ) ? -1 : 1;
+                    } else {
+                        // We only get here if the DEFAULT prop is equal
+                        return d3.ascending( a.NAME.toLowerCase(), b.NAME.toLowerCase() );
+                    }
+                } ));
     }
 
     getTranslation( name ) {
@@ -1143,4 +1152,5 @@ export default class API {
             .then( resp => resp.data )
             .catch( err => window.console.log( err ) );
     }
+
 }
