@@ -190,9 +190,9 @@ export default class Jobs extends Tab {
                                 d3.select('#util-jobs').classed('wait', true);
                                 Hoot.api.cancelJob(d.jobId)
                                     .then( resp => this.loadJobs() )
-                                    .catch( err => {
-                                        // TODO: response - unable to cancel job
-                                    } )
+                                    // .catch( err => {
+                                    //     // TODO: response - unable to cancel job
+                                    // } )
                                     .finally( () => d3.select('#util-jobs').classed('wait', false));
                             }
                         }]
@@ -340,7 +340,7 @@ export default class Jobs extends Tab {
                         statusIcon = 'check_circle_outline';
                         break;
                     case 'failed':
-                        statusIcon = 'error';
+                        statusIcon = 'warning';
                         break;
                     case 'cancelled':
                         statusIcon = 'cancel';
@@ -357,17 +357,16 @@ export default class Jobs extends Tab {
                             icon: statusIcon,
                             title: 'show error',
                             action: () => {
-                                d3.select('#util-jobs').classed('wait', true);
                                 Hoot.api.getJobError(d.jobId)
                                     .then( resp => {
                                         let type = 'error';
                                         let message = resp.errors.join('\n');
                                         Hoot.message.alert( { message, type } );
                                     } )
-                                    .catch( err => {
-                                        // TODO: response - unable to get error
-                                    } )
-                                    .finally( () => d3.select('#util-jobs').classed('wait', false));
+                                    // .catch( err => {
+                                    //     // TODO: response - unable to get error
+                                    // } )
+                                    ;
                             }
                         }]
                     });
@@ -433,6 +432,34 @@ export default class Jobs extends Tab {
                             }
                         });
                     }
+/*
+                    //Get info
+                    actions.push({
+                        title: `show info`,
+                        icon: 'info',
+                        action: () => {
+                            Hoot.api.getMapTags(d.mapId)
+                                .then( tags => {
+                                    let type = 'info';
+                                    let lines = [];
+                                    if (tags.lastAccessed) lines.push(`Last accessed: ${moment(tags.lastAccessed.replace( /[-:]/g, '' )).fromNow()}`);
+                                    if (tags.input1Name) lines.push(`Reference: ${tags.input1Name}`);
+                                    if (tags.input2Name) lines.push(`Secondary: ${tags.input2Name}`);
+                                    if (tags.params) {
+                                        let params = JSON.parse(tags.params.replace(/\\"/g, '"'));
+                                        lines.push(`Conflation type: ${params.CONFLATION_TYPE}`);
+                                    }
+
+                                    let message = lines.join('<br>');
+                                    Hoot.message.alert( { message, type } );
+                                } )
+                                // .catch( err => {
+                                //     // TODO: response - unable to get error
+                                // } )
+                                ;
+                        }
+                    });
+*/
                 }
 
                 //Clear job
@@ -445,9 +472,9 @@ export default class Jobs extends Tab {
                             d3.select('#util-jobs').classed('wait', true);
                             Hoot.api.deleteJobStatus(id)
                                 .then( resp => this.loadJobs() )
-                                .catch( err => {
-                                    // TODO: response - unable to clear job
-                                } )
+                                // .catch( err => {
+                                //     // TODO: response - unable to clear job
+                                // } )
                                 .finally( () => d3.select('#util-jobs').classed('wait', false));
                         }
                         if (d3.event.shiftKey) { //omit confirm prompt
