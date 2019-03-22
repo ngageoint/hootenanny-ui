@@ -174,7 +174,7 @@
         flex-direction: row;
         align-items: center;
         
-        .hoot-field-checkbox-title-wrap {
+        .hoot-field-title-checkbox-wrap {
             display: flex;
             height: inherit;
             width: 85%;
@@ -182,9 +182,9 @@
                 align-self: center;
             }
         }
-        .hoot-field-checkbox-input-wrap {
+        .hoot-field-input-checkbox-wrap {
             width: 15%; 
-            height: inherit;
+            height: inherit;    
             display: flex;
             justify-content: center;
             input {

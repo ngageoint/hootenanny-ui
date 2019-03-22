@@ -244,7 +244,7 @@ export default class AdvancedOpts {
             .attr( 'id', d => `${d.id}-label-wrap`)
             .classed( 'adv-opts-header fill-light keyline-bottom round-top', true )
             .classed( 'keyline-bottom', d => d.input !== 'checkbox' )
-            .classed( 'round-left hoot-field-checkbox-title-wrap keyline-right', d => d.input === 'checkbox' );
+            .classed( 'round-left hoot-field-title-checkbox-wrap keyline-right', d => d.input === 'checkbox' );
 
         let fieldLabel = fieldLabelWrap.selectAll( '.hoot-field-label' )
             .data( [ d ] );
@@ -274,7 +274,7 @@ export default class AdvancedOpts {
         fieldInputWrap = fieldInputWrap.merge(fieldInputWrapEnter);
 
         fieldInputWrap
-            .classed( 'hoot-field-checkbox-input-wrap', d => d.input === 'checkbox' );
+            .classed( 'hoot-field-input-checkbox-wrap', d => d.input === 'checkbox' );
 
         let fieldInput = fieldInputWrap.selectAll( '.hoot-field-input' )
             .data( [ d ] );
@@ -284,7 +284,7 @@ export default class AdvancedOpts {
         let fieldInputEnter = fieldInput.enter()
             .append( 'input' )
             .attr( 'class', 'hoot-field-input' )
-            .attr( 'type', d => d.input === 'checkbox' ?  'checkbox' : 'text' );
+            .attr( 'type', d => d.input === 'checkbox' ?  'checkbox' : 'text' ); // combobox & text get text input...
 
         fieldInput = fieldInput.merge(fieldInputEnter);
 
@@ -295,7 +295,10 @@ export default class AdvancedOpts {
             .property( 'checked', isCleaning );
 
         const type = fieldInput.datum().input;
-        if ( type !== 'checkbox' ) {
+        if ( type === 'checkbox' ) {
+            fieldInput
+                .property( 'checked', d => d.default === 'true' );
+        } else {
             fieldInput
                 .property( 'value', d => d.default );
 
@@ -462,6 +465,7 @@ export default class AdvancedOpts {
             fieldContainer = fieldContainer.merge(fieldContainerEnter);
 
             fieldContainer
+                .classed( 'hoot-form-field-wrap', true )
                 .classed( 'hoot-form-field-checkbox', d => d.input === 'checkbox' )
                 .classed( 'hoot-form-field-input', d => d.input !== 'checkbox' );
 
