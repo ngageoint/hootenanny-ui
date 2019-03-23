@@ -70,7 +70,7 @@ export default class Jobs extends Tab {
 
     [getJobTypeIcon](type) {
         let typeIcon;
-        switch(type) {
+        switch (type) {
             case 'import':
                 typeIcon = 'publish';
                 break;
@@ -332,7 +332,7 @@ export default class Jobs extends Tab {
 
                 //Status
                 let statusIcon;
-                switch(d.status) {
+                switch (d.status) {
                     case 'running':
                         statusIcon = 'autorenew';
                         break;
@@ -387,7 +387,7 @@ export default class Jobs extends Tab {
                 });
 
                 //Actions
-                let actions = []
+                let actions = [];
 
                 if (map) {
 
@@ -395,7 +395,7 @@ export default class Jobs extends Tab {
                     let secLayer = Hoot.layers.findLoadedBy('refType', 'secondary') ? 1 : 0;
                     let refType;
                     //use bitwise comparison to see which layers are already loaded
-                    switch(refLayer | secLayer) {
+                    switch (refLayer | secLayer) {
                         case 0:
                         case 1:
                             refType = 'reference';

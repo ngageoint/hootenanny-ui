@@ -10,7 +10,6 @@ import _map    from 'lodash-es/map';
 
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
-import moment       from 'moment';
 
 /**
  * API calls to backend services
