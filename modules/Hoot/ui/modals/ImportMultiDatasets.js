@@ -280,7 +280,7 @@ export default class ImportMultiDatasets {
             transCombo    = this.schemaInput.datum(),
             typeCombo     = this.typeInput.datum(),
 
-            translation   = _filter( transCombo.data, o => o.DESCRIPTION === transVal )[ 0 ],
+            translation   = _filter( transCombo.data, o => o.NAME === transVal )[ 0 ],
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
 
             translationName,

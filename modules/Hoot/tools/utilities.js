@@ -98,3 +98,7 @@ export const tooltipHtml = ( text, key ) => {
 export const isNaN = x => {
     return Number.isNaN( parseFloat( x ) );
 };
+
+export const titleCase = text => {
+    return text[0].toUppercase() + text.slice(1);
+};

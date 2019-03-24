@@ -8,8 +8,9 @@ import FormFactory            from '../../tools/formFactory';
 import { translationAddForm } from '../../config/domMetadata';
 
 export default class AddTranslation {
-    constructor( instance ) {
+    constructor( instance, templateText ) {
         this.instance = instance;
+        this.templateText = templateText;
 
         this.form = translationAddForm.call( this );
     }
@@ -65,10 +66,6 @@ export default class AddTranslation {
             .then( () => this.instance.loadTranslations() )
             .finally( () => {
                 this.container.remove();
-
-                if ( this.instance.id === 'manage-translations-assistant' ) {
-                    this.instance.showTranslations();
-                }
             } );
     }
 

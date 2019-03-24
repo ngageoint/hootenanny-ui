@@ -4,9 +4,13 @@
  * @author Jack Grossman on 11/26/18 jack.grossman@radiantsolutions.com
  *******************************************************************************************************/
 describe( 'Basemap component rendered', () => {
+    after(done => {
+        d3.select( '.menu-button' ).dispatch( 'click' );
+        setTimeout(() => { done(); }, 500);
+    });
     it( 'Activates basemap selector ', done => {
         d3.select('div.menu-button').dispatch('click');
-        var basemapNode = d3.select('#manage-sidebar-menu div.tab-header:nth-child(3)')
+        var basemapNode = d3.select('#manage-sidebar-menu div.tab-header:nth-child(3)');
         basemapNode.dispatch('click');
         setTimeout(() => {
             var selectBasemap = d3.selectAll('#util-basemaps').attr('id');
