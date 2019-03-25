@@ -9,7 +9,8 @@ import _find   from 'lodash-es/find';
 import _map    from 'lodash-es/map';
 
 import axios         from 'axios/dist/axios';
-import { apiConfig, baseUrl } from '../config/apiConfig';
+import { apiConfig } from '../config/apiConfig';
+import { saveAs }    from 'file-saver';
 
 /**
  * API calls to backend services
@@ -48,7 +49,8 @@ export default class API {
             method: params.method || 'GET',
             headers: params.headers,
             data: params.data,
-            params: params.params
+            params: params.params,
+            responseType: params.responseType
         } ).catch( err => {
             let { response } = err;
             let data, message, status, statusText, type;
@@ -615,21 +617,17 @@ export default class API {
     }
 
     saveDataset( id, name ) {
-        const baseUrl = this.baseUrl;
-        return new Promise(( res, rej ) => {
-            try {
-                const link = document.createElement('a');
-                const resourceQs = `${id}?outputname=${name}&removecache=true`;
-                link.href = `${baseUrl}/job/export/${resourceQs}`;
-                link.download = resourceQs;
-                link.click();
-                link.remove();
-                res();
-            } catch (e) {
-                rej( new Error('failed to save dataset') );
-            }
+        const params = {
+            path: `/job/export/${id}?outputname=${name}&removecache=true`,
+            responseType: 'arraybuffer',
+            method: 'GET'
+        };
 
-        });
+        return this.request( params )
+            .then( resp => {
+                let fileBlob = new Blob( [ resp.data ], { type: 'application/zip' } );
+                saveAs( fileBlob, name );
+            });
     }
 
     exportDataset( data ) {
@@ -682,7 +680,7 @@ export default class API {
 
         return this.request( params )
             .then( (resp) => { jobId = resp.data.jobid; } )
-            .then( () =>  this.statusInterval( jobId ) )
+            .then( () => this.statusInterval( jobId ) )
             .then( () => this.saveDataset( jobId, data.outputname ) )
             .then( () => {
                 const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
@@ -696,7 +694,7 @@ export default class API {
                 console.log( err );
 
                 return {
-                    message: `Failed to update dataset: ${ data.input }`,
+                    message: `Failed to export dataset: ${ data.input }`,
                     status: 500,
                     type: 'success'
                 };
