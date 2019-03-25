@@ -56,7 +56,7 @@ export default class ImportMultiDatasets {
         if (this.path !== 'root') {
             this.container.select( '#importPathName' ).property('value', this.path);
         }
-        
+
         this.typeInput          = this.container.select( '#importType' );
         this.fileInput          = this.container.select( '#importFile' );
         this.fileListInput      = this.container.select( '#importFileList' );

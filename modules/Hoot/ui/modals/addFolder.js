@@ -76,7 +76,7 @@ export default class AddFolder {
         let isPublic = this.folderVisibilityInput.property( 'checked' );
 
         let params = {
-            parentId: this.parentId, 
+            parentId: this.parentId,
             folderName: name,
             isPublic: isPublic
         };

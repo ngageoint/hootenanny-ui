@@ -266,7 +266,7 @@ export default class Datasets extends Tab {
                 this.addFolderModal = new AddFolder(d.data.id).render();
 
                 Hoot.events.once( 'modal-closed', () => delete this.addFolderModal );
-                break;  
+                break;
             case 'modifyDataset': {
                 this.modifyLayerModal = new ModifyDataset( tree.selectedNodes ).render();
 

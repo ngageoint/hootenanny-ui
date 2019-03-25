@@ -383,7 +383,7 @@ export default class FormFactory {
         let buttonContainer = container
             .append( 'div' )
             .classed( 'modal-footer', true );
-        
+
         buttonContainer.append('div')
             .classed( 'sideContainer', true );
 
