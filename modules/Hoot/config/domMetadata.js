@@ -274,6 +274,7 @@ export function exportDataForm( zipOutput ) {
             inputType: 'combobox',
             readonly: 'readonly',
             data: this.translations.map(t => t.NAME),
+            value: 'OSM',
             onChange: () => this.validate( exportComboId )
         },
         {
@@ -281,10 +282,11 @@ export function exportDataForm( zipOutput ) {
             id: exportFormatId,
             inputType: 'combobox',
             data: [ 'File Geodatabase', 'Shapefile', 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
+            value: 'OpenStreetMap (OSM)',
             onChange: () => {
                 const isFgdb = d3.select( `#${exportFormatId}` ).property( 'value' ) === 'File Geodatabase';
 
-                
+
                 d3.select( `#${exportFgdbId}_container` )
                     .classed( 'hidden', !isFgdb );
 

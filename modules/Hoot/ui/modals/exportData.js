@@ -39,6 +39,7 @@ export default class ExportData {
         this.appendToFgdbCheckbox = this.container.select( '#exportAppendFgdb' );
         this.dataExportNameTextInput = this.container.select( '#dataExportNameTextInput' );
         this.submitButton = this.container.select( '#exportDatasetBtn' );
+        this.submitButton.attr('disabled', false);
 
         if ( this.type === 'Datasets' ) {
             this.dataExportNameTextInput.attr( 'placeholder', this.input.split(',').join('_') );
@@ -60,7 +61,7 @@ export default class ExportData {
     }
 
     validateFields( d, name ) {
-        let id              = d.id,    
+        let id              = d.id,
             target          = d3.select( `#${id}` ),
             invalid         = !target.property( 'value' ).length;
 
