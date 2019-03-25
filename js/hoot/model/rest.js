@@ -279,11 +279,8 @@ Hoot.model.REST = function (command, data, callback, option) {
                         var availLayers = context.hoot().model.layers.getAvailLayers();
                         var input = _.find(availLayers,{name:data.INPUT_NAME});
                         if(input!==undefined){
-                            var outputFolderId = context.hoot().model.folders.getfolderIdByName(data.PATH_NAME) || 0;
                             var output = _.find(availLayers,{name:data.OUTPUT_NAME});
                             if(output!==undefined){
-                                var link = {'folderId':outputFolderId,'mapid':output.id,'updateType':'update'};
-                                context.hoot().model.folders.updateLink(link);
                                 callback(a,data.OUTPUT_NAME);
                             }
                         }
