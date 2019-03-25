@@ -1,3 +1,9 @@
+import AdvancedOpts from '../ui/sidebar/advancedOpts';
+
+import _cloneDeep from 'lodash-es/cloneDeep';
+import _isEmpty from 'lodash-es/isEmpty';
+import _isEqual from 'lodash-es/isEqual';
+
 /*******************************************************************************************************
  * File: formConfigs.js
  * Project: hootenanny-ui
@@ -44,17 +50,42 @@ export function layerConflateForm( data ) {
             data: [ 'Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/ Tags', 'Attribute' ],
             readonly: 'readonly',
             onChange: function(d) {
-                let attributeGroup = d3.select( '.advanced-opts-content #Attribute_group' ),
-                    isAttribute = d3.select( '#conflateType' ).property( 'value' ) === 'Attribute';
+                // update the renderd default value to match those in the conflation configs...
+                let type = d3.select( '#conflateType' ).property( 'value' );
+                let advancedOpts = AdvancedOpts.getInstance();
+                let advOpts = _cloneDeep( advancedOpts.advancedOptions );
+                if ( !_isEmpty(advancedOpts.conflationOptions[type.toLowerCase()]) ) {
+                    let typeDefaults = advancedOpts.conflationOptions[type.toLowerCase()];
+                    advOpts = advOpts.map(function(opt) {
+                        if (opt.name === type) {
+                            opt.members = opt.members.map(function(member) {
+                                if (typeDefaults[member.id]) {
+                                    member.default = typeDefaults[member.id];
+                                }
+                                return member;
+                            });
+                        }
+                        return opt;
+                    });
 
-                attributeGroup.select( '.adv-opt-title' )
-                    .classed( 'adv-opt-title-disabled', !isAttribute );
+                }
 
-                attributeGroup.select( '.adv-opt-toggle' )
-                    .classed( 'toggle-disabled', !isAttribute );
+                if (!_isEqual(advOpts, advancedOpts.advancedOptions)) {
+                    advancedOpts.createGroups(advOpts);
+                } else {
+                    // disable & enable the attribute conflation group.
+                    let attributeGroup = d3.select( '.advanced-opts-content #Attribute_group' ),
+                        isAttribute = d3.select( '#conflateType' ).property( 'value' ) === 'Attribute';
 
-                attributeGroup
-                    .select( '.group-body', true );
+                    attributeGroup.select( '.adv-opt-title' )
+                        .classed( 'adv-opt-title-disabled', !isAttribute );
+
+                    attributeGroup.select( '.adv-opt-toggle' )
+                        .classed( 'toggle-disabled', !isAttribute );
+
+                    attributeGroup
+                        .select( '.group-body', true );
+                }
             }
         },
         {

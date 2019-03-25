@@ -827,9 +827,9 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getAdvancedOptions() {
+    getAdvancedOptions(type) {
         const params = {
-            path: '/info/advancedopts/getoptions?conftype=hoot2',
+            path: `/info/advancedopts/getoptions?conftype=${type}`,
             method: 'GET'
         };
 

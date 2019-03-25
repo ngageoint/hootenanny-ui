@@ -6,17 +6,20 @@
 
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
+import _isEmpty   from 'lodash-es/isEmpty';
+import _isBoolean from 'lodash-es/isBoolean';
 
-import { d3combobox }   from '../../../lib/hoot/d3.combobox';
-import { svgIcon } from '../../../svg';
-import { tooltip } from '../../../util/tooltip';
-import FormFactory from '../../tools/formFactory';
+import { d3combobox } from '../../../lib/hoot/d3.combobox';
+import { svgIcon }    from '../../../svg';
+import { tooltip }    from '../../../util/tooltip';
+import FormFactory    from '../../tools/formFactory';
 
 let instance = null;
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
         this.advancedOptions = [];
+        this.conflationOptions = {};
     }
 
     static getInstance() {
@@ -39,17 +42,20 @@ export default class AdvancedOpts {
     }
 
     async init() {
-        if (!this.advancedOptions.length) {
-            this.advancedOptions = await Hoot.api.getAdvancedOptions();
-            this.render();
+        if ( _isEmpty( this.conflationOptions ) ) {
+            this.conflationOptions = await Hoot.api.getAdvancedOptions('conflationOptions');
+        }
+        if ( !this.advancedOptions.length ) {
+            this.advancedOptions = await Hoot.api.getAdvancedOptions('hoot2');
+            this.render(_cloneDeep(this.advancedOptions));
         }
     }
 
-    render() {
+    render(advOpts) {
         this.createContainer();
         this.createHeader();
         this.createContentDiv();
-        this.createGroups();
+        this.createGroups(advOpts);
     }
 
     toggle() {
@@ -297,7 +303,10 @@ export default class AdvancedOpts {
         const type = fieldInput.datum().input;
         if ( type === 'checkbox' ) {
             fieldInput
-                .property( 'checked', d => d.default === 'true' );
+                .property( 'checked', d => d.default === 'true' )
+                .on( 'click', function(d) {
+                    d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
+                });
         } else {
             fieldInput
                 .property( 'value', d => d.default );
@@ -381,9 +390,8 @@ export default class AdvancedOpts {
         notNumber.dispatch( isNumber ? 'mouseleave' : 'mouseenter' );
     }
 
-    createGroups() {
+    createGroups(advOpts) {
         let self = this,
-            advOpts = _cloneDeep( this.advancedOptions ),
             group = this.contentDiv
                 .selectAll( '.form-group' )
                 .data( advOpts );
@@ -501,50 +509,51 @@ export default class AdvancedOpts {
     }
 
     getOptions() {
+        let conflationOptions = this.conflationOptions;
+
+        function shouldSend( d, conflateType, value ) {
+            let shouldSend = true;
+
+            if ( conflateType === 'reference' ) {
+                return shouldSend;
+            }
+
+            let confOption = conflationOptions[conflateType][ d.id ];
+
+            if ( confOption && (d.input === 'checkbox' ? JSON.parse(confOption) : confOption) === value ) {
+                shouldSend = false;
+            }
+
+            return shouldSend;
+        }
+
+        function empty( value ) {
+            return !_isBoolean( value ) && _isEmpty( value );
+        }
+
         let options = { advanced: {}, cleaning: [] };
+        let conflateType = d3.select( '#conflateType' ).property( 'value' ).toLowerCase();
         this.contentDiv.selectAll( '.form-group' ).each( function(d) {
             let selection = d3.select( this );
             let isCleaning = d.name === 'Cleaning';
 
             selection.selectAll( '.hoot-form-field' ).each( function(d) {
-                const field = d3.select( this ).select( 'input' );
-                if ( !isCleaning ) { // for all args of form '-D ${name.of.option}=${value}'
-                    switch ( d.input ) {
-                        case 'checkbox': {
-                            if ( field.property( 'checked' ) ) {
-                                options.advanced[ d.id ] = true;
-                            }
-                            break;
-                        }
-                        case 'combobox': {
-                            if ( !d.send ) break;
-
-                            let value = field.property( 'value' );
-                            if ( value ) {
-                                options.advanced[ d.id ] = value;
-                            }
-                            break;
-                        }
-                        case 'text': {
-                            if ( !d.send ) break;
-
-                            let value = field.property( 'value' );
-                            if ( !value ) break;
-                            if ( d.extrema ) {
-                                value = Number(value);
-                                if ( isNaN( value ) ) break;
-                                let [ min, max ] = d.extrema;
-                                if ( value < min || max < value ) break;
-                            }
-
-                            options.advanced[ d.id ] = value;
-                            break;
-                        }
-                    }
-                } else if (!field.property( 'checked' )) { // for the cleaning options...
-                    options.cleaning.push( d.id );
+                if ( !d.send ) {
+                    return; // if no d.send, then input value never changed from default...
                 }
 
+                const value = d3.select( this ).select( 'input' )
+                    .property( d.input === 'checkbox' ? 'checked' : 'value' );
+
+                if ( empty( value ) || !shouldSend( d, conflateType, value ) ) {
+                    return; // if no value or value is equal to default in conflateOption config...
+                }
+
+                if ( !isCleaning ) {
+                    options.advanced[ d.id ] = value;
+                } else {
+                    options.cleaning.push( d.id );
+                }
             });
         });
 
