@@ -23,8 +23,8 @@ export default class API {
 
         this.host = this.config.host;
 
-        let mergePortOrPath = function(p) {
-            return isNaN(p) ? {pathname: p + '/'} : {port: p};
+        let mergePortOrPath = function( p ) {
+            return isNaN( p ) ? { pathname: p + '/' } : { port: p };
         };
 
         this.baseUrl = this.config.path;
@@ -146,7 +146,7 @@ export default class API {
 
     verifyOAuth( oauth_token, oauth_verifier ) {
         const params = {
-            path: `/auth/oauth1/verify?oauth_token=${oauth_token}&oauth_verifier=${oauth_verifier}`,
+            path: `/auth/oauth1/verify?oauth_token=${ oauth_token }&oauth_verifier=${ oauth_verifier }`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -300,7 +300,7 @@ export default class API {
                         // We only get here if the DEFAULT prop is equal
                         return d3.ascending( a.NAME.toLowerCase(), b.NAME.toLowerCase() );
                     }
-                } ));
+                } ) );
     }
 
     getTranslation( name ) {
@@ -574,7 +574,7 @@ export default class API {
             .catch( err => {
                 return Promise.reject( {
                     data: {
-                        details: err.data.commandDetail[0].stderr
+                        details: err.data.commandDetail[ 0 ].stderr
                     },
                     message: 'Failed to import dataset!',
                     status: err.status,
@@ -946,14 +946,9 @@ export default class API {
                 };
             } )
             .catch( err => {
-                let message, status, type;
-
-                status = err.status;
-
-                if ( status >= 500 ) {
-                    message = 'Error during Clip! Please try again later.';
-                    type    = err.type;
-                }
+                const message = err.data,
+                      status  = err.status,
+                      type    = err.type;
 
                 return Promise.reject( { message, status, type } );
             } );
