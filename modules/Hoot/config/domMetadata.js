@@ -3,14 +3,13 @@ import AdvancedOpts from '../ui/sidebar/advancedOpts';
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
+import hoot from '../hoot';
 
 /*******************************************************************************************************
  * File: formConfigs.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/15/18
  *******************************************************************************************************/
-
-// import Hoot from '../hoot';
 
 export function layerConflateForm( data ) {
     return [
@@ -47,7 +46,7 @@ export function layerConflateForm( data ) {
             id: 'conflateType',
             inputType: 'combobox',
             value: 'Reference',
-            data: [ 'Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/ Tags', 'Attribute' ],
+            data: this.conflateTypes,
             readonly: 'readonly',
             onChange: function(d) {
                 // update the renderd default value to match those in the conflation configs...

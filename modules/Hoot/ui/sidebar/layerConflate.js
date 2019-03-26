@@ -17,6 +17,13 @@ class LayerConflate extends SidebarForm {
         super( container, d );
     }
 
+    async getData() {
+        let that = this;
+        await Hoot.api
+            .getConflateTypes()
+            .then(conflateTypes => that.conflateTypes = conflateTypes);
+    }
+
     render( layers ) {
         this.folderList = Hoot.folders.folderPaths;
 
