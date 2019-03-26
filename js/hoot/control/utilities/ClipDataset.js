@@ -391,9 +391,9 @@ Hoot.control.utilities.clipdataset = function(context) {
             if(clipType==='visualExtent'){param.BBOX = context.map().extent().toString();}
             else{param.BBOX= _rect;}
 
-            param.PATH_NAME = d3.select('#row-' + d.id).select('div .PathName').value() || d3.select('#row-' + d.id).select('div .PathName').attr('placeholder') || 'root';
+            var pathName = d3.select('#row-' + d.id).select('div .PathName').value() || d3.select('#row-' + d.id).select('div .PathName').attr('placeholder') || 'root';
 
-            param.FOLDER_ID = context.hoot().model.folders.getfolderIdByName(param.PATH_NAME) || 0;
+            param.FOLDER_ID = context.hoot().model.folders.getfolderIdByName(pathName) || 0;
 
             params.push(param);
         });
