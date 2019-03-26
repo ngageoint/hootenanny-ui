@@ -26,7 +26,7 @@ class Hoot {
         this.layers       = new LayerManager( this );
         this.folders      = new FolderManager( this );
         this.translations = new TranslationManager( this );
-        this.users = new UserManager( this );
+        this.users        = new UserManager( this );
         this.events       = new EventManager();
 
         this.config = {

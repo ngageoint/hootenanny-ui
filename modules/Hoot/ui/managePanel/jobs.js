@@ -55,17 +55,11 @@ export default class Jobs extends Tab {
     }
 
     async loadJobs() {
-
-        // try {
-            let jobsRunning = await Hoot.api.getJobsRunning();
-            let jobsHistory = await Hoot.api.getJobsHistory();
-            await Hoot.layers.refreshLayers();
-            this.populateJobsHistory( jobsHistory );
-            this.populateJobsRunning( jobsRunning );
-        // } catch ( e ) {
-        //     window.console.log( 'Unable to retrieve jobs' );
-        //     // throw new Error( e );
-        // }
+        let jobsRunning = await Hoot.api.getJobsRunning();
+        let jobsHistory = await Hoot.api.getJobsHistory();
+        await Hoot.layers.refreshLayers();
+        this.populateJobsHistory( jobsHistory );
+        this.populateJobsRunning( jobsRunning );
     }
 
     [getJobTypeIcon](type) {
@@ -190,9 +184,6 @@ export default class Jobs extends Tab {
                                 d3.select('#util-jobs').classed('wait', true);
                                 Hoot.api.cancelJob(d.jobId)
                                     .then( resp => this.loadJobs() )
-                                    // .catch( err => {
-                                    //     // TODO: response - unable to cancel job
-                                    // } )
                                     .finally( () => d3.select('#util-jobs').classed('wait', false));
                             }
                         }]
@@ -362,11 +353,7 @@ export default class Jobs extends Tab {
                                         let type = 'error';
                                         let message = resp.errors.join('\n');
                                         Hoot.message.alert( { message, type } );
-                                    } )
-                                    // .catch( err => {
-                                    //     // TODO: response - unable to get error
-                                    // } )
-                                    ;
+                                    } );
                             }
                         }]
                     });
@@ -432,7 +419,9 @@ export default class Jobs extends Tab {
                             }
                         });
                     }
-/*
+/* Comment this out for now
+*  the call to map tags actually updates the last accessed datetime
+*  which is not desireable as it's one of the info properties shown
                     //Get info
                     actions.push({
                         title: `show info`,
@@ -452,11 +441,7 @@ export default class Jobs extends Tab {
 
                                     let message = lines.join('<br>');
                                     Hoot.message.alert( { message, type } );
-                                } )
-                                // .catch( err => {
-                                //     // TODO: response - unable to get error
-                                // } )
-                                ;
+                                } );
                         }
                     });
 */
@@ -467,14 +452,11 @@ export default class Jobs extends Tab {
                     title: 'clear job',
                     icon: 'clear',
                     action: async () => {
-
+                        let self = this;
                         function deleteJob(id) {
                             d3.select('#util-jobs').classed('wait', true);
                             Hoot.api.deleteJobStatus(id)
-                                .then( resp => this.loadJobs() )
-                                // .catch( err => {
-                                //     // TODO: response - unable to clear job
-                                // } )
+                                .then( resp => self.loadJobs() )
                                 .finally( () => d3.select('#util-jobs').classed('wait', false));
                         }
                         if (d3.event.shiftKey) { //omit confirm prompt
@@ -525,4 +507,3 @@ export default class Jobs extends Tab {
     }
 
 }
-
