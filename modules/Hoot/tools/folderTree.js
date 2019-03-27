@@ -311,9 +311,7 @@ export default class FolderTree extends EventEmitter {
                 .attr( 'text-anchor', 'start' )
                 .append( 'tspan' ).text( d => {
 
-                    return (Hoot.config.users[ d.data.userId ]) ?
-                        Hoot.config.users[ d.data.userId ].display_name :
-                        'No user for ' + d.data.userId;
+                    return Hoot.users.getNameForId( d.data.userId );
                 } );
         }
 

@@ -183,6 +183,56 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    getJobError( id ) {
+        const params = {
+            path: `/job/error/${ id }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    deleteJobStatus( id ) {
+        const params = {
+            path: `/job/${ id }`,
+            method: 'DELETE'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    cancelJob( id ) {
+        const params = {
+            path: `/job/cancel/${ id }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getJobsHistory() {
+        const params = {
+            path: '/jobs/history',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getJobsRunning() {
+        const params = {
+            path: '/jobs/running',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     getCoreVersionInfo() {
         const params = {
             path: '/info/about/coreVersionInfo',
