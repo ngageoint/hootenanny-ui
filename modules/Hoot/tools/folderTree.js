@@ -40,25 +40,13 @@ export default class FolderTree extends EventEmitter {
             multiDatasetOpts: {
                 title: 'Export Selected Datasets',
                 icon: 'export',
-                click: 'bulkexportDataset'
+                click: 'exportMultiDataset'
             },
-            singleDatasetOpts: [
-                {
-                    title: 'Export',
-                    icon: 'export',
-                    click: 'exportDataset'
-                },
-                {
-                    title: 'Prepare for Validation',
-                    icon: 'sprocket',
-                    click: 'prepValidation'
-                },
-                {
-                    title: 'Filter non-HGIS POIs',
-                    icon: 'sprocket',
-                    click: 'filter'
-                }
-            ],
+            singleDatasetOpts: {
+                title: 'Export',
+                icon: 'export',
+                click: 'exportDataset'
+            },
             addDatasetOpts: [
                 {
                     title: 'Add as Reference Dataset',

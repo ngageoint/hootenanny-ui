@@ -10,6 +10,7 @@ import _map    from 'lodash-es/map';
 
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
+import { saveAs }    from 'file-saver';
 
 /**
  * API calls to backend services
@@ -48,7 +49,8 @@ export default class API {
             method: params.method || 'GET',
             headers: params.headers,
             data: params.data,
-            params: params.params
+            params: params.params,
+            responseType: params.responseType
         } ).catch( err => {
             let { response } = err;
             let data, message, status, statusText, type;
@@ -658,6 +660,91 @@ export default class API {
 
                 return {
                     message: `Failed to modify item: ${ modName }`,
+                    status: 500,
+                    type: 'success'
+                };
+            } );
+    }
+
+    saveDataset( id, name ) {
+        const params = {
+            path: `/job/export/${id}?outputname=${name}&removecache=true`,
+            responseType: 'arraybuffer',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => {
+                let fileBlob = new Blob( [ resp.data ], { type: 'application/zip' } );
+                saveAs( fileBlob, name );
+            });
+    }
+
+    exportDataset( data ) {
+        data.tagoverrides =  JSON.stringify(
+            Object.assign(data.tagoverrides || {}, {
+                'error:circular':'',
+                'hoot:building:match':'',
+                'hoot:status':'',
+                'hoot:review:members':'',
+                'hoot:review:score':'',
+                'hoot:review:note':'',
+                'hoot:review:sort_order':'',
+                'hoot:review:type':'',
+                'hoot:review:needs':'',
+                'hoot:score:match':'',
+                'hoot:score:miss':'',
+                'hoot:score:review':'',
+                'hoot:score:uuid':''
+            })
+        );
+
+        const requiredKeys = [
+            'append',
+            'includehoottags',
+            'input',
+            'inputtype',
+            'outputname',
+            'outputtype',
+            'tagoverrides',
+            'textstatus' ,
+            'translation',
+            'userId'
+        ];
+
+        if (!requiredKeys.every( k => data.hasOwnProperty(k) )) {
+            return Promise.reject( new Error( ' invalid request payload' ) );
+        }
+
+        const params = {
+            path: '/job/export/execute',
+            method: 'POST',
+            data: data
+        };
+
+        if ( data.inputtype === 'folder' ) {
+            params.path = `${params.path}?ext=zip`;
+        }
+
+        let jobId;
+
+        return this.request( params )
+            .then( (resp) => { jobId = resp.data.jobid; } )
+            .then( () => this.statusInterval( jobId ) )
+            .then( () => this.saveDataset( jobId, data.outputname ) )
+            .then( () => {
+                const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
+                return {
+                    message: `'${data.outputname}' ${dataType} Exported`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( (err) => {
+                console.log( err );
+
+                return {
+                    message: `Failed to export dataset: ${ data.input }`,
                     status: 500,
                     type: 'success'
                 };

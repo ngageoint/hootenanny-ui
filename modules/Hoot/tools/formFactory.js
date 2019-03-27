@@ -116,11 +116,19 @@ export default class FormFactory {
             .selectAll( '.hoot-form-field' )
             .data( formMeta ).enter()
             .append( 'div' )
-            .classed( 'hoot-form-field fill-white small keyline-all round', true );
+            .classed( 'hoot-form-field fill-white small keyline-all round', true )
+            .classed( 'hoot-field-checkbox', d => d.inputType === 'checkbox' )
+            .classed('hidden', d => d.class === 'hidden' );
+
+        if ( fieldContainer.datum().id ) {
+            fieldContainer.attr( 'id', d => `${d.id}_container` );
+        }
 
         let fieldHeader = fieldContainer
             .append( 'div' )
-            .classed( 'form-field-header fill-light round-top keyline-bottom', true );
+            .classed( 'form-field-header fill-light', true )
+            .classed( 'round-top keyline-bottom', d => d.inputType !== 'checkbox' )
+            .classed( 'keyline-right', d => d.inputType === 'checkbox' );
 
         fieldHeader
             .append( 'label' )
@@ -286,16 +294,14 @@ export default class FormFactory {
      * @param field - field div
      */
     createCheckbox( field ) {
-        field
+        return field
+            .append( 'div' )
+            .classed( 'hoot-checkbox-wrap', true )
             .append( 'input' )
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
-            .attr( 'class', d => d.class )
-            .property( 'checked', d => d.checked );
-        field
-            .append( 'label' )
-            .attr( 'for', d => d.id)
-            .text( d => d.value );
+            .property( 'checked', d => d.checked )
+            .on( 'change', d => d.onChange && d.onChange(d) );
     }
 
     /**
@@ -378,6 +384,9 @@ export default class FormFactory {
             .append( 'div' )
             .classed( 'modal-footer', true );
 
+        buttonContainer.append('div')
+            .classed( 'sideContainer', true );
+
         let button = buttonContainer
             .append( 'button' )
             .attr( 'disabled', true )
@@ -388,5 +397,28 @@ export default class FormFactory {
         button
             .append( 'span' )
             .text( buttonMeta.text );
+
+        buttonContainer.append( 'div' )
+            .attr( 'class', 'sideContainer processWaiter' );
+    }
+
+    createProcessSpinner( container ) {
+        let spinnerContainer = container.select( '.processWaiter' );
+
+        let spinner = spinnerContainer.append('img')
+            .attr( 'id', 'processSpinner' )
+            .attr( 'src', Hoot.context.imagePath('loader-white.gif') )
+            .style( 'opacity', 0);
+
+        spinner.transition().style( 'opacity', 1);
+    }
+
+    removeProcessSpinner( container ) {
+        let spinnerContainer = container.select( '.processWaiter' ),
+            spinner          = spinnerContainer.select( '#processSpinner' );
+
+
+        spinner.transition().style( 'opacity', 0 );
+        spinnerContainer.remove();
     }
 }

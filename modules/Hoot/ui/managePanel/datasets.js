@@ -14,6 +14,7 @@ import ImportMultiDataset from '../modals/ImportMultiDatasets';
 import AddFolder          from '../modals/addFolder';
 import ModifyDataset      from '../modals/modifyDataset';
 import ModifyFolder       from '../modals/modifyFolder';
+import ExportData from '../modals/exportData';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -231,22 +232,38 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'addDataset': {
-                let params = {
-                    name: d.data.name,
-                    id: d.data.id
-                };
+                let translations = await Hoot.api.getTranslations();
 
-                Hoot.ui.sidebar.forms[ item.formId ].submitLayer( params )
-                    .then( () => {
-                        let refType = item.formId.charAt( 0 ).toUpperCase() + item.formId.substr( 1 ),
-                            message = `${refType} layer added to map: <u>${d.data.name}</u>`,
-                            type    = 'info';
+                this.importMultiModal = new ImportMultiDataset( translations, d.data.name ).render();
 
-                        Hoot.message.alert( { message, type } );
-                    } );
-
+                Hoot.events.once( 'modal-closed', () => delete this.importMultiModal );
                 break;
             }
+            case 'exportDataset': {
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT );
+                this.exportDatasetModal = new ExportData( translations, d, 'Dataset' ).render();
+                Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
+                break;
+            }
+            case 'exportMultiDataset': {
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT );
+                let datasets = this.folderTree.selectedNodes;
+                this.exportDatasetModal = new ExportData ( translations, datasets, 'Datasets' ).render();
+                Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
+                break;
+            }
+            case 'exportFolder': {
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT);
+                this.exportDatasetModal = new ExportData( translations, d, 'Folder' ).render();
+                Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
+                break;
+            }
+            case 'addFolder':
+                // d.data.id === parentId
+                this.addFolderModal = new AddFolder(d.data.id).render();
+
+                Hoot.events.once( 'modal-closed', () => delete this.addFolderModal );
+                break;
             case 'modifyDataset': {
                 this.modifyLayerModal = new ModifyDataset( tree.selectedNodes ).render();
 

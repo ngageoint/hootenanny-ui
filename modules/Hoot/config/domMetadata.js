@@ -261,6 +261,66 @@ export function modifyDatasetForm() {
     ];
 }
 
+export function exportDataForm( zipOutput ) {
+    const exportComboId = 'exportTranslationCombo',
+          exportFormatId = 'exportFormatCombo',
+          exportNameId = 'dataExportNameTextInput',
+          exportFgdbId = 'exportAppendFgdb';
+
+    let meta = [
+        {
+            label: 'Translation Schema',
+            id: exportComboId,
+            inputType: 'combobox',
+            readonly: 'readonly',
+            data: this.translations.map(t => t.NAME),
+            value: 'OSM',
+            onChange: () => this.validate( exportComboId )
+        },
+        {
+            label: 'Export Format',
+            id: exportFormatId,
+            inputType: 'combobox',
+            data: [ 'File Geodatabase', 'Shapefile', 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
+            value: 'OpenStreetMap (OSM)',
+            onChange: () => {
+                const isFgdb = d3.select( `#${exportFormatId}` ).property( 'value' ) === 'File Geodatabase';
+
+
+                d3.select( `#${exportFgdbId}_container` )
+                    .classed( 'hidden', !isFgdb );
+
+                this.validate( exportFormatId );
+            }
+        },
+        {
+            label: 'ESRI FGDB Template',
+            id: exportFgdbId,
+            class: 'hidden',
+            inputType: 'checkbox',
+            value: 'append',
+            checked: false,
+            hidden: true
+        },
+        // {
+        //     label: 'Tag Overrides',
+        //     id: 'exportTagOverrideId',
+        //     inputType: 'custom'
+        // },
+    ];
+
+    if ( zipOutput ) {
+        meta.push({
+            label: 'Output Zip Name',
+            id: exportNameId,
+            inputType: 'text',
+            onChange: () => this.validate( exportNameId )
+        });
+    }
+
+    return meta;
+}
+
 export function translationAddForm() {
     return [
         {
