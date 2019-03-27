@@ -281,6 +281,7 @@ Hoot.model.REST = function (command, data, callback, option) {
                         if(input!==undefined){
                             var output = _.find(availLayers,{name:data.OUTPUT_NAME});
                             if(output!==undefined){
+                                context.hoot().model.folders.refreshAll();
                                 callback(a,data.OUTPUT_NAME);
                             }
                         }

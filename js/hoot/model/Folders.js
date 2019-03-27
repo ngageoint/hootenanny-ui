@@ -111,6 +111,16 @@ Hoot.model.folders = function (context)
         });
     };
 
+    model_folders.refreshAll = function(callback) {
+        context.hoot().model.folders.refresh(function () {
+            context.hoot().model.layers.refresh(function(){
+                context.hoot().model.folders.refreshLinks(function(){
+                    context.hoot().model.import.updateTrees(callback);
+                });
+            });
+        });
+    };
+
     model_folders.refreshLinks = function(callback) {
         Hoot.model.REST('getAvailLinks', function(a) {
 
