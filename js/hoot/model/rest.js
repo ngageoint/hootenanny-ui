@@ -270,7 +270,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.clipDataset = function (context, data, callback) {
-        if(!data.INPUT_NAME || !data.BBOX || !data.OUTPUT_NAME || !data.FOLDER_ID){return false;}
+        if(!data.INPUT_NAME || !data.BBOX || !data.OUTPUT_NAME){return false;}
 
         var postClip = function(a) {
             if(a.status==='complete'){
