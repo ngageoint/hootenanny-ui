@@ -1,0 +1,49 @@
+@import '../../modules/variables';
+
+.jobs-table {
+    margin-top: 20px;
+    overflow-y: auto;
+    box-shadow: 0 3px 10px $dark-opacity10;
+
+    thead {
+        color: $light;
+        background: $dark1;
+    }
+
+    th {
+        padding-top: 5px;
+        font-size: 110%;
+        font-weight: bold;
+    }
+    th:first-child {
+        padding-left: 10px;
+    }
+
+}
+
+h3.jobs-history {
+    padding-top: 50px;
+}
+
+.jobs-item {
+    justify-content: space-between;
+    height: 20px;
+
+    &:hover {
+        background-color: $light;
+    }
+
+    td:first-child {
+        padding-left: 10px;
+    }
+
+    td.progress {
+        display: flex;
+        align-items: baseline;
+    }
+
+    i {
+        vertical-align: bottom;
+        cursor: pointer;
+    }
+}

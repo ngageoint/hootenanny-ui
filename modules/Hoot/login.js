@@ -195,11 +195,16 @@ class Login {
             .text( 'here' )
             .on( 'click', () => window.location = this.oauthRedirectUrl );
 
-        this.oauthRedirectUrl = await this.api.getOAuthRedirectUrl();
+        try {
 
-        this.launchOAuthLogin();
+            this.oauthRedirectUrl = await this.api.getOAuthRedirectUrl();
+            this.launchOAuthLogin();
+        } catch (e) {
+            console.log(e);
+        } finally { /* eslint-disable */
+            return this;
+        }
 
-        return this;
     }
 
     findGetParameter( parameterName ) {

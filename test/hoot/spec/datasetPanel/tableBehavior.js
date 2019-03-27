@@ -183,7 +183,7 @@ module.exports = () => {
                     items       = contextMenu.selectAll( 'li' );
 
                 expect( contextMenu.style( 'display' ) ).to.equal( 'block' );
-                expect( items.size() ).to.equal( 7 );
+                expect( items.size() ).to.equal( 5 );
 
                 setTimeout( () => {
                     d3.select( 'body' ).dispatch( 'click' );
@@ -232,7 +232,7 @@ module.exports = () => {
 
                 expect( table.selectAll( 'g[data-type="dataset"] .sel' ).size() ).to.equal( 1 );
                 expect( contextMenu.style( 'display' ) ).to.equal( 'block' );
-                expect( items.size() ).to.equal( 7 );
+                expect( items.size() ).to.equal( 5 );
 
                 setTimeout( () => {
                     d3.select( 'body' ).dispatch( 'click' );
