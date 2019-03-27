@@ -35,6 +35,7 @@ export default class API {
 
         this.queryInterval = this.config.queryInterval;
         this.intervals     = {};
+        this.conflateTypes = null;
     }
 
     /**
@@ -108,6 +109,24 @@ export default class API {
                 }
             }, this.queryInterval );
         } );
+    }
+
+    getConflateTypes() {
+
+        if ( this.conflateTypes ) {
+            return Promise.resolve( this.conflateTypes );
+        } else {
+            const params = {
+                path: '/info/advancedopts/conflationtypes',
+                method: 'GET'
+            };
+            let that = this;
+            return this.request( params ).then( resp => {
+                that.conflateTypes = resp.data;
+                return that.conflateTypes;
+            });
+        }
+
     }
 
     getSaveUser( userEmail ) {
@@ -964,9 +983,9 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getAdvancedOptions( confType = 'custom' ) {
+    getAdvancedOptions(type) {
         const params = {
-            path: `/info/advancedopts/getoptions?conftype=${ confType }`,
+            path: `/info/advancedopts/getoptions?conftype=${type}`,
             method: 'GET'
         };
 

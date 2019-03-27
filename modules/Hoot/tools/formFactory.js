@@ -140,16 +140,16 @@ export default class FormFactory {
                 let header = d3.select( this )
                     .classed( 'conflate-type-header', true );
 
-                // let advOpts = header.append( 'a' )
-                //     .attr( 'id', 'advanced-opts-toggle' );
+                let advOpts = header.append( 'a' )
+                    .attr( 'id', 'advanced-opts-toggle' );
 
-                // advOpts.append( 'span' )
-                //     .classed( 'toggle-text', true )
-                //     .text( 'Advanced Options' );
+                advOpts.append( 'span' )
+                    .classed( 'toggle-text', true )
+                    .text( 'Advanced Options' );
 
-                // advOpts.append( 'span' )
-                //     .classed( 'toggle-caret inline strong', true )
-                //     .text( '►' );
+                advOpts.append( 'span' )
+                    .classed( 'toggle-caret inline strong', true )
+                    .text( '►' );
             }
         } );
 

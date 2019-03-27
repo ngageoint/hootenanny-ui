@@ -119,8 +119,18 @@
         .adv-opt-toggle:hover::after {
             border-top-color: #777;
         }
-        .adv-opt-title-disabled {
-            opacity: .5;
+        .adv-opts-inner-wrap {
+            display: flex;
+            .adv-opt-title-disabled {
+                opacity: .5;
+            }
+            .adv-opts-inner-wrap-left {
+                width: 20px;
+                align-items: center;
+                input { 
+                    margin-top: 5px;
+                }
+            }
         }
     }
 
@@ -128,20 +138,24 @@
         display: flex;
         flex-direction: column;
         overflow: auto;
-        height: 300px;
-        padding: 10px;
+        align-items: center;
+        max-height: 500px;
+        padding: 15px 10px;
     }
 
     .hoot-form-field {
-        padding: 0 15px;
-        margin-top: 5px;
+        display: flex;
+        overflow: hidden;
+        margin: 10px;
+        min-height: min-content;
 
         .adv-opts-header {
             font-weight: bold;
+            padding: 5px 15px;
+            flex: none;
         }
 
         label {
-            width: 100%;
             display: inline-block;
             white-space: initial;
             padding: 0;
@@ -151,49 +165,47 @@
             }
         }
 
-        input[type="text"] {
-            border: 1px solid $dark-opacity20;
-            border-radius: 4px;
-            display: block;
-        }
-
         input.combobox-input {
             display: inline-block;
-        }
-
-        .form-field-control {
-            display: flex;
-        
-            input[type="text"] {
-                align-self: center;
-                border: none;
-            }
-
-        }
+        }    
     }
 
-    .form-field-checkbox-wrap {
-        display: flex;
+    .hoot-form-field-checkbox {
+        flex-direction: row;
         align-items: center;
-        overflow: hidden;
-        height: 50px;
-
-        .form-field-checkbox-title-wrap {
+        
+        .hoot-field-title-checkbox-wrap {
             display: flex;
             height: inherit;
             width: 85%;
             label {
                 align-self: center;
-                margin: 10px;
-                padding: 10px 0;
             }
         }
-        .form-field-checkbox-input-wrap {
+        .hoot-field-input-checkbox-wrap {
             width: 15%; 
+            height: inherit;    
             display: flex;
+            justify-content: center;
             input {
-                margin: auto;
+                margin: initial;
             }
+        }
+    }
+
+    .hoot-form-field-input {
+        flex-direction: column;
+    }
+
+    .hoot-field-label-wrap {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .hoot-field-control {
+        input[type="text"] {
+            align-self: center;
+            border: none;
         }
     }
 

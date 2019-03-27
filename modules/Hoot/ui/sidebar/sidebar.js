@@ -76,7 +76,7 @@ export default class Sidebar {
             .classed( 'hoot-sidebar', true );
 
         this.createWrapper();
-        this.createForms();
+        await this.createForms();
         this.adjustSize();
 
         this.listen();
@@ -104,8 +104,14 @@ export default class Sidebar {
 
         this.wrapper.selectAll( '.layer-conflate' )
             .data( this.conflateFormData ).enter()
-            .select( function( d ) {
-                that.forms[ d.id ] = new LayerConflate( d3.select( this ), d );
+            .select( async function( d ) {
+                try {
+                    const layerConflate = new LayerConflate( d3.select( this), d );
+                    await layerConflate.getData();
+                    that.forms[ d.id ] = layerConflate;
+                } catch (e) {
+                    throw e;
+                }
             } );
     }
 
