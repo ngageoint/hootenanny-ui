@@ -168,7 +168,7 @@ export default class Jobs extends Tab {
 
                 //Progress bar
                 props.push({
-                    span: [{ text: d.percentcomplete + '%' }],
+                    span: [{ text: Math.round(d.percentcomplete) + '%' }],
                     progress: [{ percent: d.percentcomplete }]
                 });
 
