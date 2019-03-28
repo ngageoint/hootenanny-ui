@@ -7,6 +7,7 @@
 import _map from 'lodash-es/map';
 
 import Datasets            from './datasets';
+import Jobs                from './jobs';
 import TransAssist         from './transAssist/transAssist';
 import Translations        from './translations';
 import Basemaps            from './basemaps';
@@ -25,6 +26,7 @@ export default class ManagePanel {
     constructor() {
         this.manageTabs = [
             Datasets,
+            Jobs,
             Basemaps,
             Translations,
             TransAssist,
@@ -59,13 +61,16 @@ export default class ManagePanel {
         Promise.all( _map( this.manageTabs, Tab => new Tab( this ).render() ) )
             .then( modules => {
                 this.datasets        = modules[ 0 ];
-                this.basemaps        = modules[ 1 ];
-                this.translations    = modules[ 2 ];
-                this.transAssist     = modules[ 3 ];
-                this.reviewBookmarks = modules[ 4 ];
-                this.bookmarkNotes   = modules[ 5 ];
+                this.jobs            = modules[ 1 ];
+                this.basemaps        = modules[ 2 ];
+                this.translations    = modules[ 3 ];
+                this.transAssist     = modules[ 4 ];
+                this.reviewBookmarks = modules[ 5 ];
+                this.bookmarkNotes   = modules[ 6 ];
+                this.tabs = modules;
             } );
 
         return this;
     }
+
 }

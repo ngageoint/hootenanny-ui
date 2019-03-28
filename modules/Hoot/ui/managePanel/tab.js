@@ -44,14 +44,23 @@ export default class Tab {
         return this;
     }
 
+    activate() {
+        //To be implemented by subclasses
+    }
+
+    deactivate() {
+        //To be implemented by subclasses
+    }
+
     toggle( keepSelected ) {
         if ( !keepSelected ) {
             d3.selectAll( '.tab-header' ).classed( 'strong', false );
         }
-
         d3.selectAll( '.panel-body' ).classed( 'active', false );
+        Hoot.ui.managePanel.tabs.forEach( tab => tab.deactivate() );
 
         this.tabHeader.classed( 'strong', true );
         this.panelBody.classed( 'active', true );
+        this.activate();
     }
 }

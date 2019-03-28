@@ -13,6 +13,7 @@ import MessageManager     from './managers/messages/messageManager';
 import FolderManager      from './managers/folderManager';
 import LayerManager       from './managers/layerManager';
 import TranslationManager from './managers/translationManager';
+import UserManager        from './managers/userManager';
 import EventManager       from './managers/eventManager';
 import UI                 from './ui/init';
 import { tagInfo }        from '../../data/index';
@@ -25,8 +26,9 @@ class Hoot {
         this.layers       = new LayerManager( this );
         this.folders      = new FolderManager( this );
         this.translations = new TranslationManager( this );
+        this.users        = new UserManager( this );
         this.events       = new EventManager();
-
+        // this.user
         this.config = {
             tagInfo,
             appInfo: [],
@@ -84,8 +86,16 @@ class Hoot {
     }
 
     init( context ) {
-        this.context = context;
+        let user;
 
+        this.context = context;
+        this.user = function () {
+            if (!user) {
+                user = JSON.parse( context.storage( 'user' ) );
+            }
+
+            return user;
+        };
         Promise.all( [
             this.getAboutData(),
             this.getAllUsers(),
