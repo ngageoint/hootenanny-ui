@@ -50,12 +50,12 @@ pipeline {
     post {
         aborted {
             script {
-                notifySlack("ABORTED".result, "#builds_hoot-ui")
+                notifySlack("ABORTED", "#builds_hoot-ui")
             }
         }
         success {
             script {
-                notifySlack("SUCCESS".result, "#builds_hoot-ui")
+                notifySlack("SUCCESS", "#builds_hoot-ui")
                 // If all tests passed, clean everything up
                 sh "vagrant destroy -f ${params.Box}"
                 cleanWs()
@@ -63,7 +63,7 @@ pipeline {
         }
         failure {
             script {
-                notifySlack("FAILURE".result, "#builds_hoot-ui")
+                notifySlack("FAILURE", "#builds_hoot-ui")
                 // Copy over any UI failure screenshots and send to slack
                 sh "vagrant scp ${params.Box}:~/hoot/test-files/ui/screenshot_*.png ./test-files/ui/"
                 postSlack("${env.WORKSPACE}/test-files/ui/", "screenshot_*.png", "${env.JENKINS_BOT_TOKEN}", "#builds_hoot-ui")
