@@ -14,8 +14,8 @@ export default class ExportData {
     constructor( translations, d, type ) {
         const isDatasets = type === 'Datasets';
         this.translations = translations;
-        this.input = isDatasets ? d.map(n => n.data.name).join(',') : d.data.name;
-        this.id = isDatasets ? d.map(n => n.data.id).join(',') : d.data.id;
+        this.input = isDatasets ? d.map(n => n.name).join(',') : d.data.name;
+        this.id = isDatasets ? d.map(n => n.id).join(',') : d.data.id;
         this.type = type;
         this.form = exportDataForm.call(this, isDatasets );
     }
@@ -39,7 +39,7 @@ export default class ExportData {
         this.appendToFgdbCheckbox = this.container.select( '#exportAppendFgdb' );
         this.dataExportNameTextInput = this.container.select( '#dataExportNameTextInput' );
         this.submitButton = this.container.select( '#exportDatasetBtn' );
-        this.submitButton.attr('disabled', false);
+        this.submitButton.attr('disabled', null);
 
         if ( this.type === 'Datasets' ) {
             this.dataExportNameTextInput.attr( 'placeholder', this.input.split(',').join('_') );
