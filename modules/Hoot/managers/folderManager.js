@@ -239,7 +239,7 @@ export default class FolderManager {
 
         folderList = _union( folderList, rootLayers );
 
-        return this.unflattenFolders( folderList );
+        return this.unflattenFolders( folderList ).filter(f => JSON.parse(Hoot.context.storage( 'publicVisibility' )) || f.userId === Hoot.user().id);
     }
 
     /**

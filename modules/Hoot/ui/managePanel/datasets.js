@@ -50,6 +50,12 @@ export default class Datasets extends Tab {
                 title: 'Refresh Datasets',
                 icon: 'refresh',
                 onClick: 'refresh-datasets-layers'
+            },
+            {
+                title: 'Public Data',
+                icon: JSON.parse(Hoot.context.storage( 'publicVisibility' )) ? 'visibility' : 'visibility_off',
+                iconClass: 'public-visibility',
+                onClick: 'toggle-public-visibility'
             }
         ];
 
@@ -124,10 +130,20 @@ export default class Datasets extends Tab {
                             .then( () => Hoot.events.emit( 'render-dataset-table' ) );
                         break;
                     }
+                    case 'toggle-public-visibility': {
+                        let publicVisibilityPref = JSON.parse(Hoot.context.storage( 'publicVisibility' ));
+                        Hoot.context.storage( 'publicVisibility', !publicVisibilityPref);
+                        //Would be better to make this class render() method re-entrant
+                        //but for now just surgically update icon
+                        d3.select('i.public-visibility').text(!publicVisibilityPref ? 'visibility' : 'visibility_off');
+                        Hoot.events.emit( 'render-dataset-table' );
+                        break;
+                    }
                 }
             } );
 
         buttons.append( 'i' )
+            .attr( 'class', d => d.iconClass )
             .classed( 'material-icons', true )
             .text( d => d.icon );
 
