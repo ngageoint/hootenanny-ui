@@ -50,6 +50,10 @@ export default class ImportDataset {
                 value: 'OSM'
             },
             {
+                title: 'File (geojson)',
+                value: 'GEOJSON'
+            },
+            {
                 title: 'File (geonames, txt)',
                 value: 'GEONAMES'
             },
@@ -211,7 +215,8 @@ export default class ImportDataset {
                 isDBF: false,
                 isPRJ: false,
                 isOSM: false,
-                isZIP: false
+                isZIP: false,
+                isGEOJSON: false
             };
 
             fileList.push( fObj );
@@ -234,6 +239,9 @@ export default class ImportDataset {
         } else if ( fileName.lastIndexOf( '.zip' ) > -1 ) {
             typeCount.zip++;
             fObj.isZIP = true;
+        } else if ( fileName.lastIndexOf( '.geojson' ) > -1 ) {
+            typeCount.geojson++;
+            fObj.isGEOJSON = true;
         }
     }
 
@@ -461,6 +469,10 @@ export default class ImportDataset {
             uploader
                 .property( 'multiple', true )
                 .attr( 'accept', '.shp, .shx, .dbf' );
+        } else if ( typeVal === 'GEOJSON' ) {
+            uploader
+                .property( 'multiple', false )
+                .attr( 'accept', '.geojson');
         }
     }
 }

@@ -26,7 +26,7 @@ export default class Upload {
                 icon: 'play_for_work',
                 uploadType: 'FILE',
                 multiple: true,
-                accept: '.shp, .shx, .dbf, .zip'
+                accept: '.shp, .shx, .dbf, .zip, .geojson'
             },
             {
                 title: 'Upload Folder',
@@ -146,6 +146,9 @@ export default class Upload {
 
             let resp       = await Hoot.api.uploadSchemaData( type, formData ),
                 attrValues = await Hoot.api.getSchemaAttrValues( resp.jobId );
+
+            console.log(resp);
+            console.log(attrValues);
 
             d3.selectAll( '.wait' ).classed( 'wait', false );
 
