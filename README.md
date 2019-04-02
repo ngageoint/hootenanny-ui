@@ -42,3 +42,7 @@ This will bundle the application and place static files inside `/dist`. To test 
 - Run `npm run test:hoot`
 
 After Webpack finishes bundling, Chrome should automatically open and begin executing tests. Code coverage summary will output to CLI when tests are complete and full coverage details can be viewed by opening `/coverage/index.html` in the browser.
+
+#### Code Formatting
+
+Before beginning development, follow the instructions in this [medium post](https://medium.com/@netczuk/even-faster-code-formatting-using-eslint-22b80d061461) to make sure that your code editor enforces the project's eslint rules 'on save'!!!
