@@ -148,7 +148,7 @@ export default class GrailPull {
 
         Hoot.api.grailPullOsmToDb( params )
             .then( ( resp ) => Hoot.message.alert( resp ) )
-            .then( () => Hoot.folders.refreshDatasets() )
+            .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) );
 
         this.form.remove();
