@@ -35,7 +35,7 @@ class LayerConflate extends SidebarForm {
         this.defaultFolderId = Hoot.layers.findBy('id', parseInt(this.selectedLayers.primary.id)).folderId
                     || Hoot.layers.findBy('id', parseInt(this.selectedLayers.secondary.id)).folderId;
 
-        this.defaultFolder = _find( this.folderList, folder => folder.id === this.defaultFolderId).name;
+        this.defaultFolder = _find( this.folderList, folder => folder.id === this.defaultFolderId);
 
         this.formData = layerConflateForm.call( this, layers );
 

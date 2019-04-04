@@ -204,7 +204,7 @@ export default class FormFactory {
      * @param field - field div
      */
     createCombobox( field ) {
-        const data = field.node().__data__;
+        const data = field.datum();
         let comboData = _map(data.data, n => {
             const t = data.itemKey ? n[ data.itemKey ] : n,
                   v = data.valueKey ? n[ data.valueKey ] : t,
