@@ -207,8 +207,9 @@ export default class FormFactory {
         const data = field.node().__data__;
         let comboData = _map(data.data, n => {
             const t = data.itemKey ? n[ data.itemKey ] : n,
-                  v = data.valueKey ? n[ data.valueKey ] : t;
-            return { value: v, title: t };
+                  v = data.valueKey ? n[ data.valueKey ] : t,
+                  _v = data._valueKey ? n[ data._valueKey ] : v;
+            return { value: v, title: t, _value: _v };
         } );
 
         if (data.sort) {
@@ -219,8 +220,8 @@ export default class FormFactory {
                 return textA < textB ? -1 : textA > textB ? 1 : 0;
             } );
 
-            if ( data.class === 'path-name' ) {
-                comboData = [ { value: 'root', title: 0 } ].concat(comboData);
+            if ( data.class === 'path-name' ) {//FIXME should handle folder data outside here
+                comboData = [ { value: 'root', _value: 0 } ].concat(comboData);
             }
         }
 
@@ -232,6 +233,7 @@ export default class FormFactory {
             .attr( 'autocomplete', 'off' )
             .attr( 'placeholder', d => d.placeholder )
             .attr( 'value', d => d.value )
+            .attr( '_value', d => d._value )
             .attr( 'disabled', d => d.disabled )
             .attr( 'readonly', d => d.readonly )
             .call(d3combobox().data(comboData))

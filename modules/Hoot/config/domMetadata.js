@@ -27,9 +27,10 @@ export function layerConflateForm( data ) {
             id: 'conflateFolderPath',
             class: 'path-name',
             inputType: 'combobox',
-            value: 'root',
+            value: this.defaultFolder,
             data: this.folderList,
             itemKey: 'path',
+            _valueKey: 'id',
             sort: true,
             readonly: 'readonly'
         },

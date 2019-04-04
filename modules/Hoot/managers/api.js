@@ -625,7 +625,6 @@ export default class API {
                 TRANSLATION: data.TRANSLATION,
                 INPUT_TYPE: data.INPUT_TYPE,
                 INPUT_NAME: data.INPUT_NAME,
-                // USER_EMAIL: 'test@test.com',
                 NONE_TRANSLATION: data.NONE_TRANSLATION
             },
             data: data.formData

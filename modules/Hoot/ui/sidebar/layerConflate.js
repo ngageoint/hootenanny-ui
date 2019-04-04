@@ -32,6 +32,11 @@ class LayerConflate extends SidebarForm {
             secondary: _find( layers, layer => layer.refType === 'secondary' )
         };
 
+        this.defaultFolderId = Hoot.layers.findBy('id', parseInt(this.selectedLayers.primary.id)).folderId
+                    || Hoot.layers.findBy('id', parseInt(this.selectedLayers.secondary.id)).folderId;
+
+        this.defaultFolder = _find( this.folderList, folder => folder.id === this.defaultFolderId).name;
+
         this.formData = layerConflateForm.call( this, layers );
 
         super.render();
@@ -171,18 +176,17 @@ class LayerConflate extends SidebarForm {
     preConflation() {
         let data = {};
 
-        data.TIME_STAMP         = '' + new Date().getTime();
         data.INPUT1             = Hoot.layers.findLoadedBy( 'refType', 'primary' ).id;
         data.INPUT2             = Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id;
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.property( 'value' );
+        data.OUTPUT_FOLDER      = parseInt(this.folderPathInput.attr( '_value' ));
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
         data.DISABLED_FEATURES  = this.advancedOptions.getDisabledFeatures();
         data.CONFLATION_TYPE    = this.typeInput.property( 'value' ).replace( /(Cookie Cutter & | w\/ Tags)/, '' );
         data.HOOT_2             = true;
-        data.USER_EMAIL         = 'test@test.com';
 
         let { advanced, cleaning } = this.advancedOptions.getOptions();
         data.HOOT2_ADV_OPTIONS = advanced;
@@ -225,13 +229,11 @@ class LayerConflate extends SidebarForm {
 
 
         _forEach( layers, d => Hoot.layers.hideLayer( d.id ) );
-
+//handle layer not found here
         params.id     = Hoot.layers.findBy( 'name', params.name ).id;
         params.merged = true;
         params.layers = layers;
-
-        Hoot.layers.loadLayer( params )
-            .then( () => Hoot.folders.updateFolders( this.innerWrapper ) );
+        Hoot.layers.loadLayer( params );
     }
 
     handleSubmit() {
