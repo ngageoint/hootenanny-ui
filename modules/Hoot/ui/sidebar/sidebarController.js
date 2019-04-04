@@ -150,6 +150,19 @@ class SidebarController {
             .append( 'span' )
             .classed( 'strong pad1x', true )
             .html( `${ text } &#8230;` );
+
+        // if (this.isConflate) {
+        //     console.log(this);
+        //     this.controller.insert('i', 'span')
+        //         .classed( 'material-icons', true )
+        //         .text( 'cancel' )
+        //         .attr('title', 'cancel job' )
+        //         .on('click', () => {
+        //             Hoot.api.cancelJob(d.jobId)
+        //                 // .then( resp => this.loadJobs() )
+        //                 .finally( () => console.log('done'));
+        //         });
+        // }
     }
 
     createDeleteButton() {
@@ -166,6 +179,27 @@ class SidebarController {
                 if ( confirm ) {
                     Hoot.layers.removeLoadedLayer( this.layerId );
                     Hoot.ui.sidebar.layerRemoved( d );
+                }
+            } );
+    }
+
+    createCancelButton() {
+        this.cancelButton = this.controller
+            .append( 'button' )
+            .classed( 'cancel-button icon-button keyline-left round-right inline _icon cancel', true )
+            .on( 'click', async d => {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+
+                let message = 'Are you sure you want to cancel?',
+                    confirm = await Hoot.message.confirm( message );
+
+                if ( confirm ) {
+                    // Hoot.api.cancelJob(d.jobId)
+                    //     .then( resp => this.loadJobs() )
+                    //     .finally( () => console.log('done'));
+                    // Hoot.layers.removeLoadedLayer( this.layerId );
+                    // Hoot.ui.sidebar.layerRemoved( d );
                 }
             } );
     }

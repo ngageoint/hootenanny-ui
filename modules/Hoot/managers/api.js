@@ -1059,28 +1059,7 @@ export default class API {
             data
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Conflation job complete',
-                    status: 200,
-                    type: resp.type
-                };
-            } )
-            .catch( err => {
-                let message, status, type;
-
-                status = err.status;
-
-                if ( status >= 500 ) {
-                    message = 'Error during conflation! Please try again later.';
-                    type    = err.type;
-                }
-
-                return Promise.reject( { message, status, type } );
-            } );
+        return this.request( params );
     }
 
     clipDataset( data ) {
