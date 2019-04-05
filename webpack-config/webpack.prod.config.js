@@ -7,7 +7,7 @@
 const webpack = require( 'webpack' );
 const Merge = require( 'webpack-merge' );
 const OptimizeCssAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' );
-const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
+const TerserPlugin = require('terser-webpack-plugin')
 const CommonConfig = require( './webpack.base.config' );
 
 module.exports = Merge( CommonConfig, {
@@ -32,9 +32,12 @@ module.exports = Merge( CommonConfig, {
             debug: false
         } ),
         new webpack.optimize.ModuleConcatenationPlugin(),
-        new UglifyJsPlugin( {
-            sourceMap: false
-        } ),
+        new TerserPlugin({
+            parallel: true,
+            terserOptions: {
+                ecma: 6,
+            },
+        }),
         new OptimizeCssAssetsPlugin( {
             assetNameRegExp: /\.css$/,
             cssProcessorOptions: { discardComments: { removeAll: true } }
