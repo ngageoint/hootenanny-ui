@@ -1186,33 +1186,6 @@ export default class API {
             } );
     }
 
-    differentialUpload( data ) {
-        const params = {
-            path: '/grail/everythingbybox',
-            method: 'POST',
-            data
-        };
-
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Differential Upload has succeeded.',
-                    status: 200,
-                    type: 'success'
-                };
-            } )
-            .catch( err => {
-                return {
-                    data: err.data,
-                    message: 'Error doing pull!',
-                    status: err.status,
-                    type: 'error'
-                };
-            } );
-    }
-
     createDifferential( data ) {
         const params = {
             path: '/grail/createdifferential',
@@ -1225,7 +1198,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Differential for selected region selected.',
+                    message: 'Differential for selected region created.',
                     status: 200,
                     type: 'success'
                 };
@@ -1246,11 +1219,36 @@ export default class API {
         };
 
         return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Differential stats retrieved.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      status  = err.status,
+                      type    = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } );
+    }
+
+    differentialPush( data ) {
+        const params = {
+            path: '/grail/differentialpush',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Differential for selected region selected.',
+                    message: 'Differential push complete.',
                     status: 200,
                     type: 'success'
                 };

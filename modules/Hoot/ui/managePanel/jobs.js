@@ -480,7 +480,18 @@ export default class Jobs extends Tab {
                         icon: 'info',
                         action: async () => {
                             Hoot.api.differentialStats(d.jobId)
-                                .then( resp => console.log(resp) );
+                                .then( resp => Hoot.message.alert( resp ) )
+                                .then( () => {
+                                    const params = {};
+                                    params.APPLY_TAGS = false;
+                                    params.folder = d.jobId;
+                                    Hoot.api.differentialPush( params )
+                                        .then( resp => Hoot.message.alert( resp ) );
+                                })
+                                .catch( err => {
+                                    Hoot.message.alert( err );
+                                    return false;
+                                } );
                         }
                     });
                 }
