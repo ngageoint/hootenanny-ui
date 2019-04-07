@@ -1,8 +1,6 @@
-import _map from 'lodash-es/map';
-
 import FormFactory from './formFactory';
 
-import { uuidv4, formatBbox } from './utilities';
+import { formatBbox } from './utilities';
 
 export default class DifferentialUpload {
     constructor( instance ) {
@@ -28,7 +26,7 @@ export default class DifferentialUpload {
         let formId = 'differentialTable';
 
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
-        this.submitButton = this.form.select( `#${metadata.button.id}` );
+        this.submitButton = this.form.select( `#${ metadata.button.id }` );
 
         this.submitButton.property( 'disabled', false );
 
@@ -36,8 +34,6 @@ export default class DifferentialUpload {
     }
 
     createTable() {
-        let that = this;
-
         let columns = [
             {
                 label: 'User ID for Changeset',
@@ -120,7 +116,7 @@ export default class DifferentialUpload {
         params.APPLY_TAGS = applyTags;
         params.BBOX       = formatBbox( bbox );
 
-        Hoot.api.differentialUpload( params )
+        Hoot.api.createDifferential( params )
             .then( ( resp ) => Hoot.message.alert( resp ) );
 
         this.form.remove();

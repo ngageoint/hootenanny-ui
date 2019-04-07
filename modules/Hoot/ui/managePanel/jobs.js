@@ -473,6 +473,18 @@ export default class Jobs extends Tab {
                     }
                 });
 
+                if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
+                    //Get info for the derive
+                    actions.push({
+                        title: 'info job',
+                        icon: 'info',
+                        action: async () => {
+                            Hoot.api.differentialStats(d.jobId)
+                                .then( resp => console.log(resp) );
+                        }
+                    });
+                }
+
                 props.push({
                     i: actions
                 });

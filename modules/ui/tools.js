@@ -69,12 +69,12 @@ export function uiTools( context ) {
                     action: 'grailPull'
                 },
                 {
-                    title: 'Differential Upload',
-                    tooltip: 'Get data from OSM and add new features to MapEdit',
+                    title: 'Create Differential Upload',
+                    tooltip: 'Creates a differential between OSM and MapEdit',
                     group: 'grail',
                     type: 'area',
                     icon: 'iD-icon-layers',
-                    action: 'diffUpload'
+                    action: 'createDifferential'
                 },
                 {
                     title: 'Conflation Upload',
@@ -175,7 +175,7 @@ export function uiTools( context ) {
 
                         Hoot.message.alert( { message, type } );
                     }
-                } else if ( d.action === 'grailPull' || d.action === 'diffUpload' ) {
+                } else if ( d.action === 'grailPull' || d.action === 'createDifferential' ) {
                     let grailSelectBbox = new selectBbox( context );
 
                     grailSelectBbox.render( d.action );

@@ -1213,6 +1213,57 @@ export default class API {
             } );
     }
 
+    createDifferential( data ) {
+        const params = {
+            path: '/grail/createdifferential',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Differential for selected region selected.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      status  = err.status,
+                      type    = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } );
+    }
+
+    differentialStats( jobId ) {
+        const params = {
+            path: `/grail/differentialstats/${ jobId }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Differential for selected region selected.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      status  = err.status,
+                      type    = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } );
+    }
+
     conflationUpload( data ) {
         const params = {
             path: '/grail/conflatepush',

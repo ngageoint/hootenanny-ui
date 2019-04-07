@@ -184,7 +184,7 @@ export default class SelectBbox extends EventEmitter {
             new ClipDataset( this ).render();
         } else if ( this.operationName === 'grailPull' ) {
             new GrailPull( this ).render();
-        } else if ( this.operationName === 'diffUpload' ) {
+        } else if ( this.operationName === 'createDifferential' ) {
             new DifferentialUpload( this ).render();
         }
 
