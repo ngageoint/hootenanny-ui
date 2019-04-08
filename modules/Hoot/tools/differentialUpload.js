@@ -9,15 +9,15 @@ export default class DifferentialUpload {
 
     render() {
         let titleText = this.instance.bboxSelectType === 'visualExtent'
-            ? 'Differential Upload from Visual Extent'
+            ? 'Create Differential from Visual Extent'
             : this.instance.bboxSelectType === 'boundingBox'
-                ? 'Differential Upload from Bounding Box'
-                : 'Differential Upload';
+                ? 'Create Differential from Bounding Box'
+                : 'Create Differential';
 
         let metadata = {
             title: titleText,
             button: {
-                text: 'Differential Upload',
+                text: 'Generate Differential',
                 id: 'SubmitBtn',
                 onClick: () => this.handleSubmit()
             }
@@ -38,10 +38,6 @@ export default class DifferentialUpload {
             {
                 label: 'User ID for Changeset',
                 name: 'username'
-            },
-            {
-                label: 'Apply Tag Differential?',
-                name: 'applyTags'
             }
         ];
 
@@ -111,9 +107,6 @@ export default class DifferentialUpload {
             return;
         }
 
-        let applyTags = this.form.select( '.applyTags' ).property( 'checked' );
-
-        params.APPLY_TAGS = applyTags;
         params.BBOX       = formatBbox( bbox );
 
         Hoot.api.createDifferential( params )

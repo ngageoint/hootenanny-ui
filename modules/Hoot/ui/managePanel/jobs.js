@@ -1,7 +1,7 @@
-
-import Tab          from './tab';
-import moment       from 'moment';
-import ProgressBar  from 'progressbar.js';
+import Tab               from './tab';
+import moment            from 'moment';
+import ProgressBar       from 'progressbar.js';
+import DifferentialStats from '../modals/differentialStats';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
 
@@ -480,14 +480,11 @@ export default class Jobs extends Tab {
                         icon: 'info',
                         action: async () => {
                             Hoot.api.differentialStats(d.jobId)
-                                .then( resp => Hoot.message.alert( resp ) )
-                                .then( () => {
-                                    const params = {};
-                                    params.APPLY_TAGS = false;
-                                    params.folder = d.jobId;
-                                    Hoot.api.differentialPush( params )
-                                        .then( resp => Hoot.message.alert( resp ) );
-                                })
+                                .then( resp => {
+                                    this.diffStats = new DifferentialStats( d.jobId, resp.data ).render();
+
+                                    Hoot.events.once( 'modal-closed', () => delete this.diffStats );
+                                } )
                                 .catch( err => {
                                     Hoot.message.alert( err );
                                     return false;
