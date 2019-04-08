@@ -10,6 +10,7 @@ import _map    from 'lodash-es/map';
 
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
+import { saveAs }    from 'file-saver';
 
 /**
  * API calls to backend services
@@ -23,8 +24,8 @@ export default class API {
 
         this.host = this.config.host;
 
-        let mergePortOrPath = function(p) {
-            return isNaN(p) ? {pathname: p + '/'} : {port: p};
+        let mergePortOrPath = function( p ) {
+            return isNaN( p ) ? { pathname: p + '/' } : { port: p };
         };
 
         this.baseUrl = this.config.path;
@@ -34,6 +35,7 @@ export default class API {
 
         this.queryInterval = this.config.queryInterval;
         this.intervals     = {};
+        this.conflateTypes = null;
     }
 
     /**
@@ -48,7 +50,8 @@ export default class API {
             method: params.method || 'GET',
             headers: params.headers,
             data: params.data,
-            params: params.params
+            params: params.params,
+            responseType: params.responseType
         } ).catch( err => {
             let { response } = err;
             let data, message, status, statusText, type;
@@ -108,6 +111,24 @@ export default class API {
         } );
     }
 
+    getConflateTypes() {
+
+        if ( this.conflateTypes ) {
+            return Promise.resolve( this.conflateTypes );
+        } else {
+            const params = {
+                path: '/info/advancedopts/conflationtypes',
+                method: 'GET'
+            };
+            let that = this;
+            return this.request( params ).then( resp => {
+                that.conflateTypes = resp.data;
+                return that.conflateTypes;
+            });
+        }
+
+    }
+
     getSaveUser( userEmail ) {
         const params = {
             path: '/osm/user',
@@ -146,7 +167,7 @@ export default class API {
 
     verifyOAuth( oauth_token, oauth_verifier ) {
         const params = {
-            path: `/auth/oauth1/verify?oauth_token=${oauth_token}&oauth_verifier=${oauth_verifier}`,
+            path: `/auth/oauth1/verify?oauth_token=${ oauth_token }&oauth_verifier=${ oauth_verifier }`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -176,6 +197,56 @@ export default class API {
     getJobStatus( id ) {
         const params = {
             path: `/job/status/${ id }?includeCommandDetail=true`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getJobError( id ) {
+        const params = {
+            path: `/job/error/${ id }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    deleteJobStatus( id ) {
+        const params = {
+            path: `/job/${ id }`,
+            method: 'DELETE'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    cancelJob( id ) {
+        const params = {
+            path: `/job/cancel/${ id }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getJobsHistory() {
+        const params = {
+            path: '/jobs/history',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getJobsRunning() {
+        const params = {
+            path: '/jobs/running',
             method: 'GET'
         };
 
@@ -288,7 +359,19 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp =>
+                resp.data.sort( ( a, b ) => {
+                    // Set undefined to false
+                    if ( !a.DEFAULT ) a.DEFAULT = false;
+                    if ( !b.DEFAULT ) b.DEFAULT = false;
+                    // We check DEFAULT property, putting true first
+                    if ( a.DEFAULT !== b.DEFAULT ) {
+                        return ( a.DEFAULT ) ? -1 : 1;
+                    } else {
+                        // We only get here if the DEFAULT prop is equal
+                        return d3.ascending( a.NAME.toLowerCase(), b.NAME.toLowerCase() );
+                    }
+                } ) );
     }
 
     getTranslation( name ) {
@@ -562,7 +645,7 @@ export default class API {
             .catch( err => {
                 return Promise.reject( {
                     data: {
-                        details: err.data.commandDetail[0].stderr
+                        details: err.data.commandDetail[ 0 ].stderr
                     },
                     message: 'Failed to import dataset!',
                     status: err.status,
@@ -596,6 +679,91 @@ export default class API {
 
                 return {
                     message: `Failed to modify item: ${ modName }`,
+                    status: 500,
+                    type: 'success'
+                };
+            } );
+    }
+
+    saveDataset( id, name ) {
+        const params = {
+            path: `/job/export/${id}?outputname=${name}&removecache=true`,
+            responseType: 'arraybuffer',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => {
+                let fileBlob = new Blob( [ resp.data ], { type: 'application/zip' } );
+                saveAs( fileBlob, name );
+            });
+    }
+
+    exportDataset( data ) {
+        data.tagoverrides =  JSON.stringify(
+            Object.assign(data.tagoverrides || {}, {
+                'error:circular':'',
+                'hoot:building:match':'',
+                'hoot:status':'',
+                'hoot:review:members':'',
+                'hoot:review:score':'',
+                'hoot:review:note':'',
+                'hoot:review:sort_order':'',
+                'hoot:review:type':'',
+                'hoot:review:needs':'',
+                'hoot:score:match':'',
+                'hoot:score:miss':'',
+                'hoot:score:review':'',
+                'hoot:score:uuid':''
+            })
+        );
+
+        const requiredKeys = [
+            'append',
+            'includehoottags',
+            'input',
+            'inputtype',
+            'outputname',
+            'outputtype',
+            'tagoverrides',
+            'textstatus' ,
+            'translation',
+            'userId'
+        ];
+
+        if (!requiredKeys.every( k => data.hasOwnProperty(k) )) {
+            return Promise.reject( new Error( ' invalid request payload' ) );
+        }
+
+        const params = {
+            path: '/job/export/execute',
+            method: 'POST',
+            data: data
+        };
+
+        if ( data.inputtype === 'folder' ) {
+            params.path = `${params.path}?ext=zip`;
+        }
+
+        let jobId;
+
+        return this.request( params )
+            .then( (resp) => { jobId = resp.data.jobid; } )
+            .then( () => this.statusInterval( jobId ) )
+            .then( () => this.saveDataset( jobId, data.outputname ) )
+            .then( () => {
+                const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
+                return {
+                    message: `'${data.outputname}' ${dataType} Exported`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( (err) => {
+                console.log( err );
+
+                return {
+                    message: `Failed to export dataset: ${ data.input }`,
                     status: 500,
                     type: 'success'
                 };
@@ -815,9 +983,9 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getAdvancedOptions( confType = 'custom' ) {
+    getAdvancedOptions(type) {
         const params = {
-            path: `/info/advancedopts/getoptions?conftype=${ confType }`,
+            path: `/info/advancedopts/getoptions?conftype=${type}`,
             method: 'GET'
         };
 
@@ -924,7 +1092,22 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) );
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Clip job complete',
+                    status: 200,
+                    type: resp.type
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      status  = err.status,
+                      type    = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } );
     }
 
     /**
@@ -1051,4 +1234,5 @@ export default class API {
             .then( resp => resp.data )
             .catch( err => window.console.log( err ) );
     }
+
 }

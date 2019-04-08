@@ -4,14 +4,16 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/1/18
  *******************************************************************************************************/
 
-import _isEmpty    from 'lodash-es/isEmpty';
-import _forEach    from 'lodash-es/forEach';
-import _map        from 'lodash-es/map';
+import _isEmpty from 'lodash-es/isEmpty';
+import _forEach from 'lodash-es/forEach';
+import _map     from 'lodash-es/map';
 
 import FormFactory from './formFactory';
 
 import { checkForUnallowedChar } from './utilities';
 import { d3combobox }            from '../../lib/hoot/d3.combobox';
+import _get                      from 'lodash-es/get';
+import _find                     from 'lodash-es/find';
 
 export default class ClipDataset {
     constructor( instance ) {
@@ -177,7 +179,7 @@ export default class ClipDataset {
             .data( _map( d.combobox, n => {
                 return {
                     value: n.path,
-                    title: n.path
+                    id: n.id
                 };
             } ) );
 
@@ -188,7 +190,7 @@ export default class ClipDataset {
                 textB = b.value.toLowerCase();
 
             return textA < textB ? -1 : textA > textB ? 1 : 0;
-        } ).unshift( { value: 'root', title: 0 } );
+        } ).unshift( { value: 'root', id: 0 } );
 
         input.call( combobox );
     }
@@ -208,16 +210,22 @@ export default class ClipDataset {
             let row         = d3.select( `#row-${ mapId }` ),
                 datasetName = row.select( '.datasetName' ),
                 outputName  = row.select( '.outputName' ),
-                pathName    = row.select( '.outputPath' );
+                folderId    = row.select( '.outputPath' );
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = outputName.property( 'value' ) || outputName.attr( 'placeholder' );
-            params.PATH_NAME   = pathName.property( 'value' ) || pathName.attr( 'placeholder' ) || 'root';
+            params.FOLDER_ID   = folderId.property( 'selectedID' ) || 0;
             params.BBOX        = bbox;
 
             Hoot.api.clipDataset( params )
+                .then( resp => Hoot.message.alert( resp ) )
                 .then( () => Hoot.folders.refreshDatasets() )
-                .then( () => Hoot.events.emit( 'render-dataset-table' ) );
+                .then( () => Hoot.folders.refreshLinks() )
+                .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+                .catch( err => {
+                    Hoot.message.alert( err );
+                    return false;
+                } );
         } );
 
         this.container.remove();

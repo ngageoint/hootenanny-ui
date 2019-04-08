@@ -14,12 +14,12 @@ import _map                from 'lodash-es/map';
 import _forEach            from 'lodash-es/forEach';
 
 export default class ImportMultiDatasets {
-    constructor( translations ) {
+    constructor( translations, path = 'root' ) {
         this.folderList     = Hoot.folders._folders;
         this.translations   = translations;
         this.formFactory    = new FormFactory();
         this.processRequest = null;
-
+        this.path = path;
         this.importTypes = [
             {
                 title: 'Shapefile',
@@ -50,7 +50,12 @@ export default class ImportMultiDatasets {
             }
         };
 
+
         this.container = this.formFactory.generateForm( 'body', 'datasets-import-form', metadata );
+
+        if (this.path !== 'root') {
+            this.container.select( '#importPathName' ).property('value', this.path);
+        }
 
         this.typeInput          = this.container.select( '#importType' );
         this.fileInput          = this.container.select( '#importFile' );
@@ -280,7 +285,7 @@ export default class ImportMultiDatasets {
             transCombo    = this.schemaInput.datum(),
             typeCombo     = this.typeInput.datum(),
 
-            translation   = _filter( transCombo.data, o => o.DESCRIPTION === transVal )[ 0 ],
+            translation   = _filter( transCombo.data, o => o.NAME === transVal )[ 0 ],
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
 
             translationName,

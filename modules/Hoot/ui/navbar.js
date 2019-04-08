@@ -132,6 +132,9 @@ export default class Navbar {
         let managePanel = Hoot.ui.managePanel,
             vis         = managePanel.isOpen === true;
 
+        //First time opening, render datasets panel
+        if (d3.selectAll( '.panel-body.active' ).size() === 0) managePanel.datasets.toggle();
+
         this.menuButton.classed( 'active', !vis );
         managePanel.container.classed( 'hidden', vis );
 

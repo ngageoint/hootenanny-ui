@@ -137,7 +137,7 @@ export default class ImportDataset {
         this.setMultipartForType( selectedType );
         this.formFactory.populateCombobox( this.schemaInput );
 
-        this.schemaInput.property( 'value', translationsList[ 0 ].DESCRIPTION );
+        this.schemaInput.property( 'value', translationsList[ 0 ].NAME );
     }
 
     /**
@@ -323,7 +323,7 @@ export default class ImportDataset {
             transCombo    = this.schemaInput.datum(),
             typeCombo     = this.typeInput.datum(),
 
-            translation   = _filter( transCombo.data, o => o.DESCRIPTION === transVal )[ 0 ],
+            translation   = _filter( transCombo.data, o => o.NAME === transVal )[ 0 ],
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
 
             translationName,
@@ -340,6 +340,7 @@ export default class ImportDataset {
         } else {
             folderId = pathId;
         }
+
 
         let data = {
             NONE_TRANSLATION: translation.NONE === 'true',

@@ -8,13 +8,20 @@ import _find    from 'lodash-es/find';
 import _forEach from 'lodash-es/forEach';
 
 import SidebarForm                from './sidebarForm';
-import AdvancedOpts               from './advancedOpts/advancedOpts';
+import AdvancedOpts               from './advancedOpts';
 import FormFactory                from '../../tools/formFactory';
 import { layerConflateForm }      from '../../config/domMetadata';
 
 class LayerConflate extends SidebarForm {
     constructor( container, d ) {
         super( container, d );
+    }
+
+    async getData() {
+        let that = this;
+        await Hoot.api
+            .getConflateTypes()
+            .then(conflateTypes => that.conflateTypes = conflateTypes);
     }
 
     render( layers ) {
@@ -31,14 +38,14 @@ class LayerConflate extends SidebarForm {
 
         this.createFieldset();
         this.createLayerRefThumbnails( layers );
-        // this.createAdvancedOptions();
+        this.createAdvancedOptions();
         this.createButtons();
 
         this.saveAsInput         = d3.select( '#conflateSaveAs' );
         this.folderPathInput     = d3.select( '#conflateFolderPath' );
         this.newFolderNameInput  = d3.select( '#conflateNewFolderName' );
         this.typeInput           = d3.select( '#conflateType' );
-        this.algorithmInput       = d3.select( '#conflateAlgorithm' ); 
+        this.algorithmInput      = d3.select( '#conflateAlgorithm' );
         this.refLayerInput       = d3.select( '#conflateRefLayer' );
         this.collectStatsInput   = d3.select( '#conflateCollectStats' );
     }
@@ -78,16 +85,12 @@ class LayerConflate extends SidebarForm {
             .on( 'click', () => this.handleSubmit() );
     }
 
-    createAdvancedOptions() {
-        this.advancedOptions = new AdvancedOpts();
-        this.advancedOptions.init();
-        
+    async createAdvancedOptions() {
+        this.advancedOptions = AdvancedOpts.getInstance();
+        await this.advancedOptions.init();
+
         d3.select( '#advanced-opts-toggle' )
             .on( 'click', () => this.advancedOptions.toggle() );
-    }
-
-    changeAdvancedOptions() {
-        this.advancedOptions.clear();
     }
 
     getSaveName( data ) {
@@ -176,10 +179,14 @@ class LayerConflate extends SidebarForm {
         data.OUTPUT_NAME        = this.saveAsInput.property( 'value' );
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
-        // data.ADV_OPTIONS        = this.advancedOptions.getOptions();
+        data.DISABLED_FEATURES  = this.advancedOptions.getDisabledFeatures();
         data.CONFLATION_TYPE    = this.typeInput.property( 'value' ).replace( /(Cookie Cutter & | w\/ Tags)/, '' );
-        data.HOOT_2             = true; 
+        data.HOOT_2             = true;
         data.USER_EMAIL         = 'test@test.com';
+
+        let { advanced, cleaning } = this.advancedOptions.getOptions();
+        data.HOOT2_ADV_OPTIONS = advanced;
+        data.CLEANING_OPTIONS = cleaning;
 
         switch ( data.CONFLATION_TYPE ) {
             case 'Differential': {
@@ -195,9 +202,10 @@ class LayerConflate extends SidebarForm {
                 data.CONFLATION_COMMAND = 'conflate';
             }
         }
-        
-        if (this.algorithmInput.property( 'value' ) === 'Network' ) {
+
+        if ( data.HOOT2_ADV_OPTIONS.hasOwnProperty( 'RoadEngines' ) && data.HOOT2_ADV_OPTIONS.RoadEngines === 'Network' ) {
             data.CONFLATION_ALGORITHM = 'Network';
+            delete data.HOOT2_ADV_OPTIONS.RoadEngines;
         }
 
         return data;
@@ -240,9 +248,9 @@ class LayerConflate extends SidebarForm {
         // remove reference layer controllers
         d3.selectAll( '.add-controller' ).remove();
 
-        // if ( this.advancedOptions.isOpen ) {
-        //     this.advancedOptions.toggle();
-        // }
+        if ( this.advancedOptions.isOpen ) {
+            this.advancedOptions.toggle();
+        }
 
         this.loadingState( params );
 

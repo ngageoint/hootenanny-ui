@@ -60,6 +60,9 @@ export default class LayerReview extends SidebarForm {
         this.reviewInfo.text( text );
     }
 
+    removeReviewUI() {
+        Hoot.ui.conflicts.deactivate();
+    }
     /**
      * Update text to reflect that all reviews have been resolved.
      * Display buttons to export data or to add another datasets
@@ -86,5 +89,6 @@ export default class LayerReview extends SidebarForm {
     listen() {
         Hoot.events.on( 'meta-updated', text => this.updateReviewCount( text ) );
         Hoot.events.on( 'review-complete', () => this.reviewComplete() );
+        Hoot.events.on( 'loaded-layer-removed', () => this.removeReviewUI() );
     }
 }

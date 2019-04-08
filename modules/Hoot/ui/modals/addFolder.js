@@ -8,8 +8,9 @@ import FormFactory       from '../../tools/formFactory';
 import { addFolderForm } from '../../config/domMetadata';
 
 export default class AddFolder {
-    constructor() {
-        this.form = addFolderForm.call( this );
+    constructor(parentId = 0) {
+        this.form     = addFolderForm.call( this );
+        this.parentId = parentId;
     }
 
     render() {
@@ -75,7 +76,7 @@ export default class AddFolder {
         let isPublic = this.folderVisibilityInput.property( 'checked' );
 
         let params = {
-            parentId: 0, // eventually needs to change when path is specified
+            parentId: this.parentId,
             folderName: name,
             isPublic: isPublic
         };

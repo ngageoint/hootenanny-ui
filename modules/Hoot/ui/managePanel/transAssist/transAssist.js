@@ -40,7 +40,7 @@ export default class TransAssist extends Tab {
     }
 
     openSaveForm( output ) {
-        new AddTranslation( this, output ).render();
+        new AddTranslation( Hoot.ui.managePanel.translations, output ).render();
     }
 
     showTranslations() {

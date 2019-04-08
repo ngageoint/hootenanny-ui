@@ -125,7 +125,7 @@ export function behaviorDrawMeasureLine( context, svg ) {
     }
 
     function displayLength( m ) {
-        let imperial = context.imperial;
+        let imperial = context.imperial();
 
         let d = m * (imperial ? 3.28084 : 1),
             p, unit;

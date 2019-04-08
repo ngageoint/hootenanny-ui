@@ -14,6 +14,7 @@ import ImportMultiDataset from '../modals/ImportMultiDatasets';
 import AddFolder          from '../modals/addFolder';
 import ModifyDataset      from '../modals/modifyDataset';
 import ModifyFolder       from '../modals/modifyFolder';
+import ExportData from '../modals/exportData';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -49,6 +50,12 @@ export default class Datasets extends Tab {
                 title: 'Refresh Datasets',
                 icon: 'refresh',
                 onClick: 'refresh-datasets-layers'
+            },
+            {
+                title: 'Public Data',
+                icon: JSON.parse(Hoot.context.storage( 'publicVisibility' )) ? 'visibility' : 'visibility_off',
+                iconClass: 'public-visibility',
+                onClick: 'toggle-public-visibility'
             }
         ];
 
@@ -81,9 +88,6 @@ export default class Datasets extends Tab {
      */
     render() {
         super.render();
-
-        // automatically show this panel on first load
-        this.toggle();
 
         let buttonContainer = this.panelWrapper
             .append( 'div' )
@@ -126,10 +130,20 @@ export default class Datasets extends Tab {
                             .then( () => Hoot.events.emit( 'render-dataset-table' ) );
                         break;
                     }
+                    case 'toggle-public-visibility': {
+                        let publicVisibilityPref = JSON.parse(Hoot.context.storage( 'publicVisibility' ));
+                        Hoot.context.storage( 'publicVisibility', !publicVisibilityPref);
+                        //Would be better to make this class render() method re-entrant
+                        //but for now just surgically update icon
+                        d3.select('i.public-visibility').text(!publicVisibilityPref ? 'visibility' : 'visibility_off');
+                        Hoot.events.emit( 'render-dataset-table' );
+                        break;
+                    }
                 }
             } );
 
         buttons.append( 'i' )
+            .attr( 'class', d => d.iconClass )
             .classed( 'material-icons', true )
             .text( d => d.icon );
 
@@ -234,22 +248,38 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'addDataset': {
-                let params = {
-                    name: d.data.name,
-                    id: d.data.id
-                };
+                let translations = await Hoot.api.getTranslations();
 
-                Hoot.ui.sidebar.forms[ item.formId ].submitLayer( params )
-                    .then( () => {
-                        let refType = item.formId.charAt( 0 ).toUpperCase() + item.formId.substr( 1 ),
-                            message = `${refType} layer added to map: <u>${d.data.name}</u>`,
-                            type    = 'info';
+                this.importMultiModal = new ImportMultiDataset( translations, d.data.name ).render();
 
-                        Hoot.message.alert( { message, type } );
-                    } );
-
+                Hoot.events.once( 'modal-closed', () => delete this.importMultiModal );
                 break;
             }
+            case 'exportDataset': {
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT );
+                this.exportDatasetModal = new ExportData( translations, d, 'Dataset' ).render();
+                Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
+                break;
+            }
+            case 'exportMultiDataset': {
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT );
+                let datasets = this.folderTree.selectedNodes;
+                this.exportDatasetModal = new ExportData ( translations, datasets, 'Datasets' ).render();
+                Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
+                break;
+            }
+            case 'exportFolder': {
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT);
+                this.exportDatasetModal = new ExportData( translations, d, 'Folder' ).render();
+                Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
+                break;
+            }
+            case 'addFolder':
+                // d.data.id === parentId
+                this.addFolderModal = new AddFolder(d.data.id).render();
+
+                Hoot.events.once( 'modal-closed', () => delete this.addFolderModal );
+                break;
             case 'modifyDataset': {
                 this.modifyLayerModal = new ModifyDataset( tree.selectedNodes ).render();
 
