@@ -257,13 +257,16 @@ class LayerConflate extends SidebarForm {
             .then( resp => {
                 params.jobId = resp.data.jobid;
 
-                // remove reference layer controllers
-                d3.selectAll( '.add-controller' ).remove();
+                // hide input layer controllers
+                d3.selectAll( '.add-controller' ).classed('hidden', true);
 
                 this.loadingState( params );
                 return Hoot.api.statusInterval( resp.data.jobid )
             })
             .then( resp => {
+                // remove input layer controllers
+                d3.selectAll( '.add-controller' ).remove();
+
                 Hoot.message.alert( {
                     data: resp.data,
                     message: 'Conflation job complete',
@@ -288,11 +291,17 @@ class LayerConflate extends SidebarForm {
                     message = 'Error running conflation'
                 }
 
+                // remove conflating layer
+                d3.selectAll( '.layer-loading' ).remove();
                 // restore input layers
-
+                d3.selectAll( '.add-controller' ).classed('hidden', false);
+                // remove conflate button
+                Hoot.ui.sidebar.forms.conflate.remove();
+                // restore the conflate button
+                Hoot.ui.sidebar.conflateCheck();
 
                 // Hoot.ui.sidebar.reset();
-                Hoot.message.alert( { message, type, keepOpen } );//.clearAutohide();
+                Hoot.message.alert( { message, type, keepOpen } );
 
             } );
     }

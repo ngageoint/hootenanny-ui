@@ -22,7 +22,9 @@ class SidebarController {
     }
 
     render() {
-        this.form.select( '.inner-wrapper' ).remove();
+        //hide the form components
+        this.form.select( '.inner-wrapper' ).remove();//.classed('hidden', true);
+        this.form.select( 'a' ).remove();//.classed('hidden', true);
 
         this.form
             .attr( 'class', () => {
@@ -33,9 +35,7 @@ class SidebarController {
                 return `sidebar-form layer-loading round fill-white ${ this.layerColor }`;
             } )
             .attr( 'data-name', this.layerName )
-            .attr( 'data-id', this.layerId )
-            .select( 'a' )
-            .remove();
+            .attr( 'data-id', this.layerId );
 
         this.createController();
         this.createInnerWrapper();
