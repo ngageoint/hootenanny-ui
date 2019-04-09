@@ -177,7 +177,7 @@ class LayerConflate extends SidebarForm {
         let data = {};
 
         data.INPUT1             = Hoot.layers.findLoadedBy( 'refType', 'primary' ).id;
-        data.INPUT2             = -99; //Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id;
+        data.INPUT2             = Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id;
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.property( 'value' );
