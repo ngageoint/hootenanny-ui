@@ -32,8 +32,8 @@ class LayerConflate extends SidebarForm {
             secondary: _find( layers, layer => layer.refType === 'secondary' )
         };
 
-        this.defaultFolderId = Hoot.layers.findBy('id', parseInt(this.selectedLayers.primary.id)).folderId
-                    || Hoot.layers.findBy('id', parseInt(this.selectedLayers.secondary.id)).folderId;
+        this.defaultFolderId = Hoot.layers.findBy('id', parseInt(this.selectedLayers.primary.id, 10)).folderId
+                    || Hoot.layers.findBy('id', parseInt(this.selectedLayers.secondary.id, 10)).folderId;
 
         this.defaultFolder = _find( this.folderList, folder => folder.id === this.defaultFolderId);
 
@@ -181,7 +181,7 @@ class LayerConflate extends SidebarForm {
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.property( 'value' );
-        data.OUTPUT_FOLDER      = parseInt(this.folderPathInput.attr( '_value' ));
+        data.OUTPUT_FOLDER      = parseInt(this.folderPathInput.attr( '_value' ), 10);
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
         data.DISABLED_FEATURES  = this.advancedOptions.getDisabledFeatures();
@@ -262,7 +262,7 @@ class LayerConflate extends SidebarForm {
                 // hide input layer controllers
                 this.controller.hideInputs();
 
-                return Hoot.api.statusInterval( resp.data.jobid )
+                return Hoot.api.statusInterval( resp.data.jobid );
             })
             .then( resp => {
                 // remove input layer controllers
@@ -290,7 +290,7 @@ class LayerConflate extends SidebarForm {
                 } else if (status >= 500) { // check for command line error
                     message = err.data.commandDetail[0].stderr;
                 } else {
-                    message = 'Error running conflation'
+                    message = 'Error running conflation';
                 }
 
                 // restore input layer controllers
