@@ -147,9 +147,6 @@ export default class Upload {
             let resp       = await Hoot.api.uploadSchemaData( type, formData ),
                 attrValues = await Hoot.api.getSchemaAttrValues( resp.jobId );
 
-            console.log(resp);
-            console.log(attrValues);
-
             d3.selectAll( '.wait' ).classed( 'wait', false );
 
             Hoot.message.alert( resp );
