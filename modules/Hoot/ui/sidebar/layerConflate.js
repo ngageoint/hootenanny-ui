@@ -257,10 +257,11 @@ class LayerConflate extends SidebarForm {
             .then( resp => {
                 params.jobId = resp.data.jobid;
 
-                // hide input layer controllers
-                d3.selectAll( '.add-controller' ).classed('hidden', true);
-
                 this.loadingState( params );
+
+                // hide input layer controllers
+                this.controller.hideInputs();
+
                 return Hoot.api.statusInterval( resp.data.jobid )
             })
             .then( resp => {
@@ -277,6 +278,7 @@ class LayerConflate extends SidebarForm {
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => this.postConflation( params ) )
             .catch( err => {
+                console.error(err);
                 let message, status, type, keepOpen = true;
 
                 status = err.status;
@@ -291,14 +293,8 @@ class LayerConflate extends SidebarForm {
                     message = 'Error running conflation'
                 }
 
-                // remove conflating layer
-                d3.selectAll( '.layer-loading' ).remove();
-                // restore input layers
-                d3.selectAll( '.add-controller' ).classed('hidden', false);
-                // remove conflate button
-                Hoot.ui.sidebar.forms.conflate.remove();
-                // restore the conflate button
-                Hoot.ui.sidebar.conflateCheck();
+                // restore input layer controllers
+                this.controller.restoreInputs();
 
                 // Hoot.ui.sidebar.reset();
                 Hoot.message.alert( { message, type, keepOpen } );

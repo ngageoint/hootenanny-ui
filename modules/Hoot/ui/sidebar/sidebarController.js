@@ -17,12 +17,16 @@ class SidebarController {
         this.layerId    = layer.id;
         this.layerColor = layer.color;
         this.isConflate = layer.isConflate;
+        this.jobId      = layer.jobId;
         this.refType    = layer.refType;
         this.typeClass  = this.isConflate ? 'conflate-controller' : 'add-controller';
     }
 
     render() {
-        //hide the form components
+        //remove the input form components
+        //at some point it would be nice to preserve the state of adv opts
+        //and just hide this so it could be restored on
+        //job cancel or error
         this.form.select( '.inner-wrapper' ).remove();//.classed('hidden', true);
         this.form.select( 'a' ).remove();//.classed('hidden', true);
 
@@ -43,7 +47,11 @@ class SidebarController {
         this.createColorPalette();
         this.createThumbnail();
         this.createText();
-        this.createDeleteButton();
+        if (this.isConflate) {
+            this.createCancelButton();
+        } else {
+            this.createDeleteButton();
+        }
 
         Hoot.ui.sidebar.adjustSize();
     }
@@ -150,19 +158,6 @@ class SidebarController {
             .append( 'span' )
             .classed( 'strong pad1x', true )
             .html( `${ text } &#8230;` );
-
-        // if (this.isConflate) {
-        //     console.log(this);
-        //     this.controller.insert('i', 'span')
-        //         .classed( 'material-icons', true )
-        //         .text( 'cancel' )
-        //         .attr('title', 'cancel job' )
-        //         .on('click', () => {
-        //             Hoot.api.cancelJob(d.jobId)
-        //                 // .then( resp => this.loadJobs() )
-        //                 .finally( () => console.log('done'));
-        //         });
-        // }
     }
 
     createDeleteButton() {
@@ -186,7 +181,7 @@ class SidebarController {
     createCancelButton() {
         this.cancelButton = this.controller
             .append( 'button' )
-            .classed( 'cancel-button icon-button keyline-left round-right inline _icon cancel', true )
+            .classed( 'cancel-button icon-button keyline-left round-right inline', true )
             .on( 'click', async d => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
@@ -195,13 +190,31 @@ class SidebarController {
                     confirm = await Hoot.message.confirm( message );
 
                 if ( confirm ) {
-                    // Hoot.api.cancelJob(d.jobId)
-                    //     .then( resp => this.loadJobs() )
-                    //     .finally( () => console.log('done'));
-                    // Hoot.layers.removeLoadedLayer( this.layerId );
-                    // Hoot.ui.sidebar.layerRemoved( d );
+                    Hoot.api.cancelJob(this.jobId)
+                        .then( resp => {
+                            this.restoreInputs();
+                        });
                 }
             } );
+        this.cancelButton.append('i')
+            .classed('material-icons', true)
+            .attr('title', 'cancel job' )
+            .text('cancel');
+    }
+
+    hideInputs() {
+        d3.selectAll( '.add-controller' ).classed('hidden', true);
+    }
+
+    restoreInputs() {
+        // remove conflating layer
+        d3.selectAll( '.layer-loading' ).remove();
+        // restore input layers
+        d3.selectAll( '.add-controller' ).classed('hidden', false);
+        // remove conflate button
+        Hoot.ui.sidebar.forms.conflate.remove();
+        // restore the conflate button
+        Hoot.ui.sidebar.conflateCheck();
     }
 
     update() {
@@ -263,6 +276,10 @@ class SidebarController {
             .text( layer.name );
 
         if ( this.isConflate ) {
+            //turn cancel into remove button
+            d3.selectAll('button.cancel-button').remove();
+            this.createDeleteButton();
+
             this.metadata = new LayerMetadata( this.context, this.form, layer );
             this.metadata.render();
             this.contextLayer.style( 'width', 'calc( 100% - 145px )' );
