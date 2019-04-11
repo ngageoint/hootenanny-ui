@@ -2,6 +2,7 @@ import Tab               from './tab';
 import moment            from 'moment';
 import ProgressBar       from 'progressbar.js';
 import DifferentialStats from '../modals/differentialStats';
+import JobCommandInfo    from '../modals/jobCommandInfo';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
 
@@ -476,8 +477,8 @@ export default class Jobs extends Tab {
                 if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
                     //Get info for the derive
                     actions.push({
-                        title: 'info job',
-                        icon: 'info',
+                        title: 'publish differential',
+                        icon: 'publish',
                         action: async () => {
                             Hoot.api.differentialStats(d.jobId)
                                 .then( resp => {
@@ -492,6 +493,17 @@ export default class Jobs extends Tab {
                         }
                     });
                 }
+
+                //Get info for the derive
+                actions.push({
+                    title: 'info job',
+                    icon: 'info',
+                    action: async () => {
+                        this.commandDetails = new JobCommandInfo(d.jobId).render();
+
+                        Hoot.events.once( 'modal-closed', () => delete this.commandDetails );
+                    }
+                });
 
                 props.push({
                     i: actions

@@ -212,3 +212,15 @@
 .diffInfo {
     white-space: pre-line;
 }
+
+#differentialPushTable {
+    .hoot-menu.modal {
+        max-width: 60%;
+    }
+
+    tbody {
+        display: block;
+        overflow: scroll;
+        max-height: 400px;
+    }
+}
