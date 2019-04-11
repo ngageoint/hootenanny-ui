@@ -16,16 +16,18 @@ describe( 'UI tools', () => {
             done();
         }, 1000);
     } );
+
     it( 'Measurement and Clip tools appear', done => {
 
         var menuItems = d3.selectAll('li.menu-item');
 
         setTimeout(() => {
-            expect(menuItems.size( )).to.be.equal( 2 );
+            expect(menuItems.size( )).to.be.equal( 3 );
             done();
         }, 1000);
 
     } );
+
     it( 'All measurement tools active', done => {
 
         //iD-icon-line.tools-measure
@@ -35,17 +37,29 @@ describe( 'UI tools', () => {
 
         setTimeout(() => {
             var subMenu = d3.selectAll('.tools-measure');
-            expect(subMenu.size( )).to.be.equal( 4 );
+            expect(subMenu.size( )).to.be.equal( 3 );
             done();
         }, 1000);
     } );
+
     it( 'All clip tools active', done => {
 
         var clipTools = d3.select('li.menu-item.tools-clip');
         clipTools.dispatch('mouseenter');
         setTimeout(() => {
-            var clipMenu = d3.select('.iD-operation-split'); 
+            var clipMenu = d3.select('.iD-operation-split');
             expect(clipMenu.size( )).to.be.equal( 1 );
+            done();
+        });
+    } );
+
+    it( 'All grail tools active', done => {
+
+        var grailTools = d3.select('.tools-grail');
+        grailTools.dispatch('mouseenter');
+        setTimeout(() => {
+            var grailMenu = d3.selectAll('.tools-grail');
+            expect(grailMenu.size()).to.be.equal( 4 );
             done();
         });
     } );
