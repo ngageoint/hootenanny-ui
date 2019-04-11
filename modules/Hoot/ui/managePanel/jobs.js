@@ -1,7 +1,7 @@
-
-import Tab          from './tab';
-import moment       from 'moment';
-import ProgressBar  from 'progressbar.js';
+import Tab            from './tab';
+import moment         from 'moment';
+import ProgressBar    from 'progressbar.js';
+import JobCommandInfo from '../modals/jobCommandInfo';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
 
@@ -470,6 +470,17 @@ export default class Jobs extends Tab {
                             }
                         }
 
+                    }
+                });
+
+                //Get info for the derive
+                actions.push({
+                    title: 'info job',
+                    icon: 'info',
+                    action: async () => {
+                        this.commandDetails = new JobCommandInfo(d.jobId).render();
+
+                        Hoot.events.once( 'modal-closed', () => delete this.commandDetails );
                     }
                 });
 
