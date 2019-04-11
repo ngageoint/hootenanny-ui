@@ -26,7 +26,7 @@ export default class Upload {
                 icon: 'play_for_work',
                 uploadType: 'FILE',
                 multiple: true,
-                accept: '.shp, .shx, .dbf, .zip'
+                accept: '.shp, .shx, .dbf, .zip, .geojson'
             },
             {
                 title: 'Upload Folder',
