@@ -209,14 +209,14 @@
 
 }
 
-#differentialPushTable {
+#jobCommandForm {
     .hoot-menu.modal {
         max-width: 60%;
     }
 
-    tbody {
-        display: block;
-        overflow: scroll;
-        max-height: 400px;
+    textarea {
+        width: 100%;
+        height: 400px;
     }
+
 }
