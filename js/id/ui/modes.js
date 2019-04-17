@@ -59,7 +59,10 @@ iD.ui.Modes = function(context) {
             .text(function(mode) { return mode.title; });
 
         context.on('enter.editor', function(entered) {
-            buttons.classed('active', function(mode) { return entered.button === mode.button; });
+            buttons.classed('active', function(mode) {
+                var isActive = d3.select(this).classed('active');
+                return entered.button === mode.button && !isActive;
+            });
             context.container()
                 .classed('mode-' + entered.id, true);
         });
@@ -72,8 +75,13 @@ iD.ui.Modes = function(context) {
         var keybinding = d3.keybinding('mode-buttons');
 
         modes.forEach(function(m) {
-            keybinding.on(m.key, function() { if (editable()) {
-                context.enter(m);
+            keybinding.on(m.key, function() {
+                if (editable()) {
+                    if(m.id === context.mode().id) {
+                        context.enter(iD.modes.Browse(context));
+                    } else {
+                        context.enter(m);
+                    }
                 }
             });
         });
