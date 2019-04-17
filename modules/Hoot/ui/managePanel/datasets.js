@@ -15,7 +15,6 @@ import AddFolder          from '../modals/addFolder';
 import ModifyDataset      from '../modals/modifyDataset';
 import ModifyFolder       from '../modals/modifyFolder';
 import ExportData from '../modals/exportData';
-import { geoPointInPolygon } from '../../../geo';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -246,6 +245,12 @@ export default class Datasets extends Tab {
                 this.processRequest = this.deleteItems( items )
                     .then( () => Hoot.events.emit( 'render-dataset-table' ) );
 
+                break;
+            }
+            case 'importDatasets': {
+                let translations = await Hoot.api.getTranslations();
+                this.importMultiModal = new ImportMultiDataset( translations, d.data.name ).render();
+                Hoot.events.once('modal-closed', () => delete this.importMultiModal);
                 break;
             }
             case 'addDataset': {
