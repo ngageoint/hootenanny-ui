@@ -34,6 +34,7 @@ export function uiBackground(context) {
 
     var _backgroundList = d3_select(null);
     var _overlayList = d3_select(null);
+    var _layerToggleList = d3_select(null);
     var _displayOptionsContainer = d3_select(null);
     var _offsetContainer = d3_select(null);
 
@@ -268,6 +269,13 @@ export function uiBackground(context) {
             .text(t('background.minimap.description'));
 
 
+        // the layer toggle list
+        _layerToggleList = selection.selectAll('.layer-toggle-list')
+            .data([0])
+            .enter()
+            .append('ul')
+            .attr('class', 'layer-list layer-toggle-list');
+
         // "Info / Report a Problem" link
         selection.selectAll('.imagery-faq')
             .data([0])
@@ -283,6 +291,42 @@ export function uiBackground(context) {
             .text(t('background.imagery_source_faq'));
     }
 
+    function renderLayerToggle() {
+        const getlist = Object.keys(Hoot.layers.loadedLayers).map( d => Hoot.layers.loadedLayers[d] );
+
+        let updateList = _layerToggleList.selectAll('li.layer')
+            .data(getlist)
+            .enter();
+
+        updateList.exit()
+            .remove();
+
+        let subItems = updateList
+            // .data(Hoot.layers.loadedLayers)
+            .append('li')
+            .attr('class', 'layer layer-toggle-item');
+
+        let subItemsEnter = subItems
+            .append('label');
+
+        subItemsEnter
+            .append('input')
+            .attr('type', 'checkbox')
+            .property('checked', true)
+            .on('change', function(d) {
+                const isSelected = d3.select(this).property('checked');
+
+                if (isSelected) {
+                    Hoot.layers.loadLayer(d);
+                } else {
+                    Hoot.layers.hideLayer(d.id);
+                }
+            });
+
+        subItemsEnter
+            .append('span')
+            .text(d => { return d.name; });
+    }
 
     function renderOverlayList(selection) {
         var container = selection.selectAll('.layer-overlay-list')
@@ -535,6 +579,7 @@ export function uiBackground(context) {
         uiBackground.hidePane = hidePane;
         uiBackground.togglePane = togglePane;
         uiBackground.setVisible = setVisible;
+        uiBackground.renderLayerToggle = renderLayerToggle;
     }
 
     return background;
