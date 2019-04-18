@@ -269,12 +269,9 @@ export function uiBackground(context) {
             .text(t('background.minimap.description'));
 
 
-        // the layer toggle list
-        _layerToggleList = selection.selectAll('.layer-toggle-list')
-            .data([0])
-            .enter()
-            .append('ul')
-            .attr('class', 'layer-list layer-toggle-list');
+        // the background list
+        _layerToggleList = selection.append('ul')
+             .attr('class', 'layer-list layer-toggle-list');
 
         // "Info / Report a Problem" link
         selection.selectAll('.imagery-faq')
@@ -294,23 +291,16 @@ export function uiBackground(context) {
     function renderLayerToggle() {
         const getlist = Object.keys(Hoot.layers.loadedLayers).map( d => Hoot.layers.loadedLayers[d] );
 
-        let updateList = _layerToggleList.selectAll('li.layer')
-            .data(getlist)
-            .enter();
+        let updateList = _layerToggleList.selectAll('li.layer-toggle-item')
+            .data(getlist);
 
-        updateList.exit()
-            .remove();
-
-        let subItems = updateList
-            // .data(Hoot.layers.loadedLayers)
+        let subItems = updateList.enter()
             .append('li')
             .attr('class', 'layer layer-toggle-item');
 
-        let subItemsEnter = subItems
-            .append('label');
+        let listItems = subItems.append('label');
 
-        subItemsEnter
-            .append('input')
+        listItems.append('input')
             .attr('type', 'checkbox')
             .property('checked', true)
             .on('change', function(d) {
@@ -323,9 +313,10 @@ export function uiBackground(context) {
                 }
             });
 
-        subItemsEnter
-            .append('span')
-            .text(d => { return d.name; });
+        listItems.append('span')
+            .text(d =>  d.name);
+
+        updateList.exit().remove();
     }
 
     function renderOverlayList(selection) {
