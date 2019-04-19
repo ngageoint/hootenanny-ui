@@ -28,6 +28,10 @@ export default class ImportMultiDatasets {
             {
                 title: 'OSM or PBF',
                 value: 'OSM'
+            },
+            {
+                title: 'GeoJSON',
+                value: 'GEOJSON'
             }
         ];
     }
@@ -126,7 +130,8 @@ export default class ImportMultiDatasets {
             typeCount     = {
                 osm: 0,
                 shp: 0,
-                zip: 0
+                zip: 0,
+                geojson: 0
             };
 
         if ( !files.length ) return;
@@ -169,7 +174,15 @@ export default class ImportMultiDatasets {
     }
 
     setFileMetadata( fileName, typeCount, fileList ) {
-        let fName = fileName.substring( 0, fileName.length - 4 );
+
+        let fName;
+
+        if ( fileName.includes('geojson')) {
+            fName = fileName.substring( 0, fileName.length);
+        } else {
+            fName = fileName.substring( 0, fileName.length - 4 );
+        }
+        //let fName = fileName.substring( 0, fileName.length - 4 );
 
         if ( fileName.indexOf( '.shp.xml' ) > -1 ) {
             fName = fileName.toLowerCase().substring( 0, fileName.length - 8 );
@@ -185,7 +198,8 @@ export default class ImportMultiDatasets {
                 isDBF: false,
                 isPRJ: false,
                 isOSM: false,
-                isZIP: false
+                isZIP: false,
+                isGEOJSON: false
             };
 
             fileList.push( fObj );
@@ -205,6 +219,9 @@ export default class ImportMultiDatasets {
         } else if ( fileName.lastIndexOf( '.osm' ) > -1 ) {
             typeCount.osm++;
             fObj.isOSM = true;
+        } else if ( fileName.lastIndexOf( '.geojson' ) > -1 ) {
+            typeCount.geojson++;
+            fObj.isGEOJSON = true;
         }
     }
 
@@ -481,6 +498,10 @@ export default class ImportMultiDatasets {
             uploader
                 .property( 'multiple', true )
                 .attr( 'accept', '.shp, .shx, .dbf' );
+        } else if ( typeVal === 'GEOJSON' ) {
+            uploader
+                .property( 'multiple', true )
+                .attr( 'accept', '.geojson' );
         }
     }
 }
