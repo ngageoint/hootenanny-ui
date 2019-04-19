@@ -175,14 +175,12 @@ export default class ImportMultiDatasets {
 
     setFileMetadata( fileName, typeCount, fileList ) {
 
-        let fName;
+        let fName = fileName.substring( 0, fileName.length - 4 );
 
-        if ( fileName.includes('geojson')) {
-            fName = fileName.substring( 0, fileName.length);
-        } else {
-            fName = fileName.substring( 0, fileName.length - 4 );
-        }
-        //let fName = fileName.substring( 0, fileName.length - 4 );
+        // if ( fileName.indexOf( '.geojson' ) > -1 ) {
+
+        //     fName = fileName.toLowerCase().substring( 0, fileName.length - 3);
+        // }
 
         if ( fileName.indexOf( '.shp.xml' ) > -1 ) {
             fName = fileName.toLowerCase().substring( 0, fileName.length - 8 );
