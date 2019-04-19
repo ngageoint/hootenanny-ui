@@ -98,8 +98,15 @@ export function svgLines(projection, context) {
             var scoreA = selected.indexOf(a.id) !== -1 ? 20 : 0;
             var scoreB = selected.indexOf(b.id) !== -1 ? 20 : 0;
 
-            if (a.tags.highway) { scoreA -= highway_stack[a.tags.highway]; }
-            if (b.tags.highway) { scoreB -= highway_stack[b.tags.highway]; }
+            if (a.tags.highway) { scoreA -= highway_stack[a.tags.highway] || 0; }
+            if (b.tags.highway) { scoreB -= highway_stack[b.tags.highway] || 0; }
+
+            const topLayer = Hoot.layers.getTopLayer();
+            if (topLayer) {
+                if (+a.mapId === topLayer) { scoreA += 20; }
+                if (+b.mapId === topLayer) { scoreB += 20; }
+            }
+
             return scoreA - scoreB;
         }
 

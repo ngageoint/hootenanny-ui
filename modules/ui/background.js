@@ -269,7 +269,7 @@ export function uiBackground(context) {
             .text(t('background.minimap.description'));
 
 
-        // the background list
+        // the layer toggle list
         _layerToggleList = selection.append('ul')
              .attr('class', 'layer-list layer-toggle-list');
 
@@ -291,32 +291,73 @@ export function uiBackground(context) {
     function renderLayerToggle() {
         const getlist = Object.keys(Hoot.layers.loadedLayers).map( d => Hoot.layers.loadedLayers[d] );
 
-        let updateList = _layerToggleList.selectAll('li.layer-toggle-item')
+        _layerToggleList.html('');
+
+        let updateList = _layerToggleList.selectAll('.layer-toggle-item')
             .data(getlist);
 
-        let subItems = updateList.enter()
+        updateList.exit().remove();
+
+        updateList = updateList.enter()
             .append('li')
-            .attr('class', 'layer layer-toggle-item');
+            .attr('class', 'layer layer-toggle-item')
+            .merge(updateList);
 
-        let listItems = subItems.append('label');
+        let updateButton = updateList.selectAll('.lyrcntrlbtn')
+            .data(d => [d]);
 
-        listItems.append('input')
+        updateButton.exit().remove();
+
+        updateButton = updateButton.enter()
+            .append('button')
+            .call(tooltip().title('Click to have layer be on top').placement('left'))
+            .attr('class', data => `pad0x keyline-left tall fr fill-${data.color}`)
+            .on('click', function(data) {
+                var feature = d3.select(this.parentNode).node();
+                var prev = feature.previousElementSibling;
+
+                if (!prev) {
+                    return;
+                }
+                _layerToggleList.node()
+                    .insertBefore(feature, prev);
+
+                Hoot.layers.setTopLayer(data.id);
+            })
+            .append('span')
+            .classed('material-icons', true)
+            .text('arrow_upward');
+
+        // create labels
+        let updateLabel = updateList.selectAll('.layer-toggle-item-label')
+            .data(d => [d]);
+
+        updateLabel.exit().remove();
+
+        updateLabel = updateLabel.enter()
+            .append('label')
+            .classed('layer-toggle-item-label', true)
+            .merge(updateLabel);
+
+        updateLabel.text(data =>  data.name);
+
+        // create checkboxes
+        let updateInput = updateLabel.selectAll('.layer-toggle-item-input')
+            .data(d => [d]);
+
+        updateInput.exit().remove();
+
+        updateInput = updateInput.enter()
+            .append('input')
+            .classed('layer-toggle-item-input', true)
+            .merge(updateInput);
+
+        updateInput
             .attr('type', 'checkbox')
             .property('checked', true)
             .on('change', function(d) {
-                const isSelected = d3.select(this).property('checked');
-
-                if (isSelected) {
-                    Hoot.layers.loadLayer(d);
-                } else {
-                    Hoot.layers.hideLayer(d.id);
-                }
+                Hoot.layers.toggleLayerVisibility(d);
             });
-
-        listItems.append('span')
-            .text(d =>  d.name);
-
-        updateList.exit().remove();
     }
 
     function renderOverlayList(selection) {
