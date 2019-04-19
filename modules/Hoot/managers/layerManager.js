@@ -348,11 +348,10 @@ export default class Layers {
               id = layer.id;
 
         if (isVisible) {
-            this.hoot.context.connection().addTile( id );
+            d3.selectAll(`.tag-hoot-${id}`).attr('display','');
         } else {
-            this.hoot.context.connection().removeTile( id );
+            d3.selectAll(`.tag-hoot-${id}`).attr('display','none');
         }
-        this.hoot.context.flush();
     }
 
     decodeHootStatus( status ) {

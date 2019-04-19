@@ -68,7 +68,7 @@ export function svgLines(projection, context) {
             .append('path')
             .merge(targets)
             .attr('d', getPath)
-            .attr('class', function(d) { return 'way line target target-allowed ' + targetClass + d.id; });
+            .attr('class', d => `way line target target-allowed ${targetClass} ${d.id} tag-hoot-${d.mapId}`);
 
 
         // NOPE

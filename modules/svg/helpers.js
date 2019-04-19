@@ -272,6 +272,7 @@ export function svgSegmentWay(way, graph, activeID) {
             features.passive.push({
                 type: 'Feature',
                 id: way.id + '-' + index,
+                mapId: way.mapId,
                 properties: {
                     target: true,
                     entity: way,

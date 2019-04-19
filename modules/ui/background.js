@@ -311,7 +311,15 @@ export function uiBackground(context) {
         updateButton = updateButton.enter()
             .append('button')
             .call(tooltip().title('Click to have layer be on top').placement('left'))
-            .attr('class', data => `pad0x keyline-left tall fr fill-${data.color}`)
+            .attr('class', data => {
+                let classes = `keyline-left fr fill-${data.color}`;
+
+                // First item should have the button hidden
+                if (getlist.length > 1 && getlist[0] === data) {
+                    classes += ' hidden';
+                }
+                return classes;
+            })
             .on('click', function(data) {
                 var feature = d3.select(this.parentNode).node();
                 var prev = feature.previousElementSibling;
@@ -321,6 +329,13 @@ export function uiBackground(context) {
                 }
                 _layerToggleList.node()
                     .insertBefore(feature, prev);
+
+                //turn top layer 'move up' button off
+                d3.select(feature).select('button')
+                    .classed('hidden', true);
+                //turn bottom layer 'move up' button on
+                d3.select(prev).select('button')
+                    .classed('hidden', false);
 
                 Hoot.layers.setTopLayer(data.id);
             })
