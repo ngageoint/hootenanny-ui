@@ -1,7 +1,7 @@
 {
     "extends": "eslint:recommended",
     "rules": {
-        "dot-notation": 2,
+        "dot-notation": 1,
         "eqeqeq": [2, "smart"],
         "indent": [0, 4],
         "linebreak-style": [2, "unix"],

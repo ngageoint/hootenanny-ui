@@ -185,14 +185,13 @@ Hoot.tools = function (context) {
         }
 
         data.OUTPUT_NAME = a.select('.saveAs').value();
+        data.OUTPUT_FOLDER = 0;
         data.CONFLATION_TYPE = a.select('.ConfType').value();
         //Disable till swap approval
         data.COLLECT_STATS = a.select('.isCollectStats').value();
 
         data.CONFLATION_COMMAND = conflationCommand;
 
-        var n = (new Date()).getTime();
-        data.TIME_STAMP = '' + n;
         data.REFERENCE_LAYER = refLayer;
 
         if(advOpts){
