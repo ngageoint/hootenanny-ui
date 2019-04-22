@@ -310,9 +310,13 @@ export default class ImportMultiDatasets {
             translationName = '';
         }
         if ( translation.DEFAULT ) {
-            if ( translation.PATH && translation.PATH.length || translation.IMPORTPATH && translation.IMPORTPATH.length ) {
+            if ( translation.PATH && translation.PATH.length ) {
                 translationName = translation.PATH;
-            } else {
+            }
+            else if ( translation.IMPORTPATH && translation.IMPORTPATH.length ) {
+                translationName = translation.IMPORTPATH;
+            }
+            else {
                 translationName = translation.NAME + '.js';
             }
         } else {
