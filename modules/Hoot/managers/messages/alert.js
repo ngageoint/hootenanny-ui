@@ -7,12 +7,13 @@
 import EventEmitter from 'events';
 
 export default class Alert extends EventEmitter {
-    constructor( { data, message, type } ) {
+    constructor( { data, message, type, keepOpen } ) {
         super();
 
         this.data    = data;
         this.message = message;
         this.type    = type;
+        this.keepOpen   = keepOpen;
 
         this.displayTime = 5000;
         this.animateTime = 500;
@@ -99,7 +100,8 @@ export default class Alert extends EventEmitter {
     }
 
     autoHide() {
-        this.hideTimeout = setTimeout( () => this.destroy(), this.displayTime );
+        if (!this.keepOpen)
+            this.hideTimeout = setTimeout( () => this.destroy(), this.displayTime );
     }
 
     clearAutoHide() {
