@@ -173,24 +173,40 @@ export default class Jobs extends Tab {
                 });
 
                 //Actions
+                let actions = [];
                 let user = JSON.parse( localStorage.getItem( 'user' ) );
 
+
+                //Get logging for the job
+                actions.push({
+                    title: 'view log',
+                    icon: 'subject',
+                    action: async () => {
+                        this.commandDetails = new JobCommandInfo(d.jobId, true).render();
+
+                        Hoot.events.once( 'modal-closed', () => {
+                            this.commandDetails.deactivate();
+                            delete this.commandDetails;
+                        });
+                    }
+                });
+
                 if (d.userId === user.id) {
-                    props.push({
-                        i: [{
-                            title: 'cancel job',
-                            icon: 'cancel',
-                            action: () => {
-                                d3.select('#util-jobs').classed('wait', true);
-                                Hoot.api.cancelJob(d.jobId)
-                                    .then( resp => this.loadJobs() )
-                                    .finally( () => d3.select('#util-jobs').classed('wait', false));
-                            }
-                        }]
+                    actions.push({
+                        title: 'cancel job',
+                        icon: 'cancel',
+                        action: () => {
+                            d3.select('#util-jobs').classed('wait', true);
+                            Hoot.api.cancelJob(d.jobId)
+                                .then( resp => this.loadJobs() )
+                                .finally( () => d3.select('#util-jobs').classed('wait', false));
+                        }
                     });
-                } else {
-                    props.push({});
                 }
+
+                props.push({
+                    i: actions
+                });
 
                 return props;
             });
@@ -473,10 +489,10 @@ export default class Jobs extends Tab {
                     }
                 });
 
-                //Get info for the derive
+                //Get logging for the job
                 actions.push({
-                    title: 'info job',
-                    icon: 'info',
+                    title: 'view log',
+                    icon: 'subject',
                     action: async () => {
                         this.commandDetails = new JobCommandInfo(d.jobId).render();
 
