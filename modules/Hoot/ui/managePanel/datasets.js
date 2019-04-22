@@ -247,12 +247,26 @@ export default class Datasets extends Tab {
 
                 break;
             }
-            case 'addDataset': {
+            case 'importDatasets': {
                 let translations = await Hoot.api.getTranslations();
-
                 this.importMultiModal = new ImportMultiDataset( translations, d.data.name ).render();
+                Hoot.events.once('modal-closed', () => delete this.importMultiModal);
+                break;
+            }
+            case 'addDataset': {
 
-                Hoot.events.once( 'modal-closed', () => delete this.importMultiModal );
+                let params = {
+                    name: d.data.name,
+                    id: d.data.id
+                };
+
+                Hoot.ui.sidebar.forms[item.formId].submitLayer( params )
+                    .then( () => {
+                        let refType = item.formId.charAt( 0 ).toUpperCase() + item.formId.substr( 1 ),
+                            message = `${refType} layer added to map: <u>${d.data.name}</u>`,
+                            type    = 'info';
+                        Hoot.message.alert( {message, type} );
+                    });
                 break;
             }
             case 'exportDataset': {
