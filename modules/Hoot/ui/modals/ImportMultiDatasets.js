@@ -141,8 +141,8 @@ export default class ImportMultiDatasets {
                 fileName    = currentFile.name;
 
             totalFileSize += currentFile.size;
-            fileNames.push( fileName );
 
+            fileNames.push( fileName );
             this.setFileMetadata( fileName, typeCount, fileList );
         }
 
@@ -177,12 +177,10 @@ export default class ImportMultiDatasets {
 
         let fName = fileName.substring( 0, fileName.length - 4 );
 
-        // if ( fileName.indexOf( '.geojson' ) > -1 ) {
-
-        //     fName = fileName.toLowerCase().substring( 0, fileName.length - 3);
-        // }
-
         if ( fileName.indexOf( '.shp.xml' ) > -1 ) {
+            fName = fileName.toLowerCase().substring( 0, fileName.length - 8 );
+        }
+        if ( fileName.indexOf( '.geojson' ) > -1 ) {
             fName = fileName.toLowerCase().substring( 0, fileName.length - 8 );
         }
 
@@ -345,6 +343,9 @@ export default class ImportMultiDatasets {
                     if ( file.name.toLowerCase().indexOf( '.shp.xml' ) > -1 ) {
                         fName = file.name.substring( 0, file.name.length - 8 );
                     }
+                    if ( file.name.indexOf( '.geojson' ) > -1 ) {
+                        fName = file.name.toLowerCase().substring( 0, file.name.length - 8 );
+                    }
 
                     return fName === name;
                 } );
@@ -353,7 +354,7 @@ export default class ImportMultiDatasets {
                     NONE_TRANSLATION: translation.NONE === 'true',
                     TRANSLATION: translationName,
                     INPUT_TYPE: importType.value,
-                    INPUT_NAME: name,
+                    INPUT_NAME: this.checkLayerName(name),
                     formData: this.getFormData( importFiles )
                 };
 
@@ -380,6 +381,17 @@ export default class ImportMultiDatasets {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
             } );
+    }
+
+    checkLayerName(layerName) {
+        var matches = [];
+        for (let i = 0; i < Hoot.layers.allLayers.length; i++) {
+            var checkedLayer = Hoot.layers.allLayers[i].name;
+            if (checkedLayer === layerName || new RegExp(layerName + '_\\d+').test(checkedLayer) ) {
+                matches.push(checkedLayer);
+            }
+        }
+        return matches.length ? `${layerName}_${matches.length}` : layerName;
     }
 
     allProgress( proms, cb ) {
@@ -499,7 +511,7 @@ export default class ImportMultiDatasets {
         } else if ( typeVal === 'GEOJSON' ) {
             uploader
                 .property( 'multiple', true )
-                .attr( 'accept', '.geojson' );
+                .attr( 'accept', '.geojson', '.geo' );
         }
     }
 }
