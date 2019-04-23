@@ -498,10 +498,7 @@ export default class Jobs extends Tab {
                         this.commandDetails = new JobCommandInfo(d.jobId);
                         this.commandDetails.render();
 
-                        Hoot.events.once( 'modal-closed', () => {
-                            this.commandDetails.deactivate();
-                            delete this.commandDetails;
-                        });
+                        Hoot.events.once( 'modal-closed', () => delete this.commandDetails );
                     }
                 });
 
