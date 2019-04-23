@@ -1,7 +1,7 @@
-
-import Tab          from './tab';
-import moment       from 'moment';
-import ProgressBar  from 'progressbar.js';
+import Tab            from './tab';
+import moment         from 'moment';
+import ProgressBar    from 'progressbar.js';
+import JobCommandInfo from '../modals/jobCommandInfo';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
 
@@ -173,24 +173,40 @@ export default class Jobs extends Tab {
                 });
 
                 //Actions
+                let actions = [];
                 let user = JSON.parse( localStorage.getItem( 'user' ) );
 
+
+                //Get logging for the job
+                actions.push({
+                    title: 'view log',
+                    icon: 'subject',
+                    action: async () => {
+                        this.commandDetails = new JobCommandInfo(d.jobId, true).render();
+
+                        Hoot.events.once( 'modal-closed', () => {
+                            this.commandDetails.deactivate();
+                            delete this.commandDetails;
+                        });
+                    }
+                });
+
                 if (d.userId === user.id) {
-                    props.push({
-                        i: [{
-                            title: 'cancel job',
-                            icon: 'cancel',
-                            action: () => {
-                                d3.select('#util-jobs').classed('wait', true);
-                                Hoot.api.cancelJob(d.jobId)
-                                    .then( resp => this.loadJobs() )
-                                    .finally( () => d3.select('#util-jobs').classed('wait', false));
-                            }
-                        }]
+                    actions.push({
+                        title: 'cancel job',
+                        icon: 'cancel',
+                        action: () => {
+                            d3.select('#util-jobs').classed('wait', true);
+                            Hoot.api.cancelJob(d.jobId)
+                                .then( resp => this.loadJobs() )
+                                .finally( () => d3.select('#util-jobs').classed('wait', false));
+                        }
                     });
-                } else {
-                    props.push({});
                 }
+
+                props.push({
+                    i: actions
+                });
 
                 return props;
             });
@@ -470,6 +486,17 @@ export default class Jobs extends Tab {
                             }
                         }
 
+                    }
+                });
+
+                //Get logging for the job
+                actions.push({
+                    title: 'view log',
+                    icon: 'subject',
+                    action: async () => {
+                        this.commandDetails = new JobCommandInfo(d.jobId).render();
+
+                        Hoot.events.once( 'modal-closed', () => delete this.commandDetails );
                     }
                 });
 
