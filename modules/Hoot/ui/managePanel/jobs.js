@@ -182,7 +182,8 @@ export default class Jobs extends Tab {
                     title: 'view log',
                     icon: 'subject',
                     action: async () => {
-                        this.commandDetails = new JobCommandInfo(d.jobId, true).render();
+                        this.commandDetails = new JobCommandInfo(d.jobId, true);
+                        this.commandDetails.render();
 
                         Hoot.events.once( 'modal-closed', () => {
                             this.commandDetails.deactivate();
@@ -494,9 +495,13 @@ export default class Jobs extends Tab {
                     title: 'view log',
                     icon: 'subject',
                     action: async () => {
-                        this.commandDetails = new JobCommandInfo(d.jobId).render();
+                        this.commandDetails = new JobCommandInfo(d.jobId);
+                        this.commandDetails.render();
 
-                        Hoot.events.once( 'modal-closed', () => delete this.commandDetails );
+                        Hoot.events.once( 'modal-closed', () => {
+                            this.commandDetails.deactivate();
+                            delete this.commandDetails;
+                        });
                     }
                 });
 
