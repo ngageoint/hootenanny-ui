@@ -21,7 +21,7 @@ export default class JobCommandInfo {
     }
 
     activate() {
-        this.poller = window.setInterval( this.loadCommands.bind(this), 2000 );
+        this.poller = window.setInterval( this.loadCommands.bind(this), 5000 );
     }
 
     deactivate() {
