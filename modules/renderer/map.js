@@ -1,5 +1,6 @@
 import _compact from 'lodash-es/compact';
 import _map from 'lodash-es/map';
+import _throttle from 'lodash-es/throttle';
 import _values from 'lodash-es/values';
 
 import { set as d3_set } from 'd3-collection';
@@ -86,7 +87,6 @@ export function rendererMap(context) {
     var minzoom = 0;
     var mouse;
     var mousemove;
-    var timeoutId;
 
     var zoom = d3_zoom()
         .scaleExtent([kMin, kMax])
@@ -94,11 +94,7 @@ export function rendererMap(context) {
         .filter(zoomEventFilter)
         .on('zoom', zoomPan);
 
-    //var scheduleRedraw = _throttle(redraw, 750);
-    function scheduleRedraw() {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout( function() { redraw(); }, 150);
-    }
+    var scheduleRedraw = _throttle(redraw, 750);
     // var isRedrawScheduled = false;
     // var pendingRedrawCall;
     // function scheduleRedraw() {
@@ -115,7 +111,7 @@ export function rendererMap(context) {
     // }
 
     function cancelPendingRedraw() {
-        clearTimeout(timeoutId);
+        scheduleRedraw.cancel();
         // isRedrawScheduled = false;
         // window.cancelIdleCallback(pendingRedrawCall);
     }
@@ -578,7 +574,6 @@ export function rendererMap(context) {
     function redraw(difference, extent) {
         if (surface.empty() || !_redrawEnabled) return;
 
-        cancelPendingRedraw();
         // If we are in the middle of a zoom/pan, we can't do differenced redraws.
         // It would result in artifacts where differenced entities are redrawn with
         // one transform and unchanged entities with another.
@@ -616,9 +611,6 @@ export function rendererMap(context) {
 
         // OSM
         if ( map.editable() ) {
-            if ( context.connection() ) {
-                context.connection().tileZoom( 1 );
-            }
             context.loadTiles( projection, () => {
                 if ( Hoot.layers.mergedLayer ) {
                     Hoot.events.emit( 'layer-merged' );
@@ -628,18 +620,6 @@ export function rendererMap(context) {
             drawVector( difference, extent );
         } else {
             editOff();
-
-            if ( context.connection() ) {
-                context.connection().tileZoom( 16 );
-            }
-
-            if ( Hoot.layers.mergedLayer ) {
-                Hoot.events.emit( 'layer-merged' );
-            }
-
-            //context.loadTiles( projection, dimensions );
-
-            //drawVector( difference, extent );
         }
 
         _transformStart = projection.transform();
@@ -688,7 +668,7 @@ export function rendererMap(context) {
 
     //Added so we can redraw the map without changing extent
     //after a layer is added.
-    map.immediateRedraw = immediateRedraw;
+    //map.immediateRedraw = immediateRedraw;
 
     map.isTransformed = function() {
         return _transformed;
@@ -898,7 +878,7 @@ export function rendererMap(context) {
             dispatch.call('move', this, map);
         }
 
-        redraw();
+        scheduleRedraw();
         return map;
     };
 
