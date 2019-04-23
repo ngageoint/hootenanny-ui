@@ -178,7 +178,7 @@ export default class ClipDataset {
             .data( _map( d.combobox, n => {
                 return {
                     value: n.path,
-                    id: n.id
+                    _value: n.id
                 };
             } ) );
 
@@ -189,7 +189,7 @@ export default class ClipDataset {
                 textB = b.value.toLowerCase();
 
             return textA < textB ? -1 : textA > textB ? 1 : 0;
-        } ).unshift( { value: 'root', id: 0 } );
+        } ).unshift( { value: 'root', _value: 0 } );
 
         input.call( combobox );
     }
@@ -213,7 +213,7 @@ export default class ClipDataset {
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = outputName.property( 'value' ) || outputName.attr( 'placeholder' );
-            params.FOLDER_ID   = folderId.property( 'selectedID' ) || 0;
+            params.FOLDER_ID   = folderId.attr( '_value' ) || 0;
             params.BBOX        = bbox;
 
             Hoot.api.clipDataset( params )

@@ -1,24 +1,37 @@
 import FormFactory from '../../tools/formFactory';
 
 export default class JobCommandInfo {
-    constructor( jobId ) {
+    constructor( jobId, poll ) {
         this.jobId = jobId;
+        this.poll = poll;
     }
 
     render() {
         let metadata = {
-            title: 'Job Command Info',
+            title: 'Job Log',
         };
 
-        let formId = 'differentialPushTable';
+        let formId = 'jobCommandForm';
         this.form  = new FormFactory().generateForm( 'body', formId, metadata );
 
+        this.loadCommands();
+
+        if (this.poll)
+            this.activate();
+    }
+
+    activate() {
+        this.poller = window.setInterval( this.loadCommands.bind(this), 2000 );
+    }
+
+    deactivate() {
+        window.clearInterval(this.poller);
+    }
+
+    loadCommands() {
         Hoot.api.getJobStatus( this.jobId )
             .then( resp => {
-                let { stdout, stderr } = resp.commandDetail[ 0 ];
-                console.log( stdout );
-                this.stdout = stdout;
-
+                this.commands = resp.commandDetail;
                 this.createTable();
             } )
             .catch( err => {
@@ -28,27 +41,14 @@ export default class JobCommandInfo {
     }
 
     createTable() {
-        let table = this.form
+        let ta = this.form
             .select( '.wrapper div' )
-            .insert( 'table', '.modal-footer' )
-            .attr( 'id', 'jobCommandInfo' );
-
-        let colgroup = table
-            .append( 'colgroup' );
-
-        colgroup.append( 'col' )
-            .attr( 'span', '1' );
-
-        colgroup.append( 'col' )
-            .style( 'width', '100px' );
-
-        let tableBody = table.append( 'tbody' )
-            .append( 'tr' );
-
-        tableBody.append( 'td' )
-            .classed( 'diffInfo', true )
-            .text(this.stdout);
-
-
+            .selectAll( 'textarea' )
+            .data([0]);
+        ta.exit().remove();
+        ta.enter().append('textarea')
+            .merge(ta)
+            .text(this.commands.map( comm => comm.stdout).join(''));
+        ta.node().scrollTop = ta.node().scrollHeight;
     }
 }

@@ -625,7 +625,6 @@ export default class API {
                 TRANSLATION: data.TRANSLATION,
                 INPUT_TYPE: data.INPUT_TYPE,
                 INPUT_NAME: data.INPUT_NAME,
-                // USER_EMAIL: 'test@test.com',
                 NONE_TRANSLATION: data.NONE_TRANSLATION
             },
             data: data.formData
@@ -1060,28 +1059,7 @@ export default class API {
             data
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Conflation job complete',
-                    status: 200,
-                    type: resp.type
-                };
-            } )
-            .catch( err => {
-                let message, status, type;
-
-                status = err.status;
-
-                if ( status >= 500 ) {
-                    message = 'Error during conflation! Please try again later.';
-                    type    = err.type;
-                }
-
-                return Promise.reject( { message, status, type } );
-            } );
+        return this.request( params );
     }
 
     clipDataset( data ) {

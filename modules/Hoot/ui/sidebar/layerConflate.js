@@ -32,6 +32,11 @@ class LayerConflate extends SidebarForm {
             secondary: _find( layers, layer => layer.refType === 'secondary' )
         };
 
+        this.defaultFolderId = Hoot.layers.findBy('id', parseInt(this.selectedLayers.primary.id, 10)).folderId
+                    || Hoot.layers.findBy('id', parseInt(this.selectedLayers.secondary.id, 10)).folderId;
+
+        this.defaultFolder = _find( this.folderList, folder => folder.id === this.defaultFolderId);
+
         this.formData = layerConflateForm.call( this, layers );
 
         super.render();
@@ -171,18 +176,17 @@ class LayerConflate extends SidebarForm {
     preConflation() {
         let data = {};
 
-        data.TIME_STAMP         = '' + new Date().getTime();
         data.INPUT1             = Hoot.layers.findLoadedBy( 'refType', 'primary' ).id;
         data.INPUT2             = Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id;
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
         data.OUTPUT_NAME        = this.saveAsInput.property( 'value' );
+        data.OUTPUT_FOLDER      = parseInt(this.folderPathInput.attr( '_value' ), 10);
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
         data.DISABLED_FEATURES  = this.advancedOptions.getDisabledFeatures();
         data.CONFLATION_TYPE    = this.typeInput.property( 'value' ).replace( /(Cookie Cutter & | w\/ Tags)/, '' );
         data.HOOT_2             = true;
-        data.USER_EMAIL         = 'test@test.com';
 
         let { advanced, cleaning } = this.advancedOptions.getOptions();
         data.HOOT2_ADV_OPTIONS = advanced;
@@ -225,13 +229,12 @@ class LayerConflate extends SidebarForm {
 
 
         _forEach( layers, d => Hoot.layers.hideLayer( d.id ) );
-
+//handle layer not found here
         params.id     = Hoot.layers.findBy( 'name', params.name ).id;
+        params.refType = 'merged';
         params.merged = true;
         params.layers = layers;
-
-        Hoot.layers.loadLayer( params )
-            .then( () => Hoot.folders.updateFolders( this.innerWrapper ) );
+        Hoot.layers.loadLayer( params );
     }
 
     handleSubmit() {
@@ -245,25 +248,58 @@ class LayerConflate extends SidebarForm {
                 isConflate: true
             };
 
-        // remove reference layer controllers
-        d3.selectAll( '.add-controller' ).remove();
-
         if ( this.advancedOptions.isOpen ) {
             this.advancedOptions.toggle();
         }
 
-        this.loadingState( params );
 
         return Hoot.api.conflate( data )
-            .then( resp => Hoot.message.alert( resp ) )
-            .catch( err => {
-                Hoot.ui.sidebar.reset();
-                Hoot.message.alert( err );
+            .then( resp => {
+                params.jobId = resp.data.jobid;
 
-                return false;
+                this.loadingState( params );
+
+                // hide input layer controllers
+                this.controller.hideInputs();
+
+                return Hoot.api.statusInterval( resp.data.jobid );
+            })
+            .then( resp => {
+                // remove input layer controllers
+                d3.selectAll( '.add-controller' ).remove();
+
+                Hoot.message.alert( {
+                    data: resp.data,
+                    message: 'Conflation job complete',
+                    status: 200,
+                    type: resp.type
+                } );
             } )
             .then( () => Hoot.layers.refreshLayers() )
-            .then( () => this.postConflation( params ) );
+            .then( () => this.postConflation( params ) )
+            .catch( err => {
+                console.error(err);
+                let message, status, type, keepOpen = true;
+
+                status = err.status;
+                type   = err.type;
+
+                // check for services error
+                if (status >= 400 && status < 500) {
+                    message = err.data.split('\n')[0];
+                } else if (status >= 500) { // check for command line error
+                    message = err.data.commandDetail[0].stderr;
+                } else {
+                    message = 'Error running conflation';
+                }
+
+                // restore input layer controllers
+                this.controller.restoreInputs();
+
+                // Hoot.ui.sidebar.reset();
+                Hoot.message.alert( { message, type, keepOpen } );
+
+            } );
     }
 
     forceAdd( params ) {

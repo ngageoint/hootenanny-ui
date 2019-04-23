@@ -206,7 +206,17 @@
         display: flex;
         justify-content: center;
     }
+}
 
+#jobCommandForm {
+    .hoot-menu.modal {
+        max-width: 60%;
+    }
+
+    textarea {
+        width: 100%;
+        height: 400px;
+    }
 }
 
 .diffInfo {
@@ -224,3 +234,4 @@
         max-height: 400px;
     }
 }
+
