@@ -987,8 +987,9 @@ export default {
                 .zoomExtent([_tileZoom, _tileZoom])
                 .getTiles(projection)
                 .map(function(tile) {
-                    tile.mapId = tile.id = layer.id;
+                    tile.mapId = layer.id;
                     tile.layerName = layer.name;
+                    tile.id = tile.id + '_' + tile.mapId;
 
                     return tile;
                 });

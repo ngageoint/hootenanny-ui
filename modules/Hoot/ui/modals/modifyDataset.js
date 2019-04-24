@@ -136,7 +136,7 @@ export default class ModifyDataset {
         let folderId;
 
         if ( newFolderName ) {
-            folderId = await Hoot.folders.addFolder( pathName, newFolderName );
+            folderId = (await Hoot.folders.addFolder( pathName, newFolderName )).folderId;
         } else {
             folderId = pathId;
         }

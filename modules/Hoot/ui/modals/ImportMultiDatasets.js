@@ -307,7 +307,7 @@ export default class ImportMultiDatasets {
         }
 
         if ( newFolderName ) {
-            folderId = await Hoot.folders.addFolder( pathName, newFolderName );
+            folderId = (await Hoot.folders.addFolder( pathName, newFolderName )).folderId;
         } else {
             folderId = pathId;
         }

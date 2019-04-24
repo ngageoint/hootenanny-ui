@@ -27,9 +27,11 @@ export function layerConflateForm( data ) {
             id: 'conflateFolderPath',
             class: 'path-name',
             inputType: 'combobox',
-            value: 'root',
+            value: this.defaultFolder.name,
+            _value: this.defaultFolder.id,
             data: this.folderList,
             itemKey: 'path',
+            _valueKey: 'id',
             sort: true,
             readonly: 'readonly'
         },
@@ -269,7 +271,7 @@ export function modifyDatasetForm() {
             onChange: d => this.validateTextInput( d )
         },
         {
-            label: 'Path',
+            label: 'Move to Existing Folder',
             id: 'modifyPathName',
             class: 'path-name',
             inputType: 'combobox',

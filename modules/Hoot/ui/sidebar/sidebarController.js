@@ -17,12 +17,18 @@ class SidebarController {
         this.layerId    = layer.id;
         this.layerColor = layer.color;
         this.isConflate = layer.isConflate;
+        this.jobId      = layer.jobId;
         this.refType    = layer.refType;
         this.typeClass  = this.isConflate ? 'conflate-controller' : 'add-controller';
     }
 
     render() {
-        this.form.select( '.inner-wrapper' ).remove();
+        //remove the input form components
+        //at some point it would be nice to preserve the state of adv opts
+        //and just hide this so it could be restored on
+        //job cancel or error
+        this.form.select( '.inner-wrapper' ).remove();//.classed('hidden', true);
+        this.form.select( 'a' ).remove();//.classed('hidden', true);
 
         this.form
             .attr( 'class', () => {
@@ -33,9 +39,7 @@ class SidebarController {
                 return `sidebar-form layer-loading round fill-white ${ this.layerColor }`;
             } )
             .attr( 'data-name', this.layerName )
-            .attr( 'data-id', this.layerId )
-            .select( 'a' )
-            .remove();
+            .attr( 'data-id', this.layerId );
 
         this.createController();
         this.createInnerWrapper();
@@ -43,7 +47,11 @@ class SidebarController {
         this.createColorPalette();
         this.createThumbnail();
         this.createText();
-        this.createDeleteButton();
+        if (this.isConflate) {
+            this.createCancelButton();
+        } else {
+            this.createDeleteButton();
+        }
 
         Hoot.ui.sidebar.adjustSize();
     }
@@ -170,6 +178,45 @@ class SidebarController {
             } );
     }
 
+    createCancelButton() {
+        this.cancelButton = this.controller
+            .append( 'button' )
+            .classed( 'cancel-button icon-button keyline-left round-right inline', true )
+            .on( 'click', async d => {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+
+                let message = 'Are you sure you want to cancel?',
+                    confirm = await Hoot.message.confirm( message );
+
+                if ( confirm ) {
+                    Hoot.api.cancelJob(this.jobId)
+                        .then( resp => {
+                            this.restoreInputs();
+                        });
+                }
+            } );
+        this.cancelButton.append('i')
+            .classed('material-icons', true)
+            .attr('title', 'cancel job' )
+            .text('cancel');
+    }
+
+    hideInputs() {
+        d3.selectAll( '.add-controller' ).classed('hidden', true);
+    }
+
+    restoreInputs() {
+        // remove conflating layer
+        d3.selectAll( '.layer-loading' ).remove();
+        // restore input layers
+        d3.selectAll( '.add-controller' ).classed('hidden', false);
+        // remove conflate button
+        Hoot.ui.sidebar.forms.conflate.remove();
+        // restore the conflate button
+        Hoot.ui.sidebar.conflateCheck();
+    }
+
     update() {
         let layer = Hoot.layers.findLoadedBy( 'name', this.layerName );
 
@@ -229,6 +276,10 @@ class SidebarController {
             .text( layer.name );
 
         if ( this.isConflate ) {
+            //turn cancel into remove button
+            d3.selectAll('button.cancel-button').remove();
+            this.createDeleteButton();
+
             this.metadata = new LayerMetadata( this.context, this.form, layer );
             this.metadata.render();
             this.contextLayer.style( 'width', 'calc( 100% - 145px )' );

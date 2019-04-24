@@ -304,7 +304,7 @@ export function d3combobox() {
 
         function accept( d ) {
             if ( !shown ) return;
-            input.property( 'selectedID', d.id );
+            input.attr( '_value', d._value );
             input.property( 'value', d.value );
             utilTriggerEvent( input, 'change' );
             dispatch.call( 'accept', this, d );
