@@ -85,7 +85,8 @@ export default class Layers {
         var getNumber = /\d+/g;
         for (let i = 0; i < Hoot.layers.allLayers.length; i++) {
             let checkedLayer = Hoot.layers.allLayers[i].name;
-            if ( checkedLayer === layerName || new RegExp(layerName + '(\((\d+)\))').test(checkedLayer) || checkedLayer.includes(layerName.substring( 0, layerName.length-3 )) ) {
+            if ( checkedLayer === layerName || new RegExp(layerName + '(\((\d+)\))').test(checkedLayer) ||
+            checkedLayer.includes(layerName.substring( 0, layerName.length-3 )) ) {
                 numMatch.push(Number(checkedLayer.match(getNumber)));
                 matches.push(checkedLayer);
             }
