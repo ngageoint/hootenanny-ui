@@ -14,6 +14,7 @@ import { checkForUnallowedChar } from './utilities';
 import { d3combobox }            from '../../lib/hoot/d3.combobox';
 import _get                      from 'lodash-es/get';
 import _find                     from 'lodash-es/find';
+import LayerManager              from '../managers/layerManager';
 
 export default class ClipDataset {
     constructor( instance ) {
@@ -138,15 +139,22 @@ export default class ClipDataset {
         } );
     }
 
+    getLayerManager ( layer ) {
+        let layerManager = new LayerManager();
+        let layerName = layer.name;
+        return layerManager.checkLayerName( layerName );
+
+    }
+
     createLayerNameField( input, layer ) {
         let that       = this,
             uniquename = false,
-            layerName  = layer.name,
+            layerName  = this.getLayerManager( layer ),
             i          = 1;
 
         while ( uniquename === false ) {
             if ( !_isEmpty( Hoot.layers.findBy( 'name', layerName ) ) ) {
-                layerName = layer.name + i.toString();
+                layerName = layerName.name;
                 i++;
             } else {
                 uniquename = true;
@@ -179,7 +187,7 @@ export default class ClipDataset {
             .data( _map( d.combobox, n => {
                 return {
                     value: n.path,
-                    _value: n.id
+                    id: n.id
                 };
             } ) );
 
@@ -190,7 +198,7 @@ export default class ClipDataset {
                 textB = b.value.toLowerCase();
 
             return textA < textB ? -1 : textA > textB ? 1 : 0;
-        } ).unshift( { value: 'root', _value: 0 } );
+        } ).unshift( { value: 'root', id: 0 } );
 
         input.call( combobox );
     }
@@ -210,11 +218,12 @@ export default class ClipDataset {
             let row         = d3.select( `#row-${ mapId }` ),
                 datasetName = row.select( '.datasetName' ),
                 outputName  = row.select( '.outputName' ),
-                folderId    = row.select( '.outputPath' );
+                folderName  = row.select( '.outputPath' ).property( 'value' ),
+                folder    = Hoot.folders.findBy( 'name', folderName );
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = outputName.property( 'value' ) || outputName.attr( 'placeholder' );
-            params.FOLDER_ID   = folderId.attr( '_value' ) || 0;
+            params.FOLDER_ID   = folder ? folder.id : 0;
             params.BBOX        = bbox;
 
             Hoot.api.clipDataset( params )

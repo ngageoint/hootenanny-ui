@@ -17,6 +17,7 @@ import {
     importSingleForm,
 }           from '../../config/domMetadata';
 import _get from 'lodash-es/get';
+import LayerManager from '../../managers/layerManager';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -341,12 +342,11 @@ export default class ImportDataset {
             folderId = pathId;
         }
 
-
         let data = {
             NONE_TRANSLATION: translation.NONE === 'true',
             TRANSLATION: translationName,
             INPUT_TYPE: importType.value,
-            INPUT_NAME: this.checkLayerName(layerName),
+            INPUT_NAME: this.getLayerManager( layerName ),
             formData: this.getFormData( this.fileIngest.node().files )
         };
 
@@ -363,15 +363,17 @@ export default class ImportDataset {
                 Hoot.events.emit( 'modal-closed' );
             } );
     }
-    checkLayerName(layerName) {
-        var matches = [];
-        for (let i = 0; i < Hoot.layers.allLayers.length; i++) {
-            var checkedLayer = Hoot.layers.allLayers[i].name;
-            if (checkedLayer === layerName || new RegExp(layerName + '_\\d+').test(checkedLayer) ) {
-                matches.push(checkedLayer);
-            }
-        }
-        return matches.length ? `${layerName}_${matches.length}` : layerName;
+
+        /**
+     *
+     * @param layerName
+     * @returns layerName
+     */
+
+    getLayerManager() {
+        let layerManager = new LayerManager();
+        let layerName = this.layerNameInput.property( 'value' );
+        return layerManager.checkLayerName(layerName);
     }
 
     updateLinks( layerName, folderId ) {

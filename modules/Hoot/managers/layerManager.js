@@ -43,6 +43,7 @@ export default class Layers {
         this.mergedLayer        = null;
         this.mergedConflicts    = null;
         this.palette            = colorPalette;
+        this.checkLayerName     = this.checkLayerName;
     }
 
     /**
@@ -69,6 +70,24 @@ export default class Layers {
         } catch ( err ) {
             Hoot.message.alert( err );
         }
+    }
+
+    /**
+     * Check name of file being uploaded. If it is a duplicate,
+     * append a number to the end of the file's name
+     *
+     * @param layerName - layerName
+     */
+
+    checkLayerName(layerName) {
+        var matches = [];
+        for (let i = 0; i < Hoot.layers.allLayers.length; i++) {
+            let checkedLayer = Hoot.layers.allLayers[i].name;
+            if ( checkedLayer === layerName || new RegExp(layerName + '(\((\d+)\))').test(checkedLayer) || checkedLayer.includes(layerName.substring( 0, layerName.length-3 )) ) {
+                matches.push(checkedLayer);
+            }
+        }
+        return matches.length ? `${matches[0]}(${matches.length})` : layerName;
     }
 
     async addHashLayer(type, mapId) {
@@ -133,6 +152,7 @@ export default class Layers {
     hashLayer( type, mapId ) {
         this.hashLayers[type] = parseInt(mapId, 10);
     }
+
 
     async loadLayer( params ) {
         try {
