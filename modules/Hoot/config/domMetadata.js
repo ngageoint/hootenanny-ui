@@ -271,7 +271,7 @@ export function modifyDatasetForm() {
             onChange: d => this.validateTextInput( d )
         },
         {
-            label: 'Path',
+            label: 'Move to Existing Folder',
             id: 'modifyPathName',
             class: 'path-name',
             inputType: 'combobox',
