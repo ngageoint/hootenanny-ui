@@ -92,7 +92,7 @@ export default class Layers {
             }
         }
         return matches.length && matches.includes(layerName) ?
-        `${matches[0]}(${String(numMatch[numMatch.length-1] + 1)})`
+        `${matches[0]}(${String(Math.max(...numMatch) + 1)})`
         : layerName;
     }
 
