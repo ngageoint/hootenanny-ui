@@ -81,13 +81,18 @@ export default class Layers {
 
     checkLayerName(layerName) {
         var matches = [];
+        var numMatch = [];
+        var getNumber = /\d+/g;
         for (let i = 0; i < Hoot.layers.allLayers.length; i++) {
             let checkedLayer = Hoot.layers.allLayers[i].name;
             if ( checkedLayer === layerName || new RegExp(layerName + '(\((\d+)\))').test(checkedLayer) || checkedLayer.includes(layerName.substring( 0, layerName.length-3 )) ) {
+                numMatch.push(Number(checkedLayer.match(getNumber)));
                 matches.push(checkedLayer);
             }
         }
-        return matches.length ? `${matches[0]}(${matches.length})` : layerName;
+        return matches.length && matches.includes(layerName) ?
+        `${matches[0]}(${String(numMatch[numMatch.length-1] + 1)})`
+        : layerName;
     }
 
     async addHashLayer(type, mapId) {
