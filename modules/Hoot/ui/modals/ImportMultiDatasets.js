@@ -358,7 +358,7 @@ export default class ImportMultiDatasets {
                     NONE_TRANSLATION: translation.NONE === 'true',
                     TRANSLATION: translationName,
                     INPUT_TYPE: importType.value,
-                    INPUT_NAME: this.checkLayerName(name),
+                    INPUT_NAME: name,
                     formData: this.getFormData( importFiles )
                 };
 
@@ -385,17 +385,6 @@ export default class ImportMultiDatasets {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
             } );
-    }
-
-    checkLayerName(layerName) {
-        var matches = [];
-        for (let i = 0; i < Hoot.layers.allLayers.length; i++) {
-            var checkedLayer = Hoot.layers.allLayers[i].name;
-            if (checkedLayer === layerName || new RegExp(layerName + '_\\d+').test(checkedLayer) ) {
-                matches.push(checkedLayer);
-            }
-        }
-        return matches.length ? `${layerName}_${matches.length}` : layerName;
     }
 
     allProgress( proms, cb ) {
