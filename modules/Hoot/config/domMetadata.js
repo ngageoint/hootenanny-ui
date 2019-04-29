@@ -243,14 +243,14 @@ export function importMultiForm() {
 export function addFolderForm() {
     return [
         {
-            label: 'Folder Name',
+            label: 'Name',
             id: 'addFolderName',
             class: 'new-folder-name',
             inputType: 'text',
             onChange: d => this.validateTextInput( d )
         },
         {
-            label: 'Folder Visibility',
+            label: 'Public',
             id: 'addFolderVisibility',
             inputType: 'checkbox',
             value: 'Public',
@@ -289,7 +289,7 @@ export function modifyDatasetForm() {
             onChange: d => this.validateTextInput( d )
         },
         {
-            label: 'Visibility',
+            label: 'Public',
             id: 'modifyVisibility',
             inputType: 'checkbox',
             value: 'Public',
