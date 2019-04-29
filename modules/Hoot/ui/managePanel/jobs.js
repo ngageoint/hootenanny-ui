@@ -87,6 +87,12 @@ export default class Jobs extends Tab {
             case 'delete':
                 typeIcon = 'delete';
                 break;
+            case 'derive_changeset':
+                typeIcon = 'change_history';
+                break;
+            case 'upload_changeset':
+                typeIcon = 'cloud_upload';
+                break;
             case 'unknown':
             default:
                 typeIcon = 'help';
@@ -494,8 +500,8 @@ export default class Jobs extends Tab {
                 if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
                     //Get info for the derive
                     actions.push({
-                        title: 'publish differential',
-                        icon: 'publish',
+                        title: 'upload changeset',
+                        icon: 'cloud_upload',
                         action: async () => {
                             Hoot.api.differentialStats(d.jobId)
                                 .then( resp => {
