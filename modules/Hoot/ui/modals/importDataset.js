@@ -346,7 +346,7 @@ export default class ImportDataset {
             NONE_TRANSLATION: translation.NONE === 'true',
             TRANSLATION: translationName,
             INPUT_TYPE: importType.value,
-            INPUT_NAME: this.getLayerManager( layerName ),
+            INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
             formData: this.getFormData( this.fileIngest.node().files )
         };
 

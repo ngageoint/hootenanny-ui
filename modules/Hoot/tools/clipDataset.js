@@ -142,7 +142,7 @@ export default class ClipDataset {
     getLayerManager ( layer ) {
         let layerManager = new LayerManager();
         let layerName = layer.name;
-        return layerManager.checkLayerName( layerName );
+        return Hoot.layers.checkLayerName( layerName );
 
     }
 
@@ -186,7 +186,7 @@ export default class ClipDataset {
         let combobox = d3combobox()
             .data( _map( d.combobox, n => {
                 return {
-                    value: n.path,
+                    _value: n.path,
                     id: n.id
                 };
             } ) );
@@ -198,7 +198,7 @@ export default class ClipDataset {
                 textB = b.value.toLowerCase();
 
             return textA < textB ? -1 : textA > textB ? 1 : 0;
-        } ).unshift( { value: 'root', id: 0 } );
+        } ).unshift( { value: 'root', _value: 0 } );
 
         input.call( combobox );
     }
@@ -219,11 +219,11 @@ export default class ClipDataset {
                 datasetName = row.select( '.datasetName' ),
                 outputName  = row.select( '.outputName' ),
                 folderName  = row.select( '.outputPath' ).property( 'value' ),
-                folder    = Hoot.folders.findBy( 'name', folderName );
+                folderId    = parseInt(folderName.attr( '_value' ), 10); //Hoot.folders.findBy( 'name', folderName );
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = outputName.property( 'value' ) || outputName.attr( 'placeholder' );
-            params.FOLDER_ID   = folder ? folder.id : 0;
+            params.FOLDER_ID   = folder ? folderId.attr('_value') : 0;
             params.BBOX        = bbox;
 
             Hoot.api.clipDataset( params )
