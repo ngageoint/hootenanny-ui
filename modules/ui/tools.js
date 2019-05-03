@@ -13,7 +13,6 @@ import { svgIcon } from '../svg';
 
 import selectBbox       from '../Hoot/tools/selectBbox';
 import { tooltip }      from '../util/tooltip';
-import ConflationUpload from '../Hoot/tools/conflationUpload';
 
 export function uiTools( context ) {
     let menuItemMeta = [
@@ -75,14 +74,6 @@ export function uiTools( context ) {
                     type: 'area',
                     icon: 'iD-icon-layers',
                     action: 'createDifferential'
-                },
-                {
-                    title: 'Conflation Upload',
-                    tooltip: 'Upload the difference between the two datasets',
-                    group: 'grail',
-                    type: 'area',
-                    icon: 'iD-icon-layers',
-                    action: 'conflationUpload'
                 }
             ]
         }
@@ -179,16 +170,6 @@ export function uiTools( context ) {
                     let grailSelectBbox = new selectBbox( context );
 
                     grailSelectBbox.render( d.action );
-                } else if ( d.action === 'conflationUpload' ) {
-                    if ( Object.keys( Hoot.layers.loadedLayers ).length === 2 ) {
-                        new ConflationUpload( this ).render();
-                    } else {
-                        let message = 'Add mapedit layer and conflation layer',
-                            type    = 'warn';
-
-                        Hoot.message.alert( { message, type } );
-                    }
-
                 }
             } );
 

@@ -59,7 +59,7 @@ describe( 'UI tools', () => {
         grailTools.dispatch('mouseenter');
         setTimeout(() => {
             var grailMenu = d3.selectAll('.tools-grail');
-            expect(grailMenu.size()).to.be.equal( 4 );
+            expect(grailMenu.size()).to.be.equal( 3 );
             done();
         });
     } );

@@ -29,16 +29,20 @@ export default class DifferentialStats {
     }
 
     createTable() {
+        const { hasTags } = this.diffInfo;
         let columns = [
             {
-                label: 'Data Info',
+                label: 'Data Stats',
                 name: 'diffInfo'
-            },
-            {
-                label: 'Apply Tag Differential?',
-                name: 'applyTags'
             }
         ];
+
+        if (hasTags) {
+            columns.push({
+                label: 'Apply Tag Differential?',
+                name: 'applyTags'
+            });
+        }
 
         let table = this.form
             .select( '.wrapper div' )
@@ -66,19 +70,47 @@ export default class DifferentialStats {
         let tableBody = table.append( 'tbody' )
             .append( 'tr' );
 
-        tableBody.append( 'td' )
-            .classed( 'diffInfo', true )
-            .text(
-                `Node Count: ${ this.diffInfo.nodeCount } \n` +
-                `Way Count: ${ this.diffInfo.wayCount } \n` +
-                `Relation Count: ${ this.diffInfo.relationCount }`
-            );
+        const statsString = this.statsToString();
 
         tableBody.append( 'td' )
-            .append( 'input' )
-            .attr( 'type', 'checkbox' )
-            .property( 'checked', false )
-            .attr( 'class', 'applyTags' );
+            .classed( 'diffInfo', true )
+            .text(statsString);
+
+        if (hasTags) {
+            tableBody.append( 'td' )
+                .append( 'input' )
+                .attr( 'type', 'checkbox' )
+                .property( 'checked', false )
+                .attr( 'class', 'applyTags' );
+        }
+    }
+
+    // Mainly to control order of the text displayed to the user
+    statsToString() {
+        let diffStats = {
+            'create' : { 'node' : 0, 'way' : 0, 'relation' : 0 },
+            'modify' : { 'node' : 0, 'way' : 0, 'relation' : 0 },
+            'delete' : { 'node' : 0, 'way' : 0, 'relation' : 0 }
+        };
+        Object.keys(this.diffInfo).forEach( data => {
+            let [changeType, element] = data.split('-');
+            if (changeType in diffStats) {
+                diffStats[changeType][element] = this.diffInfo[data];
+            }
+        });
+
+        let output = '';
+
+        Object.keys(diffStats).forEach( changeType => {
+            output += `${ changeType.charAt(0).toUpperCase() + changeType.slice(1) }\n`;
+
+            Object.keys(diffStats[changeType]).forEach( element => {
+                output += `    ${element}: ${diffStats[changeType][element]}\n`;
+            });
+            output += '\n';
+        });
+
+        return output;
     }
 
     handleSubmit() {

@@ -517,6 +517,28 @@ export default class Jobs extends Tab {
                     });
                 }
 
+                if (d.jobType.toUpperCase() === 'CONFLATE') {
+                    let currentLayer = this.findLayer( d.mapId );
+
+                    if (currentLayer && currentLayer.grail) {
+                        //Get info for the derive
+                        actions.push({
+                            title: 'derive changeset',
+                            icon: 'publish',
+                            action: async () => {
+                                const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
+
+                                const params  = {};
+                                params.input1 = tagsInfo.input1;
+                                params.input2 = d.mapId;
+
+                                Hoot.api.conflateDifferential( params )
+                                    .then( resp => Hoot.message.alert( resp ) );
+                            }
+                        });
+                    }
+                }
+
                 //Get logging for the job
                 actions.push({
                     title: 'view log',
@@ -560,6 +582,12 @@ export default class Jobs extends Tab {
             .merge(span)
             .text( d => d.text );
 
+    }
+
+    findLayer( layerId ) {
+        return Hoot.layers.allLayers.find( layer => {
+            return layer.id === layerId;
+        });
     }
 
 }

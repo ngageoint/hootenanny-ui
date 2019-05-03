@@ -1240,6 +1240,33 @@ export default class API {
             } );
     }
 
+    conflateDifferential( data ) {
+        const params = {
+            path: '/grail/conflatedifferential',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Conflate differential has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing Conflate differential!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
     conflationUpload( data ) {
         const params = {
             path: '/grail/conflatepush',
