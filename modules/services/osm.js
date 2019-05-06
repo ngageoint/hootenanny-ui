@@ -1241,12 +1241,6 @@ export default {
         dispatch.call( 'loaded' );
     },
 
-    addTile( id ) {
-        _tileCache.loaded[ id ] = true;
-        dispatch.call( 'loaded' );
-    },
-
-
     logout: function() {
         _userChangesets = undefined;
         _userDetails = undefined;
