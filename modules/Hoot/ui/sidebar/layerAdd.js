@@ -18,7 +18,8 @@ export default class LayerAdd extends SidebarForm {
 
         this.selectedLayer = {
             name: null,
-            id: null
+            id: null,
+            activeLayer: true
         };
     }
 
@@ -201,6 +202,7 @@ export default class LayerAdd extends SidebarForm {
             name: d ? d.name : this.selectedLayer.name,
             id: d ? d.id : this.selectedLayer.id,
             refType: this.formMeta.refType,
+            activeLayer: d ? this.checkActiveLayers() : this.selectedLayer.activeLayer,
             color
         };
 
@@ -211,6 +213,17 @@ export default class LayerAdd extends SidebarForm {
         Hoot.events.emit( 'load-layer' );
 
         // return this.checkForReview( layer );
+        this.checkActiveLayers();
+    }
+
+    checkActiveLayers() {
+        let activeLayer = this.selectedLayer.activeLayer;
+        if (this.formMeta.refType === 'secondary') {
+            activeLayer = false;
+        } else {
+            activeLayer = true;
+        }
+        return activeLayer;
     }
 
     /**

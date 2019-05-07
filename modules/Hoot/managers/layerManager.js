@@ -143,6 +143,7 @@ export default class Layers {
             let layer = {
                 name: params.name,
                 id: params.id,
+                activeLayer: params.activeLayer,
                 refType: params.refType,
                 color: params.color,
                 merged: params.merged || false,

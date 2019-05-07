@@ -334,6 +334,18 @@ button.disabled {
     border-radius: 4px 0 0 4px;
 }
 
+.select-active-layer {
+    width: -webkit-fill-available;
+    font-weight: bold;
+}
+
+.select-active-button:active,
+.select-active-button:focus
+.select-active-button:target {
+    background: #cccccc;
+    color: #888;
+}
+
 
 /* Action buttons */
 button.action {
@@ -357,6 +369,17 @@ button[disabled].action:hover {
     background: #cccccc;
     color: #888;
     cursor: not-allowed;
+}
+
+.disable-non-active,
+.disable-non-active:hover {
+    background: #cccccc;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.no-click {
+    pointer-events: none;
 }
 
 
