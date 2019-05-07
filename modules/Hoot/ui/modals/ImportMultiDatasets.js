@@ -28,6 +28,10 @@ export default class ImportMultiDatasets {
             {
                 title: 'OSM or PBF',
                 value: 'OSM'
+            },
+            {
+                title: 'GeoJSON',
+                value: 'GEOJSON'
             }
         ];
     }
@@ -126,7 +130,8 @@ export default class ImportMultiDatasets {
             typeCount     = {
                 osm: 0,
                 shp: 0,
-                zip: 0
+                zip: 0,
+                geojson: 0
             };
 
         if ( !files.length ) return;
@@ -136,8 +141,8 @@ export default class ImportMultiDatasets {
                 fileName    = currentFile.name;
 
             totalFileSize += currentFile.size;
-            fileNames.push( fileName );
 
+            fileNames.push( fileName );
             this.setFileMetadata( fileName, typeCount, fileList );
         }
 
@@ -169,9 +174,13 @@ export default class ImportMultiDatasets {
     }
 
     setFileMetadata( fileName, typeCount, fileList ) {
+
         let fName = fileName.substring( 0, fileName.length - 4 );
 
         if ( fileName.indexOf( '.shp.xml' ) > -1 ) {
+            fName = fileName.toLowerCase().substring( 0, fileName.length - 8 );
+        }
+        if ( fileName.indexOf( '.geojson' ) > -1 ) {
             fName = fileName.toLowerCase().substring( 0, fileName.length - 8 );
         }
 
@@ -185,7 +194,8 @@ export default class ImportMultiDatasets {
                 isDBF: false,
                 isPRJ: false,
                 isOSM: false,
-                isZIP: false
+                isZIP: false,
+                isGEOJSON: false
             };
 
             fileList.push( fObj );
@@ -205,6 +215,9 @@ export default class ImportMultiDatasets {
         } else if ( fileName.lastIndexOf( '.osm' ) > -1 ) {
             typeCount.osm++;
             fObj.isOSM = true;
+        } else if ( fileName.lastIndexOf( '.geojson' ) > -1 ) {
+            typeCount.geojson++;
+            fObj.isGEOJSON = true;
         }
     }
 
@@ -297,9 +310,13 @@ export default class ImportMultiDatasets {
             translationName = '';
         }
         if ( translation.DEFAULT ) {
-            if ( translation.PATH && translation.PATH.length || translation.IMPORTPATH && translation.IMPORTPATH.length ) {
+            if ( translation.PATH && translation.PATH.length ) {
                 translationName = translation.PATH;
-            } else {
+            }
+            else if ( translation.IMPORTPATH && translation.IMPORTPATH.length ) {
+                translationName = translation.IMPORTPATH;
+            }
+            else {
                 translationName = translation.NAME + '.js';
             }
         } else {
@@ -329,6 +346,9 @@ export default class ImportMultiDatasets {
 
                     if ( file.name.toLowerCase().indexOf( '.shp.xml' ) > -1 ) {
                         fName = file.name.substring( 0, file.name.length - 8 );
+                    }
+                    if ( file.name.indexOf( '.geojson' ) > -1 ) {
+                        fName = file.name.toLowerCase().substring( 0, file.name.length - 8 );
                     }
 
                     return fName === name;
@@ -481,6 +501,10 @@ export default class ImportMultiDatasets {
             uploader
                 .property( 'multiple', true )
                 .attr( 'accept', '.shp, .shx, .dbf' );
+        } else if ( typeVal === 'GEOJSON' ) {
+            uploader
+                .property( 'multiple', true )
+                .attr( 'accept', '.geojson', '.geo' );
         }
     }
 }
