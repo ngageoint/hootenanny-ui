@@ -19,7 +19,7 @@ export default class LayerAdd extends SidebarForm {
         this.selectedLayer = {
             name: null,
             id: null,
-            activeLayer: true
+            activeLayer: null
         };
     }
 

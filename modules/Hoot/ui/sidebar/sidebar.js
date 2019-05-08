@@ -15,6 +15,7 @@ import {
     utilQsString,
     utilStringQs
 } from '../../../util';
+import { diff3MergeIndices } from 'node-diff3';
 
 /**
  * Create the sidebar
@@ -173,8 +174,8 @@ export default class Sidebar {
         if (loadedLayers.length === 2) {
             let selectReference  = d3.selectAll('#reference');
             let selectSecondary  = d3.selectAll('#secondary');
-            let referenceActive = loadedLayers[1];
-            let secondaryActive = loadedLayers[0];
+            let referenceActive = loadedLayers[0];
+            let secondaryActive = loadedLayers[1];
             let changeActive = new LayerAdd();
             let referenceState;
             let secondaryState;
@@ -184,25 +185,46 @@ export default class Sidebar {
                 .classed('select-active-layer', true)
                 .text('Set as active layer')
                 .on('click',  function() {
+
+                    d3.event.preventDefault();
+
+                    d3.select('#reference')
+                        .classed('active-pulse', true);
+
+                    d3.select('#secondary')
+                        .classed('active-pulse', false);
+
+                    d3.select('#reference  button.select-active-layer')
+                        .text('Active Layer')
+                        .classed('button-active', true);
+
+                    d3.select('#secondary  button.select-active-layer')
+                        .text('Set as active layer')
+                        .classed('button-active', false);
+
                     d3.selectAll('#secondary div.controller')
                         .classed('disable-non-active', true);
+
                     d3.selectAll('#reference div.controller')
                         .classed('disable-non-active', false);
+
                     d3.selectAll('#secondary button.delete-button')
                         .classed('disable-non-active', true)
                         .classed('no-click', true);
+
                     d3.selectAll('#reference button.delete-button')
                         .classed('disable-non-active', false)
                         .classed('no-click', false);
 
+
                     referenceState = referenceActive;
 
                     if (secondaryState) {
-                        secondaryState.activeLayer = true;
-                        referenceState.activeLayer = false;
+                        secondaryState.activeLayer = false;
+                        referenceState.activeLayer = true;
                     }
                     else {
-                        referenceState.activeLayer = false;
+                        referenceState.activeLayer = true;
                     }
                     changeActive.selectedLayer = referenceState;
                 });
@@ -212,13 +234,33 @@ export default class Sidebar {
                 .classed('select-active-layer', true)
                 .text('Set as active layer')
                 .on('click',  function() {
+
+                    d3.event.preventDefault();
+
+                    d3.select('#secondary')
+                        .classed('active-pulse', true);
+
+                    d3.select('#reference')
+                        .classed('active-pulse', false);
+
+                    d3.select('#secondary  button.select-active-layer')
+                        .text('Active Layer')
+                        .classed('button-active', true);
+
+                    d3.select('#reference  button.select-active-layer')
+                        .text('Set as active layer')
+                        .classed('button-active', false);
+
                     d3.selectAll('#reference div.controller')
                         .classed('disable-non-active', true);
+
                     d3.selectAll('#secondary div.controller')
                         .classed('disable-non-active', false);
+
                     d3.selectAll('#reference button.delete-button')
                         .classed('disable-non-active', true)
                         .classed('no-click', true);
+
                     d3.selectAll('#secondary button.delete-button')
                         .classed('disable-non-active', false)
                         .classed('no-click', false);
@@ -226,14 +268,14 @@ export default class Sidebar {
                     secondaryState = secondaryActive;
 
                     if (referenceState) {
-                        secondaryState.activeLayer = false;
-                        referenceState.activeLayer = true;
+                        secondaryState.activeLayer = true;
+                        referenceState.activeLayer = false;
                     }
                     else {
-                        referenceState.activeLayer = true;
+                        secondaryState.activeLayer = true;
                     }
 
-                    changeActive.selectedLayer = referenceState;
+                    changeActive.selectedLayer = secondaryState;
 
                 });
         }

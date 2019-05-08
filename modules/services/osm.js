@@ -633,21 +633,19 @@ export default {
 
     filterChanges: function( changes ) {
         let ways = _filter( _flatten( _map( changes, featArr => featArr ) ), feat => feat.type !== 'node' ),
-            visLayers = _map( _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible ), layer => layer.id ),
-            primaryMapId,
-            secondaryMapId;
+            checkLayers = Hoot.layers.loadedLayers,
+            visLayers = _map( _filter( _values( checkLayers ), layer => layer.visible ), layer => layer.id ),
+            activeLayer = _find(checkLayers, function(a, b) { return a.activeLayer === true ? a : null; }),
+            defaultMapId;
 
         // Make sure there is only one layer visible. Otherwise, return a falsy value to prevent save.
         if (visLayers.length === 1 || changes.created.length === 0){
-            primaryMapId = visLayers[0];
+            defaultMapId = activeLayer.id;
         }
-        else {
+        else if (visLayers.length === 2) {
+            defaultMapId = activeLayer.id;
+        } else {
             return false;
-        }
-        if (visLayers.length === 2) {
-            secondaryMapId = visLayers[1];
-            return ({ message: 'Select layer for saving chagnes', status: -2 }, secondaryMapId);
-
         }
 
         return _reduce( changes, ( obj, featArr, type ) => {
@@ -658,30 +656,7 @@ export default {
             };
 
             _forEach( featArr, feat => {
-                if (visLayers.length === 2) {
-                    let allIds = [primaryMapId, secondaryMapId];
-                    for (let i = 0; i < allIds.length; i++) {
-                        if ( feat.isNew() && feat.type === 'node' ) {
-                            let parent = _find( ways, way => _includes( way.nodes, feat.id ) );
-                            if ( parent && parent.mapId ) {
-                                allIds[i] = parent.mapId;
-                            }
-                        }
-                        // create map ID key if not yet exists
-                        if ( !obj[ allIds[i] ] ) {
-                            obj[ allIds[i] ] = {};
-                        }
-                        // create change type key if not yet exists
-                        if ( !obj[ allIds[i] ][ type ] ) {
-                            obj[ allIds[i] ][ type ] = [];
-                        }
-                        // merge object into default types array so that the final result
-                        // will contain all keys in case change type is empty
-                        obj[ allIds[i] ] = Object.assign( changeTypes, obj[ allIds[i] ] );
-                    }
-                }
-                else {
-                let mapId = primaryMapId;
+                let mapId = defaultMapId;
 
                 if ( feat.isNew() && feat.type === 'node' ) {
                     let parent = _find( ways, way => _includes( way.nodes, feat.id ) );
@@ -706,7 +681,6 @@ export default {
                 // merge object into default types array so that the final result
                 // will contain all keys in case change type is empty
                 obj[ mapId ] = Object.assign( changeTypes, obj[ mapId ] );
-            }
             } );
             return obj;
         }, {} );
@@ -728,40 +702,6 @@ export default {
             return createdChangeset.call(this, null, _changeset.open);
 
         } else {   // Open a new changeset..
-            if ( Object.keys(Hoot.layers.loadedLayers).length === 2 ) {
-                let allLayers = _map( _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible ), layer => layer.id );
-                console.log(allLayers);
-                console.log(changesArr);
-                //let mapId = [allLayers[0], allLayers[1]];
-                _map( _forEach( changesArr === allLayers), layer => {
-                    let path = '/api/0.6/changeset/create';
-                    path += layer ? `?mapId=${layer}` : '';
-                    var options = {
-                        method: 'PUT',
-                        path: path,
-                        options: { header: { 'Content-Type': 'text/xml' } },
-                        content: JXON.stringify(changeset.asJXON())
-                    };
-                    _changeset.inflight = oauth.xhr(
-                        options,
-                        wrapcb(this, createdChangeset, cid, layer)
-                    );
-                });
-                // _forEach( changesArr, (changes, allLayers) => {
-                //     let path = '/api/0.6/changeset/create';
-                //     path += allLayers++ ? `?mapId=${allLayers++}` : '';
-                //     var options = {
-                //         method: 'PUT',
-                //         path: path,
-                //         options: { header: { 'Content-Type': 'text/xml' } },
-                //         content: JXON.stringify(changeset.asJXON())
-                //     };
-                //     _changeset.inflight = oauth.xhr(
-                //         options,
-                //         wrapcb(this, createdChangeset, cid, allLayers++)
-                //     );
-                // });
-            } else {
                 _forEach( changesArr, ( changes, mapId ) => {
                     let path = '/api/0.6/changeset/create';
                     path += mapId ? `?mapId=${ mapId }` : '';
@@ -777,10 +717,7 @@ export default {
                         wrapcb(this, createdChangeset, cid, mapId)
                     );
                 } );
-            }
-
         }
-
 
         function createdChangeset(err, changesetID, mapId) {
             _changeset.inflight = null;
