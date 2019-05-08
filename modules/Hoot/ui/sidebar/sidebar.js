@@ -171,113 +171,117 @@ export default class Sidebar {
 
     saveChanges() {
         let loadedLayers = Object.values(Hoot.layers.loadedLayers);
+        let selectReference = d3.selectAll('#reference');
+        let selectSecondary = d3.selectAll('#secondary');
         if (loadedLayers.length === 2) {
-            let selectReference  = d3.selectAll('#reference');
-            let selectSecondary  = d3.selectAll('#secondary');
             let referenceActive = loadedLayers[0];
             let secondaryActive = loadedLayers[1];
             let changeActive = new LayerAdd();
             let referenceState;
             let secondaryState;
 
-            selectReference
-                .append('button')
-                .classed('select-active-layer', true)
-                .text('Set as active layer')
-                .on('click',  function() {
 
-                    d3.event.preventDefault();
+            if (d3.select('#reference button.select-active-layer').empty()) {
+                selectReference
+                    .append('button')
+                    .classed('select-active-layer', true)
+                    .text('Set as active layer')
+                    .on('click', function () {
 
-                    d3.select('#reference')
-                        .classed('active-pulse', true);
+                        d3.event.preventDefault();
 
-                    d3.select('#secondary')
-                        .classed('active-pulse', false);
+                        d3.select('#reference')
+                            .classed('active-pulse', true);
 
-                    d3.select('#reference  button.select-active-layer')
-                        .text('Active Layer')
-                        .classed('button-active', true);
+                        d3.select('#secondary')
+                            .classed('active-pulse', false);
 
-                    d3.select('#secondary  button.select-active-layer')
-                        .text('Set as active layer')
-                        .classed('button-active', false);
+                        d3.select('#reference  button.select-active-layer')
+                            .text('Active Layer')
+                            .classed('button-active', true);
 
-                    d3.selectAll('#secondary div.controller')
-                        .classed('disable-non-active', true);
+                        d3.select('#secondary  button.select-active-layer')
+                            .text('Set as active layer')
+                            .classed('button-active', false);
 
-                    d3.selectAll('#reference div.controller')
-                        .classed('disable-non-active', false);
+                        d3.selectAll('#secondary div.controller')
+                            .classed('disable-non-active', true);
 
-                    d3.selectAll('#secondary button.delete-button')
-                        .classed('disable-non-active', true)
-                        .classed('no-click', true);
+                        d3.selectAll('#reference div.controller')
+                            .classed('disable-non-active', false);
 
-                    d3.selectAll('#reference button.delete-button')
-                        .classed('disable-non-active', false)
-                        .classed('no-click', false);
+                        d3.selectAll('#secondary button.delete-button')
+                            .classed('disable-non-active', true)
+                            .classed('no-click', true);
+
+                        d3.selectAll('#reference button.delete-button')
+                            .classed('disable-non-active', false)
+                            .classed('no-click', false);
 
 
-                    referenceState = referenceActive;
+                        referenceState = referenceActive;
 
-                    if (secondaryState) {
-                        secondaryState.activeLayer = false;
-                        referenceState.activeLayer = true;
-                    }
-                    else {
-                        referenceState.activeLayer = true;
-                    }
-                    changeActive.selectedLayer = referenceState;
-                });
+                        if (secondaryState) {
+                            secondaryState.activeLayer = false;
+                            referenceState.activeLayer = true;
+                        }
+                        else {
+                            referenceState.activeLayer = true;
+                        }
+                        changeActive.selectedLayer = referenceState;
+                    });
+            }
 
-            selectSecondary
-                .append('button')
-                .classed('select-active-layer', true)
-                .text('Set as active layer')
-                .on('click',  function() {
+            if (d3.select('#secondary button.select-active-layer').empty()) {
+                selectSecondary
+                    .append('button')
+                    .classed('select-active-layer', true)
+                    .text('Set as active layer')
+                    .on('click', function () {
 
-                    d3.event.preventDefault();
+                        d3.event.preventDefault();
+                        d3.select('#secondary')
+                            .classed('active-pulse', true);
 
-                    d3.select('#secondary')
-                        .classed('active-pulse', true);
+                        d3.select('#reference')
+                            .classed('active-pulse', false);
 
-                    d3.select('#reference')
-                        .classed('active-pulse', false);
+                        d3.select('#secondary  button.select-active-layer')
+                            .text('Active Layer')
+                            .classed('button-active', true);
 
-                    d3.select('#secondary  button.select-active-layer')
-                        .text('Active Layer')
-                        .classed('button-active', true);
+                        d3.select('#reference  button.select-active-layer')
+                            .text('Set as active layer')
+                            .classed('button-active', false);
 
-                    d3.select('#reference  button.select-active-layer')
-                        .text('Set as active layer')
-                        .classed('button-active', false);
+                        d3.selectAll('#reference div.controller')
+                            .classed('disable-non-active', true);
 
-                    d3.selectAll('#reference div.controller')
-                        .classed('disable-non-active', true);
+                        d3.selectAll('#secondary div.controller')
+                            .classed('disable-non-active', false);
 
-                    d3.selectAll('#secondary div.controller')
-                        .classed('disable-non-active', false);
+                        d3.selectAll('#reference button.delete-button')
+                            .classed('disable-non-active', true)
+                            .classed('no-click', true);
 
-                    d3.selectAll('#reference button.delete-button')
-                        .classed('disable-non-active', true)
-                        .classed('no-click', true);
+                        d3.selectAll('#secondary button.delete-button')
+                            .classed('disable-non-active', false)
+                            .classed('no-click', false);
 
-                    d3.selectAll('#secondary button.delete-button')
-                        .classed('disable-non-active', false)
-                        .classed('no-click', false);
+                        secondaryState = secondaryActive;
 
-                    secondaryState = secondaryActive;
+                        if (referenceState) {
+                            secondaryState.activeLayer = true;
+                            referenceState.activeLayer = false;
+                        }
+                        else {
+                            secondaryState.activeLayer = true;
+                        }
 
-                    if (referenceState) {
-                        secondaryState.activeLayer = true;
-                        referenceState.activeLayer = false;
-                    }
-                    else {
-                        secondaryState.activeLayer = true;
-                    }
+                        changeActive.selectedLayer = secondaryState;
 
-                    changeActive.selectedLayer = secondaryState;
-
-                });
+                    });
+            }
         }
     }
 
