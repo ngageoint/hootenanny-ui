@@ -28,10 +28,27 @@ export default class JobCommandInfo {
         window.clearInterval(this.poller);
     }
 
+    parseStatus( jobStatus ) {
+        const uuidRegex = '[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}';
+
+        // get all commands in 1 big string, seperate them by line, only use the ones marked at 'STATUS'
+        return jobStatus.map( comm => comm.stdout)
+            .join('')
+            .split('\n')
+            .filter( command => {
+                return /^STATUS/.test(command);
+            })
+            .map( command => {
+                const replace = new RegExp(`^STATUS\\s+${uuidRegex}\\s+-\\s+`,'g');
+                return command.replace( replace, '' );
+            })
+            .join('\n');
+    }
+
     loadCommands() {
         Hoot.api.getJobStatus( this.jobId )
             .then( resp => {
-                this.commands = resp.commandDetail;
+                this.commands = this.parseStatus(resp.commandDetail);
                 this.createTable();
             } )
             .catch( err => {
@@ -48,7 +65,6 @@ export default class JobCommandInfo {
         ta.exit().remove();
         ta.enter().append('textarea')
             .merge(ta)
-            .text(this.commands.map( comm => comm.stdout).join(''));
-        ta.node().scrollTop = ta.node().scrollHeight;
+            .text(this.commands);
     }
 }
