@@ -204,8 +204,12 @@ export default class Datasets extends Tab {
                 .style( 'fill', 'rgb(255,0,0)' );
 
             if ( data.type === 'dataset' ) {
-                return Hoot.api.deleteLayer( data.name )
-                    .then( () => Hoot.layers.removeLayer( data.id ) );
+                return Hoot.api.deleteLayer( data.id )
+                    .catch( ( err ) => {
+                        err.message = err.data;
+                        delete err.data;
+                        Hoot.message.alert( err );
+                    });
             } else {
                 let children = item.children || data._children; // children are placed in root of object when folder is open
 
