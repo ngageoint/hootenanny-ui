@@ -1137,11 +1137,10 @@ export default class API {
             } );
     }
 
-    grailPullOsmToDb( data ) {
+    grailPullOverpassToDb( data ) {
         const params = {
-            path: '/grail/pullosmtodb',
-            method: 'POST',
-            data
+            path: `/grail/pulloverpasstodb?bbox=${ data.BBOX }`,
+            method: 'GET'
         };
 
         return this.request( params )
@@ -1149,7 +1148,34 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Pull from Overpass and Rails Port API has succeeded.',
+                    message: 'Pull from Overpass API has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing pull!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+
+    grailPullRailsPortToDb( data ) {
+        const params = {
+            path: `/grail/pullrailsporttodb?bbox=${ data.BBOX }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Pull from Rails Port API has succeeded.',
                     status: 200,
                     type: 'success'
                 };
