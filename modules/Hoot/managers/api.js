@@ -1149,7 +1149,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Pull from OSM and MapEdit has succeeded.',
+                    message: 'Pull from Overpass and Rails Port API has succeeded.',
                     status: 200,
                     type: 'success'
                 };

@@ -60,16 +60,18 @@ export function uiTools( context ) {
             group: 'grail',
             items: [
                 {
-                    title: 'Pull from OSM and MapEdit',
-                    tooltip: 'Pull data from OSM and MapEdit',
+                    title: 'Pull Remote Data',
+                    tooltip: 'Pull data for a bounding box from public Overpass and a private Rails Port into Hootenanny datasets',
+                    placement: 'right',
                     group: 'grail',
                     type: 'area',
-                    icon: 'iD-icon-layers',
+                    icon: 'iD-icon-load',
                     action: 'grailPull'
                 },
                 {
-                    title: 'Create Differential Upload',
-                    tooltip: 'Creates a differential between OSM and MapEdit',
+                    title: 'Derive Differential Changeset',
+                    tooltip: 'Derives a differential conflation changeset for a bounding box between public Overpass and a private Rails Port',
+                    placement: 'right',
                     group: 'grail',
                     type: 'area',
                     icon: 'iD-icon-layers',
@@ -178,7 +180,7 @@ export function uiTools( context ) {
                 .call( svgIcon( `#${ d.icon }`, 'pre-text' ) )
                 .call( tooltip()
                     .title( d.tooltip )
-                    .placement( 'top' ) );
+                    .placement( d.placement || 'right' ) );
         } );
 
         item.append( 'span' )
