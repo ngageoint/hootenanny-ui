@@ -29,6 +29,12 @@ h3.jobs-history {
     justify-content: space-between;
     height: 20px;
 
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+
     &:hover {
         background-color: $light;
     }
