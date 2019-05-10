@@ -40,7 +40,7 @@ module.exports = () => {
             table         = d3.select( '#dataset-table' );
             datasetsPanel = Hoot.ui.managePanel.datasets;
 
-            this.timeout( 10000 );
+            this.timeout( 50000 );
 
             let generateCount = 7,
                 layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] ),
