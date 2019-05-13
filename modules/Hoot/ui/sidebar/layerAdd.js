@@ -202,7 +202,7 @@ export default class LayerAdd extends SidebarForm {
             name: d ? d.name : this.selectedLayer.name,
             id: d ? d.id : this.selectedLayer.id,
             refType: this.formMeta.refType,
-            activeLayer: d ? this.checkActiveLayers() : this.selectedLayer.activeLayer,
+            activeLayer: d ? d.activeLayer : this.selectedLayer.activeLayer,
             color
         };
 
@@ -213,7 +213,7 @@ export default class LayerAdd extends SidebarForm {
         Hoot.events.emit( 'load-layer' );
 
         // return this.checkForReview( layer );
-        this.checkActiveLayers();
+        //this.checkActiveLayers();
     }
 
     checkActiveLayers() {

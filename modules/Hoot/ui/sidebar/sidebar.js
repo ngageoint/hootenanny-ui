@@ -222,11 +222,11 @@ export default class Sidebar {
                         referenceState = referenceActive;
 
                         if (secondaryState) {
-                            secondaryState.activeLayer = false;
-                            referenceState.activeLayer = true;
+                            secondaryState.activeLayer  = false;
+                            referenceState.activeLayer  = true;
                         }
                         else {
-                            referenceState.activeLayer = true;
+                            referenceState.activeLayer  = true;
                         }
                         changeActive.selectedLayer = referenceState;
                     });

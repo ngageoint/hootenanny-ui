@@ -12,12 +12,12 @@ import { behaviorHover } from './hover';
 import { behaviorTail } from './tail';
 import { geoChooseEdge, geoVecLength } from '../geo';
 import { utilKeybinding, utilRebind } from '../util';
+import _find from 'lodash-es/find';
 
 
 var _usedTails = {};
 var _disableSpace = false;
 var _lastSpace = null;
-
 
 export function behaviorDraw(context) {
     var dispatch = d3_dispatch(
@@ -124,19 +124,33 @@ export function behaviorDraw(context) {
     function click() {
         var d = datum();
         var target = d && d.properties && d.properties.entity;
+        var _activeLayer = _find( Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer === true ? a : null; });
 
         if (target && target.type === 'node') {   // Snap to a node
-            dispatch.call('clickNode', this, target, d);
-            return;
+            if (_activeLayer.id === Number(target.mapId)) {
+                console.log(target.name + ' (' + target.id + ')' + ' is an active layer' );
+                dispatch.call('clickNode', this, target, d);
+                return;
+            } else {
+                return ({ message: 'Selected layer is not active', status: -2 }, target.name);
+            }
+            // dispatch.call('clickNode', this, target, d);
+            // return;
 
         } else if (target && target.type === 'way') {   // Snap to a way
-            var choice = geoChooseEdge(
-                context.childNodes(target), context.mouse(), context.projection, context.activeID()
-            );
-            if (choice) {
-                var edge = [target.nodes[choice.index - 1], target.nodes[choice.index]];
-                dispatch.call('clickWay', this, choice.loc, edge, d);
-                return;
+            // eslint-disable-next-line radix
+            if (_activeLayer.id === Number(target.mapId)) {
+                console.log(target.id + ' is an active layer' );
+                var choice = geoChooseEdge(
+                    context.childNodes(target), context.mouse(), context.projection, context.activeID()
+                );
+                if (choice) {
+                    var edge = [target.nodes[choice.index - 1], target.nodes[choice.index]];
+                    dispatch.call('clickWay', this, choice.loc, edge, d);
+                    return;
+                }
+            } else {
+                return ({ message: 'Selected layer is not active', status: -2 }, target.name);
             }
         }
         dispatch.call('click', this, context.map().mouseCoordinates(), d);
