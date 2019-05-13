@@ -205,6 +205,7 @@ export default class Datasets extends Tab {
 
             if ( data.type === 'dataset' ) {
                 return Hoot.api.deleteLayer( data.id )
+                    .then( () => Hoot.layers.removeLayer( data.id ) )
                     .catch( ( err ) => {
                         err.message = err.data;
                         delete err.data;
@@ -247,7 +248,6 @@ export default class Datasets extends Tab {
                 let items = d.data.type === 'folder' ? new Array( d ) : tree.selectedNodes;
 
                 this.processRequest = this.deleteItems( items )
-                    .then( () => Hoot.folders.refreshAll() )
                     .then( () => Hoot.events.emit( 'render-dataset-table' ) );
 
                 break;
