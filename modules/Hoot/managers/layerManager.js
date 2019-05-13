@@ -43,6 +43,7 @@ export default class Layers {
         this.mergedLayer        = null;
         this.mergedConflicts    = null;
         this.palette            = colorPalette;
+        this.topLayer           = null;
     }
 
     /**
@@ -342,6 +343,17 @@ export default class Layers {
         this.hoot.context.flush();
     }
 
+    toggleLayerVisibility( layer ) {
+        const isVisible = layer.visible = !layer.visible,
+              id = layer.id;
+
+        if (isVisible) {
+            d3.selectAll(`.tag-hoot-${id}`).attr('display','');
+        } else {
+            d3.selectAll(`.tag-hoot-${id}`).attr('display','none');
+        }
+    }
+
     decodeHootStatus( status ) {
         if ( status === 'Input1' ) {
             return 1;
@@ -375,6 +387,15 @@ export default class Layers {
         sheets.insertRule( 'path.shadow.tag-hoot-' + mapId + ' { stroke:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'path.fill.tag-hoot-' + mapId + ' { fill:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'g.point.tag-hoot-' + mapId + ' .stroke { fill:' + color + '}', sheets.cssRules.length - 1 );
+    }
+
+    setTopLayer( mapId ) {
+        this.topLayer = mapId;
+        this.hoot.context.flush();
+    }
+
+    getTopLayer() {
+        return this.topLayer;
     }
 
     setRecentlyUsedLayers( layerName ) {
