@@ -73,6 +73,7 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
     function move(datum) {
         context.surface().classed('nope-disabled', d3_event.altKey);
 
+		// add one more boolean at end, is activeLayer===mapId
         var targetLoc = datum && datum.properties && datum.properties.entity && datum.properties.entity.loc;
         var targetNodes = datum && datum.properties && datum.properties.nodes;
         var loc = context.map().mouseCoordinates();

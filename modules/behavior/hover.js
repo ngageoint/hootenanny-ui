@@ -140,6 +140,7 @@ export function behaviorHover(context) {
                     return;
                 }
 
+				// again, boolean, is entity.mapId === activeLayerId...
                 var suppressed = _altDisables && d3_event && d3_event.altKey;
                 _selection.selectAll(selector)
                     .classed(suppressed ? 'hover-suppressed' : 'hover', true);

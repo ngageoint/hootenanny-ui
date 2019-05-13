@@ -126,6 +126,8 @@ export function behaviorDraw(context) {
         var target = d && d.properties && d.properties.entity;
         var _activeLayer = _find( Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer === true ? a : null; });
 
+        // for each if/elseif statment add boolean (is _activeLayer===target.mapId)...
+
         if (target && target.type === 'node') {   // Snap to a node
             if (_activeLayer.id === Number(target.mapId)) {
                 console.log(target.name + ' (' + target.id + ')' + ' is an active layer' );
