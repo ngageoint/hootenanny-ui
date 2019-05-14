@@ -998,9 +998,9 @@ export default class API {
      * @param layerName - name of layer to delete
      * @returns {Promise<any>}
      */
-    deleteLayer( layerName ) {
+    deleteLayer( layerId ) {
         const params = {
-            path: `/osm/api/0.6/map/${ layerName }`,
+            path: `/osm/api/0.6/map/${ layerId }`,
             method: 'DELETE'
         };
 
