@@ -43,7 +43,6 @@ export default class Layers {
         this.mergedLayer        = null;
         this.mergedConflicts    = null;
         this.palette            = colorPalette;
-        this.checkLayerName     = this.checkLayerName;
     }
 
     /**
@@ -158,7 +157,6 @@ export default class Layers {
     hashLayer( type, mapId ) {
         this.hashLayers[type] = parseInt(mapId, 10);
     }
-
 
     async loadLayer( params ) {
         try {

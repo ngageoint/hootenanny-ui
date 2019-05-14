@@ -138,16 +138,10 @@ export default class ClipDataset {
         } );
     }
 
-    getLayerManager ( layer ) {
-        let layerName = layer.name;
-        return Hoot.layers.checkLayerName( layerName );
-
-    }
-
     createLayerNameField( input, layer ) {
         let that       = this,
             uniquename = false,
-            layerName  = this.getLayerManager( layer ),
+            layerName  = Hoot.layers.checkLayerName( layer.name ),
             i          = 1;
 
         while ( uniquename === false ) {
@@ -200,7 +194,6 @@ export default class ClipDataset {
 
         input.call( combobox );
     }
-
 
     handleSubmit() {
         let checkedRows = this.form.selectAll( '[type="checkbox"]' ),

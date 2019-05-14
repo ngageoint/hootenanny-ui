@@ -105,7 +105,7 @@ class LayerConflate extends SidebarForm {
             return 'Merged_' + Math.random().toString( 16 ).substring( 7 );
         }
         else {
-            return 'Merged_' + newName.substring + '_' + Math.random().toString( 16 ).substring( 7 );
+            return Hoot.layers.checkLayerName('Merged_' + newName.substring);
         }
     }
 
