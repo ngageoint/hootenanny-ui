@@ -34,6 +34,7 @@ export function uiBackground(context) {
 
     var _backgroundList = d3_select(null);
     var _overlayList = d3_select(null);
+    var _layerToggleList = d3_select(null);
     var _displayOptionsContainer = d3_select(null);
     var _offsetContainer = d3_select(null);
 
@@ -268,6 +269,10 @@ export function uiBackground(context) {
             .text(t('background.minimap.description'));
 
 
+        // the layer toggle list
+        _layerToggleList = selection.append('ul')
+             .attr('class', 'layer-list layer-toggle-list');
+
         // "Info / Report a Problem" link
         selection.selectAll('.imagery-faq')
             .data([0])
@@ -283,6 +288,92 @@ export function uiBackground(context) {
             .text(t('background.imagery_source_faq'));
     }
 
+    function renderLayerToggle() {
+        const getlist = Object.keys(Hoot.layers.loadedLayers).map( d => Hoot.layers.loadedLayers[d] );
+
+        _layerToggleList.html('');
+
+        let updateList = _layerToggleList.selectAll('.layer-toggle-item')
+            .data(getlist);
+
+        updateList.exit().remove();
+
+        updateList = updateList.enter()
+            .append('li')
+            .attr('class', 'layer layer-toggle-item')
+            .merge(updateList);
+
+        let updateButton = updateList.selectAll('.lyrcntrlbtn')
+            .data(d => [d]);
+
+        updateButton.exit().remove();
+
+        updateButton = updateButton.enter()
+            .append('button')
+            .call(tooltip().title('Click to have layer be on top').placement('left'))
+            .attr('class', data => {
+                let classes = `keyline-left fr fill-${data.color}`;
+
+                // First item should have the button hidden
+                if (getlist.length > 1 && getlist[0] === data) {
+                    classes += ' hidden';
+                }
+                return classes;
+            })
+            .on('click', function(data) {
+                var feature = d3.select(this.parentNode).node();
+                var prev = feature.previousElementSibling;
+
+                if (!prev) {
+                    return;
+                }
+                _layerToggleList.node()
+                    .insertBefore(feature, prev);
+
+                //turn top layer 'move up' button off
+                d3.select(feature).select('button')
+                    .classed('hidden', true);
+                //turn bottom layer 'move up' button on
+                d3.select(prev).select('button')
+                    .classed('hidden', false);
+
+                Hoot.layers.setTopLayer(data.id);
+            })
+            .append('span')
+            .classed('material-icons', true)
+            .text('arrow_upward');
+
+        // create labels
+        let updateLabel = updateList.selectAll('.layer-toggle-item-label')
+            .data(d => [d]);
+
+        updateLabel.exit().remove();
+
+        updateLabel = updateLabel.enter()
+            .append('label')
+            .classed('layer-toggle-item-label', true)
+            .merge(updateLabel);
+
+        updateLabel.text(data =>  data.name);
+
+        // create checkboxes
+        let updateInput = updateLabel.selectAll('.layer-toggle-item-input')
+            .data(d => [d]);
+
+        updateInput.exit().remove();
+
+        updateInput = updateInput.enter()
+            .append('input')
+            .classed('layer-toggle-item-input', true)
+            .merge(updateInput);
+
+        updateInput
+            .attr('type', 'checkbox')
+            .property('checked', true)
+            .on('change', function(d) {
+                Hoot.layers.toggleLayerVisibility(d);
+            });
+    }
 
     function renderOverlayList(selection) {
         var container = selection.selectAll('.layer-overlay-list')
@@ -535,6 +626,7 @@ export function uiBackground(context) {
         uiBackground.hidePane = hidePane;
         uiBackground.togglePane = togglePane;
         uiBackground.setVisible = setVisible;
+        uiBackground.renderLayerToggle = renderLayerToggle;
     }
 
     return background;

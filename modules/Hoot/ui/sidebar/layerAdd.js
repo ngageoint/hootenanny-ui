@@ -10,7 +10,8 @@ import _reject from 'lodash-es/reject';
 import FolderTree  from '../../tools/folderTree';
 import SidebarForm from './sidebarForm';
 
-import { d3combobox } from '../../../lib/hoot/d3.combobox';
+import { d3combobox }   from '../../../lib/hoot/d3.combobox';
+import { uiBackground } from '../../../ui/background';
 
 export default class LayerAdd extends SidebarForm {
     constructor( container, d ) {
@@ -210,7 +211,7 @@ export default class LayerAdd extends SidebarForm {
 
         Hoot.events.emit( 'load-layer' );
 
-        // return this.checkForReview( layer );
+        uiBackground.renderLayerToggle();
     }
 
     /**
