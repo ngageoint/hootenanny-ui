@@ -140,18 +140,7 @@ export default class ClipDataset {
 
     createLayerNameField( input, layer ) {
         let that       = this,
-            uniquename = false,
-            layerName  = Hoot.layers.checkLayerName( layer.name ),
-            i          = 1;
-
-        while ( uniquename === false ) {
-            if ( !_isEmpty( Hoot.layers.findBy( 'name', layerName ) ) ) {
-                layerName = layerName.name;
-                i++;
-            } else {
-                uniquename = true;
-            }
-        }
+            layerName  = Hoot.layers.checkLayerName( layer.name );
 
         input
             .property( 'value', layerName )
