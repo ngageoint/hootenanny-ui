@@ -66,5 +66,9 @@ export default class JobCommandInfo {
         ta.enter().append('textarea')
             .merge(ta)
             .text(this.commands);
+
+        if (ta.node()) {
+            ta.node().scrollTop = ta.node().scrollHeight;
+        }
     }
 }
