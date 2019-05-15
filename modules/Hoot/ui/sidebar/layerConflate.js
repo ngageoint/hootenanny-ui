@@ -105,7 +105,7 @@ class LayerConflate extends SidebarForm {
             return 'Merged_' + Math.random().toString( 16 ).substring( 7 );
         }
         else {
-            return 'Merged_' + newName.substring + '_' + Math.random().toString( 16 ).substring( 7 );
+            return Hoot.layers.checkLayerName('Merged_' + newName.substring);
         }
     }
 
@@ -180,7 +180,7 @@ class LayerConflate extends SidebarForm {
         data.INPUT2             = Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id;
         data.INPUT1_TYPE        = 'DB';
         data.INPUT2_TYPE        = 'DB';
-        data.OUTPUT_NAME        = this.saveAsInput.property( 'value' );
+        data.OUTPUT_NAME        = Hoot.layers.checkLayerName(this.saveAsInput.property( 'value' ));
         data.OUTPUT_FOLDER      = parseInt(this.folderPathInput.attr( '_value' ), 10);
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
