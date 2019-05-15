@@ -265,18 +265,36 @@ class LayerConflate extends SidebarForm {
                 return Hoot.api.statusInterval( resp.data.jobid );
             })
             .then( resp => {
-                // remove input layer controllers
-                d3.selectAll( '.add-controller' ).remove();
+                let message;
+                if (resp.data && resp.data.status === 'cancelled') {
+                    message = 'Job successfully cancelled';
+                } else {
+                    message = 'Conflation job complete';
+                }
 
                 Hoot.message.alert( {
                     data: resp.data,
-                    message: 'Conflation job complete',
+                    message: message,
                     status: 200,
                     type: resp.type
                 } );
+
+                return resp;
             } )
-            .then( () => Hoot.layers.refreshLayers() )
-            .then( () => this.postConflation( params ) )
+            .then( async (resp) => {
+                if (resp.data && resp.data.status !== 'cancelled') {
+                    // remove input layer controllers
+                    d3.selectAll( '.add-controller' ).remove();
+
+                    await Hoot.layers.refreshLayers();
+                }
+                return resp;
+            } )
+            .then( (resp) => {
+                if (resp.data && resp.data.status !== 'cancelled') {
+                    this.postConflation( params );
+                }
+            } )
             .catch( err => {
                 console.error(err);
                 let message, status, type, keepOpen = true;

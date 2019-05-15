@@ -101,6 +101,9 @@ export default class API {
                 if ( status === 'complete' ) {
                     clearInterval( this.intervals[ jobId ] );
                     res( { data, type: 'success', status: 200, jobId } );
+                } else if ( status === 'cancelled' ) {
+                    clearInterval( this.intervals[ jobId ] );
+                    res( { data, type: 'warn', status: 200 } );
                 } else if ( status === 'failed' ) {
                     clearInterval( this.intervals[ jobId ] );
                     rej( { data, type: 'error', status: 500 } );
