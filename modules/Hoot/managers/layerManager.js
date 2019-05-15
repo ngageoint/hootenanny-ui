@@ -80,20 +80,32 @@ export default class Layers {
      */
 
     checkLayerName(layerName) {
-        var matches = [];
-        var numMatch = [];
-        var getNumber = /\d+/g;
+        let usedNumbers = [];
+        let regex = /(.+)\s\((\d+)\)$/; /*group 1 is the name and 2 is the number*/
+        let matcher = regex.exec(layerName);
+        let namePart = layerName;
+        if (matcher) namePart = matcher[1];
+
         for (let i = 0; i < Hoot.layers.allLayers.length; i++) {
             let checkedLayer = Hoot.layers.allLayers[i].name;
-            if ( checkedLayer === layerName || new RegExp(layerName + '(\((\d+)\))').test(checkedLayer) ||
-            checkedLayer.includes(layerName.substring( 0, layerName.length-3 )) ) {
-                numMatch.push(Number(checkedLayer.match(getNumber)));
-                matches.push(checkedLayer);
+            if ( checkedLayer === namePart ) {
+                usedNumbers.push(0);
+            } else if (new RegExp(namePart + '\\s\\(\\d+\\)$').test(checkedLayer)) {
+                let checkedMatcher = regex.exec(checkedLayer);
+                usedNumbers.push(Number(checkedMatcher[2]));
             }
         }
-        return matches.length && matches.includes(layerName) ?
-        `${matches[0]}` + ' ' + `(${String(Math.max(...numMatch) + 1)})`
-        : layerName;
+
+        //get lowest available number to deconflict filenames
+        let num = usedNumbers.sort().findIndex( (n, i) => {
+            return n > i;
+        });
+
+        //if not found, there are no unused so use length
+        if (num === -1) num = usedNumbers.length;
+
+        // if zero, then the name without number is available
+        return (num === 0) ? namePart : `${namePart} (${num})`;
     }
 
     async addHashLayer(type, mapId) {
