@@ -202,7 +202,7 @@ export default class ClipDataset {
                 folderId    = parseInt(row.select( '.outputPath' ).attr('_value'), 10);
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
-            params.OUTPUT_NAME = outputName.property( 'value' ) || outputName.attr( 'placeholder' );
+            params.OUTPUT_NAME = Hoot.layers.checkLayerName(outputName.property( 'value' ) || outputName.attr( 'placeholder' ));
             params.FOLDER_ID   = folderId ? folderId : 0;
             params.BBOX        = bbox;
 
