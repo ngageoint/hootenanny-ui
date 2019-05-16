@@ -45,13 +45,7 @@ Hoot.view.utilities.dataset = function(context)
                 } else if (d.class === 'import-add-folder') {
                     context.hoot().control.utilities.folder.importFolderContainer(0);
                 } else if (d.class === 'import-refresh-layers') {
-                    context.hoot().model.folders.refresh(function () {
-                        context.hoot().model.layers.refresh(function(){
-                            context.hoot().model.folders.refreshLinks(function(){
-                                context.hoot().model.import.updateTrees();
-                            });
-                        });
-                    });
+                    context.hoot().model.folders.refreshAll();
 
                     this.blur();
                 }

@@ -270,7 +270,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.clipDataset = function (context, data, callback) {
-        if(!data.INPUT_NAME || !data.BBOX || !data.OUTPUT_NAME || !data.PATH_NAME){return false;}
+        if(!data.INPUT_NAME || !data.BBOX || !data.OUTPUT_NAME || isNaN(data.FOLDER_ID)){return false;}
 
         var postClip = function(a) {
             if(a.status==='complete'){
@@ -279,11 +279,9 @@ Hoot.model.REST = function (command, data, callback, option) {
                         var availLayers = context.hoot().model.layers.getAvailLayers();
                         var input = _.find(availLayers,{name:data.INPUT_NAME});
                         if(input!==undefined){
-                            var outputFolderId = context.hoot().model.folders.getfolderIdByName(data.PATH_NAME) || 0;
                             var output = _.find(availLayers,{name:data.OUTPUT_NAME});
                             if(output!==undefined){
-                                var link = {'folderId':outputFolderId,'mapid':output.id,'updateType':'update'};
-                                context.hoot().model.folders.updateLink(link);
+                                context.hoot().model.folders.refreshAll();
                                 callback(a,data.OUTPUT_NAME);
                             }
                         }
