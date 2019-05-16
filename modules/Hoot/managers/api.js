@@ -633,27 +633,7 @@ export default class API {
             data: data.formData
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data[ 0 ].jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Dataset successfully imported',
-                    status: 200,
-                    type: resp.type,
-                    jobId: resp.jobId
-                };
-            } )
-            .catch( err => {
-                return Promise.reject( {
-                    data: {
-                        details: err.data.commandDetail[ 0 ].stderr
-                    },
-                    message: 'Failed to import dataset!',
-                    status: err.status,
-                    type: err.type
-                } );
-            } );
+        return this.request( params );
     }
 
     modify( { mapId, modName, inputType } ) {

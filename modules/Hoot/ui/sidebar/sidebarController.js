@@ -191,7 +191,7 @@ class SidebarController {
 
                 if ( confirm ) {
                     Hoot.api.cancelJob(this.jobId)
-                        .then( resp => {
+                        .then( () => {
                             this.restoreInputs();
                         });
                 }
