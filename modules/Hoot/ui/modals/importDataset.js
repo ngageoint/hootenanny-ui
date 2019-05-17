@@ -399,7 +399,7 @@ export default class ImportDataset {
             } )
             .catch( err => {
                 console.error(err);
-                let message = 'Error running conflation',
+                let message = 'Error running import',
                     type = err.type,
                     keepOpen = true;
 

@@ -224,10 +224,6 @@ export default class ExportData {
                 let message;
                 if (resp.data && resp.data.status === 'cancelled') {
                     message = 'Job successfully cancelled';
-
-                    this.submitButton
-                        .select( 'span' )
-                        .text( 'Import' );
                 } else {
                     const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
                     message = `'${data.outputname}' ${dataType} Exported`;
@@ -244,7 +240,7 @@ export default class ExportData {
             } )
             .catch( (err) => {
                 console.error(err);
-                let message = 'Error running conflation',
+                let message = 'Error running export',
                     type = err.type,
                     keepOpen = true;
 
