@@ -43,6 +43,7 @@ export default class Layers {
         this.mergedLayer        = null;
         this.mergedConflicts    = null;
         this.palette            = colorPalette;
+        this.topLayer           = null;
     }
 
     /**
@@ -69,6 +70,42 @@ export default class Layers {
         } catch ( err ) {
             Hoot.message.alert( err );
         }
+    }
+
+    /**
+     * Check name of file being uploaded. If it is a duplicate,
+     * append a number to the end of the file's name
+     *
+     * @param layerName - layerName
+     */
+
+    checkLayerName(layerName) {
+        let usedNumbers = [];
+        let regex = /(.+)\s\((\d+)\)$/; /*group 1 is the name and 2 is the number*/
+        let matcher = regex.exec(layerName);
+        let namePart = layerName;
+        if (matcher) namePart = matcher[1];
+
+        for (let i = 0; i < Hoot.layers.allLayers.length; i++) {
+            let checkedLayer = Hoot.layers.allLayers[i].name;
+            if ( checkedLayer === namePart ) {
+                usedNumbers.push(0);
+            } else if (new RegExp(namePart + '\\s\\(\\d+\\)$').test(checkedLayer)) {
+                let checkedMatcher = regex.exec(checkedLayer);
+                usedNumbers.push(Number(checkedMatcher[2]));
+            }
+        }
+
+        //get lowest available number to deconflict filenames
+        let num = usedNumbers.sort().findIndex( (n, i) => {
+            return n > i;
+        });
+
+        //if not found, there are no unused so use length
+        if (num === -1) num = usedNumbers.length;
+
+        // if zero, then the name without number is available
+        return (num === 0) ? namePart : `${namePart} (${num})`;
     }
 
     async addHashLayer(type, mapId) {
@@ -342,6 +379,17 @@ export default class Layers {
         this.hoot.context.flush();
     }
 
+    toggleLayerVisibility( layer ) {
+        const isVisible = layer.visible = !layer.visible,
+              id = layer.id;
+
+        if (isVisible) {
+            d3.selectAll(`.tag-hoot-${id}`).attr('display','');
+        } else {
+            d3.selectAll(`.tag-hoot-${id}`).attr('display','none');
+        }
+    }
+
     decodeHootStatus( status ) {
         if ( status === 'Input1' ) {
             return 1;
@@ -375,6 +423,15 @@ export default class Layers {
         sheets.insertRule( 'path.shadow.tag-hoot-' + mapId + ' { stroke:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'path.fill.tag-hoot-' + mapId + ' { fill:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'g.point.tag-hoot-' + mapId + ' .stroke { fill:' + color + '}', sheets.cssRules.length - 1 );
+    }
+
+    setTopLayer( mapId ) {
+        this.topLayer = mapId;
+        this.hoot.context.flush();
+    }
+
+    getTopLayer() {
+        return this.topLayer;
     }
 
     setRecentlyUsedLayers( layerName ) {
