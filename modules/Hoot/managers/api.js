@@ -1030,23 +1030,7 @@ export default class API {
             data
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Clip job complete',
-                    status: 200,
-                    type: resp.type
-                };
-            } )
-            .catch( err => {
-                const message = err.data,
-                      status  = err.status,
-                      type    = err.type;
-
-                return Promise.reject( { message, status, type } );
-            } );
+        return this.request( params );
     }
 
     /**
