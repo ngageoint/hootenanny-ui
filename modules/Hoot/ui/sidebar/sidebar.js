@@ -170,13 +170,13 @@ export default class Sidebar {
     }
 
     saveChanges() {
-        let loadedLayers = Object.values(Hoot.layers.loadedLayers);
+        let loadedLayers    = Object.values(Hoot.layers.loadedLayers);
         let selectReference = d3.selectAll('#reference');
         let selectSecondary = d3.selectAll('#secondary');
         if (loadedLayers.length === 2) {
             let referenceActive = loadedLayers[0];
             let secondaryActive = loadedLayers[1];
-            let changeActive = new LayerAdd();
+            let changeActive    = new LayerAdd();
             let referenceState;
             let secondaryState;
 
@@ -271,8 +271,8 @@ export default class Sidebar {
                         secondaryState = secondaryActive;
 
                         if (referenceState) {
-                            secondaryState.activeLayer = true;
                             referenceState.activeLayer = false;
+                            secondaryState.activeLayer = true;
                         }
                         else {
                             secondaryState.activeLayer = true;

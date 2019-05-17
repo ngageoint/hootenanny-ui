@@ -327,6 +327,32 @@ export default class API {
             } );
     }
 
+
+    /**
+     * Get all id's necessary to create new map features
+     *
+     * @param {Promise|array} mapId + changesetId, nodeId, wayId, relationId
+     */
+    getAllIds( mapId ) {
+        const params = {
+            path: `/osm/api/0.6/map/${ mapId }/startingIndex`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp =>  {
+
+                let activeIds = {};
+                activeIds = resp.data;
+                return activeIds;
+            } )
+            .catch( err => {
+                const message = this.internalError( err ) || 'Unable to retrieve all map ids';
+
+                return Promise.reject( message );
+            } );
+    }
+
     /**
      * Get all layer links from the database
      *

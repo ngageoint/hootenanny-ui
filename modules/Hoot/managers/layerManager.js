@@ -39,6 +39,7 @@ export default class Layers {
         this.allLayers          = [];
         this.loadedLayers       = {};
         this.hashLayers         = {};
+        this.allIds             = {};
         this.recentlyUsedLayers = null;
         this.mergedLayer        = null;
         this.mergedConflicts    = null;
@@ -136,14 +137,16 @@ export default class Layers {
 
     async loadLayer( params ) {
         try {
-            let mapId       = params.id,
-                tags        = await this.hoot.api.getMapTags( mapId ),
-                layerExtent = await this.layerExtent( mapId );
+            let mapId           = params.id,
+                tags            = await this.hoot.api.getMapTags( mapId ),
+                layerExtent     = await this.layerExtent( mapId ),
+                activeIds       = await Hoot.api.getAllIds( mapId );
 
             let layer = {
                 name: params.name,
                 id: params.id,
                 activeLayer: params.activeLayer,
+                activeIds: activeIds,
                 refType: params.refType,
                 color: params.color,
                 merged: params.merged || false,

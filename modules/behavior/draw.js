@@ -124,24 +124,18 @@ export function behaviorDraw(context) {
     function click() {
         var d = datum();
         var target = d && d.properties && d.properties.entity;
-        var _activeLayer = _find( Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer === true ? a : null; });
+        var _activeLayer = _find( Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
 
         // for each if/elseif statment add boolean (is _activeLayer===target.mapId)...
 
-        if (target && target.type === 'node') {   // Snap to a node
-            if (_activeLayer.id === Number(target.mapId)) {
+        if (target && target.type === 'node' && _activeLayer.id === Number(target.mapId)) {   // Snap to a node
                 console.log(target.name + ' (' + target.id + ')' + ' is an active layer' );
                 dispatch.call('clickNode', this, target, d);
                 return;
-            } else {
-                return ({ message: 'Selected layer is not active', status: -2 }, target.name);
-            }
             // dispatch.call('clickNode', this, target, d);
             // return;
 
-        } else if (target && target.type === 'way') {   // Snap to a way
-            // eslint-disable-next-line radix
-            if (_activeLayer.id === Number(target.mapId)) {
+        } else if (target && target.type === 'way' && _activeLayer.id === Number(target.mapId)) {   // Snap to a way
                 console.log(target.id + ' is an active layer' );
                 var choice = geoChooseEdge(
                     context.childNodes(target), context.mouse(), context.projection, context.activeID()
@@ -151,9 +145,6 @@ export function behaviorDraw(context) {
                     dispatch.call('clickWay', this, choice.loc, edge, d);
                     return;
                 }
-            } else {
-                return ({ message: 'Selected layer is not active', status: -2 }, target.name);
-            }
         }
         dispatch.call('click', this, context.map().mouseCoordinates(), d);
     }

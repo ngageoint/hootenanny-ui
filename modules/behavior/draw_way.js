@@ -16,6 +16,7 @@ import { geoChooseEdge, geoHasSelfIntersections } from '../geo';
 import { modeBrowse, modeSelect } from '../modes';
 import { osmNode } from '../osm';
 import { utilKeybinding } from '../util';
+import _find from 'lodash-es/find';
 
 
 export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
@@ -73,7 +74,8 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
     function move(datum) {
         context.surface().classed('nope-disabled', d3_event.altKey);
 
-		// add one more boolean at end, is activeLayer===mapId
+    // add one more boolean at end, is activeLayer===mapId
+        var _activeLayer = _find( Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
         var targetLoc = datum && datum.properties && datum.properties.entity && datum.properties.entity.loc;
         var targetNodes = datum && datum.properties && datum.properties.nodes;
         var loc = context.map().mouseCoordinates();

@@ -635,7 +635,7 @@ export default {
         let ways = _filter( _flatten( _map( changes, featArr => featArr ) ), feat => feat.type !== 'node' ),
             checkLayers = Hoot.layers.loadedLayers,
             visLayers   = _map( _filter( _values( checkLayers ), layer => layer.visible ), layer => layer.id ),
-            activeLayer = _find(checkLayers, function(a, b) { return a.activeLayer === true ? a : null; }),
+            activeLayer = _find(checkLayers, function(a, b) { return a.activeLayer === true; }),
             defaultMapId;
 
         // Make sure there is only one layer visible. Otherwise, return a falsy value to prevent save.

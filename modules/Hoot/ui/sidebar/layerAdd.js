@@ -6,6 +6,7 @@
 
 import _map    from 'lodash-es/map';
 import _reject from 'lodash-es/reject';
+import _find   from 'lodash-es/find';
 
 import FolderTree  from '../../tools/folderTree';
 import SidebarForm from './sidebarForm';
@@ -19,7 +20,8 @@ export default class LayerAdd extends SidebarForm {
         this.selectedLayer = {
             name: null,
             id: null,
-            activeLayer: null
+            activeLayer: null,
+            activeIds: null
         };
     }
 
@@ -203,6 +205,7 @@ export default class LayerAdd extends SidebarForm {
             id: d ? d.id : this.selectedLayer.id,
             refType: this.formMeta.refType,
             activeLayer: d ? d.activeLayer : this.selectedLayer.activeLayer,
+            activeIds: d ? d.activeIds : this.selectedLayer.activeIds,
             color
         };
 
@@ -213,17 +216,6 @@ export default class LayerAdd extends SidebarForm {
         Hoot.events.emit( 'load-layer' );
 
         // return this.checkForReview( layer );
-        //this.checkActiveLayers();
-    }
-
-    checkActiveLayers() {
-        let activeLayer = this.selectedLayer.activeLayer;
-        if (this.formMeta.refType === 'secondary') {
-            activeLayer = false;
-        } else {
-            activeLayer = true;
-        }
-        return activeLayer;
     }
 
     /**
