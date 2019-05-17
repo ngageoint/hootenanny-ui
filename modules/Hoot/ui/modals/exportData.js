@@ -130,7 +130,12 @@ export default class ExportData {
     loadingState() {
         this.submitButton
             .select( 'span' )
-            .text( 'Exporting...' );
+            .text( 'Cancel Export' );
+
+        // overwrite the submit click action with a cancel action
+        this.submitButton.on( 'click', () => {
+            Hoot.api.cancelJob(this.jobId);
+        } );
 
         this.submitButton
             .append( 'div' )
@@ -198,12 +203,52 @@ export default class ExportData {
         this.loadingState();
 
         this.processRequest = Hoot.api.exportDataset(data)
-            .then( (message) => {
+            .then( resp => {
+                this.jobId = resp.data.jobid;
+
+                return Hoot.api.statusInterval( this.jobId );
+            } )
+            .then( async resp => {
+                console.log(resp);
+                if (resp.data && resp.data.status !== 'cancelled') {
+                    await Hoot.api.saveDataset( this.jobId, data.outputname );
+                }
+                return resp;
+            } )
+            .then( resp => {
                 Hoot.events.emit( 'modal-closed' );
-                Hoot.message.alert( message );
+
+                return resp;
             })
-            .catch( err => {
-                Hoot.message.alert( err );
+            .then( resp => {
+                let message;
+                if (resp.data && resp.data.status === 'cancelled') {
+                    message = 'Job successfully cancelled';
+
+                    this.submitButton
+                        .select( 'span' )
+                        .text( 'Import' );
+                } else {
+                    const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
+                    message = `'${data.outputname}' ${dataType} Exported`;
+                }
+
+                Hoot.message.alert( {
+                    data: resp.data,
+                    message: message,
+                    status: 200,
+                    type: resp.type
+                } );
+
+                return resp;
+            } )
+            .catch( (err) => {
+                console.error(err);
+                let message = 'Error running conflation',
+                    type = err.type,
+                    keepOpen = true;
+
+                Hoot.message.alert( { message, type, keepOpen } );
             } );
         }
 

@@ -727,29 +727,7 @@ export default class API {
             params.path = `${params.path}?ext=zip`;
         }
 
-        let jobId;
-
-        return this.request( params )
-            .then( (resp) => { jobId = resp.data.jobid; } )
-            .then( () => this.statusInterval( jobId ) )
-            .then( () => this.saveDataset( jobId, data.outputname ) )
-            .then( () => {
-                const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
-                return {
-                    message: `'${data.outputname}' ${dataType} Exported`,
-                    status: 200,
-                    type: 'success'
-                };
-            } )
-            .catch( (err) => {
-                console.log( err );
-
-                return {
-                    message: `Failed to export dataset: ${ data.input }`,
-                    status: 500,
-                    type: 'success'
-                };
-            } );
+        return this.request( params );
     }
 
     updateFolder( { folderId, parentId } ) {

@@ -397,7 +397,15 @@ export default class ImportDataset {
                 }
                 return resp;
             } )
-            .catch( err => Hoot.message.alert( err ) )
+            .catch( err => {
+                console.error(err);
+                let message = 'Error running conflation',
+                    type = err.type,
+                    keepOpen = true;
+
+                Hoot.message.alert( { message, type, keepOpen } );
+
+            } )
             .finally( () => {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
