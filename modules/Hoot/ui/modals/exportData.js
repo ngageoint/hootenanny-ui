@@ -104,7 +104,7 @@ export default class ExportData {
         return {
             'Shapefile': 'shp',
             'File Geodatabase': 'gdb',
-            'OpenStreetMap (OSM)': 'osm',
+            'OpenStreetMap (XML)': 'osm',
             'OpenStreetMap (PBF)': 'osm.pbf'
         }[this.exportFormatCombo.node().value];
     }
