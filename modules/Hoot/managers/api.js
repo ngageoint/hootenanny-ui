@@ -796,32 +796,7 @@ export default class API {
             data
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobId ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Schema data uploaded',
-                    status: 200,
-                    type: resp.type,
-                    jobId: resp.jobId
-                };
-            } )
-            .catch( err => {
-                window.console.log( err );
-                let message, status, type;
-
-                status = err.status;
-                type   = err.type;
-
-                if ( status >= 500 ) {
-                    message = 'Error during conflation! Please try again later.';
-                } else {
-                    message = 'Error while uploading schema data!';
-                }
-
-                return Promise.reject( { message, status, type } );
-            } );
+        return this.request( params );
     }
 
     uploadBasemap( data ) {

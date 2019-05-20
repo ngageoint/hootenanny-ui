@@ -114,8 +114,7 @@ export default class Upload {
             .classed( 'hidden', true )
             .on( 'click', () => d3.event.stopPropagation() )
             .on( 'change', function( d ) {
-                that.processSchemaData( d3.select( this ).node(), d.uploadType )
-                    .then( valuesMap => that.instance.initMapping( valuesMap ) );
+                that.processSchemaData( d3.select( this ).node(), d.uploadType );
             } );
 
         buttons
@@ -130,32 +129,60 @@ export default class Upload {
     }
 
     async processSchemaData( input, type ) {
-        try {
-            let formData = new FormData();
+        let formData = new FormData();
 
-            for ( let i = 0; i < input.files.length; i++ ) {
-                let file = input.files[ i ];
-                formData.append( i, file );
-            }
-
-            // reset the file input value so on change will fire
-            // if the same files/folder is selected twice in a row
-            input.value = null;
-
-            d3.selectAll( 'div, button, a, label' ).classed( 'wait', true );
-
-            let resp       = await Hoot.api.uploadSchemaData( type, formData ),
-                attrValues = await Hoot.api.getSchemaAttrValues( resp.jobId );
-
-            d3.selectAll( '.wait' ).classed( 'wait', false );
-
-            Hoot.message.alert( resp );
-
-            return this.convertUniqueValues( attrValues );
-
-        } catch ( e ) {
-            throw new Error( 'Unable to process schema data.' );
+        for ( let i = 0; i < input.files.length; i++ ) {
+            let file = input.files[ i ];
+            formData.append( i, file );
         }
+
+        // reset the file input value so on change will fire
+        // if the same files/folder is selected twice in a row
+        input.value = null;
+
+        return Hoot.api.uploadSchemaData( type, formData )
+            .then( resp => {
+                this.loadingState(d3.select(input.parentElement), true);
+
+                this.jobId = resp.data.jobId;
+
+                return Hoot.api.statusInterval( this.jobId );
+            } )
+            .then( resp => {
+                let message;
+                if (resp.data && resp.data.status === 'cancelled') {
+                    message = 'Job successfully cancelled';
+                } else {
+                    message = 'Schema data uploaded';
+                }
+
+                Hoot.message.alert( {
+                    data: resp.data,
+                    message: message,
+                    status: 200,
+                    type: resp.type
+                } );
+
+                return resp;
+            } )
+            .then( async (resp) => {
+                if (resp.data && resp.data.status !== 'cancelled') {
+                    const attrValues = await Hoot.api.getSchemaAttrValues( this.jobId );
+                    const valuesMap = this.convertUniqueValues( attrValues );
+                    this.instance.initMapping( valuesMap );
+                }
+            } )
+            .catch( err => {
+                console.error( err );
+                let message = 'Error while uploading schema data!',
+                    status = err.status,
+                    type = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } )
+            .finally( () => {
+                this.loadingState(d3.select(input.parentElement), false);
+            } );
     }
 
     convertUniqueValues( json ) {
@@ -177,5 +204,35 @@ export default class Upload {
         } );
 
         return obj;
+    }
+
+    loadingState(submitButton, isLoading) {
+        const text = isLoading ? 'Cancel Upload' : submitButton.data()[0].title;
+
+        submitButton
+            .select( 'span' )
+            .text( text );
+
+        const spinnerId = 'importSpin';
+        if (isLoading) {
+            // overwrite the submit click action with a cancel action
+            submitButton.on( 'click', () => {
+                Hoot.api.cancelJob(this.jobId);
+            } );
+
+            submitButton
+                .append( 'div' )
+                .classed( '_icon _loading float-right', true )
+                .attr( 'id', spinnerId );
+        } else {
+            // reattach old click event
+            submitButton.on('click', function() {
+                submitButton.select( 'input' ).node().click();
+            });
+
+            submitButton
+                .select(`#${ spinnerId }`)
+                .remove();
+        }
     }
 }
