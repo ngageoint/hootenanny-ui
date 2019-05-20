@@ -183,7 +183,7 @@ export default class ExportData {
         let self = this,
             data = {
                 hoot2: true,
-                input: self.getInputs(self.input),
+                input: self.id,
                 inputtype: self.getInputType(),
                 append: self.appendToFgdbCheckbox.property( 'checked' ),
                 includehoottags: false,
