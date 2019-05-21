@@ -126,17 +126,11 @@ export function behaviorDraw(context) {
         var target = d && d.properties && d.properties.entity;
         var _activeLayer = _find( Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
 
-        // for each if/elseif statment add boolean (is _activeLayer===target.mapId)...
-
-        if (target && target.type === 'node' && _activeLayer.id === Number(target.mapId)) {   // Snap to a node
-                console.log(target.name + ' (' + target.id + ')' + ' is an active layer' );
+        if (target && target.type === 'node' && _activeLayer.id === Number(target.id.split('_')[1])) {   // Snap to a node
                 dispatch.call('clickNode', this, target, d);
                 return;
-            // dispatch.call('clickNode', this, target, d);
-            // return;
 
-        } else if (target && target.type === 'way' && _activeLayer.id === Number(target.mapId)) {   // Snap to a way
-                console.log(target.id + ' is an active layer' );
+        } else if (target && target.type === 'way' && _activeLayer.id === Number(target.id.split('_')[1])) {   // Snap to a way
                 var choice = geoChooseEdge(
                     context.childNodes(target), context.mouse(), context.projection, context.activeID()
                 );

@@ -6,6 +6,7 @@
 
 import _filter  from 'lodash-es/filter';
 import _forEach from 'lodash-es/forEach';
+import _find    from 'lodash-es/find';
 
 import LayerAdd      from './layerAdd';
 import LayerConflate from './layerConflate';
@@ -15,7 +16,6 @@ import {
     utilQsString,
     utilStringQs
 } from '../../../util';
-import { diff3MergeIndices } from 'node-diff3';
 
 /**
  * Create the sidebar
@@ -174,11 +174,9 @@ export default class Sidebar {
         let selectReference = d3.selectAll('#reference');
         let selectSecondary = d3.selectAll('#secondary');
         if (loadedLayers.length === 2) {
-            let referenceActive = loadedLayers[0];
-            let secondaryActive = loadedLayers[1];
+            let referenceActive = _find(loadedLayers, function(a, b) { return a.refType === 'primary'; });
+            let secondaryActive = _find(loadedLayers, function(a, b) { return a.refType === 'secondary'; });
             let changeActive    = new LayerAdd();
-            let referenceState;
-            let secondaryState;
 
 
             if (d3.select('#reference button.select-active-layer').empty()) {
@@ -219,16 +217,14 @@ export default class Sidebar {
                             .classed('no-click', false);
 
 
-                        referenceState = referenceActive;
-
-                        if (secondaryState) {
-                            secondaryState.activeLayer  = false;
-                            referenceState.activeLayer  = true;
+                        if (secondaryActive.activeLayer !== null) {
+                            secondaryActive.activeLayer  = false;
+                            referenceActive.activeLayer  = true;
                         }
                         else {
-                            referenceState.activeLayer  = true;
+                            referenceActive.activeLayer  = true;
                         }
-                        changeActive.selectedLayer = referenceState;
+                        changeActive.selectedLayer = referenceActive;
                     });
             }
 
@@ -268,17 +264,15 @@ export default class Sidebar {
                             .classed('disable-non-active', false)
                             .classed('no-click', false);
 
-                        secondaryState = secondaryActive;
-
-                        if (referenceState) {
-                            referenceState.activeLayer = false;
-                            secondaryState.activeLayer = true;
+                        if (referenceActive.activeLayer !== null) {
+                            referenceActive.activeLayer = false;
+                            secondaryActive.activeLayer = true;
                         }
                         else {
-                            secondaryState.activeLayer = true;
+                            secondaryActive.activeLayer = true;
                         }
 
-                        changeActive.selectedLayer = secondaryState;
+                        changeActive.selectedLayer = secondaryActive;
 
                     });
             }

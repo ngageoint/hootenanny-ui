@@ -145,7 +145,7 @@ export default class Layers {
             let layer = {
                 name: params.name,
                 id: params.id,
-                activeLayer: params.activeLayer,
+                activeLayer: params.activeLayer === undefined ? null : params.activeLayer,
                 activeIds: activeIds,
                 refType: params.refType,
                 color: params.color,

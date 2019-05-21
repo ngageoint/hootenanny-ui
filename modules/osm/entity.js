@@ -14,17 +14,11 @@ export function osmEntity(attrs) {
     if (this instanceof osmEntity) return;
 
     // Create the appropriate subtype.
+    var _activeLayer = _find(Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
     if (attrs && attrs.type) {
-
-        var _activeLayer = _find(Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
-        if (_activeLayer && _activeLayer.id) {
-            console.log(attrs);
-            console.log(attrs.id);
-            //attrs.id = attrs.id + '_' + _activeLayer.id;
-            return osmEntity[osmEntity.id.type(attrs.id)].apply(this, arguments);
-        } else {
-            return osmEntity[attrs.type].apply(this, arguments);
-        }
+        return osmEntity[attrs.type].apply(this, arguments);
+    } else if (attrs && attrs.id && attrs.id.includes(String(_activeLayer.id))) {
+        return osmEntity[osmEntity.id.type(attrs.id).apply(this, arguments)];
     }
     // Initialize a generic Entity (used only in tests).
     return (new osmEntity()).initialize(arguments);

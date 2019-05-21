@@ -340,12 +340,7 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp =>  {
-
-                let activeIds = {};
-                activeIds = resp.data;
-                return activeIds;
-            } )
+            .then( resp => resp.data )
             .catch( err => {
                 const message = this.internalError( err ) || 'Unable to retrieve all map ids';
 
