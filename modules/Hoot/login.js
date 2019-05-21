@@ -9,6 +9,8 @@ import '../../css/hoot/login.scss';
 import * as d3      from 'd3';
 import API          from './managers/api';
 import Navbar       from './ui/navbar';
+import { apiConfig } from './config/apiConfig';
+
 
 class Login {
     constructor() {
@@ -243,43 +245,76 @@ class Login {
         };
     }
 
-    verifyOAuth( oauthToken, oauthVerifier ) {
-        // in popup
-        this.api.verifyOAuth( oauthToken, oauthVerifier )
-            .then( resp => {
-                if ( opener ) {
-                    window.onbeforeunload = function() {
-                        opener.oAuthDone( null, resp );
-                    };
+    verifyOAuth(oauthToken, oauthVerifier) {
+        const params = {
+            path: `/auth/oauth1/verify?oauth_token=${ oauth_token }&oauth_verifier=${ oauth_verifier }`,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
 
-                    let pathname = opener.location.pathname;
+        axios( {
+            url: params.url || `${ apiConfig.baseUrl }${ params.path }`,
+            method: params.method || 'GET',
+            headers: params.headers,
+        } ).catch( err => {
+            let { response } = err;
+            let data, message, status, statusText, type;
 
-                    // redirect parent
-                    opener.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
+            if ( response ) {
+                data       = response.data;
+                message    = response.message;
+                status     = response.status;
+                statusText = response.statusText;
+                type       = 'error';
+            } else {
+                message = err.message;
+                status  = 500;
+                type    = 'error';
+            }
 
-                    // close self
-                    window.close();
-                } else {
-                    localStorage.setItem( 'user', JSON.stringify( resp ) );
+            if ( status === 401 && statusText === 'Unauthorized' ) {
+                window.location.replace( 'login.html' );
+            }
 
-                    let pathname = window.location.pathname;
+            return Promise.reject( { data, message, status, type } );
+        } )
+        .then( resp => resp.data )
+        .then( resp => {
+            if ( opener ) {
+                window.onbeforeunload = function() {
+                    opener.oAuthDone( null, resp );
+                };
 
-                    window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
-                }
-            } )
-            .catch( err => {
-                if ( opener ) {
-                    window.onbeforeunload = function() {
-                        opener.oAuthDone( err, null );
-                    };
+                let pathname = opener.location.pathname;
 
-                    self.close();
-                } else {
-                    window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
-                    // clear oauth params.
-                    window.history.pushState( {}, document.title, window.location.pathname );
-                }
-            } );
+                // redirect parent
+                opener.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
+
+                // close self
+                window.close();
+            } else {
+                localStorage.setItem( 'user', JSON.stringify( resp ) );
+
+                let pathname = window.location.pathname;
+
+                window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
+            }
+        } )
+        .catch( err => {
+            if ( opener ) {
+                window.onbeforeunload = function() {
+                    opener.oAuthDone( err, null );
+                };
+
+                self.close();
+            } else {
+                window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
+                // clear oauth params.
+                window.history.pushState( {}, document.title, window.location.pathname );
+            }
+        } );
     }
 }
 

@@ -6,7 +6,7 @@
 
 const path         = require( 'path' );
 const Merge        = require( 'webpack-merge' );
-const CommonConfig = require( './webpack.base.config' );
+const CommonConfig = require('./webpack.base.config');
 
 module.exports = Merge( CommonConfig, {
     mode: 'development',
@@ -52,4 +52,4 @@ module.exports = Merge( CommonConfig, {
             }
         ]
     }
-} );
+});
