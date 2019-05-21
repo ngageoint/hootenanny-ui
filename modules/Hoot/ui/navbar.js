@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import About from './about';
+import { event as d3_event } from 'd3-selection';
 
 /**
  * Creates the navigation bar
@@ -16,7 +17,7 @@ export default class Navbar {
     constructor( isLoggedIn, login ) {
         this.container  = d3.select( 'body' );
         this.isLoggedIn = isLoggedIn;
-        this.login      = login;
+        this.login = login;
     }
 
     /**
@@ -64,6 +65,10 @@ export default class Navbar {
             .append( 'div' )
             .classed( 'nav-item', true);
 
+        function showDropdown(dropdownContent) {
+            const isVisible = dropdownContent.classed('visible');
+            dropdownContent.classed('visible', !isVisible);
+        }
 
         if ( this.isLoggedIn ) {
             let user = JSON.parse( localStorage.getItem( 'user' ) );
@@ -76,7 +81,7 @@ export default class Navbar {
 
             let dropdownToggle = rightContainer
                 .append( 'div' )
-                .classed( 'dropdown-toggle icon-container button flex align-center text-light pointer', true );
+                .classed('dropdown-toggle icon-container button flex align-center text-light pointer', true);
 
             dropdownToggle
                 .append( 'i' )
@@ -86,7 +91,8 @@ export default class Navbar {
             dropdownToggle
                 .append( 'i' )
                 .classed( 'medium material-icons', true )
-                .text( 'arrow_drop_down' );
+                .text( 'arrow_drop_down' )
+                .on('click', () => showDropdown(dropdownContent));
 
             let dropdownContent = rightContainer
                 .append( 'ul' )
@@ -114,8 +120,13 @@ export default class Navbar {
                 // .attr( 'href', '#!' )
                 .text( 'Logout' );
 
-            this.initDropdown();
-
+            d3.select('body').on('click.navbar', () => {
+                if (d3.event && d3.event.target) {
+                    if (!dropdownToggle.node().contains(d3.event.target) && dropdownContent.classed('visible')) {
+                        showDropdown(dropdownContent);
+                    }
+                }
+            });
         } else {
             rightContainer
                 .append( 'div' )
@@ -126,7 +137,6 @@ export default class Navbar {
                 .on( 'click', () => this.login.launchOAuthLogin() );
         }
     }
-
 
     toggleManagePanel() {
         let managePanel = Hoot.ui.managePanel,
