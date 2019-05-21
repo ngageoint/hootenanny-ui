@@ -41,14 +41,14 @@ module.exports = () => {
             datasetsPanel = Hoot.ui.managePanel.datasets;
 
             this.enableTimeouts(false)
-console.log('before')
+
             let generateCount = 7,
                 layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] ),
                 folderParams  = {
                     parentId: 0,
                     folderName: 'UnitTestFolder1'
                 };
-console.log(layerParams.length)
+
             await Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
             await Hoot.api.addFolder( folderParams ); // generate test folder
             await Hoot.folders.refreshAll();
