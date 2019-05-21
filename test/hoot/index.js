@@ -6,7 +6,6 @@
 
 let iD        = require( '../../modules/index' ),
     Hoot      = require( '../../modules/Hoot/hoot' ).default,
-    $         = require( 'jquery' ),
     _         = require( 'lodash-es' ),
     chai      = require( 'chai' );
     // sinonChai = require( 'sinon-chai' );
@@ -17,7 +16,6 @@ let id = iD.Context();
 
 global.Hoot   = Hoot;
 global.d3     = iD.d3;
-global.$      = $;
 global._      = _;
 global.iD     = iD;
 global.expect = chai.expect;

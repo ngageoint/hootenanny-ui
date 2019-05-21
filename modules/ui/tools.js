@@ -173,9 +173,9 @@ export function uiTools( context ) {
 
     function initDropdown() {
         let duration     = 50,
-            $toolsToggle = $( '.tools-toggle' );
+            toolsToggle = d3.select( '.tools-toggle' );
 
-        $toolsToggle.one( 'click', () => {
+        toolsToggle.on( 'click', () => {
             if ( toolsToggle.text() === 'Clear' ) {
                 d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
                 toolsToggle
@@ -192,7 +192,7 @@ export function uiTools( context ) {
         } );
 
         function toggle( cb ) {
-            $toolsToggle.siblings( '.dropdown-content' ).slideToggle( duration, function() {
+            toolsToggle.siblings( '.dropdown-content' ).slideToggle( duration, function() {
                 if ( cb ) {
                     cb();
                 }

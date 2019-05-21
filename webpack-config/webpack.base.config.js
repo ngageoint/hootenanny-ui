@@ -15,11 +15,7 @@ const
             from: './img', // context: root
             to: './img' // context: dist
         }
-    ] ),
-    includeModules = new webpack.ProvidePlugin( {
-        $: 'jquery',
-        jQuery: 'jquery'
-    } );
+    ] );
 
 module.exports = {
     context: resolve( __dirname, '../' ),
@@ -65,7 +61,6 @@ module.exports = {
     },
     plugins: [
         extractAssets,
-        includeModules,
         new MiniCssExtractPlugin( {
             filename: '[name].css'
         } ),

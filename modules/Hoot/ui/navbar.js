@@ -147,17 +147,17 @@ export default class Navbar {
         let that = this;
 
         // bind single click listener to open dropdown
-        $( 'nav .dropdown-toggle' ).one( 'click', () => toggleDropdown() );
+        d3.select( 'nav .dropdown-toggle' ).on( 'click', () => toggleDropdown() );
 
         // toggle the dropdown
         function toggleDropdown( cb ) {
-            $( 'nav .dropdown-content' ).slideToggle( 50, () => {
+            d3.select( 'nav .dropdown-content' ).slideToggle( 50, () => {
                 if ( cb ) {
                     cb();
                     return;
                 }
 
-                if ( !$( 'nav .dropdown-content' ).is( ':visible' ) ) return;
+                if ( !d3.select( 'nav .dropdown-content' ).is( ':visible' ) ) return;
 
                 bindBodyClick();
             } );
@@ -165,7 +165,7 @@ export default class Navbar {
 
         // bind single click listener to body after dropdown is visible to close dropdown
         function bindBodyClick() {
-            $( 'body' ).one( 'click', () => toggleDropdown( () => that.initDropdown() ) );
+            d3.select( 'body' ).on( 'click.navbar', () => toggleDropdown( () => that.initDropdown() ) );
         }
     }
 
