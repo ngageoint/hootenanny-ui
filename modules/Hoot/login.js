@@ -6,15 +6,15 @@
 
 import '../../css/hoot/login.scss';
 
-import * as d3      from 'd3';
-import API          from './managers/api';
-import Navbar       from './ui/navbar';
-import { apiConfig } from './config/apiConfig';
+import * as d3       from 'd3';
+import Navbar        from './ui/navbar';
+import { baseUrl } from './config/apiConfig';
+import axios         from 'axios/dist/axios';
 
 
 class Login {
     constructor() {
-        this.api = new API();
+        this.baseUrl = baseUrl;
     }
 
     async render() {
@@ -199,7 +199,7 @@ class Login {
 
         try {
 
-            this.oauthRedirectUrl = await this.api.getOAuthRedirectUrl();
+            this.oauthRedirectUrl = await this.getOAuthRedirectUrl();
             this.launchOAuthLogin();
         } catch (e) {
             console.log(e);
@@ -222,6 +222,19 @@ class Login {
             } );
 
         return result;
+    }
+
+    getOAuthRedirectUrl() {
+        const params = {
+            url: `${ this.baseUrl }/auth/oauth1/request`,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'text/plain'
+            }
+        };
+
+        return axios(params)
+            .then( resp => resp.data );
     }
 
     launchOAuthLogin() {
@@ -247,74 +260,49 @@ class Login {
 
     verifyOAuth(oauthToken, oauthVerifier) {
         const params = {
-            path: `/auth/oauth1/verify?oauth_token=${ oauth_token }&oauth_verifier=${ oauth_verifier }`,
+            url: `${ this.baseUrl }/auth/oauth1/verify?oauth_token=${ oauth_token }&oauth_verifier=${ oauth_verifier }`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
         };
 
-        axios( {
-            url: params.url || `${ apiConfig.baseUrl }${ params.path }`,
-            method: params.method || 'GET',
-            headers: params.headers,
-        } ).catch( err => {
-            let { response } = err;
-            let data, message, status, statusText, type;
+        axios( params )
+            .then( resp => resp.data )
+            .then( resp => {
+                if ( opener ) {
+                    window.onbeforeunload = function() {
+                        opener.oAuthDone( null, resp );
+                    };
 
-            if ( response ) {
-                data       = response.data;
-                message    = response.message;
-                status     = response.status;
-                statusText = response.statusText;
-                type       = 'error';
-            } else {
-                message = err.message;
-                status  = 500;
-                type    = 'error';
-            }
+                    let pathname = opener.location.pathname;
 
-            if ( status === 401 && statusText === 'Unauthorized' ) {
-                window.location.replace( 'login.html' );
-            }
+                    // redirect parent
+                    opener.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
 
-            return Promise.reject( { data, message, status, type } );
-        } )
-        .then( resp => resp.data )
-        .then( resp => {
-            if ( opener ) {
-                window.onbeforeunload = function() {
-                    opener.oAuthDone( null, resp );
-                };
+                    // close self
+                    window.close();
+                } else {
+                    localStorage.setItem( 'user', JSON.stringify( resp ) );
 
-                let pathname = opener.location.pathname;
+                    let pathname = window.location.pathname;
 
-                // redirect parent
-                opener.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
+                    window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
+                }
+            } )
+            .catch( err => {
+                if ( opener ) {
+                    window.onbeforeunload = function() {
+                        opener.oAuthDone( err, null );
+                    };
 
-                // close self
-                window.close();
-            } else {
-                localStorage.setItem( 'user', JSON.stringify( resp ) );
-
-                let pathname = window.location.pathname;
-
-                window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
-            }
-        } )
-        .catch( err => {
-            if ( opener ) {
-                window.onbeforeunload = function() {
-                    opener.oAuthDone( err, null );
-                };
-
-                self.close();
-            } else {
-                window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
-                // clear oauth params.
-                window.history.pushState( {}, document.title, window.location.pathname );
-            }
-        } );
+                    self.close();
+                } else {
+                    window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
+                    // clear oauth params.
+                    window.history.pushState( {}, document.title, window.location.pathname );
+                }
+            } );
     }
 }
 
