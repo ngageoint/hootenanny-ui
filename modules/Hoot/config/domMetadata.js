@@ -332,7 +332,7 @@ export function exportDataForm( zipOutput ) {
             }
         },
         {
-            label: 'ESRI FGDB Template',
+            label: 'Append to ESRI FGDB Template?',
             id: exportFgdbId,
             class: 'hidden',
             inputType: 'checkbox',
