@@ -104,7 +104,7 @@ export default class ExportData {
         return {
             'Shapefile': 'shp',
             'File Geodatabase': 'gdb',
-            'OpenStreetMap (XML)': 'osm',
+            'OpenStreetMap (OSM)': 'osm',
             'OpenStreetMap (PBF)': 'osm.pbf'
         }[this.exportFormatCombo.node().value];
     }
@@ -182,7 +182,6 @@ export default class ExportData {
     handleSubmit() {
         let self = this,
             data = {
-                hoot2: true,
                 input: self.id,
                 inputtype: self.getInputType(),
                 append: self.appendToFgdbCheckbox.property( 'checked' ),
@@ -191,8 +190,7 @@ export default class ExportData {
                 outputtype: self.getOutputType(),
                 tagoverrides: {},
                 textstatus: false,
-                translation: self.getTranslationPath(),
-                userId: Hoot.user().id
+                translation: self.getTranslationPath()
             };
 
         this.loadingState();
