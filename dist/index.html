@@ -4,8 +4,9 @@
         <meta charset='utf-8'>
         <title>Hootenanny</title>
         <link rel="icon" href="favicon.ico"/>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="../css/80_app.css">
         <link rel='stylesheet' href='iD.css'>
+        <link rel='icon' href='img/favicon.png'>
 
         <!-- mobile devices -->
         <meta name='viewport' content='initial-scale=1.0 maximum-scale=1.0'>
@@ -34,7 +35,7 @@
                     } else {
                         var id = iD.Context();
 
-                        // disable boundaries (unless we have an explicit disable_features list)
+                        // disable boundaries (unless we have an explicit disable_features list) 
                         var q = iD.utilStringQs(window.location.hash.substring(1));
                         if (!q.hasOwnProperty('disable_features')) {
                             id.features().disable('boundaries');
