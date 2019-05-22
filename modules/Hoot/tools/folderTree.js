@@ -15,9 +15,10 @@ import _forEach    from 'lodash-es/forEach';
 import _remove     from 'lodash-es/remove';
 import _slice      from 'lodash-es/slice';
 import _uniq       from 'lodash-es/uniq';
-import _without    from 'lodash-es/without';
+import _without from 'lodash-es/without';
 
-import moment       from 'moment';
+import dayjs from 'dayjs';
+
 import EventEmitter from 'events';
 
 /**
@@ -382,15 +383,14 @@ export default class FolderTree extends EventEmitter {
                 .attr( 'text-anchor', 'end' )
                 .text( function( d ) {
                     let lastAccessed = d.data.lastAccessed,
-                        timeAgo      = lastAccessed.replace( /[-:]/g, '' ),
-                        dateActive   = moment( timeAgo ).fromNow(),
-                        oldData      = moment().diff( moment( timeAgo ), 'days' ) > 60;
+                        timeAgo = dayjs(lastAccessed),
+                        diff = dayjs(Date.now()).diff(timeAgo, 'days');
 
-                    if ( oldData ) {
+                    if ( diff > 60 ) {
                         that.updateLastAccessed( this );
                     }
 
-                    return dateActive;
+                    return `${diff} days ago`;
                 } );
         }
     }

@@ -1,5 +1,5 @@
 import Tab            from './tab';
-import moment         from 'moment';
+import dayjs from 'dayjs';
 import ProgressBar    from 'progressbar.js';
 import JobCommandInfo from '../modals/jobCommandInfo';
 
@@ -17,6 +17,42 @@ export default class Jobs extends Tab {
 
         this.name = 'Jobs';
         this.id   = 'util-jobs';
+    }
+
+    duration(start, end, started) {
+        let duration,
+            diff = dayjs(end).diff(dayjs(start), 'seconds');
+
+        function calcDiff(diff, unit) {
+            diff = Math.floor(diff);
+            let calc;
+            if (diff < 1) {
+                calc = `less than a ${unit}`;
+            } else if (diff === 1) {
+                calc = `a ${unit}`;
+            } else if (diff < 5) {
+                calc = `a few ${unit}s`;
+            } else {
+                calc = `${diff} ${unit}s`;
+            }
+            return calc;
+        }
+
+        if (diff <= 60) {
+            duration = calcDiff(diff, 'second');
+        } else if ((diff / 60) <= 60) {
+            duration = calcDiff(Math.floor(diff / 60), 'minute');
+        } else if ((diff / 3600) <= 24) {
+            duration = calcDiff(Math.floor(diff / 3600), 'hour');
+        } else {
+            duration = calcDiff(Math.floor(diff / 86400), 'day');
+        }
+
+        if (started) {
+            duration += ' ago';
+        }
+
+        return duration;
     }
 
     render() {
@@ -163,7 +199,7 @@ export default class Jobs extends Tab {
 
                 //Start
                 props.push({
-                    span: [{text: moment( d.start ).fromNow()}]
+                    span: [{ text: this.duration(d.start, Date.now(), true) }]
                 });
 
                 //Progress bar
@@ -382,12 +418,12 @@ export default class Jobs extends Tab {
 
                 //Start
                 props.push({
-                    span: [{text: moment( d.start ).fromNow()}]
+                    span: [{text: this.duration(d.start, Date.now(), true) }]
                 });
 
                 //Duration
                 props.push({
-                    span: [{text: moment.duration( d.end - d.start ).humanize()}]
+                    span: [{text: this.duration(d.start, d.end) }]
                 });
 
                 //Actions
