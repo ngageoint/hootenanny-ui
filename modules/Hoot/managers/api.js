@@ -699,8 +699,8 @@ export default class API {
     }
 
     exportDataset( data ) {
-        // data.tagoverrides =  JSON.stringify(
-        //     Object.assign(data.tagoverrides || {}, {
+        data.tagoverrides =  JSON.stringify(
+            Object.assign(data.tagoverrides || {}, {
                 // 'error:circular':'',
                 // 'hoot:building:match':'',
                 // 'hoot:status':'',
@@ -714,8 +714,8 @@ export default class API {
                 // 'hoot:score:miss':'',
                 // 'hoot:score:review':'',
                 // 'hoot:score:uuid':''
-        //     })
-        // );
+            })
+        );
 
         const requiredKeys = [
             'append',
