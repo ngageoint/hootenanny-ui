@@ -13,8 +13,89 @@
     <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent'/>
 </head>
 <body>
+<div id="navbar" class="contain text-white fill-dark">
+    <div class="nav-item">
+        <div class="logo-container">
+            <img src="./img/hoot_logo_update.png" class="pointer hoot-logo"/>
+        </div>
+    </div>
+    <div class="nav-item">
+        <div id="logoutTabBtn" class="_icon light strong small info pad3x flex align-center text-light pointer">
+            Launch Login
+        </div>
+    </div>
+</div>
 <div id='id-container'>
-    <div id="id-sink"></div>
+    <div id="id-sink">
+        <div id="login-page">
+            <div class="login-container">
+                <div>
+                    <h2>What is Hootenanny</h2>
+                    <p>
+                        <em>Hootenanny:</em>
+                    </p>
+                    <ol>
+                        <li>a gathering at which folksingers entertain often with the audience joining in</li>
+                    </ol>
+                    <p>
+                        <em>Conflation</em>
+                    </p>
+                    <ol>
+                        <li>Fance word for merge</li>
+                    </ol>
+                    <p></p>
+                    <p>Hootenanny is an open source conflation tool developed to facilitate automated and semi - automated conflation of critical Foundation GEOINT features in the topographic domain.In short, it merges multiple maps of geodata into a single seamless map.</p>
+                    <p>Hootenanny is developed under the open source General Public License (GPL) and maintained on the National Geospatial-Intelligence Agency’s (NGA) GitHub <a href=\"https://github.com/ngageoint/hootenanny\" target=\"_new\">site</a></p>
+                    <h2>Access & Authentication</h2>
+                    <p>Hootenanny utilizes a third party to associate your contributions and perform basic authorization. You should have seen a popup dialog directing you to grant Hootenanny access to basic information about who you are. Once you have completed that wokflow, you should not see this again until your session is removed or expires. It is very common for browsers to block popups, see below for allowing us to create a window.</p>
+                </div>
+                <h2>Enabling Popup Windows: Chrome & Chromium</h2>
+                <div class="hoot-login-table">
+                    <div class="hoot-login-row">
+                        <div class="hoot-login-cell text">
+                            &#9658; Click 'Always Allow' and 'Done'
+                        </div>
+                    </div>
+                    <div class="hoot-login-row">
+                        <div class="hoot-login-cell">
+                            <img src="./img/login-popup-chrome-1.png"/>
+                        </div>
+                        <div class="hoot-login-cell">
+                            <img src="./img/login-popup-chrome-2.png"/>
+                        </div>
+                    </div>
+                </div>
+                <h2>Enabling Popup Windows: Firefox</h2>
+                <div class="hoot-login-table">
+                    <div class="hoot-login-row">
+                        <div class="hoot-login-cell text">
+                            &#9658; You might see a yellow bar with a notification of a popup blocked
+                        </div>
+                    </div>
+                    <div class="hoot-login-row">
+                        <div class="hoot-login-cell">
+                            <img src="./img/login-popup-firefox-1.png"/>
+                        </div>
+                        <div class="hoot-login-cell">
+                            <img src="./img/login-popup-firefox-2.png"/>
+                        </div>
+                    </div>
+                    <div class="hoot-login-row">
+                        <div class="hoot-login-cell pad-top">
+                            &#9658; Alternatively if the yellow notification is not present, look to the left in the address bar. Click on the discrete notification, and then select 'Show...' or toggle 'Block' to 'Allow'
+                        </div>
+                    </div>
+                    <div class="hoot-login-row">
+                        <div class="hoot-login-cell">
+                            <img src="./img/login-popup-firefox-3.png"/>
+                        </div>
+                    </div>
+                </div>
+                <h2>Without Popup Windows</h2>
+                <p>&#9658; Click <a id="here-click" href="#!">here</a></p>
+            </div>
+        </div>
+    </div>
 </div>
 <script src='./login.min.js'></script>
 <script src='./vendors~iD~login.min.js'></script>
@@ -28,7 +109,7 @@
         // if we have these tokens, this is the spawned popup-
         login.verifyOAuth( oauthToken, oauthVerifier );
     } else {
-        login.render();
+        login.init();
     }
 </script>
 </body>
