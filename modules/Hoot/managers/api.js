@@ -679,7 +679,7 @@ export default class API {
                 return {
                     message: `Failed to modify item: ${ modName }`,
                     status: 500,
-                    type: 'success'
+                    type: 'error'
                 };
             } );
     }
