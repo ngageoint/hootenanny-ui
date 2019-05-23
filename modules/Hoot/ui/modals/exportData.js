@@ -110,24 +110,6 @@ export default class ExportData {
         }[this.exportFormatCombo.node().value];
     }
 
-    getInputs(input) {
-        switch (this.type.toLowerCase()) {
-            case 'datasets': {
-                input = this.input;
-                break;
-            }
-            case 'folder': {
-                input = Hoot.folders.findBy('name', input).id;
-                break;
-            }
-            default: {
-                input = Hoot.layers.findBy('name', this.input ).name;
-                break;
-            }
-        }
-        return input;
-    }
-
     loadingState() {
         this.submitButton
             .select( 'span' )
