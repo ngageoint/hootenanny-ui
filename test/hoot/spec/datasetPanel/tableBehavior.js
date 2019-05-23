@@ -36,30 +36,11 @@ module.exports = () => {
     }
 
     describe( 'table behavior', () => {
-
-        after( async function() {
-                ['UnitTestFolder', 'UnitTestFolder1'].forEach( fName => {
-
-                    var f = table.select( 'g[data-name="' + fName + '"]' );
-                    if (f.size()) {
-                        f.node().dispatchEvent( contextClick );
-                        d3.select( '.context-menu li:nth-child(1)' ).dispatch( 'click' );
-                        d3.select( 'body' ).dispatch( 'click' );
-
-                        d3.select( '.hoot-confirm .confirm-actions button.primary' ).dispatch( 'click' );
-
-                        setTimeout( () => { // wait for delete process to begin
-                            Hoot.ui.managePanel.datasets.processRequest;
-                        }, 300 );
-                    }
-                });
-        } );
-
-        it( 'calls upload uploadDataset', async function() {
+        before( async function() {
             table         = d3.select( '#dataset-table' );
             datasetsPanel = Hoot.ui.managePanel.datasets;
 
-            this.timeout(30000);
+            this.timeout(25000);
 
             let generateCount = 4,
                 layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] ),
@@ -68,11 +49,35 @@ module.exports = () => {
                     folderName: 'UnitTestFolder1'
                 };
 
-            await Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
-            await Hoot.api.addFolder( folderParams ); // generate test folder
+            const upload = await Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
+            const addFolder = await Hoot.api.addFolder( folderParams ); // generate test folder
             const promiseEnd = Hoot.folders.refreshAll();
-            await Hoot.events.emit( 'render-dataset-table' );
+            const renderTable = await Hoot.events.emit( 'render-dataset-table' );
+
+            return Promise.all([upload, addFolder, promiseEnd, renderTable]);
         } );
+
+
+        after( async function() {
+            ['UnitTestFolder', 'UnitTestFolder1'].forEach( fName => {
+
+                var f = table.select( 'g[data-name="' + fName + '"]' );
+                if (f.size()) {
+                    f.node().dispatchEvent( contextClick );
+                    d3.select( '.context-menu li:nth-child(1)' ).dispatch( 'click' );
+                    d3.select( 'body' ).dispatch( 'click' );
+
+                    d3.select( '.hoot-confirm .confirm-actions button.primary' ).dispatch( 'click' );
+
+                    setTimeout( () => { // wait for delete process to begin
+                        Hoot.ui.managePanel.datasets.processRequest;
+                    }, 300 );
+                }
+
+            });
+
+        } );
+
 
         describe( 'table refresh', () => {
             it( 'calls refreshAll method and re-renders dataset table', done => {
