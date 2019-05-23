@@ -40,12 +40,18 @@ module.exports = () => {
             table         = d3.select( '#dataset-table' );
             datasetsPanel = Hoot.ui.managePanel.datasets;
 
-            this.timeout(25000);
+            // this.timeout(30000);
 
             let generateCount = 4,
                 layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] );
 
-            return Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
+            const ingest1 = await Hoot.api.uploadDataset( layerParams[0] );
+            const ingest2 = await Hoot.api.uploadDataset( layerParams[1] );
+            const ingest3 = await Hoot.api.uploadDataset( layerParams[2] );
+            const ingest4 = await Hoot.api.uploadDataset( layerParams[3] );
+
+            // return ingest4;
+            return Promise.all([ingest1,ingest2,ingest3, ingest4]);
         } );
 
 
