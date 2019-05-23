@@ -36,7 +36,7 @@ module.exports = () => {
     }
 
     describe( 'table behavior', () => {
-        before( async function(done) {
+        before( async function() {
             table         = d3.select( '#dataset-table' );
             datasetsPanel = Hoot.ui.managePanel.datasets;
 
@@ -51,9 +51,10 @@ module.exports = () => {
 
             await Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
             await Hoot.api.addFolder( folderParams ); // generate test folder
-            await Hoot.folders.refreshAll();
+            const promiseEnd = Hoot.folders.refreshAll();
             await Hoot.events.emit( 'render-dataset-table' );
-            done();
+
+            return promiseEnd;
         } );
 
 
