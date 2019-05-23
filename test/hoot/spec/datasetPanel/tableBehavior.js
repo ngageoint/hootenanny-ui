@@ -36,25 +36,6 @@ module.exports = () => {
     }
 
     describe( 'table behavior', () => {
-        before( async function() {
-            table         = d3.select( '#dataset-table' );
-            datasetsPanel = Hoot.ui.managePanel.datasets;
-
-            // this.timeout(30000);
-
-            let generateCount = 4,
-                layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] );
-
-            const ingest1 = await Hoot.api.uploadDataset( layerParams[0] );
-            const ingest2 = await Hoot.api.uploadDataset( layerParams[1] );
-            const ingest3 = await Hoot.api.uploadDataset( layerParams[2] );
-            const ingest4 = await Hoot.api.uploadDataset( layerParams[3] );
-
-            // return ingest4;
-            return Promise.all([ingest1,ingest2,ingest3, ingest4]);
-        } );
-
-
         after( async function() {
             ['UnitTestFolder', 'UnitTestFolder1'].forEach( fName => {
 
@@ -73,6 +54,25 @@ module.exports = () => {
             });
         } );
 
+        describe( 'file ingest', () => {
+            it( 'calls uploadDataset for multiple files ingest', async function() {
+                table         = d3.select( '#dataset-table' );
+                datasetsPanel = Hoot.ui.managePanel.datasets;
+
+                // this.timeout(30000);
+
+                let generateCount = 4,
+                    layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] );
+
+                const ingest1 = await Hoot.api.uploadDataset( layerParams[ 0 ] );
+                const ingest2 = await Hoot.api.uploadDataset( layerParams[ 1 ] );
+                const ingest3 = await Hoot.api.uploadDataset( layerParams[ 2 ] );
+                const ingest4 = await Hoot.api.uploadDataset( layerParams[ 3 ] );
+
+                return Promise.all( [ ingest1, ingest2, ingest3, ingest4 ] );
+            } );
+        } );
+
         describe( 'folder add', () => {
             it( 'calls addFolder', async () => {
                 const folderParams  = {
@@ -84,8 +84,8 @@ module.exports = () => {
                 const refresh = Hoot.folders.refreshAll();
 
                 return refresh;
-            });
-        });
+            } );
+        } );
 
         describe( 'table refresh', () => {
             it( 'calls refreshAll method and re-renders dataset table', done => {
