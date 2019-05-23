@@ -36,27 +36,6 @@ module.exports = () => {
     }
 
     describe( 'table behavior', () => {
-        before( async function() {
-            table         = d3.select( '#dataset-table' );
-            datasetsPanel = Hoot.ui.managePanel.datasets;
-
-            this.timeout(20000);
-
-            let generateCount = 4,
-                layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] ),
-                folderParams  = {
-                    parentId: 0,
-                    folderName: 'UnitTestFolder1'
-                };
-
-            await Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
-            await Hoot.api.addFolder( folderParams ); // generate test folder
-            const promiseEnd = Hoot.folders.refreshAll();
-            await Hoot.events.emit( 'render-dataset-table' );
-
-            return promiseEnd;
-        } );
-
 
         after( async function() {
                 ['UnitTestFolder', 'UnitTestFolder1'].forEach( fName => {
@@ -73,11 +52,27 @@ module.exports = () => {
                             Hoot.ui.managePanel.datasets.processRequest;
                         }, 300 );
                     }
-
                 });
-
         } );
 
+        it( 'calls upload uploadDataset', async function() {
+            table         = d3.select( '#dataset-table' );
+            datasetsPanel = Hoot.ui.managePanel.datasets;
+
+            this.timeout(30000);
+
+            let generateCount = 4,
+                layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] ),
+                folderParams  = {
+                    parentId: 0,
+                    folderName: 'UnitTestFolder1'
+                };
+
+            await Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
+            await Hoot.api.addFolder( folderParams ); // generate test folder
+            const promiseEnd = Hoot.folders.refreshAll();
+            await Hoot.events.emit( 'render-dataset-table' );
+        } );
 
         describe( 'table refresh', () => {
             it( 'calls refreshAll method and re-renders dataset table', done => {
