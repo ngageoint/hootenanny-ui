@@ -37,6 +37,7 @@ export default class ExportData {
         this.translationSchemaCombo = this.container.select( '#exportTranslationCombo' );
         this.exportFormatCombo = this.container.select( '#exportFormatCombo' );
         this.appendToFgdbCheckbox = this.container.select( '#exportAppendFgdb' );
+        this.includeHootTagsCheckbox = this.container.select( '#exportHootTags' );
         this.dataExportNameTextInput = this.container.select( '#dataExportNameTextInput' );
         this.submitButton = this.container.select( '#exportDatasetBtn' );
         this.submitButton.attr('disabled', null);
@@ -185,7 +186,7 @@ export default class ExportData {
                 input: self.id,
                 inputtype: self.getInputType(),
                 append: self.appendToFgdbCheckbox.property( 'checked' ),
-                includehoottags: false,
+                includehoottags: self.includeHootTagsCheckbox.property( 'checked' ),
                 outputname: self.getOutputName(),
                 outputtype: self.getOutputType(),
                 tagoverrides: {},
