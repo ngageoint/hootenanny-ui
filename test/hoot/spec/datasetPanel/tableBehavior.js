@@ -43,18 +43,9 @@ module.exports = () => {
             this.timeout(25000);
 
             let generateCount = 4,
-                layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] ),
-                folderParams  = {
-                    parentId: 0,
-                    folderName: 'UnitTestFolder1'
-                };
+                layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] );
 
-            const upload = await Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
-            const addFolder = await Hoot.api.addFolder( folderParams ); // generate test folder
-            const promiseEnd = Hoot.folders.refreshAll();
-            const renderTable = await Hoot.events.emit( 'render-dataset-table' );
-
-            return Promise.all([upload, addFolder, promiseEnd, renderTable]);
+            return Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
         } );
 
 
@@ -73,11 +64,22 @@ module.exports = () => {
                         Hoot.ui.managePanel.datasets.processRequest;
                     }, 300 );
                 }
-
             });
-
         } );
 
+        describe( 'folder add', () => {
+            it( 'calls addFolder', async () => {
+                const folderParams  = {
+                    parentId: 0,
+                    folderName: 'UnitTestFolder1'
+                };
+
+                await Hoot.api.addFolder( folderParams ); // generate test folder
+                const refresh = Hoot.folders.refreshAll();
+
+                return refresh;
+            });
+        });
 
         describe( 'table refresh', () => {
             it( 'calls refreshAll method and re-renders dataset table', done => {
