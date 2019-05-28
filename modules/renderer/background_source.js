@@ -222,18 +222,20 @@ rendererBackgroundSource.Bing = function(data, dispatch) {
     var providers = [];
 
     d3_json(url, function(err, json) {
-        providers = json.resourceSets[0].resources[0].imageryProviders.map(function(provider) {
-            return {
-                attribution: provider.attribution,
-                areas: provider.coverageAreas.map(function(area) {
-                    return {
-                        zoom: [area.zoomMin, area.zoomMax],
-                        extent: geoExtent([area.bbox[1], area.bbox[0]], [area.bbox[3], area.bbox[2]])
-                    };
-                })
-            };
-        });
-        dispatch.call('change');
+        if (json) {
+            providers = json.resourceSets[0].resources[0].imageryProviders.map(function(provider) {
+                return {
+                    attribution: provider.attribution,
+                    areas: provider.coverageAreas.map(function(area) {
+                        return {
+                            zoom: [area.zoomMin, area.zoomMax],
+                            extent: geoExtent([area.bbox[1], area.bbox[0]], [area.bbox[3], area.bbox[2]])
+                        };
+                    })
+                };
+            });
+            dispatch.call('change');
+        }
     });
 
 
