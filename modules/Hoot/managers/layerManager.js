@@ -72,6 +72,42 @@ export default class Layers {
         }
     }
 
+    /**
+     * Check name of file being uploaded. If it is a duplicate,
+     * append a number to the end of the file's name
+     *
+     * @param layerName - layerName
+     */
+
+    checkLayerName(layerName) {
+        let usedNumbers = [];
+        let regex = /(.+)\s\((\d+)\)$/; /*group 1 is the name and 2 is the number*/
+        let matcher = regex.exec(layerName);
+        let namePart = layerName;
+        if (matcher) namePart = matcher[1];
+
+        for (let i = 0; i < Hoot.layers.allLayers.length; i++) {
+            let checkedLayer = Hoot.layers.allLayers[i].name;
+            if ( checkedLayer === namePart ) {
+                usedNumbers.push(0);
+            } else if (new RegExp(namePart + '\\s\\(\\d+\\)$').test(checkedLayer)) {
+                let checkedMatcher = regex.exec(checkedLayer);
+                usedNumbers.push(Number(checkedMatcher[2]));
+            }
+        }
+
+        //get lowest available number to deconflict filenames
+        let num = usedNumbers.sort().findIndex( (n, i) => {
+            return n > i;
+        });
+
+        //if not found, there are no unused so use length
+        if (num === -1) num = usedNumbers.length;
+
+        // if zero, then the name without number is available
+        return (num === 0) ? namePart : `${namePart} (${num})`;
+    }
+
     async addHashLayer(type, mapId) {
         Hoot.ui.sidebar.forms[ type ].submitLayer( {
             id: mapId,

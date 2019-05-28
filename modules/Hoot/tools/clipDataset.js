@@ -140,18 +140,7 @@ export default class ClipDataset {
 
     createLayerNameField( input, layer ) {
         let that       = this,
-            uniquename = false,
-            layerName  = layer.name,
-            i          = 1;
-
-        while ( uniquename === false ) {
-            if ( !_isEmpty( Hoot.layers.findBy( 'name', layerName ) ) ) {
-                layerName = layer.name + i.toString();
-                i++;
-            } else {
-                uniquename = true;
-            }
-        }
+            layerName  = Hoot.layers.checkLayerName( layer.name );
 
         input
             .property( 'value', layerName )
@@ -212,11 +201,11 @@ export default class ClipDataset {
             let row         = d3.select( `#row-${ mapId }` ),
                 datasetName = row.select( '.datasetName' ),
                 outputName  = row.select( '.outputName' ),
-                folderId    = row.select( '.outputPath' );
+                folderId    = parseInt(row.select( '.outputPath' ).attr('_value'), 10);
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
-            params.OUTPUT_NAME = outputName.property( 'value' ) || outputName.attr( 'placeholder' );
-            params.FOLDER_ID   = folderId.attr( '_value' ) || 0;
+            params.OUTPUT_NAME = Hoot.layers.checkLayerName(outputName.property( 'value' ) || outputName.attr( 'placeholder' ));
+            params.FOLDER_ID   = folderId ? folderId : 0;
             params.BBOX        = bbox;
 
             self.loadingState();

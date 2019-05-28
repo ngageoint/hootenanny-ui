@@ -189,7 +189,7 @@ export default class ImportDataset {
 
             this.fileInput.property( 'value', fileNames.join( '; ' ) );
 
-            this.layerNameInput.property( 'value', saveName );
+            this.layerNameInput.property( 'value', Hoot.layers.checkLayerName(saveName) );
         }
 
         this.formValid = true;
@@ -341,12 +341,11 @@ export default class ImportDataset {
             folderId = pathId;
         }
 
-
         let data = {
             NONE_TRANSLATION: translation.NONE === 'true',
             TRANSLATION: translationName,
             INPUT_TYPE: importType.value,
-            INPUT_NAME: layerName,
+            INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
             formData: this.getFormData( this.fileIngest.node().files )
         };
 
