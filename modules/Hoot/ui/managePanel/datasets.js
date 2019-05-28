@@ -205,6 +205,7 @@ export default class Datasets extends Tab {
 
             if ( data.type === 'dataset' ) {
                 return Hoot.api.deleteLayer( data.id )
+                    .then( () => Hoot.layers.removeLayer( data.id ) )
                     .catch( ( err ) => {
                         err.message = err.data;
                         delete err.data;

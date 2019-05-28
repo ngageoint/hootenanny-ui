@@ -573,7 +573,11 @@ export default class Jobs extends Tab {
             .merge(i)
             .text( d => d.icon )
             .attr('title', d => d.title )
-            .on('click', d => d.action());
+            .on('click', d => {
+                if ( d.action ) {
+                    d.action();
+                }
+            });
 
         let span = cells.selectAll('span')
             .data( d => (d.span) ? d.span : [] );

@@ -14,7 +14,8 @@ import LayerReview   from './layerReview';
 import {
     utilQsString,
     utilStringQs
-} from '../../../util';
+}                       from '../../../util';
+import { uiBackground } from '../../../ui';
 
 /**
  * Create the sidebar
@@ -165,6 +166,7 @@ export default class Sidebar {
             window.location.replace('#' + utilQsString(q, true));
         }
 
+        uiBackground.renderLayerToggle();
         this.adjustSize();
     }
 

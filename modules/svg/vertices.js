@@ -108,7 +108,7 @@ export function svgVertices(projection, context) {
         // enter
         var enter = groups.enter()
             .append('g')
-            .attr('class', function(d) { return 'node vertex ' + d.id; })
+            .attr('class', data => `node vertex tag-hoot-${data.mapId} ${data.id}`)
             .order();
 
         enter
@@ -205,6 +205,7 @@ export function svgVertices(projection, context) {
                 data.targets.push({
                     type: 'Feature',
                     id: node.id,
+                    mapId: node.mapId,
                     properties: {
                         target: true,
                         entity: node
@@ -240,7 +241,7 @@ export function svgVertices(projection, context) {
             .append('circle')
             .attr('r', function(d) { return (_radii[d.id] || radiuses.shadow[3]); })
             .merge(targets)
-            .attr('class', function(d) { return 'node vertex target target-allowed ' + targetClass + d.id; })
+            .attr('class', data => `node vertex target target-allowed tag-hoot-${data.mapId} ${targetClass} ${data.id}`)
             .attr('transform', getTransform);
 
 
