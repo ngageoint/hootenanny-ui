@@ -80,9 +80,12 @@ export default class GrailPull {
         Promise.all([
                 Hoot.api.grailPullOverpassToDb( params ),
                 Hoot.api.grailPullRailsPortToDb( params )
-
             ])
-            .then( ( resp ) => Hoot.message.alert( resp ) )
+            .then( ( resp ) => {
+                resp.forEach( jobResp => {
+                    Hoot.message.alert( jobResp );
+                });
+            } )
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) );
 
