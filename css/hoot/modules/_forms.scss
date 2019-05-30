@@ -220,5 +220,30 @@
 }
 
 .diffInfo {
-    white-space: pre-wrap;
+    width: 300px;
+
+    th {
+        text-align: right;
+        width: 100px;
+    }
+
+    td {
+        text-align: right;
+        //padding-right: 15px;
+    }
+}
+
+.tagInput {
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    label {
+        display: inline-block;
+        padding-right: 10px;
+    }
+
+    input {
+        display: inline-block;
+        float: none;
+    }
 }

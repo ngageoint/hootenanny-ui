@@ -30,55 +30,25 @@ export default class DifferentialStats {
 
     createTable() {
         const { hasTags } = this.diffInfo;
-        let columns = [
-            {
-                label: 'Data Stats',
-                name: 'diffInfo'
-            }
-        ];
-
-        if (hasTags) {
-            columns.push({
-                label: 'Apply Tag Differential?',
-                name: 'applyTags'
-            });
-        }
 
         let table = this.form
             .select( '.wrapper div' )
             .insert( 'table', '.modal-footer' )
-            .attr( 'id', 'diffPushTable' );
-
-        let colgroup = table
-            .append( 'colgroup' );
-
-        colgroup.append( 'col' )
-            .attr( 'span', '1' );
-
-        colgroup.append( 'col' )
-            .style( 'width', '100px' );
-
-        table
-            .append( 'thead' )
-            .append( 'tr' )
-            .selectAll( 'th' )
-            .data( columns )
-            .enter()
-            .append( 'th' )
-            .text( d => d.label );
-
-        let tableBody = table.append( 'tbody' )
-            .append( 'tr' );
+            .classed( 'diffInfo', true );
 
         const diffStats = this.parseStats();
-
-        const tableElement = tableBody.append( 'td' )
-            .classed( 'diffInfo', true );
-        this.infoGrid(tableElement, diffStats);
+        this.infoGrid(table, diffStats);
 
         if (hasTags) {
-            tableBody.append( 'td' )
-                .append( 'input' )
+            let tagsOption = this.form
+                .select( '.wrapper div' )
+                .insert( 'div', '.modal-footer' )
+                .classed( 'tagInput', true );
+
+            tagsOption.append( 'label' )
+                .text('Apply Tag Differential?');
+
+            tagsOption.append( 'input' )
                 .attr( 'type', 'checkbox' )
                 .property( 'checked', false )
                 .attr( 'class', 'applyTags' );
@@ -86,9 +56,8 @@ export default class DifferentialStats {
     }
 
     infoGrid (tableElement, data) {
-        let table = tableElement.append('table');
-        let thead = table.append('thead');
-        let tbody = table.append('tbody');
+        let thead = tableElement.append('thead');
+        let tbody = tableElement.append('tbody');
 
         const columns = ['', 'node', 'way', 'relation'];
         thead.append('tr')
@@ -109,10 +78,8 @@ export default class DifferentialStats {
             })
             .enter()
             .append('td')
-            .text(function (d) {
-                return d; });
-
-        return table;
+            .classed( 'strong', data => data > 0 )
+            .text( data => data );
     }
 
     // Mainly to control order of the text displayed to the user
@@ -140,10 +107,11 @@ export default class DifferentialStats {
     }
 
     handleSubmit() {
-        const params  = {};
+        const params  = {},
+              tagsCheck = this.form.select('.applyTags');
 
-        params.APPLY_TAGS = false;
         params.folder     = this.jobId;
+        params.APPLY_TAGS = tagsCheck ? tagsCheck.property('checked') : false;
 
         Hoot.api.differentialPush( params )
             .then( resp => Hoot.message.alert( resp ) )
