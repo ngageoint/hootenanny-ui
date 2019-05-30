@@ -106,8 +106,6 @@ module.exports = () => {
 
             importSubmit.dispatch( 'click' );
 
-            expect( importSubmit.select( 'span' ).text() ).to.equal( 'Cancel Import' );
-
             await importModal.processRequest;
 
             expect( datasets.importSingleModal ).to.be.undefined;
