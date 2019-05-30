@@ -37,6 +37,7 @@ export default class ExportData {
         this.translationSchemaCombo = this.container.select( '#exportTranslationCombo' );
         this.exportFormatCombo = this.container.select( '#exportFormatCombo' );
         this.appendToFgdbCheckbox = this.container.select( '#exportAppendFgdb' );
+        this.includeHootTagsCheckbox = this.container.select( '#exportHootTags' );
         this.dataExportNameTextInput = this.container.select( '#dataExportNameTextInput' );
         this.submitButton = this.container.select( '#exportDatasetBtn' );
         this.submitButton.attr('disabled', null);
@@ -109,24 +110,6 @@ export default class ExportData {
         }[this.exportFormatCombo.node().value];
     }
 
-    getInputs(input) {
-        switch (this.type.toLowerCase()) {
-            case 'datasets': {
-                input = this.input;
-                break;
-            }
-            case 'folder': {
-                input = Hoot.folders.findBy('name', input).id;
-                break;
-            }
-            default: {
-                input = Hoot.layers.findBy('name', this.input ).name;
-                break;
-            }
-        }
-        return input;
-    }
-
     loadingState() {
         this.submitButton
             .select( 'span' )
@@ -187,17 +170,15 @@ export default class ExportData {
     handleSubmit() {
         let self = this,
             data = {
-                hoot2: true,
-                input: self.getInputs(self.input),
+                input: self.id,
                 inputtype: self.getInputType(),
                 append: self.appendToFgdbCheckbox.property( 'checked' ),
-                includehoottags: false,
+                includehoottags: self.includeHootTagsCheckbox.property( 'checked' ),
                 outputname: self.getOutputName(),
                 outputtype: self.getOutputType(),
                 tagoverrides: {},
                 textstatus: false,
-                translation: self.getTranslationPath(),
-                userId: Hoot.user().id
+                translation: self.getTranslationPath()
             };
 
         this.loadingState();

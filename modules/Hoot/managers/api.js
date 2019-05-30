@@ -662,7 +662,7 @@ export default class API {
                 return {
                     message: `Failed to modify item: ${ modName }`,
                     status: 500,
-                    type: 'success'
+                    type: 'error'
                 };
             } );
     }
@@ -684,19 +684,19 @@ export default class API {
     exportDataset( data ) {
         data.tagoverrides =  JSON.stringify(
             Object.assign(data.tagoverrides || {}, {
-                'error:circular':'',
-                'hoot:building:match':'',
-                'hoot:status':'',
-                'hoot:review:members':'',
-                'hoot:review:score':'',
-                'hoot:review:note':'',
-                'hoot:review:sort_order':'',
-                'hoot:review:type':'',
-                'hoot:review:needs':'',
-                'hoot:score:match':'',
-                'hoot:score:miss':'',
-                'hoot:score:review':'',
-                'hoot:score:uuid':''
+                // 'error:circular':'',
+                // 'hoot:building:match':'',
+                // 'hoot:status':'',
+                // 'hoot:review:members':'',
+                // 'hoot:review:score':'',
+                // 'hoot:review:note':'',
+                // 'hoot:review:sort_order':'',
+                // 'hoot:review:type':'',
+                // 'hoot:review:needs':'',
+                // 'hoot:score:match':'',
+                // 'hoot:score:miss':'',
+                // 'hoot:score:review':'',
+                // 'hoot:score:uuid':''
             })
         );
 
@@ -709,8 +709,7 @@ export default class API {
             'outputtype',
             'tagoverrides',
             'textstatus' ,
-            'translation',
-            'userId'
+            'translation'
         ];
 
         if (!requiredKeys.every( k => data.hasOwnProperty(k) )) {
@@ -740,7 +739,6 @@ export default class API {
             .then( () => {
                 return {
                     message: `Successfully updated folder: ${ folderId }`,
-                    status: 200,
                     type: 'success'
                 };
             } )
@@ -749,8 +747,7 @@ export default class API {
 
                 return {
                     message: `Failed to update folder: ${ folderId }`,
-                    status: 500,
-                    type: 'success'
+                    type: 'error'
                 };
             } );
     }
@@ -765,7 +762,6 @@ export default class API {
             .then( () => {
                 return {
                     message: `Successfully updated visibility of folder: ${ folderId } to ${ visibility }`,
-                    status: 200,
                     type: 'success'
                 };
             } )
@@ -774,8 +770,7 @@ export default class API {
 
                 return {
                     message: `Failed to change visibility of folder: ${ folderId } to ${ visibility }`,
-                    status: 500,
-                    type: 'success'
+                    type: 'error'
                 };
             } );
     }
@@ -1043,7 +1038,6 @@ export default class API {
                 return {
                     data: resp.data,
                     message: 'Review has successfully been saved. It can be viewed in Manage Panel -> Review Bookmarks',
-                    status: 200,
                     type: 'success'
                 };
             } )
@@ -1051,7 +1045,6 @@ export default class API {
                 return {
                     data: err.data,
                     message: 'Error saving review!',
-                    status: err.status,
                     type: 'error'
                 };
             } );
