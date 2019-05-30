@@ -105,7 +105,7 @@ module.exports = () => {
         } );
 
         describe( 'item selection', () => {
-            before( async function() {
+            it( 'Moves two datasets to a folder', () => {
 
                 let startLayer = table.select( 'g[data-name="UnitTestLayer2"]' ),
                     endLayer   = table.select( 'g[data-name="UnitTestLayer3"]' );
@@ -128,7 +128,7 @@ module.exports = () => {
 
                 submitButton.dispatch( 'click' );
 
-                await modifyModal.processRequest;
+                return modifyModal.processRequest;
 
             } );
 
