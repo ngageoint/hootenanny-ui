@@ -378,24 +378,9 @@ export default class ImportDataset {
 
                 return resp;
             } )
-            .then( async (resp) => {
-                if (resp.data && resp.data.status !== 'cancelled') {
-                    await Hoot.layers.refreshLayers();
-                }
-                return resp;
-            } )
-            .then( (resp) => {
-                if (resp.data && resp.data.status !== 'cancelled') {
-                    this.updateLinks( layerName, folderId );
-                }
-                return resp;
-            } )
-            .then( (resp) => {
-                if (resp.data && resp.data.status !== 'cancelled') {
-                    Hoot.events.emit( 'render-dataset-table' );
-                }
-                return resp;
-            } )
+            .then( () => Hoot.layers.refreshLayers() )
+            .then( () => this.updateLinks( layerName, folderId ) )
+            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {
                 console.error(err);
                 let message = 'Error running import',
@@ -434,6 +419,7 @@ export default class ImportDataset {
     loadingState() {
         this.submitButton
             .select( 'span' )
+            .classed( 'label', true )
             .text( 'Cancel Import' );
 
         // overwrite the submit click action with a cancel action
@@ -441,10 +427,9 @@ export default class ImportDataset {
             Hoot.api.cancelJob(this.jobId);
         } );
 
-        this.submitButton
-            .append( 'div' )
-            .classed( '_icon _loading float-right', true )
-            .attr( 'id', 'importSpin' );
+        this.submitButton.insert('i', 'span')
+            .classed('material-icons', true)
+            .text('cancel');
 
         this.container.selectAll( 'input' )
             .each( function() {
