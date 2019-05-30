@@ -29,7 +29,8 @@ export default class Jobs extends Tab {
             if (diff < 1) {
                 calc = `less than a ${unit}`;
             } else if (diff === 1) {
-                calc = `a ${unit}`;
+                let article = unit === 'hour' ? 'an' : 'a';
+                calc = `${article} ${unit}`;
             } else if (diff < 5) {
                 calc = `a few ${unit}s`;
             } else {
@@ -38,11 +39,11 @@ export default class Jobs extends Tab {
             return calc;
         }
 
-        if (diff <= 60) {
+        if (diff < 60) {
             duration = calcDiff(diff, 'second');
-        } else if ((diff / 60) <= 60) {
+        } else if ((diff / 60) < 60) {
             duration = calcDiff(Math.floor(diff / 60), 'minute');
-        } else if ((diff / 3600) <= 24) {
+        } else if ((diff / 3600) < 24) {
             duration = calcDiff(Math.floor(diff / 3600), 'hour');
         } else {
             duration = calcDiff(Math.floor(diff / 86400), 'day');
