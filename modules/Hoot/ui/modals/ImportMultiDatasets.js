@@ -363,6 +363,7 @@ export default class ImportMultiDatasets {
                 };
 
                 Hoot.api.uploadDataset( params )
+                    .then( resp => Hoot.api.statusInterval( resp.data[ 0 ].jobid ) )
                     .then( () => resolve( name ) );
             } );
         } );
