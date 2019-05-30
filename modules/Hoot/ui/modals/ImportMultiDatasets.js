@@ -380,8 +380,13 @@ export default class ImportMultiDatasets {
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => Promise.all( _map( fileNames, name => this.updateLinks( name, folderId ) ) ) )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
-            .catch( err => Hoot.message.alert( err ) )
+            .catch( err => {
+                console.error(err);
+                err.type = 'error';
+                Hoot.message.alert( err );
+            })
             .finally( () => {
+
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
             } );

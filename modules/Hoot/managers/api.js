@@ -866,7 +866,7 @@ export default class API {
     }
 
     updateMapFolderLinks( { mapId, folderId } ) {
-        if ( !mapId || folderId < 0 ) return;
+        if ( !mapId || folderId < 0 ) return Promise.resolve( 'Map or folder id invalid' );
 
         const params = {
             path: `/osm/api/0.6/map/${ mapId }/move/${ folderId }`,
