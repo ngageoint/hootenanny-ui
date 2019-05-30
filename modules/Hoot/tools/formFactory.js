@@ -86,10 +86,11 @@ export default class FormFactory {
             .append( 'div' )
             .classed( 'modal-header pad1y big keyline-bottom', true );
 
-        header
-            .append( 'h3' )
-            .text( formTitle )
-            .append( 'div' )
+        let span = header
+            .append( 'h3' );
+        span.append('span')
+            .text( formTitle );
+        span.append( 'div' )
             .classed( 'fr _icon close pointer', true )
             .on( 'click', () => {
                 container.remove();
