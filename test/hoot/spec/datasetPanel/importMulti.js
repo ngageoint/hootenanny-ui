@@ -113,7 +113,7 @@ module.exports = () => {
 
             importSubmit.dispatch( 'click' );
 
-            expect( importSubmit.select( 'span' ).text() ).to.equal( 'Uploading...' );
+            expect( importSubmit.select( 'span' ).text() ).to.equal( 'Cancel Import' );
 
             await importModal.processRequest;
 
