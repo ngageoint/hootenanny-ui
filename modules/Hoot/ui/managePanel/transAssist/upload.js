@@ -151,9 +151,9 @@ export default class Upload {
             .then( resp => {
                 let message;
                 if (resp.data && resp.data.status === 'cancelled') {
-                    message = 'Job successfully cancelled';
+                    message = 'Translation Assistant job cancelled';
                 } else {
-                    message = 'Schema data uploaded';
+                    message = 'Translation Assistant job completed';
                 }
 
                 Hoot.message.alert( {
@@ -174,7 +174,7 @@ export default class Upload {
             } )
             .catch( err => {
                 console.error( err );
-                let message = 'Error while uploading schema data!',
+                let message = 'Error running Translation Assistant',
                     status = err.status,
                     type = err.type;
 

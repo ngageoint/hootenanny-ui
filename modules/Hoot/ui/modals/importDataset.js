@@ -360,7 +360,7 @@ export default class ImportDataset {
             .then( resp => {
                 let message;
                 if (resp.data && resp.data.status === 'cancelled') {
-                    message = 'Job successfully cancelled';
+                    message = 'Import job cancelled';
 
                     this.submitButton
                         .select( 'span' )

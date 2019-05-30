@@ -219,7 +219,7 @@ export default class ClipDataset {
                 .then( resp => {
                     let message;
                     if (resp.data && resp.data.status === 'cancelled') {
-                        message = 'Job successfully cancelled';
+                        message = 'Clip job cancelled';
                     } else {
                         message = 'Clip job complete';
                     }

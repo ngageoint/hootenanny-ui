@@ -204,7 +204,7 @@ export default class ExportData {
             .then( resp => {
                 let message;
                 if (resp.data && resp.data.status === 'cancelled') {
-                    message = 'Job successfully cancelled';
+                    message = 'Export job cancelled';
                 } else {
                     const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
                     message = `'${data.outputname}' ${dataType} Exported`;

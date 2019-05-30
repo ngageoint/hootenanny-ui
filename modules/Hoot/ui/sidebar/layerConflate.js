@@ -267,7 +267,7 @@ class LayerConflate extends SidebarForm {
             .then( resp => {
                 let message;
                 if (resp.data && resp.data.status === 'cancelled') {
-                    message = 'Job successfully cancelled';
+                    message = 'Conflation job cancelled';
                 } else {
                     message = 'Conflation job complete';
                 }
