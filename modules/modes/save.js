@@ -1,5 +1,6 @@
 import _clone from 'lodash-es/clone';
 import _filter from 'lodash-es/filter';
+import _find   from 'lodash-es/find';
 import _map from 'lodash-es/map';
 import _reduce from 'lodash-es/reduce';
 import _union from 'lodash-es/union';
@@ -44,6 +45,9 @@ import {
 } from '../util';
 
 import { osmEntity } from '../osm/index';
+import { create } from 'domain';
+import { pseudoRandomBytes } from 'crypto';
+import { async } from 'q';
 
 var _isSaving = false;
 
@@ -287,7 +291,6 @@ export function modeSave(context) {
         }
     }
 
-
     function upload(changeset) {
         var osm = context.connection();
         if (!osm) {
@@ -305,7 +308,36 @@ export function modeSave(context) {
             var changes = history.changes(actionDiscardTags(history.difference()));
             if (changes.modified.length || changes.created.length || changes.deleted.length) {
                 //loadLocation();  // so it is ready when we display the save screen
-                osm.putChangeset(changeset, changes, uploadCallback);
+
+                var getMapIds   = Object.keys(Hoot.layers.loadedLayers);
+                var idToNum     = getMapIds.map(parseFloat);
+                let changesetArray = [];
+
+                var mapChanges  = idToNum.map(function(mapId) {
+                    var created     = changes.created.filter(function(created) { return Number(created.id.split('_')[1]) === mapId; });
+                    var modified    = changes.modified.filter(function(modified) { return Number(modified.id.split('_')[1]) === mapId; });
+                    var deleted     = changes.deleted.filter(function(deleted) { return Number(deleted.id.split('_')[1]) === mapId; });
+                        return {
+                            mapId: mapId,
+                            changes: {
+                                created: created,
+                                modified: modified,
+                                deleted: deleted
+                            }
+                        };
+                    });
+
+                mapChanges.forEach(
+                    function (changes) {
+                        if (changes.changes.created.length === 0 && changes.changes.modified.length === 0 && changes.changes.deleted.length === 0) {
+                            return;
+                        }
+                        else if (changes.changes.created.length > 0 || changes.changes.modified.length > 0 || changes.changes.deleted.length > 0) {
+                            changesetArray.push(changes);
+                        }
+                        osm.putChangeset(changeset, changes.changes ,uploadCallback, changesetArray, changes.mapId);
+                    }
+                );
             } else {        // changes were insignificant or reverted by user
                 d3_select('.inspector-wrap *').remove();
                 loading.close();
@@ -315,7 +347,6 @@ export function modeSave(context) {
             }
         }
     }
-
 
     function uploadCallback(err, changeset) {
         if (err) {

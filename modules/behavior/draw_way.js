@@ -75,9 +75,7 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
     function move(datum) {
         context.surface().classed('nope-disabled', d3_event.altKey);
 
-        var _activeLayer = _find( Hoot.layers.loadedLayers, function(a,b) { return a.activeLayer; });
         var targetLoc = datum && datum.properties && datum.properties.entity && datum.properties.entity.loc;
-            //&& datum.properties.entity.id.includes(String(_activeLayer.id));
         var targetNodes = datum && datum.properties && datum.properties.nodes;
         var loc = context.map().mouseCoordinates();
 
@@ -120,12 +118,6 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
         for (var i = 0; i < parents.length; i++) {
             var parent = parents[i];
             var nodes = parent.nodes.map(function(nodeID) { return graph.entity(nodeID); });
-            // var getId  = origWay.id.split('_')[1];
-            // var _activeLayer = _find( Hoot.layers.loadedLayers, function(a,b) { return a.activeLayer; });
-
-            // if (getId === String(_activeLayer.id)) {
-            //     finishDraw = true;
-            // }
 
             if (origWay.isClosed()) { // Check if Area
                 if (finishDraw) {
@@ -287,8 +279,6 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
 
     // Connect the way to an existing node and continue drawing.
     drawWay.addNode = function(node, d) {
-        console.log(node);
-        console.log(d);
         if ((d && d.properties && d.properties.nope) || context.surface().classed('nope')) {
             return;   // can't click here
         }

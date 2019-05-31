@@ -52,6 +52,7 @@ export function modeDragNode(context) {
     var _activeEntity;
     var _startLoc;
     var _lastLoc;
+    var _activeLayer = _find( Hoot.layers.loadedLayers, function(a,b) { return a.activeLayer; });
 
 
     function startNudge(entity, nudge) {
@@ -187,6 +188,7 @@ export function modeDragNode(context) {
         var currMouse = geoVecSubtract(currPoint, nudge);
         var loc = context.projection.invert(currMouse);
 
+
         if (!_nudgeInterval) {   // If not nudging at the edge of the viewport, try to snap..
             // related code
             // - `mode/drag_node.js`     `doMode()`
@@ -198,10 +200,9 @@ export function modeDragNode(context) {
             var targetNodes = d && d.properties && d.properties.nodes;
             var edge;
 
-            if (targetLoc) {   // snap to node/vertex - a point target with `.loc`
+            if (targetLoc && Number(target.id.split('_')[1]) === _activeLayer.id) {  // snap to node/vertex - a point target with `.loc`
                 loc = targetLoc;
-
-            } else if (targetNodes) {   // snap to way - a line target with `.nodes`
+            } else if (targetNodes && Number(target.id.split('_')[1]) === _activeLayer.id) { // snap to way - a line target with `.nodes`
                 edge = geoChooseEdge(targetNodes, context.mouse(), context.projection, end.id);
                 if (edge) {
                     loc = edge.loc;
@@ -340,6 +341,7 @@ export function modeDragNode(context) {
 
     function move(entity) {
         if (_isCancelled) return;
+        if ( _activeLayer === undefined || _activeLayer.id !== Number(entity.id.split('_')[1])) return;
         d3_event.sourceEvent.stopPropagation();
 
         context.surface().classed('nope-disabled', d3_event.sourceEvent.altKey);
@@ -368,7 +370,7 @@ export function modeDragNode(context) {
                 _actionBounceBack(entity.id, _startLoc)
             );
 
-        } else if (target && target.type === 'way') {
+        } else if (target && target.type === 'way' && Number(target.id.split('_')[1]) === _activeLayer.id) {
             var choice = geoChooseEdge(context.childNodes(target), context.mouse(), context.projection, entity.id);
             context.replace(
                 actionAddMidpoint({
@@ -378,7 +380,7 @@ export function modeDragNode(context) {
                 connectAnnotation(entity, target)
             );
 
-        } else if (target && target.type === 'node') {
+        } else if (target && target.type === 'node' && Number(target.id.split('_')[1]) === _activeLayer.id) {
             context.replace(
                 actionConnect([target.id, entity.id]),
                 connectAnnotation(entity, target)

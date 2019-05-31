@@ -8,7 +8,6 @@ import _flatten from 'lodash-es/flatten';
 import _groupBy from 'lodash-es/groupBy';
 import _isEmpty from 'lodash-es/isEmpty';
 import _map from 'lodash-es/map';
-import _matches from 'lodash-es/matches';
 import _throttle from 'lodash-es/throttle';
 import _uniq from 'lodash-es/uniq';
 import _values from 'lodash-es/values';
@@ -42,7 +41,6 @@ import {
 } from '../util';
 
 import { baseUrl as hootBaseUrl } from '../Hoot/config/apiConfig';
-import { all } from 'q';
 
 var tiler = utilTiler();
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded', 'loadedNotes');
@@ -74,6 +72,7 @@ var _userCache = { toLoad: {}, user: {} };
 var _changeset = {};
 
 var _connectionID = 1;
+var _multiCIDs = [];
 var _tileZoom = 16;
 var _noteZoom = 12;
 var _rateLimitError;
@@ -639,10 +638,8 @@ export default {
             defaultMapId;
 
         // Make sure there is only one layer visible. Otherwise, return a falsy value to prevent save.
-        if (visLayers.length === 1 || changes.created.length === 0){
-            defaultMapId = activeLayer.id;
-        }
-        else if (visLayers.length === 2) {
+
+        if ( activeLayer.activeLayer === true ){
             defaultMapId = activeLayer.id;
         } else {
             return false;
@@ -688,35 +685,40 @@ export default {
 
     // Create, upload, and close a changeset
     // PUT /api/0.6/changeset/create
-    // POST /api/0.6/changeset/#id/upload
+    // POST /api/0.6/changeset/#i/upload
     // PUT /api/0.6/changeset/#id/close
-    putChangeset: function(changeset, changes, callback ) {
+    putChangeset: function(changeset, changes, callback, changesetArray, mapId ) {
         var cid = _connectionID;
+        _multiCIDs.push(cid);
 
-        let changesArr = this.filterChanges( changes );
+        //let changesArr = this.filterChanges(changes);
 
-        if (_changeset.inflight || !changesArr) {
-            return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
+        if (_changeset.inflight) {
+            if (changesetArray.length === 2) {
+                changesetArray.forEach(function (multiple) {
+                    var err;
+                    var result;
+                    uploadedChangeset(err, result, multiple.mapId);
+                });
+            } else {
+                return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
+            }
 
         } else if (_changeset.open) {   // reuse existing open changeset..
-            return createdChangeset.call(this, null, _changeset.open);
+            return createdChangeset.call(this, null, _changeset.open, mapId);
 
         } else {   // Open a new changeset..
-                _forEach( changesArr, ( changes, mapId ) => {
-                    let path = '/api/0.6/changeset/create';
-                    path += mapId ? `?mapId=${ mapId }` : '';
-
-                    var options = {
+            let path = `/api/0.6/changeset/create/?mapId=${ mapId }`;
+            var options = {
                         method: 'PUT',
                         path: path,
                         options: { header: { 'Content-Type': 'text/xml' } },
                         content: JXON.stringify(changeset.asJXON())
                     };
-                    _changeset.inflight = oauth.xhr(
+                _changeset.inflight = oauth.xhr(
                         options,
                         wrapcb(this, createdChangeset, cid, mapId)
                     );
-                } );
         }
 
         function createdChangeset(err, changesetID, mapId) {
@@ -762,7 +764,7 @@ export default {
             } );
 
             let path = '/api/0.6/changeset/' + changesetID + '/upload';
-            path += mapId ? `?mapId=${ mapId }` : '';
+            path += `?mapId=${ mapId }`;
 
             // Upload the changeset..
             var options = {
@@ -789,7 +791,20 @@ export default {
 
             // At this point, we don't really care if the connection was switched..
             // Only try to close the changeset if we're still talking to the same server.
-            if (this.getConnectionId() === cid) {
+            if (_multiCIDs.length === 2) {
+                _multiCIDs.forEach(function (id) {
+                    let path = '/api/0.6/changeset/' + changeset.id + '/close';
+                    path += mapId ? `?mapId=${mapId}` : '';
+
+                    // Still attempt to close changeset, but ignore response because #2667
+                    oauth.xhr({
+                        method: 'PUT',
+                        path: path,
+                        options: { header: { 'Content-Type': 'text/xml' } }
+                    }, function () { return true; });
+                });
+            }
+            else {
                 let path = '/api/0.6/changeset/' + changeset.id + '/close';
                 path += mapId ? `?mapId=${ mapId }` : '';
 

@@ -370,8 +370,9 @@ button[disabled].action:hover {
 
 .disable-non-active,
 .disable-non-active:hover {
-    cursor: not-allowed;
-}
+    background-color: #fff;
+}    /* cursor: not-allowed; */
+
 
 .active-pulse {
     border-radius: 50%;
@@ -410,9 +411,9 @@ button[disabled].action:hover {
     }
   }
 
-.no-click {
+/* .no-click {
     pointer-events: none;
-}
+} */
 
 
 /* Icons
