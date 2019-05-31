@@ -1216,9 +1216,9 @@ export default class API {
             } );
     }
 
-    differentialStats( jobId ) {
+    differentialStats( jobId, includeTags ) {
         const params = {
-            path: `/grail/differentialstats/${ jobId }`,
+            path: `/grail/differentialstats?jobId=${ jobId }&includeTags=${ includeTags }`,
             method: 'GET'
         };
 

@@ -4,6 +4,7 @@ export default class DifferentialStats {
     constructor( jobId, data ) {
         this.jobId    = jobId;
         this.diffInfo = data;
+        this.includeTags = false;
     }
 
     render() {
@@ -36,8 +37,7 @@ export default class DifferentialStats {
             .insert( 'table', '.modal-footer' )
             .classed( 'diffInfo', true );
 
-        const diffStats = this.parseStats();
-        this.infoGrid(table, diffStats);
+        this.infoGrid(table);
 
         if (hasTags) {
             let tagsOption = this.form
@@ -48,14 +48,24 @@ export default class DifferentialStats {
             tagsOption.append( 'label' )
                 .text('Apply Tag Differential?');
 
-            tagsOption.append( 'input' )
+            const checkbox = tagsOption.append( 'input' )
                 .attr( 'type', 'checkbox' )
-                .property( 'checked', false )
-                .attr( 'class', 'applyTags' );
+                .property( 'checked', this.includeTags )
+                .attr( 'class', 'applyTags' )
+                .on('click', async ()  => {
+                    this.includeTags = checkbox.property( 'checked' );
+                    const stats = await Hoot.api.differentialStats(this.jobId, this.includeTags);
+                    this.diffInfo = stats.data;
+
+                    this.form.select('table').remove();
+                    tagsOption.remove();
+                    this.createTable();
+                });
         }
     }
 
-    infoGrid (tableElement, data) {
+    infoGrid (tableElement) {
+        const diffStats = this.parseStats();
         let thead = tableElement.append('thead');
         let tbody = tableElement.append('tbody');
 
@@ -68,7 +78,7 @@ export default class DifferentialStats {
             .text(function (d) { return d; });
 
         let rows = tbody.selectAll('tr')
-            .data(data)
+            .data(diffStats)
             .enter()
             .append('tr');
 

@@ -503,7 +503,7 @@ export default class Jobs extends Tab {
                         title: 'upload changeset',
                         icon: 'cloud_upload',
                         action: async () => {
-                            Hoot.api.differentialStats(d.jobId)
+                            Hoot.api.differentialStats(d.jobId, false)
                                 .then( resp => {
                                     this.diffStats = new DifferentialStats( d.jobId, resp.data ).render();
 
