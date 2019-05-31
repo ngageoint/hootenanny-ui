@@ -7,8 +7,6 @@
 const _     = require( 'lodash' );
 const sinon = require( 'sinon' );
 
-const { generateOsmLayerParams } = require( '../../helpers' );
-
 const CONTEXT_TIMEOUT = 300;
 
 module.exports = () => {
@@ -36,6 +34,11 @@ module.exports = () => {
     }
 
     describe( 'table behavior', () => {
+        before( function() {
+            table         = d3.select( '#dataset-table' );
+            datasetsPanel = Hoot.ui.managePanel.datasets;
+        });
+
         after( async function() {
             ['UnitTestFolder', 'UnitTestFolder1'].forEach( fName => {
 
@@ -52,25 +55,6 @@ module.exports = () => {
                     }, 300 );
                 }
             });
-        } );
-
-        describe( 'file ingest', () => {
-            it( 'calls uploadDataset for multiple files ingest', async function() {
-                table         = d3.select( '#dataset-table' );
-                datasetsPanel = Hoot.ui.managePanel.datasets;
-
-                // this.timeout(30000);
-
-                let generateCount = 4,
-                    layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] );
-
-                const ingest1 = await Hoot.api.uploadDataset( layerParams[ 0 ] );
-                const ingest2 = await Hoot.api.uploadDataset( layerParams[ 1 ] );
-                const ingest3 = await Hoot.api.uploadDataset( layerParams[ 2 ] );
-                const ingest4 = await Hoot.api.uploadDataset( layerParams[ 3 ] );
-
-                return Promise.all( [ ingest1, ingest2, ingest3, ingest4 ] );
-            } );
         } );
 
         describe( 'folder add', () => {
@@ -105,7 +89,7 @@ module.exports = () => {
         } );
 
         describe( 'item selection', () => {
-            it( 'Moves two datasets to a folder', () => {
+            before( async function() {
 
                 let startLayer = table.select( 'g[data-name="UnitTestLayer2"]' ),
                     endLayer   = table.select( 'g[data-name="UnitTestLayer3"]' );
@@ -128,7 +112,7 @@ module.exports = () => {
 
                 submitButton.dispatch( 'click' );
 
-                return modifyModal.processRequest;
+                await modifyModal.processRequest;
 
             } );
 
