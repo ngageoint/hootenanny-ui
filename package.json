@@ -29,7 +29,7 @@
     "start": "webpack-dev-server --env.NODE_ENV=dev",
     "test": "npm-run-all -s lint build test:**",
     "test:hoot": "karma start",
-    "testgui:hoot": "karma start --no-single-run --auto-watch --browsers Chrome",
+    "testgui:hoot": "karma start --single-run --browsers Chrome",
     "test:phantom": "phantomjs --web-security=no node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/index.html spec",
     "translations": "node data/update_locales",
     "buildinfo": "UI_VERSION=`git describe --tags` && echo '{\"name\": \"Hootenanny iD Editor\", \"version\": \"'$UI_VERSION'\", \"user\": \"webpack\"}' > modules/Hoot/config/buildInfo.json"

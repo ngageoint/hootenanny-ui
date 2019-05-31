@@ -349,14 +349,47 @@ export default class ImportDataset {
             formData: this.getFormData( this.fileIngest.node().files )
         };
 
-        this.loadingState();
-
         this.processRequest = Hoot.api.uploadDataset( data )
-            .then( resp => Hoot.message.alert( resp ) )
+            .then( resp => {
+                this.loadingState();
+
+                this.jobId = resp.data[ 0 ].jobid;
+
+                return Hoot.api.statusInterval( this.jobId );
+            } )
+            .then( resp => {
+                let message;
+                if (resp.data && resp.data.status === 'cancelled') {
+                    message = 'Import job cancelled';
+
+                    this.submitButton
+                        .select( 'span' )
+                        .text( 'Import' );
+                } else {
+                    message = 'Import job complete';
+                }
+
+                Hoot.message.alert( {
+                    data: resp.data,
+                    message: message,
+                    status: 200,
+                    type: resp.type
+                } );
+
+                return resp;
+            } )
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => this.updateLinks( layerName, folderId ) )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
-            .catch( err => Hoot.message.alert( err ) )
+            .catch( err => {
+                console.error(err);
+                let message = 'Error running import',
+                    type = err.type,
+                    keepOpen = true;
+
+                Hoot.message.alert( { message, type, keepOpen } );
+
+            } )
             .finally( () => {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
@@ -386,12 +419,17 @@ export default class ImportDataset {
     loadingState() {
         this.submitButton
             .select( 'span' )
-            .text( 'Uploading...' );
+            .classed( 'label', true )
+            .text( 'Cancel Import' );
 
-        this.submitButton
-            .append( 'div' )
-            .classed( '_icon _loading float-right', true )
-            .attr( 'id', 'importSpin' );
+        // overwrite the submit click action with a cancel action
+        this.submitButton.on( 'click', () => {
+            Hoot.api.cancelJob(this.jobId);
+        } );
+
+        this.submitButton.insert('i', 'span')
+            .classed('material-icons', true)
+            .text('cancel');
 
         this.container.selectAll( 'input' )
             .each( function() {

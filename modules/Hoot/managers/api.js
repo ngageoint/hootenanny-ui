@@ -101,6 +101,9 @@ export default class API {
                 if ( status === 'complete' ) {
                     clearInterval( this.intervals[ jobId ] );
                     res( { data, type: 'success', status: 200, jobId } );
+                } else if ( status === 'cancelled' ) {
+                    clearInterval( this.intervals[ jobId ] );
+                    res( { data, type: 'warn', status: 200 } );
                 } else if ( status === 'failed' ) {
                     clearInterval( this.intervals[ jobId ] );
                     rej( { data, type: 'error', status: 500 } );
@@ -630,27 +633,7 @@ export default class API {
             data: data.formData
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data[ 0 ].jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Dataset successfully imported',
-                    status: 200,
-                    type: resp.type,
-                    jobId: resp.jobId
-                };
-            } )
-            .catch( err => {
-                return Promise.reject( {
-                    data: {
-                        details: err.data.commandDetail[ 0 ].stderr
-                    },
-                    message: 'Failed to import dataset!',
-                    status: err.status,
-                    type: err.type
-                } );
-            } );
+        return this.request( params );
     }
 
     modify( { mapId, modName, inputType } ) {
@@ -743,27 +726,7 @@ export default class API {
             params.path = `${params.path}?ext=zip`;
         }
 
-        let jobId;
-
-        return this.request( params )
-            .then( (resp) => { jobId = resp.data.jobid; } )
-            .then( () => this.statusInterval( jobId ) )
-            .then( () => this.saveDataset( jobId, data.outputname ) )
-            .then( () => {
-                const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
-                return {
-                    message: `'${data.outputname}' ${dataType} Exported`,
-                    type: 'success'
-                };
-            } )
-            .catch( (err) => {
-                console.log( err );
-
-                return {
-                    message: `Failed to export dataset: ${ data.outputname }`,
-                    type: 'error'
-                };
-            } );
+        return this.request( params );
     }
 
     updateFolder( { folderId, parentId } ) {
@@ -828,32 +791,7 @@ export default class API {
             data
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobId ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Schema data uploaded',
-                    status: 200,
-                    type: resp.type,
-                    jobId: resp.jobId
-                };
-            } )
-            .catch( err => {
-                window.console.log( err );
-                let message, status, type;
-
-                status = err.status;
-                type   = err.type;
-
-                if ( status >= 500 ) {
-                    message = 'Error during conflation! Please try again later.';
-                } else {
-                    message = 'Error while uploading schema data!';
-                }
-
-                return Promise.reject( { message, status, type } );
-            } );
+        return this.request( params );
     }
 
     uploadBasemap( data ) {
@@ -928,7 +866,7 @@ export default class API {
     }
 
     updateMapFolderLinks( { mapId, folderId } ) {
-        if ( !mapId || folderId < 0 ) return;
+        if ( !mapId || folderId < 0 ) return Promise.resolve( 'Map or folder id invalid' );
 
         const params = {
             path: `/osm/api/0.6/map/${ mapId }/move/${ folderId }`,
@@ -1062,22 +1000,7 @@ export default class API {
             data
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Clip job complete',
-                    type: resp.type
-                };
-            } )
-            .catch( err => {
-                const message = err.data,
-                      status  = err.status,
-                      type    = err.type;
-
-                return Promise.reject( { message, status, type } );
-            } );
+        return this.request( params );
     }
 
     /**
