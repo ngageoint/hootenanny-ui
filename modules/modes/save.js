@@ -66,6 +66,7 @@ export function modeSave(context) {
 
     var _toCheck = [];
     var _toLoad = [];
+    var _changesetArray = [];
     var _loaded = {};
     var _toLoadCount = 0;
     var _toLoadTotal = 0;
@@ -311,33 +312,54 @@ export function modeSave(context) {
 
                 var getMapIds   = Object.keys(Hoot.layers.loadedLayers);
                 var idToNum     = getMapIds.map(parseFloat);
-                let changesetArray = [];
 
-                var mapChanges  = idToNum.map(function(mapId) {
-                    var created     = changes.created.filter(function(created) { return Number(created.id.split('_')[1]) === mapId; });
-                    var modified    = changes.modified.filter(function(modified) { return Number(modified.id.split('_')[1]) === mapId; });
-                    var deleted     = changes.deleted.filter(function(deleted) { return Number(deleted.id.split('_')[1]) === mapId; });
-                        return {
-                            mapId: mapId,
-                            changes: {
-                                created: created,
-                                modified: modified,
-                                deleted: deleted
+                idToNum.forEach(function (mapId) {
+                    var created = changes.created.filter(function (created) { return Number(created.id.split('_')[1]) === mapId; });
+                    var modified = changes.modified.filter(function (modified) { return Number(modified.id.split('_')[1]) === mapId; });
+                    var deleted = changes.deleted.filter(function (deleted) { return Number(deleted.id.split('_')[1]) === mapId; });
+                    if (created.length > 0 || modified.length > 0 || deleted.length > 0) {
+                        _changesetArray.push(
+                            {
+                                mapId: mapId,
+                                changes: {
+                                    created: created,
+                                    modified: modified,
+                                    deleted: deleted
+                                }
                             }
-                        };
-                    });
+                        );
 
-                mapChanges.forEach(
-                    function (changes) {
-                        if (changes.changes.created.length === 0 && changes.changes.modified.length === 0 && changes.changes.deleted.length === 0) {
-                            return;
-                        }
-                        else if (changes.changes.created.length > 0 || changes.changes.modified.length > 0 || changes.changes.deleted.length > 0) {
-                            changesetArray.push(changes);
-                        }
-                        osm.putChangeset(changeset, changes.changes ,uploadCallback, changesetArray, changes.mapId);
+                        return;
                     }
-                );
+                });
+
+                osm.putChangeset(changeset, _changesetArray[0].changes, uploadCallback, _changesetArray[0].mapId);
+
+                // var mapChanges  = idToNum.map(function(mapId) {
+                //     var created     = changes.created.filter(function(created) { return Number(created.id.split('_')[1]) === mapId; });
+                //     var modified    = changes.modified.filter(function(modified) { return Number(modified.id.split('_')[1]) === mapId; });
+                //     var deleted     = changes.deleted.filter(function(deleted) { return Number(deleted.id.split('_')[1]) === mapId; });
+                //         return {
+                //             mapId: mapId,
+                //             changes: {
+                //                 created: created,
+                //                 modified: modified,
+                //   d              deleted: deleted
+                //             }
+                //         };
+                //     });
+
+                // mapChanges.forEach(
+                //     function (changes) {
+                //         if (changes.changes.created.length === 0 && changes.changes.modified.length === 0 && changes.changes.deleted.length === 0) {
+                //             return;
+                //         }
+                //         else if (changes.changes.created.length > 0 || changes.changes.modified.length > 0 || changes.changes.deleted.length > 0) {
+                //             _changesetArray.push(changes);
+                //         }
+                //         osm.putChangeset(changeset, changes.changes ,uploadCallback, _changesetArray, changes.mapId);
+                //     }
+                // );
             } else {        // changes were insignificant or reverted by user
                 d3_select('.inspector-wrap *').remove();
                 loading.close();
@@ -348,7 +370,7 @@ export function modeSave(context) {
         }
     }
 
-    function uploadCallback(err, changeset) {
+    function uploadCallback(err, changeset, mapId) {
         if (err) {
             if (err.status === 409) {          // 409 Conflicts
                 save(changeset, true, true);   // tryAgain = true, checkConflicts = true
@@ -362,7 +384,7 @@ export function modeSave(context) {
 
         } else {
             context.history().clearSaved();
-            success(changeset);
+            success(changeset, mapId);
             // Add delay to allow for postgres replication #1646 #2678
             window.setTimeout(function() {
                 d3_select('.inspector-wrap *').remove();
@@ -494,11 +516,23 @@ export function modeSave(context) {
     }
 
 
-    function success(changeset) {
+    function success(changeset, mapId) {
+
+        var cID = Number(mapId);
+        _changesetArray = _changesetArray.filter( function(changes) { return cID !== changes.mapId; } );
+
+        if (_changesetArray.length > 0) {
+            var osm = context.connection();
+            if (osm) {
+                osm.putChangeset(changeset, _changesetArray[0].changes, uploadCallback, _changesetArray[0].mapId);
+                return;
+            }
+        }
+
         commit.reset();
 
         // commented out to prevent success UI from showing
-        //var ui = uiSuccess(context)
+        //  var ui = uiSuccess(context)
         //    .changeset(changeset)
         //    .location(_location)
         //    .on('cancel', function() { context.ui().sidebar.hide(); });

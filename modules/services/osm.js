@@ -72,7 +72,6 @@ var _userCache = { toLoad: {}, user: {} };
 var _changeset = {};
 
 var _connectionID = 1;
-var _multiCIDs = [];
 var _tileZoom = 16;
 var _noteZoom = 12;
 var _rateLimitError;
@@ -687,22 +686,13 @@ export default {
     // PUT /api/0.6/changeset/create
     // POST /api/0.6/changeset/#i/upload
     // PUT /api/0.6/changeset/#id/close
-    putChangeset: function(changeset, changes, callback, changesetArray, mapId ) {
+    putChangeset: function(changeset, changes, callback, mapId ) {
         var cid = _connectionID;
-        _multiCIDs.push(cid);
 
         //let changesArr = this.filterChanges(changes);
 
         if (_changeset.inflight) {
-            if (changesetArray.length === 2) {
-                changesetArray.forEach(function (multiple) {
-                    var err;
-                    var result;
-                    uploadedChangeset(err, result, multiple.mapId);
-                });
-            } else {
-                return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
-            }
+            return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
 
         } else if (_changeset.open) {   // reuse existing open changeset..
             return createdChangeset.call(this, null, _changeset.open, mapId);
@@ -786,25 +776,12 @@ export default {
 
             // Upload was successful, safe to call the callback.
             // Add delay to allow for postgres replication #1646 #2678
-            window.setTimeout(function() { callback(null, changeset); }, 500);
+            window.setTimeout(function() { callback(null, changeset, mapId); }, 500);
             _changeset.open = null;
 
             // At this point, we don't really care if the connection was switched..
             // Only try to close the changeset if we're still talking to the same server.
-            if (_multiCIDs.length === 2) {
-                _multiCIDs.forEach(function (id) {
-                    let path = '/api/0.6/changeset/' + changeset.id + '/close';
-                    path += mapId ? `?mapId=${mapId}` : '';
-
-                    // Still attempt to close changeset, but ignore response because #2667
-                    oauth.xhr({
-                        method: 'PUT',
-                        path: path,
-                        options: { header: { 'Content-Type': 'text/xml' } }
-                    }, function () { return true; });
-                });
-            }
-            else {
+            if (this.getConnectionId() === cid) {
                 let path = '/api/0.6/changeset/' + changeset.id + '/close';
                 path += mapId ? `?mapId=${ mapId }` : '';
 
