@@ -35,7 +35,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3)$/,
+                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3|eot|woff2|woff)$/,
                 use: [
                     {
                         loader: 'file-loader',

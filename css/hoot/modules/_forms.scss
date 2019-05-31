@@ -87,6 +87,14 @@
             }
         }
     }
+
+    h3 span {
+        width: 90%;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .form-field-header {
