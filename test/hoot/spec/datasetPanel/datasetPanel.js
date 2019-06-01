@@ -8,6 +8,7 @@ const { generateOsmLayerParams } = require( '../../helpers' );
 
 describe( 'dataset panel', () => {
     before( async () => {
+        console.log( 'loading data...' );
 
         let generateCount = 4,
             layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] );
@@ -17,10 +18,6 @@ describe( 'dataset panel', () => {
         const ingest3 = Hoot.api.uploadDataset( layerParams[ 2 ] );
         const ingest4 = Hoot.api.uploadDataset( layerParams[ 3 ] );
 
-        await Promise.all( [ ingest1, ingest2, ingest3, ingest4 ] )
-                    .then( () => Hoot.layers.refreshLayers() )
-                    .then( () => Hoot.events.emit( 'render-dataset-table' ) );
-
         let menuButton = d3.select( '#navbar .menu-button' );
 
         if ( !menuButton.classed( 'active' ) ) {
@@ -28,6 +25,10 @@ describe( 'dataset panel', () => {
         }
 
         d3.select( '[data-id="#manage-datasets"]' ).dispatch( 'click' );
+
+        return Promise.all( [ ingest1, ingest2, ingest3, ingest4 ] )
+                    .then( () => Hoot.layers.refreshLayers() )
+                    .then( () => Hoot.events.emit( 'render-dataset-table' ) );
 
     } );
 
@@ -44,9 +45,7 @@ describe( 'dataset panel', () => {
         let deleteLayers  = Promise.all( _.map( layerIds, id => Hoot.api.deleteLayer( id ) ) ),
             deleteFolders = Promise.all( _.map( folderIds, id => Hoot.api.deleteFolder( id ) ) );
 
-        await Promise.all( [ deleteLayers, deleteFolders ] );
-
-        console.log( 'data cleaned!' );
+        return Promise.all( [ deleteLayers, deleteFolders ] );
     } );
 
     require( './importSingle' )();
