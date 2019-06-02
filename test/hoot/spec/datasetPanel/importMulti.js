@@ -118,6 +118,6 @@ module.exports = () => {
             expect( datasets.importMultiModal ).to.be.undefined;
             expect( Hoot.layers.findBy( 'name', 'LAP030' ) ).to.be.ok;
             expect( d3.select( '#dataset-table' ).select( 'g[data-name="LAP030"]' ).size() ).to.equal( 1 );
-        } ).timeout( 15000 );
+        } );
     } );
 };

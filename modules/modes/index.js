@@ -15,4 +15,4 @@ export { modeSelectData } from './select_data';
 export { modeSelectNote } from './select_note';
 export { modeAddMeasureLine } from './add_measure_line';
 export { modeAddMeasureArea } from './add_measure_area';
-export { modeClipBoundingBox } from './clip_bounding_box';
+export { modeDrawBoundingBox } from './clip_bounding_box';

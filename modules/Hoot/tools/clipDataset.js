@@ -21,9 +21,9 @@ export default class ClipDataset {
     }
 
     render() {
-        let titleText = this.instance.clipType === 'visualExtent'
+        let titleText = this.instance.bboxSelectType === 'visualExtent'
             ? 'Clip Data to Visual Extent'
-            : this.instance.clipType === 'boundingBox'
+            : this.instance.bboxSelectType === 'boundingBox'
                 ? 'Clip Data to Bounding Box'
                 : 'Clip Data';
 
@@ -36,8 +36,7 @@ export default class ClipDataset {
             }
         };
 
-        this.container    = new FormFactory().generateForm( 'body', 'clipDataset', metadata );
-        this.form         = d3.select( '#clipDataset' );
+        this.form    = new FormFactory().generateForm( 'body', 'clipDataset', metadata );
         this.submitButton = d3.select( '#clipSubmitBtn' );
 
         this.submitButton.property( 'disabled', false );
@@ -116,7 +115,7 @@ export default class ClipDataset {
                     if ( d.name === 'datasetName' ) {
                         d3.select( this )
                             .attr( 'placeholder', layer.name )
-                            .attr( 'readonly', true );
+                            .attr( 'readonly', false );
                     } else if ( d.name === 'doClip' ) {
                         let parent = d3.select( this.parentElement );
 
@@ -261,7 +260,7 @@ export default class ClipDataset {
                 .finally( () => {
                     self.container.remove();
                     Hoot.events.emit( 'modal-closed' );
-                });
+                } );
         } );
 
     }

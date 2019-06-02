@@ -214,7 +214,6 @@
         display: flex;
         justify-content: center;
     }
-
 }
 
 #jobCommandForm {
@@ -226,5 +225,32 @@
         width: 100%;
         height: 400px;
     }
+}
 
+.diffInfo {
+    width: 300px;
+
+    th {
+        text-align: right;
+        width: 100px;
+    }
+
+    td {
+        text-align: right;
+    }
+}
+
+.tagInput {
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    label {
+        display: inline-block;
+        padding-right: 10px;
+    }
+
+    input {
+        display: inline-block;
+        float: none;
+    }
 }

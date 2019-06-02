@@ -11,7 +11,8 @@ import {
 
 import { svgIcon } from '../svg';
 
-import ClipSelectBbox from '../Hoot/tools/clipSelectBbox';
+import selectBbox       from '../Hoot/tools/selectBbox';
+import { tooltip }      from '../util/tooltip';
 
 export function uiTools( context ) {
     let menuItemMeta = [
@@ -35,14 +36,6 @@ export function uiTools( context ) {
                     type: 'area',
                     icon: 'iD-icon-area',
                     mode: modeAddMeasureArea( context )
-                },
-                {
-                    title: 'Measure Help',
-                    tooltip: '',
-                    group: 'measure',
-                    type: 'help',
-                    icon: 'iD-icon-help',
-                    action: 'measureHelp'
                 }
             ]
         },
@@ -58,6 +51,31 @@ export function uiTools( context ) {
                     type: 'area',
                     icon: 'iD-operation-split',
                     action: 'clipData'
+                }
+            ]
+        },
+        {
+            title: 'Grail Tools',
+            icon: 'line',
+            group: 'grail',
+            items: [
+                {
+                    title: 'Pull Remote Data',
+                    tooltip: 'Pull data for a bounding box from public Overpass and a private Rails Port into Hootenanny datasets',
+                    placement: 'right',
+                    group: 'grail',
+                    type: 'area',
+                    icon: 'iD-icon-load',
+                    action: 'grailPull'
+                },
+                {
+                    title: 'Derive Differential Changeset',
+                    tooltip: 'Derives a differential conflation changeset for a bounding box between public Overpass and a private Rails Port',
+                    placement: 'right',
+                    group: 'grail',
+                    type: 'area',
+                    icon: 'iD-icon-layers',
+                    action: 'createDifferential'
                 }
             ]
         }
@@ -141,25 +159,28 @@ export function uiTools( context ) {
                     context.enter( d.mode );
                 } else if ( d.action === 'clipData' ) {
                     if ( Object.keys( Hoot.layers.loadedLayers ).length ) {
-                        let clipSelectBbox = new ClipSelectBbox( context );
+                        let clipSelectBbox = new selectBbox( context );
 
-                        clipSelectBbox.render();
+                        clipSelectBbox.render( 'clipData' );
                     } else {
                         let message = 'Add a layer before clipping',
-                            type = 'warn';
+                            type    = 'warn';
 
-                        Hoot.message.alert( { message , type } );
+                        Hoot.message.alert( { message, type } );
                     }
-                } else if ( d.action === 'measureHelp' ) {
-                    let message = 'Click anywhere on the map to start measuring.  Double-click to end measurement. Clicking on the Tools menu will clear the vectors from the screen.',
-                        type = 'info';
+                } else if ( d.action === 'grailPull' || d.action === 'createDifferential' ) {
+                    let grailSelectBbox = new selectBbox( context );
 
-                    Hoot.message.alert( { message, type } );
+                    grailSelectBbox.render( d.action );
                 }
             } );
 
         item.each( function( d ) {
-            d3.select( this ).call( svgIcon( `#${ d.icon }`, 'pre-text' ) );
+            d3.select( this )
+                .call( svgIcon( `#${ d.icon }`, 'pre-text' ) )
+                .call( tooltip()
+                    .title( d.tooltip )
+                    .placement( d.placement || 'right' ) );
         } );
 
         item.append( 'span' )

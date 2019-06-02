@@ -498,7 +498,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => {
+            .catch( () => {
                 return {
                     'minlon': -180,
                     'minlat': -90,
@@ -1045,6 +1045,189 @@ export default class API {
                 return {
                     data: err.data,
                     message: 'Error saving review!',
+                    type: 'error'
+                };
+            } );
+    }
+
+    grailPullOverpassToDb( data ) {
+        const params = {
+            path: `/grail/pulloverpasstodb?bbox=${ data.BBOX }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Pull from Overpass API has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing pull!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+
+    grailPullRailsPortToDb( data ) {
+        const params = {
+            path: `/grail/pullrailsporttodb?bbox=${ data.BBOX }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Pull from Rails Port API has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing pull!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+    createDifferential( data ) {
+        const params = {
+            path: '/grail/createdifferential',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Differential for selected region created.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      status  = err.status,
+                      type    = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } );
+    }
+
+    differentialStats( jobId, includeTags ) {
+        const params = {
+            path: `/grail/differentialstats?jobId=${ jobId }&includeTags=${ includeTags }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Differential stats retrieved.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      status  = err.status,
+                      type    = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } );
+    }
+
+    differentialPush( data ) {
+        const params = {
+            path: '/grail/differentialpush',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Differential push complete.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      status  = err.status,
+                      type    = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } );
+    }
+
+    conflateDifferential( data ) {
+        const params = {
+            path: '/grail/conflatedifferential',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Conflate differential has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing Conflate differential!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+    conflationUpload( data ) {
+        const params = {
+            path: '/grail/conflatepush',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Conflation Upload has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing Conflation Upload!',
+                    status: err.status,
                     type: 'error'
                 };
             } );
