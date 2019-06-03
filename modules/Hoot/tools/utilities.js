@@ -170,7 +170,7 @@ export const duration = (start, end, ago) => {
         }
         diff /= value;
         lastUnit = unit;
-    };
+    }
 
     if (ago) {
         duration += ' ago';
