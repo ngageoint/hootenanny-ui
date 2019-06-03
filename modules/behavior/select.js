@@ -136,7 +136,7 @@ export function behaviorSelect(context) {
             context.selectedNoteID(null);
 
             if (!isMultiselect) {
-                if (Number(datum.id.split('_')[1]) !== _activeLayer.id) {
+                if (Number(datum.id.split('_')[1]) !== Number(_activeLayer.id)) {
                     mode.suppressMenu(false).reselect();
                 }
                 else if (selectedIDs.length > 1 && (!suppressMenu && !isShowAlways)) {
