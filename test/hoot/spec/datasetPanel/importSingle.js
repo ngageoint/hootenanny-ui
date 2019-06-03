@@ -106,13 +106,11 @@ module.exports = () => {
 
             importSubmit.dispatch( 'click' );
 
-            expect( importSubmit.select( 'span' ).text() ).to.equal( 'Uploading...' );
-
             await importModal.processRequest;
 
             expect( datasets.importSingleModal ).to.be.undefined;
             expect( Hoot.layers.findBy( 'name', 'UnitTestImportSingle' ) ).to.be.ok;
             expect( d3.select( '#dataset-table' ).select( 'g[data-name="UnitTestImportSingle"]' ).size() ).to.equal( 1 );
-        } );
+        } ).timeout( 15000 );
     } );
 };

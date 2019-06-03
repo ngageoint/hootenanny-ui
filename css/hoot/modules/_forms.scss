@@ -87,6 +87,14 @@
             }
         }
     }
+
+    h3 span {
+        width: 90%;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .form-field-header {
@@ -206,7 +214,6 @@
         display: flex;
         justify-content: center;
     }
-
 }
 
 #jobCommandForm {
@@ -218,5 +225,32 @@
         width: 100%;
         height: 400px;
     }
+}
 
+.diffInfo {
+    width: 300px;
+
+    th {
+        text-align: right;
+        width: 100px;
+    }
+
+    td {
+        text-align: right;
+    }
+}
+
+.tagInput {
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    label {
+        display: inline-block;
+        padding-right: 10px;
+    }
+
+    input {
+        display: inline-block;
+        float: none;
+    }
 }

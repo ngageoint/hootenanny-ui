@@ -21,9 +21,9 @@ export default class ClipDataset {
     }
 
     render() {
-        let titleText = this.instance.clipType === 'visualExtent'
+        let titleText = this.instance.bboxSelectType === 'visualExtent'
             ? 'Clip Data to Visual Extent'
-            : this.instance.clipType === 'boundingBox'
+            : this.instance.bboxSelectType === 'boundingBox'
                 ? 'Clip Data to Bounding Box'
                 : 'Clip Data';
 
@@ -36,8 +36,7 @@ export default class ClipDataset {
             }
         };
 
-        this.container    = new FormFactory().generateForm( 'body', 'clipDataset', metadata );
-        this.form         = d3.select( '#clipDataset' );
+        this.form    = new FormFactory().generateForm( 'body', 'clipDataset', metadata );
         this.submitButton = d3.select( '#clipSubmitBtn' );
 
         this.submitButton.property( 'disabled', false );
@@ -116,7 +115,7 @@ export default class ClipDataset {
                     if ( d.name === 'datasetName' ) {
                         d3.select( this )
                             .attr( 'placeholder', layer.name )
-                            .attr( 'readonly', true );
+                            .attr( 'readonly', false );
                     } else if ( d.name === 'doClip' ) {
                         let parent = d3.select( this.parentElement );
 
@@ -188,6 +187,8 @@ export default class ClipDataset {
         let checkedRows = this.form.selectAll( '[type="checkbox"]' ),
             bbox        = this.instance.bbox;
 
+        let self = this;
+
         checkedRows.select( function() {
             let checkbox = d3.select( this );
 
@@ -206,17 +207,82 @@ export default class ClipDataset {
             params.FOLDER_ID   = folderId ? folderId : 0;
             params.BBOX        = bbox;
 
-            Hoot.api.clipDataset( params )
-                .then( resp => Hoot.message.alert( resp ) )
-                .then( () => Hoot.folders.refreshDatasets() )
-                .then( () => Hoot.folders.refreshLinks() )
-                .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+            self.loadingState();
+
+            self.processRequest = Hoot.api.clipDataset( params )
+                .then( resp => {
+                    self.jobId = resp.data.jobid;
+
+                    return Hoot.api.statusInterval( self.jobId );
+                } )
+                .then( resp => {
+                    let message;
+                    if (resp.data && resp.data.status === 'cancelled') {
+                        message = 'Clip job cancelled';
+                    } else {
+                        message = 'Clip job complete';
+                    }
+
+                    Hoot.message.alert( {
+                        data: resp.data,
+                        message: message,
+                        status: 200,
+                        type: resp.type
+                    } );
+
+                    return resp;
+                } )
+                .then( resp => {
+                    if (resp.data && resp.data.status !== 'cancelled') {
+                        Hoot.folders.refreshDatasets();
+                    }
+
+                    return resp;
+                } )
+                .then( resp => {
+                    if (resp.data && resp.data.status !== 'cancelled') {
+                        Hoot.folders.refreshLinks();
+                    }
+
+                    return resp;
+                } )
+                .then( () => {
+                    Hoot.events.emit( 'render-dataset-table' );
+                } )
                 .catch( err => {
-                    Hoot.message.alert( err );
-                    return false;
+                    console.error(err);
+                    let message = 'Error running clip',
+                        type = err.type,
+                        keepOpen = true;
+
+                    Hoot.message.alert( { message, type, keepOpen } );
+                } )
+                .finally( () => {
+                    self.container.remove();
+                    Hoot.events.emit( 'modal-closed' );
                 } );
         } );
 
-        this.container.remove();
+    }
+
+    loadingState() {
+        this.submitButton
+            .select( 'span' )
+            .text( 'Cancel Clip' );
+
+        // overwrite the submit click action with a cancel action
+        this.submitButton.on( 'click', () => {
+            Hoot.api.cancelJob(this.jobId);
+        } );
+
+        this.submitButton
+            .append( 'div' )
+            .classed( '_icon _loading float-right', true )
+            .attr( 'id', 'importSpin' );
+
+        this.container.selectAll( 'input' )
+            .each( function() {
+                d3.select( this ).node().disabled = true;
+            } );
     }
 }

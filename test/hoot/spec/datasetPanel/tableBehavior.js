@@ -7,8 +7,6 @@
 const _     = require( 'lodash' );
 const sinon = require( 'sinon' );
 
-const { generateOsmLayerParams } = require( '../../helpers' );
-
 const CONTEXT_TIMEOUT = 300;
 
 module.exports = () => {
@@ -36,48 +34,42 @@ module.exports = () => {
     }
 
     describe( 'table behavior', () => {
-        before( async function() {
+        before( function() {
             table         = d3.select( '#dataset-table' );
             datasetsPanel = Hoot.ui.managePanel.datasets;
+        });
 
-            this.timeout( 25000 );
+        after( async function() {
+            ['UnitTestFolder', 'UnitTestFolder1'].forEach( fName => {
 
-            let generateCount = 7,
-                layerParams   = await generateOsmLayerParams( [ ...Array( generateCount ).keys() ] ),
-                folderParams  = {
+                var f = table.select( 'g[data-name="' + fName + '"]' );
+                if (f.size()) {
+                    f.node().dispatchEvent( contextClick );
+                    d3.select( '.context-menu li:nth-child(1)' ).dispatch( 'click' );
+                    d3.select( 'body' ).dispatch( 'click' );
+
+                    d3.select( '.hoot-confirm .confirm-actions button.primary' ).dispatch( 'click' );
+
+                    setTimeout( () => { // wait for delete process to begin
+                        Hoot.ui.managePanel.datasets.processRequest;
+                    }, 300 );
+                }
+            });
+        } );
+
+        describe( 'folder add', () => {
+            it( 'calls addFolder', async () => {
+                const folderParams  = {
                     parentId: 0,
                     folderName: 'UnitTestFolder1'
                 };
 
-            await Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
-            await Hoot.api.addFolder( folderParams ); // generate test folder
-            await Hoot.folders.refreshAll();
-            await Hoot.events.emit( 'render-dataset-table' );
+                await Hoot.api.addFolder( folderParams ); // generate test folder
+                const refresh = Hoot.folders.refreshAll();
+
+                return refresh;
+            } );
         } );
-
-
-        after( async function() {
-
-                ["UnitTestFolder", "UnitTestFolder1"].forEach( fName => {
-
-                    var f = table.select( 'g[data-name="' + fName + '"]' );
-                    if (f.size()) {
-                        f.node().dispatchEvent( contextClick );
-                        d3.select( '.context-menu li:nth-child(1)' ).dispatch( 'click' );
-                        d3.select( 'body' ).dispatch( 'click' );
-
-                        confirmOverlay = d3.select( '.hoot-confirm' );
-                        d3.select( '.hoot-confirm .confirm-actions button.primary' ).dispatch( 'click' );
-
-                        setTimeout( () => { // wait for delete process to begin
-                            Hoot.ui.managePanel.datasets.processRequest
-                        }, 300 );
-                    }
-
-                });
-
-        } );
-
 
         describe( 'table refresh', () => {
             it( 'calls refreshAll method and re-renders dataset table', done => {
@@ -99,8 +91,8 @@ module.exports = () => {
         describe( 'item selection', () => {
             before( async function() {
 
-                let startLayer = table.select( 'g[data-name="UnitTestLayer5"]' ),
-                    endLayer   = table.select( 'g[data-name="UnitTestLayer6"]' );
+                let startLayer = table.select( 'g[data-name="UnitTestLayer2"]' ),
+                    endLayer   = table.select( 'g[data-name="UnitTestLayer3"]' );
 
                 startLayer.dispatch( 'click' );
                 endLayer.node().dispatchEvent( shiftClick );
@@ -112,11 +104,7 @@ module.exports = () => {
 
                 let modifyModal = datasetsPanel.modifyLayerModal;
                 let pathNameInput = modifyModal.pathNameInput,
-                    submitButton  = modifyModal.submitButton,
-                    layerNames    = [
-                        'UnitTestLayer5',
-                        'UnitTestLayer6'
-                    ];
+                    submitButton  = modifyModal.submitButton;
 
                 pathNameInput
                     .property( 'value', 'UnitTestFolder' )
@@ -164,12 +152,11 @@ module.exports = () => {
                 let datasets = table.selectAll( 'g[data-type="dataset"]' );
 
                 datasets
-                    .filter( ( d, i ) => i === 3 )
                     .each( function() {
                         d3.select( this ).node().dispatchEvent( shiftClick );
                     } );
 
-                expect( table.selectAll( 'g[data-type="dataset"] .sel' ).size() ).to.equal( 4 );
+                expect( table.selectAll( 'g[data-type="dataset"] .sel' ).size() ).to.equal( 2 );
 
             } );
 
@@ -200,7 +187,6 @@ module.exports = () => {
                 dataset.dispatch( 'click' );
 
                 datasets
-                    .filter( ( d, i ) => i === 3 )
                     .each( function() {
                         d3.select( this ).node().dispatchEvent( shiftClick );
                     } );
@@ -382,7 +368,7 @@ module.exports = () => {
 
             it( 'opens modify modal for multiple layers', () => {
                 let startLayer = table.select( 'g[data-name="UnitTestLayer1"]' ),
-                    endLayer   = table.select( 'g[data-name="UnitTestLayer4"]' );
+                    endLayer   = table.select( 'g[data-name="UnitTestLayer2"]' );
 
                 startLayer.dispatch( 'click' );
                 endLayer.node().dispatchEvent( shiftClick );
@@ -409,9 +395,7 @@ module.exports = () => {
                     submitButton  = modifyModal.submitButton,
                     layerNames    = [
                         'UnitTestLayer1',
-                        'UnitTestLayer2',
-                        'UnitTestLayer3',
-                        'UnitTestLayer4',
+                        'UnitTestLayer2'
                     ];
 
                 pathNameInput

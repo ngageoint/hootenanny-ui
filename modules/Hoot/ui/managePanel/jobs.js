@@ -1,6 +1,7 @@
 import Tab            from './tab';
 import dayjs from 'dayjs';
 import ProgressBar    from 'progressbar.js';
+import DifferentialStats from '../modals/differentialStats';
 import JobCommandInfo from '../modals/jobCommandInfo';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
@@ -122,6 +123,12 @@ export default class Jobs extends Tab {
                 break;
             case 'delete':
                 typeIcon = 'delete';
+                break;
+            case 'derive_changeset':
+                typeIcon = 'change_history';
+                break;
+            case 'upload_changeset':
+                typeIcon = 'cloud_upload';
                 break;
             case 'unknown':
             default:
@@ -527,6 +534,48 @@ export default class Jobs extends Tab {
                     }
                 });
 
+                if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
+                    //Get info for the derive
+                    actions.push({
+                        title: 'upload changeset',
+                        icon: 'cloud_upload',
+                        action: async () => {
+                            Hoot.api.differentialStats(d.jobId, false)
+                                .then( resp => {
+                                    this.diffStats = new DifferentialStats( d.jobId, resp.data ).render();
+
+                                    Hoot.events.once( 'modal-closed', () => delete this.diffStats );
+                                } )
+                                .catch( err => {
+                                    Hoot.message.alert( err );
+                                    return false;
+                                } );
+                        }
+                    });
+                }
+
+                if (d.jobType.toUpperCase() === 'CONFLATE') {
+                    let currentLayer = this.findLayer( d.mapId );
+
+                    if (currentLayer && currentLayer.grail) {
+                        //Get info for the derive
+                        actions.push({
+                            title: 'derive changeset',
+                            icon: 'publish',
+                            action: async () => {
+                                const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
+
+                                const params  = {};
+                                params.input1 = tagsInfo.input1;
+                                params.input2 = d.mapId;
+
+                                Hoot.api.conflateDifferential( params )
+                                    .then( resp => Hoot.message.alert( resp ) );
+                            }
+                        });
+                    }
+                }
+
                 //Get logging for the job
                 actions.push({
                     title: 'view log',
@@ -574,6 +623,12 @@ export default class Jobs extends Tab {
             .merge(span)
             .text( d => d.text );
 
+    }
+
+    findLayer( layerId ) {
+        return Hoot.layers.allLayers.find( layer => {
+            return layer.id === layerId;
+        });
     }
 
 }

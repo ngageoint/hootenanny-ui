@@ -303,7 +303,26 @@ export function exportDataForm( zipOutput ) {
     const exportComboId = 'exportTranslationCombo',
           exportFormatId = 'exportFormatCombo',
           exportNameId = 'dataExportNameTextInput',
-          exportFgdbId = 'exportAppendFgdb';
+          exportFgdbId = 'exportAppendFgdb',
+          exportHootTags = 'exportHootTags',
+          that = this;
+
+    function changeExport() {
+        const showFgdbTemplate = d3.select( `#${exportFormatId}` ).property( 'value' ) === 'File Geodatabase'
+                        && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('TDS') === 0;
+
+        d3.select( `#${exportFgdbId}_container` )
+            .classed( 'hidden', !showFgdbTemplate );
+
+        const showHootTags = d3.select( `#${exportFormatId}` ).property( 'value' ).indexOf('OpenStreetMap') === 0
+                        && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('OSM') === 0;
+
+        d3.select( `#${exportHootTags}_container` )
+            .classed( 'hidden', !showHootTags );
+
+        that.validate( exportComboId );
+        that.validate( exportFormatId );
+    }
 
     let meta = [
         {
@@ -313,7 +332,7 @@ export function exportDataForm( zipOutput ) {
             readonly: 'readonly',
             data: this.translations.map(t => t.NAME),
             value: 'OSM',
-            onChange: () => this.validate( exportComboId )
+            onChange: changeExport
         },
         {
             label: 'Export Format',
@@ -321,22 +340,20 @@ export function exportDataForm( zipOutput ) {
             inputType: 'combobox',
             data: [ 'File Geodatabase', 'Shapefile', 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
             value: 'OpenStreetMap (OSM)',
-            onChange: () => {
-                const isFgdb = d3.select( `#${exportFormatId}` ).property( 'value' ) === 'File Geodatabase';
-
-
-                d3.select( `#${exportFgdbId}_container` )
-                    .classed( 'hidden', !isFgdb );
-
-                this.validate( exportFormatId );
-            }
+            onChange: changeExport
         },
         {
-            label: 'ESRI FGDB Template',
+            label: 'Append to ESRI FGDB Template?',
             id: exportFgdbId,
             class: 'hidden',
             inputType: 'checkbox',
-            value: 'append',
+            checked: false,
+            hidden: true
+        },
+        {
+            label: 'Include Hootenanny tags?',
+            id: exportHootTags,
+            inputType: 'checkbox',
             checked: false,
             hidden: true
         },

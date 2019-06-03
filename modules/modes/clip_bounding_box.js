@@ -7,7 +7,7 @@
 import { clip }       from '../behavior';
 import { modeBrowse } from './browse';
 
-export function modeClipBoundingBox( instance, context ) {
+export function modeDrawBoundingBox( instance, context ) {
     let clipBbox = {
         id: 'clip-bounding-box'
     };

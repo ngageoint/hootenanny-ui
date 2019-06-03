@@ -1,41 +1,48 @@
 /*******************************************************************************************************
- * File: clipSelectBbox.js
+ * File: selectBbox.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/25/18
  *******************************************************************************************************/
 
 import EventEmitter from 'events';
-import ClipDataset  from './clipDataset';
 import FormFactory  from './formFactory';
 
-import { modeClipBoundingBox } from '../../modes';
+import { modeDrawBoundingBox } from '../../modes';
+import ClipDataset             from './clipDataset';
+import GrailPull               from './grailPull';
+import DifferentialUpload      from './differentialUpload';
 
-export default class ClipSelectBbox extends EventEmitter {
+export default class SelectBbox extends EventEmitter {
     constructor( context ) {
         super();
 
         this.context = context;
 
-        this.minlon   = null;
-        this.minlat   = null;
-        this.maxlon   = null;
-        this.maxlat   = null;
-        this.clipType = 'visualExtent';
+        this.minlon         = null;
+        this.minlat         = null;
+        this.maxlon         = null;
+        this.maxlat         = null;
+        this.bboxSelectType = 'visualExtent';
+        this.operationName  = '';
     }
 
-    render() {
-        let metadata = {
-            title: 'Enter Coordinates for Clip Bounding Box',
+    render( operationName ) {
+        this.operationName = operationName;
+
+        const metadata = {
+            title: 'Enter Coordinates for Bounding Box',
             button: {
                 text: 'Next',
-                id: 'clipNextBtn',
+                id: 'bboxNextBtn',
                 onClick: () => this.handleNext()
             }
         };
 
-        this.container  = new FormFactory().generateForm( 'body', 'selectClipBbox', metadata );
-        this.form       = d3.select( '#selectClipBbox' );
-        this.nextButton = d3.select( '#clipNextBtn' );
+        const formId = 'drawBboxForm';
+
+        this.container  = new FormFactory().generateForm( 'body', formId, metadata );
+        this.form       = d3.select( `#${formId}` );
+        this.nextButton = d3.select( `#${metadata.button.id}` );
 
         this.nextButton.property( 'disabled', false );
 
@@ -43,7 +50,7 @@ export default class ClipSelectBbox extends EventEmitter {
 
         this.updateCoords( mapExtent );
         this.createCoordsField();
-        this.createClipOptions();
+        this.createBboxOptions();
     }
 
     updateCoords( extent ) {
@@ -104,18 +111,18 @@ export default class ClipSelectBbox extends EventEmitter {
             .property( 'value', this.minlat );
     }
 
-    createClipOptions() {
+    createBboxOptions() {
         let that = this;
 
-        let clipOptions = this.form
+        let bboxOptions = this.form
             .select( '.wrapper div' )
             .insert( 'div', '.modal-footer' )
-            .classed( 'clip-options button-wrap flex justify-center', true );
+            .classed( 'bbox-options button-wrap flex justify-center', true );
 
-        clipOptions
+        bboxOptions
             .append( 'button' )
             .classed( 'keyline-all', true )
-            .text( 'Clip to Bounding Box' )
+            .text( 'Draw Bounding Box' )
             .on( 'click', function() {
                 d3.select( this.parentNode )
                     .selectAll( 'button' )
@@ -124,11 +131,11 @@ export default class ClipSelectBbox extends EventEmitter {
                 d3.select( this ).classed( 'selected', true );
                 that.container.classed( 'hidden', true );
 
-                that.context.enter( modeClipBoundingBox( that, that.context ) );
-                that.clipType = 'boundingBox';
+                that.context.enter( modeDrawBoundingBox( that, that.context ) );
+                that.bboxSelectType = 'boundingBox';
             } );
 
-        clipOptions
+        bboxOptions
             .append( 'button' )
             .classed( 'keyline-all selected', true )
             .text( 'Use Visual Extent' )
@@ -140,7 +147,7 @@ export default class ClipSelectBbox extends EventEmitter {
                 d3.select( this ).classed( 'selected', true );
 
                 that.handleBbox( that.context.map().extent() );
-                that.clipType = 'visualExtent';
+                that.bboxSelectType = 'visualExtent';
             } );
     }
 
@@ -173,6 +180,13 @@ export default class ClipSelectBbox extends EventEmitter {
         this.container.remove();
         this.nextButton = null;
 
-        new ClipDataset( this ).render();
+        if ( this.operationName === 'clipData' ) {
+            new ClipDataset( this ).render();
+        } else if ( this.operationName === 'grailPull' ) {
+            new GrailPull( this ).render();
+        } else if ( this.operationName === 'createDifferential' ) {
+            new DifferentialUpload( this ).render();
+        }
+
     }
 }
