@@ -359,7 +359,8 @@ export default class ImportMultiDatasets {
                     TRANSLATION: translationName,
                     INPUT_TYPE: importType.value,
                     INPUT_NAME: name,
-                    formData: this.getFormData( importFiles )
+                    formData: this.getFormData( importFiles ),
+                    folderId
                 };
 
                 Hoot.api.uploadDataset( params )
@@ -378,8 +379,7 @@ export default class ImportMultiDatasets {
                 message: 'All datasets successfully imported',
                 type: 'success'
             } ) )
-            .then( () => Hoot.layers.refreshLayers() )
-            .then( () => Promise.all( _map( fileNames, name => this.updateLinks( name, folderId ) ) ) )
+            .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {
                 console.error(err);
@@ -406,11 +406,6 @@ export default class ImportMultiDatasets {
         } );
 
         return Promise.all( proms );
-    }
-
-    updateLinks( layerName, folderId ) {
-        return Hoot.folders.updateFolderLink( layerName, folderId )
-            .then( () => Hoot.folders.refreshAll() );
     }
 
     /**

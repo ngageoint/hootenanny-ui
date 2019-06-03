@@ -628,7 +628,8 @@ export default class API {
                 TRANSLATION: data.TRANSLATION,
                 INPUT_TYPE: data.INPUT_TYPE,
                 INPUT_NAME: data.INPUT_NAME,
-                NONE_TRANSLATION: data.NONE_TRANSLATION
+                NONE_TRANSLATION: data.NONE_TRANSLATION,
+                FOLDER_ID: data.folderId
             },
             data: data.formData
         };
