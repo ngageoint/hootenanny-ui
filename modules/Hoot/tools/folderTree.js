@@ -17,7 +17,7 @@ import _slice      from 'lodash-es/slice';
 import _uniq       from 'lodash-es/uniq';
 import _without from 'lodash-es/without';
 
-import dayjs from 'dayjs';
+import { duration } from './utilities';
 
 import EventEmitter from 'events';
 
@@ -383,14 +383,13 @@ export default class FolderTree extends EventEmitter {
                 .attr( 'text-anchor', 'end' )
                 .text( function( d ) {
                     let lastAccessed = d.data.lastAccessed,
-                        timeAgo = dayjs(lastAccessed),
-                        diff = dayjs(Date.now()).diff(timeAgo, 'days');
+                        now = Date.now();
 
-                    if ( diff > 60 ) {
+                    if ( now - lastAccessed > 5184000000 ) { //60 days
                         that.updateLastAccessed( this );
                     }
 
-                    return `${diff} days ago`;
+                    return duration(lastAccessed, now, true);
                 } );
         }
     }
