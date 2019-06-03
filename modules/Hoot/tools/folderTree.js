@@ -382,7 +382,7 @@ export default class FolderTree extends EventEmitter {
                 .attr( 'dx', '65%' )
                 .attr( 'text-anchor', 'end' )
                 .text( function( d ) {
-                    let lastAccessed = d.data.lastAccessed,
+                    let lastAccessed = new Date(d.data.lastAccessed),
                         now = Date.now();
 
                     if ( now - lastAccessed > 5184000000 ) { //60 days

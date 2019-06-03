@@ -5,7 +5,6 @@
  *******************************************************************************************************/
 
 import _forEach from 'lodash-es/forEach';
-import dayjs from 'dayjs';
 import { t } from '../../util/locale';
 
 export const getBrowserInfo = () => {
@@ -133,19 +132,18 @@ export const formatBbox = str => {
     return `${minx},${miny},${maxx},${maxy}`;
 };
 
-export const duration = (start, end, started) => {
+export const duration = (start, end, ago) => {
     let duration,
-        diff = dayjs(end).diff(dayjs(start), 'seconds');
+        diff = end - start;
 
     function calcDiff(diff, unit) {
-        diff = Math.floor(diff);
         let calc;
         if (diff < 1) {
             calc = `less than a ${unit}`;
         } else if (diff === 1) {
             let article = unit === 'hour' ? 'an' : 'a';
             calc = `${article} ${unit}`;
-        } else if (diff < 5) {
+        } else if (diff < 5 && !ago) {
             calc = `a few ${unit}s`;
         } else {
             calc = `${diff} ${unit}s`;
@@ -153,17 +151,24 @@ export const duration = (start, end, started) => {
         return calc;
     }
 
-    if (diff < 60) {
-        duration = calcDiff(diff, 'second');
-    } else if ((diff / 60) < 60) {
-        duration = calcDiff(Math.floor(diff / 60), 'minute');
-    } else if ((diff / 3600) < 24) {
-        duration = calcDiff(Math.floor(diff / 3600), 'hour');
-    } else {
-        duration = calcDiff(Math.floor(diff / 86400), 'day');
-    }
+    let units = [
+        {unit: 'second', value: 1000}, //milliseconds per second
+        {unit: 'minute', value: 60}, //seconds per minute
+        {unit: 'hour', value: 60}, //minutes per hour
+        {unit: 'day', value: 24}, //hours per day
+        {unit: 'month', value: 30}, //days per month
+        {unit: 'year', value: 12}  //months per year
+    ];
 
-    if (started) {
+    for (let i=0; i<units.length; i++) {
+        if (diff < units[i].value) {
+            duration = calcDiff(Math.floor(diff), units[i-1].unit);
+            break;
+        }
+        diff /= units[i].value;
+    };
+
+    if (ago) {
         duration += ' ago';
     }
 
