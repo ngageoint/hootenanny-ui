@@ -305,7 +305,7 @@ export default class API {
                 if ( !layers || !layers.length )
                     return resp.data;
 
-                return this.getMapSizes( _map( layers, 'id' ) )
+                return this.getMapSizes()
                     .then( sizeInfo => {
                         _map( layers, layer => {
                             _assign( layer, _find( sizeInfo.layers, { id: layer.id } ) );
@@ -510,11 +510,9 @@ export default class API {
     }
 
     getMapSizes( mapIds ) {
-        if ( !mapIds ) {
-            return null;
-        }
+        const ids = mapIds ? mapIds : '';
         const params = {
-            path: `/info/map/sizes?mapid=${ mapIds }`,
+            path: `/info/map/sizes?mapid=${ ids }`,
             method: 'GET'
         };
 
