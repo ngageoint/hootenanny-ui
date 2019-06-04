@@ -213,23 +213,38 @@ export function uiTools( context ) {
         } );
 
         function toggle( cb ) {
-            toolsToggle.siblings( '.dropdown-content' ).slideToggle( duration, function() {
-                if ( cb ) {
-                    cb();
-                }
+            d3.select('.hoot-tools').selectAll('.tools-menu')
+            // .select(toolsToggle.parentNode).selectAll( '.dropdown-content' )
+                // .transition()
+                // .duration( duration )
+                // .attr('height', 100)
+                .style('display', function(d) {
+                    return ( d3.select(this).style( 'display' ) === 'none' ) ? 'block' : 'none';
+                });
+                // .classed('active-menu', function() {
+                //     return !d3.select(this).classed('active-menu');
+                // })
+                // .on('end',  function() {
+                //     if ( cb ) {
+                //         cb();
+                //     }
+                //     d3.select(this).classed('active-menu', function() {
+                //         return !d3.select(this).classed('active-menu');
+                //     })
 
-                if ( toolsMenu.style( 'display' ) === 'none' ) {
-                    destroySubMenu();
-                }
+                //     if ( toolsMenu.style( 'display' ) === 'none' ) {
+                //         destroySubMenu();
+                //     }
 
-                if ( !$( this ).is( ':visible' ) ) return;
+                //     if ( !toolsMenu.attr( 'visibility' ) === 'visible' ) return;
 
-                bindBodyClick();
-            } );
+                //     bindBodyClick();
+                // } )
+                ;
         }
 
         function bindBodyClick() {
-            $( 'body' ).one( 'click', () => toggle( () => initDropdown() ) );
+            d3.select( 'body' ).on( 'click', () => toggle( () => initDropdown() ) );
         }
     }
 
