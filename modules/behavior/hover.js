@@ -8,9 +8,6 @@ import {
 import { osmEntity, osmNote } from '../osm';
 import { utilKeybinding, utilRebind } from '../util';
 
-import _find from 'lodash-es/find';
-
-
 /*
    The hover behavior adds the `.hover` class on mouseover to all elements to which
    the identical datum is bound, and removes it on mouseout.

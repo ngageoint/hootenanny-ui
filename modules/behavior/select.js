@@ -20,6 +20,7 @@ import {
     osmEntity,
     osmNote
 } from '../osm';
+import { createSecurePair } from 'tls';
 
 
 export function behaviorSelect(context) {
@@ -136,18 +137,16 @@ export function behaviorSelect(context) {
             context.selectedNoteID(null);
 
             if (!isMultiselect) {
-
-                if ( Hoot.layers.loadedLayers > 1 && Number(datum.id.split('_')[1]) !== Number(_activeLayer.id)) {
+                if (selectedIDs.length > 1 && (!suppressMenu && !isShowAlways) ) {
                     mode.suppressMenu(false).reselect();
-                }
-                else if (selectedIDs.length > 1 && (!suppressMenu && !isShowAlways)) {
-                    // multiple things already selected, just show the menu...
-                    mode.suppressMenu(false).reselect();
+                } else if (Number(datum.id.split('_')[1]) !== Number(_activeLayer.id)) {
+                    selectedIDs = [];
                 } else {
                     // select a single thing..
                     context.enter(modeSelect(context, [datum.id]).suppressMenu(suppressMenu));
                 }
-            } else {
+            }
+            else {
                 if (selectedIDs.indexOf(datum.id) !== -1) {
                     // clicked entity is already in the selectedIDs list..
                     if (!suppressMenu && !isShowAlways) {
@@ -164,7 +163,6 @@ export function behaviorSelect(context) {
                     context.enter(modeSelect(context, selectedIDs).suppressMenu(suppressMenu));
                 }
             }
-
         } else if (datum && datum.__featurehash__ && !isMultiselect) {    // clicked Data..
             context
                 .selectedNoteID(null)

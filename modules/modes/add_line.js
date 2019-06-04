@@ -9,7 +9,6 @@ import { behaviorAddWay } from '../behavior';
 import { modeDrawLine } from './index';
 import { osmNode, osmWay } from '../osm';
 
-
 export function modeAddLine(context) {
     var mode = {
         id: 'add-line',

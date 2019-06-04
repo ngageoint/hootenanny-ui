@@ -196,7 +196,6 @@ export default class Sidebar {
 
                     d3.select(`#${active} button.delete-button`)
                         .classed('disable-non-active', false);
-                        //.classed('no-click', false);
                 }
 
                 if (inactive) {
@@ -219,70 +218,136 @@ export default class Sidebar {
 
 
             if (d3.select('#reference button.select-active-layer').empty()) {
+
                 selectReference
                     .append('button')
                     .classed('select-active-layer', true)
-                    .text('Set as active layer')
-                    .on('click', function () {
+                    .text('Set as active layer');
 
-                        d3.event.preventDefault();
+                if (referenceActive.activeLayer === true && refClickCount === 0) {
+                    d3.select('#reference button.select-active-layer')
+                        .classed('select-active-layer', true)
+                        .text('Active Layer');
 
+                    updateButton('reference', 'secondary');
+
+                }
+
+                selectReference.on('click', function () {
+
+                    d3.event.preventDefault();
+
+                    if (secondaryActive.activeLayer !== null) {
+                        secondaryActive.activeLayer = null;
+                        referenceActive.activeLayer = true;
                         updateButton('reference', 'secondary');
+                    }
+                    else if (refClickCount === 1  && referenceActive.activeLayer === true) {
+                        refClickCount++;
+                    }
+                    else {
+                        refClickCount++;
+                        referenceActive.activeLayer = true;
+                        d3.select('#reference button.select-active-layer')
+                        .classed('select-active-layer', true)
+                        .text('Active Layer');
+                        updateButton('reference', 'secondary');
+                    }
+                    while (refClickCount === 2) {
+                        updateButton(null, 'reference');
+                        referenceActive.activeLayer = null;
+                        refClickCount = 0;
+                    }
 
-                        if (secondaryActive.activeLayer !== null) {
-                            secondaryActive.activeLayer  = null;
-                            referenceActive.activeLayer  = true;
-                        }
-                        else if (refClickCount === 1  && referenceActive.activeLayer === true) {
-                            refClickCount++;
-                        }
-                        else {
-                            refClickCount++;
-                            referenceActive.activeLayer  = true;
-                        }
-                        while ( refClickCount === 2  ) {
-                            updateButton(null, 'reference');
-                            referenceActive.activeLayer = null;
-                            refClickCount = 0;
-                        }
-
-                        changeActive.selectedLayer = referenceActive;
-
-                    });
+                    changeActive.selectedLayer = referenceActive;
+                });
             }
 
             if (d3.select('#secondary button.select-active-layer').empty()) {
+
                 selectSecondary
-                    .append('button')
+                .append('button')
+                .classed('select-active-layer', true)
+                .text('Set as active layer');
+
+
+                if ( secondaryActive.activeLayer === true && secClickCount === 0 ) {
+
+                    d3.select('#secondary button.select-active-layer')
                     .classed('select-active-layer', true)
-                    .text('Set as active layer')
+                    .text('Active Layer');
+
+                    updateButton('secondary', 'reference');
+                }
+
+                selectSecondary
                     .on('click', function () {
 
                         d3.event.preventDefault();
-
-                        updateButton('secondary', 'reference');
-
+                        //updateButton(null, 'reference');
                         if (referenceActive.activeLayer !== null) {
-                            referenceActive.activeLayer = null;
-                            secondaryActive.activeLayer = true;
+                            referenceActive.activeLayer  = null;
+                            secondaryActive.activeLayer  = true;
+                            updateButton('secondary', 'reference');
                         }
                         else if (secClickCount === 1  && secondaryActive.activeLayer === true) {
                             secClickCount++;
                         }
                         else {
                             secClickCount++;
-                            secondaryActive.activeLayer = true;
+                            secondaryActive.activeLayer  = true;
+                            d3.select('#reference button.select-active-layer')
+                            .classed('select-active-layer', true)
+                            .text('Active Layer');
+                            updateButton('secondary', 'reference');
+
                         }
-                        while ( secClickCount === 2 ) {
+                        while ( secClickCount === 2  ) {
                             updateButton(null, 'secondary');
-                            secondaryActive.activeLayer  = null;
+                            secondaryActive.activeLayer = null;
                             secClickCount = 0;
                         }
 
                         changeActive.selectedLayer = secondaryActive;
-
                     });
-            }
+
+                }
+
+                // else if ( secondaryActive.activeLayer === null && secClickCount === 0 ) {
+
+                //     selectSecondary
+                //     .append('button')
+                //     .classed('select-active-layer', true)
+                //     .text('Set as active layer')
+                //     .on('click', function () {
+
+                //         d3.event.preventDefault();
+
+                //         //updateButton('reference', 'secondary');
+
+                //         if (referenceActive.activeLayer !== null) {
+                //             referenceActive.activeLayer  = null;
+                //             secondaryActive.activeLayer  = true;
+                //         }
+                //         else if (secClickCount === 1  && secondaryActive.activeLayer === true) {
+                //             secClickCount++;
+                //         }
+                //         else {
+                //             secClickCount++;
+                //             secondaryActive.activeLayer  = true;
+                //         }
+                //         while ( secClickCount === 2  ) {
+                //             updateButton(null, 'secondary');
+                //             secondaryActive.activeLayer = null;
+                //             secClickCount = 0;
+                //         }
+
+                //         changeActive.selectedLayer = referenceActive;
+
+                //     });
+
+                // }
+
         }
     }
 

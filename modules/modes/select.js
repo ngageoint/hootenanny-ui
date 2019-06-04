@@ -1,4 +1,5 @@
 import _intersection from 'lodash-es/intersection';
+import _find from 'lodash-es/find';
 import _map from 'lodash-es/map';
 import _uniq from 'lodash-es/uniq';
 import _values from 'lodash-es/values';

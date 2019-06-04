@@ -17,8 +17,6 @@ import { modeBrowse, modeSelect } from '../modes';
 import { osmNode } from '../osm';
 import { utilKeybinding } from '../util';
 import _find from 'lodash-es/find';
-import { data } from '../../data';
-
 
 export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
     var origWay = context.entity(wayId);
