@@ -346,7 +346,8 @@ export default class ImportDataset {
             TRANSLATION: translationName,
             INPUT_TYPE: importType.value,
             INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
-            formData: this.getFormData( this.fileIngest.node().files )
+            formData: this.getFormData( this.fileIngest.node().files ),
+            folderId
         };
 
         this.processRequest = Hoot.api.uploadDataset( data )
@@ -378,8 +379,7 @@ export default class ImportDataset {
 
                 return resp;
             } )
-            .then( () => Hoot.layers.refreshLayers() )
-            .then( () => this.updateLinks( layerName, folderId ) )
+            .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {
                 console.error(err);
@@ -394,11 +394,6 @@ export default class ImportDataset {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
             } );
-    }
-
-    updateLinks( layerName, folderId ) {
-        return Hoot.folders.updateFolderLink( layerName, folderId )
-            .then( () => Hoot.folders.refreshAll() );
     }
 
     /**
