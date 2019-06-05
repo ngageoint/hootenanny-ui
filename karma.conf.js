@@ -22,7 +22,7 @@ const webpackConfig = {
         rules: [
             // instrument only testing sources with Istanbulvar fs = require('fs')
             {
-                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3)$/,
+                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3|eot|woff2|woff)$/,
                 use: [
                     {
                         loader: 'file-loader'
