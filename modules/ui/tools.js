@@ -240,7 +240,7 @@ export function uiTools( context ) {
 
                 //     bindBodyClick();
                 // } )
-                ;
+                // ;
         }
 
         function bindBodyClick() {
