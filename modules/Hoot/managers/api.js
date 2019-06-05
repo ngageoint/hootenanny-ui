@@ -509,10 +509,9 @@ export default class API {
             } );
     }
 
-    getMapSizes( mapIds ) {
-        const ids = mapIds ? mapIds : '';
+    getMapSizes() {
         const params = {
-            path: `/info/map/sizes?mapid=${ ids }`,
+            path: '/info/map/sizes',
             method: 'GET'
         };
 
