@@ -8,6 +8,8 @@ import {
 import { osmEntity, osmNote } from '../osm';
 import { utilKeybinding, utilRebind } from '../util';
 
+import _find from 'lodash-es/find';
+
 /*
    The hover behavior adds the `.hover` class on mouseover to all elements to which
    the identical datum is bound, and removes it on mouseout.
@@ -97,6 +99,8 @@ export function behaviorHover(context) {
 
 
         function enter(datum) {
+
+            var _activeLayer = _find(Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer === true; });
             if (datum === _target) return;
             _target = datum;
 
@@ -115,7 +119,7 @@ export function behaviorHover(context) {
                 entity = datum;
                 selector = '.note-' + datum.id;
 
-            } else if (datum instanceof osmEntity) {
+            } else if (datum instanceof osmEntity && Number(datum.id.split('_')[1]) === Number(_activeLayer.id)) {
                     entity = datum;
                     selector = '.' + entity.id;
                     if (entity.type === 'relation') {
@@ -132,7 +136,7 @@ export function behaviorHover(context) {
             }
 
             // Update hover state and dispatch event
-            if (entity && entity.id !== _newId) {
+            if (entity && entity.id !== _newId && Number(entity.id.split('_')[1]) === Number(_activeLayer.id)) {
                 // If drawing a way, don't hover on a node that was just placed. #3974
                 var mode = context.mode() && context.mode().id;
                 if ((mode === 'draw-line' || mode === 'draw-area') && !_newId && entity.type === 'node') {

@@ -1,5 +1,6 @@
 import _assign from 'lodash-es/assign';
 import _values from 'lodash-es/values';
+import _find   from 'lodash-es/find';
 
 import { select as d3_select } from 'd3-selection';
 
@@ -196,33 +197,38 @@ export function svgVertices(projection, context) {
         var getTransform = svgPointTransform(projection).geojson;
         var activeID = context.activeID();
         var data = { targets: [], nopes: [] };
+        var _activeLayer = _find(Hoot.layers.loadedLayers, function(a,b) { return a.activeLayer; } );
 
         entities.forEach(function(node) {
-            if (activeID === node.id) return;   // draw no target on the activeID
+            if (Number(node.id.split('_')[1]) === Number(_activeLayer.id)) {
+                if (activeID === node.id ) return;   // draw no target on the activeID
 
-            var vertexType = svgPassiveVertex(node, graph, activeID);
-            if (vertexType !== 0) {     // passive or adjacent - allow to connect
-                data.targets.push({
-                    type: 'Feature',
-                    id: node.id,
-                    properties: {
-                        target: true,
-                        entity: node
-                    },
-                    geometry: node.asGeoJSON()
-                });
-            } else {
-                data.nopes.push({
-                    type: 'Feature',
-                    id: node.id + '-nope',
-                    properties: {
-                        nope: true,
-                        target: true,
-                        entity: node
-                    },
-                    geometry: node.asGeoJSON()
-                });
+                var vertexType = svgPassiveVertex(node, graph, activeID);
+                if (vertexType !== 0) {     // passive or adjacent - allow to connect
+                    data.targets.push({
+                        type: 'Feature',
+                        id: node.id,
+                        properties: {
+                            target: true,
+                            entity: node
+                        },
+                        geometry: node.asGeoJSON()
+                    });
+                } else {
+                    data.nopes.push({
+                        type: 'Feature',
+                        id: node.id + '-nope',
+                        properties: {
+                            nope: true,
+                            target: true,
+                            entity: node
+                        },
+                        geometry: node.asGeoJSON()
+                    });
+                }
+
             }
+
         });
 
 

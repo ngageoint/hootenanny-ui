@@ -200,9 +200,9 @@ export function modeDragNode(context) {
             var targetNodes = d && d.properties && d.properties.nodes;
             var edge;
 
-            if (targetLoc && Hoot.layers.loadedLayers === 1 || targetLoc && Number(target.id.split('_')[1]) === _activeLayer.id) {  // snap to node/vertex - a point target with `.loc`
+            if (targetLoc && Number(target.id.split('_')[1]) === _activeLayer.id) {  // snap to node/vertex - a point target with `.loc`
                 loc = targetLoc;
-            } else if (targetNodes && Hoot.layers.loadedLayers === 1 || targetNodes && Number(target.id.split('_')[1]) === _activeLayer.id) { // snap to way - a line target with `.nodes`
+            } else if (targetNodes && Number(target.id.split('_')[1]) === _activeLayer.id) { // snap to way - a line target with `.nodes`
                 edge = geoChooseEdge(targetNodes, context.mouse(), context.projection, end.id);
                 if (edge) {
                     loc = edge.loc;
@@ -341,7 +341,7 @@ export function modeDragNode(context) {
 
     function move(entity) {
         if (_isCancelled) return;
-        if ( _activeLayer === undefined || _activeLayer.id !== Number(entity.id.split('_')[1])) return;
+        if (_activeLayer.id !== Number(entity.id.split('_')[1])) return;
         d3_event.sourceEvent.stopPropagation();
 
         context.surface().classed('nope-disabled', d3_event.sourceEvent.altKey);
