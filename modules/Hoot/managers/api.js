@@ -302,21 +302,11 @@ export default class API {
             .then( resp => {
                 let layers = resp.data.layers;
 
-                if ( !layers || !layers.length )
+                if ( !layers || !layers.length ){
                     return resp.data;
-
-                return this.getMapSizes()
-                    .then( sizeInfo => {
-                        _map( layers, layer => {
-                            _assign( layer, _find( sizeInfo.layers, { id: layer.id } ) );
-                        } );
-
-                        return layers;
-                    } )
-                    .catch( () => {
-                        //TODO: handle this properly
-                        return layers;
-                    } );
+                } else {
+                    return layers;
+                }
             } )
             .catch( err => {
                 if ( err ) throw new Error( err );
