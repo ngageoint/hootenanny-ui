@@ -126,11 +126,11 @@ export function behaviorDraw(context) {
         var target = d && d.properties && d.properties.entity;
         var _activeLayer = _find( Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
 
-        if (target && target.type === 'node' && _activeLayer.id === Number(target.id.split('_')[1])) {   // Snap to a node
+        if (target && target.type === 'node' && Number(_activeLayer.id) === Number(target.id.split('_')[1])) {   // Snap to a node
                 dispatch.call('clickNode', this, target, d);
                 return;
 
-        } else if (target && target.type === 'way' && _activeLayer.id === Number(target.id.split('_')[1])) {   // Snap to a way
+        } else if (target && target.type === 'way' && Number(_activeLayer.id) === Number(target.id.split('_')[1])) {   // Snap to a way
                 var choice = geoChooseEdge(
                     context.childNodes(target), context.mouse(), context.projection, context.activeID()
                 );

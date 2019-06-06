@@ -341,8 +341,8 @@ export function modeDragNode(context) {
 
     function move(entity) {
         if (_isCancelled) return;
-        var _activeLayer = _find( Hoot.layers.loadedLayers, function(a,b) { return a.activeLayer; });
-        if (_activeLayer.id !== Number(entity.id.split('_')[1])) return;
+        // var _activeLayer = _find( Hoot.layers.loadedLayers, function(a,b) { return a.activeLayer; });
+        // if (_activeLayer.id !== Number(entity.id.split('_')[1])) return;
         d3_event.sourceEvent.stopPropagation();
 
         context.surface().classed('nope-disabled', d3_event.sourceEvent.altKey);
