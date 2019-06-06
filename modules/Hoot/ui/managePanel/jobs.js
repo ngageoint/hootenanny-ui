@@ -184,22 +184,23 @@ export default class Jobs extends Tab {
                 let user = JSON.parse( localStorage.getItem( 'user' ) );
 
 
-                //Get logging for the job
-                actions.push({
-                    title: 'view log',
-                    icon: 'subject',
-                    action: async () => {
-                        this.commandDetails = new JobCommandInfo(d.jobId, true);
-                        this.commandDetails.render();
-
-                        Hoot.events.once( 'modal-closed', () => {
-                            this.commandDetails.deactivate();
-                            delete this.commandDetails;
-                        });
-                    }
-                });
-
                 if (d.userId === user.id) {
+                    //Get logging for the job
+                    actions.push({
+                        title: 'view log',
+                        icon: 'subject',
+                        action: async () => {
+                            this.commandDetails = new JobCommandInfo(d.jobId, true);
+                            this.commandDetails.render();
+
+                            Hoot.events.once( 'modal-closed', () => {
+                                this.commandDetails.deactivate();
+                                delete this.commandDetails;
+                            });
+                        }
+                    });
+
+                    //Add a cancel button
                     actions.push({
                         title: 'cancel job',
                         icon: 'cancel',

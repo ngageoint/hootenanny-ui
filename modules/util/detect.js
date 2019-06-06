@@ -48,7 +48,6 @@ export function utilDetect(force) {
     detected.version = detected.version.split(/\W/).slice(0,2).join('.');
 
     if (detected.browser.toLowerCase() === 'msie') {
-        window.console.log( 'blah' );
         detected.ie = true;
         detected.browser = 'Internet Explorer';
         detected.support = parseFloat(detected.version) >= 11;

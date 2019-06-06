@@ -190,7 +190,6 @@ export default class ExportData {
                 return Hoot.api.statusInterval( this.jobId );
             } )
             .then( async resp => {
-                console.log(resp);
                 if (resp.data && resp.data.status !== 'cancelled') {
                     await Hoot.api.saveDataset( this.jobId, data.outputname );
                 }
