@@ -43,17 +43,15 @@ export function svgLines(projection, context) {
         var nopeClass = context.getDebug('target') ? 'red ' : 'nocolor ';
         var getPath = svgPath(projection).geojson;
         var activeID = context.activeID();
-        var _activeLayer = _find(Hoot.layers.loadedLayers, function(a,b) { return a.activeLayer; } );
+        var _activeLayer = _find(Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer === true; });
 
         // The targets and nopes will be MultiLineString sub-segments of the ways
         var data = { targets: [], nopes: [] };
 
-        entities.forEach(function (way) {
-            if (Number(way.id.split('_')[1]) === Number(_activeLayer.id)) {
-                var features = svgSegmentWay(way, graph, activeID);
-                data.targets.push.apply(data.targets, features.passive);
-                data.nopes.push.apply(data.nopes, features.active);
-            }
+        entities.forEach(function(way) {
+            var features = svgSegmentWay(way, graph, activeID);
+            data.targets.push.apply(data.targets, features.passive);
+            data.nopes.push.apply(data.nopes, features.active);
         });
 
 
