@@ -3,7 +3,7 @@ import _filter from 'lodash-es/filter';
 import _flatten from 'lodash-es/flatten';
 import _forOwn from 'lodash-es/forOwn';
 import _map from 'lodash-es/map';
-import _find from 'lodash-es/map';
+import _find from 'lodash-es/find';
 
 import { range as d3_range } from 'd3-array';
 
@@ -50,8 +50,12 @@ export function svgLines(projection, context) {
 
         entities.forEach(function(way) {
             var features = svgSegmentWay(way, graph, activeID);
-            data.targets.push.apply(data.targets, features.passive);
-            data.nopes.push.apply(data.nopes, features.active);
+            if (Number(way.id.split('_')[1]) === Number(_activeLayer.id)) {
+                data.targets.push.apply(data.targets, features.passive);
+            }
+            else {
+                data.nopes.push.apply(data.nopes, features.active);
+            }
         });
 
 

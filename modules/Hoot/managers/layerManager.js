@@ -19,6 +19,7 @@ import { rgb as d3_rgb } from 'd3-color';
 import { geoExtent as GeoExtent } from '../../geo/index';
 import { utilDetect }             from '../../util/detect';
 import colorPalette               from '../config/colorPalette';
+import LayerAdd                   from '../ui/sidebar/layerAdd';
 
 import { osmChangeset } from '../../osm';
 
@@ -320,7 +321,30 @@ export default class Layers {
 
             this.hoot.context.flush();
         }
+
+        if ( Object.keys(Hoot.layers.loadedLayers).length === 1 ) {
+            this.resetActiveLayers();
+        }
         this.hoot.events.emit( 'loaded-layer-removed' );
+    }
+
+    async resetActiveLayers() {
+
+        let changeActive    = new LayerAdd();
+
+        let loadedLayers    = Object.values(Hoot.layers.loadedLayers);
+
+        let referenceLayer = _find(loadedLayers, function(a, b) { return a.refType === 'primary'; });
+        let secondaryLayer = _find(loadedLayers, function(a, b) { return a.refType === 'secondary'; });
+
+        if (Object.keys(Hoot.layers.loadedLayers).length === 1 && referenceLayer ) {
+            referenceLayer.activeLayer  = true;
+            changeActive.selectedLayer = referenceLayer;
+        } else {
+            secondaryLayer.activeLayer = true;
+            changeActive.selectedLayer = secondaryLayer;
+        }
+
     }
 
     removeAllLoadedLayers() {
