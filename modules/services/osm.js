@@ -628,68 +628,12 @@ export default {
         return oauth.authenticated();
     },
 
-
-    filterChanges: function( changes ) {
-        let ways = _filter( _flatten( _map( changes, featArr => featArr ) ), feat => feat.type !== 'node' ),
-            checkLayers = Hoot.layers.loadedLayers,
-            visLayers   = _map( _filter( _values( checkLayers ), layer => layer.visible ), layer => layer.id ),
-            activeLayer = _find(checkLayers, function(a, b) { return a.activeLayer === true; }),
-            defaultMapId;
-
-        // Make sure there is only one layer visible. Otherwise, return a falsy value to prevent save.
-
-        if ( activeLayer.activeLayer === true ){
-            defaultMapId = activeLayer.id;
-        } else {
-            return false;
-        }
-
-        return _reduce( changes, ( obj, featArr, type ) => {
-            let changeTypes = {
-                created: [],
-                deleted: [],
-                modified: []
-            };
-
-            _forEach( featArr, feat => {
-                let mapId = defaultMapId;
-
-                if ( feat.isNew() && feat.type === 'node' ) {
-                    let parent = _find( ways, way => _includes( way.nodes, feat.id ) );
-
-                    if ( parent && parent.mapId ) {
-                        mapId = parent.mapId;
-                    }
-                }
-
-                // create map ID key if not yet exists
-                if ( !obj[ mapId ] ) {
-                    obj[ mapId ] = {};
-                }
-
-                // create change type key if not yet exists
-                if ( !obj[ mapId ][ type ] ) {
-                    obj[ mapId ][ type ] = [];
-                }
-
-                obj[ mapId ][ type ].push( feat );
-
-                // merge object into default types array so that the final result
-                // will contain all keys in case change type is empty
-                obj[ mapId ] = Object.assign( changeTypes, obj[ mapId ] );
-            } );
-            return obj;
-        }, {} );
-    },
-
     // Create, upload, and close a changeset
     // PUT /api/0.6/changeset/create
     // POST /api/0.6/changeset/#i/upload
     // PUT /api/0.6/changeset/#id/close
     putChangeset: function(changeset, changes, callback, mapId ) {
         var cid = _connectionID;
-
-        //let changesArr = this.filterChanges(changes);
 
         if (_changeset.inflight) {
             return callback({ message: 'Changeset already inflight', status: -2 }, changeset);

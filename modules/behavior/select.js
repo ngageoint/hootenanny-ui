@@ -20,8 +20,6 @@ import {
     osmEntity,
     osmNote
 } from '../osm';
-import { createSecurePair } from 'tls';
-
 
 export function behaviorSelect(context) {
     var lastMouse = null;
@@ -139,9 +137,9 @@ export function behaviorSelect(context) {
             if (!isMultiselect) {
                 if (selectedIDs.length > 1 && (!suppressMenu && !isShowAlways) ) {
                     mode.suppressMenu(false).reselect();
-                } else if (Number(datum.id.split('_')[1]) !== Number(_activeLayer.id)) {
-                    selectedIDs = [];
-                } else {
+                } else if (Number(datum.id.split('_')[1]) === Number(_activeLayer.id)) {
+                    // selectedIDs = [];
+                // } else {
                     // select a single thing..
                     context.enter(modeSelect(context, [datum.id]).suppressMenu(suppressMenu));
                 }

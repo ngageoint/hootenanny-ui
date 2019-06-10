@@ -134,7 +134,8 @@ export function svgAreas(projection, context) {
 
         entities.forEach(function(way) {
             var features = svgSegmentWay(way, graph, activeID);
-            if (Number(way.id.split('_')[1]) === Number(_activeLayer.id)) {
+            var activeLayerCheck = _activeLayer ? way.id && _activeLayer.id && Number(way.id.split('_')[1]) === Number(_activeLayer.id) : true;
+            if (activeLayerCheck) {
                 data.targets.push.apply(data.targets, features.passive);
             } else {
                 data.nopes.push.apply(data.nopes, features.active);

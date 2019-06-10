@@ -119,7 +119,7 @@ export function behaviorHover(context) {
                 entity = datum;
                 selector = '.note-' + datum.id;
 
-            } else if (datum instanceof osmEntity && Number(datum.id.split('_')[1]) === Number(_activeLayer.id)) {
+            } else if (datum instanceof osmEntity && _activeLayer && _activeLayer.id && Number(datum.id.split('_')[1]) === Number(_activeLayer.id)) {
                     entity = datum;
                     selector = '.' + entity.id;
                     if (entity.type === 'relation') {
@@ -136,7 +136,7 @@ export function behaviorHover(context) {
             }
 
             // Update hover state and dispatch event
-            if (entity && entity.id !== _newId && Number(entity.id.split('_')[1]) === Number(_activeLayer.id)) {
+            if (entity && entity.id !== _newId && _activeLayer && _activeLayer.id && Number(entity.id.split('_')[1]) === Number(_activeLayer.id)) {
                 // If drawing a way, don't hover on a node that was just placed. #3974
                 var mode = context.mode() && context.mode().id;
                 if ((mode === 'draw-line' || mode === 'draw-area') && !_newId && entity.type === 'node') {

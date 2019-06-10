@@ -26,9 +26,7 @@ export function osmEntity(attrs) {
 
 osmEntity.id = function(type) {
     var _activeLayer = _find(Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
-    let allIds = {};
-    allIds = _activeLayer.activeIds;
-    var id = osmEntity.id.fromOSM(type, allIds[type]--);
+    var id = osmEntity.id.fromOSM(type, _activeLayer.activeIds[type]--);
     if (_activeLayer && _activeLayer.id) {
         id = id + '_' + _activeLayer.id;
     }

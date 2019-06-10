@@ -44,11 +44,6 @@ import {
     utilKeybinding
 } from '../util';
 
-import { osmEntity } from '../osm/index';
-import { create } from 'domain';
-import { pseudoRandomBytes } from 'crypto';
-import { async } from 'q';
-
 var _isSaving = false;
 
 
@@ -310,8 +305,8 @@ export function modeSave(context) {
             if (changes.modified.length || changes.created.length || changes.deleted.length) {
                 //loadLocation();  // so it is ready when we display the save screen
 
-                var getMapIds   = Object.keys(Hoot.layers.loadedLayers);
-                var idToNum     = getMapIds.map(parseFloat);
+                var getMapIds = Object.keys(Hoot.layers.loadedLayers);
+                var idToNum = getMapIds.map(parseFloat);
 
                 idToNum.forEach(function (mapId) {
                     var created = changes.created.filter(function (created) { return Number(created.id.split('_')[1]) === mapId; });
@@ -334,32 +329,6 @@ export function modeSave(context) {
                 });
 
                 osm.putChangeset(changeset, _changesetArray[0].changes, uploadCallback, _changesetArray[0].mapId);
-
-                // var mapChanges  = idToNum.map(function(mapId) {
-                //     var created     = changes.created.filter(function(created) { return Number(created.id.split('_')[1]) === mapId; });
-                //     var modified    = changes.modified.filter(function(modified) { return Number(modified.id.split('_')[1]) === mapId; });
-                //     var deleted     = changes.deleted.filter(function(deleted) { return Number(deleted.id.split('_')[1]) === mapId; });
-                //         return {
-                //             mapId: mapId,
-                //             changes: {
-                //                 created: created,
-                //                 modified: modified,
-                //   d              deleted: deleted
-                //             }
-                //         };
-                //     });
-
-                // mapChanges.forEach(
-                //     function (changes) {
-                //         if (changes.changes.created.length === 0 && changes.changes.modified.length === 0 && changes.changes.deleted.length === 0) {
-                //             return;
-                //         }
-                //         else if (changes.changes.created.length > 0 || changes.changes.modified.length > 0 || changes.changes.deleted.length > 0) {
-                //             _changesetArray.push(changes);
-                //         }
-                //         osm.putChangeset(changeset, changes.changes ,uploadCallback, _changesetArray, changes.mapId);
-                //     }
-                // );
             } else {        // changes were insignificant or reverted by user
                 d3_select('.inspector-wrap *').remove();
                 loading.close();
