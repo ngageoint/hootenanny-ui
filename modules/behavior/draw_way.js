@@ -78,10 +78,10 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
         var _activeLayer = _find( Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
         var loc = context.map().mouseCoordinates();
 
-        if (targetLoc && Number(datum.id.split('_')[1]) === Number(_activeLayer.id) ) {   // snap to node/vertex - a point target with `.loc`
+        if (targetLoc && Number(datum.id.split('_')[1]) === _activeLayer.id) {   // snap to node/vertex - a point target with `.loc`
             loc = targetLoc;
 
-        } else if (targetNodes && Number(datum.properties.entity.id.split('_')[1]) === Number(_activeLayer.id) ) {   // snap to way - a line target with `.nodes`
+        } else if (targetNodes && Number(datum.properties.entity.id.split('_')[1]) === _activeLayer.id) {   // snap to way - a line target with `.nodes`
             var choice = geoChooseEdge(targetNodes, context.mouse(), context.projection, end.id);
             if (choice) {
                 loc = choice.loc;

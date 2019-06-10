@@ -187,8 +187,6 @@ export default class Sidebar {
         let selectSecondary = d3.selectAll('#secondary');
         let referenceActive = _find(loadedLayers, function(a, b) { return a.refType === 'primary'; });
         let secondaryActive = _find(loadedLayers, function(a, b) { return a.refType === 'secondary'; });
-        let refClickCount = 0;
-        let secClickCount = 0;
 
         if (loadedLayers.length === 2) {
             let changeActive    = new LayerAdd();
@@ -262,7 +260,7 @@ export default class Sidebar {
                     .classed('select-active-layer', true)
                     .text('Set as active layer');
 
-                if (referenceActive.activeLayer === true && refClickCount === 0) {
+                if (referenceActive.activeLayer === true) {
                     d3.select('#reference button.select-active-layer')
                         .classed('select-active-layer', true)
                         .text('Active Layer');
@@ -282,7 +280,7 @@ export default class Sidebar {
                     .text('Set as active layer');
 
 
-                if (secondaryActive.activeLayer === true && secClickCount === 0) {
+                if (secondaryActive.activeLayer === true) {
 
                     d3.select('#secondary button.select-active-layer')
                         .classed('select-active-layer', true)
