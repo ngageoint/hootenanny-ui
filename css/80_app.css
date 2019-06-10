@@ -4387,6 +4387,10 @@ svg.mouseclick use.right {
     background-color: #fff;
 }
 
+.right .tooltip-inner {
+    min-width: 200px;
+}
+
 .tail {
     width: 200px;
     height: 400px;

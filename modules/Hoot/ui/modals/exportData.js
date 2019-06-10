@@ -37,6 +37,7 @@ export default class ExportData {
         this.translationSchemaCombo = this.container.select( '#exportTranslationCombo' );
         this.exportFormatCombo = this.container.select( '#exportFormatCombo' );
         this.appendToFgdbCheckbox = this.container.select( '#exportAppendFgdb' );
+        this.includeHootTagsCheckbox = this.container.select( '#exportHootTags' );
         this.dataExportNameTextInput = this.container.select( '#dataExportNameTextInput' );
         this.submitButton = this.container.select( '#exportDatasetBtn' );
         this.submitButton.attr('disabled', null);
@@ -109,28 +110,15 @@ export default class ExportData {
         }[this.exportFormatCombo.node().value];
     }
 
-    getInputs(input) {
-        switch (this.type.toLowerCase()) {
-            case 'datasets': {
-                input = this.input;
-                break;
-            }
-            case 'folder': {
-                input = Hoot.folders.findBy('name', input).id;
-                break;
-            }
-            default: {
-                input = Hoot.layers.findBy('name', this.input ).name;
-                break;
-            }
-        }
-        return input;
-    }
-
     loadingState() {
         this.submitButton
             .select( 'span' )
-            .text( 'Exporting...' );
+            .text( 'Cancel Export' );
+
+        // overwrite the submit click action with a cancel action
+        this.submitButton.on( 'click', () => {
+            Hoot.api.cancelJob(this.jobId);
+        } );
 
         this.submitButton
             .append( 'div' )
@@ -182,28 +170,61 @@ export default class ExportData {
     handleSubmit() {
         let self = this,
             data = {
-                hoot2: true,
-                input: self.getInputs(self.input),
+                input: self.id,
                 inputtype: self.getInputType(),
                 append: self.appendToFgdbCheckbox.property( 'checked' ),
-                includehoottags: false,
+                includehoottags: self.includeHootTagsCheckbox.property( 'checked' ),
                 outputname: self.getOutputName(),
                 outputtype: self.getOutputType(),
                 tagoverrides: {},
                 textstatus: false,
-                translation: self.getTranslationPath(),
-                userId: Hoot.user().id
+                translation: self.getTranslationPath()
             };
 
         this.loadingState();
 
         this.processRequest = Hoot.api.exportDataset(data)
-            .then( (message) => {
+            .then( resp => {
+                this.jobId = resp.data.jobid;
+
+                return Hoot.api.statusInterval( this.jobId );
+            } )
+            .then( async resp => {
+                if (resp.data && resp.data.status !== 'cancelled') {
+                    await Hoot.api.saveDataset( this.jobId, data.outputname );
+                }
+                return resp;
+            } )
+            .then( resp => {
                 Hoot.events.emit( 'modal-closed' );
-                Hoot.message.alert( message );
+
+                return resp;
             })
-            .catch( err => {
-                Hoot.message.alert( err );
+            .then( resp => {
+                let message;
+                if (resp.data && resp.data.status === 'cancelled') {
+                    message = 'Export job cancelled';
+                } else {
+                    const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
+                    message = `'${data.outputname}' ${dataType} Exported`;
+                }
+
+                Hoot.message.alert( {
+                    data: resp.data,
+                    message: message,
+                    status: 200,
+                    type: resp.type
+                } );
+
+                return resp;
+            } )
+            .catch( (err) => {
+                console.error(err);
+                let message = 'Error running export',
+                    type = err.type,
+                    keepOpen = true;
+
+                Hoot.message.alert( { message, type, keepOpen } );
             } );
         }
 

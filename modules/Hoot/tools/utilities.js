@@ -5,7 +5,6 @@
  *******************************************************************************************************/
 
 import _forEach from 'lodash-es/forEach';
-
 import { t } from '../../util/locale';
 
 export const getBrowserInfo = () => {
@@ -51,10 +50,10 @@ export const getOS = () => {
 };
 
 export const isValidCoords = coords => {
-    return (coords.length === 2 ||
-        (!isNaN( coords[ 0 ] ) && !isNaN( coords[ 1 ] )) ||
-        (coords[ 0 ] < 180.0 && coords[ 0 ] > -180.0) ||
-        (coords[ 1 ] < 90.0 && coords[ 1 ] > -90.0)
+    return ( coords.length === 2 ||
+        ( !isNaN( coords[ 0 ] ) && !isNaN( coords[ 1 ] ) ) ||
+        ( coords[ 0 ] < 180.0 && coords[ 0 ] > -180.0 ) ||
+        ( coords[ 1 ] < 90.0 && coords[ 1 ] > -90.0 )
     );
 };
 
@@ -100,5 +99,82 @@ export const isNaN = x => {
 };
 
 export const titleCase = text => {
-    return text[0].toUppercase() + text.slice(1);
+    return text[ 0 ].toUpperCase() + text.slice( 1 );
+};
+
+export const uuidv4 = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
+        const r = Math.random() * 16 | 0, v = c === 'x' ? r : ( r & 0x3 | 0x8 );
+        return v.toString( 16 );
+    } );
+};
+
+//Returns comma delimited bounds in order: minx,miny,maxx,maxy e.g.38,-105,39,-104
+export const formatBbox = str => {
+    const coords = str.split( ',' );
+    if ( coords.length !== 4 ) {
+        Hoot.message.alert( new Error( 'Bbox needs to have 4 numbers!' ) );
+        return;
+    }
+
+    let minx = +coords[ 0 ],
+        miny = +coords[ 1 ],
+        maxx = +coords[ 2 ],
+        maxy = +coords[ 3 ];
+
+    if ( minx > maxx ) {
+        [ minx, maxx ] = [ maxx, minx ];
+    }
+    if ( miny > maxy ) {
+        [ miny, maxy ] = [ maxy, miny ];
+    }
+
+    return `${minx},${miny},${maxx},${maxy}`;
+};
+
+export const duration = (start, end, ago) => {
+    let duration,
+        diff = (end - start) / 1000;
+
+    function calcDiff(diff, unit) {
+        let calc;
+        if (diff < 1) {
+            calc = `less than a ${unit}`;
+        } else if (diff === 1) {
+            let article = unit === 'hour' ? 'an' : 'a';
+            calc = `${article} ${unit}`;
+        } else if (diff < 5 && !ago) {
+            calc = `a few ${unit}s`;
+        } else {
+            calc = `${diff} ${unit}s`;
+        }
+        return calc;
+    }
+
+    let units = [
+        {unit: 'second', value: 1}, //seconds per second
+        {unit: 'minute', value: 60}, //seconds per minute
+        {unit: 'hour', value: 60}, //minutes per hour
+        {unit: 'day', value: 24}, //hours per day
+        {unit: 'month', value: 30}, //days per month
+        {unit: 'year', value: 12}  //months per year
+    ];
+    let lastUnit = units[0].unit;
+
+    for (let i=0; i<units.length; i++) {
+        let unit = units[i].unit;
+        let value = units[i].value;
+        if (diff < value) {
+            duration = calcDiff(Math.floor(diff), lastUnit);
+            break;
+        }
+        diff /= value;
+        lastUnit = unit;
+    }
+
+    if (ago) {
+        duration += ' ago';
+    }
+
+    return duration;
 };

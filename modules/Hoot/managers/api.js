@@ -326,13 +326,11 @@ export default class API {
                 return Promise.reject( { message, type } );
             } );
     }
-
-
     /**
-     * Get all id's necessary to create new map features
      *
-     * @param {Promise|array} mapId + changesetId, nodeId, wayId, relationId
+     * @param {Returns a promise} - mapId
      */
+
     getAllIds( mapId ) {
         const params = {
             path: `/osm/api/0.6/map/${ mapId }/startingIndex`,
@@ -353,7 +351,7 @@ export default class API {
      *
      * @returns {Promise|array} - links
      */
-    getLinks() {
+     getLinks() {
         const params = {
             path: '/osm/api/0.6/map/folders/linked',
             method: 'GET'
@@ -1019,14 +1017,31 @@ export default class API {
      * @param layerName - name of layer to delete
      * @returns {Promise<any>}
      */
-    deleteLayer( layerName ) {
+    deleteLayer( layerId ) {
         const params = {
-            path: `/osm/api/0.6/map/${ layerName }`,
+            path: `/osm/api/0.6/map/${ layerId }`,
             method: 'DELETE'
         };
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) );
+    }
+
+    /** Get a folder Id
+     *
+     *
+     *
+     */
+    getFolderId( folderId ) {
+        const params = {
+            path: `/osm/api/0.6/map/folders/${folderId}`,
+            method: 'GET',
+            params: {
+                folderId
+            }
+        };
+
+        return this.request( params );
     }
 
     /**

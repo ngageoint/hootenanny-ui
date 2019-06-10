@@ -15,11 +15,7 @@ const
             from: './img', // context: root
             to: './img' // context: dist
         }
-    ] ),
-    includeModules = new webpack.ProvidePlugin( {
-        $: 'jquery',
-        jQuery: 'jquery'
-    } );
+    ] );
 
 module.exports = {
     context: resolve( __dirname, '../' ),
@@ -35,7 +31,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3)$/,
+                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3|eot|woff2|woff)$/,
                 use: [
                     {
                         loader: 'file-loader',
@@ -65,7 +61,6 @@ module.exports = {
     },
     plugins: [
         extractAssets,
-        includeModules,
         new MiniCssExtractPlugin( {
             filename: '[name].css'
         } ),

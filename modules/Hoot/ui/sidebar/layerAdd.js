@@ -11,7 +11,9 @@ import _find   from 'lodash-es/find';
 import FolderTree  from '../../tools/folderTree';
 import SidebarForm from './sidebarForm';
 
-import { d3combobox } from '../../../lib/hoot/d3.combobox';
+import { d3combobox }   from '../../../lib/hoot/d3.combobox';
+import { uiBackground } from '../../../ui/background';
+import hoot from '../../hoot';
 
 export default class LayerAdd extends SidebarForm {
     constructor( container, d ) {
@@ -216,27 +218,7 @@ export default class LayerAdd extends SidebarForm {
         Hoot.events.emit( 'load-layer' );
 
         if ( Object.keys(Hoot.layers.loadedLayers).length === 1 ) {
-            await this.setActiveLayer(d);
-        }
-
-        // return this.checkForReview( layer );
-    }
-
-    async setActiveLayer ( d ) {
-
-        let changeActive    = new LayerAdd();
-
-        let loadedLayers    = Object.values(Hoot.layers.loadedLayers);
-
-        let referenceLayer = _find(loadedLayers, function(a, b) { return a.refType === 'primary'; });
-        let secondaryLayer = _find(loadedLayers, function(a, b) { return a.refType === 'secondary'; });
-
-        if (Object.keys(Hoot.layers.loadedLayers).length === 1 && referenceLayer ) {
-            referenceLayer.activeLayer  = true;
-            changeActive.selectedLayer = referenceLayer;
-        } else {
-            secondaryLayer.activeLayer = true;
-            changeActive.selectedLayer = secondaryLayer;
+            await Hoot.layers.resetActiveLayers();
         }
     }
 

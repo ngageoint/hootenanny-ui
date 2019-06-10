@@ -18,6 +18,7 @@ import EventManager       from './managers/eventManager';
 import UI                 from './ui/init';
 import { tagInfo }        from '../../data/index';
 import buildInfo          from './config/buildInfo.json';
+import { duration }       from './tools/utilities';
 
 class Hoot {
     constructor() {
@@ -28,6 +29,7 @@ class Hoot {
         this.translations = new TranslationManager( this );
         this.users        = new UserManager( this );
         this.events       = new EventManager();
+        this.duration     = duration;
         // this.user
         this.config = {
             tagInfo,

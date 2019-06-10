@@ -15,7 +15,8 @@ import LayerReview   from './layerReview';
 import {
     utilQsString,
     utilStringQs
-} from '../../../util';
+}                       from '../../../util';
+import { uiBackground } from '../../../ui';
 
 /**
  * Create the sidebar
@@ -162,9 +163,8 @@ export default class Sidebar {
             this.conflateCheck();
 
             if (Object.keys(Hoot.layers.loadedLayers).length === 1) {
-                let loadedLayers    = Object.values(Hoot.layers.loadedLayers);
-                let referenceActive = _find(loadedLayers, function(a, b) { return a.refType === 'primary'; });
-                if (referenceActive) {
+                let loadedLayer    = Object.values(Hoot.layers.loadedLayers)[0];
+                if (loadedLayer.refType === 'primary') {
                     d3.select('#reference button.select-active-layer').remove();
                 } else {
                     d3.select('#secondary button.select-active-layer').remove();
@@ -177,6 +177,7 @@ export default class Sidebar {
             window.location.replace('#' + utilQsString(q, true));
         }
 
+        uiBackground.renderLayerToggle();
         this.adjustSize();
     }
 
@@ -223,8 +224,34 @@ export default class Sidebar {
 
                     d3.select(`#${inactive} button.delete-button`)
                         .classed('disable-non-active', true);
-                        //.classed('no-click', true);
                 }
+
+            }
+
+            // eslint-disable-next-line no-inner-declarations
+            function onClickActive(layerName) {
+                return function() {
+                    let selection = d3.select(this);
+                    let activeButton = selection.select('button.select-active-layer');
+                    let setAsActive = activeButton.text() === 'Set as active layer';
+                    let currentLayer = layerName === 'reference'
+                        ? { refType: 'primary',  layerName: 'reference', otherLayer: 'secondary' }
+                        : { refType: 'secondary', layerName: 'secondary', otherLayer: 'reference'};
+
+                    let loadedLayers = Object.values(Hoot.layers.loadedLayers);
+
+                    if (setAsActive) {
+                        Object.values(loadedLayers).forEach(function(layer) {
+                            layer.activeLayer = layer.refType === currentLayer.refType ? true : null;
+                        });
+                        updateButton(currentLayer.layerName, currentLayer.otherLayer);
+                    } else {
+                        loadedLayers.find(function(layer){ return layer.refType === currentLayer.refType; }).activeLayer = null;
+                        updateButton(null, currentLayer.layerName);
+                        updateButton(null, currentLayer.otherLayer);
+                    }
+                    activeButton.text(setAsActive ? 'Active Layer': 'Set as active layer');
+                };
 
             }
 
@@ -244,89 +271,29 @@ export default class Sidebar {
 
                 }
 
-                selectReference.on('click', function () {
-
-                    d3.event.preventDefault();
-
-                    if (secondaryActive.activeLayer !== null) {
-                        secondaryActive.activeLayer = null;
-                        referenceActive.activeLayer = true;
-                        updateButton('reference', 'secondary');
-                    }
-                    else if (refClickCount === 1  && referenceActive.activeLayer === true) {
-                        refClickCount++;
-                    }
-                    else {
-                        refClickCount++;
-                        referenceActive.activeLayer = true;
-                        d3.select('#reference button.select-active-layer')
-                        .classed('select-active-layer', true)
-                        .text('Active Layer');
-                        updateButton('reference', 'secondary');
-                    }
-                    while (refClickCount === 2 && Object.keys(Hoot.layers.loadedLayers).length > 1) {
-                        updateButton(null, 'reference');
-                        referenceActive.activeLayer = null;
-                        refClickCount = 0;
-                    }
-
-                    changeActive.selectedLayer = referenceActive;
-                });
+                selectReference.on('click', onClickActive('reference'));
             }
 
             if (d3.select('#secondary button.select-active-layer').empty()) {
 
                 selectSecondary
-                .append('button')
-                .classed('select-active-layer', true)
-                .text('Set as active layer');
+                    .append('button')
+                    .classed('select-active-layer', true)
+                    .text('Set as active layer');
 
 
-                if ( secondaryActive.activeLayer === true && secClickCount === 0 ) {
+                if (secondaryActive.activeLayer === true && secClickCount === 0) {
 
                     d3.select('#secondary button.select-active-layer')
-                    .classed('select-active-layer', true)
-                    .text('Active Layer');
+                        .classed('select-active-layer', true)
+                        .text('Active Layer');
 
                     updateButton('secondary', 'reference');
                 }
 
-                if ( Object.keys(Hoot.layers.loadedLayers).length === 1 ) {
-                    d3.select('#secondary button').remove();
-                }
+                selectSecondary.on('click', onClickActive('secondary'));
 
-                selectSecondary
-                    .on('click', function () {
-
-                        d3.event.preventDefault();
-                        //updateButton(null, 'reference');
-                        if (referenceActive.activeLayer !== null) {
-                            referenceActive.activeLayer  = null;
-                            secondaryActive.activeLayer  = true;
-                            updateButton('secondary', 'reference');
-                        }
-                        else if (secClickCount === 1  && secondaryActive.activeLayer === true) {
-                            secClickCount++;
-                        }
-                        else {
-                            secClickCount++;
-                            secondaryActive.activeLayer  = true;
-                            d3.select('#reference button.select-active-layer')
-                            .classed('select-active-layer', true)
-                            .text('Active Layer');
-                            updateButton('secondary', 'reference');
-
-                        }
-                        while ( secClickCount === 2 && Object.keys(Hoot.layers.loadedLayers).length > 1 ) {
-                            updateButton(null, 'secondary');
-                            secondaryActive.activeLayer = null;
-                            secClickCount = 0;
-                        }
-
-                        changeActive.selectedLayer = secondaryActive;
-                    });
-
-                }
+            }
         }
     }
 

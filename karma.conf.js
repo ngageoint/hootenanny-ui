@@ -6,12 +6,12 @@ const url = require( 'url' );
 const proxy = require( 'express-http-proxy' );
 
 const materialIconFiles = [
-    { pattern: 'node_modules/material-design-icons/iconfont/material-icons.css', included: true },
-    { pattern: 'node_modules/material-design-icons/iconfont/MaterialIcons-Regular.eot', included: false },
-    { pattern: 'node_modules/material-design-icons/iconfont/MaterialIcons-Regular.svg', included: false },
-    { pattern: 'node_modules/material-design-icons/iconfont/MaterialIcons-Regular.ttf', included: false },
-    { pattern: 'node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff', included: false },
-    { pattern: 'node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff2', included: false },
+    { pattern: 'node_modules/material-icons/iconfont/material-icons.css', included: true },
+    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.eot', included: false },
+    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.svg', included: false },
+    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.ttf', included: false },
+    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.woff', included: false },
+    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.woff2', included: false },
 ];
 
 const webpackConfig = {
@@ -22,7 +22,7 @@ const webpackConfig = {
         rules: [
             // instrument only testing sources with Istanbulvar fs = require('fs')
             {
-                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3)$/,
+                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3|eot|woff2|woff)$/,
                 use: [
                     {
                         loader: 'file-loader'

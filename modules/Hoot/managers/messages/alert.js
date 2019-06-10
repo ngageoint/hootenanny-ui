@@ -40,63 +40,7 @@ export default class Alert extends EventEmitter {
             .append( 'span' )
             .html( this.message );
 
-        if ( this.data ) {
-            this.displayTime = 10000;
-            this.container.classed( 'has-data', true );
-            this.createDetails();
-        }
-
         this.autoHide();
-    }
-
-    createDetails() {
-        let dataArr = d3.map( this.data ).entries();
-
-        this.details = this.container
-            .insert( 'div', '.alert-footer' )
-            .classed( 'alert-details', true );
-
-        let detailRows = this.details
-            .selectAll( '.detail-row' )
-            .data( dataArr )
-            .enter();
-
-        let row = detailRows
-            .append( 'div' )
-            .classed( 'detail-row', true );
-
-        row
-            .append( 'span' )
-            .classed( 'detail-name', true )
-            .text( d => `${d.key}: ` );
-
-        row
-            .append( 'span' )
-            .classed( 'detail-value', true )
-            .text( d => d.value );
-
-        this.container
-            .append( 'div' )
-            .classed( 'alert-footer', true )
-            .append( 'a' )
-            .classed( 'alert-link', true )
-            .text( 'More details' )
-            .on( 'click', () => this.toggleDetails() );
-    }
-
-    toggleDetails() {
-        let isShown = this.details.classed( 'show' );
-
-        this.details.classed( 'show', !isShown );
-
-        this.container
-            .select( '.alert-link' )
-            .text( isShown ? 'More details' : 'Less details' );
-
-
-        if ( !isShown ) {
-            this.clearAutoHide();
-        }
     }
 
     autoHide() {

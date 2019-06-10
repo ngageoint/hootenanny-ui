@@ -1239,7 +1239,6 @@ export default {
         dispatch.call( 'loaded' );
     },
 
-
     logout: function() {
         _userChangesets = undefined;
         _userDetails = undefined;

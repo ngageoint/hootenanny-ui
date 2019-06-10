@@ -189,7 +189,7 @@ export default class ImportDataset {
 
             this.fileInput.property( 'value', fileNames.join( '; ' ) );
 
-            this.layerNameInput.property( 'value', saveName );
+            this.layerNameInput.property( 'value', Hoot.layers.checkLayerName(saveName) );
         }
 
         this.formValid = true;
@@ -341,32 +341,59 @@ export default class ImportDataset {
             folderId = pathId;
         }
 
-
         let data = {
             NONE_TRANSLATION: translation.NONE === 'true',
             TRANSLATION: translationName,
             INPUT_TYPE: importType.value,
-            INPUT_NAME: layerName,
-            formData: this.getFormData( this.fileIngest.node().files )
+            INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
+            formData: this.getFormData( this.fileIngest.node().files ),
+            folderId
         };
 
-        this.loadingState();
-
         this.processRequest = Hoot.api.uploadDataset( data )
-            .then( resp => Hoot.message.alert( resp ) )
-            .then( () => Hoot.layers.refreshLayers() )
-            .then( () => this.updateLinks( layerName, folderId ) )
+            .then( resp => {
+                this.loadingState();
+
+                this.jobId = resp.data[ 0 ].jobid;
+
+                return Hoot.api.statusInterval( this.jobId );
+            } )
+            .then( resp => {
+                let message;
+                if (resp.data && resp.data.status === 'cancelled') {
+                    message = 'Import job cancelled';
+
+                    this.submitButton
+                        .select( 'span' )
+                        .text( 'Import' );
+                } else {
+                    message = 'Import job complete';
+                }
+
+                Hoot.message.alert( {
+                    data: resp.data,
+                    message: message,
+                    status: 200,
+                    type: resp.type
+                } );
+
+                return resp;
+            } )
+            .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
-            .catch( err => Hoot.message.alert( err ) )
+            .catch( err => {
+                console.error(err);
+                let message = 'Error running import',
+                    type = err.type,
+                    keepOpen = true;
+
+                Hoot.message.alert( { message, type, keepOpen } );
+
+            } )
             .finally( () => {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
             } );
-    }
-
-    updateLinks( layerName, folderId ) {
-        return Hoot.folders.updateFolderLink( layerName, folderId )
-            .then( () => Hoot.folders.refreshAll() );
     }
 
     /**
@@ -387,12 +414,17 @@ export default class ImportDataset {
     loadingState() {
         this.submitButton
             .select( 'span' )
-            .text( 'Uploading...' );
+            .classed( 'label', true )
+            .text( 'Cancel Import' );
 
-        this.submitButton
-            .append( 'div' )
-            .classed( '_icon _loading float-right', true )
-            .attr( 'id', 'importSpin' );
+        // overwrite the submit click action with a cancel action
+        this.submitButton.on( 'click', () => {
+            Hoot.api.cancelJob(this.jobId);
+        } );
+
+        this.submitButton.insert('i', 'span')
+            .classed('material-icons', true)
+            .text('cancel');
 
         this.container.selectAll( 'input' )
             .each( function() {

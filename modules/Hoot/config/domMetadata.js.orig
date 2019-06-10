@@ -27,8 +27,8 @@ export function layerConflateForm( data ) {
             id: 'conflateFolderPath',
             class: 'path-name',
             inputType: 'combobox',
-            value: this.defaultFolder.name,
-            _value: this.defaultFolder.id,
+            value: this.defaultFolder ? this.defaultFolder.name : 'root',
+            _value: this.defaultFolder ? this.defaultFolder.id : 0,
             data: this.folderList,
             itemKey: 'path',
             _valueKey: 'id',
@@ -260,6 +260,7 @@ export function addFolderForm() {
     ];
 }
 
+
 export function modifyDatasetForm() {
     return [
         {
@@ -289,7 +290,11 @@ export function modifyDatasetForm() {
             onChange: d => this.validateTextInput( d )
         },
         {
+<<<<<<< HEAD
+            label: 'Visiblity',
+=======
             label: 'Public',
+>>>>>>> hoot2x
             id: 'modifyVisibility',
             inputType: 'checkbox',
             value: 'Public',
