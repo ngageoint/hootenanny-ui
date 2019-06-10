@@ -371,7 +371,7 @@ export function modeDragNode(context) {
                 _actionBounceBack(entity.id, _startLoc)
             );
 
-        } else if (target && target.type === 'way' && Number(target.id.split('_')[1]) === _activeLayer.id) {
+        } else if (target && target.type === 'way') { // && Number(target.id.split('_')[1]) === _activeLayer.id
             var choice = geoChooseEdge(context.childNodes(target), context.mouse(), context.projection, entity.id);
             context.replace(
                 actionAddMidpoint({
@@ -381,7 +381,7 @@ export function modeDragNode(context) {
                 connectAnnotation(entity, target)
             );
 
-        } else if (target && target.type === 'node' && Number(target.id.split('_')[1]) === _activeLayer.id) {
+        } else if (target && target.type === 'node' ) { //&& Number(target.id.split('_')[1]) === _activeLayer.id
             context.replace(
                 actionConnect([target.id, entity.id]),
                 connectAnnotation(entity, target)

@@ -202,7 +202,7 @@ export function svgVertices(projection, context) {
             if (activeID === node.id) return;   // draw no target on the activeID
 
             var vertexType = svgPassiveVertex(node, graph, activeID);
-            if (vertexType !== 0 || Number(node.id.split('_')[1]) === Number(_activeLayer.id) ) {     // passive or adjacent - allow to connect
+            if (vertexType !== 0 && node.id && _activeLayer.id && Number(node.id.split('_')[1]) === Number(_activeLayer.id) ) {     // passive or adjacent - allow to connect
                 data.targets.push({
                     type: 'Feature',
                     id: node.id,
