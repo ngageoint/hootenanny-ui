@@ -23,6 +23,23 @@ mocha.setup({
 expect = chai.expect;
 
 window.d3 = iD.d3;   // TODO: remove
+window.Hoot = {
+    layers: {
+        loadedLayers: {
+            50: {
+                name: 'a',
+                id: '50',
+                activeIds: {
+                    node: 0,
+                    way: 0,
+                    relation: 0,
+                    changeset: 0
+                },
+                refType: 'primary'
+            }
+        }
+    }
+};
 
 
 // Array.find polyfill (For PhantomJS / IE11)

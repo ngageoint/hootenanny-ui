@@ -1,6 +1,5 @@
 import _clone from 'lodash-es/clone';
 import _filter from 'lodash-es/filter';
-import _find   from 'lodash-es/find';
 import _map from 'lodash-es/map';
 import _reduce from 'lodash-es/reduce';
 import _union from 'lodash-es/union';
