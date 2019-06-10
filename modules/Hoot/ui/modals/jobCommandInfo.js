@@ -53,6 +53,7 @@ export default class JobCommandInfo {
             } )
             .catch( err => {
                 Hoot.message.alert( err );
+                this.deactivate();
                 return false;
             } );
     }

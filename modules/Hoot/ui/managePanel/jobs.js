@@ -1,8 +1,8 @@
-import Tab          from './tab';
-import moment       from 'moment';
-import ProgressBar  from 'progressbar.js';
+import Tab            from './tab';
+import ProgressBar    from 'progressbar.js';
 import DifferentialStats from '../modals/differentialStats';
-import JobCommandInfo    from '../modals/jobCommandInfo';
+import JobCommandInfo from '../modals/jobCommandInfo';
+import { duration } from '../../tools/utilities';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
 
@@ -170,7 +170,7 @@ export default class Jobs extends Tab {
 
                 //Start
                 props.push({
-                    span: [{text: moment( d.start ).fromNow()}]
+                    span: [{ text: duration(d.start, Date.now(), true) }]
                 });
 
                 //Progress bar
@@ -184,31 +184,32 @@ export default class Jobs extends Tab {
                 let user = JSON.parse( localStorage.getItem( 'user' ) );
 
 
-                //Get logging for the job
-                actions.push({
-                    title: 'view log',
-                    icon: 'subject',
-                    action: async () => {
-                        this.commandDetails = new JobCommandInfo(d.jobId, true);
-                        this.commandDetails.render();
-
-                        Hoot.events.once( 'modal-closed', () => {
-                            this.commandDetails.deactivate();
-                            delete this.commandDetails;
-                        });
-                    }
-                });
-
                 if (d.userId === user.id) {
+                    //Get logging for the job
                     actions.push({
-                            title: 'cancel job',
-                            icon: 'cancel',
-                            action: () => {
-                                d3.select('#util-jobs').classed('wait', true);
-                                Hoot.api.cancelJob(d.jobId)
-                                    .then( resp => this.loadJobs() )
-                                    .finally( () => d3.select('#util-jobs').classed('wait', false));
-                            }
+                        title: 'view log',
+                        icon: 'subject',
+                        action: async () => {
+                            this.commandDetails = new JobCommandInfo(d.jobId, true);
+                            this.commandDetails.render();
+
+                            Hoot.events.once( 'modal-closed', () => {
+                                this.commandDetails.deactivate();
+                                delete this.commandDetails;
+                            });
+                        }
+                    });
+
+                    //Add a cancel button
+                    actions.push({
+                        title: 'cancel job',
+                        icon: 'cancel',
+                        action: () => {
+                            d3.select('#util-jobs').classed('wait', true);
+                            Hoot.api.cancelJob(d.jobId)
+                                .then( resp => this.loadJobs() )
+                                .finally( () => d3.select('#util-jobs').classed('wait', false));
+                        }
                     });
                 }
 
@@ -389,12 +390,12 @@ export default class Jobs extends Tab {
 
                 //Start
                 props.push({
-                    span: [{text: moment( d.start ).fromNow()}]
+                    span: [{text: duration(d.start, Date.now(), true) }]
                 });
 
                 //Duration
                 props.push({
-                    span: [{text: moment.duration( d.end - d.start ).humanize()}]
+                    span: [{text: duration(d.start, d.end) }]
                 });
 
                 //Actions

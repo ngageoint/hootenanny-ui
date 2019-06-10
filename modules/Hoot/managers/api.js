@@ -204,7 +204,12 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp => resp.data )
+            .catch( err => {
+                if (!err.message) err.message = 'Unable to retrieve job status';
+
+                return Promise.reject( err );
+            } );
     }
 
     getJobError( id ) {

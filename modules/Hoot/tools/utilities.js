@@ -5,7 +5,6 @@
  *******************************************************************************************************/
 
 import _forEach from 'lodash-es/forEach';
-
 import { t } from '../../util/locale';
 
 export const getBrowserInfo = () => {
@@ -131,4 +130,51 @@ export const formatBbox = str => {
     }
 
     return `${minx},${miny},${maxx},${maxy}`;
+};
+
+export const duration = (start, end, ago) => {
+    let duration,
+        diff = (end - start) / 1000;
+
+    function calcDiff(diff, unit) {
+        let calc;
+        if (diff < 1) {
+            calc = `less than a ${unit}`;
+        } else if (diff === 1) {
+            let article = unit === 'hour' ? 'an' : 'a';
+            calc = `${article} ${unit}`;
+        } else if (diff < 5 && !ago) {
+            calc = `a few ${unit}s`;
+        } else {
+            calc = `${diff} ${unit}s`;
+        }
+        return calc;
+    }
+
+    let units = [
+        {unit: 'second', value: 1}, //seconds per second
+        {unit: 'minute', value: 60}, //seconds per minute
+        {unit: 'hour', value: 60}, //minutes per hour
+        {unit: 'day', value: 24}, //hours per day
+        {unit: 'month', value: 30}, //days per month
+        {unit: 'year', value: 12}  //months per year
+    ];
+    let lastUnit = units[0].unit;
+
+    for (let i=0; i<units.length; i++) {
+        let unit = units[i].unit;
+        let value = units[i].value;
+        if (diff < value) {
+            duration = calcDiff(Math.floor(diff), lastUnit);
+            break;
+        }
+        diff /= value;
+        lastUnit = unit;
+    }
+
+    if (ago) {
+        duration += ' ago';
+    }
+
+    return duration;
 };

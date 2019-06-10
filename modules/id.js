@@ -16,10 +16,8 @@ import '../css/80_app.css';
 
 import * as iD from './index';
 import Hoot from './Hoot/hoot';
-import $ from 'jquery';
 
 window.iD = iD;
 window.Hoot = Hoot;
-window.$ = window.jQuery = $;
 
 export default iD;
