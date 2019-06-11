@@ -208,7 +208,6 @@ export function uiTools( context ) {
 
                 initDropdown();
             } else {
-                // console.log('toggle');
                 toggle();
             }
             toolsToggle.on( 'click', null );
@@ -216,10 +215,6 @@ export function uiTools( context ) {
 
         function toggle( cb ) {
             d3.select('.hoot-tools').selectAll('.tools-menu')
-            // .select(toolsToggle.parentNode).selectAll( '.dropdown-content' )
-                // .transition()
-                // .duration( duration )
-                // .attr('height', 100)
                 .style('display', function(d) {
                     if ( cb ) cb();
                     if ( d3.select(this).style( 'display' ) === 'none' ) {
@@ -234,7 +229,6 @@ export function uiTools( context ) {
 
         function bindSingleBodyClick() {
             d3.select( 'body' ).on( 'click', () => {
-                // console.log('body click');
                 toggle( () => initDropdown() );
                 d3.select( 'body' ).on('click', null);
             });
