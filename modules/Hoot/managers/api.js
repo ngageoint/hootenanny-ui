@@ -307,21 +307,11 @@ export default class API {
             .then( resp => {
                 let layers = resp.data.layers;
 
-                if ( !layers || !layers.length )
+                if ( !layers || !layers.length ){
                     return resp.data;
-
-                return this.getMapSizes( _map( layers, 'id' ) )
-                    .then( sizeInfo => {
-                        _map( layers, layer => {
-                            _assign( layer, _find( sizeInfo.layers, { id: layer.id } ) );
-                        } );
-
-                        return layers;
-                    } )
-                    .catch( () => {
-                        //TODO: handle this properly
-                        return layers;
-                    } );
+                } else {
+                    return layers;
+                }
             } )
             .catch( err => {
                 if ( err ) throw new Error( err );
@@ -514,12 +504,9 @@ export default class API {
             } );
     }
 
-    getMapSizes( mapIds ) {
-        if ( !mapIds ) {
-            return null;
-        }
+    getMapSizes() {
         const params = {
-            path: `/info/map/sizes?mapid=${ mapIds }`,
+            path: '/info/map/sizes',
             method: 'GET'
         };
 

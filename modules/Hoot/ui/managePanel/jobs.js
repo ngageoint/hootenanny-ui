@@ -525,7 +525,7 @@ export default class Jobs extends Tab {
                         //Get info for the derive
                         actions.push({
                             title: 'derive changeset',
-                            icon: 'publish',
+                            icon: 'change_history',
                             action: async () => {
                                 const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
 

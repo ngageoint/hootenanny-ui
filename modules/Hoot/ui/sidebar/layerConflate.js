@@ -286,7 +286,8 @@ class LayerConflate extends SidebarForm {
                     // remove input layer controllers
                     d3.selectAll( '.add-controller' ).remove();
 
-                    await Hoot.layers.refreshLayers();
+                    await Hoot.folders.refreshAll();
+                    Hoot.events.emit( 'render-dataset-table' );
                 }
                 return resp;
             } )
