@@ -175,22 +175,7 @@ Hoot.model.REST = function (command, data, callback, option) {
             if (error) {
                 return callback(_alertError(error, 'Get available layers failed!'));
             } else {
-                if(resp.layers && resp.layers.length > 0)
-                {
-                    var layerlist = resp;
-                    Hoot.model.REST('getMapSizes', _.pluck(resp.layers,'id').toString(),function (sizeInfo) {
-                        if(sizeInfo) {
-                            layerlist.layers = _.map(layerlist.layers, function(lyr){
-                                return _.extend(lyr, _.find(sizeInfo.layers, { id: lyr.id} ));
-                            });
-                        }
-
-
-                        callback(layerlist);
-                     });
-                } else {
-                    callback(resp);
-                }
+                callback(resp);
             }
         });
     };
@@ -250,20 +235,6 @@ Hoot.model.REST = function (command, data, callback, option) {
         request.get(function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get map size thresholds failed!'));
-            }
-            callback(resp);
-        });
-    };
-
-    rest.getMapSizes = function (mapIds, callback){
-        if(!mapIds){
-            callback(null);
-            return;
-        }
-        var request = d3.json('../hoot-services/info/map/sizes?mapid=' + mapIds);
-        request.get(function (error, resp) {
-            if (error) {
-                return callback(_alertError(error, 'Get map sizes failed!'));
             }
             callback(resp);
         });
