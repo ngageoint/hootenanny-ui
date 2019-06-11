@@ -282,57 +282,57 @@ export default class FolderManager {
      * @param container - form used to create new layer
      * @returns {*}
      */
-    updateFolders( container, name ) {
-        let pathNameInput      = container.select( '.path-name' ),
-            newFolderNameInput = container.select( '.new-folder-name' );
+    // updateFolders( container, name ) {
+    //     let pathNameInput      = container.select( '.path-name' ),
+    //         newFolderNameInput = container.select( '.new-folder-name' );
 
-        let fullPath   = pathNameInput.property( 'value' ) || pathNameInput.attr( 'placeholder' ),
-            pathName   = fullPath.substring( fullPath.lastIndexOf( '/' ) + 1 ),
-            folderName = newFolderNameInput.property( 'value' );
+    //     let fullPath   = pathNameInput.property( 'value' ) || pathNameInput.attr( 'placeholder' ),
+    //         pathName   = fullPath.substring( fullPath.lastIndexOf( '/' ) + 1 ),
+    //         folderName = newFolderNameInput.property( 'value' );
 
-        if ( folderName ) {
-            // create new folder and then update folder structure
-            return addFolder.call( this );
-        } else {
-            // update folder structure
-            return updateFolderLink.call( this );
-        }
+    //     if ( folderName ) {
+    //         // create new folder and then update folder structure
+    //         return addFolder.call( this );
+    //     } else {
+    //         // update folder structure
+    //         return updateFolderLink.call( this );
+    //     }
 
-        function addFolder() {
-            let parentId = _get( _find( this._folders, folder => folder.name === pathName ), 'id' ) || 0;
+    //     function addFolder() {
+    //         let parentId = _get( _find( this._folders, folder => folder.name === pathName ), 'id' ) || 0;
 
-            let params = {
-                folderName,
-                parentId
-            };
+    //         let params = {
+    //             folderName,
+    //             parentId
+    //         };
 
-            return this.hoot.api.addFolder( params )
-                .then( resp => updateFolderLink.call( this, resp.folderId ) )
-                .catch( err => {
-                    // TODO: response - unable to create new folder
-                } );
-        }
+    //         return this.hoot.api.addFolder( params )
+    //             .then( resp => updateFolderLink.call( this, resp.folderId ) )
+    //             .catch( err => {
+    //                 // TODO: response - unable to create new folder
+    //             } );
+    //     }
 
-        function updateFolderLink( folderId ) {
-            let layerName = name || container.select( '.layer-name' ).property( 'value' ),
-                mapId     = _get( _find( this.hoot.layers.allLayers, layer => layer.name === layerName ), 'id' ) || 0;
+    //     function updateFolderLink( folderId ) {
+    //         let layerName = name || container.select( '.layer-name' ).property( 'value' ),
+    //             mapId     = _get( _find( this.hoot.layers.allLayers, layer => layer.name === layerName ), 'id' ) || 0;
 
-            folderId = folderId || _get( _find( this._folders, folder => folder.name === pathName ), 'id' ) || 0;
+    //         folderId = folderId || _get( _find( this._folders, folder => folder.name === pathName ), 'id' ) || 0;
 
-            let params = {
-                folderId,
-                mapId,
-                updateType : 'new'
-            };
+    //         let params = {
+    //             folderId,
+    //             mapId,
+    //             updateType : 'new'
+    //         };
 
-            return this.hoot.api.updateMapFolderLinks( params )
-                .then( () => this.refreshAll() )
-                .then( () => this.hoot.events.emit( 'render-dataset-table' ) )
-                .catch( err => {
-                    // TODO: response - unable to update folder links
-                } );
-        }
-    }
+    //         return this.hoot.api.updateMapFolderLinks( params )
+    //             .then( () => this.refreshAll() )
+    //             .then( () => this.hoot.events.emit( 'render-dataset-table' ) )
+    //             .catch( err => {
+    //                 // TODO: response - unable to update folder links
+    //             } );
+    //     }
+    // }
 
     //duplicateFolderCheck( folder ) {
     //    let folderList = _forEach( _map( this._folders, _cloneDeep ), folder => {
@@ -353,8 +353,7 @@ export default class FolderManager {
         return this.hoot.api.addFolder( params );
     }
 
-    updateFolderLink( layerName, folderId ) {
-        let mapId = _get( _find( this.hoot.layers.allLayers, layer => layer.name === layerName ), 'id' ) || 0;
+    updateFolderLink( mapId, folderId ) {
 
         let params = {
             folderId,
