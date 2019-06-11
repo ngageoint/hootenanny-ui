@@ -220,16 +220,6 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
 
-    rest.getMapSize = function (mapId, callback) {
-        var request = d3.json('../hoot-services/info/map/size?mapid=' + mapId);
-        request.get(function (error, resp) {
-            if (error) {
-                return callback(_alertError(error, 'Get map size failed!'));
-            }
-            callback(resp);
-        });
-    };
-
     rest.getMapSizeThresholds = function (callback) {
         var request = d3.json('../hoot-services/info/map/thresholds');
         request.get(function (error, resp) {

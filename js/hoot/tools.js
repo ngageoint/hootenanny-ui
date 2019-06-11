@@ -424,7 +424,6 @@ Hoot.tools = function (context) {
         var input1_id = context.hoot().model.layers.getmapIdByName(layers[0]);
         var input2_id = context.hoot().model.layers.getmapIdByName(layers[1]);
         // and then check size
-        //getMapSize
 
         var size_byte = context.hoot().model.layers.getAvailLayers().filter(function(item) {
             return item.id === input1_id || item.id === input2_id;
