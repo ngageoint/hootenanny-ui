@@ -210,41 +210,28 @@ export function uiTools( context ) {
             } else {
                 toggle();
             }
+            toolsToggle.on( 'click', null );
         } );
 
         function toggle( cb ) {
             d3.select('.hoot-tools').selectAll('.tools-menu')
-            // .select(toolsToggle.parentNode).selectAll( '.dropdown-content' )
-                // .transition()
-                // .duration( duration )
-                // .attr('height', 100)
                 .style('display', function(d) {
-                    return ( d3.select(this).style( 'display' ) === 'none' ) ? 'block' : 'none';
+                    if ( cb ) cb();
+                    if ( d3.select(this).style( 'display' ) === 'none' ) {
+                        setTimeout(bindSingleBodyClick, 100);
+                        return 'block';
+                    } else {
+                        setTimeout(destroySubMenu, 100);
+                        return 'none';
+                    }
                 });
-                // .classed('active-menu', function() {
-                //     return !d3.select(this).classed('active-menu');
-                // })
-                // .on('end',  function() {
-                //     if ( cb ) {
-                //         cb();
-                //     }
-                //     d3.select(this).classed('active-menu', function() {
-                //         return !d3.select(this).classed('active-menu');
-                //     })
-
-                //     if ( toolsMenu.style( 'display' ) === 'none' ) {
-                //         destroySubMenu();
-                //     }
-
-                //     if ( !toolsMenu.attr( 'visibility' ) === 'visible' ) return;
-
-                //     bindBodyClick();
-                // } )
-                // ;
         }
 
-        function bindBodyClick() {
-            d3.select( 'body' ).on( 'click', () => toggle( () => initDropdown() ) );
+        function bindSingleBodyClick() {
+            d3.select( 'body' ).on( 'click', () => {
+                toggle( () => initDropdown() );
+                d3.select( 'body' ).on('click', null);
+            });
         }
     }
 
