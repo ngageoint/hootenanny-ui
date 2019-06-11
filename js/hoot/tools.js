@@ -424,36 +424,38 @@ Hoot.tools = function (context) {
         var input1_id = context.hoot().model.layers.getmapIdByName(layers[0]);
         var input2_id = context.hoot().model.layers.getmapIdByName(layers[1]);
         // and then check size
-        //getMapSize
-        Hoot.model.REST('getMapSize', input1_id + ',' + input2_id,function (sizeInfo) {
 
-            if(sizeInfo.error){
+        var size_byte = context.hoot().model.layers.getAvailLayers().filter(function(item) {
+            return item.id === input1_id || item.id === input2_id;
+        }).map(function(item) { return item.size; })
+        .reduce(function(acc, val) { return acc + val; }, 0);
+
+        if(!size_byte){
+            context.hoot().reset();
+            return;
+        }
+        var confThreshold = 1*iD.data.hootConfig.conflate_size_threshold;
+        var totalSize = 1*size_byte;
+
+        if(totalSize > confThreshold)
+        {
+            var thresholdInMb = Math.floor((1*confThreshold)/1000000);
+            if(!window.confirm('Conflation data size is greater than ' + thresholdInMb +
+                'MB and conflation may encounter problem. Do you wish to continue? (If you cancel layers will reset.)')) {
                 context.hoot().reset();
                 return;
             }
-            var confThreshold = 1*iD.data.hootConfig.conflate_size_threshold;
-            var totalSize = 1*sizeInfo.size_byte;
+        }
 
-            if(totalSize > confThreshold)
-            {
-                var thresholdInMb = Math.floor((1*confThreshold)/1000000);
-                if(!window.confirm('Conflation data size is greater than ' + thresholdInMb +
-                    'MB and conflation may encounter problem. Do you wish to continue? (If you cancel layers will reset.)')) {
-                    context.hoot().reset();
-                    return;
-                }
+        var data = preConflation(a, layerName, advOptions, conflationCommand);
+
+        var conflationExecType = 'Conflate';
+        context.hoot().model.conflate.conflate(conflationExecType, data, function (item) {
+            if(item.status && item.status === 'requested'){
+                conflate.jobid = item.jobid;
+            } else {
+                postConflation(item,a);
             }
-
-            var data = preConflation(a, layerName, advOptions, conflationCommand);
-
-            var conflationExecType = 'Conflate';
-            context.hoot().model.conflate.conflate(conflationExecType, data, function (item) {
-                if(item.status && item.status === 'requested'){
-                    conflate.jobid = item.jobid;
-                } else {
-                    postConflation(item,a);
-                }
-            });
         });
     });
 

@@ -237,33 +237,36 @@ Hoot.view.utilities.dataset = function(context)
         d3.event.preventDefault();
 
         var mapid = context.hoot().model.layers.getmapIdByName(d.name);
-        Hoot.model.REST('getMapSize', mapid,function (sizeInfo) {
-//
-            if(sizeInfo.error){
+
+        var size_byte = context.hoot().model.layers.getAvailLayers().filter(function(item) {
+            return item.id === mapid;
+        }).map(function(item) { return item.size; })
+            .reduce(function(acc, val) { return acc + val; }, 0);
+
+        if(!size_byte){
+            return;
+        }
+        var expThreshold = 1*iD.data.hootConfig.export_size_threshold;
+        var totalSize = 1*size_byte;
+
+        if(totalSize > expThreshold)
+        {
+            var thresholdInMb = Math.floor((1*expThreshold)/1000000);
+            var res = window.confirm('Export data size is greater than ' + thresholdInMb
+                +'MB and export may encounter problem.' +
+                ' Do you wish to continue?');
+            if(res === false) {
+
                 return;
             }
-            var expThreshold = 1*iD.data.hootConfig.export_size_threshold;
-            var totalSize = 1*sizeInfo.size_byte;
+        }
 
-            if(totalSize > expThreshold)
-            {
-                var thresholdInMb = Math.floor((1*expThreshold)/1000000);
-                var res = window.confirm('Export data size is greater than ' + thresholdInMb
-                    +'MB and export may encounter problem.' +
-                    ' Do you wish to continue?');
-                if(res === false) {
-
-                    return;
-                }
+        Hoot.model.REST('getTranslations', function (trans) {
+            if(trans.error){
+                window.console.error(trans.error);
+                return;
             }
-
-            Hoot.model.REST('getTranslations', function (trans) {
-                if(trans.error){
-                    window.console.error(trans.error);
-                    return;
-                }
-                context.hoot().control.utilities.exportdataset.exportDataContainer(d, trans);
-            });
+            context.hoot().control.utilities.exportdataset.exportDataContainer(d, trans);
         });
     };
 
@@ -286,13 +289,6 @@ Hoot.view.utilities.dataset = function(context)
             _lyrInfo.id = lyrid;
             _lyrInfo.name = context.hoot().model.layers.getNameBymapId(lyrid);
             _exportList.push(_lyrInfo);
-
-            /*Hoot.model.REST('getMapSize', d,function (sizeInfo) {
-                if(sizeInfo.error){ _lyrInfo.size = -1; }
-
-                _lyrInfo.size = 1*sizeInfo.size_byte;
-                if(_lyrInfo.size > expThreshold) { _lyrInfo.oversized = true; }
-            });*/
         });
 
         Hoot.model.REST('getTranslations', function (trans) {
