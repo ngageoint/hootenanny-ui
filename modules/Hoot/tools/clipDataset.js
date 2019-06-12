@@ -4,7 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/1/18
  *******************************************************************************************************/
 
-import _isEmpty from 'lodash-es/isEmpty';
 import _forEach from 'lodash-es/forEach';
 import _map     from 'lodash-es/map';
 
@@ -12,8 +11,6 @@ import FormFactory from './formFactory';
 
 import { checkForUnallowedChar } from './utilities';
 import { d3combobox }            from '../../lib/hoot/d3.combobox';
-import _get                      from 'lodash-es/get';
-import _find                     from 'lodash-es/find';
 
 export default class ClipDataset {
     constructor( instance ) {
@@ -258,7 +255,7 @@ export default class ClipDataset {
                     Hoot.message.alert( { message, type, keepOpen } );
                 } )
                 .finally( () => {
-                    self.container.remove();
+                    self.form.remove();
                     Hoot.events.emit( 'modal-closed' );
                 } );
         } );
@@ -280,7 +277,7 @@ export default class ClipDataset {
             .classed( '_icon _loading float-right', true )
             .attr( 'id', 'importSpin' );
 
-        this.container.selectAll( 'input' )
+        this.form.selectAll( 'input' )
             .each( function() {
                 d3.select( this ).node().disabled = true;
             } );
