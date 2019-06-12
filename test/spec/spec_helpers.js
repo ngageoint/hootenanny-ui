@@ -28,7 +28,8 @@ window.Hoot = {
         loadedLayers: {
             50: {
                 name: 'a',
-                id: '50',
+                id: 50,
+                activeLayer: true,
                 activeIds: {
                     node: 0,
                     way: 0,
