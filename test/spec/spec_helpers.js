@@ -38,7 +38,8 @@ window.Hoot = {
                     },
                     refType: 'primary'
             }
-        }
+        },
+        getTopLayer: function(){}
     }
 };
 
