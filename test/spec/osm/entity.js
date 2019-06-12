@@ -3,9 +3,9 @@ describe('iD.osmEntity', function () {
         expect(iD.Entity({type: 'node'})).be.an.instanceOf(iD.Node);
         expect(iD.Entity({type: 'way'})).be.an.instanceOf(iD.Way);
         expect(iD.Entity({type: 'relation'})).be.an.instanceOf(iD.Relation);
-        expect(iD.Entity({id: 'n1'})).be.an.instanceOf(iD.Node);
-        expect(iD.Entity({id: 'w1'})).be.an.instanceOf(iD.Way);
-        expect(iD.Entity({id: 'r1'})).be.an.instanceOf(iD.Relation);
+        expect(iD.Entity({id: 'n1_50'})).be.an.instanceOf(iD.Node);
+        expect(iD.Entity({id: 'w1_50'})).be.an.instanceOf(iD.Way);
+        expect(iD.Entity({id: 'r1_50'})).be.an.instanceOf(iD.Relation);
     });
 
     if (iD.debug) {
@@ -65,12 +65,12 @@ describe('iD.osmEntity', function () {
         });
 
         it('resets \'id\', \'user\', and \'version\' properties', function () {
-            var n = iD.Entity({id: 'n', version: 10, user: 'user'}),
+            var n = iD.Entity({id: 'n_50', version: 10, user: 'user'}),
                 copies = {};
             n.copy(null, copies);
-            expect(copies.n.isNew()).to.be.ok;
-            expect(copies.n.version).to.be.undefined;
-            expect(copies.n.user).to.be.undefined;
+            expect(copies.n_50.isNew()).to.be.ok;
+            expect(copies.n_50.version).to.be.undefined;
+            expect(copies.n_50.user).to.be.undefined;
         });
 
         it('copies tags', function () {
