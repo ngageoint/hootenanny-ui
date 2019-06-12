@@ -127,7 +127,7 @@ describe('iD.osmIntersection', function() {
             expect(turns[1].u).to.be.true;
 
             expect(turns[2]).to.be.an.instanceOf(iD.osmTurn);
-            expect(turns[2].key).to.match(/^-\_\*\_w-\d_\d+$/);   // new way
+            expect(turns[2].key).to.match(/^-\_\*\_w-\d+_\d+$/);   // new way
             expect(turns[2].u).to.be.not.ok;
         });
 
