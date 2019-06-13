@@ -36,6 +36,8 @@
     background-color: black;
     float: left;
     display: inline-block;
+    overflow-y: auto;
+    height: 500px;
 
     table {
         background: transparent;
