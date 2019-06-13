@@ -727,7 +727,7 @@ export default class API {
         return this.request( params )
             .then( () => {
                 return {
-                    message: `Successfully updated folder location }`,
+                    message: 'Successfully updated folder location',
                     type: 'success'
                 };
             } )
