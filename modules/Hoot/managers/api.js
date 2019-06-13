@@ -644,19 +644,15 @@ export default class API {
         return this.request( params )
             .then( () => {
                 return {
-                    message: `Successfully modified item: ${ modName }`,
-                    status: 200,
+                    message: `Successfully renamed ${ inputType }`,
                     type: 'success'
                 };
             } )
             .catch( err => {
-                window.console.log( err );
-
-                return {
-                    message: `Failed to modify item: ${ modName }`,
-                    status: 500,
+                return Promise.reject({
+                    message: err.data,
                     type: 'error'
-                };
+                });
             } );
     }
 
@@ -731,17 +727,15 @@ export default class API {
         return this.request( params )
             .then( () => {
                 return {
-                    message: `Successfully updated folder: ${ folderId }`,
+                    message: 'Successfully updated folder location',
                     type: 'success'
                 };
             } )
             .catch( err => {
-                window.console.log( err );
-
-                return {
-                    message: `Failed to update folder: ${ folderId }`,
+                return Promise.reject({
+                    message: err.data,
                     type: 'error'
-                };
+                });
             } );
     }
 
@@ -754,17 +748,15 @@ export default class API {
         return this.request( params )
             .then( () => {
                 return {
-                    message: `Successfully updated visibility of folder: ${ folderId } to ${ visibility }`,
+                    message: `Successfully updated visibility of folder to ${ visibility }`,
                     type: 'success'
                 };
             } )
             .catch( err => {
-                window.console.log( err );
-
-                return {
-                    message: `Failed to change visibility of folder: ${ folderId } to ${ visibility }`,
+                return Promise.reject({
+                    message: err.data,
                     type: 'error'
-                };
+                });
             } );
     }
 
@@ -1249,7 +1241,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => window.console.log( err ) );
+            .catch( err => window.console.error( err ) );
     }
 
     translateFromXml( xml, translation ) {
@@ -1267,7 +1259,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => window.console.log( err ) );
+            .catch( err => window.console.error( err ) );
     }
 
     translateToXml( xml, translation ) {
@@ -1285,7 +1277,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => window.console.log( err ) );
+            .catch( err => window.console.error( err ) );
     }
 
     translateToJson( p ) {
@@ -1299,7 +1291,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => window.console.log( err ) );
+            .catch( err => window.console.error( err ) );
     }
 
 }
