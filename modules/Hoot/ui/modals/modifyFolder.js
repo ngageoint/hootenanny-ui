@@ -129,6 +129,9 @@ export default class ModifyFolder {
                 let type = 'success';
                 Hoot.message.alert( { message, type } );
             } )
+            .catch( (err) => {
+                Hoot.message.alert( err );
+            })
             .finally( () => {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );

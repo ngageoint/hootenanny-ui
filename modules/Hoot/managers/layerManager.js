@@ -163,6 +163,15 @@ export default class Layers {
             mbr = await this.hoot.api.getMbr( ids );
         }
 
+        if (mbr.nodescount === 0) {
+            let alert = {
+                message: 'There are no features in the output.',
+                type: 'warn'
+            };
+
+            Hoot.message.alert( alert );
+        }
+
         let min = [ mbr.minlon, mbr.minlat ],
             max = [ mbr.maxlon, mbr.maxlat ];
 

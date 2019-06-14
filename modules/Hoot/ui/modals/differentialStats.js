@@ -121,7 +121,7 @@ export default class DifferentialStats {
               tagsCheck = this.form.select('.applyTags');
 
         params.folder     = this.jobId;
-        params.APPLY_TAGS = tagsCheck ? tagsCheck.property('checked') : false;
+        params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
 
         Hoot.api.differentialPush( params )
             .then( resp => Hoot.message.alert( resp ) )

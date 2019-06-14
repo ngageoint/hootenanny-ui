@@ -299,21 +299,11 @@ export default class API {
             .then( resp => {
                 let layers = resp.data.layers;
 
-                if ( !layers || !layers.length )
+                if ( !layers || !layers.length ){
                     return resp.data;
-
-                return this.getMapSizes( _map( layers, 'id' ) )
-                    .then( sizeInfo => {
-                        _map( layers, layer => {
-                            _assign( layer, _find( sizeInfo.layers, { id: layer.id } ) );
-                        } );
-
-                        return layers;
-                    } )
-                    .catch( () => {
-                        //TODO: handle this properly
-                        return layers;
-                    } );
+                } else {
+                    return layers;
+                }
             } )
             .catch( err => {
                 if ( err ) throw new Error( err );
@@ -525,12 +515,9 @@ export default class API {
             } );
     }
 
-    getMapSizes( mapIds ) {
-        if ( !mapIds ) {
-            return null;
-        }
+    getMapSizes() {
         const params = {
-            path: `/info/map/sizes?mapid=${ mapIds }`,
+            path: '/info/map/sizes',
             method: 'GET'
         };
 
@@ -687,19 +674,15 @@ export default class API {
         return this.request( params )
             .then( () => {
                 return {
-                    message: `Successfully modified item: ${ modName }`,
-                    status: 200,
+                    message: `Successfully renamed ${ inputType }`,
                     type: 'success'
                 };
             } )
             .catch( err => {
-                window.console.log( err );
-
-                return {
-                    message: `Failed to modify item: ${ modName }`,
-                    status: 500,
-                    type: 'success'
-                };
+                return Promise.reject({
+                    message: err.data,
+                    type: 'error'
+                });
             } );
     }
 
@@ -797,19 +780,15 @@ export default class API {
         return this.request( params )
             .then( () => {
                 return {
-                    message: `Successfully updated folder: ${ folderId }`,
-                    status: 200,
+                    message: 'Successfully updated folder location',
                     type: 'success'
                 };
             } )
             .catch( err => {
-                window.console.log( err );
-
-                return {
-                    message: `Failed to update folder: ${ folderId }`,
-                    status: 500,
-                    type: 'success'
-                };
+                return Promise.reject({
+                    message: err.data,
+                    type: 'error'
+                });
             } );
     }
 
@@ -822,19 +801,15 @@ export default class API {
         return this.request( params )
             .then( () => {
                 return {
-                    message: `Successfully updated visibility of folder: ${ folderId } to ${ visibility }`,
-                    status: 200,
+                    message: `Successfully updated visibility of folder to ${ visibility }`,
                     type: 'success'
                 };
             } )
             .catch( err => {
-                window.console.log( err );
-
-                return {
-                    message: `Failed to change visibility of folder: ${ folderId } to ${ visibility }`,
-                    status: 500,
-                    type: 'success'
-                };
+                return Promise.reject({
+                    message: err.data,
+                    type: 'error'
+                });
             } );
     }
 
@@ -1196,7 +1171,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => window.console.log( err ) );
+            .catch( err => window.console.error( err ) );
     }
 
     translateFromXml( xml, translation ) {
@@ -1214,7 +1189,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => window.console.log( err ) );
+            .catch( err => window.console.error( err ) );
     }
 
     translateToXml( xml, translation ) {
@@ -1232,7 +1207,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => window.console.log( err ) );
+            .catch( err => window.console.error( err ) );
     }
 
     translateToJson( p ) {
@@ -1246,7 +1221,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => window.console.log( err ) );
+            .catch( err => window.console.error( err ) );
     }
 
 }

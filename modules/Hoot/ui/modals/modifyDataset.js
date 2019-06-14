@@ -150,7 +150,7 @@ export default class ModifyDataset {
 
             this.processRequest = Hoot.api.modify( params )
                 .then( () => Hoot.layers.refreshLayers() )
-                .then( () => Hoot.folders.updateFolderLink( layerName, folderId ) )
+                .then( () => Hoot.folders.updateFolderLink( params.mapId, folderId ) )
                 .then( () => Hoot.folders.refreshAll() )
                 .then( () => Hoot.events.emit( 'render-dataset-table' ) )
                 .then( () => {
@@ -167,18 +167,15 @@ export default class ModifyDataset {
 
                     Hoot.message.alert( { message, type } );
                 } )
-                .catch( () => {
-                    let message = 'Error modifying datasets!',
-                        type    = 'error';
-
-                    Hoot.message.alert( { message, type } );
+                .catch( (err) => {
+                    Hoot.message.alert( err );
                 } )
                 .finally( () => {
                     this.container.remove();
                     Hoot.events.emit( 'modal-closed' );
                 } );
         } else {
-            this.processRequest = Promise.all( _map( this.datasets, dataset => Hoot.folders.updateFolderLink( dataset.name, folderId ) ) )
+            this.processRequest = Promise.all( _map( this.datasets, dataset => Hoot.folders.updateFolderLink( dataset.id, folderId ) ) )
                 .then( () => Hoot.folders.refreshAll() )
                 .then( () => Hoot.events.emit( 'render-dataset-table' ) )
                 .then( () => {
@@ -187,11 +184,8 @@ export default class ModifyDataset {
 
                     Hoot.message.alert( { message, type } );
                 } )
-                .catch( () => {
-                    let message = 'Error performing move! Please make sure the selected folder path exists.',
-                        type    = 'error';
-
-                    Hoot.message.alert( { message, type } );
+                .catch( (err) => {
+                    Hoot.message.alert( err );
                 } )
                 .finally( () => {
                     this.container.remove();
