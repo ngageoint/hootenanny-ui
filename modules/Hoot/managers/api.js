@@ -101,6 +101,9 @@ export default class API {
                 if ( status === 'complete' ) {
                     clearInterval( this.intervals[ jobId ] );
                     res( { data, type: 'success', status: 200, jobId } );
+                } else if ( status === 'cancelled' ) {
+                    clearInterval( this.intervals[ jobId ] );
+                    res( { data, type: 'warn', status: 200 } );
                 } else if ( status === 'failed' ) {
                     clearInterval( this.intervals[ jobId ] );
                     rej( { data, type: 'error', status: 500 } );
@@ -201,7 +204,12 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp => resp.data )
+            .catch( err => {
+                if (!err.message) err.message = 'Unable to retrieve job status';
+
+                return Promise.reject( err );
+            } );
     }
 
     getJobError( id ) {
@@ -341,7 +349,7 @@ export default class API {
      *
      * @returns {Promise|array} - links
      */
-     getLinks() {
+    getLinks() {
         const params = {
             path: '/osm/api/0.6/map/folders/linked',
             method: 'GET'
@@ -504,7 +512,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data )
-            .catch( err => {
+            .catch( () => {
                 return {
                     'minlon': -180,
                     'minlat': -90,
@@ -631,32 +639,13 @@ export default class API {
                 TRANSLATION: data.TRANSLATION,
                 INPUT_TYPE: data.INPUT_TYPE,
                 INPUT_NAME: data.INPUT_NAME,
-                NONE_TRANSLATION: data.NONE_TRANSLATION
+                NONE_TRANSLATION: data.NONE_TRANSLATION,
+                FOLDER_ID: data.folderId
             },
             data: data.formData
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data[ 0 ].jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Dataset successfully imported',
-                    status: 200,
-                    type: resp.type,
-                    jobId: resp.jobId
-                };
-            } )
-            .catch( err => {
-                return Promise.reject( {
-                    data: {
-                        details: err.data.commandDetail[ 0 ].stderr
-                    },
-                    message: 'Failed to import dataset!',
-                    status: err.status,
-                    type: err.type
-                } );
-            } );
+        return this.request( params );
     }
 
     modify( { mapId, modName, inputType } ) {
@@ -703,19 +692,19 @@ export default class API {
     exportDataset( data ) {
         data.tagoverrides =  JSON.stringify(
             Object.assign(data.tagoverrides || {}, {
-                'error:circular':'',
-                'hoot:building:match':'',
-                'hoot:status':'',
-                'hoot:review:members':'',
-                'hoot:review:score':'',
-                'hoot:review:note':'',
-                'hoot:review:sort_order':'',
-                'hoot:review:type':'',
-                'hoot:review:needs':'',
-                'hoot:score:match':'',
-                'hoot:score:miss':'',
-                'hoot:score:review':'',
-                'hoot:score:uuid':''
+                // 'error:circular':'',
+                // 'hoot:building:match':'',
+                // 'hoot:status':'',
+                // 'hoot:review:members':'',
+                // 'hoot:review:score':'',
+                // 'hoot:review:note':'',
+                // 'hoot:review:sort_order':'',
+                // 'hoot:review:type':'',
+                // 'hoot:review:needs':'',
+                // 'hoot:score:match':'',
+                // 'hoot:score:miss':'',
+                // 'hoot:score:review':'',
+                // 'hoot:score:uuid':''
             })
         );
 
@@ -728,8 +717,7 @@ export default class API {
             'outputtype',
             'tagoverrides',
             'textstatus' ,
-            'translation',
-            'userId'
+            'translation'
         ];
 
         if (!requiredKeys.every( k => data.hasOwnProperty(k) )) {
@@ -746,29 +734,7 @@ export default class API {
             params.path = `${params.path}?ext=zip`;
         }
 
-        let jobId;
-
-        return this.request( params )
-            .then( (resp) => { jobId = resp.data.jobid; } )
-            .then( () => this.statusInterval( jobId ) )
-            .then( () => this.saveDataset( jobId, data.outputname ) )
-            .then( () => {
-                const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
-                return {
-                    message: `'${data.outputname}' ${dataType} Exported`,
-                    status: 200,
-                    type: 'success'
-                };
-            } )
-            .catch( (err) => {
-                console.log( err );
-
-                return {
-                    message: `Failed to export dataset: ${ data.input }`,
-                    status: 500,
-                    type: 'success'
-                };
-            } );
+        return this.request( params );
     }
 
     updateFolder( { folderId, parentId } ) {
@@ -829,32 +795,7 @@ export default class API {
             data
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobId ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Schema data uploaded',
-                    status: 200,
-                    type: resp.type,
-                    jobId: resp.jobId
-                };
-            } )
-            .catch( err => {
-                window.console.log( err );
-                let message, status, type;
-
-                status = err.status;
-                type   = err.type;
-
-                if ( status >= 500 ) {
-                    message = 'Error during conflation! Please try again later.';
-                } else {
-                    message = 'Error while uploading schema data!';
-                }
-
-                return Promise.reject( { message, status, type } );
-            } );
+        return this.request( params );
     }
 
     uploadBasemap( data ) {
@@ -929,7 +870,7 @@ export default class API {
     }
 
     updateMapFolderLinks( { mapId, folderId } ) {
-        if ( !mapId || folderId < 0 ) return;
+        if ( !mapId || folderId < 0 ) return Promise.resolve( 'Map or folder id invalid' );
 
         const params = {
             path: `/osm/api/0.6/map/${ mapId }/move/${ folderId }`,
@@ -1080,23 +1021,7 @@ export default class API {
             data
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Clip job complete',
-                    status: 200,
-                    type: resp.type
-                };
-            } )
-            .catch( err => {
-                const message = err.data,
-                      status  = err.status,
-                      type    = err.type;
-
-                return Promise.reject( { message, status, type } );
-            } );
+        return this.request( params );
     }
 
     /**
@@ -1134,7 +1059,6 @@ export default class API {
                 return {
                     data: resp.data,
                     message: 'Review has successfully been saved. It can be viewed in Manage Panel -> Review Bookmarks',
-                    status: 200,
                     type: 'success'
                 };
             } )
@@ -1142,6 +1066,188 @@ export default class API {
                 return {
                     data: err.data,
                     message: 'Error saving review!',
+                    type: 'error'
+                };
+            } );
+    }
+
+    grailPullOverpassToDb( data ) {
+        const params = {
+            path: `/grail/pulloverpasstodb?bbox=${ data.BBOX }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Pull from Overpass API has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing pull!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+
+    grailPullRailsPortToDb( data ) {
+        const params = {
+            path: `/grail/pullrailsporttodb?bbox=${ data.BBOX }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Pull from Rails Port API has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing pull!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+    createDifferential( data ) {
+        const params = {
+            path: '/grail/createdifferential',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Differential for selected region created.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      status  = err.status,
+                      type    = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } );
+    }
+
+    differentialStats( jobId, includeTags ) {
+        const params = {
+            path: `/grail/differentialstats?jobId=${ jobId }&includeTags=${ includeTags }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Differential stats retrieved.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      status  = err.status,
+                      type    = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } );
+    }
+
+    differentialPush( data ) {
+        const params = {
+            path: '/grail/differentialpush',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Differential push complete.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      status  = err.status,
+                      type    = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } );
+    }
+
+    conflateDifferential( data ) {
+        const params = {
+            path: '/grail/conflatedifferential',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Conflate differential has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing Conflate differential!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+    conflationUpload( data ) {
+        const params = {
+            path: '/grail/conflatepush',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Conflation Upload has succeeded.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error doing Conflation Upload!',
                     status: err.status,
                     type: 'error'
                 };
