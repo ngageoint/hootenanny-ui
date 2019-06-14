@@ -338,7 +338,7 @@ export function exportDataForm( zipOutput ) {
             label: 'Export Format',
             id: exportFormatId,
             inputType: 'combobox',
-            data: [ 'File Geodatabase', 'Shapefile', 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
+            data: [ 'File Geodatabase', 'GeoPackage (GPKG)', 'Shapefile', 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
             value: 'OpenStreetMap (OSM)',
             onChange: changeExport
         },
