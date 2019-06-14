@@ -27,17 +27,19 @@ window.Hoot = {
     layers: {
         loadedLayers: {
             50: {
-                name: 'a',
-                id: '50',
-                activeIds: {
-                    node: 0,
-                    way: 0,
-                    relation: 0,
-                    changeset: 0
-                },
-                refType: 'primary'
+                    name: 'a',
+                    id: 50,
+                    activeLayer: true,
+                    activeIds: {
+                        node: 0,
+                        way: 0,
+                        relation: 0,
+                        changeset: 0
+                    },
+                    refType: 'primary'
             }
-        }
+        },
+        getTopLayer: function(){}
     }
 };
 

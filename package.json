@@ -13,6 +13,7 @@
     "all": "npm-run-all -s clean build dist",
     "build": "webpack --env.NODE_ENV=prod",
     "build:analyze": "webpack --env.NODE_ENV=analyze",
+    "build:dev": "webpack --env.NODE_ENV=dev",
     "clean": "shx rm -f dist/*.js dist/*.map dist/*.css dist/img/*.svg",
     "dist": "npm-run-all -p dist:**",
     "dist:mapillary": "shx mkdir -p dist/mapillary-js && shx cp -R node_modules/mapillary-js/dist/* dist/mapillary-js/",

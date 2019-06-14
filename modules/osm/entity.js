@@ -18,7 +18,7 @@ export function osmEntity(attrs) {
     if (attrs && attrs.type) {
         return osmEntity[attrs.type].apply(this, arguments);
     } else if (attrs && attrs.id && attrs.id.includes(String(_activeLayer.id))) {
-        return osmEntity[osmEntity.id.type(attrs.id).apply(this, arguments)];
+        return osmEntity[osmEntity.id.type(attrs.id)].apply(this, arguments);
     }
     // Initialize a generic Entity (used only in tests).
     return (new osmEntity()).initialize(arguments);

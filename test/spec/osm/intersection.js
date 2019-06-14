@@ -127,7 +127,7 @@ describe('iD.osmIntersection', function() {
             expect(turns[1].u).to.be.true;
 
             expect(turns[2]).to.be.an.instanceOf(iD.osmTurn);
-            expect(turns[2].key).to.match(/^-\_\*\_w-\d+$/);   // new way
+            expect(turns[2].key).to.match(/^-\_\*\_w-\d+_\d+$/);   // new way
             expect(turns[2].u).to.be.not.ok;
         });
 
@@ -158,7 +158,7 @@ describe('iD.osmIntersection', function() {
             expect(turns[1].u).to.be.not.ok;
 
             expect(turns[2]).to.be.an.instanceOf(iD.osmTurn);
-            expect(turns[2].key).to.match(/^=\_\*\_w-\d+$/);   // new way
+            expect(turns[2].key).to.match(/^=\_\*\_w-\d+_\d+$/);   // new way
             expect(turns[2].u).to.be.not.ok;
         });
 
@@ -403,7 +403,7 @@ describe('iD.osmIntersection', function() {
             expect(turns[1].u).to.be.true;
 
             expect(turns[2]).to.be.an.instanceOf(iD.osmTurn);
-            expect(turns[2].key).to.match(/^=\_\*\_w-\d+$/);   // new way
+            expect(turns[2].key).to.match(/^=\_\*\_w-\d+_\d+$/);   // new way
             expect(turns[2].u).to.be.not.ok;
         });
 
@@ -435,7 +435,7 @@ describe('iD.osmIntersection', function() {
             expect(turns[1].u).to.be.not.ok;
 
             expect(turns[2]).to.be.an.instanceOf(iD.osmTurn);
-            expect(turns[2].key).to.match(/^-\_\*\_w-\d+$/);   // new way
+            expect(turns[2].key).to.match(/^-\_\*\_w-\d+_\d+$/);   // new way
             expect(turns[2].u).to.be.not.ok;
         });
 
@@ -512,8 +512,8 @@ describe('iD.osmIntersection', function() {
             ]);
 
             var intersection = iD.osmIntersection(graph, '*');
-            var newWay = intersection.ways.find(function(w) { return /^w-\d+$/.test(w.id); });
-            var turns = iD.osmIntersection(graph, '*').turns(newWay.id);
+            var newWay = intersection.ways.find(function(w) { return /^w-\d+_\d+$/.test(w.id); });
+            var turns = intersection.turns(newWay.id);
             expect(turns.length).to.eql(2);
 
             expect(turns[0]).to.be.an.instanceOf(iD.osmTurn);
@@ -542,8 +542,8 @@ describe('iD.osmIntersection', function() {
             ]);
 
             var intersection = iD.osmIntersection(graph, '*');
-            var newWay = intersection.ways.find(function(w) { return /^w-\d+$/.test(w.id); });
-            var turns = iD.osmIntersection(graph, '*').turns(newWay.id);
+            var newWay = intersection.ways.find(function(w) { return /^w-\d+_\d+$/.test(w.id); });
+            var turns = intersection.turns(newWay.id);
             expect(turns.length).to.eql(2);
 
             expect(turns[0]).to.be.an.instanceOf(iD.osmTurn);
