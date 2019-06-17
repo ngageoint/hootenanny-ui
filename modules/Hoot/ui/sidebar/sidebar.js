@@ -248,6 +248,7 @@ export default class Sidebar {
                         updateButton(null, currentLayer.layerName);
                         updateButton(null, currentLayer.otherLayer);
                     }
+                    d3.event.preventDefault();
                     activeButton.text(setAsActive ? 'Active Layer': 'Set as active layer');
                 };
 

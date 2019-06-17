@@ -191,8 +191,8 @@ export default class Layers {
 
             let layer = {
                 name: params.name,
-                id: params.id,
-                activeLayer: params.activeLayer === undefined ? null : Number(params.activeLayer),
+                id: Number(params.id),
+                activeLayer: !params.activeLayer ? null : Number(params.activeLayer),
                 activeIds: activeIds,
                 refType: params.refType,
                 color: params.color,
@@ -380,9 +380,9 @@ export default class Layers {
 
     async resetActiveLayers() {
 
-        let changeActive    = new LayerAdd();
+        let changeActive = new LayerAdd();
 
-        let loadedLayer    = Object.values(Hoot.layers.loadedLayers);
+        let loadedLayer  = Object.values(Hoot.layers.loadedLayers);
 
         loadedLayer[0].activeLayer = true;
 
