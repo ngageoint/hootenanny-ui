@@ -35,6 +35,17 @@ class Login {
 
     }
 
+    static async isAuthorized() {
+
+        const params = {
+            path: '/info/about/servicesVersionInfo',
+            method: 'HEAD'
+        };
+
+        return this.request(params)
+
+    }
+
     findGetParameter( parameterName ) {
         var result = null,
             tmp    = [];
