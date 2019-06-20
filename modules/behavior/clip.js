@@ -107,7 +107,7 @@ export function clip( context, svg ) {
 
             d3.select( '#surface' ).on( 'dblclick', null );
 
-            ret( [ maxCoords, minCoords ] );
+            ret( [ minCoords, maxCoords ] );
 
             nodeId = 0;
         }
