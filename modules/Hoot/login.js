@@ -46,6 +46,10 @@ class Login {
 
     }
 
+    static getBaseUrl() {
+        return baseUrl;
+    }
+
     findGetParameter( parameterName ) {
         var result = null,
             tmp    = [];
