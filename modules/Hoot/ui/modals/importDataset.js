@@ -383,9 +383,14 @@ export default class ImportDataset {
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {
                 console.error(err);
+
                 let message = 'Error running import',
                     type = err.type,
                     keepOpen = true;
+
+                if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                    message = err.data.commandDetail[0].stderr;
+                }
 
                 Hoot.message.alert( { message, type, keepOpen } );
 
