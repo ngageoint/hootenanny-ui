@@ -4,10 +4,6 @@
  * @author Matt Putipong on 3/2/18
  *******************************************************************************************************/
 
-import _assign from 'lodash-es/assign';
-import _find   from 'lodash-es/find';
-import _map    from 'lodash-es/map';
-
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
 import { saveAs }    from 'file-saver';
