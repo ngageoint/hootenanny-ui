@@ -374,7 +374,24 @@ export default class ImportMultiDatasets {
 
                 Hoot.api.uploadDataset( params )
                     .then( resp => Hoot.api.statusInterval( resp.data[ 0 ].jobid ) )
-                    .then( () => resolve( name ) );
+                    .then( () => resolve( name ) )
+                    .catch( err => {
+                        console.error(err);
+
+                        let message = `Error running import on ${name}\n`,
+                            type = err.type,
+                            keepOpen = true;
+
+                        if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                            message += err.data.commandDetail[0].stderr;
+                        }
+
+                        Hoot.message.alert( { message, type, keepOpen } );
+                    })
+                    .finally( () => {
+                        this.container.remove();
+                        Hoot.events.emit( 'modal-closed' );
+                    } );
             } );
         } );
 
@@ -389,17 +406,7 @@ export default class ImportMultiDatasets {
                 type: 'success'
             } ) )
             .then( () => Hoot.folders.refreshAll() )
-            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
-            .catch( err => {
-                console.error(err);
-                err.type = 'error';
-                Hoot.message.alert( err );
-            })
-            .finally( () => {
-
-                this.container.remove();
-                Hoot.events.emit( 'modal-closed' );
-            } );
+            .then( () => Hoot.events.emit( 'render-dataset-table' ) );
     }
 
     allProgress( proms, cb ) {

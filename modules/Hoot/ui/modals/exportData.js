@@ -222,11 +222,19 @@ export default class ExportData {
             } )
             .catch( (err) => {
                 console.error(err);
+
                 let message = 'Error running export',
                     type = err.type,
                     keepOpen = true;
 
+                if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                    message = err.data.commandDetail[0].stderr;
+                }
+
                 Hoot.message.alert( { message, type, keepOpen } );
+            } )
+            .finally( () => {
+                Hoot.events.emit( 'modal-closed' );
             } );
         }
 
