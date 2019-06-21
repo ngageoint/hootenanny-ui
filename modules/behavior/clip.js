@@ -96,18 +96,18 @@ export function clip( context, svg ) {
         }
         else {
             let minCoords = context.projection.invert( [
-                parseFloat( rect.attr( 'x' ) ) + parseFloat( rect.attr( 'width' ) ),
+                parseFloat( rect.attr( 'x' ) ),
                 parseFloat( rect.attr( 'y' ) ) + parseFloat( rect.attr( 'height' ) )
             ] );
 
             let maxCoords = context.projection.invert( [
-                parseFloat( rect.attr( 'x' ) ),
+                parseFloat( rect.attr( 'x' ) ) + parseFloat( rect.attr( 'width' ) ),
                 parseFloat( rect.attr( 'y' ) )
             ] );
 
             d3.select( '#surface' ).on( 'dblclick', null );
 
-            ret( [ maxCoords, minCoords ] );
+            ret( [ minCoords, maxCoords ] );
 
             nodeId = 0;
         }
