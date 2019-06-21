@@ -32,6 +32,10 @@ export default class ImportMultiDatasets {
             {
                 title: 'GeoJSON',
                 value: 'GEOJSON'
+            },
+            {
+                title: 'GeoPackage',
+                value: 'GPKG'
             }
         ];
     }
@@ -131,7 +135,8 @@ export default class ImportMultiDatasets {
                 osm: 0,
                 shp: 0,
                 zip: 0,
-                geojson: 0
+                geojson: 0,
+                gpkg: 0
             };
 
         if ( !files.length ) return;
@@ -195,7 +200,8 @@ export default class ImportMultiDatasets {
                 isPRJ: false,
                 isOSM: false,
                 isZIP: false,
-                isGEOJSON: false
+                isGEOJSON: false,
+                isGPKG: false
             };
 
             fileList.push( fObj );
@@ -218,6 +224,9 @@ export default class ImportMultiDatasets {
         } else if ( fileName.lastIndexOf( '.geojson' ) > -1 ) {
             typeCount.geojson++;
             fObj.isGEOJSON = true;
+        } else if ( fileName.lastIndexOf( '.gpkg' ) > -1 ) {
+            typeCount.gpkg++;
+            fObj.isGPKG = true;
         }
     }
 
@@ -506,6 +515,10 @@ export default class ImportMultiDatasets {
             uploader
                 .property( 'multiple', true )
                 .attr( 'accept', '.geojson', '.geo' );
+        } else if ( typeVal === 'GPKG' ) {
+            uploader
+                .property( 'multiple', true )
+                .attr( 'accept', '.gpkg' );
         }
     }
 }

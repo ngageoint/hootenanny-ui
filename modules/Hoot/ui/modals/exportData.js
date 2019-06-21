@@ -98,7 +98,8 @@ export default class ExportData {
 
     getTranslationPath() {
         const selectedTranslation = this.translationSchemaCombo.node().value;
-        return this.translations.find( t => t.NAME === selectedTranslation ).PATH;
+        const translation = this.translations.find( t => t.NAME === selectedTranslation );
+        return !translation.hasOwnProperty('PATH')  ? translation.EXPORTPATH : translation.PATH;
     }
 
     getOutputType() {
@@ -106,7 +107,8 @@ export default class ExportData {
             'Shapefile': 'shp',
             'File Geodatabase': 'gdb',
             'OpenStreetMap (OSM)': 'osm',
-            'OpenStreetMap (PBF)': 'osm.pbf'
+            'OpenStreetMap (PBF)': 'osm.pbf',
+            'GeoPackage (GPKG)': 'gpkg'
         }[this.exportFormatCombo.node().value];
     }
 

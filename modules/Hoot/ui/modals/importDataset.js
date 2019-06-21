@@ -58,6 +58,10 @@ export default class ImportDataset {
                 value: 'GEONAMES'
             },
             {
+                title: 'File (GeoPackage, gpkg)',
+                value: 'GPKG'
+            },
+            {
                 title: 'Directory (FGDB)',
                 value: 'DIR'
             }
@@ -216,7 +220,8 @@ export default class ImportDataset {
                 isPRJ: false,
                 isOSM: false,
                 isZIP: false,
-                isGEOJSON: false
+                isGEOJSON: false,
+                isGPKG: false
             };
 
             fileList.push( fObj );
@@ -242,6 +247,9 @@ export default class ImportDataset {
         } else if ( fileName.lastIndexOf( '.geojson' ) > -1 ) {
             typeCount.geojson++;
             fObj.isGEOJSON = true;
+        } else if ( fileName.lastIndexOf( '.gpkg' ) > -1 ) {
+            typeCount.gpkg++;
+            fObj.isGPKG = true;
         }
     }
 
@@ -506,6 +514,10 @@ export default class ImportDataset {
             uploader
                 .property( 'multiple', false )
                 .attr( 'accept', '.geojson');
+        } else if ( typeVal === 'GPKG' ) {
+            uploader
+                .property( 'multiple', true)
+                .attr( 'accept', '.gpkg');
         }
     }
 }
