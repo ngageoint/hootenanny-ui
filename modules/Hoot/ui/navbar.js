@@ -81,7 +81,8 @@ export default class Navbar {
 
             let dropdownToggle = rightContainer
                 .append( 'div' )
-                .classed('dropdown-toggle icon-container button flex align-center text-light pointer', true);
+                .classed('dropdown-toggle icon-container button flex align-center text-light pointer', true)
+                .on('click', () => showDropdown(dropdownContent));
 
             dropdownToggle
                 .append( 'i' )
@@ -91,8 +92,7 @@ export default class Navbar {
             dropdownToggle
                 .append( 'i' )
                 .classed( 'medium material-icons', true )
-                .text( 'arrow_drop_down' )
-                .on('click', () => showDropdown(dropdownContent));
+                .text( 'arrow_drop_down' );
 
             let dropdownContent = rightContainer
                 .append( 'ul' )
