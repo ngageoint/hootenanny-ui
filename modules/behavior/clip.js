@@ -96,12 +96,12 @@ export function clip( context, svg ) {
         }
         else {
             let minCoords = context.projection.invert( [
-                parseFloat( rect.attr( 'x' ) ) + parseFloat( rect.attr( 'width' ) ),
+                parseFloat( rect.attr( 'x' ) ),
                 parseFloat( rect.attr( 'y' ) ) + parseFloat( rect.attr( 'height' ) )
             ] );
 
             let maxCoords = context.projection.invert( [
-                parseFloat( rect.attr( 'x' ) ),
+                parseFloat( rect.attr( 'x' ) ) + parseFloat( rect.attr( 'width' ) ),
                 parseFloat( rect.attr( 'y' ) )
             ] );
 
