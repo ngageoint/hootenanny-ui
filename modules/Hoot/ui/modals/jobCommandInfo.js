@@ -50,6 +50,10 @@ export default class JobCommandInfo {
             .then( resp => {
                 this.commands = this.parseStatus(resp.commandDetail);
                 this.createTable();
+
+                if (resp.status === 'complete') {
+                    this.deactivate();
+                }
             } )
             .catch( err => {
                 Hoot.message.alert( err );
