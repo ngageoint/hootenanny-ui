@@ -47,6 +47,9 @@ export default class Map {
             this.setHighlight();
         }
 
+        d3.selectAll('td.value-col.feature1').on('click', () => this.panToConflict());
+        d3.selectAll('td.value-col.feature2').on('click', () => this.panToConflict());
+
         if ( relation.tags[ 'hoot:review:type' ] === 'POI to Polygon' ||
             ((feature && againstFeature) && feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n')
         ) {
