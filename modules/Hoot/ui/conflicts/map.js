@@ -43,12 +43,15 @@ export default class Map {
         // panning will cause a 'drawn' event to fire and will automatically highlight the nodes
         if ( panTo ) {
             this.panToConflict();
+            let feature1Click = d3.selectAll('td.value-col.feature1');
+            feature1Click.on('click', () => this.panToConflict());
+            let feature2Click = d3.selectAll('td.value-col.feature2');
+            feature2Click.on('click', () => this.panToConflict());
         } else {
             this.setHighlight();
         }
 
-        d3.selectAll('td.value-col.feature1').on('click', () => this.panToConflict());
-        d3.selectAll('td.value-col.feature2').on('click', () => this.panToConflict());
+
 
         if ( relation.tags[ 'hoot:review:type' ] === 'POI to Polygon' ||
             ((feature && againstFeature) && feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n')
