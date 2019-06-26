@@ -337,8 +337,8 @@ export default class ImportDataset {
             translationName,
             folderId;
 
-        if ( translation.DEFAULT && ( translation.IMPORTPATH && translation.IMPORTPATH.length ) ) {
-            translationName = translation.IMPORTPATH;
+        if ( translation.DEFAULT && ( translation.PATH && translation.PATH.length ) ) {
+            translationName = translation.PATH;
         } else {
             translationName = translation.NAME + '.js';
         }
