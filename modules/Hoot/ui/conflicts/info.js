@@ -11,6 +11,10 @@ import _forEach   from 'lodash-es/forEach';
 import _map       from 'lodash-es/map';
 import _startCase from 'lodash-es/startCase';
 
+import { isValidCoords } from '../../tools/utilities';
+
+import { modeSelect } from '../../../modes';
+
 export default class ConflictMetadata {
     constructor( instance ) {
         this.instance = instance;
@@ -85,7 +89,10 @@ export default class ConflictMetadata {
                 .text( tag.value[ 0 ] );
 
             row.selectAll( 'td.value-col.feature1' )
-                .on('click', () => this.panToEntity(this.data.currentFeatures[0]));
+                .on('click', () => {
+                    this.panToEntity(this.data.currentFeatures[0]);
+                    this.selectEntity(this.data.currentFeatures[0]);
+                });
 
             row.selectAll( 'td.feature2' )
                 .data( [ { k: 2 } ] ).enter()
@@ -94,7 +101,10 @@ export default class ConflictMetadata {
                 .text( tag.value[ 1 ] );
 
             row.selectAll( 'td.value-col.feature2' )
-                .on('click', () => this.panToEntity(this.data.currentFeatures[1]));
+                .on('click', () => {
+                    this.panToEntity(this.data.currentFeatures[1]);
+                    this.selectEntity(this.data.currentFeatures[1]);
+                });
         } );
 
         this.poiTable.selectAll( '.value-col' )
@@ -102,23 +112,34 @@ export default class ConflictMetadata {
             .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
     }
 
+    selectEntity(entity) {
+        Hoot.context.enter(modeSelect(Hoot.context, [entity.id]));
+    }
+
     /**
      * Pan to feature with conflict
      */
 
     panToEntity(feature) {
-
-        let extent = null;
+        let panToId = null,
+            extent = null;
         if ( !extent ) {
             extent = feature.extent( Hoot.context.graph() );
         }
         else {
             extent = extent.extend( feature.extent( Hoot.context.graph() ) );
         }
-        let panToId = feature.id;
+        if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
+            panToId = feature.id;
+        }
 
         if (panToId) {
-            Hoot.context.map().centerZoom( extent.center(), Hoot.context.map().trimmedExtentZoom( extent ) - 0.5 );
+            if ( feature.type === 'node' ) {
+                Hoot.context.map().centerZoom( extent.center(), Hoot.context.map().trimmedExtentZoom( extent ) - 0.5);
+            } else {
+                Hoot.context.map().centerZoom( extent.center(), Hoot.context.map().trimmedExtentZoom( extent ) - 0.5 );
+            }
+
         }
     }
 
