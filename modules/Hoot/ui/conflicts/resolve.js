@@ -61,6 +61,7 @@ export default class Resolve {
      * @param layer - review layer
      */
     acceptAll( layer ) {
+
         let hasChanges = Hoot.context.history().hasChanges();
 
         if ( hasChanges ) {

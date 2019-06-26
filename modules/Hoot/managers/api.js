@@ -574,6 +574,27 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    resolveAllConflicts(mapId) {
+        const params = {
+            path: `/job/review/resolveall?mapId=${ mapId }`,
+            method: 'PUT'
+        };
+
+        return this.request( params )
+        .then( () => {
+            return {
+                message: `Successfully renamed ${ mapId }`,
+                type: 'success'
+            };
+        } )
+        .catch( err => {
+            return Promise.reject({
+                message: err.data,
+                type: 'error'
+            });
+        } );
+    }
+
     /**
      * Get next review item in current conflicts review process
      *
