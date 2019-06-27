@@ -135,7 +135,7 @@ export default class ConflictMetadata {
 
         if (panToId) {
             if ( feature.type === 'node' ) {
-                Hoot.context.map().centerZoom( extent.center(), 19);
+                 Hoot.context.map().centerZoom( extent.center(), 21);
             } else {
                 Hoot.context.map().centerZoom( extent.center(), Hoot.context.map().trimmedExtentZoom( extent ) - 0.5 );
             }

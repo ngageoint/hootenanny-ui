@@ -111,8 +111,12 @@ export default class Map {
                 panToId = feature.id;
             }
 
-            if ( panToId ) {
-                Hoot.context.map().centerZoom( extent.center(), Hoot.context.map().trimmedExtentZoom( extent ) - 0.5 );
+            if (panToId && panToId === feature.id) {
+                if ( feature.type === 'node' ) {
+                    Hoot.context.map().centerZoom( extent.center(), 21);
+                } else {
+                    Hoot.context.map().centerZoom( extent.center(), Hoot.context.map().trimmedExtentZoom( extent ) - 0.5 );
+                }
             }
         } );
     }
