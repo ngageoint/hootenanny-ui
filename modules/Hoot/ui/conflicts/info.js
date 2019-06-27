@@ -121,25 +121,11 @@ export default class ConflictMetadata {
      */
 
     panToEntity(feature) {
-        let panToId = null,
-            extent = null;
-        if ( !extent ) {
-            extent = feature.extent( Hoot.context.graph() );
-        }
-        else {
-            extent = extent.extend( feature.extent( Hoot.context.graph() ) );
-        }
-        if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
-            panToId = feature.id;
-        }
-
-        if (panToId) {
-            if ( feature.type === 'node' ) {
-                 Hoot.context.map().centerZoom( extent.center(), 21);
-            } else {
-                Hoot.context.map().centerZoom( extent.center(), Hoot.context.map().trimmedExtentZoom( extent ) - 0.5 );
-            }
-
+        let extent = feature.extent(Hoot.context.graph());
+        if (feature.type === 'node') {
+            Hoot.context.map().centerZoom(extent.center(), 21);
+        } else {
+            Hoot.context.map().centerZoom(extent.center(), Hoot.context.map().trimmedExtentZoom(extent) - 0.5);
         }
     }
 
