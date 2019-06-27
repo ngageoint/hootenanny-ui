@@ -64,12 +64,17 @@ export default class Resolve {
 
         let hasChanges = Hoot.context.history().hasChanges();
 
+        Hoot.api.resolveAllConflicts(layer.id);
+
+
         if ( hasChanges ) {
             Hoot.layers.save( false, () => {
                 this.performAcceptAll( layer );
             } );
         } else {
+
             this.performAcceptAll( layer );
+            d3.select('#conflicts-container').remove();
         }
     }
 

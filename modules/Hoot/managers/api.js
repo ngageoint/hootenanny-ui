@@ -577,22 +577,12 @@ export default class API {
     resolveAllConflicts(mapId) {
         const params = {
             path: `/job/review/resolveall?mapId=${ mapId }`,
-            method: 'PUT'
+            method: 'PUT',
+            data: {mapId: mapId}
         };
 
         return this.request( params )
-        .then( () => {
-            return {
-                message: `Successfully renamed ${ mapId }`,
-                type: 'success'
-            };
-        } )
-        .catch( err => {
-            return Promise.reject({
-                message: err.data,
-                type: 'error'
-            });
-        } );
+            .then( resp => resp.data );
     }
 
     /**
