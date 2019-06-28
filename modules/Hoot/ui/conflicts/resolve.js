@@ -79,6 +79,11 @@ export default class Resolve {
         }
     }
 
+    removeHighlight() {
+        d3.selectAll( '.review-feature1').classed( 'highlight review-feature1', false );
+        d3.selectAll( '.review-feature2').classed( 'highlight review-feature2', false );
+    }
+
     /**
      * Resolve all remaining reviewables
      *
