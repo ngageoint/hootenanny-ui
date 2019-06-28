@@ -576,7 +576,7 @@ export default class API {
 
     resolveAllConflicts(mapId) {
         const params = {
-            path: `/job/review/resolveall?mapId=${ mapId }`,
+            path: '/job/review/resolveall',
             method: 'PUT',
             data: {mapId: mapId}
         };

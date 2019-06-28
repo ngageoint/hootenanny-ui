@@ -55,6 +55,10 @@ export default class Resolve {
         }
     }
 
+    async resolveAllConflicts(layer) {
+        await Hoot.api.resolveAllConflicts( layer.id );
+    }
+
     /**
      * Save any unsaved items and resolve all remaining reviewables
      *
@@ -64,16 +68,13 @@ export default class Resolve {
 
         let hasChanges = Hoot.context.history().hasChanges();
 
-        Hoot.api.resolveAllConflicts(layer.id);
-
-
         if ( hasChanges ) {
             Hoot.layers.save( false, () => {
                 this.performAcceptAll( layer );
             } );
         } else {
-
             this.performAcceptAll( layer );
+            this.resolveAllConflicts( layer );
             d3.select('#conflicts-container').remove();
         }
     }
