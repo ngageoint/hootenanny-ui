@@ -10,9 +10,6 @@ import _flatten   from 'lodash-es/flatten';
 import _forEach   from 'lodash-es/forEach';
 import _map       from 'lodash-es/map';
 import _startCase from 'lodash-es/startCase';
-
-import { isValidCoords } from '../../tools/utilities';
-
 import { modeSelect } from '../../../modes';
 
 export default class ConflictMetadata {
