@@ -55,10 +55,6 @@ export default class Resolve {
         }
     }
 
-    async resolveAllConflicts(layer) {
-        await Hoot.api.resolveAllConflicts( layer.id );
-    }
-
     /**
      * Save any unsaved items and resolve all remaining reviewables
      *
@@ -74,8 +70,13 @@ export default class Resolve {
             } );
         } else {
             this.performAcceptAll( layer );
-            this.resolveAllConflicts( layer );
-            Hoot.ui.conflicts.deactivate();
+            try {
+                Hoot.api.resolveAllConflicts( layer.id );
+            } catch (e) {
+                console.log(e);
+            } finally { /* eslint-disable */
+                Hoot.ui.conflicts.deactivate();
+            }
         }
     }
 
