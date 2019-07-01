@@ -75,13 +75,8 @@ export default class Resolve {
         } else {
             this.performAcceptAll( layer );
             this.resolveAllConflicts( layer );
-            d3.select('#conflicts-container').remove();
+            Hoot.ui.conflicts.deactivate();
         }
-    }
-
-    removeHighlight() {
-        d3.selectAll( '.review-feature1').classed( 'highlight review-feature1', false );
-        d3.selectAll( '.review-feature2').classed( 'highlight review-feature2', false );
     }
 
     /**
