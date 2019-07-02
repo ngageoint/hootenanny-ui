@@ -119,11 +119,7 @@ export default class ConflictMetadata {
 
     panToEntity(feature) {
         let extent = feature.extent(Hoot.context.graph());
-        //if (feature.type === 'node') {
-            Hoot.context.map().centerZoom(extent.center(), 21);
-        //} else {
-            //Hoot.context.map().centerZoom(extent.center(), Hoot.context.map().trimmedExtentZoom(extent) - 0.5);
-        //}
+        Hoot.context.map().centerZoom(extent.center(), 21);
     }
 
     /**
