@@ -69,14 +69,11 @@ export default class Resolve {
                 this.performAcceptAll( layer );
             } );
         } else {
-            this.performAcceptAll( layer );
-            try {
-                Hoot.api.resolveAllConflicts( layer.id );
-            } catch (e) {
-                console.log(e);
-            } finally { /* eslint-disable */
+            Hoot.api.resolveAllConflicts(layer.id)
+            .then ( () => {
                 Hoot.ui.conflicts.deactivate();
-            }
+                this.performAcceptAll( layer );
+            });
         }
     }
 
@@ -93,7 +90,7 @@ export default class Resolve {
                 color: layer.color
             };
 
-        // enter controller refresh state
+        // enter controller refresh stats
         conflateController.text.html( 'Refreshing &#8230;' );
 
         // update layer

@@ -582,7 +582,21 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+        .then( resp => {
+            if (resp.status !== 200) {
+                return Promise.reject({
+                    message: resp.data,
+                    type: 'error'
+                })
+                .then( () => {
+                    let alert = {
+                        message: 'Failed to resolve all conflicts in review.',
+                        type: 'warn'
+                    };
+                    Hoot.message.alert( alert );
+                });
+            }
+        });
     }
 
     /**
@@ -653,18 +667,18 @@ export default class API {
         };
 
         return this.request( params )
-            .then( () => {
-                return {
-                    message: `Successfully renamed ${ inputType }`,
-                    type: 'success'
-                };
-            } )
-            .catch( err => {
-                return Promise.reject({
-                    message: err.data,
-                    type: 'error'
-                });
-            } );
+        .then( () => {
+            return {
+                message: `Successfully renamed ${ inputType }`,
+                type: 'success'
+            };
+        } )
+        .catch( err => {
+            return Promise.reject({
+                message: err.data,
+                type: 'error'
+            });
+        } );
     }
 
     saveDataset( id, name ) {
