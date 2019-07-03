@@ -100,24 +100,33 @@
 <script src='./login.min.js'></script>
 <script src='./vendors~iD~login.min.js'></script>
 <script>
+    //if i'm authorized redirect to index
 
-    let login = new Login();
 
-    var isAuthorized = new Request(login.baseUrl + '/info/about/servicesVersionInfo',
-    {
+    var isAuthorizedRequest = new Request(Login.getBaseUrl() + '/info/about/servicesVersionInfo', {
         method: 'HEAD',
-        credentials: 'include'
+        credentials: "include"
     });
 
-    let oauthToken    = login.findGetParameter( 'oauth_token' ),
-        oauthVerifier = login.findGetParameter( 'oauth_verifier' );
+    let login = new Login();
+    let oauthToken = login.findGetParameter('oauth_token'),
+        oauthVerifier = login.findGetParameter('oauth_verifier');
 
-    if ( oauthToken && oauthVerifier ) {
-        // if we have these tokens, this is the spawned popup-
-        login.verifyOAuth( oauthToken, oauthVerifier );
-    } else {
-        login.init();
-    }
+    fetch(isAuthorizedRequest).then(resp => {
+
+        if (resp.status === 401) {
+
+            if (oauthToken && oauthVerifier) {
+                // if we have these tokens, this is the spawned popup-
+                login.verifyOAuth(oauthToken, oauthVerifier);
+            } else {
+                login.init();
+            }
+        } else {
+            window.location.replace(Login.getBaseUrl());
+        }
+    });
+
 </script>
 </body>
 </html>

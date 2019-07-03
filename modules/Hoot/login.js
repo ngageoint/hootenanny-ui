@@ -35,6 +35,28 @@ class Login {
 
     }
 
+    async getToken() {
+        let getToken = await this.getOAuthRedirectUrl();
+
+        return getToken;
+
+    }
+
+    static async isAuthorized() {
+
+        const params = {
+            path: '/info/about/servicesVersionInfo',
+            method: 'HEAD'
+        };
+
+        return this.request(params)
+
+    }
+
+    static getBaseUrl() {
+        return baseUrl;
+    }
+
     findGetParameter( parameterName ) {
         var result = null,
             tmp    = [];
@@ -52,6 +74,8 @@ class Login {
             }
 
             if (location.search.length === 0 ) {
+                let somethingNew = this.getToken();
+                localStorage.setItem( 'setAuth', somethingNew);
                 localStorage.setAuth
                 .substr( 1 )
                 .split( '&' )
@@ -107,7 +131,9 @@ class Login {
         const url = `${this.baseUrl}/auth/oauth1/verify?oauth_token=${oauthToken}&oauth_verifier=${oauthVerifier}`;
         fetch(url, params)
             .then(resp => {
+                console.log(resp);
                 if (resp.status !== 200) throw error;
+
                 return resp.json();
             } )
             .then( resp => {
