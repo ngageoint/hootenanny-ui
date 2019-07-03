@@ -100,7 +100,14 @@
 <script src='./login.min.js'></script>
 <script src='./vendors~iD~login.min.js'></script>
 <script>
+
     let login = new Login();
+
+    var isAuthorized = new Request(login.baseUrl + '/info/about/servicesVersionInfo',
+    {
+        method: 'HEAD',
+        credentials: 'include'
+    });
 
     let oauthToken    = login.findGetParameter( 'oauth_token' ),
         oauthVerifier = login.findGetParameter( 'oauth_verifier' );

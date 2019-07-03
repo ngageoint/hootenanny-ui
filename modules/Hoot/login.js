@@ -39,15 +39,28 @@ class Login {
         var result = null,
             tmp    = [];
 
-        location.search
-            .substr( 1 )
-            .split( '&' )
-            .forEach( function( item ) {
-                tmp = item.split( '=' );
-                if ( tmp[ 0 ] === parameterName ) result = decodeURIComponent( tmp[ 1 ] );
-            } );
+            if (location.search.length > 0 ) {
+                localStorage.setItem( 'setAuth', location.search);
+                location.search
+                .substr( 1 )
+                .split( '&' )
+                .forEach( function( item ) {
+                    tmp = item.split( '=' );
+                    if ( tmp[ 0 ] === parameterName ) result = decodeURIComponent( tmp[ 1 ] );
+                } );
+                return result
+            }
 
-        return result;
+            if (location.search.length === 0 ) {
+                localStorage.setAuth
+                .substr( 1 )
+                .split( '&' )
+                .forEach( function( item ) {
+                    tmp = item.split( '=' );
+                    if ( tmp[ 0 ] === parameterName ) result = decodeURIComponent( tmp[ 1 ] );
+                } );
+                return result
+            }
     }
 
     getOAuthRedirectUrl() {
