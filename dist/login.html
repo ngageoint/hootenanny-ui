@@ -100,17 +100,25 @@
 <script src='./login.min.js'></script>
 <script src='./vendors~iD~login.min.js'></script>
 <script>
+    var isAuthorizedRequest = new Request(Login.getBaseUrl() + '/info/about/servicesVersionInfo', {
+        method: 'HEAD',
+        credentials: "include"
+    });
     let login = new Login();
-
-    let oauthToken    = login.findGetParameter( 'oauth_token' ),
-        oauthVerifier = login.findGetParameter( 'oauth_verifier' );
-
-    if ( oauthToken && oauthVerifier ) {
-        // if we have these tokens, this is the spawned popup-
-        login.verifyOAuth( oauthToken, oauthVerifier );
-    } else {
-        login.init();
-    }
+    let oauthToken = login.findGetParameter('oauth_token'),
+        oauthVerifier = login.findGetParameter('oauth_verifier');
+    fetch(isAuthorizedRequest).then(resp => {
+        if (resp.status === 401) {
+            if (oauthToken && oauthVerifier) {
+                // if we have these tokens, this is the spawned popup-
+                login.verifyOAuth(oauthToken, oauthVerifier);
+            } else {
+                login.init();
+            }
+        } else {
+            window.location.replace(Login.getBaseUrl());
+        }
+    });
 </script>
 </body>
 </html>

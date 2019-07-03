@@ -34,21 +34,58 @@ class Login {
         }
 
     }
+    async getToken() {
+        let getToken = await this.getOAuthRedirectUrl();
+
+        return getToken;
+
+    }
+
+    static async isAuthorized() {
+
+        const params = {
+            path: '/info/about/servicesVersionInfo',
+            method: 'HEAD'
+        };
+
+        return this.request(params)
+
+    }
+
+    static getBaseUrl() {
+        return baseUrl;
+    }
 
     findGetParameter( parameterName ) {
         var result = null,
             tmp    = [];
 
-        location.search
-            .substr( 1 )
-            .split( '&' )
-            .forEach( function( item ) {
-                tmp = item.split( '=' );
-                if ( tmp[ 0 ] === parameterName ) result = decodeURIComponent( tmp[ 1 ] );
-            } );
+            if (location.search.length > 0 ) {
+                localStorage.setItem( 'setAuth', location.search);
+                location.search
+                .substr( 1 )
+                .split( '&' )
+                .forEach( function( item ) {
+                    tmp = item.split( '=' );
+                    if ( tmp[ 0 ] === parameterName ) result = decodeURIComponent( tmp[ 1 ] );
+                } );
+                return result
+            }
 
-        return result;
+            if (location.search.length === 0 ) {
+                let somethingNew = this.getToken();
+                localStorage.setItem( 'setAuth', somethingNew);
+                localStorage.setAuth
+                .substr( 1 )
+                .split( '&' )
+                .forEach( function( item ) {
+                    tmp = item.split( '=' );
+                    if ( tmp[ 0 ] === parameterName ) result = decodeURIComponent( tmp[ 1 ] );
+                } );
+                return result
+            }
     }
+
 
     getOAuthRedirectUrl() {
         const params = {
