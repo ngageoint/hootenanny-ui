@@ -584,17 +584,11 @@ export default class API {
         return this.request( params )
         .then( resp => {
             if (resp.status !== 200) {
-                return Promise.reject({
-                    message: resp.data,
-                    type: 'error'
-                })
-                .then( () => {
-                    let alert = {
-                        message: 'Failed to resolve all conflicts in review.',
-                        type: 'warn'
-                    };
-                    Hoot.message.alert( alert );
-                });
+                let alert = {
+                    message: 'Failed to resolve all conflicts in review.',
+                    type: 'warn'
+                };
+                Hoot.message.alert( alert );
             }
         });
     }

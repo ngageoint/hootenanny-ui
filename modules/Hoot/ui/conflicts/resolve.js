@@ -90,7 +90,7 @@ export default class Resolve {
                 color: layer.color
             };
 
-        // enter controller refresh stats
+        // enter controller refresh state
         conflateController.text.html( 'Refreshing &#8230;' );
 
         // update layer
