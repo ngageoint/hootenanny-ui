@@ -12,7 +12,8 @@ import _forEach        from 'lodash-es/forEach';
 import _isEmpty        from 'lodash-es/isEmpty';
 import _map            from 'lodash-es/map';
 import _reduce         from 'lodash-es/reduce';
-import _remove         from 'lodash-es/remove';
+import _remove from 'lodash-es/remove';
+import _debounce from 'lodash-es/debounce';
 
 import { rgb as d3_rgb } from 'd3-color';
 
@@ -210,8 +211,12 @@ export default class Layers {
 
             this.loadedLayers[ layer.id ] = layer;
 
-            if ( layerExtent.toParam() !== '-180,-90,180,90' ) {
-                this.hoot.context.extent( layerExtent );
+            if (layerExtent.toParam() !== '-180,-90,180,90') {
+                if (layer.merged && Hoot.context.map().trimmedExtentZoom(layerExtent) < 16) {
+                    _debounce(() => { Hoot.context.map().centerZoom(layerExtent.center(), 16); }, 400)();
+                } else {
+                    this.hoot.context.extent(layerExtent);
+                }
             }
 
             if ( !this.hootOverlay ) {
