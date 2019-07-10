@@ -10,6 +10,8 @@ import _flatten   from 'lodash-es/flatten';
 import _forEach   from 'lodash-es/forEach';
 import _map       from 'lodash-es/map';
 import _startCase from 'lodash-es/startCase';
+import { modeSelect } from '../../../modes';
+import Map  from './map';
 
 export default class ConflictMetadata {
     constructor( instance ) {
@@ -84,16 +86,41 @@ export default class ConflictMetadata {
                 .classed( 'value-col feature1', true )
                 .text( tag.value[ 0 ] );
 
+            row.selectAll( 'td.value-col.feature1' )
+                .on('click', () => {
+                    this.panToEntity(this.data.currentFeatures[0]);
+                    this.selectEntity(this.data.currentFeatures[0]);
+                });
+
             row.selectAll( 'td.feature2' )
                 .data( [ { k: 2 } ] ).enter()
                 .append( 'td' )
                 .classed( 'value-col feature2', true )
                 .text( tag.value[ 1 ] );
+
+            row.selectAll( 'td.value-col.feature2' )
+                .on('click', () => {
+                    this.panToEntity(this.data.currentFeatures[1]);
+                    this.selectEntity(this.data.currentFeatures[1]);
+                });
         } );
 
         this.poiTable.selectAll( '.value-col' )
             .on( 'mouseenter', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true ) )
             .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
+    }
+
+    selectEntity(entity) {
+        Hoot.context.enter(modeSelect(Hoot.context, [entity.id]));
+    }
+
+    /**
+     * Pan to feature with conflict
+     */
+
+    panToEntity(feature) {
+        let extent = feature.extent(Hoot.context.graph());
+        Hoot.context.map().centerZoom(extent.center(), Map.getZoomFromExtent(extent));
     }
 
     /**
