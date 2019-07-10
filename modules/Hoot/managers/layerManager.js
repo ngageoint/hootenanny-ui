@@ -200,9 +200,11 @@ export default class Layers {
             };
 
             //update url hash
-            var q = utilStringQs(window.location.hash.substring(1));
-            q[params.refType] = mapId;
-            window.location.replace('#' + utilQsString(q, true));
+            if (params.refType) {
+                var q = utilStringQs(window.location.hash.substring(1));
+                q[params.refType] = mapId;
+                window.location.replace('#' + utilQsString(q, true));
+            }
 
             if ( tags.input1 || tags.input2 ) {
                 layer = await this.checkForReview( layer );
