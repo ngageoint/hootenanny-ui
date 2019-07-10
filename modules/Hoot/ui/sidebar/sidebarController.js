@@ -168,7 +168,7 @@ class SidebarController {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
-                let message = 'Are you sure you want to delete?',
+                let message = 'Are you sure you want to remove?',
                     confirm = await Hoot.message.confirm( message );
 
                 if ( confirm ) {
