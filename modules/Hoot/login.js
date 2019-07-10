@@ -35,7 +35,7 @@ class Login {
 
     }
 
-    async isAuthorized() {
+    async authorize() {
 
         const params = {
             method: 'HEAD'
