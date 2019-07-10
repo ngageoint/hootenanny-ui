@@ -11,6 +11,7 @@ import _forEach   from 'lodash-es/forEach';
 import _map       from 'lodash-es/map';
 import _startCase from 'lodash-es/startCase';
 import { modeSelect } from '../../../modes';
+import Map  from './map';
 
 export default class ConflictMetadata {
     constructor( instance ) {
@@ -119,7 +120,7 @@ export default class ConflictMetadata {
 
     panToEntity(feature) {
         let extent = feature.extent(Hoot.context.graph());
-        Hoot.context.map().centerZoom(extent.center(), 21);
+        Hoot.context.map().centerZoom(extent.center(), Map.getZoomFromExtent(extent));
     }
 
     /**

@@ -98,7 +98,7 @@ export default class Map {
      * Returns zoom level for given extent, bounded by level 16 and 21;
      * @param {Object} extent extent object that represents feature(s) extents
      */
-    getZoomFromExtent(extent) {
+    static getZoomFromExtent(extent) {
         let zoom = Hoot.context.map().trimmedExtentZoom(extent) - 0.5;
         return zoom < 16 ? 16 :
                zoom > 21 ? 21 : zoom;
@@ -112,23 +112,7 @@ export default class Map {
             return extent.extend(feature.extent(Hoot.context.graph()));
         }, geoExtent());
 
-        // _forEach( this.data.currentFeatures, feature => {
-        //     if ( !extent ) {
-        //         extent = feature.extent( Hoot.context.graph() );
-        //     } else {
-        //         extent = extent.extend( feature.extent( Hoot.context.graph() ) );
-        //     }
-
-        //     if ( !panToId && isValidCoords( extent[ 0 ] ) && isValidCoords( extent[ 1 ] ) ) {
-        //         panToId = feature.id;
-        //     }
-
-        //     if ( panToId ) {
-        //         Hoot.context.map().centerZoom( extent.center(), Hoot.context.map().trimmedExtentZoom( extent ) - 0.5 );
-        //     }
-        // } );
-
-        Hoot.context.map().centerZoom( extent.center(), this.getZoomFromExtent(extent) );
+        Hoot.context.map().centerZoom( extent.center(), Map.getZoomFromExtent(extent) );
     }
 
     /**
