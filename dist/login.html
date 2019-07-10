@@ -100,16 +100,17 @@
 <script src='./login.min.js'></script>
 <script src='./vendors~iD~login.min.js'></script>
 <script>
+
     let login = new Login();
-
-    let oauthToken    = login.findGetParameter( 'oauth_token' ),
-        oauthVerifier = login.findGetParameter( 'oauth_verifier' );
-
-    if ( oauthToken && oauthVerifier ) {
+    let oauthToken = login.findGetParameter('oauth_token'),
+        oauthVerifier = login.findGetParameter('oauth_verifier');
+    if (oauthToken && oauthVerifier) {
         // if we have these tokens, this is the spawned popup-
-        login.verifyOAuth( oauthToken, oauthVerifier );
+        login.verifyOAuth(oauthToken, oauthVerifier);
     } else {
-        login.init();
+        // check if we already have a valid session
+        // if so redirect to main app, if not start the login process
+        login.authorize();
     }
 </script>
 </body>

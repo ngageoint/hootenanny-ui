@@ -35,6 +35,26 @@ class Login {
 
     }
 
+    async authorize() {
+
+        const params = {
+            method: 'HEAD'
+        };
+
+        return fetch(`${ this.baseUrl }/info/about/servicesVersionInfo`, params)
+            .then(resp => {
+                if (resp.status === 401) {
+                    //client is not authenticated so do login
+                    login.init();
+                } else {
+                    //a valid session exists so go to app main page
+                    let pathname = window.location.pathname;
+                    window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
+                }
+            });
+
+    }
+
     findGetParameter( parameterName ) {
         var result = null,
             tmp    = [];
