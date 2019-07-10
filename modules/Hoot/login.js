@@ -34,58 +34,41 @@ class Login {
         }
 
     }
-    async getToken() {
-        let getToken = await this.getOAuthRedirectUrl();
 
-        return getToken;
-
-    }
-
-    static async isAuthorized() {
+    async isAuthorized() {
 
         const params = {
-            path: '/info/about/servicesVersionInfo',
             method: 'HEAD'
         };
 
-        return this.request(params)
+        return fetch(`${ this.baseUrl }/info/about/servicesVersionInfo`, params)
+            .then(resp => {
+                if (resp.status === 401) {
+                    //client is not authenticated so do login
+                    login.init();
+                } else {
+                    //a valid session exists so go to app main page
+                    let pathname = window.location.pathname;
+                    window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
+                }
+            });
 
-    }
-
-    static getBaseUrl() {
-        return baseUrl;
     }
 
     findGetParameter( parameterName ) {
         var result = null,
             tmp    = [];
 
-            if (location.search.length > 0 ) {
-                localStorage.setItem( 'setAuth', location.search);
-                location.search
-                .substr( 1 )
-                .split( '&' )
-                .forEach( function( item ) {
-                    tmp = item.split( '=' );
-                    if ( tmp[ 0 ] === parameterName ) result = decodeURIComponent( tmp[ 1 ] );
-                } );
-                return result
-            }
+        location.search
+            .substr( 1 )
+            .split( '&' )
+            .forEach( function( item ) {
+                tmp = item.split( '=' );
+                if ( tmp[ 0 ] === parameterName ) result = decodeURIComponent( tmp[ 1 ] );
+            } );
 
-            if (location.search.length === 0 ) {
-                let somethingNew = this.getToken();
-                localStorage.setItem( 'setAuth', somethingNew);
-                localStorage.setAuth
-                .substr( 1 )
-                .split( '&' )
-                .forEach( function( item ) {
-                    tmp = item.split( '=' );
-                    if ( tmp[ 0 ] === parameterName ) result = decodeURIComponent( tmp[ 1 ] );
-                } );
-                return result
-            }
+        return result;
     }
-
 
     getOAuthRedirectUrl() {
         const params = {
