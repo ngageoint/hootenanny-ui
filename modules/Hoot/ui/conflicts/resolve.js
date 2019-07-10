@@ -68,7 +68,11 @@ export default class Resolve {
                 this.performAcceptAll( layer );
             } );
         } else {
-            this.performAcceptAll( layer );
+            Hoot.api.resolveAllReviews(layer.id)
+                .then ( () => {
+                    Hoot.ui.conflicts.deactivate();
+                    this.performAcceptAll( layer );
+                });
         }
     }
 

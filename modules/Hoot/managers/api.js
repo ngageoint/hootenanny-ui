@@ -574,6 +574,25 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    resolveAllReviews(mapId) {
+        const params = {
+            path: '/job/review/resolveall',
+            method: 'PUT',
+            data: {mapId: mapId}
+        };
+
+        return this.request( params )
+            .then( resp => {
+                if (resp.status !== 200) {
+                    let alert = {
+                        message: 'Failed to resolve all conflicts in review.',
+                        type: 'warn'
+                    };
+                    Hoot.message.alert( alert );
+                }
+            });
+    }
+
     /**
      * Get next review item in current conflicts review process
      *
