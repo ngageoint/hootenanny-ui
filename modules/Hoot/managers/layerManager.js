@@ -47,20 +47,6 @@ export default class Layers {
     }
 
     /**
-     * Method that updates layer hash parameters to reflect the current state of the map.
-     */
-    updateLayersHash() {
-        let q = utilStringQs(window.location.hash.substring(1));
-        Object.keys(q).forEach(k => {
-            if (['primary', 'secondary', 'merged'].indexOf(k) !== -1 && !this.loadedLayers.hasOwnProperty(q[k])) {
-                delete q[k];
-            }
-        });
-
-        window.location.replace('#' + utilQsString(q, true));
-    }
-
-    /**
      * Retrieve layers from database
      */
     async refreshLayers() {
@@ -78,8 +64,6 @@ export default class Layers {
                 });
 
                 this.hashLayers = {};
-            } else { // remove all hash parameters for layers not in the loaded layers hashmap.
-                this.updateLayersHash();
             }
 
             return this.allLayers;
@@ -198,9 +182,9 @@ export default class Layers {
 
     async loadLayer( params ) {
         try {
-            let mapId = params.id,
-                tags = await this.hoot.api.getMapTags(mapId),
-                layerExtent = await this.layerExtent(mapId);
+            let mapId       = params.id,
+                tags        = await this.hoot.api.getMapTags( mapId ),
+                layerExtent = await this.layerExtent( mapId );
 
             let layer = {
                 name: params.name,
@@ -303,21 +287,16 @@ export default class Layers {
                 input2Name = tags.input2Name;
 
             if ( (input1 && input1Name) && (input2 && input2Name) ) {
-                let loaded = Object.values(Hoot.layers.loadedLayers).find(l => l.id === tags.input1),
-                    params1 = {
-                        name: input1Name,
-                        id: input1,
-                        color: 'violet',
-                        refType: loaded ? loaded.refType : ''
-                    };
-
-                loaded = Object.values(Hoot.layers.loadedLayers).find(l => l.id === tags.input2);
+                let params1 = {
+                    name: input1Name,
+                    id: input1,
+                    color: 'violet'
+                };
 
                 let params2 = {
                     name: input2Name,
                     id: input2,
-                    color: 'orange',
-                    refType: loaded ? loaded.refType : ''
+                    color: 'orange'
                 };
 
                 Promise.all( [
@@ -377,16 +356,10 @@ export default class Layers {
 
     removeLoadedLayer( id ) {
         if ( id && this.loadedLayers[ id ] ) {
-            const isMerged = this.loadedLayers[id].merged;
-            delete this.loadedLayers[id];
-
-            if (isMerged) {
-                Object.keys(this.loadedLayers).forEach(id => delete this.loadedLayers[id]);
-            }
-
+            delete this.loadedLayers[ id ];
             this.hoot.context.background().removeSource( id );
             this.hootOverlay.removeGeojson( id );
-            this.updateLayersHash();
+
             this.hoot.context.flush();
         }
         this.hoot.events.emit( 'loaded-layer-removed' );
