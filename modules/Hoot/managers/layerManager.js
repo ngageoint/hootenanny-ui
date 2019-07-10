@@ -202,7 +202,19 @@ export default class Layers {
             //update url hash
             if (params.refType) {
                 var q = utilStringQs(window.location.hash.substring(1));
-                q[params.refType] = mapId;
+                //special handling for postConflate merged layer
+                if (params.refType === 'merged') { //a merged layer in postConflate becomes the primary
+                                                   //simply so a refresh restores the layer state of the app
+                    q.primary = mapId;
+                    delete q.secondary;
+                } else {
+                    //if a merged layer is loaded, the input layers (primary, secondary) are not added
+                    //to the url hash
+                    if (!this.findLoadedBy('refType', 'merged')) {
+                        q[params.refType] = mapId;
+                    }
+                }
+
                 window.location.replace('#' + utilQsString(q, true));
             }
 
@@ -239,7 +251,7 @@ export default class Layers {
 
             return layer;
         } catch ( err ) {
-            this.hoot.message.alert( err );
+            window.console.error(err);
         }
     }
 
@@ -269,6 +281,7 @@ export default class Layers {
 
             mergedLayer.merged = true;
             mergedLayer.color  = 'green';
+            mergedLayer.refType = 'merged';
 
             d3.selectAll( '.layer-loading' ).remove();
             d3.selectAll( '.layer-add' ).remove();
@@ -292,13 +305,15 @@ export default class Layers {
                 let params1 = {
                     name: input1Name,
                     id: input1,
-                    color: 'violet'
+                    color: 'violet',
+                    refType: 'primary'
                 };
 
                 let params2 = {
                     name: input2Name,
                     id: input2,
-                    color: 'orange'
+                    color: 'orange',
+                    refType: 'secondary'
                 };
 
                 Promise.all( [
