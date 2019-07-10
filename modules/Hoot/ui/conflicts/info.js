@@ -38,6 +38,8 @@ export default class ConflictMetadata {
 
         let currentRelation = this.instance.graphSync.getCurrentRelation();
 
+        let checkMerge      = this.instance.merge.mergeTags;
+
         if ( this.poiTable ) {
             this.tableContainer.remove();
         }
@@ -82,7 +84,7 @@ export default class ConflictMetadata {
                 .data( [ { k: 1 } ] ).enter()
                 .append( 'td' )
                 .classed( 'value-col feature1', true )
-                .text( tag.value[ 0 ] );
+                .text( tag.value[ 0 ] === null && checkMerge ? tag.value[ 1 ] : tag.value[ 0 ] );
 
             row.selectAll( 'td.feature2' )
                 .data( [ { k: 2 } ] ).enter()
