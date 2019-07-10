@@ -61,7 +61,6 @@ export default class Resolve {
      * @param layer - review layer
      */
     acceptAll( layer ) {
-
         let hasChanges = Hoot.context.history().hasChanges();
 
         if ( hasChanges ) {
@@ -69,11 +68,11 @@ export default class Resolve {
                 this.performAcceptAll( layer );
             } );
         } else {
-            Hoot.api.resolveAllConflicts(layer.id)
-            .then ( () => {
-                Hoot.ui.conflicts.deactivate();
-                this.performAcceptAll( layer );
-            });
+            Hoot.api.resolveAllReviews(layer.id)
+                .then ( () => {
+                    Hoot.ui.conflicts.deactivate();
+                    this.performAcceptAll( layer );
+                });
         }
     }
 

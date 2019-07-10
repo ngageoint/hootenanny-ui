@@ -574,7 +574,7 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    resolveAllConflicts(mapId) {
+    resolveAllReviews(mapId) {
         const params = {
             path: '/job/review/resolveall',
             method: 'PUT',
@@ -582,15 +582,15 @@ export default class API {
         };
 
         return this.request( params )
-        .then( resp => {
-            if (resp.status !== 200) {
-                let alert = {
-                    message: 'Failed to resolve all conflicts in review.',
-                    type: 'warn'
-                };
-                Hoot.message.alert( alert );
-            }
-        });
+            .then( resp => {
+                if (resp.status !== 200) {
+                    let alert = {
+                        message: 'Failed to resolve all conflicts in review.',
+                        type: 'warn'
+                    };
+                    Hoot.message.alert( alert );
+                }
+            });
     }
 
     /**
@@ -661,18 +661,18 @@ export default class API {
         };
 
         return this.request( params )
-        .then( () => {
-            return {
-                message: `Successfully renamed ${ inputType }`,
-                type: 'success'
-            };
-        } )
-        .catch( err => {
-            return Promise.reject({
-                message: err.data,
-                type: 'error'
-            });
-        } );
+            .then( () => {
+                return {
+                    message: `Successfully renamed ${ inputType }`,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return Promise.reject({
+                    message: err.data,
+                    type: 'error'
+                });
+            } );
     }
 
     saveDataset( id, name ) {
