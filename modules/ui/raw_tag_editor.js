@@ -216,13 +216,12 @@ export function uiRawTagEditor(context) {
 
         function bindTypeahead(key, value) {
             if (isReadOnly(key.datum())) return;
-
             var geometry = context.geometry(_entityID);
 
             key.call(d3_combobox()
                 .container(context.container())
                 .fetcher(function(value, callback) {
-                    if (context.hoot.translations.activeTranslation === 'OSM') {
+                    if (Hoot.translations.activeTranslation === 'OSM') {
                         taginfo.keys({
                             debounce: true,
                             geometry: geometry,
@@ -239,7 +238,7 @@ export function uiRawTagEditor(context) {
             value.call(d3_combobox()
                 .container(context.container())
                 .fetcher(function(value, callback) {
-                    if (context.hoot.translations.activeTranslation === 'OSM') {
+                    if (Hoot.translations.activeTranslation === 'OSM') {
                         taginfo.values({
                             debounce: true,
                             key: utilGetSetValue(key),

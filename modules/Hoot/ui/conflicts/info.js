@@ -13,8 +13,11 @@ import _startCase from 'lodash-es/startCase';
 
 export default class ConflictMetadata {
     constructor( instance ) {
-        this.instance = instance;
-        this.data     = instance.data;
+        this.instance   = instance;
+        this.data       = instance.data;
+        Hoot.context.history().on('change', function() {
+            Hoot.ui.conflicts.info.buildTagTable();
+        });
 
         this.tagBlacklist = [
             /hoot*/,
@@ -31,71 +34,101 @@ export default class ConflictMetadata {
      * Create tag table for revieawble items
      */
     buildTagTable() {
-        let colData    = this.data.currentFeatures,
-            tags1      = this.filterTags( colData[ 0 ] ? colData[ 0 ].tags : {} ),
-            tags2      = this.filterTags( colData[ 1 ] ? colData[ 1 ].tags : {} ),
-            tagsMerged = this.mergeTags( [ tags1, tags2 ] );
+        if ( this.data.currentFeatures !== null ) {
+            let colData= this.data.currentFeatures,
+            nowTags1   = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 0 ].id).tags : {} ),
+            nowTags2   = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 1 ].id).tags : {} ),
+            tagsMerged = this.mergeTags( [ nowTags1, nowTags2 ] );
 
-        let currentRelation = this.instance.graphSync.getCurrentRelation();
+            let currentRelation = this.instance.graphSync.getCurrentRelation();
 
-        let checkMerge      = this.instance.merge.mergeTags;
+            let checkMerge      = this.instance.merge.mergeTags;
 
-        if ( this.poiTable ) {
-            this.tableContainer.remove();
+            if ( this.poiTable ) {
+                this.tableContainer.remove();
+            }
+
+            this.tableContainer = this.instance.rightContainer
+                .insert( 'div', ':first-child' )
+                .classed( 'tag-table', true );
+
+            this.poiTable = this.tableContainer.append( 'table' );
+
+            if ( currentRelation.members.length > 2 ) {
+                let navHtml = '<div class="navigation-wrapper"><div class="prev">&lt;&lt;</div><div class="next">&gt;&gt;</div></div>';
+
+                let row = this.poiTable.append( 'tr' )
+                    .classed( 'table-head', true );
+
+                row.append( 'td' )
+                    .classed( 'fillD', true )
+                    .text( 'Review Item' );
+
+                row.selectAll( 'td.feature1' )
+                    .data( [ { k: 1 } ] ).enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature1', true )
+                    .html( navHtml );
+
+                row.selectAll( 'td.feature2' )
+                    .data( [ { k: 2 } ] ).enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature2', true )
+                    .html( navHtml );
+            }
+
+            _forEach( tagsMerged, tag => {
+                let row = this.poiTable.append( 'tr' );
+
+                row.append( 'td' )
+                    .classed( 'fillD', true )
+                    .text( _startCase( tag.key ) );
+
+                row.selectAll( 'td.feature1' )
+                    .data( [ { k: 1 } ] ).enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature1', true )
+                    .text( tag.value[ 0 ]  );
+
+                row.selectAll( 'td.feature2' )
+                    .data( [ { k: 2 } ] ).enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature2', true )
+                    .text( tag.value[ 1 ] );
+            } );
+
+            this.poiTable.selectAll( '.value-col' )
+                .on( 'mouseenter', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true ) )
+                .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
         }
+    }
 
-        this.tableContainer = this.instance.rightContainer
-            .insert( 'div', ':first-child' )
-            .classed( 'tag-table', true );
+    /**
+     * Update table once things change i guess
+     */
 
-        this.poiTable = this.tableContainer.append( 'table' );
+    updateTagTable() {
+        if ( this.data.currentFeatures !== null ) {
+            let updateTags = this.data.currentFeatures[0] ? this.data.currentFeatures[ 0 ].tags : {};
 
-        if ( currentRelation.members.length > 2 ) {
-            let navHtml = '<div class="navigation-wrapper"><div class="prev">&lt;&lt;</div><div class="next">&gt;&gt;</div></div>';
+            this.poiTable = this.tableContainer.append('table');
 
-            let row = this.poiTable.append( 'tr' )
-                .classed( 'table-head', true );
+            _forEach( updateTags, tag => {
+                let row = this.poiTable.append( 'tr' )
+                    .classed( 'table-head', true );
 
-            row.append( 'td' )
-                .classed( 'fillD', true )
-                .text( 'Review Item' );
+                row.append( 'td' )
+                    .classed( 'fillD', true )
+                    .text( 'Review Item' );
 
-            row.selectAll( 'td.feature1' )
-                .data( [ { k: 1 } ] ).enter()
-                .append( 'td' )
-                .classed( 'value-col feature1', true )
-                .html( navHtml );
+                row.selectAll( 'td.feature1' )
+                    .data( [ { k: 1 } ] ).enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature1', true )
+                    .text( tag.value  );
+            } );
 
-            row.selectAll( 'td.feature2' )
-                .data( [ { k: 2 } ] ).enter()
-                .append( 'td' )
-                .classed( 'value-col feature2', true )
-                .html( navHtml );
         }
-
-        _forEach( tagsMerged, tag => {
-            let row = this.poiTable.append( 'tr' );
-
-            row.append( 'td' )
-                .classed( 'fillD', true )
-                .text( _startCase( tag.key ) );
-
-            row.selectAll( 'td.feature1' )
-                .data( [ { k: 1 } ] ).enter()
-                .append( 'td' )
-                .classed( 'value-col feature1', true )
-                .text( tag.value[ 0 ] === null && checkMerge ? tag.value[ 1 ] : tag.value[ 0 ] );
-
-            row.selectAll( 'td.feature2' )
-                .data( [ { k: 2 } ] ).enter()
-                .append( 'td' )
-                .classed( 'value-col feature2', true )
-                .text( tag.value[ 1 ] );
-        } );
-
-        this.poiTable.selectAll( '.value-col' )
-            .on( 'mouseenter', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true ) )
-            .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
     }
 
     /**
