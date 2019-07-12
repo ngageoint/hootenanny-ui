@@ -97,6 +97,8 @@ export default class Merge {
 
         this.mergeTags = true;
 
+        this.instance.info.removeColumn();
+
     }
 
     /**

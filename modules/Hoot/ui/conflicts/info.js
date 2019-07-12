@@ -107,27 +107,35 @@ export default class ConflictMetadata {
      * Update table once things change i guess
      */
 
-    updateTagTable() {
+    removeColumn() {
         if ( this.data.currentFeatures !== null ) {
-            let updateTags = this.data.currentFeatures[0] ? this.data.currentFeatures[ 0 ].tags : {};
 
-            this.poiTable = this.tableContainer.append('table');
+            this.tableContainer.remove();
 
-            _forEach( updateTags, tag => {
+            this.tableContainer = this.instance.rightContainer
+                .insert( 'div', ':first-child' )
+                .classed( 'tag-table', true );
+
+            let colData = this.data.currentFeatures,
+            tags1       = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 0 ].id).tags : {} ),
+            orderTags   = this.mergeTags( [tags1] );
+
+            this.poiTable = this.tableContainer.append( 'table' );
+
+            _forEach( orderTags, tag => {
                 let row = this.poiTable.append( 'tr' )
-                    .classed( 'table-head', true );
+                .classed( 'table-head', true );
 
                 row.append( 'td' )
                     .classed( 'fillD', true )
-                    .text( 'Review Item' );
+                    .text( _startCase( tag.key ) );
 
                 row.selectAll( 'td.feature1' )
                     .data( [ { k: 1 } ] ).enter()
                     .append( 'td' )
                     .classed( 'value-col feature1', true )
-                    .text( tag.value  );
+                    .text( tag.value );
             } );
-
         }
     }
 
