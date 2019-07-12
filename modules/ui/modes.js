@@ -7,7 +7,9 @@ import {
     modeAddLine,
     modeAddPoint,
     modeAddNote,
-    modeBrowse
+    modeBrowse,
+    modeAddMeasureLine,
+    modeAddMeasureArea
 } from '../modes';
 
 import { svgIcon } from '../svg';
@@ -21,6 +23,13 @@ export function uiModes(context) {
         modeAddArea(context),
         modeAddNote(context)
     ];
+
+    var toolModes = [
+        modeAddMeasureLine(context),
+        modeAddMeasureArea(context)
+    ].forEach(function(m){
+            context.keybinding().on(m.key, function() {context.enter(m);});
+    });
 
 
     function editable() {

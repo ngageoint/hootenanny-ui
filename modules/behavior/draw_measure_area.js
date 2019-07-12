@@ -5,12 +5,10 @@
  *******************************************************************************************************/
 
 import { utilRebind }           from '../util/rebind';
-import { utilKeybinding }       from '../util/keybinding';
 import { geoEuclideanDistance } from '../geo';
 
 export function behaviorDrawMeasureArea( context, svg ) {
     let dispatch        = d3.dispatch( 'move', 'click', 'undo', 'cancel', 'finish', 'dblclick' ),
-        keybinding      = utilKeybinding( 'measure' ),
         closeTolerance  = 4,
         tolerance       = 12,
         rectMargin      = 30,
@@ -135,12 +133,6 @@ export function behaviorDrawMeasureArea( context, svg ) {
                 ptArr.push( context.map().mouseCoordinates() );
             }
         }
-
-        svg
-            .append( 'g' )
-            .classed( `node point measure-vertex-${ nodeId }`, true )
-            .attr( 'transform', 'translate(' + c[ 0 ] + ',' + c[ 1 ] + ')' )
-            .attr( 'loc', mouseCoords );
 
         totDist     = totDist + segmentDist;
         segmentDist = 0;
@@ -341,18 +333,9 @@ export function behaviorDrawMeasureArea( context, svg ) {
         lengthLabel = label.append( 'tspan' ).text( '' );
         areaLabel   = label.append( 'tspan' ).text( '' );
 
-        keybinding
-            .on( '⌫', backspace )
-            .on( '⌦', del )
-            .on( '⎋', ret )
-            .on( '↩', ret );
-
         selection
             .on( 'mousedown.drawarea', mousedown )
             .on( 'mousemove.drawarea', mousemove );
-
-        d3.select( document )
-            .call( keybinding );
 
         return drawarea;
     }

@@ -20,11 +20,14 @@ export function modeAddMeasureLine( context ) {
         .on( 'finish', finish );
 
     function finish( nodeId ) {
-        d3.selectAll( '.measure-line-' + nodeId ).each( function() {
-            d3.select( this.parentNode ).remove();
-        } );
+        d3.selectAll( '.measure-line-' + nodeId ).remove();
 
-        d3.selectAll( '.measure-vertex-' + nodeId ).remove();
+        d3.selectAll( '[class*="measure-line"]')
+            .filter(function() {
+                return d3.select(this).attr('loc1') === d3.select(this).attr('loc2');
+            }).each(function() {
+                this.parentNode.remove();
+            })
 
         if ( d3.select( '.data-layer.measure' ).selectAll( 'g' ).size() ) {
             d3.select( '.tools-toggle' ).text( 'Clear' );

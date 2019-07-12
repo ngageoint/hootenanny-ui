@@ -5,12 +5,10 @@
  *******************************************************************************************************/
 
 import { utilRebind }           from '../util/rebind';
-import { utilKeybinding }       from '../util/keybinding';
 import { geoEuclideanDistance } from '../geo';
 
 export function behaviorDrawMeasureLine( context, svg ) {
     let dispatch       = d3.dispatch( 'move', 'click', 'undo', 'cancel', 'finish', 'dblclick' ),
-        keybinding     = utilKeybinding( 'measure' ),
         closeTolerance = 4,
         tolerance      = 12,
         lastPoint      = null,
@@ -88,10 +86,6 @@ export function behaviorDrawMeasureLine( context, svg ) {
 
     function click() {
         let c = context.projection( context.map().mouseCoordinates() );
-
-        svg.append( 'g' )
-            .classed( 'node point measure-vertex-' + nodeId, true )
-            .attr( 'transform', 'translate(' + c[ 0 ] + ',' + c[ 1 ] + ')' );
 
         totDist     = totDist + segmentDist;
         segmentDist = 0;
@@ -179,18 +173,9 @@ export function behaviorDrawMeasureLine( context, svg ) {
     function drawline( selection ) {
         nodeId = 0;
 
-        keybinding
-            .on( '⌫', backspace )
-            .on( '⌦', del )
-            .on( '⎋', ret )
-            .on( '↩', ret );
-
         selection
             .on( 'mousedown.drawline', mousedown )
             .on( 'mousemove.drawline', mousemove );
-
-        d3.select( document )
-            .call( keybinding );
 
         return drawline;
     }
