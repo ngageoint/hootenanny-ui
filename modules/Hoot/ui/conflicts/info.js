@@ -36,13 +36,11 @@ export default class ConflictMetadata {
     buildTagTable() {
         if ( this.data.currentFeatures !== null ) {
             let colData= this.data.currentFeatures,
-            nowTags1   = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 0 ].id).tags : {} ),
-            nowTags2   = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 1 ].id).tags : {} ),
-            tagsMerged = this.mergeTags( [ nowTags1, nowTags2 ] );
+            tags1   = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 0 ].id).tags : {} ),
+            tags2   = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 1 ].id).tags : {} ),
+            tagsMerged = this.mergeTags( [ tags1, tags2 ] );
 
             let currentRelation = this.instance.graphSync.getCurrentRelation();
-
-            let checkMerge      = this.instance.merge.mergeTags;
 
             if ( this.poiTable ) {
                 this.tableContainer.remove();
