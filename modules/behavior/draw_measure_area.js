@@ -41,8 +41,8 @@ export function behaviorDrawMeasureArea( context, svg ) {
             pos     = point();
 
         element.on( 'dblclick', () => {
-            ret( element );
             polygon.classed( 'measure-complete', true );
+            ret( element );
         } );
 
         element.on( 'mousemove.drawarea', null );
