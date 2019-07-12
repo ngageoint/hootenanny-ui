@@ -9,8 +9,8 @@ import { modeBrowse }              from './browse';
 
 export function modeAddMeasureArea( context ) {
     let addArea = {
-        id: 'measure-add-line',
-        key: '6'
+        id: 'measure-add-area',
+        key: '7'
     };
 
     let svg = d3.select( '.data-layer.measure' ).select( 'svg' );
