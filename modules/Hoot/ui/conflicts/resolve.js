@@ -18,6 +18,7 @@ export default class Resolve {
         this.data     = instance.data;
 
         this.sidebar = Hoot.ui.sidebar;
+        this.noBuild = null;
     }
 
     /**
@@ -42,6 +43,7 @@ export default class Resolve {
             this.instance.info.tableContainer.remove();
 
             let hasChanges = Hoot.context.history().hasChanges();
+            this.noBuild = true;
 
             if ( hasChanges ) {
                 Hoot.layers.mergedConflicts = this.data.mergedConflicts;
