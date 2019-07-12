@@ -210,7 +210,6 @@ export function uiTools( context ) {
             } else {
                 toggle();
             }
-            toolsToggle.on( 'click', null );
         } );
 
         function toggle( cb ) {
