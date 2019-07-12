@@ -930,7 +930,7 @@ export default class API {
     /**
      * Delete a layer from the database
      *
-     * @param layerName - name of layer to delete
+     * @param layerId - map id of layer to delete
      * @returns {Promise<any>}
      */
     deleteLayer( layerId ) {
