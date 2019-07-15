@@ -38,7 +38,7 @@ export default class ConflictMetadata {
      * Create tag table for revieawble items
      */
     buildTagTable() {
-        if ( this.data.currentFeatures !== null ) {
+        if (this.data.currentFeatures !== null) {
             let colData    = this.data.currentFeatures,
             mergeCheck = Object.values(Hoot.context.graph().entities).length > 0,
             tags1      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 0 ].id).tags : {} ),
