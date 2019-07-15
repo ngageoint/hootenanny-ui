@@ -38,10 +38,16 @@ export default class ConflictMetadata {
      * Create tag table for revieawble items
      */
     buildTagTable() {
-        if ( this.data.currentFeatures !== null ) {
+        if (this.data.currentFeatures !== null) {
+            // turn currentFeatures into list of entity ids for entities only in graph
+            // map that filtered list into list of tags, so pass each through filterTags I guess
+            // take that list and put it through mergedTags.
             let colData    = this.data.currentFeatures,
             tags1      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 0 ].id).tags : {} ),
-            tags2      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 1 ].id).tags : {} ),
+            tags2 = this.filterTags(colData[0] ? Hoot.context.graph().entity(colData[1].id).tags : {}),
+            // map this to an array of lists, rather than the list of objects it is now.
+            // right now it is { key: 'tagKey', values: [..list of values] }
+            // our lives would be easier if it was a single list with the tagKey as the first element.
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
 
         let currentRelation = this.instance.graphSync.getCurrentRelation();
@@ -79,7 +85,15 @@ export default class ConflictMetadata {
                 .html( navHtml );
         }
 
-        _forEach( tagsMerged, tag => {
+        // here is where we can do some enter/update/exit.
+        // no longer should we do the for each.
+        // Instead you'll want to do 2 levels of data binding.
+        // first for the table rows, binding the mergedTags list of lists.
+        // then inside each table row, bind each inner list to td elements.
+
+        // for a reference to doing enter/update/exit, see the advanced options class.
+
+        _forEach(tagsMerged, tag => {
             let row = this.poiTable.append( 'tr' );
 
             row.append( 'td' )
