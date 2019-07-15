@@ -127,7 +127,7 @@ export default class Translations extends Tab {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
-                let r = confirm( 'Are you sure you want to delete selected translations?' );
+                let r = Hoot.message.confirm( 'Are you sure you want to delete selected translations?' );
                 if ( !r ) return;
 
                 Hoot.api.deleteTranslation( d.NAME )
@@ -140,7 +140,7 @@ export default class Translations extends Tab {
                             d3.event.stopPropagation();
                             d3.event.preventDefault();
 
-                            alert( 'Can not delete default translations.' );
+                            Hoot.message.alert( 'Can not delete default translations.' );
                         } );
                 } else {
                     d3.select( this ).classed( 'keyline-left _icon trash', true );
