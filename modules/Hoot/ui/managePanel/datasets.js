@@ -240,7 +240,7 @@ export default class Datasets extends Tab {
         switch ( item.click ) {
             case 'delete': {
                 let warningMsg = d.data.type === 'folder' ? 'folder and all data?' : 'datasets?',
-                    message    = `Are you sure you want to remove the selected ${ warningMsg }`,
+                    message    = `Are you sure you want to delete the selected ${ warningMsg }`,
                     confirm    = await Hoot.message.confirm( message );
 
                 if ( !confirm ) return;
