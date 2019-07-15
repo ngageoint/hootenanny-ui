@@ -9,8 +9,8 @@ import { modeBrowse }              from './browse';
 
 export function modeAddMeasureArea( context ) {
     let addArea = {
-        id: 'measure-add-line',
-        key: '6'
+        id: 'measure-add-area',
+        key: '7'
     };
 
     let svg = d3.select( '.data-layer.measure' ).select( 'svg' );
@@ -22,12 +22,6 @@ export function modeAddMeasureArea( context ) {
     function finish( nodeId, ptArr ) {
         if ( ptArr.length < 3 ) {
             d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
-        } else {
-            d3.selectAll( `.measure-line-${ nodeId }` ).each( function() {
-                d3.select( this.parentNode ).remove();
-            } );
-
-            d3.selectAll( `.measure-vertex-${ nodeId }` ).remove();
         }
 
         if ( d3.select( '.data-layer.measure' ).selectAll( 'g' ).size() ) {
