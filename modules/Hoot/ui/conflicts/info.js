@@ -16,7 +16,7 @@ export default class ConflictMetadata {
         this.instance   = instance;
         this.data       = instance.data;
         Hoot.context.history().on('change', function() {
-            if ( Hoot.ui.conflicts.resolve.noBuild === null ) {
+            if ( !Hoot.ui.conflicts.resolve.noBuild ) {
                 Hoot.ui.conflicts.info.buildTagTable();
             }
         });
@@ -104,7 +104,7 @@ export default class ConflictMetadata {
     }
 
     /**
-     * Update table once things change i guess
+     * Remove stale column of tags, leaves only the column of merged tags
      */
 
     removeColumn() {

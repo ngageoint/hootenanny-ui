@@ -18,7 +18,7 @@ export default class Resolve {
         this.data     = instance.data;
 
         this.sidebar = Hoot.ui.sidebar;
-        this.noBuild = null;
+        this.noBuild = false;
     }
 
     /**
