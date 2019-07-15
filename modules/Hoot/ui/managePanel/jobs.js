@@ -204,11 +204,16 @@ export default class Jobs extends Tab {
                     actions.push({
                         title: 'cancel job',
                         icon: 'cancel',
-                        action: () => {
-                            d3.select('#util-jobs').classed('wait', true);
-                            Hoot.api.cancelJob(d.jobId)
-                                .then( resp => this.loadJobs() )
-                                .finally( () => d3.select('#util-jobs').classed('wait', false));
+                        action: async () => {
+                            let message = 'Are you sure you want to cancel this job?',
+                            confirm = await Hoot.message.confirm( message );
+
+                            if ( confirm ) {
+                                d3.select('#util-jobs').classed('wait', true);
+                                Hoot.api.cancelJob(d.jobId)
+                                    .then( resp => this.loadJobs() )
+                                    .finally( () => d3.select('#util-jobs').classed('wait', false));
+                            }
                         }
                     });
                 }
