@@ -27,7 +27,7 @@ export function modeAddMeasureLine( context ) {
                 return d3.select(this).attr('loc1') === d3.select(this).attr('loc2');
             }).each(function() {
                 this.parentNode.remove();
-            })
+            });
 
         if ( d3.select( '.data-layer.measure' ).selectAll( 'g' ).size() ) {
             d3.select( '.tools-toggle' ).text( 'Clear' );
