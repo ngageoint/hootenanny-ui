@@ -4,6 +4,8 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/16/18
  *******************************************************************************************************/
 
+import { d3_tsv } from 'd3-dsv';
+
 export default class LayerMetadata {
     constructor( context, form, layer ) {
         this.context  = context;
@@ -11,6 +13,7 @@ export default class LayerMetadata {
         this.layer    = layer;
         this.tags     = layer.tags;
         this.metadata = null;
+        this.download = '';
     }
 
     render() {
@@ -119,15 +122,81 @@ export default class LayerMetadata {
             .html( d => d.value );
     }
 
+    createExpandTables(data, title) {
+        let container, table, tr, mapMeta = this;
+
+        container = this.body.append('a')
+            .text(title)
+            .on('click', () => mapMeta.toggleList(container, title));
+
+        table = this.body.append('div')
+            .classed('metadata-table round hidden', true)
+            .selectAll('table')
+            .data(data)
+            .enter().append('table')
+            .attr('class', function (d) { return `metadata-table round hidden ${d.key}`; });
+
+        let rows = table.selectAll('tr')
+            .data(function (d) { return d3.entries(d.value); })
+            .enter().append('tr')
+            .classed('metadata-row', true);
+
+        rows.selectAll('td')
+            .data(function (d) {
+                let dv = d3.entries(d.value);
+                return [d.key].concat(dv.map((v) => v.value));
+            })
+            .enter().append('td')
+            .html(d => d)
+            .classed('tar', function (d, i) { return i > 0; })
+            .classed('key', function (d, i) { return i === 0; });
+    }
+
+    formatPercent(d) {
+        return parseFloat(d).toFixed(1) + '%';
+    }
+
+    addToDownload(value) {
+        Object.values(value.diffstats).forEach((v) => {
+            this.download += `${Object.values(v).join('\t')}\n`;
+        });
+    }
+
+    addDownloadLink(d) {
+        let download = this.download;
+        this.body.append('a')
+            .text('Download')
+            .attr('href', '#')
+            .classed('hide-toggle', true)
+            .classed('expanded', false)
+            .on('click', function() {
+                var fileName = d.name.replace(/\s/g, '_');
+                var blob = new Blob([download], {type: 'text/tab-separated-values;charset=utf-8'});
+                window.saveAs(blob, fileName + '-stats.tsv');
+                d3.event.preventDefault();
+            });
+    }
+
+
     parseTags() {
         let tags = JSON.parse( this.tags.params.replace( /\\"/g, '"' ) );
 
-        let paramData = d3.entries( {
-            'Reference Layer': this.tags.input1Name || 'Reference Layer Missing',
-            'Secondary Layer': this.tags.input2Name || 'Secondary Layer Missing',
-            'Conflation Type': tags.CONFLATION_TYPE,
-            'Conflated Layer': this.layer.name
-        } );
+        let params = {
+                'Reference Layer': this.tags.input1Name || 'Reference Layer Missing',
+                'Secondary Layer': this.tags.input2Name || 'Secondary Layer Missing',
+                'Conflation Type': tags.CONFLATION_TYPE,
+                'Conflated Layer': this.layer.name
+            },
+            { RefLayerName, SecLayerName, ConflationType, ConflatedLayer } = params,
+            formatPercent = this.formatPercent,
+            paramData = d3.entries(params);
+
+
+        this.download = 'Parameters:\n';
+
+        paramData.forEach((p) => {
+            this.download += `${p.key}\t${p.value}\n`;
+        });
 
         let optData = d3.entries( tags.ADV_OPTIONS ).sort( ( a, b ) => {
             if ( a.key < b.key ) {
@@ -138,9 +207,188 @@ export default class LayerMetadata {
             }
             // a must be equal to b
             return 0;
-        } );
+        });
+
+        this.download += '\nOptions:\n';
+        optData.forEach((o) => {
+            this.download += `${o.key}\t${o.value}\n`;
+        });
 
         this.createExpandList( paramData, 'Parameters' );
         this.createExpandList( optData, 'Options' );
+
+        if (this.tags.hasOwnProperty('stats')) {
+            let stats = d3_tsv.tsvParse(this.tags.stats).reduce(function (stats, d) {
+                stats[d.shift()] = d;
+                return stats;
+            }, {});
+
+            const tableConfig = {
+                layercounts: {
+                    count: {
+                        1: 'nodes',
+                        2: 'ways',
+                        3: 'relations'
+                    },
+                    [RefLayerName]: {
+                        nodes: stats.Nodes[0],
+                        ways: stats.Ways[0],
+                        relations: stats.Relations[0]
+                    },
+                    [SecLayerName]: {
+                        nodes: stats.Nodes[1],
+                        ways: stats.Ways[1],
+                        relations: stats.Relations[1]
+                    },
+                    [ConflatedLayer]: {
+                        nodes: stats.Nodes[2],
+                        ways: stats.Ways[2],
+                        relations: stats.Relations[2]
+                    }
+                },
+                layerfeatures: {
+                    count: {
+                        1: 'pois',
+                        2: 'roads',
+                        3: 'buildings'
+                    },
+                    [RefLayerName]: {
+                        pois: stats.POIs[0],
+                        roads: stats.Roads[0],
+                        buildings: stats.Buildings[0]
+                    },
+                    [SecLayerName]: {
+                        pois: stats.POIs[1],
+                        roads: stats.Roads[1],
+                        buildings: stats.Buildings[1]
+                    },
+                    [ConflatedLayer]: {
+                        pois: stats.POIs[2],
+                        roads: stats.Roads[2],
+                        buildings: stats.Buildings[2]
+                    }
+                },
+                featurecounts: {
+                    count: {
+                        1: 'unmatched',
+                        2: 'merged',
+                        3: 'review'
+                    },
+                    pois: {
+                        unmatched: stats['Unmatched POIs'][2],
+                        merged: stats['Conflated POIs'][2],
+                        review: stats['POIs Marked for Review'][2]
+                    },
+                    roads: {
+                        unmatched: stats['Unmatched Roads'][2],
+                        merged: stats['Conflated Roads'][2],
+                        review: stats['Roads Marked for Review'][2]
+                    },
+                    buildings: {
+                        unmatched: stats['Unmatched Buildings'][2],
+                        merged: stats['Conflated Buildings'][2],
+                        review: stats['Buildings Marked for Review'][2]
+                    }
+                },
+                featurepercents: {
+                    percent: {
+                        1: 'unmatched',
+                        2: 'merged',
+                        3: 'review'
+                    },
+                    pois: {
+                        unmatched: formatPercent(stats['Percentage of Unmatched POIs'][2]),
+                        merged: formatPercent(stats['Percentage of POIs Conflated'][2]),
+                        review: formatPercent(stats['Percentage of POIs Marked for Review'][2])
+                    },
+                    roads: {
+                        unmatched: formatPercent(stats['Percentage of Unmatched Roads'][2]),
+                        merged: formatPercent(stats['Percentage of Roads Conflated'][2]),
+                        review: formatPercent(stats['Percentage of Roads Marked for Review'][2])
+                    },
+                    buildings: {
+                        unmatched: formatPercent(stats['Percentage of Unmatched Buildings'][2]),
+                        merged: formatPercent(stats['Percentage of Buildings Conflated'][2]),
+                        review: formatPercent(stats['Percentage of Buildings Marked for Review'][2])
+                    }
+                }
+            };
+
+            //Add waterways stats if present
+            if (stats.Waterways) {
+                tableConfig.layerfeatures.count['4'] = 'waterways';
+                tableConfig.layerfeatures[RefLayerName].waterways = stats.Waterways[0];
+                tableConfig.layerfeatures[SecLayerName].waterways = stats.Waterways[1];
+                tableConfig.layerfeatures[ConflatedLayer].waterways = stats.Waterways[2];
+
+                tableConfig.featurecounts.waterways = {
+                    unmatched: stats['Unmatched Waterways'][2],
+                    merged: stats['Conflated Waterways'][2],
+                    review: stats['Waterways Marked for Review'][2]
+                };
+                tableConfig.featurepercents.waterways = {
+                    unmatched: formatPercent(stats['Percentage of Unmatched Waterways'][2]),
+                    merged: formatPercent(stats['Percentage of Waterways Conflated'][2]),
+                    review: formatPercent(stats['Percentage of Waterways Marked for Review'][2])
+                };
+            }
+
+            this.download += '\nStatistics:\n';
+
+            if (ConflatedLayer.includes('Differentials')) {
+                // eslint-disable-next-line radix
+                let poiOrig = parseInt(stats.POIs[0]), poiNew = parseInt(stats['New POIs'][3]),
+                    // eslint-disable-next-line radix
+                    buildOrig = parseInt(stats.Buildings[0]), buildNew = parseInt(stats['New Buildings'][3]),
+                    // eslint-disable-next-line radix
+                    kmOrig = parseInt(stats.Buildings[0]) / 1000.0, kmNew = parseInt(stats['New Buildings'][3]);
+
+
+                tableConfig.diffstats = {
+                    Differential: {
+                        1: 'original',
+                        2: 'new',
+                        3: 'total'
+                    },
+                    POIs: {
+                        original: poiOrig,
+                        new: poiNew,
+                        total: poiOrig + poiNew
+                    },
+                    Buildings: {
+                        original: buildOrig,
+                        buildNew: buildNew,
+                        total: poiOrig + poiNew
+                    },
+                    kmOrig: {
+                        original: kmOrig.toFixed.toFixed(2),
+                        kmNew: kmNew.toFixed(2),
+                        total: (kmOrig + kmNew).toFixed(2)
+                    }
+                };
+
+                this.download += '\nDiff Stats:\n';
+                this.addToDownload(tableConfig.diffstats);
+            }
+
+            this.download += '\nLayer Counts:\n';
+            this.addToDownload(tableConfig.layercounts);
+
+            this.download += '\nLayer Features:\n';
+            this.addToDownload(tableConfig.layerfeatures);
+
+            this.download += '\nFeature Counts:\n';
+            this.addToDownload(tableConfig.featurecounts);
+
+            this.download += '\nFeature Percents:\n';
+            this.addToDownload(tableConfig.featurepercents);
+            this.download += '\nStatistics (Raw):\n';
+            this.download += this.tags.stats;
+
+            this.createExpandTables(d3.entries(tableConfig), 'Statistics');
+            this.createExpandList(d3.entries(stats), 'Statistics (Raw)');
+
+            this.addDownloadLink(this.tags);
+        }
     }
 }
