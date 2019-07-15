@@ -17,6 +17,11 @@ export default class ConflictMetadata {
     constructor( instance ) {
         this.instance = instance;
         this.data     = instance.data;
+        Hoot.context.history().on('change', function() {
+            if ( !Hoot.ui.conflicts.resolve.noBuild ) {
+                Hoot.ui.conflicts.info.buildTagTable();
+            }
+        });
 
         this.tagBlacklist = [
             /hoot*/,
@@ -33,9 +38,10 @@ export default class ConflictMetadata {
      * Create tag table for revieawble items
      */
     buildTagTable() {
-        let colData    = this.data.currentFeatures,
-            tags1      = this.filterTags( colData[ 0 ] ? colData[ 0 ].tags : {} ),
-            tags2      = this.filterTags( colData[ 1 ] ? colData[ 1 ].tags : {} ),
+        if ( this.data.currentFeatures !== null ) {
+            let colData    = this.data.currentFeatures,
+            tags1      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 0 ].id).tags : {} ),
+            tags2      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 1 ].id).tags : {} ),
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
 
         let currentRelation = this.instance.graphSync.getCurrentRelation();
@@ -108,6 +114,44 @@ export default class ConflictMetadata {
         this.poiTable.selectAll( '.value-col' )
             .on( 'mouseenter', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true ) )
             .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
+        }
+
+    }
+
+    /**
+     * Remove stale column of tags once user merges feature tags
+     */
+
+    removeColumn() {
+        if ( this.data.currentFeatures !== null ) {
+
+            this.tableContainer.remove();
+
+            this.tableContainer = this.instance.rightContainer
+                .insert( 'div', ':first-child' )
+                .classed( 'tag-table', true );
+
+            let colData = this.data.currentFeatures,
+            tags1       = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 0 ].id).tags : {} ),
+            orderTags   = this.mergeTags( [tags1] );
+
+            this.poiTable = this.tableContainer.append( 'table' );
+
+            _forEach( orderTags, tag => {
+                let row = this.poiTable.append( 'tr' )
+                .classed( 'table-head', true );
+
+                row.append( 'td' )
+                    .classed( 'fillD', true )
+                    .text( _startCase( tag.key ) );
+
+                row.selectAll( 'td.feature1' )
+                    .data( [ { k: 1 } ] ).enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature1', true )
+                    .text( tag.value );
+            } );
+        }
     }
 
     selectEntity(entity) {

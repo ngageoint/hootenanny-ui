@@ -24,6 +24,7 @@ export default class Merge {
      * @param instance - conflicts class
      */
     constructor( instance ) {
+        this.instance = instance;
         this.data = instance.data;
 
         this.mergeArrow = {
@@ -91,6 +92,8 @@ export default class Merge {
         }
 
         this.processMerge( reviewRefs, mergedFeature, featureDelete );
+
+        this.instance.info.removeColumn();
     }
 
     /**
