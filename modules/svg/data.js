@@ -482,7 +482,10 @@ export function svgData(projection, context, dispatch) {
         if (extension) {
             _template = null;
             d3_text(url, function(err, data) {
-                if (err) return;
+                if (err) {
+                    window.console.error(err);
+                    return;
+                }
                 drawData.setFile(extension, data);
             });
         } else {
@@ -497,13 +500,10 @@ export function svgData(projection, context, dispatch) {
         return _src || '';
     };
 
-
-    drawData.fitZoom = function() {
+    function flattenCoords() {
         var features = getFeatures(_geojson);
         if (!features.length) return;
 
-        var map = context.map();
-        var viewport = map.trimmedExtent().polygon();
         var coords = _reduce(features, function(coords, feature) {
             var c = feature.geometry.coordinates;
 
@@ -527,6 +527,17 @@ export function svgData(projection, context, dispatch) {
             return _union(coords, c);
         }, []);
 
+        return coords;
+    }
+
+    drawData.extent = function() {
+        return geoExtent(d3_geoBounds({ type: 'LineString', coordinates: flattenCoords() }));
+    }
+
+    drawData.fitZoom = function() {
+        let coords = flattenCoords();
+        var map = context.map();
+        var viewport = map.trimmedExtent().polygon();
         if (!geoPolygonIntersectsPolygon(viewport, coords, true)) {
             var extent = geoExtent(d3_geoBounds({ type: 'LineString', coordinates: coords }));
             map.centerZoom(extent.center(), map.trimmedExtentZoom(extent));

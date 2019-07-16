@@ -149,6 +149,24 @@ export default class SelectBbox extends EventEmitter {
                 that.handleBbox( that.context.map().extent() );
                 that.bboxSelectType = 'visualExtent';
             } );
+
+        let customDataLayer = this.context.layers().layer('data');
+        if (customDataLayer.hasData() && customDataLayer.enabled()) {
+            bboxOptions
+                .append( 'button' )
+                .classed( 'keyline-all', true )
+                .text( 'Use Custom Data Extent' )
+                .on( 'click', function() {
+                    d3.select( this.parentNode )
+                        .selectAll( 'button' )
+                        .classed( 'selected', false );
+
+                    d3.select( this ).classed( 'selected', true );
+
+                    that.handleBbox( customDataLayer.extent() );
+                    that.bboxSelectType = 'customDataExtent';
+                } );
+        }
     }
 
     handleBbox( extent ) {
