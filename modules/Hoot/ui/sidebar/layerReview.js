@@ -6,6 +6,7 @@
 
 import ExportData from '../modals/exportData';
 import SidebarForm from './sidebarForm';
+import LayerConflate from './layerConflate';
 
 /**
  * @class LayerReview
@@ -73,7 +74,7 @@ export default class LayerReview extends SidebarForm {
         this.acceptAll.remove();
 
         let layer = this.layer;
-        let btnContainer = this.fieldset.append( 'div' )
+        let btnContainer = this.fieldset.append('div')
             .classed( 'hoot-form-field action-container', true );
 
         btnContainer.append( 'button' )
@@ -85,9 +86,14 @@ export default class LayerReview extends SidebarForm {
 
             });
 
-        btnContainer.append( 'button' )
-            .classed( 'button dark text-light small strong round', true )
-            .text( 'Add Another Datasets' );
+        btnContainer.append('button')
+            .classed('button dark text-light small strong round', true)
+            .text('Add Another Datasets')
+            .on('click', async () => {
+                await Hoot.layers.refreshLayers();
+                Hoot.layers.removeAllLoadedLayers();
+                await Hoot.layers.addHashLayer('reference', layer.id);
+            });
     }
 
     /**
