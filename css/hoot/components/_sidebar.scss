@@ -374,7 +374,7 @@
     .context-menu-layer {
         position: absolute;
         display: inline-block;
-        width: calc(100% - 100px);
+        // width: calc(100% - 100px);
         height: 60px;
         line-height: 60px;
         overflow: hidden;

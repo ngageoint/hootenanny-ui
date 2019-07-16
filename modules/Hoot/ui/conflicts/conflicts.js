@@ -96,6 +96,7 @@ export default class Conflicts {
         Hoot.context.map().on( 'drawn', () => this.map.setHighlight() );
 
         this.traverse.jumpTo( 'forward' );
+        d3.select('.showlayers').classed('hide', false);
     }
 
     /**

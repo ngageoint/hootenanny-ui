@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import _reject       from 'lodash-es/reject';
-
+import { svgIcon }    from '../../../svg';
 import LayerMetadata from './layerMetadata';
 
 class SidebarController {
@@ -178,6 +178,38 @@ class SidebarController {
             } );
     }
 
+    createShowLayersButton() {
+        let sources;
+        this.showButton = this.controller
+            .append('button')
+            .classed('showlayers icon-button keyline-left inline unround hide', true)
+            .call(svgIcon('#iD-icon-layers'))
+            .on('click', async () => {
+                d3.event.preventDefault();
+                if (!sources) {
+                    sources = Object.values(Hoot.layer.loadedLayers).reduce((sources, l) => {
+                        let key = l.merged ? 'merged' : 'original';
+                        sources[key] = (sources[key] || []).concat(l);
+                        return sources;
+                    });
+                }
+                if (Object.values(Hoot.layers.loadedLayers).findIndex(l => l.merged) !== -1) {
+                    // let merged = Object.values(Hoot.layers.loadedLayers).find(l => l.merged).id;
+                    // Hoot.layers.hideLayer(merged);
+                    // let sources = Object.values(Hoot.layers.loadedLayers).reduce((sources, l) => {
+                    //     let key = l.merged ? 'merged' : 'original';
+                    //     sources[key] = (sources[key] || []).concat(l);
+                    //     return sources;
+                    // }, {});
+
+                    // if (sources.merged) {
+                    //     Hoot.layers.hideLayer(sources.merged[0].id);
+                    // }
+
+                }
+            });
+    }
+
     createCancelButton() {
         this.cancelButton = this.controller
             .append( 'button' )
@@ -282,8 +314,13 @@ class SidebarController {
 
             this.metadata = new LayerMetadata( this.context, this.form, layer );
             this.metadata.render();
-            this.contextLayer.style( 'width', 'calc( 100% - 145px )' );
+            // this.contextLayer.style( 'width', 'calc( 100% - 145px )' );
         }
+
+        if (layer.merged) {
+            this.createShowLayersButton();
+        }
+
     }
 }
 
