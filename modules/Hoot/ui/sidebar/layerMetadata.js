@@ -4,8 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/16/18
  *******************************************************************************************************/
 
-import { d3_tsv } from 'd3-dsv';
-
 export default class LayerMetadata {
     constructor( context, form, layer ) {
         this.context  = context;
@@ -126,15 +124,17 @@ export default class LayerMetadata {
         let container, table, tr, mapMeta = this;
 
         container = this.body.append('a')
+            .classed('hide-toggle-button expand-title', true)
             .text(title)
             .on('click', () => mapMeta.toggleList(container, title));
 
         table = this.body.append('div')
-            .classed('metadata-table round hidden', true)
+            .classed('hidden', true)
+            .attr( 'title', `table-${ title }` )
             .selectAll('table')
             .data(data)
             .enter().append('table')
-            .attr('class', function (d) { return `metadata-table round hidden ${d.key}`; });
+            .attr('class', function (d) { return `metadata-table round ${d.key}`; });
 
         let rows = table.selectAll('tr')
             .data(function (d) { return d3.entries(d.value); })
@@ -147,9 +147,9 @@ export default class LayerMetadata {
                 return [d.key].concat(dv.map((v) => v.value));
             })
             .enter().append('td')
-            .html(d => d)
-            .classed('tar', function (d, i) { return i > 0; })
-            .classed('key', function (d, i) { return i === 0; });
+            .classed('metadata', true)
+            .classed('metadata-key keyline-right', function (d, i) { return i === 0; })
+            .text(d => d);
     }
 
     formatPercent(d) {
@@ -157,22 +157,20 @@ export default class LayerMetadata {
     }
 
     addToDownload(value) {
-        Object.values(value.diffstats).forEach((v) => {
-            this.download += `${Object.values(v).join('\t')}\n`;
+        Object.keys(value).forEach((k) => {
+            this.download += `${k}\t${Object.values(value[k]).join('\t')}\n`;
         });
     }
 
-    addDownloadLink(d) {
+    addDownloadLink(name) {
         let download = this.download;
         this.body.append('a')
             .text('Download')
             .attr('href', '#')
-            .classed('hide-toggle', true)
-            .classed('expanded', false)
+            .classed('hide-toggle-button expand-title', true)
             .on('click', function() {
-                var fileName = d.name.replace(/\s/g, '_');
                 var blob = new Blob([download], {type: 'text/tab-separated-values;charset=utf-8'});
-                window.saveAs(blob, fileName + '-stats.tsv');
+                window.saveAs(blob, `${name.replace(/\s/g, '_')}-stats.tsv`);
                 d3.event.preventDefault();
             });
     }
@@ -181,13 +179,16 @@ export default class LayerMetadata {
     parseTags() {
         let tags = JSON.parse( this.tags.params.replace( /\\"/g, '"' ) );
 
-        let params = {
-                'Reference Layer': this.tags.input1Name || 'Reference Layer Missing',
-                'Secondary Layer': this.tags.input2Name || 'Secondary Layer Missing',
-                'Conflation Type': tags.CONFLATION_TYPE,
-                'Conflated Layer': this.layer.name
+        let RefLayerName = this.tags.input1Name || 'Reference Layer Missing',
+            SecLayerName = this.tags.input2Name || 'Secondary Layer Missing',
+            ConflationType = tags.CONFLATION_TYPE,
+            ConflatedLayer = this.layer.name,
+            params = {
+                'Reference Layer': RefLayerName,
+                'Secondary Layer': SecLayerName,
+                'Conflation Type': ConflationType,
+                'Conflated Layer': ConflatedLayer
             },
-            { RefLayerName, SecLayerName, ConflationType, ConflatedLayer } = params,
             formatPercent = this.formatPercent,
             paramData = d3.entries(params);
 
@@ -218,7 +219,7 @@ export default class LayerMetadata {
         this.createExpandList( optData, 'Options' );
 
         if (this.tags.hasOwnProperty('stats')) {
-            let stats = d3_tsv.tsvParse(this.tags.stats).reduce(function (stats, d) {
+            let stats = d3.tsvParseRows(this.tags.stats).reduce(function(stats, d) {
                 stats[d.shift()] = d;
                 return stats;
             }, {});
@@ -388,7 +389,7 @@ export default class LayerMetadata {
             this.createExpandTables(d3.entries(tableConfig), 'Statistics');
             this.createExpandList(d3.entries(stats), 'Statistics (Raw)');
 
-            this.addDownloadLink(this.tags);
+            this.addDownloadLink(ConflatedLayer);
         }
     }
 }
