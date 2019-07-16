@@ -134,7 +134,7 @@ export default class API {
 
     getSaveUser( userEmail ) {
         const params = {
-            path: '/osm/user',
+            path: '/osm/api/0.6/user',
             method: 'POST',
             params: {
                 userEmail
@@ -147,7 +147,7 @@ export default class API {
 
     getAllUsers() {
         const params = {
-            path: '/osm/user/all',
+            path: '/osm/api/0.6/user/all',
             method: 'GET'
         };
 
