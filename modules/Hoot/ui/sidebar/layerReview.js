@@ -6,7 +6,6 @@
 
 import ExportData from '../modals/exportData';
 import SidebarForm from './sidebarForm';
-import LayerConflate from './layerConflate';
 
 /**
  * @class LayerReview
