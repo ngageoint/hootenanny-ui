@@ -181,7 +181,7 @@ export default class Layers {
         this.hashLayers[type] = parseInt(mapId, 10);
     }
 
-    async loadLayer( params ) {
+    async loadLayer( params, reviewMode ) {
         try {
             let mapId       = params.id,
                 tags        = await this.hoot.api.getMapTags( mapId ),
@@ -219,13 +219,13 @@ export default class Layers {
                 window.location.replace('#' + utilQsString(q, true));
             }
 
-            if ( tags.input1 || tags.input2 ) {
+            if ( (tags.input1 || tags.input2) && !reviewMode) {
                 layer = await this.checkForReview( layer );
             }
 
             this.loadedLayers[ layer.id ] = layer;
 
-            if (layerExtent.toParam() !== '-180,-90,180,90') {
+            if (!reviewMode && layerExtent.toParam() !== '-180,-90,180,90') {
                 if (layer.merged && Hoot.context.map().trimmedExtentZoom(layerExtent) < 16) {
                     _debounce(() => { Hoot.context.map().centerZoom(layerExtent.center(), 16); }, 400)();
                 } else {

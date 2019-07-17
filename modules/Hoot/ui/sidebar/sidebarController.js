@@ -4,6 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/3/18
  *******************************************************************************************************/
 
+import _debounce from 'lodash-es/debounce';
 import _reject       from 'lodash-es/reject';
 import { svgIcon }    from '../../../svg';
 import LayerMetadata from './layerMetadata';
@@ -182,32 +183,49 @@ class SidebarController {
         let sources;
         this.showButton = this.controller
             .append('button')
-            .classed('showlayers icon-button keyline-left inline unround hide', true)
+            .classed('showlayers icon-button keyline-left inline unround', true)
             .call(svgIcon('#iD-icon-layers'))
-            .on('click', async () => {
-                d3.event.preventDefault();
-                if (!sources) {
-                    sources = Object.values(Hoot.layer.loadedLayers).reduce((sources, l) => {
-                        let key = l.merged ? 'merged' : 'original';
-                        sources[key] = (sources[key] || []).concat(l);
-                        return sources;
-                    });
-                }
-                if (Object.values(Hoot.layers.loadedLayers).findIndex(l => l.merged) !== -1) {
-                    // let merged = Object.values(Hoot.layers.loadedLayers).find(l => l.merged).id;
-                    // Hoot.layers.hideLayer(merged);
-                    // let sources = Object.values(Hoot.layers.loadedLayers).reduce((sources, l) => {
-                    //     let key = l.merged ? 'merged' : 'original';
-                    //     sources[key] = (sources[key] || []).concat(l);
-                    //     return sources;
-                    // }, {});
+            .on('click', async function () {
+                try {
+                    let span = d3.select(this).select('span');
+                    d3.event.preventDefault();
+                    if (!sources) {
+                        sources = Object.values(Hoot.layers.loadedLayers).reduce((sources, l) => {
+                            let key = l.merged ? 'merged' : 'original';
+                            sources[key] = key === 'merged' ? l : (sources[key] || []).concat(l);
+                            return sources;
+                        }, {});
+                    }
 
-                    // if (sources.merged) {
-                    //     Hoot.layers.hideLayer(sources.merged[0].id);
-                    // }
 
+                    const isMerged = Object.values(Hoot.layers.loadedLayers).findIndex(l => l.merged) !== -1;
+                    const zoom = [Array.from(Hoot.context.extent().center()), Number(Hoot.context.map().zoom())]; // make sure are copying the variables.
+
+                    Hoot.layers.loadedLayers = {};
+                    Hoot.context.flush();
+                    if (isMerged) {
+                        span.text('Original');
+                        Hoot.context.background().removeSource(sources.merged.id);
+                        Hoot.layers.hootOverlay.removeGeojson(sources.merged.id);
+
+                        let load = Hoot.layers.loadLayer.bind(Hoot.layers);
+                        await Promise.all(sources.original.map((l) => { load(l, true);}));
+                    } else {
+                        span.text('Merged');
+                        sources.original.forEach(layer => {
+                            Hoot.context.background().removeSource(layer.id);
+                            Hoot.layers.hootOverlay.removeGeojson(layer.id);
+                        });
+
+                        await Hoot.layers.loadLayer(sources.merged, true);
+                    }
+                    _debounce(() => { Hoot.context.map().centerZoom(...zoom); }, 400)();
+                } catch (e) {
+                    console.log(e);
                 }
             });
+
+        this.showButton.append('span').text('Merged');
     }
 
     createCancelButton() {
