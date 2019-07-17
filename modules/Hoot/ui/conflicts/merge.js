@@ -31,7 +31,6 @@ export default class Merge {
             from: null,
             to: null
         };
-
     }
 
     /**
@@ -40,6 +39,7 @@ export default class Merge {
      * @returns {Promise<void>}
      */
     async mergeFeatures() {
+        Hoot.ui.conflicts.resolve.noBuild = null;
         let features = _clone( this.data.currentFeatures ),
             reverse  = d3.event.ctrlKey || d3.event.metaKey,
             featureUpdate,

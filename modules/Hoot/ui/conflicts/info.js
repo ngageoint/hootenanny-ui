@@ -43,11 +43,7 @@ export default class ConflictMetadata {
             mergeCheck = Object.values(Hoot.context.graph().entities).length > 0,
             tags1      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 0 ].id).tags : {} ),
             tags2      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 1 ].id).tags : {} ),
-            merge1     = this.filterTags( Object.values(Hoot.context.graph().entities).length > 0 ? Object.values(Hoot.context.graph().entities)[0].tags : {} ),
-            mergeTable = this.mergeTags( [ merge1 ] ),
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
-
-        let currentRelation = this.instance.graphSync.getCurrentRelation();
 
         this.tableContainer = this.instance.rightContainer
             .selectAll( '.tag-table' )
@@ -96,7 +92,11 @@ export default class ConflictMetadata {
             .append( 'td' )
             .classed( 'value-col feature1', true )
             .merge( tableData1 )
-            .text( function(d) { return d; });
+            .text( function(d) { return d; })
+            .on('click', () => {
+                this.panToEntity(this.data.currentFeatures[0]);
+                this.selectEntity(this.data.currentFeatures[0]);
+            });
 
         if ( !mergeCheck ) {
             var tableData2 = rows
@@ -110,107 +110,34 @@ export default class ConflictMetadata {
                 .append( 'td' )
                 .classed( 'value-col feature2', true )
                 .merge( tableData2 )
-                .text( function(d) { return d; } );
+                .text( function(d) { return d; } )
+                .on('click', () => {
+                    this.panToEntity(this.data.currentFeatures[1]);
+                    this.selectEntity(this.data.currentFeatures[1]);
+                });
 
         }
+        var getTable = this.tableContainer
+            .selectAll( 'table' )
+            .data( tagsMerged );
 
-        // if ( currentRelation.members.length > 2 ) {
-        //     let navHtml = '<div class="navigation-wrapper"><div class="prev">&lt;&lt;</div><div class="next">&gt;&gt;</div></div>';
-        //     let row = this.poiTable.append( 'tr' )
-        //         .classed( 'table-head', true );
+        getTable.exit().remove();
 
-        //     row.append( 'td' )
-        //         .classed( 'fillD', true )
-        //         .text( 'Review Item' );
+        getTable
+            .enter()
+            .merge( getTable );
 
-        //     row.selectAll( 'td.feature1' )
-        //         .data( [ { k: 1 } ] ).enter()
-        //         .append( 'td' )
-        //         .classed( 'value-col feature1', true )
-        //         .html( navHtml );
+        var updateHighlight = getTable
+            .selectAll( '.value-col' )
+            .data( [0] );
 
-        //     row.selectAll( 'td.feature2' )
-        //         .data( [ { k: 2 } ] ).enter()
-        //         .append( 'td' )
-        //         .classed( 'value-col feature2', true )
-        //         .html( navHtml );
-        // }
+        updateHighlight.exit().remove();
 
-
-
-        // _forEach(  mergeCheck ? mergeTable : tagsMerged,
-        //     tag => {
-
-        //     let row = this.poiTable.append( 'tr' );
-
-        //     row.append( 'td')
-        //         .classed( 'fillD', true )
-        //         .text( _startCase( tag.key ));
-
-        //     row.selectAll( 'td.feature1' )
-        //       .data( [ { tagsMerged } ] ).enter()
-        //       .append( 'td' )
-        //       .classed( 'value-col feature1', true )
-        //       .text( tag.value[ 0 ] );
-
-        //     row.selectAll( 'td.value-col.feature1' )
-        //         .on('click', () => {
-        //             this.panToEntity(this.data.currentFeatures[0]);
-        //             this.selectEntity(this.data.currentFeatures[0]);
-        //         });
-
-            // if ( mergeCheck ) {
-            //     row.append( 'td' )
-            //         .classed( 'fillD', true )
-            //         .text( _startCase( tag.key ) );
-
-            //     row.selectAll( 'td.feature1' )
-            //         .data( [ { k: 1 } ] ).enter()
-            //         .append( 'td' )
-            //         .classed( 'value-col feature1', true )
-            //         .text( tag.value[ 0 ] );
-
-            //     row.selectAll( 'td.value-col.feature1' )
-            //         .on('click', () => {
-            //             this.panToEntity(this.data.currentFeatures[0]);
-            //             this.selectEntity(this.data.currentFeatures[0]);
-            //         });
-
-            // } else {
-            //     row.append( 'td' )
-            //         .classed( 'fillD', true )
-            //         .text( _startCase( tag.key ) );
-
-            //     row.selectAll( 'td.feature1' )
-            //         .data( [ { k: 1 } ] ).enter()
-            //         .append( 'td' )
-            //         .classed( 'value-col feature1', true )
-            //         .text( tag.value[ 0 ] );
-
-            //     row.selectAll( 'td.value-col.feature1' )
-            //         .on('click', () => {
-            //             this.panToEntity(this.data.currentFeatures[0]);
-            //             this.selectEntity(this.data.currentFeatures[0]);
-            //         });
-
-            //     row.selectAll( 'td.feature2' )
-            //         .data( [ { k: 2 } ] ).enter()
-            //         .append( 'td' )
-            //         .classed( 'value-col feature2', true )
-            //         .text( tag.value[ 1 ] );
-
-            //     row.selectAll( 'td.value-col.feature2' )
-            //         .on('click', () => {
-            //             this.panToEntity(this.data.currentFeatures[1]);
-            //             this.selectEntity(this.data.currentFeatures[1]);
-            //         });
-            // }
-
-        //} );
-
-        // this.poiTable.selectAll( '.value-col' )
-        //     .on( 'mouseenter', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true ) )
-        //     .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
+        updateHighlight
+            .enter()
+            .merge( updateHighlight )
+            .on( 'mouseenter', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true ) )
+            .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
         }
 
     }
