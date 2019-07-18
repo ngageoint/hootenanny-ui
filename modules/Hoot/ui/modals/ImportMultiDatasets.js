@@ -118,6 +118,7 @@ export default class ImportMultiDatasets {
             this.updateButtonState();
         } else {
             this.asSingleLayerName.node().disabled = true;
+            this.updateButtonState();
         }
 
         // filter out geoname translations
