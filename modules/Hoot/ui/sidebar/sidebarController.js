@@ -8,6 +8,7 @@ import _debounce from 'lodash-es/debounce';
 import _reject       from 'lodash-es/reject';
 import { svgIcon }    from '../../../svg';
 import LayerMetadata from './layerMetadata';
+import { uiBackground } from '../../../ui';
 
 class SidebarController {
     constructor( form, layer ) {
@@ -180,7 +181,7 @@ class SidebarController {
     }
 
     createShowLayersButton() {
-        let sources;
+        let sources, isMerged = true;
         this.showButton = this.controller
             .append('button')
             .classed('showlayers icon-button keyline-left inline unround', true)
@@ -197,29 +198,23 @@ class SidebarController {
                         }, {});
                     }
 
-
-                    const isMerged = Object.values(Hoot.layers.loadedLayers).findIndex(l => l.merged) !== -1;
-                    const zoom = [Array.from(Hoot.context.extent().center()), Number(Hoot.context.map().zoom())]; // make sure are copying the variables.
-
                     Hoot.layers.loadedLayers = {};
                     Hoot.context.flush();
+
                     if (isMerged) {
                         span.text('Original');
-                        Hoot.context.background().removeSource(sources.merged.id);
-                        Hoot.layers.hootOverlay.removeGeojson(sources.merged.id);
-
-                        let load = Hoot.layers.loadLayer.bind(Hoot.layers);
-                        await Promise.all(sources.original.map((l) => { load(l, true);}));
+                        Hoot.layers.removeLoadedLayer(sources.merged.id);
+                        await Promise.all([
+                            Hoot.layers.loadLayer(sources.original[0], true),
+                            Hoot.layers.loadLayer(sources.original[1], true)
+                        ]);
                     } else {
                         span.text('Merged');
-                        sources.original.forEach(layer => {
-                            Hoot.context.background().removeSource(layer.id);
-                            Hoot.layers.hootOverlay.removeGeojson(layer.id);
-                        });
-
+                        sources.original.forEach(layer => Hoot.layers.removeLoadedLayer(layer.id));
                         await Hoot.layers.loadLayer(sources.merged, true);
                     }
-                    _debounce(() => { Hoot.context.map().centerZoom(...zoom); }, 400)();
+                    isMerged = !isMerged;
+                    uiBackground.renderLayerToggle();
                 } catch (e) {
                     console.log(e);
                 }
