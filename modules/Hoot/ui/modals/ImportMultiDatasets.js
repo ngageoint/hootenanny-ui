@@ -474,6 +474,7 @@ export default class ImportMultiDatasets {
      */
     updateButtonState() {
         let importType      = this.typeInput.node().value,
+            importList      = this.fileListInput.node().length,
             asSingleEnabled = this.asSingleLayer.node().checked,
             asSingleName  = this.asSingleLayerName.node().value,
             self            = this;
@@ -482,10 +483,10 @@ export default class ImportMultiDatasets {
             .each( function() {
                 let classes = d3.select( this ).attr( 'class' ).split( ' ' );
 
-                if ( classes.indexOf( 'invalid' ) > -1 || !importType.length || asSingleEnabled && !asSingleName.length ) {
+                if ( classes.indexOf( 'invalid' ) > -1 ||!importType.length || !importList || asSingleEnabled && !asSingleName.length ) {
                     self.formValid = false;
                 }
-                else {
+                else if ( importType.length  && !asSingleEnabled && !asSingleName.length ) {
                     self.formValid = true;
                 }
             } );

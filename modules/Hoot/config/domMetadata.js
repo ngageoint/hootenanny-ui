@@ -233,6 +233,20 @@ export function importMultiForm() {
             hidden: true
         },
         {
+            label: 'Upload as Single Layer',
+            id: 'importMultiAsSingle',
+            inputType: 'checkbox',
+            checkbox: 'cboxMultiAsSingle',
+            onChange: () => this.handleTypeChange()
+        },
+        {
+            label: 'New Layer Name',
+            id: 'importMultiAsSingleName',
+            inputType: 'text',
+            disabled: true,
+            onChange: d => this.validateTextInput( d )
+        },
+        {
             label: 'Custom Suffix',
             id: 'importCustomSuffix',
             onChange: d => this.validateTextInput( d )
