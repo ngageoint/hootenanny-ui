@@ -452,17 +452,17 @@ export default class ImportMultiDatasets {
         }
 
         this.processRequest = this.allProgress( proms, ( n, fileName ) => {
-                this.progressBar.property( 'value', n );
-                this.fileListInput
-                    .select( `option[value="${fileName}"]` )
-                    .classed( 'import-success', true );
-            } )
-            .then( () => Hoot.message.alert( {
-                message: 'All datasets successfully imported',
-                type: 'success'
-            } ) )
-            .then( () => Hoot.folders.refreshAll() )
-            .then( () => Hoot.events.emit( 'render-dataset-table' ) );
+            this.progressBar.property( 'value', n );
+            this.fileListInput
+                .select( `option[value="${fileName}"]` )
+                .classed( 'import-success', true );
+        } )
+        .then( () => Hoot.message.alert( {
+            message: 'All datasets successfully imported',
+            type: 'success'
+        } ) )
+        .then( () => Hoot.folders.refreshAll() )
+        .then( () => Hoot.events.emit( 'render-dataset-table' ) );
     }
 
     allProgress( proms, cb ) {
@@ -510,7 +510,9 @@ export default class ImportMultiDatasets {
                 d3.select( this ).node().disabled = true;
             } );
 
-        this.progressContainer.classed( 'hidden', false );
+        if ( !this.asSingleLayer.node().checked ) {
+            this.progressContainer.classed( 'hidden', false );
+        }
 
         this.progressBar = this.progressContainer
             .append( 'span' )
