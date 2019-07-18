@@ -364,9 +364,12 @@ export default class ImportMultiDatasets {
 
         this.loadingState( fileNames.length );
 
+        let asSingleProms;
         let proms;
 
         if ( asSingle ) {
+            proms = asSingleProms;
+
             proms = [new Promise( resolve => {
                 let params = {
                     NONE_TRANSLATION: translation.NONE === 'true',
@@ -398,6 +401,54 @@ export default class ImportMultiDatasets {
                         Hoot.events.emit( 'modal-closed' );
                     } );
             } )];
+        }
+        else {
+            proms = _map( fileNames, name => {
+                return new Promise( resolve => {
+                    let importFiles = _filter( this.fileIngest.node().files, file => {
+                        let fName = file.name.substring( 0, file.name.length - 4 );
+
+                        if ( file.name.toLowerCase().indexOf( '.shp.xml' ) > -1 ) {
+                            fName = file.name.substring( 0, file.name.length - 8 );
+                        }
+                        if ( file.name.indexOf( '.geojson' ) > -1 ) {
+                            fName = file.name.toLowerCase().substring( 0, file.name.length - 8 );
+                        }
+
+                        return fName === name;
+                    } );
+
+                    let params = {
+                        NONE_TRANSLATION: translation.NONE === 'true',
+                        TRANSLATION: translationName,
+                        INPUT_TYPE: importType.value,
+                        INPUT_NAME: name,
+                        formData: this.getFormData( importFiles ),
+                        folderId
+                    };
+
+                    Hoot.api.uploadDataset( params )
+                        .then( resp => Hoot.api.statusInterval( resp.data[ 0 ].jobid ) )
+                        .then( () => resolve( name ) )
+                        .catch( err => {
+                            console.error(err);
+
+                            let message = `Error running import on ${name}\n`,
+                                type = err.type,
+                                keepOpen = true;
+
+                            if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                                message += err.data.commandDetail[0].stderr;
+                            }
+
+                            Hoot.message.alert( { message, type, keepOpen } );
+                        })
+                        .finally( () => {
+                            this.container.remove();
+                            Hoot.events.emit( 'modal-closed' );
+                        } );
+                } );
+            } );
         }
 
         this.processRequest = this.allProgress( proms, ( n, fileName ) => {
