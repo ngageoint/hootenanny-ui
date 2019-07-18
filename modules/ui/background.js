@@ -289,7 +289,7 @@ export function uiBackground(context) {
     }
 
     function renderLayerToggle() {
-        const getlist = Object.keys(Hoot.layers.loadedLayers).map( d => Hoot.layers.loadedLayers[d] );
+        const getlist = Object.values(Hoot.layers.loadedLayers);
 
         _layerToggleList.html('');
 
@@ -337,7 +337,7 @@ export function uiBackground(context) {
                 d3.select(prev).select('button')
                     .classed('hidden', false);
 
-                Hoot.layers.setTopLayer(data.id);
+                Hoot.layers.setTopLayer(Number(data.id));
             })
             .append('span')
             .classed('material-icons', true)
