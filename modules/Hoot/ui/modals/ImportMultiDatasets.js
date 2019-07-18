@@ -69,6 +69,8 @@ export default class ImportMultiDatasets {
         this.fileInput          = this.container.select( '#importFile' );
         this.fileListInput      = this.container.select( '#importFileList' );
         this.pathNameInput      = this.container.select( '#importPathName' );
+        this.asSingleLayer      = this.container.select( '#importMultiAsSingle' );
+        this.asSingleLayerName  = this.container.select( '#importMultiAsSingleName' );
         this.newFolderNameInput = this.container.select( '#importNewFolderName' );
         this.schemaInput        = this.container.select( '#importSchema' );
         this.customSuffixInput  = this.container.select( '#importCustomSuffix' );
@@ -92,11 +94,13 @@ export default class ImportMultiDatasets {
         let selectedVal  = this.typeInput.property( 'value' ),
             selectedType = this.getTypeName( selectedVal ),
             schemaCombo  = this.schemaInput.datum(),
+            toSingle     = this.asSingleLayer.property('checked'),
             translationsList;
 
         // clear values
         this.fileInput.property( 'value', '' );
         this.schemaInput.property( 'value', '' );
+        this.asSingleLayer.property('pointer-events', 'none');
 
         // enable input if a type is selected
         if ( !selectedType ) {
@@ -105,6 +109,15 @@ export default class ImportMultiDatasets {
         } else {
             this.fileInput.node().disabled   = false;
             this.schemaInput.node().disabled = false;
+            this.asSingleLayer.property('pointer-events', 'auto');
+        }
+
+        if ( toSingle ) {
+            this.asSingleLayerName.node().disabled = false;
+            d3.select('#importMultiAsSingleName').classed( 'asSingleName', true);
+            this.updateButtonState();
+        } else {
+            this.asSingleLayerName.node().disabled = true;
         }
 
         // filter out geoname translations
@@ -309,6 +322,8 @@ export default class ImportMultiDatasets {
 
             translation   = _filter( transCombo.data, o => o.NAME === transVal )[ 0 ],
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
+            asSingle      = this.asSingleLayer.property('checked'),
+            asSingleName  = this.asSingleLayerName.property('value'),
 
             translationName,
             folderId;
@@ -348,27 +363,16 @@ export default class ImportMultiDatasets {
 
         this.loadingState( fileNames.length );
 
-        let proms = _map( fileNames, name => {
-            return new Promise( resolve => {
-                let importFiles = _filter( this.fileIngest.node().files, file => {
-                    let fName = file.name.substring( 0, file.name.length - 4 );
+        let proms;
 
-                    if ( file.name.toLowerCase().indexOf( '.shp.xml' ) > -1 ) {
-                        fName = file.name.substring( 0, file.name.length - 8 );
-                    }
-                    if ( file.name.indexOf( '.geojson' ) > -1 ) {
-                        fName = file.name.toLowerCase().substring( 0, file.name.length - 8 );
-                    }
-
-                    return fName === name;
-                } );
-
+        if ( asSingle ) {
+            proms = [new Promise( resolve => {
                 let params = {
                     NONE_TRANSLATION: translation.NONE === 'true',
                     TRANSLATION: translationName,
                     INPUT_TYPE: importType.value,
-                    INPUT_NAME: name,
-                    formData: this.getFormData( importFiles ),
+                    INPUT_NAME: asSingleName,
+                    formData: this.getFormData(this.fileIngest.node().files),
                     folderId
                 };
 
@@ -392,8 +396,8 @@ export default class ImportMultiDatasets {
                         this.container.remove();
                         Hoot.events.emit( 'modal-closed' );
                     } );
-            } );
-        } );
+            } )];
+        }
 
         this.processRequest = this.allProgress( proms, ( n, fileName ) => {
                 this.progressBar.property( 'value', n );
@@ -468,14 +472,16 @@ export default class ImportMultiDatasets {
      * Enable/disable button based on form validity
      */
     updateButtonState() {
-        let importType = this.typeInput.node().value,
-            self       = this;
+        let importType      = this.typeInput.node().value,
+            asSingleDisabled = this.asSingleLayer.node().checked,
+            asSingleName  = this.asSingleLayerName.node().value,
+            self            = this;
 
         this.container.selectAll( '.text-input' )
             .each( function() {
                 let classes = d3.select( this ).attr( 'class' ).split( ' ' );
 
-                if ( classes.indexOf( 'invalid' ) > -1 || !importType.length ) {
+                if ( classes.indexOf( 'invalid' ) > -1 || !importType.length || asSingleDisabled && !asSingleName.length ) {
                     self.formValid = false;
                 }
             } );
