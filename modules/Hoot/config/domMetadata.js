@@ -194,6 +194,13 @@ export function importMultiForm() {
             onChange: () => this.handleMultipartChange()
         },
         {
+            label: 'Upload as Single Layer',
+            id: 'importMultiAsSingle',
+            inputType: 'checkbox',
+            checkbox: 'cboxMultiAsSingle',
+            onChange: () => this.handleTypeChange()
+        },
+        {
             label: 'Import Files List',
             id: 'importFileList',
             inputType: 'listbox',
@@ -217,6 +224,13 @@ export function importMultiForm() {
             onChange: d => this.validateTextInput( d )
         },
         {
+            label: 'New Layer Name',
+            id: 'importMultiAsSingleName',
+            inputType: 'text',
+            disabled: true,
+            onChange: d => this.validateTextInput( d )
+        },
+        {
             label: 'Translations Schema of Import File',
             id: 'importSchema',
             inputType: 'combobox',
@@ -231,20 +245,6 @@ export function importMultiForm() {
             inputType: 'checkbox',
             checkbox: 'cboxAppendFCode',
             hidden: true
-        },
-        {
-            label: 'Upload as Single Layer',
-            id: 'importMultiAsSingle',
-            inputType: 'checkbox',
-            checkbox: 'cboxMultiAsSingle',
-            onChange: () => this.handleTypeChange()
-        },
-        {
-            label: 'New Layer Name',
-            id: 'importMultiAsSingleName',
-            inputType: 'text',
-            disabled: true,
-            onChange: d => this.validateTextInput( d )
         },
         {
             label: 'Custom Suffix',

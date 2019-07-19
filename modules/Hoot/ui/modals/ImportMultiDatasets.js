@@ -12,6 +12,7 @@ import _find               from 'lodash-es/find';
 import _get                from 'lodash-es/get';
 import _map                from 'lodash-es/map';
 import _forEach            from 'lodash-es/forEach';
+import _debounce           from 'lodash-es/debounce';
 
 export default class ImportMultiDatasets {
     constructor( translations, path = 'root' ) {
@@ -382,6 +383,12 @@ export default class ImportMultiDatasets {
 
                 Hoot.api.uploadDataset( params )
                     .then( resp => Hoot.api.statusInterval( resp.data[ 0 ].jobid ) )
+                    .then( () => {
+                        this.progressBar.property('value', fileNames.length );
+                        this.fileListInput
+                            .selectAll('option')
+                            .classed( 'import-success', true );
+                    })
                     .then( () => resolve( name ) )
                     .catch( err => {
                         console.error(err);
@@ -395,15 +402,11 @@ export default class ImportMultiDatasets {
                         }
 
                         Hoot.message.alert( { message, type, keepOpen } );
-                    })
-                    .finally( () => {
-                        this.container.remove();
-                        Hoot.events.emit( 'modal-closed' );
-                    } );
+                    });
             } )];
         }
         else {
-            proms = _map( fileNames, name => {
+            proms = fileNames.map( (name, index) => {
                 return new Promise( resolve => {
                     let importFiles = _filter( this.fileIngest.node().files, file => {
                         let fName = file.name.substring( 0, file.name.length - 4 );
@@ -429,6 +432,12 @@ export default class ImportMultiDatasets {
 
                     Hoot.api.uploadDataset( params )
                         .then( resp => Hoot.api.statusInterval( resp.data[ 0 ].jobid ) )
+                        .then( () => {
+                            this.progressBar.property( 'value', index + 1 );
+                            this.fileListInput
+                                .select( `option[value="${name}"]` )
+                                .classed( 'import-success', true );
+                        } )
                         .then( () => resolve( name ) )
                         .catch( err => {
                             console.error(err);
@@ -442,42 +451,24 @@ export default class ImportMultiDatasets {
                             }
 
                             Hoot.message.alert( { message, type, keepOpen } );
-                        })
-                        .finally( () => {
-                            this.container.remove();
-                            Hoot.events.emit( 'modal-closed' );
-                        } );
+                        });
                 } );
             } );
         }
 
-        this.processRequest = this.allProgress( proms, ( n, fileName ) => {
-            this.progressBar.property( 'value', n );
-            this.fileListInput
-                .select( `option[value="${fileName}"]` )
-                .classed( 'import-success', true );
-        } )
+        this.processRequest = Promise.all( proms )
         .then( () => Hoot.message.alert( {
             message: 'All datasets successfully imported',
             type: 'success'
         } ) )
         .then( () => Hoot.folders.refreshAll() )
-        .then( () => Hoot.events.emit( 'render-dataset-table' ) );
-    }
-
-    allProgress( proms, cb ) {
-        let n = 0;
-
-        cb( 0 );
-
-        proms.forEach( p => {
-            p.then( fileName => {
-                n++;
-                cb( n, fileName );
-            } );
-        } );
-
-        return Promise.all( proms );
+        .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+        .finally( () => {
+            _debounce(() => {
+                this.container.remove();
+                Hoot.events.emit( 'modal-closed' );
+            }, 450)();
+        });
     }
 
     /**
@@ -509,10 +500,7 @@ export default class ImportMultiDatasets {
             .each( function() {
                 d3.select( this ).node().disabled = true;
             } );
-
-        if ( !this.asSingleLayer.node().checked ) {
-            this.progressContainer.classed( 'hidden', false );
-        }
+        this.progressContainer.classed( 'hidden', false );
 
         this.progressBar = this.progressContainer
             .append( 'span' )
