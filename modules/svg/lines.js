@@ -90,33 +90,23 @@ export function svgLines(projection, context) {
     }
 
 
-    function drawLines(selection, graph, entities, filter) {
+    function drawLines(selection, graph, entities, filter)
 
 
         function waystack(a, b) {
             var selected = context.selectedIDs();
             var scoreA = selected.indexOf(a.id) !== -1 ? 20 : 0;
             var scoreB = selected.indexOf(b.id) !== -1 ? 20 : 0;
+            if (a.tags.highway) { scoreA -= highway_stack[a.tags.highway]; }
+            if (b.tags.highway) { scoreB -= highway_stack[b.tags.highway]; }
 
-            if (a.tags.highway) { scoreA -= highway_stack[a.tags.highway] || 0; }
-            if (b.tags.highway) { scoreB -= highway_stack[b.tags.highway] || 0; }
+            var ret = scoreA - scoreB;
 
-            const topLayer = Hoot.layers.getTopLayer();
-            if (topLayer) { // make top layer just above other layer.
-                if (+a.mapId === topLayer) {
-                  // scoreA += 20
-                  scoreA = scoreB + 1;
-                }
-                if (+b.mapId === topLayer) {
-                  // scoreB += 20;
-                  scoreB = scoreA + 1;
-                }
-            }
-
-            return scoreA - scoreB;
+            var topLayer = Hoot.layers.getTopLayer();
+            if (topLayer) ret = +a.mapId === topLayer ? 1 : -1
+            return ret;
         }
-
-
+        
         function drawLineGroup(selection, klass, isSelected) {
             // Note: Don't add `.selected` class in draw modes
             var mode = context.mode();

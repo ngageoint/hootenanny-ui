@@ -458,7 +458,7 @@ export default class Layers {
 
     setTopLayer( mapId ) {
         this.topLayer = mapId;
-        this.hoot.context.flush();
+        this.hoot.context.change();
     }
 
     getTopLayer() {
