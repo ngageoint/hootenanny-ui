@@ -339,7 +339,6 @@ export function coreContext() {
         return features.hasHiddenConnections(entity, graph);
     };
 
-
     /* Presets */
     var presets;
     context.presets = function() { return presets; };
