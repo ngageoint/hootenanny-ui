@@ -351,12 +351,27 @@
 .controller {
     border-radius: 4px;
     transition: border-radius 300ms linear;
+    display: flex;
+    overflow: hidden;
+
+    button {
+        min-width: 55px;
+        max-width: 55px;
+    }
+
+    div, button {
+        flex-grow: 1
+    }
 
     span {
         color: black;
+        width: 100%;
+        align-self: center;
+        text-align: center;
     }
 
     .thumbnail {
+        max-width: 60px;
         border-radius: 4px 0 0 4px;
         transition: inherit;
     }
@@ -372,7 +387,6 @@
     }
 
     .context-menu-layer {
-        position: absolute;
         display: inline-block;
         // width: calc(100% - 100px);
         height: 60px;
@@ -383,16 +397,12 @@
     }
 
     .icon-button {
-        width: 40px;
         height: 60px;
         float: right;
 
         &:hover {
             background-color: $light
         }
-    }
-    .showlayers {
-        width: 50px;
     }
 }
 

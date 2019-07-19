@@ -295,7 +295,8 @@ export default class Layers {
             let params = {
                 name: mergedLayer.name,
                 color: 'green',
-                isConflate: true
+                isConflate: true,
+                merged: true
             };
 
             Hoot.ui.sidebar.forms.conflate.forceAdd( params );

@@ -19,6 +19,7 @@ class SidebarController {
         this.layerId    = layer.id;
         this.layerColor = layer.color;
         this.isConflate = layer.isConflate;
+        this.merged = layer.merged;
         this.jobId      = layer.jobId;
         this.refType    = layer.refType;
         this.typeClass  = this.isConflate ? 'conflate-controller' : 'add-controller';
@@ -154,7 +155,7 @@ class SidebarController {
     }
 
     createText() {
-        let text = this.isConflate ? 'Conflating' : 'Loading';
+        let text = this.isConflate && !this.merged ? 'Conflating' : 'Loading';
 
         this.text = this.controller
             .append( 'span' )
@@ -313,27 +314,24 @@ class SidebarController {
                 } );
             } );
 
+        d3.selectAll(`button.${this.isConflate ? 'cancel' : 'delete'}-button`).remove();
         this.text.remove();
 
         this.text = this.contextLayer
-            .append( 'span' )
-            .classed( 'strong pad1x', true )
-            .text( layer.name );
-
-        if ( this.isConflate ) {
-            //turn cancel into remove button
-            d3.selectAll('button.cancel-button').remove();
-            this.createDeleteButton();
-
-            this.metadata = new LayerMetadata( this.context, this.form, layer );
-            this.metadata.render();
-            // this.contextLayer.style( 'width', 'calc( 100% - 145px )' );
-        }
+            .append('span')
+            .classed('strong pad1x', true)
+            .attr('title', layer.name)
+            .text(layer.name);
 
         if (layer.merged) {
             this.createShowLayersButton();
         }
 
+        if ( this.isConflate ) {
+            this.metadata = new LayerMetadata( this.context, this.form, layer );
+            this.metadata.render();
+        }
+        this.createDeleteButton();
     }
 }
 
