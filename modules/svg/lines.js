@@ -102,9 +102,15 @@ export function svgLines(projection, context) {
             if (b.tags.highway) { scoreB -= highway_stack[b.tags.highway] || 0; }
 
             const topLayer = Hoot.layers.getTopLayer();
-            if (topLayer) {
-                if (+a.mapId === topLayer) { scoreA += 20; }
-                if (+b.mapId === topLayer) { scoreB += 20; }
+            if (topLayer) { // make top layer just above other layer.
+                if (+a.mapId === topLayer) {
+                  // scoreA += 20
+                  scoreA = scoreB + 1;
+                }
+                if (+b.mapId === topLayer) {
+                  // scoreB += 20;
+                  scoreB = scoreA + 1;
+                }
             }
 
             return scoreA - scoreB;
