@@ -96,7 +96,8 @@ export function svgLines(projection, context) {
         function waystack(a, b) {
             // if top layer set, make top layer lines last to render.
             var topLayer = Hoot.layers.getTopLayer();
-            if (topLayer) { return +a.mapId === topLayer ? 1 : -1 }
+            if (topLayer) { return +a.mapId === topLayer ? 1 : -1; }
+
 
             var selected = context.selectedIDs();
             var scoreA = selected.indexOf(a.id) !== -1 ? 20 : 0;
