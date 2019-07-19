@@ -196,8 +196,11 @@ class SidebarController {
                             let key = l.merged ? 'merged' : 'original';
                             sources[key] = key === 'merged' ? l : (sources[key] || []).concat(l);
                             return sources;
-                        }, {});
+                        }, { histories: {} });
                     }
+
+                    // take snapshot of history
+                    sources.histories[isMerged ? 'merged' : 'original'] = Hoot.context.history().toJSON();
 
                     Hoot.layers.loadedLayers = {};
                     Hoot.context.flush();
@@ -214,6 +217,12 @@ class SidebarController {
                         sources.original.forEach(layer => Hoot.layers.removeLoadedLayer(layer.id));
                         await Hoot.layers.loadLayer(sources.merged, true);
                     }
+
+                    if (Object.keys(sources.histories).length === 2) { // the first time we don't want to refresh history, so we just ignore.
+                        const history = sources.histories[isMerged ? 'original' : 'merged'];
+                        if (history) Hoot.context.history().fromJSON(history); // if no changes occur, toJSON doesn't build anything, so do not refresh history.
+                    }
+
                     isMerged = !isMerged;
                     uiBackground.renderLayerToggle();
                 } catch (e) {
