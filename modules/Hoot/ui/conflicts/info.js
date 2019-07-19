@@ -45,101 +45,79 @@ export default class ConflictMetadata {
             tags2      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 1 ].id).tags : {} ),
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
 
-        this.tableContainer = this.instance.rightContainer
-            .selectAll( '.tag-table' )
-            .data([ 0 ]);
 
-        this.tableContainer.exit().remove();
+            this.tableContainer = this.instance.rightContainer
+                .selectAll( '.tag-table' )
+                .data([ 0 ]);
 
-        this.tableContainer
-            .enter()
-            .append( 'table' )
-            .classed( 'tag-table', true )
-            .merge( this.tableContainer );
+            this.tableContainer.exit().remove();
 
-        var rows = this.tableContainer
-            .selectAll( 'tr' )
-            .data( tagsMerged );
+            this.tableContainer = this.tableContainer
+                .enter()
+                .append( 'table' )
+                .classed( 'tag-table', true )
+                .merge( this.tableContainer );
 
-        rows.exit().remove();
+            var rows = this.tableContainer
+                .selectAll( 'tr' )
+                .data( tagsMerged );
 
-        rows
-            .enter()
-            .append( 'tr' )
-            .merge( rows );
+            rows.exit().remove();
 
-        var tableKeys = rows
-            .selectAll( 'td' )
-            .data( function(d) { return [d.key]; } );
+            rows = rows
+                .enter()
+                .append( 'tr' )
+                .merge( rows );
 
-        tableKeys.exit().remove();
+            var tableKeys = rows
+                .selectAll( 'td' )
+                .data( function(d) { return [d.key]; } );
 
-        tableKeys
-            .enter()
-            .append( 'td' )
-            .classed( 'fillD', true )
-            .merge( tableKeys )
-            .text( function(d) { return d; } );
+            tableKeys.exit().remove();
 
-        var tableData1 = rows
-            .selectAll( 'td.feature1' )
-            .data( function(d) { return [d.value[0]]; } );
-
-        tableData1.exit().remove();
-
-        tableData1
-            .enter()
-            .append( 'td' )
-            .classed( 'value-col feature1', true )
-            .merge( tableData1 )
-            .text( function(d) { return d; })
-            .on('click', () => {
-                this.panToEntity(this.data.currentFeatures[0]);
-                this.selectEntity(this.data.currentFeatures[0]);
-            });
-
-        if ( !mergeCheck ) {
-            var tableData2 = rows
-            .selectAll( 'td.feature2' )
-            .data( function(d) { return [d.value[1]]; } );
-
-            tableData2.exit().remove();
-
-            tableData2
+            tableKeys = tableKeys
                 .enter()
                 .append( 'td' )
-                .classed( 'value-col feature2', true )
-                .merge( tableData2 )
-                .text( function(d) { return d; } )
+                .classed( 'fillD', true )
+                .merge( tableKeys )
+                .text( function(d) { return d; } );
+
+            var tableData1 = rows
+                .selectAll( 'td.feature1' )
+                .data( function(d) { return [d.value[0]]; } );
+
+            tableData1.exit().remove();
+
+            tableData1 = tableData1
+                .enter()
+                .append( 'td' )
+                .classed( 'value-col feature1', true )
+                .merge( tableData1 )
+                .text( function(d) { return d; })
                 .on('click', () => {
-                    this.panToEntity(this.data.currentFeatures[1]);
-                    this.selectEntity(this.data.currentFeatures[1]);
+                    this.panToEntity(this.data.currentFeatures[0]);
+                    this.selectEntity(this.data.currentFeatures[0]);
                 });
 
+            if ( !mergeCheck ) {
+                var tableData2 = rows
+                .selectAll( 'td.feature2' )
+                .data( function(d) { return [d.value[1]]; } );
+
+                tableData2.exit().remove();
+
+                tableData2 = tableData2
+                    .enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature2', true )
+                    .merge( tableData2 )
+                    .text( function(d) { return d; } )
+                    .on('click', () => {
+                        this.panToEntity(this.data.currentFeatures[1]);
+                        this.selectEntity(this.data.currentFeatures[1]);
+                    });
+            }
         }
-        var getTable = this.tableContainer
-            .selectAll( 'table' )
-            .data( tagsMerged );
-
-        getTable.exit().remove();
-
-        getTable
-            .enter()
-            .merge( getTable );
-
-        var updateHighlight = getTable
-            .selectAll( '.value-col' )
-            .data( [0] );
-
-        updateHighlight.exit().remove();
-
-        updateHighlight
-            .enter()
-            .merge( updateHighlight )
-            .on( 'mouseenter', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true ) )
-            .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
-        }
-
     }
 
     selectEntity(entity) {

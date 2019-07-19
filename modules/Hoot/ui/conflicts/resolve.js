@@ -40,6 +40,8 @@ export default class Resolve {
                 this.instance.graphSync.updateReviewTagsForResolve( currentRelation );
             }
 
+            this.instance.info.tableContainer.remove();
+
             let hasChanges = Hoot.context.history().hasChanges();
             this.noBuild = true;
 
