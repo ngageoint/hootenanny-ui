@@ -60,7 +60,7 @@ export default class Conflicts {
     deactivate() {
         Hoot.context.map().on( 'drawn', null );
         this.map.unsetHighlight();
-        if (!this.container.node().hidden) {
+        if ( this.container && !this.container.node().hidden) {
             this.container.remove();
         }
         this.data = privateMethods.initData();

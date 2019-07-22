@@ -17,7 +17,9 @@ export default class ConflictMetadata {
         this.instance = instance;
         this.data     = instance.data;
         Hoot.context.history().on('change', function() {
-            if ( Hoot.ui.conflicts.resolve.noBuild === null ) {
+            if ( Hoot.ui.conflicts.resolve.noBuild === null
+                // check for entities after post layer removal context flush
+                && Object.values(Hoot.context.graph().entities).length ) {
                 Hoot.ui.conflicts.info.buildTagTable();
             }
         });
