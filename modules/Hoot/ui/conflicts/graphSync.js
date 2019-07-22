@@ -60,11 +60,10 @@ export default class GraphSync {
 
             if ( memberCount !== relation.members.length ) {
                 return this.loadMissingFeatures( relId )
-                    .then( () => this.validateMemberCount( relId ) );
-            } else if ( memberCount === 1 ) {
-                // TODO: get back to this
-            } else {
-                // TODO: show alert
+                    .then( () => this.validateMemberCount( relId ) )
+                    .catch( err => {
+                        window.console.error(err);
+                    } );
             }
 
             return relation.members;
@@ -76,7 +75,7 @@ export default class GraphSync {
             return this.loadMissingFeatures( relId )
                 .then( () => this.validateMemberCount( relId ) )
                 .catch( err => {
-                    // TODO: show alert
+                    window.console.error(err);
                 } );
         }
     }
