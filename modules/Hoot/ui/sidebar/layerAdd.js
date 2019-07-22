@@ -224,6 +224,7 @@ export default class LayerAdd extends SidebarForm {
             this.updateRecentlyUsed();
         } );
 
+        Hoot.events.setMaxListeners(15);
         Hoot.events.on( 'recent-layers-retrieved', () => this.updateRecentlyUsed() );
         Hoot.events.on( 'load-layer', () => this.updateRecentlyUsed() );
     }
