@@ -98,7 +98,7 @@ export default class Layers {
         }
 
         //get lowest available number to deconflict filenames
-        let num = usedNumbers.sort().findIndex( (n, i) => {
+        let num = usedNumbers.sort((a, b) => a - b).findIndex( (n, i) => {
             return n > i;
         });
 
