@@ -207,20 +207,20 @@ class SidebarController {
 
                     if (isMerged) {
                         span.text('Original');
-                        Hoot.layers.removeLoadedLayer(sources.merged.id);
+                        Hoot.layers.removeLoadedLayer(sources.merged.id, true);
                         await Promise.all([
                             Hoot.layers.loadLayer(sources.original[0], true),
                             Hoot.layers.loadLayer(sources.original[1], true)
                         ]);
                     } else {
                         span.text('Merged');
-                        sources.original.forEach(layer => Hoot.layers.removeLoadedLayer(layer.id));
+                        sources.original.forEach(layer => Hoot.layers.removeLoadedLayer(layer.id, true));
                         await Hoot.layers.loadLayer(sources.merged, true);
                     }
 
                     if (Object.keys(sources.histories).length === 2) { // the first time we don't want to refresh history, so we just ignore.
                         const history = sources.histories[isMerged ? 'original' : 'merged'];
-                        if (history) Hoot.context.history().fromJSON(history); // if no changes occur, toJSON doesn't build anything, so do not refresh history.
+                        if (history) Hoot.context.history().fromJSON(history); // if no changes occur, toJSON doesn't build anything, so do not refresh history
                     }
 
                     isMerged = !isMerged;

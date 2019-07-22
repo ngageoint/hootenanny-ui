@@ -377,7 +377,7 @@ export default class Layers {
         _remove( this.allLayers, layer => layer.id === id );
     }
 
-    removeLoadedLayer( id ) {
+    removeLoadedLayer( id, toggle ) {
         if ( id && this.loadedLayers[ id ] ) {
             delete this.loadedLayers[ id ];
             this.hoot.context.background().removeSource( id );
@@ -385,7 +385,8 @@ export default class Layers {
 
             this.hoot.context.flush();
         }
-        this.hoot.events.emit( 'loaded-layer-removed' );
+        if (!toggle)
+            this.hoot.events.emit( 'loaded-layer-removed' );
     }
 
     removeAllLoadedLayers() {
