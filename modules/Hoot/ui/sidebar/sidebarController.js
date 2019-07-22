@@ -323,7 +323,7 @@ class SidebarController {
                 } );
             } );
 
-        d3.selectAll(`button.${this.isConflate ? 'cancel' : 'delete'}-button`).remove();
+        this.form.selectAll(`button.${this.isConflate ? 'cancel' : 'delete'}-button`).remove();
         this.text.remove();
 
         this.text = this.contextLayer
