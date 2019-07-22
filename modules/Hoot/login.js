@@ -5,9 +5,7 @@
  *******************************************************************************************************/
 
 import '../../css/hoot/login.scss';
-
 import { baseUrl } from './config/apiConfig';
-
 
 class Login {
     constructor() {
@@ -43,13 +41,15 @@ class Login {
 
         return fetch(`${ this.baseUrl }/info/about/servicesVersionInfo`, params)
             .then(resp => {
-                if (resp.status === 401) {
-                    //client is not authenticated so do login
-                    login.init();
-                } else {
+                if (resp.status === 200) {
                     //a valid session exists so go to app main page
                     let pathname = window.location.pathname;
                     window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
+                } else if (resp.status === 401) {
+                    //client is not authenticated so do login
+                    login.init();
+                } else {
+                    alert('Hootenanny Services are currently unavailable.')
                 }
             });
 
