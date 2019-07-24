@@ -3,8 +3,10 @@
     width: 100%;
     height: auto;
     bottom: 30px;
+    pointer-events: none;
 
     .inner-wrapper {
+
         clear: both;
         display: flex;
         justify-content: flex-start;
@@ -14,6 +16,7 @@
     .left-container {
         width: 100%;
         padding: 10px 15px;
+        pointer-events: auto;
 
         button {
             height: 35px;
@@ -38,6 +41,8 @@
     display: inline-block;
     overflow-y: auto;
     max-height: 500px;
+    pointer-events: auto;
+
 
     table {
         background: transparent;
