@@ -87,15 +87,11 @@ export default class Conflicts {
         this.merge     = modules[ 4 ];
         this.resolve   = modules[ 5 ];
 
-        let reviewStats = await Hoot.api.getReviewStatistics( this.data.mapId );
-
-        if ( reviewStats.totalCount === 0 ) return;
-
         this.render();
 
         Hoot.context.map().on( 'drawn', () => this.map.setHighlight() );
 
-        this.traverse.jumpTo( 'forward' );
+        this.traverse.showFirstReview( layer );
     }
 
     /**
@@ -121,7 +117,7 @@ export default class Conflicts {
             .classed( 'meta-dialog', true )
             .append( 'span' )
             .classed( '_icon info light', true )
-            .html( '<strong class="review-note">Initialzing...</strong>' );
+            .html( '<strong class="review-note">Initializing...</strong>' );
 
         this.tooltip = tooltip()
             .placement( 'top' )
