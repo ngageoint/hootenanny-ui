@@ -108,7 +108,8 @@ export default class API {
                     } else if ( status === 'failed' ) {
                         rej( { data, type: 'error', status: 500 } );
                     }
-                } catch(err) {
+                } catch (err) {
+                    let data = {};
                     rej( { data, type: 'error', status: 500 } );
                 }
             }, this.queryInterval );
