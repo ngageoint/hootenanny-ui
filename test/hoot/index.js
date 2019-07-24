@@ -22,7 +22,7 @@ global.expect = chai.expect;
 
 before( async () => {
     localStorage.setItem( 'sawSplash', 'true' );
-    localStorage.setItem( 'user', '{"email":"karma@test.com","id":-1541432234,"display_name":"Karma","provider_created_at":1510002712000,"last_authorized":1542647276773,"created_at":1542647276766}' );
+    localStorage.setItem( 'user', '{"email":"karma@test.com","id":-1541432234,"display_name":"Karma","privileges":{"advanced":"true"},"provider_created_at":1510002712000,"last_authorized":1542647276773,"created_at":1542647276766}' );
 
     d3.select( 'body' )
         .append( 'div' )
