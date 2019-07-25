@@ -52,6 +52,12 @@ export default class Conflicts {
         this.data = privateMethods.initData();
 
         this.buttonEnabled = true;
+
+        Hoot.context.history().on('undone', function() {
+
+            Hoot.ui.conflicts.updateButtons();
+
+        });
     }
 
     /**
@@ -131,11 +137,32 @@ export default class Conflicts {
             .title( d => tooltipHtml( t( `review.${ d.id }.description` ), d.cmd ) );
 
         // create buttons
-        this.leftContainer.append( 'div' )
+
+        this.leftContainer = this.info.instance.leftContainer
+        .selectAll( 'left-container')
+        .data( [0] );
+
+        this.leftContainer.exit().remove();
+
+        this.leftContainer = this.leftContainer
+            .enter()
+            .append( 'div' )
             .classed( 'action-buttons', true )
+            .merge( this.leftContainer );
+
+        var metaButtons = this.leftContainer
             .selectAll( 'button' )
-            .data( this.buttonMeta ).enter()
+            .data( this.buttonMeta );
+
+        metaButtons.exit().remove();
+
+        metaButtons = metaButtons
+            .enter()
             .append( 'button' )
+            .classed( 'action-buttons', true )
+            .merge( metaButtons );
+
+        metaButtons
             .attr( 'class', d => d.class )
             .text( d => d.text )
             .on( 'click', d => {
@@ -150,6 +177,39 @@ export default class Conflicts {
 
         this.bindKeys();
     }
+
+    /**
+     * Update buttons
+     */
+
+     updateButtons() {
+        var metaButtons = this.info.instance.leftContainer
+            .selectAll( 'button' )
+            .data( this.buttonMeta );
+
+        metaButtons.exit().remove();
+
+        metaButtons = metaButtons
+            .enter()
+            .append( 'button' )
+            .classed( 'action-buttons', true )
+            .merge( metaButtons );
+
+        metaButtons
+            .attr( 'class', d => d.class )
+            .text( d => d.text )
+            .on( 'click', d => {
+                setTimeout( () => this.buttonEnabled = true, 500 );
+
+                if ( this.buttonEnabled ) {
+                    this.buttonEnabled = false;
+                    d.action();
+                }
+            } )
+            .call( this.tooltip );
+
+        this.bindKeys();
+     }
 
     /**
      * Bind key press events to actions buttons

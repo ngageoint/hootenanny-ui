@@ -31,6 +31,7 @@ export default class Merge {
             from: null,
             to: null
         };
+
     }
 
     /**
@@ -93,8 +94,6 @@ export default class Merge {
         }
 
         this.processMerge( reviewRefs, mergedFeature, featureDelete );
-
-        this.mergeTags = true;
     }
 
     /**
