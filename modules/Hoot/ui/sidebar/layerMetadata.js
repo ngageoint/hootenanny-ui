@@ -192,12 +192,15 @@ export default class LayerMetadata {
             formatPercent = this.formatPercent,
             paramData = d3.entries(params);
 
+        if (paramData.length) {
+            this.download = 'Parameters:\n';
 
-        this.download = 'Parameters:\n';
+            paramData.forEach((p) => {
+                this.download += `${p.key}\t${p.value}\n`;
+            });
 
-        paramData.forEach((p) => {
-            this.download += `${p.key}\t${p.value}\n`;
-        });
+            this.createExpandList( paramData, 'Parameters' );
+        }
 
         let optData = d3.entries( tags.ADV_OPTIONS ).sort( ( a, b ) => {
             if ( a.key < b.key ) {
@@ -210,13 +213,13 @@ export default class LayerMetadata {
             return 0;
         });
 
-        this.download += '\nOptions:\n';
-        optData.forEach((o) => {
-            this.download += `${o.key}\t${o.value}\n`;
-        });
-
-        this.createExpandList( paramData, 'Parameters' );
-        this.createExpandList( optData, 'Options' );
+        if (optData.length) {
+            this.download += '\nOptions:\n';
+            optData.forEach((o) => {
+                this.download += `${o.key}\t${o.value}\n`;
+            });
+            this.createExpandList( optData, 'Options' );
+        }
 
         if (this.tags.hasOwnProperty('stats')) {
             let stats = d3.tsvParseRows(this.tags.stats).reduce(function(stats, d) {
