@@ -86,7 +86,7 @@ export default class LayerReview extends SidebarForm {
 
         btnContainer.append('button')
             .classed('button dark text-light small strong round', true)
-            .text('Add Another Datasets')
+            .text('Add Another Dataset')
             .on('click', async () => {
                 await Hoot.layers.refreshLayers();
                 Hoot.layers.removeAllLoadedLayers();
