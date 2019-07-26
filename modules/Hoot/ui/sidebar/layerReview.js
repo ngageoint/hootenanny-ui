@@ -4,6 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/29/18
  *******************************************************************************************************/
 
+import ExportData from '../modals/exportData';
 import SidebarForm from './sidebarForm';
 
 /**
@@ -71,16 +72,26 @@ export default class LayerReview extends SidebarForm {
         this.reviewInfo.text( 'All reviews resolved!' );
         this.acceptAll.remove();
 
-        let btnContainer = this.fieldset.append( 'div' )
+        let layer = this.layer;
+        let btnContainer = this.fieldset.append('div')
             .classed( 'hoot-form-field action-container', true );
 
         btnContainer.append( 'button' )
             .classed( 'button secondary small strong round', true )
-            .text( 'Export Data' );
+            .text('Export Data')
+            .on('click', async () => {
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT);
+                new ExportData(translations, { data: layer }, 'Dataset' ).render();
+            });
 
-        btnContainer.append( 'button' )
-            .classed( 'button dark text-light small strong round', true )
-            .text( 'Add Another Datasets' );
+        btnContainer.append('button')
+            .classed('button dark text-light small strong round', true)
+            .text('Add Another Dataset')
+            .on('click', async () => {
+                await Hoot.layers.refreshLayers();
+                Hoot.layers.removeAllLoadedLayers();
+                await Hoot.layers.addHashLayer('reference', layer.id);
+            });
     }
 
     /**
