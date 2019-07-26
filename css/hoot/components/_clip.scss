@@ -41,18 +41,24 @@
 
     button {
         width: 100%;
+        border-radius: 0;
+        border: 1px solid $light3;
 
         &:first-child {
             border-radius: 4px 0 0 4px;
         }
 
         &:last-child {
-            border-right: 1px solid $light3 !important;
             border-radius: 0 4px 4px 0;
+        }
+
+        &:not(:last-child) {
+            border-right: 0px;
         }
 
         &.selected {
             background-color: $blue;
+            border-color: $blue1;
             color: $light;
         }
     }
