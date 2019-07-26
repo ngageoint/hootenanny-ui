@@ -101,7 +101,6 @@ export default class ImportMultiDatasets {
         // clear values
         this.fileInput.property( 'value', '' );
         this.schemaInput.property( 'value', '' );
-        this.asSingleLayer.property('pointer-events', 'none');
 
         // enable input if a type is selected
         if ( !selectedType ) {
@@ -110,15 +109,15 @@ export default class ImportMultiDatasets {
         } else {
             this.fileInput.node().disabled   = false;
             this.schemaInput.node().disabled = false;
-            this.asSingleLayer.property('pointer-events', 'auto');
         }
 
         if ( toSingle ) {
             this.asSingleLayerName.node().disabled = false;
-            d3.select('#importMultiAsSingleName').classed( 'asSingleName', true);
+            d3.select('#importMultiAsSingleName').classed( 'invalid', true);
             this.updateButtonState();
         } else {
             this.asSingleLayerName.node().disabled = true;
+            d3.select('#importMultiAsSingleName').classed( 'invalid', false);
             this.updateButtonState();
         }
 
@@ -365,79 +364,47 @@ export default class ImportMultiDatasets {
 
         this.loadingState( fileNames.length );
 
-        let asSingleProms;
-        let proms;
+        let proms,
+        asSingleCheck;
 
-        if ( asSingle ) {
-            proms = asSingleProms;
+        proms = fileNames.map( (name, index) => {
 
-            proms = [new Promise( resolve => {
-                let params = {
-                    NONE_TRANSLATION: translation.NONE === 'true',
-                    TRANSLATION: translationName,
-                    INPUT_TYPE: importType.value,
-                    INPUT_NAME: asSingleName,
-                    formData: this.getFormData(this.fileIngest.node().files),
-                    folderId
-                };
-
-                Hoot.api.uploadDataset( params )
-                    .then( resp => Hoot.api.statusInterval( resp.data[ 0 ].jobid ) )
-                    .then( () => {
-                        this.progressBar.property('value', fileNames.length );
-                        this.fileListInput
-                            .selectAll('option')
-                            .classed( 'import-success', true );
-                    })
-                    .then( () => resolve( name ) )
-                    .catch( err => {
-                        console.error(err);
-
-                        let message = `Error running import on ${name}\n`,
-                            type = err.type,
-                            keepOpen = true;
-
-                        if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
-                            message += err.data.commandDetail[0].stderr;
-                        }
-
-                        Hoot.message.alert( { message, type, keepOpen } );
-                    });
-            } )];
-        }
-        else {
-            proms = fileNames.map( (name, index) => {
+            if ( !asSingleCheck ) {
                 return new Promise( resolve => {
-                    let importFiles = _filter( this.fileIngest.node().files, file => {
-                        let fName = file.name.substring( 0, file.name.length - 4 );
 
-                        if ( file.name.toLowerCase().indexOf( '.shp.xml' ) > -1 ) {
-                            fName = file.name.substring( 0, file.name.length - 8 );
-                        }
-                        if ( file.name.indexOf( '.geojson' ) > -1 ) {
-                            fName = file.name.toLowerCase().substring( 0, file.name.length - 8 );
-                        }
+                    let importFiles;
 
-                        return fName === name;
-                    } );
+                    if ( !asSingle ) {
+                        importFiles = _filter( this.fileIngest.node().files, file => {
+
+                            let fName = file.name.substring( 0, file.name.length - 4 );
+
+                            if ( file.name.toLowerCase().indexOf( '.shp.xml' ) > -1 ) {
+                                fName = file.name.substring( 0, file.name.length - 8 );
+                            }
+                            if ( file.name.indexOf( '.geojson' ) > -1 ) {
+                                fName = file.name.toLowerCase().substring( 0, file.name.length - 8 );
+                            }
+
+                            asSingleCheck = false;
+
+                            return fName === name;
+                        } );
+                    } else {
+                        asSingleCheck = true;
+                    }
 
                     let params = {
                         NONE_TRANSLATION: translation.NONE === 'true',
                         TRANSLATION: translationName,
                         INPUT_TYPE: importType.value,
-                        INPUT_NAME: name,
-                        formData: this.getFormData( importFiles ),
+                        INPUT_NAME: asSingle ? asSingleName : name,
+                        formData: this.getFormData( asSingle ? this.fileIngest.node().files : importFiles ),
                         folderId
                     };
 
                     Hoot.api.uploadDataset( params )
                         .then( resp => Hoot.api.statusInterval( resp.data[ 0 ].jobid ) )
-                        .then( () => {
-                            this.progressBar.property( 'value', index + 1 );
-                            this.fileListInput
-                                .select( `option[value="${name}"]` )
-                                .classed( 'import-success', true );
-                        } )
                         .then( () => resolve( name ) )
                         .catch( err => {
                             console.error(err);
@@ -452,11 +419,18 @@ export default class ImportMultiDatasets {
 
                             Hoot.message.alert( { message, type, keepOpen } );
                         });
-                } );
-            } );
-        }
 
-        this.processRequest = Promise.all( proms )
+                    });
+            }
+
+        });
+
+        this.processRequest = this.allProgress( proms, ( n, fileName ) => {
+            this.progressBar.property( 'value', asSingle ? fileNames.length : n );
+            this.fileListInput
+                .selectAll( asSingle ?  'option' : `option[value="${fileName}"]` )
+                .classed( 'import-success', true );
+        } )
         .then( () => Hoot.message.alert( {
             message: 'All datasets successfully imported',
             type: 'success'
@@ -464,11 +438,28 @@ export default class ImportMultiDatasets {
         .then( () => Hoot.folders.refreshAll() )
         .then( () => Hoot.events.emit( 'render-dataset-table' ) )
         .finally( () => {
-            _debounce(() => {
-                this.container.remove();
-                Hoot.events.emit( 'modal-closed' );
-            }, 450)();
+            this.container.remove();
+            Hoot.events.emit( 'modal-closed' );
         });
+    }
+
+    allProgress( proms, cb ) {
+        let n = 0;
+
+        cb( 0 );
+
+        if ( this.asSingleLayer.property('checked') ) {
+            cb( n, this.asSingleLayerName.property('value') );
+        }
+        else {
+            proms.forEach( p => {
+                p.then( fileName => {
+                    n++;
+                    cb( n, fileName );
+                } );
+            } );
+        }
+        return Promise.all( proms );
     }
 
     /**

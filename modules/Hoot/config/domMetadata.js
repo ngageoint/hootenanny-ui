@@ -201,6 +201,13 @@ export function importMultiForm() {
             onChange: () => this.handleTypeChange()
         },
         {
+            label: 'New Layer Name',
+            id: 'importMultiAsSingleName',
+            inputType: 'text',
+            disabled: true,
+            onChange: d => this.validateTextInput( d )
+        },
+        {
             label: 'Import Files List',
             id: 'importFileList',
             inputType: 'listbox',
@@ -221,13 +228,6 @@ export function importMultiForm() {
             id: 'importNewFolderName',
             class: 'new-folder-name',
             inputType: 'text',
-            onChange: d => this.validateTextInput( d )
-        },
-        {
-            label: 'New Layer Name',
-            id: 'importMultiAsSingleName',
-            inputType: 'text',
-            disabled: true,
             onChange: d => this.validateTextInput( d )
         },
         {
