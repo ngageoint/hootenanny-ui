@@ -49,7 +49,7 @@ class Login {
                     //client is not authenticated so do login
                     login.init();
                 } else {
-                    alert('Hootenanny Services are currently unavailable.')
+                    alert('Cannot connect to Hootenanny Services.')
                 }
             });
 
