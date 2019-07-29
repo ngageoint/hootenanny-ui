@@ -34,7 +34,6 @@ export default class API {
         this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
 
         this.queryInterval = this.config.queryInterval;
-        this.intervals     = {};
         this.conflateTypes = null;
     }
 
@@ -85,33 +84,37 @@ export default class API {
     }
 
     /**
-     * Recursively poll the backend to check the status of a job
+     * Recursively poll the backend to check the status of a running job
      *
      * @param jobId
      * @returns {Promise<any>}
      */
     statusInterval( jobId ) {
-        return new Promise( ( res, rej ) => {
-            this.intervals[ jobId ] = setInterval( async () => {
-                let data   = await this.getJobStatus( jobId ),
-                    status = data.status;
+        const poll = (res, rej) => {
+            setTimeout( async () => {
+                try {
+                    let data   = await this.getJobStatus( jobId ),
+                        status = data.status;
 
-                if ( status === 'running' ) return;
+                    if ( status === 'running' ) {
+                        poll(res, rej);
+                        return;
+                    }
 
-                if ( status === 'complete' ) {
-                    clearInterval( this.intervals[ jobId ] );
-                    res( { data, type: 'success', status: 200, jobId } );
-                } else if ( status === 'cancelled' ) {
-                    clearInterval( this.intervals[ jobId ] );
-                    res( { data, type: 'warn', status: 200 } );
-                } else if ( status === 'failed' ) {
-                    clearInterval( this.intervals[ jobId ] );
+                    if ( status === 'complete' ) {
+                        res( { data, type: 'success', status: 200, jobId } );
+                    } else if ( status === 'cancelled' ) {
+                        res( { data, type: 'warn', status: 200 } );
+                    } else if ( status === 'failed' ) {
+                        rej( { data, type: 'error', status: 500 } );
+                    }
+                } catch (err) {
+                    let data = {};
                     rej( { data, type: 'error', status: 500 } );
-                } else {
-                    // TODO: handle warning
                 }
             }, this.queryInterval );
-        } );
+        };
+        return new Promise( poll );
     }
 
     getConflateTypes() {
@@ -1073,7 +1076,7 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
-                    message: 'Error doing pull!',
+                    message: err.data || 'Error doing pull!',
                     status: err.status,
                     type: 'error'
                 };
@@ -1100,7 +1103,7 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
-                    message: 'Error doing pull!',
+                    message: err.data || 'Error doing pull!',
                     status: err.status,
                     type: 'error'
                 };

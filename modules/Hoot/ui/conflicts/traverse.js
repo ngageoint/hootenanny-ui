@@ -19,6 +19,21 @@ export default class Traverse {
     }
 
     /**
+     * Loads initial review item when merged layer goes into review mode
+     *
+     * @param the review item
+     * @returns {Promise<void>}
+     */
+    async showFirstReview( layer ) {
+        this.data.reviewStats = layer.reviewStats;
+        this.data.currentReviewItem = layer.reviewItem;
+
+        //should already have review relation loaded by zoom
+        this.instance.graphSync.getRelationMembers( layer.reviewItem.relationId )
+            .then( members => this.instance.map.highlightLayer( members[ 0 ], members[ 1 ], true ) );
+    }
+
+    /**
      * Jumps to next available reviewable relation
      *
      * @param direction - forward | backward

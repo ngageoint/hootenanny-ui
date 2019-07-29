@@ -15,6 +15,15 @@ import selectBbox       from '../Hoot/tools/selectBbox';
 import { tooltip }      from '../util/tooltip';
 
 export function uiTools( context ) {
+    let isAdvancedUser = false;
+    if ( localStorage ) {
+        const user = JSON.parse( localStorage.getItem( 'user' ) );
+
+        if (user && user.privileges) {
+            isAdvancedUser = user.privileges.advanced === 'true';
+        }
+    }
+
     let menuItemMeta = [
         {
             title: 'Measurement Tools',
@@ -53,8 +62,11 @@ export function uiTools( context ) {
                     action: 'clipData'
                 }
             ]
-        },
-        {
+        }
+    ];
+
+    if (isAdvancedUser) {
+        const grailMenuItem = {
             title: 'Grail Tools',
             icon: 'line',
             group: 'grail',
@@ -78,8 +90,10 @@ export function uiTools( context ) {
                     action: 'createDifferential'
                 }
             ]
-        }
-    ];
+        };
+
+        menuItemMeta.push(grailMenuItem);
+    }
 
     let toolsToggle,
         toolsMenu,

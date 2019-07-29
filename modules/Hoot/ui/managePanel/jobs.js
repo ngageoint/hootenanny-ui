@@ -18,6 +18,8 @@ export default class Jobs extends Tab {
 
         this.name = 'Jobs';
         this.id   = 'util-jobs';
+
+        this.privileges = Hoot.user().privileges;
     }
 
     render() {
@@ -503,45 +505,49 @@ export default class Jobs extends Tab {
                     }
                 });
 
-                if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
-                    //Get info for the derive
-                    actions.push({
-                        title: 'upload changeset',
-                        icon: 'cloud_upload',
-                        action: async () => {
-                            Hoot.api.differentialStats(d.jobId, false)
-                                .then( resp => {
-                                    this.diffStats = new DifferentialStats( d.jobId, resp.data ).render();
 
-                                    Hoot.events.once( 'modal-closed', () => delete this.diffStats );
-                                } )
-                                .catch( err => {
-                                    Hoot.message.alert( err );
-                                    return false;
-                                } );
-                        }
-                    });
-                }
-
-                if (d.jobType.toUpperCase() === 'CONFLATE') {
-                    let currentLayer = this.findLayer( d.mapId );
-
-                    if (currentLayer && currentLayer.grail) {
+                // Only advanced user may perform these
+                if (this.privileges && this.privileges.advanced === 'true') {
+                    if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
                         //Get info for the derive
                         actions.push({
-                            title: 'derive changeset',
-                            icon: 'change_history',
+                            title: 'upload changeset',
+                            icon: 'cloud_upload',
                             action: async () => {
-                                const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
+                                Hoot.api.differentialStats(d.jobId, false)
+                                    .then( resp => {
+                                        this.diffStats = new DifferentialStats( d.jobId, resp.data ).render();
 
-                                const params  = {};
-                                params.input1 = tagsInfo.input1;
-                                params.input2 = d.mapId;
-
-                                Hoot.api.conflateDifferential( params )
-                                    .then( resp => Hoot.message.alert( resp ) );
+                                        Hoot.events.once( 'modal-closed', () => delete this.diffStats );
+                                    } )
+                                    .catch( err => {
+                                        Hoot.message.alert( err );
+                                        return false;
+                                    } );
                             }
                         });
+                    }
+
+                    if (d.jobType.toUpperCase() === 'CONFLATE') {
+                        let currentLayer = this.findLayer( d.mapId );
+
+                        if (currentLayer && currentLayer.grail) {
+                            //Get info for the derive
+                            actions.push({
+                                title: 'derive changeset',
+                                icon: 'change_history',
+                                action: async () => {
+                                    const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
+
+                                    const params  = {};
+                                    params.input1 = tagsInfo.input1;
+                                    params.input2 = d.mapId;
+
+                                    Hoot.api.conflateDifferential( params )
+                                        .then( resp => Hoot.message.alert( resp ) );
+                                }
+                            });
+                        }
                     }
                 }
 

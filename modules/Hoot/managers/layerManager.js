@@ -98,7 +98,7 @@ export default class Layers {
         }
 
         //get lowest available number to deconflict filenames
-        let num = usedNumbers.sort().findIndex( (n, i) => {
+        let num = usedNumbers.sort((a, b) => a - b).findIndex( (n, i) => {
             return n > i;
         });
 
@@ -225,10 +225,10 @@ export default class Layers {
 
             this.loadedLayers[ layer.id ] = layer;
 
-            if (!reviewMode && layerExtent.toParam() !== '-180,-90,180,90') {
-                if (layer.merged && Hoot.context.map().trimmedExtentZoom(layerExtent) < 16) {
-                    _debounce(() => { Hoot.context.map().centerZoom(layerExtent.center(), 16); }, 400)();
-                } else {
+            if (layerExtent.toParam() !== '-180,-90,180,90') {
+                if (Object.keys(this.loadedLayers).length === 1 //only zoom to the first layer loaded
+                        && !layer.merged //and only if not going into review mode
+                    ) {
                     this.hoot.context.extent(layerExtent);
                 }
             }
@@ -283,6 +283,21 @@ export default class Layers {
             if ( Hoot.ui.managePanel.isOpen ) {
                 Hoot.ui.navbar.toggleManagePanel();
             }
+
+            //Get an initial review item
+            //and zoom to it's bounds
+            let mapId = mergedLayer.id;
+            let sequence = -999;
+            let direction = 'forward';
+            let reviewItem = await Hoot.api.getNextReview( {mapId, sequence, direction} );
+            let reviewBounds = reviewItem.bounds.split(',').map(parseFloat);
+            let min = [ reviewBounds[0], reviewBounds[1] ],
+                max = [ reviewBounds[2], reviewBounds[3] ];
+            let reviewExtent = new GeoExtent( min, max );
+            this.hoot.context.extent(reviewExtent);
+
+            mergedLayer.reviewItem = reviewItem;
+            mergedLayer.reviewStats = reviewStats;
 
             mergedLayer.merged = true;
             mergedLayer.color  = 'green';
