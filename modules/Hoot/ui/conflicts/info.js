@@ -17,9 +17,9 @@ export default class ConflictMetadata {
     constructor( instance ) {
         this.instance = instance;
         this.data     = instance.data;
-        Hoot.context.history().on('change', function() {
-            _debounce( this.buildTagTable.bind(this), 450);
-        });
+        Hoot.context.history().on('change.reviewtagtable',
+        _debounce(this.buildTagTable.bind(this), 300)
+        );
 
         this.tagBlacklist = [
             /hoot*/,
@@ -126,21 +126,6 @@ export default class ConflictMetadata {
      * Pan to feature with conflict
      */
 
-    panToEntity(feature) {
-        let extent = feature.extent(Hoot.context.graph());
-        Hoot.context.map().centerZoom(extent.center(), Map.getZoomFromExtent(extent));
-    }
-
-    // eslint-disable-next-line no-dupe-class-members
-    selectEntity(entity) {
-        Hoot.context.enter(modeSelect(Hoot.context, [entity.id]));
-    }
-
-    /**
-     * Pan to feature with conflict
-     */
-
-    // eslint-disable-next-line no-dupe-class-members
     panToEntity(feature) {
         let extent = feature.extent(Hoot.context.graph());
         Hoot.context.map().centerZoom(extent.center(), Map.getZoomFromExtent(extent));
