@@ -532,7 +532,7 @@ export function svgData(projection, context, dispatch) {
 
     drawData.extent = function() {
         return geoExtent(d3_geoBounds({ type: 'LineString', coordinates: flattenCoords() }));
-    }
+    };
 
     drawData.fitZoom = function() {
         let coords = flattenCoords();
