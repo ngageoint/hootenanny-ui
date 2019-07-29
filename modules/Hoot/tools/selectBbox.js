@@ -121,7 +121,6 @@ export default class SelectBbox extends EventEmitter {
 
         bboxOptions
             .append( 'button' )
-            .classed( 'keyline-all', true )
             .text( 'Draw Bounding Box' )
             .on( 'click', function() {
                 d3.select( this.parentNode )
@@ -137,8 +136,8 @@ export default class SelectBbox extends EventEmitter {
 
         bboxOptions
             .append( 'button' )
-            .classed( 'keyline-all selected', true )
-            .text( 'Use Visual Extent' )
+            .classed( 'selected', true )
+            .text( 'Visual Extent' )
             .on( 'click', function() {
                 d3.select( this.parentNode )
                     .selectAll( 'button' )
@@ -149,6 +148,23 @@ export default class SelectBbox extends EventEmitter {
                 that.handleBbox( that.context.map().extent() );
                 that.bboxSelectType = 'visualExtent';
             } );
+
+        let customDataLayer = this.context.layers().layer('data');
+        if (customDataLayer.hasData() && customDataLayer.enabled()) {
+            bboxOptions
+                .append( 'button' )
+                .text( 'Custom Data Extent' )
+                .on( 'click', function() {
+                    d3.select( this.parentNode )
+                        .selectAll( 'button' )
+                        .classed( 'selected', false );
+
+                    d3.select( this ).classed( 'selected', true );
+
+                    that.handleBbox( customDataLayer.extent() );
+                    that.bboxSelectType = 'customDataExtent';
+                } );
+        }
     }
 
     handleBbox( extent ) {
