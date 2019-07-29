@@ -9,6 +9,7 @@ import _filter    from 'lodash-es/filter';
 import _flatten   from 'lodash-es/flatten';
 import _forEach   from 'lodash-es/forEach';
 import _map       from 'lodash-es/map';
+import _debounce from  'lodash-es/debounce';
 import { modeSelect } from '../../../modes';
 import Map  from './map';
 
@@ -17,9 +18,7 @@ export default class ConflictMetadata {
         this.instance = instance;
         this.data     = instance.data;
         Hoot.context.history().on('change', function() {
-            if ( Hoot.ui.conflicts.resolve.noBuild === null ) {
-                Hoot.ui.conflicts.info.buildTagTable();
-            }
+            _debounce( this.buildTagTable.bind(this), 450);
         });
 
         this.tagBlacklist = [
@@ -42,9 +41,8 @@ export default class ConflictMetadata {
             let colData    = this.data.currentFeatures,
             mergeCheck = Object.values(Hoot.context.graph().entities).length > 0,
             tags1      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 0 ].id).tags : {} ),
-            tags2      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 1 ].id).tags : {} ),
+            tags2      = this.filterTags( colData[ 1 ] ? Hoot.context.graph().entity(colData[ 1 ].id).tags : {} ),
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
-
 
             this.tableContainer = this.instance.rightContainer
                 .selectAll( '.tag-table' )
@@ -128,6 +126,21 @@ export default class ConflictMetadata {
      * Pan to feature with conflict
      */
 
+    panToEntity(feature) {
+        let extent = feature.extent(Hoot.context.graph());
+        Hoot.context.map().centerZoom(extent.center(), Map.getZoomFromExtent(extent));
+    }
+
+    // eslint-disable-next-line no-dupe-class-members
+    selectEntity(entity) {
+        Hoot.context.enter(modeSelect(Hoot.context, [entity.id]));
+    }
+
+    /**
+     * Pan to feature with conflict
+     */
+
+    // eslint-disable-next-line no-dupe-class-members
     panToEntity(feature) {
         let extent = feature.extent(Hoot.context.graph());
         Hoot.context.map().centerZoom(extent.center(), Map.getZoomFromExtent(extent));

@@ -24,7 +24,6 @@ export default class Merge {
      * @param instance - conflicts class
      */
     constructor( instance ) {
-        this.instance = instance;
         this.data = instance.data;
 
         this.mergeArrow = {
@@ -92,7 +91,6 @@ export default class Merge {
         } catch ( e ) {
             throw new Error( 'Unable to retrieve review references for merged items' );
         }
-
         this.processMerge( reviewRefs, mergedFeature, featureDelete );
     }
 
