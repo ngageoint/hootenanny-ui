@@ -35,13 +35,14 @@ export default class ConflictMetadata {
     /**
      * Create tag table for revieawble items
      */
-    buildTagTable() {
-        if (this.data.currentFeatures !== null) {
+    buildTagTable( reverse ) {
+        if ( this.data.currentFeatures !== null ) {
 
-            let colData    = this.data.currentFeatures,
-            mergeCheck = Object.values(Hoot.context.graph().entities).length > 0,
-            tags1      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity(colData[ 0 ].id).tags : {} ),
-            tags2      = this.filterTags( colData[ 1 ] ? Hoot.context.graph().entity(colData[ 1 ].id).tags : {} ),
+            let colData    = this.data.currentFeatures;
+            if ( reverse ) { colData.reverse(); }
+            let mergeCheck = Object.values(Hoot.context.graph().entities).length > 0,
+            tags1      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity( colData[ 0 ].id).tags : {} ),
+            tags2      = this.filterTags( colData[ 1 ] ? Hoot.context.graph().entity( colData[ 1 ].id).tags : {} ),
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
 
             this.tableContainer = this.instance.rightContainer
