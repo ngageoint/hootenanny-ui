@@ -87,7 +87,7 @@ export function uiTools( context ) {
                     group: 'grail',
                     type: 'area',
                     icon: 'iD-icon-layers',
-                    action: 'createDifferential'
+                    action: 'createDifferentialChangeset'
                 }
             ]
         };
@@ -182,7 +182,7 @@ export function uiTools( context ) {
 
                         Hoot.message.alert( { message, type } );
                     }
-                } else if ( d.action === 'grailPull' || d.action === 'createDifferential' ) {
+                } else if ( d.action === 'grailPull' || d.action === 'createDifferentialChangeset' ) {
                     let grailSelectBbox = new selectBbox( context );
 
                     grailSelectBbox.render( d.action );

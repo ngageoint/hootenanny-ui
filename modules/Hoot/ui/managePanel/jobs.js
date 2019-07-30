@@ -543,7 +543,7 @@ export default class Jobs extends Tab {
                                     params.input1 = tagsInfo.input1;
                                     params.input2 = d.mapId;
 
-                                    Hoot.api.conflateDifferential( params )
+                                    Hoot.api.deriveChangeset( params )
                                         .then( resp => Hoot.message.alert( resp ) );
                                 }
                             });
