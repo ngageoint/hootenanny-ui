@@ -408,6 +408,44 @@ export default class Jobs extends Tab {
                 //Actions
                 let actions = [];
 
+                //Clear job
+                actions.push({
+                    title: 'clear job',
+                    icon: 'clear',
+                    action: async () => {
+                        let self = this;
+                        function deleteJob(id) {
+                            d3.select('#util-jobs').classed('wait', true);
+                            Hoot.api.deleteJobStatus(id)
+                                .then( resp => self.loadJobs() )
+                                .finally( () => d3.select('#util-jobs').classed('wait', false));
+                        }
+                        if (d3.event.shiftKey) { //omit confirm prompt
+                            deleteJob(d.jobId);
+                        } else {
+                            let message = 'Are you sure you want to clear this job record?',
+                                confirm = await Hoot.message.confirm( message );
+
+                            if ( confirm ) {
+                                deleteJob(d.jobId);
+                            }
+                        }
+
+                    }
+                });
+
+                //Get logging for the job
+                actions.push({
+                    title: 'view log',
+                    icon: 'subject',
+                    action: async () => {
+                        this.commandDetails = new JobCommandInfo(d.jobId);
+                        this.commandDetails.render();
+
+                        Hoot.events.once( 'modal-closed', () => delete this.commandDetails );
+                    }
+                });
+
                 if (map) {
 
                     let refLayer = Hoot.layers.findLoadedBy('refType', 'primary') ? 2 : 0;
@@ -451,60 +489,8 @@ export default class Jobs extends Tab {
                             }
                         });
                     }
-/* Comment this out for now
-*  the call to map tags actually updates the last accessed datetime
-*  which is not desireable as it's one of the info properties shown
-                    //Get info
-                    actions.push({
-                        title: `show info`,
-                        icon: 'info',
-                        action: () => {
-                            Hoot.api.getMapTags(d.mapId)
-                                .then( tags => {
-                                    let type = 'info';
-                                    let lines = [];
-                                    if (tags.lastAccessed) lines.push(`Last accessed: ${moment(tags.lastAccessed.replace( /[-:]/g, '' )).fromNow()}`);
-                                    if (tags.input1Name) lines.push(`Reference: ${tags.input1Name}`);
-                                    if (tags.input2Name) lines.push(`Secondary: ${tags.input2Name}`);
-                                    if (tags.params) {
-                                        let params = JSON.parse(tags.params.replace(/\\"/g, '"'));
-                                        lines.push(`Conflation type: ${params.CONFLATION_TYPE}`);
-                                    }
 
-                                    let message = lines.join('<br>');
-                                    Hoot.message.alert( { message, type } );
-                                } );
-                        }
-                    });
-*/
                 }
-
-                //Clear job
-                actions.push({
-                    title: 'clear job',
-                    icon: 'clear',
-                    action: async () => {
-                        let self = this;
-                        function deleteJob(id) {
-                            d3.select('#util-jobs').classed('wait', true);
-                            Hoot.api.deleteJobStatus(id)
-                                .then( resp => self.loadJobs() )
-                                .finally( () => d3.select('#util-jobs').classed('wait', false));
-                        }
-                        if (d3.event.shiftKey) { //omit confirm prompt
-                            deleteJob(d.jobId);
-                        } else {
-                            let message = 'Are you sure you want to clear this job record?',
-                            confirm = await Hoot.message.confirm( message );
-
-                            if ( confirm ) {
-                                deleteJob(d.jobId);
-                            }
-                        }
-
-                    }
-                });
-
 
                 // Only advanced user may perform these
                 if (this.privileges && this.privileges.advanced === 'true') {
@@ -550,18 +536,6 @@ export default class Jobs extends Tab {
                         }
                     }
                 }
-
-                //Get logging for the job
-                actions.push({
-                    title: 'view log',
-                    icon: 'subject',
-                    action: async () => {
-                        this.commandDetails = new JobCommandInfo(d.jobId);
-                        this.commandDetails.render();
-
-                        Hoot.events.once( 'modal-closed', () => delete this.commandDetails );
-                    }
-                });
 
                 props.push({
                     i: actions
