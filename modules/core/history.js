@@ -30,6 +30,7 @@ import {
     utilSessionMutex
 } from '../util';
 
+
 export function coreHistory(context) {
     var imageryUsed = ['Bing'];
     var dispatch = d3_dispatch('change', 'undone', 'redone');
