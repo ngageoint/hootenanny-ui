@@ -140,6 +140,7 @@ export function importSingleForm() {
             class: 'layer-name',
             inputType: 'text',
             placeholder: 'Enter name',
+            required: true,
             onChange: d => this.validateTextInput( d )
         },
         {
@@ -198,13 +199,14 @@ export function importMultiForm() {
             id: 'importMultiAsSingle',
             inputType: 'checkbox',
             checkbox: 'cboxMultiAsSingle',
-            onChange: () => this.handleTypeChange()
+            onChange: () => this.handleSingleLayerChange()
         },
         {
             label: 'New Layer Name',
             id: 'importMultiAsSingleName',
             inputType: 'text',
             disabled: true,
+            required: true,
             onChange: d => this.validateTextInput( d )
         },
         {

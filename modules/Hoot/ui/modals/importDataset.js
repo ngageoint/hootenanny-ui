@@ -307,7 +307,7 @@ export default class ImportDataset {
             valid = false;
         }
 
-        if ( node.id === 'importLayerName' && !str.length ) {
+        if ( d.required && !str.length ) {
             valid = false;
         }
 
@@ -418,7 +418,7 @@ export default class ImportDataset {
         let formData = new FormData();
 
         _forEach( files, ( file, i ) => {
-            formData.append( `eltuploadfile${ i }`, file );
+            formData.append( `etluploadfile${ i }`, file );
         } );
 
         return formData;
