@@ -46,6 +46,7 @@ export default class Merge {
             mergedFeature,
             reviewRefs;
 
+
         // show merge button
         this.toggleMergeButton( true );
 
@@ -73,6 +74,7 @@ export default class Merge {
             );
 
             mergedFeature = featureUpdate; // feature that is updated is now the new merged node
+
         } catch ( e ) {
             window.console.log( e );
             throw new Error( 'Unable to merge features' );
@@ -153,6 +155,7 @@ export default class Merge {
         }
 
         operationDelete( [ featureToDelete.id ], Hoot.context )();
+
     }
 
     /**
@@ -288,8 +291,6 @@ export default class Merge {
                     .on( 'keydown', () => {
                         if ( d3.event.ctrlKey || d3.event.metaKey ) {
                             that.updateMergeArrow( 'reverse' );
-                            let reverse = true;
-                            Hoot.ui.conflicts.info.buildTagTable( reverse );
                         }
                     } )
                     .on( 'keyup', () => {

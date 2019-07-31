@@ -18,7 +18,7 @@ export default class ConflictMetadata {
         this.instance = instance;
         this.data     = instance.data;
         Hoot.context.history().on('change.reviewtagtable',
-        _debounce(this.buildTagTable.bind(this), 300)
+            _debounce( () => this.buildTagTable.bind(this)(), 300)
         );
 
         this.tagBlacklist = [
@@ -35,11 +35,10 @@ export default class ConflictMetadata {
     /**
      * Create tag table for revieawble items
      */
-    buildTagTable( reverse ) {
+    buildTagTable() {
         if ( this.data.currentFeatures !== null ) {
 
             let colData    = this.data.currentFeatures;
-            if ( reverse ) { colData.reverse(); }
             let mergeCheck = Object.values(Hoot.context.graph().entities).length > 0,
             tags1      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity( colData[ 0 ].id).tags : {} ),
             tags2      = this.filterTags( colData[ 1 ] ? Hoot.context.graph().entity( colData[ 1 ].id).tags : {} ),
@@ -81,40 +80,62 @@ export default class ConflictMetadata {
                 .merge( tableKeys )
                 .text( function(d) { return d; } );
 
-            var tableData1 = rows
-                .selectAll( 'td.feature1' )
-                .data( function(d) { return [d.value[0]]; } );
+            if ( this.instance.merge.mergeArrow.to !== null && this.instance.merge.mergeArrow.to.origid === Object.values( Hoot.context.graph().entities)[0].origid ) {
 
-            tableData1.exit().remove();
+                var reverseData = rows
+                    .selectAll( 'td.feature2' )
+                    .data( function(d) { return [d.value[1]]; } );
 
-            tableData1 = tableData1
-                .enter()
-                .append( 'td' )
-                .classed( 'value-col feature1', true )
-                .merge( tableData1 )
-                .text( function(d) { return d; })
-                .on('click', () => {
-                    this.panToEntity(this.data.currentFeatures[0]);
-                    this.selectEntity(this.data.currentFeatures[0]);
-                });
+                reverseData.exit().remove();
 
-            if ( !mergeCheck ) {
-                var tableData2 = rows
-                .selectAll( 'td.feature2' )
-                .data( function(d) { return [d.value[1]]; } );
-
-                tableData2.exit().remove();
-
-                tableData2 = tableData2
+                reverseData = reverseData
                     .enter()
                     .append( 'td' )
                     .classed( 'value-col feature2', true )
-                    .merge( tableData2 )
-                    .text( function(d) { return d; } )
+                    .merge( reverseData )
+                    .text( function(d) { return d; })
                     .on('click', () => {
-                        this.panToEntity(this.data.currentFeatures[1]);
-                        this.selectEntity(this.data.currentFeatures[1]);
+                        this.panToEntity(this.data.currentFeatures[0]);
+                        this.selectEntity(this.data.currentFeatures[0]);
                     });
+            }
+            else {
+
+                var tableData1 = rows
+                .selectAll( 'td.feature1' )
+                .data( function(d) { return [d.value[0]]; } );
+
+                tableData1.exit().remove();
+
+                tableData1 = tableData1
+                    .enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature1', true )
+                    .merge( tableData1 )
+                    .text( function(d) { return d; })
+                    .on('click', () => {
+                        this.panToEntity(this.data.currentFeatures[0]);
+                        this.selectEntity(this.data.currentFeatures[0]);
+                    });
+
+                if ( !mergeCheck ) {
+                    var tableData2 = rows
+                        .selectAll( 'td.feature2' )
+                        .data( function(d) { return [d.value[1]]; } );
+
+                    tableData2.exit().remove();
+
+                    tableData2 = tableData2
+                        .enter()
+                        .append( 'td' )
+                        .classed( 'value-col feature2', true )
+                        .merge( tableData2 )
+                        .text( function(d) { return d; } )
+                        .on('click', () => {
+                            this.panToEntity(this.data.currentFeatures[1]);
+                            this.selectEntity(this.data.currentFeatures[1]);
+                        });
+                }
             }
         }
     }
