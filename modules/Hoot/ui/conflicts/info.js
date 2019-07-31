@@ -80,7 +80,7 @@ export default class ConflictMetadata {
                 .merge( tableKeys )
                 .text( function(d) { return d; } );
 
-            if ( this.instance.merge.mergeArrow.to !== null && this.instance.merge.mergeArrow.to.origid === Object.values( Hoot.context.graph().entities)[0].origid ) {
+            if ( this.instance.merge.mergeArrow.to !== null && mergeCheck && this.instance.merge.mergeArrow.to.origid === Object.values( Hoot.context.graph().entities)[0].origid ) {
 
                 var reverseData = rows
                     .selectAll( 'td.feature2' )
