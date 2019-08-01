@@ -80,7 +80,7 @@ export default class ConflictMetadata {
                 .merge( tableKeys )
                 .text( function(d) { return d; } );
 
-            if ( this.instance.merge.mergeArrow.to !== null && mergeCheck && this.instance.merge.mergeArrow.to.origid === Object.values( Hoot.context.graph().entities)[0].origid ) {
+            if ( this.reverseMergeCheck( this.instance.merge.mergeArrow.to, mergeCheck ) === true ) {
 
                 var reverseData = rows
                     .selectAll( 'td.feature2' )
@@ -154,14 +154,20 @@ export default class ConflictMetadata {
     }
 
     /**
-     * Check for current features that allow tag table to build
+     * Check for current features, allowing tag table to build
      */
     checkCurrentFeatures() {
-        let currentFeatures;
 
         if ( this.data.currentFeatures !== null && Hoot.ui.conflicts.info.data.currentFeatures !== null
              && this.instance.traverse.data.reviewStats.unreviewedCount > 0 ) {
-            return currentFeatures = true;
+            return true;
+        }
+    }
+
+    reverseMergeCheck( mergeTo, mergeCheck ) {
+
+        if ( mergeTo !== null && mergeCheck && mergeTo.origid === Object.values( Hoot.context.graph().entities)[0].origid ) {
+            return true;
         }
     }
 

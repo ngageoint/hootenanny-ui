@@ -317,7 +317,7 @@ export default class Merge {
                 if ( d3.event.ctrlKey || d3.event.metaKey ) {
                     // if the from type is a way and the to type is a node then prevent the ctrlKey
                     // if invalid reverse merge, disable merge button
-                    that.updateMergeArrow( that.preventFeatureMerge( that.mergeArrow.from.type, that.mergeArrow.to.type ) === 'delete' ? that.disableMergeButton( true ) : that.disableMergeButton( false ) );
+                    that.updateMergeArrow( that.preventFeatureMerge( that.mergeArrow.from.type, that.mergeArrow.to.type ) === 'delete' ? that.disableMergeButton( true ) : 'reverse' );
 
                 } else {
                     that.updateMergeArrow();
@@ -326,7 +326,7 @@ export default class Merge {
                 d3.select( this )
                     .on( 'keydown', () => {
                         if ( d3.event.ctrlKey || d3.event.metaKey ) {
-                            that.updateMergeArrow( that.preventFeatureMerge( that.mergeArrow.from.type, that.mergeArrow.to.type ) === 'delete' ? that.disableMergeButton( true ) : that.disableMergeButton( false ) );
+                            that.updateMergeArrow( that.preventFeatureMerge( that.mergeArrow.from.type, that.mergeArrow.to.type ) === 'delete' ? that.disableMergeButton( true ) : 'reverse' );
                         }
                     } )
                     .on( 'keyup', () => {
