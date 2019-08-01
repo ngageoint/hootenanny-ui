@@ -4249,6 +4249,10 @@ svg.mouseclick use.right {
     height: 30px;
 }
 
+.disable-reverse {
+    pointer-events: none;
+}
+
 
 /* Notices (Zoom in to Edit)
 ------------------------------------------------------- */

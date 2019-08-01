@@ -92,6 +92,7 @@ export default class Merge {
         } catch ( e ) {
             throw new Error( 'Unable to retrieve review references for merged items' );
         }
+
         this.processMerge( reviewRefs, mergedFeature, featureDelete );
     }
 
@@ -266,6 +267,32 @@ export default class Merge {
     }
 
     /**
+     * Disables/Enables pointer events on merge button when user attempts to reverse merge
+     * @param disable  - true | false
+     */
+
+    disableMergeButton( disable ) {
+        d3.select( '.action-buttons .merge' ).classed( 'disable-reverse', disable );
+    }
+
+    /**
+     *
+     * Check feature merge destination, if invalid merge type, prevent merge button click
+     * @param fromType point | node | way
+     * @param toType point | node | way
+     */
+
+    preventFeatureMerge( fromType, toType ) {
+
+        if ( fromType === 'way' && toType === 'node' || fromType === 'node' && toType === 'way' ) {
+            return 'delete';
+        }
+        else {
+            return 'reverse';
+        }
+    }
+
+    /**
      * Activate merge arrow layer. Arrow appears when hovering over merge button
      *
      * @param feature
@@ -277,12 +304,21 @@ export default class Merge {
         this.mergeArrow.from = feature;
         this.mergeArrow.to   = againstFeature;
 
+        d3.select( '.action-buttons' )
+            .on( 'mouseleave', function() {
+                // reactivate pointer events if they've previously been disabled by invalid reverse merge attempt
+                that.disableMergeButton( false );
+            } );
+
         d3.select( '.action-buttons .merge' )
             .on( 'mouseenter', function() {
                 this.focus();
 
                 if ( d3.event.ctrlKey || d3.event.metaKey ) {
-                    that.updateMergeArrow( 'reverse' );
+                    // if the from type is a way and the to type is a node then prevent the ctrlKey
+                    // if invalid reverse merge, disable merge button
+                    that.updateMergeArrow( that.preventFeatureMerge( that.mergeArrow.from.type, that.mergeArrow.to.type ) === 'delete' ? that.disableMergeButton( true ) : that.disableMergeButton( false ) );
+
                 } else {
                     that.updateMergeArrow();
                 }
@@ -290,17 +326,19 @@ export default class Merge {
                 d3.select( this )
                     .on( 'keydown', () => {
                         if ( d3.event.ctrlKey || d3.event.metaKey ) {
-                            that.updateMergeArrow( 'reverse' );
+                            that.updateMergeArrow( that.preventFeatureMerge( that.mergeArrow.from.type, that.mergeArrow.to.type ) === 'delete' ? that.disableMergeButton( true ) : that.disableMergeButton( false ) );
                         }
                     } )
                     .on( 'keyup', () => {
                         that.updateMergeArrow();
                     } );
+
             } )
             .on( 'mouseleave', function() {
                 this.blur();
 
                 that.updateMergeArrow( 'delete' );
+
             } );
     }
 

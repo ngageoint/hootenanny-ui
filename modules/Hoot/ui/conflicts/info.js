@@ -36,7 +36,7 @@ export default class ConflictMetadata {
      * Create tag table for revieawble items
      */
     buildTagTable() {
-        if ( Hoot.ui.conflicts.data.currentFeatures !== null && Object.keys( Hoot.layers.loadedLayers ).length ) {
+        if ( this.checkCurrentFeatures() === true ) {
 
             let colData    = this.data.currentFeatures;
             let mergeCheck = Object.values(Hoot.context.graph().entities).length > 0,
@@ -151,6 +151,18 @@ export default class ConflictMetadata {
     panToEntity(feature) {
         let extent = feature.extent(Hoot.context.graph());
         Hoot.context.map().centerZoom(extent.center(), Map.getZoomFromExtent(extent));
+    }
+
+    /**
+     * Check for current features that allow tag table to build
+     */
+    checkCurrentFeatures() {
+        let currentFeatures;
+
+        if ( this.data.currentFeatures !== null && Hoot.ui.conflicts.info.data.currentFeatures !== null
+             && this.instance.traverse.data.reviewStats.unreviewedCount > 0 ) {
+            return currentFeatures = true;
+        }
     }
 
     /**
