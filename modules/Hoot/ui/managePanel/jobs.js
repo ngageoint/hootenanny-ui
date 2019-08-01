@@ -526,6 +526,14 @@ export default class Jobs extends Tab {
                                     } );
                             }
                         });
+
+                        actions.push({
+                            title: 'download changeset',
+                            icon: 'save_alt',
+                            action: async () => {
+                                Hoot.api.saveChangeset( d.jobId );
+                            }
+                        });
                     }
 
                     if (d.jobType.toUpperCase() === 'CONFLATE') {
@@ -540,7 +548,7 @@ export default class Jobs extends Tab {
                                     const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
 
                                     const params  = {};
-                                    params.input1 = tagsInfo.input1;
+                                    params.input1 = parseInt(tagsInfo.input1, 10);
                                     params.input2 = d.mapId;
 
                                     Hoot.api.conflateDifferential( params )
