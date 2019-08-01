@@ -392,7 +392,7 @@ export default class ImportMultiDatasets {
                     TRANSLATION: translationName,
                     INPUT_TYPE: importType.value,
                     INPUT_NAME: name,
-                    formData: importFiles,
+                    formData: this.getFormData(importFiles),
                     folderId
                 };
 
@@ -419,7 +419,7 @@ export default class ImportMultiDatasets {
         this.processRequest = this.allProgress( proms, ( n, fileName ) => {
                 this.progressBar.property( 'value', n );
                 this.fileListInput
-                    .selectAll( asSingle ?  'option' : `option[value="${fileName}"]` )
+                    .selectAll( asSingle ? 'option' : `option[value="${fileName}"]` )
                     .classed( 'import-success', true );
             } )
             .then( () => Hoot.message.alert( {
