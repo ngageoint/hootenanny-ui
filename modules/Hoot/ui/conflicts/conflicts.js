@@ -52,6 +52,12 @@ export default class Conflicts {
         this.data = privateMethods.initData();
 
         this.buttonEnabled = true;
+
+        Hoot.context.history().on('undone', function() {
+
+            Hoot.ui.conflicts.updateButtons();
+
+        });
     }
 
     /**
@@ -60,7 +66,9 @@ export default class Conflicts {
     deactivate() {
         Hoot.context.map().on( 'drawn', null );
         this.map.unsetHighlight();
-        this.container.remove();
+        if ( this.container && !this.container.node().hidden) {
+            this.container.remove();
+        }
         this.data = privateMethods.initData();
     }
 
@@ -87,11 +95,16 @@ export default class Conflicts {
         this.merge     = modules[ 4 ];
         this.resolve   = modules[ 5 ];
 
+        // let reviewStats = await Hoot.api.getReviewStatistics( this.data.mapId );
+
+        // if ( reviewStats.totalCount === 0 ) return;
+
         this.render();
 
         Hoot.context.map().on( 'drawn', () => this.map.setHighlight() );
 
         this.traverse.showFirstReview( layer );
+        //this.traverse.jumpTo( 'forward' );
     }
 
     /**
@@ -117,7 +130,7 @@ export default class Conflicts {
             .classed( 'meta-dialog', true )
             .append( 'span' )
             .classed( '_icon info light', true )
-            .html( '<strong class="review-note">Initializing...</strong>' );
+            .html( '<strong class="review-note">Initialzing...</strong>' );
 
         this.tooltip = tooltip()
             .placement( 'top' )
@@ -125,11 +138,32 @@ export default class Conflicts {
             .title( d => tooltipHtml( t( `review.${ d.id }.description` ), d.cmd ) );
 
         // create buttons
-        this.leftContainer.append( 'div' )
+
+        this.leftContainer = this.info.instance.leftContainer
+        .selectAll( 'left-container')
+        .data( [0] );
+
+        this.leftContainer.exit().remove();
+
+        this.leftContainer = this.leftContainer
+            .enter()
+            .append( 'div' )
             .classed( 'action-buttons', true )
+            .merge( this.leftContainer );
+
+        var metaButtons = this.leftContainer
             .selectAll( 'button' )
-            .data( this.buttonMeta ).enter()
+            .data( this.buttonMeta );
+
+        metaButtons.exit().remove();
+
+        metaButtons = metaButtons
+            .enter()
             .append( 'button' )
+            .classed( 'action-buttons', true )
+            .merge( metaButtons );
+
+        metaButtons
             .attr( 'class', d => d.class )
             .text( d => d.text )
             .on( 'click', d => {
@@ -144,6 +178,39 @@ export default class Conflicts {
 
         this.bindKeys();
     }
+
+    /**
+     * Update buttons
+     */
+
+     updateButtons() {
+        var metaButtons = this.info.instance.leftContainer
+            .selectAll( 'button' )
+            .data( this.buttonMeta );
+
+        metaButtons.exit().remove();
+
+        metaButtons = metaButtons
+            .enter()
+            .append( 'button' )
+            .classed( 'action-buttons', true )
+            .merge( metaButtons );
+
+        metaButtons
+            .attr( 'class', d => d.class )
+            .text( d => d.text )
+            .on( 'click', d => {
+                setTimeout( () => this.buttonEnabled = true, 500 );
+
+                if ( this.buttonEnabled ) {
+                    this.buttonEnabled = false;
+                    d.action();
+                }
+            } )
+            .call( this.tooltip );
+
+        this.bindKeys();
+     }
 
     /**
      * Bind key press events to actions buttons

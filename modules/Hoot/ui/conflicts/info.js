@@ -9,7 +9,7 @@ import _filter    from 'lodash-es/filter';
 import _flatten   from 'lodash-es/flatten';
 import _forEach   from 'lodash-es/forEach';
 import _map       from 'lodash-es/map';
-import _startCase from 'lodash-es/startCase';
+import _debounce from  'lodash-es/debounce';
 import { modeSelect } from '../../../modes';
 import Map  from './map';
 
@@ -17,6 +17,9 @@ export default class ConflictMetadata {
     constructor( instance ) {
         this.instance = instance;
         this.data     = instance.data;
+        Hoot.context.history().on('change.reviewtagtable',
+            _debounce( () => this.buildTagTable.bind(this)(), 300)
+        );
 
         this.tagBlacklist = [
             /hoot*/,
@@ -33,81 +36,108 @@ export default class ConflictMetadata {
      * Create tag table for revieawble items
      */
     buildTagTable() {
-        let colData    = this.data.currentFeatures,
-            tags1      = this.filterTags( colData[ 0 ] ? colData[ 0 ].tags : {} ),
-            tags2      = this.filterTags( colData[ 1 ] ? colData[ 1 ].tags : {} ),
+        if ( this.checkCurrentFeatures() === true ) {
+
+            let colData    = this.data.currentFeatures;
+            let mergeCheck = Object.values(Hoot.context.graph().entities).length > 0,
+            tags1      = this.filterTags( colData[ 0 ] ? Hoot.context.graph().entity( colData[ 0 ].id).tags : {} ),
+            tags2      = this.filterTags( colData[ 1 ] ? Hoot.context.graph().entity( colData[ 1 ].id).tags : {} ),
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
 
-        let currentRelation = this.instance.graphSync.getCurrentRelation();
+            this.tableContainer = this.instance.rightContainer
+                .selectAll( '.tag-table' )
+                .data([ 0 ]);
 
-        if ( this.poiTable ) {
-            this.tableContainer.remove();
-        }
+            this.tableContainer.exit().remove();
 
-        this.tableContainer = this.instance.rightContainer
-            .insert( 'div', ':first-child' )
-            .classed( 'tag-table', true );
+            this.tableContainer = this.tableContainer
+                .enter()
+                .append( 'table' )
+                .classed( 'tag-table', true )
+                .merge( this.tableContainer );
 
-        this.poiTable = this.tableContainer.append( 'table' );
+            var rows = this.tableContainer
+                .selectAll( 'tr' )
+                .data( tagsMerged );
 
-        if ( currentRelation.members.length > 2 ) {
-            let navHtml = '<div class="navigation-wrapper"><div class="prev">&lt;&lt;</div><div class="next">&gt;&gt;</div></div>';
+            rows.exit().remove();
 
-            let row = this.poiTable.append( 'tr' )
-                .classed( 'table-head', true );
+            rows = rows
+                .enter()
+                .append( 'tr' )
+                .merge( rows );
 
-            row.append( 'td' )
+            var tableKeys = rows
+                .selectAll( 'td' )
+                .data( function(d) { return [d.key]; } );
+
+            tableKeys.exit().remove();
+
+            tableKeys = tableKeys
+                .enter()
+                .append( 'td' )
                 .classed( 'fillD', true )
-                .text( 'Review Item' );
+                .merge( tableKeys )
+                .text( function(d) { return d; } );
 
-            row.selectAll( 'td.feature1' )
-                .data( [ { k: 1 } ] ).enter()
-                .append( 'td' )
-                .classed( 'value-col feature1', true )
-                .html( navHtml );
+            if ( this.reverseMergeCheck( this.instance.merge.mergeArrow.to, mergeCheck ) === true ) {
 
-            row.selectAll( 'td.feature2' )
-                .data( [ { k: 2 } ] ).enter()
-                .append( 'td' )
-                .classed( 'value-col feature2', true )
-                .html( navHtml );
+                var reverseData = rows
+                    .selectAll( 'td.feature2' )
+                    .data( function(d) { return [d.value[1]]; } );
+
+                reverseData.exit().remove();
+
+                reverseData = reverseData
+                    .enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature2', true )
+                    .merge( reverseData )
+                    .text( function(d) { return d; })
+                    .on('click', () => {
+                        this.panToEntity(this.data.currentFeatures[0]);
+                        this.selectEntity(this.data.currentFeatures[0]);
+                    });
+            }
+            else {
+
+                var tableData1 = rows
+                .selectAll( 'td.feature1' )
+                .data( function(d) { return [d.value[0]]; } );
+
+                tableData1.exit().remove();
+
+                tableData1 = tableData1
+                    .enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature1', true )
+                    .merge( tableData1 )
+                    .text( function(d) { return d; })
+                    .on('click', () => {
+                        this.panToEntity(this.data.currentFeatures[0]);
+                        this.selectEntity(this.data.currentFeatures[0]);
+                    });
+
+                if ( !mergeCheck ) {
+                    var tableData2 = rows
+                        .selectAll( 'td.feature2' )
+                        .data( function(d) { return [d.value[1]]; } );
+
+                    tableData2.exit().remove();
+
+                    tableData2 = tableData2
+                        .enter()
+                        .append( 'td' )
+                        .classed( 'value-col feature2', true )
+                        .merge( tableData2 )
+                        .text( function(d) { return d; } )
+                        .on('click', () => {
+                            this.panToEntity(this.data.currentFeatures[1]);
+                            this.selectEntity(this.data.currentFeatures[1]);
+                        });
+                }
+            }
         }
-
-        _forEach( tagsMerged, tag => {
-            let row = this.poiTable.append( 'tr' );
-
-            row.append( 'td' )
-                .classed( 'fillD', true )
-                .text( _startCase( tag.key ) );
-
-            row.selectAll( 'td.feature1' )
-                .data( [ { k: 1 } ] ).enter()
-                .append( 'td' )
-                .classed( 'value-col feature1', true )
-                .text( tag.value[ 0 ] );
-
-            row.selectAll( 'td.value-col.feature1' )
-                .on('click', () => {
-                    this.panToEntity(this.data.currentFeatures[0]);
-                    this.selectEntity(this.data.currentFeatures[0]);
-                });
-
-            row.selectAll( 'td.feature2' )
-                .data( [ { k: 2 } ] ).enter()
-                .append( 'td' )
-                .classed( 'value-col feature2', true )
-                .text( tag.value[ 1 ] );
-
-            row.selectAll( 'td.value-col.feature2' )
-                .on('click', () => {
-                    this.panToEntity(this.data.currentFeatures[1]);
-                    this.selectEntity(this.data.currentFeatures[1]);
-                });
-        } );
-
-        this.poiTable.selectAll( '.value-col' )
-            .on( 'mouseenter', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true ) )
-            .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
     }
 
     selectEntity(entity) {
@@ -121,6 +151,24 @@ export default class ConflictMetadata {
     panToEntity(feature) {
         let extent = feature.extent(Hoot.context.graph());
         Hoot.context.map().centerZoom(extent.center(), Map.getZoomFromExtent(extent));
+    }
+
+    /**
+     * Check for current features, allowing tag table to build
+     */
+    checkCurrentFeatures() {
+
+        if ( this.data.currentFeatures !== null && Hoot.ui.conflicts.info.data.currentFeatures !== null
+             && this.instance.traverse.data.reviewStats.unreviewedCount > 0 ) {
+            return true;
+        }
+    }
+
+    reverseMergeCheck( mergeTo, mergeCheck ) {
+
+        if ( mergeTo !== null && mergeCheck && mergeTo.origid === Object.values( Hoot.context.graph().entities)[0].origid ) {
+            return true;
+        }
     }
 
     /**
