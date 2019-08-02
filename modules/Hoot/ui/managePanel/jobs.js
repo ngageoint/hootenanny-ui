@@ -493,7 +493,9 @@ export default class Jobs extends Tab {
                 }
 
                 // Only advanced user may perform these
-                if (this.privileges && this.privileges.advanced === 'true') {
+                if (this.privileges && this.privileges.advanced === 'true' &&
+                    d.statusDetail.toUpperCase() !== 'STALE') {
+
                     if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
                         //Get info for the derive
                         actions.push({
@@ -528,6 +530,7 @@ export default class Jobs extends Tab {
                                     const params  = {};
                                     params.input1 = tagsInfo.input1;
                                     params.input2 = d.mapId;
+                                    params.parentId = d.jobId;
 
                                     Hoot.api.deriveChangeset( params )
                                         .then( resp => Hoot.message.alert( resp ) );
