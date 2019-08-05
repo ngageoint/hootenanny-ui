@@ -15,6 +15,7 @@ import { t }                from '../../../util/locale';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions/index';
 import { osmNode }          from '../../../osm';
+import { merge } from 'node-diff3';
 
 /**
  * @class Merge
@@ -39,7 +40,7 @@ export default class Merge {
      * @returns {Promise<void>}
      */
     async mergeFeatures() {
-        let features = _clone( this.data.currentFeatures ),
+        let features = _clone( this.getMergeArrowFeatures( this.data.currentFeatures[0], this.data.currentFeatures[ 1 ] ) ),
             reverse  = d3.event.ctrlKey || d3.event.metaKey,
             featureUpdate,
             featureDelete,
@@ -60,8 +61,8 @@ export default class Merge {
         // and will be ignored since POIs are always merged into polygons.
         features[ 0 ].tags[ 'hoot:merge:target' ] = 'yes';
 
-        featureUpdate = features[ 0 ];
-        featureDelete = features[ 1 ];
+        featureUpdate = features[ 1 ];
+        featureDelete = features[ 0 ];
 
         try {
             let mergedNode = await this.getMergedNode( features );
@@ -275,21 +276,26 @@ export default class Merge {
         d3.select( '.action-buttons .merge' ).classed( 'disable-reverse', disable );
     }
 
-    /**
-     *
-     * Check feature merge destination, if invalid merge type, prevent merge button click
-     * @param fromType point | node | way
-     * @param toType point | node | way
-     */
+    getMergeArrowFeatures( fromFeature, toFeature ) {
 
-    preventFeatureMerge( fromType, toType ) {
+        let mergeFeatures = [];
 
-        if ( fromType === 'way' && toType === 'node' || fromType === 'node' && toType === 'way' ) {
-            return 'delete';
+        if ( fromFeature.id.charAt( 0 ) === 'n' && toFeature.id.charAt( 0 ) === 'n' ) {
+            mergeFeatures.push( fromFeature, toFeature);
+            return mergeFeatures;
+        }
+        else if ( fromFeature.id.charAt( 0 ) === 'n' && toFeature.id.charAt( 0 ) === 'w' ) {
+            mergeFeatures.push( fromFeature, toFeature );
+            return mergeFeatures;
+        }
+        else if ( fromFeature.id.charAt( 0 ) === 'w' && toFeature.id.charAt( 0 ) === 'w') {
+            mergeFeatures.push( fromFeature, toFeature);
+            return mergeFeatures;
         }
         else {
-            return 'reverse';
+            return null;
         }
+
     }
 
     /**
@@ -301,8 +307,14 @@ export default class Merge {
     activateMergeArrow( feature, againstFeature ) {
         let that = this;
 
-        this.mergeArrow.from = feature;
-        this.mergeArrow.to   = againstFeature;
+        let mergeArrowFeatures = that.getMergeArrowFeatures( feature, againstFeature );
+
+
+        feature = mergeArrowFeatures !== null ? mergeArrowFeatures[0] : null;
+        againstFeature =  mergeArrowFeatures !== null ? mergeArrowFeatures[1] : null;
+
+        this.mergeArrow.from = againstFeature;
+        this.mergeArrow.to   = feature;
 
         d3.select( '.action-buttons' )
             .on( 'mouseleave', function() {
@@ -315,9 +327,10 @@ export default class Merge {
                 this.focus();
 
                 if ( d3.event.ctrlKey || d3.event.metaKey ) {
+
                     // if the from type is a way and the to type is a node then prevent the ctrlKey
                     // if invalid reverse merge, disable merge button
-                    that.updateMergeArrow( that.preventFeatureMerge( that.mergeArrow.from.type, that.mergeArrow.to.type ) === 'delete' ? that.disableMergeButton( true ) : 'reverse' );
+                    that.updateMergeArrow( mergeArrowFeatures === null ? 'reverse' : 'delete' && that.disableMergeButton( true ) );
 
                 } else {
                     that.updateMergeArrow();
@@ -326,7 +339,7 @@ export default class Merge {
                 d3.select( this )
                     .on( 'keydown', () => {
                         if ( d3.event.ctrlKey || d3.event.metaKey ) {
-                            that.updateMergeArrow( that.preventFeatureMerge( that.mergeArrow.from.type, that.mergeArrow.to.type ) === 'delete' ? that.disableMergeButton( true ) : 'reverse' );
+                            that.updateMergeArrow( mergeArrowFeatures === null ? 'reverse' : 'delete' && that.disableMergeButton( true ) );
                         }
                     } )
                     .on( 'keyup', () => {
