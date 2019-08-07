@@ -15,7 +15,7 @@ import { t }                from '../../../util/locale';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions/index';
 import { osmNode }          from '../../../osm';
-import { merge } from 'node-diff3';
+import { osmWay }           from '../../../osm';
 
 /**
  * @class Merge
@@ -40,7 +40,7 @@ export default class Merge {
      * @returns {Promise<void>}
      */
     async mergeFeatures() {
-        let features = _clone( this.getMergeArrowFeatures( this.data.currentFeatures[0], this.data.currentFeatures[ 1 ] ) ),
+        let features = _clone( Object.values(this.mergeArrow).map( function( a ) { return a; } ) ),
             reverse  = d3.event.ctrlKey || d3.event.metaKey,
             featureUpdate,
             featureDelete,
@@ -56,13 +56,16 @@ export default class Merge {
             features.reverse();
         }
 
+
+
         // This tag identifies the feature that is being merged into and will be removed by the server
         // after merging is completed. The tag is not needed by POI to Polygon conflation, however,
         // and will be ignored since POIs are always merged into polygons.
+
         features[ 0 ].tags[ 'hoot:merge:target' ] = 'yes';
 
-        featureUpdate = features[ 1 ];
-        featureDelete = features[ 0 ];
+        featureUpdate = features[ 0 ];
+        featureDelete = features[ 1 ];
 
         try {
             let mergedNode = await this.getMergedNode( features );
@@ -143,9 +146,15 @@ export default class Merge {
                 }
 
                 if ( !exists && !refRelation.memberById( mergedFeature.id ) ) {
-                    let newNode = this.createNewRelationNodeMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
 
-                    this.data.mergedConflicts.push( newNode );
+                    if ( mergedFeature.type === 'node' ) {
+
+                        let newNode = this.createNewRelationNodeMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
+                        this.data.mergedConflicts.push( newNode );
+                    } else {
+                        let newWay = this.createNewRelationWayMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
+                        this.data.mergedConflicts.push( newWay );
+                     }
                 }
             }
         } );
@@ -241,6 +250,27 @@ export default class Merge {
     }
 
     /**
+     * Generate metadata for merged way
+     * @param {*} mergeWayId
+     * @param {*} relationId
+     * @param {*} mergeIdx
+     */
+
+    createNewRelationWayMeta( mergedWayId, relationId, mergedIdx ) {
+        let way = new osmWay(),
+            obj = {};
+        way.id    = mergedWayId;
+        way.type  = 'way';
+        way.role  = 'reviewee';
+        way.index = mergedIdx;
+
+        obj.id  = relationId;
+        obj.obj = way;
+
+        return obj;
+    }
+
+    /**
      * Get IDs of missing relations
      *
      * @param reviewRefs - reference of nodes being merged
@@ -276,26 +306,14 @@ export default class Merge {
         d3.select( '.action-buttons .merge' ).classed( 'disable-reverse', disable );
     }
 
-    getMergeArrowFeatures( fromFeature, toFeature ) {
+    checkMergeArrowFeatures( toFeature, fromFeature ) {
 
         let mergeFeatures = [];
 
-        if ( fromFeature.id.charAt( 0 ) === 'n' && toFeature.id.charAt( 0 ) === 'n' ) {
-            mergeFeatures.push( fromFeature, toFeature);
+       if ( toFeature.id.charAt( 0 ) === 'n' && fromFeature.id.charAt( 0 ) === 'w' ) {
+            mergeFeatures.push( toFeature, fromFeature, null);
             return mergeFeatures;
         }
-        else if ( fromFeature.id.charAt( 0 ) === 'n' && toFeature.id.charAt( 0 ) === 'w' ) {
-            mergeFeatures.push( fromFeature, toFeature );
-            return mergeFeatures;
-        }
-        else if ( fromFeature.id.charAt( 0 ) === 'w' && toFeature.id.charAt( 0 ) === 'w') {
-            mergeFeatures.push( fromFeature, toFeature);
-            return mergeFeatures;
-        }
-        else {
-            return null;
-        }
-
     }
 
     /**
@@ -307,14 +325,8 @@ export default class Merge {
     activateMergeArrow( feature, againstFeature ) {
         let that = this;
 
-        let mergeArrowFeatures = that.getMergeArrowFeatures( feature, againstFeature );
-
-
-        feature = mergeArrowFeatures !== null ? mergeArrowFeatures[0] : null;
-        againstFeature =  mergeArrowFeatures !== null ? mergeArrowFeatures[1] : null;
-
-        this.mergeArrow.from = againstFeature;
-        this.mergeArrow.to   = feature;
+        that.mergeArrow.from = againstFeature;
+        that.mergeArrow.to   = feature;
 
         d3.select( '.action-buttons' )
             .on( 'mouseleave', function() {
@@ -326,11 +338,13 @@ export default class Merge {
             .on( 'mouseenter', function() {
                 this.focus();
 
+                let mergeArrowFeatures = that.checkMergeArrowFeatures( feature, againstFeature );
+
                 if ( d3.event.ctrlKey || d3.event.metaKey ) {
 
                     // if the from type is a way and the to type is a node then prevent the ctrlKey
                     // if invalid reverse merge, disable merge button
-                    that.updateMergeArrow( mergeArrowFeatures === null ? 'reverse' : 'delete' && that.disableMergeButton( true ) );
+                    that.updateMergeArrow( mergeArrowFeatures.length > 2 ? ' delete' && that.disableMergeButton( true ) : 'reverse' );
 
                 } else {
                     that.updateMergeArrow();
@@ -339,7 +353,7 @@ export default class Merge {
                 d3.select( this )
                     .on( 'keydown', () => {
                         if ( d3.event.ctrlKey || d3.event.metaKey ) {
-                            that.updateMergeArrow( mergeArrowFeatures === null ? 'reverse' : 'delete' && that.disableMergeButton( true ) );
+                            that.updateMergeArrow( mergeArrowFeatures.length > 2 ? 'delete' && that.disableMergeButton( true ) : 'reverse' );
                         }
                     } )
                     .on( 'keyup', () => {

@@ -99,7 +99,26 @@ export default class ConflictMetadata {
                         this.selectEntity(this.data.currentFeatures[0]);
                     });
             }
-            else {
+            else if ( this.data.mergedConflicts.length > 0 ) {
+
+                var mergedData = rows
+                    .selectAll( 'td.feature1' )
+                    .data( function(d) { return Object.values( [ d.value[ 1 ] ] ); } );
+
+                mergedData.exit().remove();
+
+                mergedData = mergedData
+                    .enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature1', true )
+                    .merge( mergedData )
+                    .text( function(d) { return d; })
+                    .on( 'click', () => {
+                        this.panToEntity( this.data.currentFeatures[ 0 ]);
+                        this.selectEntity( this.data.currentFeatures[ 0 ]);
+                    });
+
+            } else {
 
                 var tableData1 = rows
                 .selectAll( 'td.feature1' )
