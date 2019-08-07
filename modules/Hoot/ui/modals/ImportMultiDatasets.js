@@ -194,14 +194,7 @@ export default class ImportMultiDatasets {
 
     setFileMetadata( fileName, typeCount, fileList ) {
 
-        let fName = fileName.substring( 0, fileName.length - 4 );
-
-        if ( fileName.indexOf( '.shp.xml' ) > -1 ) {
-            fName = fileName.toLowerCase().substring( 0, fileName.length - 8 );
-        }
-        if ( fileName.indexOf( '.geojson' ) > -1 ) {
-            fName = fileName.toLowerCase().substring( 0, fileName.length - 8 );
-        }
+        let fName = fileName.split('.')[0];
 
         let fObj = _find( fileList, file => file.name === fName );
 
@@ -381,7 +374,7 @@ export default class ImportMultiDatasets {
                     //filter files by name if not merging to single layer
                     importFiles = _filter( files, file => {
 
-                        let fName = file.name.toLowerCase().split('.')[0];
+                        let fName = file.name.split('.')[0];
 
                         return fName === name;
                     } );
