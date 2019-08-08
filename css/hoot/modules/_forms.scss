@@ -240,6 +240,19 @@
     }
 }
 
+.pullStatsInfo {
+    width: 200px;
+
+    th:first-child,
+    td:first-child {
+        width: 120px;
+    }
+
+    th,td {
+        text-align: right;
+    }
+}
+
 .tagInput {
     padding-top: 10px;
     padding-bottom: 10px;
@@ -253,4 +266,8 @@
         display: inline-block;
         float: none;
     }
+}
+
+.badData {
+    color: red;
 }
