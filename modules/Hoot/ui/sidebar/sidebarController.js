@@ -4,7 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/3/18
  *******************************************************************************************************/
 
-import _debounce from 'lodash-es/debounce';
 import _reject       from 'lodash-es/reject';
 import { svgIcon }    from '../../../svg';
 import LayerMetadata from './layerMetadata';
