@@ -569,11 +569,15 @@ export default class FolderTree extends EventEmitter {
             } else {
                 // add options for single selected dataset
                 _forEach( this.datasetContextMenu.addDatasetOpts, o => {
-                    let form = Hoot.ui.sidebar.forms[ o.formId ].exists;
 
-                    if ( form && !form.attr( 'data-id' ) ) {
-                        opts.push( o );
-                    }
+                    let formMeta = Hoot.ui.sidebar.forms[ o.formId ];
+
+                    if ( formMeta ) {
+                         let form = formMeta.form;
+                         if ( form && !form.attr( 'data-id' ) ) {
+                            opts.push( o );
+                        }
+                     }
                 } );
 
                 opts.splice( 4, 0, {
