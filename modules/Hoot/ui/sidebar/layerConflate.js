@@ -197,7 +197,7 @@ class LayerConflate extends SidebarForm {
                 data.CONFLATION_COMMAND = 'conflate-differential';
                 break;
             }
-            case 'Differential w/ Tags': {
+            case 'Differential w/Tags': {
                 data.CONFLATION_TYPE = 'Differential';
                 data.CONFLATION_COMMAND = 'conflate-differential-tags';
                 break;
