@@ -17,11 +17,11 @@ class SidebarController {
         this.layerName  = layer.name;
         this.layerId    = layer.id;
         this.layerColor = layer.color;
-        this.isConflate = layer.isConflate;
-        this.merged = layer.merged;
+        this.isConflating = layer.isConflating;
+        this.isMerged     = layer.isMerged;
         this.jobId      = layer.jobId;
         this.refType    = layer.refType;
-        this.typeClass  = this.isConflate ? 'conflate-controller' : 'add-controller';
+        this.typeClass  = layer.isMerged ? 'conflate-controller' : 'add-controller';
     }
 
     render() {
@@ -49,7 +49,7 @@ class SidebarController {
         this.createColorPalette();
         this.createThumbnail();
         this.createText();
-        if (this.isConflate) {
+        if (this.isConflating) {
             this.createCancelButton();
         } else {
             this.createDeleteButton();
@@ -111,7 +111,7 @@ class SidebarController {
             .append( 'div' )
             .classed( 'keyline-all hoot-form-field palette clearfix round', true );
 
-        if ( !this.isConflate ) {
+        if ( !this.isMerged ) {
             palette = _reject( palette, color => color.name === 'green' );
         }
 
@@ -154,7 +154,7 @@ class SidebarController {
     }
 
     createText() {
-        let text = this.isConflate && !this.merged ? 'Conflating' : 'Loading';
+        let text = this.isConflating ? 'Conflating' : 'Loading';
 
         this.text = this.controller
             .append( 'span' )
@@ -165,7 +165,7 @@ class SidebarController {
     createDeleteButton() {
         this.deleteButton = this.controller
             .append( 'button' )
-            .classed( 'delete-button icon-button keyline-left round-right inline _icon trash', true )
+            .classed( 'delete-button icon-button keyline-left round-right inline', true )
             .on( 'click', async d => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
@@ -178,21 +178,25 @@ class SidebarController {
                     Hoot.ui.sidebar.layerRemoved( d );
                 }
             } );
+        this.deleteButton.append('i')
+            .classed('material-icons', true)
+            .attr('title', 'remove layer')
+            .text('delete_outline');
     }
 
     createShowLayersButton() {
-        let sources, isMerged = true;
+        let sources,
+            isMerged = true,
+            icon;
         this.showButton = this.controller
             .append('button')
             .classed('showlayers icon-button keyline-left inline unround', true)
-            .call(svgIcon('#iD-icon-layers'))
             .on('click', async function () {
                 try {
-                    let span = d3.select(this).select('span');
                     d3.event.preventDefault();
                     if (!sources) {
                         sources = Object.values(Hoot.layers.loadedLayers).reduce((sources, l) => {
-                            let key = l.merged ? 'merged' : 'original';
+                            let key = l.isMerged ? 'merged' : 'original';
                             sources[key] = key === 'merged' ? l : (sources[key] || []).concat(l);
                             return sources;
                         }, { histories: {} });
@@ -205,14 +209,12 @@ class SidebarController {
                     Hoot.context.flush();
 
                     if (isMerged) {
-                        span.text('Original');
                         Hoot.layers.removeLoadedLayer(sources.merged.id, true);
                         await Promise.all([
                             Hoot.layers.loadLayer(sources.original[0], true),
                             Hoot.layers.loadLayer(sources.original[1], true)
                         ]);
                     } else {
-                        span.text('Merged');
                         sources.original.forEach(layer => Hoot.layers.removeLoadedLayer(layer.id, true));
                         await Hoot.layers.loadLayer(sources.merged, true);
                     }
@@ -223,13 +225,19 @@ class SidebarController {
                     }
 
                     isMerged = !isMerged;
-                    uiBackground.renderLayerToggle();
+
+                    //toggle swap tooltip
+                    icon.attr('title', `show ${isMerged ? 'inputs' : 'merged'}`);
+
                 } catch (e) {
-                    console.log(e);
+                    console.error(e);
                 }
             });
+        icon = this.showButton.append('i')
+            .classed('material-icons', true)
+            .attr('title', `show ${isMerged ? 'inputs' : 'merged'}`)
+            .text('swap_vert');
 
-        this.showButton.append('span').text('Merged');
     }
 
     createCancelButton() {
@@ -282,7 +290,7 @@ class SidebarController {
             .classed( this.typeClass, true );
 
         this.thumbnail.attr( 'class', () => {
-            let icon = layer.merged ? 'conflate' : 'data',
+            let icon = layer.isMerged ? 'conflate' : 'data',
                 osm  = layer.color === 'osm' ? '_osm' : '';
 
             return `pad1 inline thumbnail light big _icon ${ icon } ${ osm }`;
@@ -322,7 +330,7 @@ class SidebarController {
                 } );
             } );
 
-        this.form.selectAll(`button.${this.isConflate ? 'cancel' : 'delete'}-button`).remove();
+        this.form.selectAll(`button.${this.isConflating ? 'cancel' : 'delete'}-button`).remove();
         this.text.remove();
 
         this.text = this.contextLayer
@@ -331,11 +339,11 @@ class SidebarController {
             .attr('title', layer.name)
             .text(layer.name);
 
-        if (layer.merged) {
+        if (layer.isMerged) {
             this.createShowLayersButton();
         }
 
-        if ( this.isConflate ) {
+        if ( this.isMerged ) {
             this.metadata = new LayerMetadata( this.context, this.form, layer );
             this.metadata.render();
         }

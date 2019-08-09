@@ -107,7 +107,7 @@ export function svgTagClasses() {
 
                 // For merged datasets, assign color class of source layer
                 var lyr = Hoot.layers.loadedLayers[ mapId ];
-                if ( lyr && lyr.merged ) {
+                if ( lyr && lyr.isMerged ) {
                     var id;
                     var sourceId = Hoot.layers.decodeHootStatus( t[ 'hoot:status' ] );
                     switch ( sourceId ) {

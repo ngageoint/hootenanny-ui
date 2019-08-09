@@ -232,7 +232,7 @@ class LayerConflate extends SidebarForm {
 //handle layer not found here
         params.id     = Hoot.layers.findBy( 'name', params.name ).id;
         params.refType = 'merged';
-        params.merged = true;
+        params.isMerged = true;
         params.layers = layers;
         Hoot.layers.loadLayer( params );
     }
@@ -245,7 +245,7 @@ class LayerConflate extends SidebarForm {
             params = {
                 name: data.OUTPUT_NAME,
                 color: 'green',
-                isConflate: true
+                isConflating: true
             };
 
         if ( this.advancedOptions.isOpen ) {

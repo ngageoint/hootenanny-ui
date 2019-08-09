@@ -154,6 +154,81 @@ export function uiMapData(context) {
     }
 
 
+    function drawHootItems(selection) {
+        var hootLayers = Object.values(Hoot.layers.loadedLayers);
+
+        var ul = selection
+            .selectAll('.layer-list-hoot')
+            .data([0]);
+
+        ul = ul.enter()
+            .append('ul')
+            .attr('class', 'layer-list layer-list-hoot')
+            .merge(ul);
+
+        var li = ul.selectAll('.list-item')
+            .data(hootLayers, function(d) {
+                return d.id;
+            });
+
+        li.exit()
+            .remove();
+
+        var liEnter = li.enter()
+            .append('li')
+            .attr('class', function(d) { return 'list-item list-item-' + d.id; });
+
+
+        //Button to move layer up
+        liEnter
+            .append('button')
+            .call(tooltip().title('Click to have layer be on top').placement('left'))
+            .attr('class', d => `hoot-layer fill-${d.color}`)
+            .on('click', function(data) {
+                var feature = d3.select(this.parentNode).node();
+                var prev = feature.previousElementSibling;
+
+                if (!prev) {
+                    return;
+                }
+                ul.node()
+                    .insertBefore(feature, prev);
+
+                //turn top layer 'move up' button off
+                d3.select(feature).select('i')
+                    .classed('hidden', true);
+                //turn bottom layer 'move up' button on
+                d3.select(prev).select('i')
+                    .classed('hidden', false);
+
+                Hoot.layers.setTopLayer(Number(data.id));
+            })
+            .append('i')
+            .classed('material-icons', true)
+            .text('arrow_upward');
+
+
+        var labelEnter = liEnter
+            .append('label');
+
+        labelEnter
+            .append('input')
+            .attr('type', 'checkbox')
+            .on('change', Hoot.layers.toggleLayerVisibility);
+
+        labelEnter
+            .append('span')
+            .text(function(d) { return d.name; })
+            ;
+
+
+        // Update
+        li.merge(liEnter)
+            .selectAll('input')
+            .property('checked', function (d) { return d.visible; });
+    }
+
+
     function drawOsmItems(selection) {
         var osmKeys = ['osm', 'notes'];
         var osmLayers = layers.all().filter(function(obj) { return osmKeys.indexOf(obj.id) !== -1; });
@@ -500,7 +575,8 @@ export function uiMapData(context) {
 
     function update() {
         _dataLayerContainer
-            .call(drawOsmItems)
+            // .call(drawOsmItems)
+            .call(drawHootItems)
             .call(drawPhotoItems)
             .call(drawCustomDataItems)
             .call(drawVectorItems);      // Beta - Detroit mapping challenge

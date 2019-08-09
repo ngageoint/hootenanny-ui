@@ -121,7 +121,7 @@ export default class Sidebar {
             let loadedLayer = Hoot.layers.findLoadedBy( 'name', form.loadingLayerName );
             if ( loadedLayer != null ) {
 
-                if ( loadedLayer.merged ) {
+                if ( loadedLayer.isMerged ) {
                     Hoot.layers.mergedLayer = loadedLayer;
                 }
 
@@ -133,7 +133,7 @@ export default class Sidebar {
         } );
     }
 
-    layerMerged() {
+    layerReviews() {
         let that = this;
 
         let layer = Hoot.layers.mergedLayer;
@@ -166,7 +166,6 @@ export default class Sidebar {
             window.location.replace('#' + utilQsString(q, true));
         }
 
-        uiBackground.renderLayerToggle();
         this.adjustSize();
     }
 
@@ -215,7 +214,7 @@ export default class Sidebar {
 
     listen() {
         Hoot.events.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
-        Hoot.events.on( 'layer-merged', () => this.layerMerged() );
+        Hoot.events.on( 'layer-reviews', () => this.layerReviews() );
 
         window.onresize = () => this.adjustSize();
     }

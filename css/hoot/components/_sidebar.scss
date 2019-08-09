@@ -355,8 +355,8 @@
     overflow: hidden;
 
     button {
-        min-width: 55px;
-        max-width: 55px;
+        min-width: 39px;
+        max-width: 39px;
     }
 
     div, button {
@@ -398,6 +398,7 @@
 
     .icon-button {
         height: 60px;
+        line-height: 50%;
         float: right;
 
         &:hover {

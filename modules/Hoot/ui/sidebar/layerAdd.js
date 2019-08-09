@@ -210,8 +210,6 @@ export default class LayerAdd extends SidebarForm {
         await Hoot.layers.loadLayer( params );
 
         Hoot.events.emit( 'load-layer' );
-
-        uiBackground.renderLayerToggle();
     }
 
     /**
