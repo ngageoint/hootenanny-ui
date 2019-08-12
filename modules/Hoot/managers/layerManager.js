@@ -181,7 +181,7 @@ export default class Layers {
         this.hashLayers[type] = parseInt(mapId, 10);
     }
 
-    async loadLayer( params, reviewMode ) {
+    async loadLayer( params, skipCheckForReviewsAndZoom ) {
         try {
             let mapId       = params.id,
                 tags        = await this.hoot.api.getMapTags( mapId ),
@@ -219,7 +219,7 @@ export default class Layers {
                 window.location.replace('#' + utilQsString(q, true));
             }
 
-            if ( (tags.input1 || tags.input2) && !reviewMode) {
+            if ( (tags.input1 || tags.input2) && !skipCheckForReviewsAndZoom) {
                 layer = await this.checkForReview( layer );
             }
 
@@ -228,6 +228,7 @@ export default class Layers {
             if (layerExtent.toParam() !== '-180,-90,180,90') {
                 if (Object.keys(this.loadedLayers).length === 1 //only zoom to the first layer loaded
                         && !layer.isMerged //and only if not going into review mode
+                        && !skipCheckForReviewsAndZoom //and only if not toggling between merged layer and inputs
                     ) {
                     this.hoot.context.extent(layerExtent);
                 }
