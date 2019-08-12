@@ -10,9 +10,9 @@ export default class GrailPull {
 
     render() {
         let titleText = this.instance.bboxSelectType === 'visualExtent'
-            ? 'Pull Remote Data to Visual Extent'
+            ? 'Pull Remote Data for Visual Extent'
             : this.instance.bboxSelectType === 'boundingBox'
-                ? 'Pull Remote Data to Bounding Box'
+                ? 'Pull Remote Data for Bounding Box'
                 : 'Pull Remote Data';
 
         let metadata = {
@@ -121,7 +121,7 @@ export default class GrailPull {
 
         this.submitButton
             .select( 'span' )
-            .text( isLoading ? 'Loading Stats' : 'Submit' );
+            .text( isLoading ? 'Loading Counts' : 'Submit' );
 
 
         if (isLoading){

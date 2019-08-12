@@ -1090,14 +1090,6 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Overpass stats query retrieved successfully.',
-                    status: 200,
-                    type: 'success'
-                };
-            } )
             .catch( err => {
                 return {
                     data: err.data,
