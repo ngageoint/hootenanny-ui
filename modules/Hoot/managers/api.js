@@ -692,6 +692,20 @@ export default class API {
             });
     }
 
+    saveChangeset( id ) {
+        const params = {
+            path: `/job/export/${id}?outputname=diff&ext=osc`,
+            responseType: 'arraybuffer',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => {
+                let fileBlob = new Blob( [ resp.data ], { type: 'application/xml' } );
+                saveAs( fileBlob, `changeset_${id}.osc` );
+            });
+    }
+
     exportDataset( data ) {
         data.tagoverrides =  JSON.stringify(
             Object.assign(data.tagoverrides || {}, {
