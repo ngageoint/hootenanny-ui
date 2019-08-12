@@ -62,7 +62,6 @@ export default class ClipDataset {
             },
             {
                 label: 'Path',
-                placeholder: 'root',
                 combobox: folderList,
                 name: 'outputPath'
             }
@@ -128,7 +127,11 @@ export default class ClipDataset {
                     } else if ( d.name === 'outputName' ) {
                         that.createLayerNameField( d3.select( this ), layer );
                     } else {
+                        var folderId = Hoot.layers.findBy( 'id', layer.id ).folderId;
+                        d.combobox = [d.combobox.find( function(l) { return l.id === folderId; } )]
+                            .concat( d.combobox.filter( function(l) { return l.id !== folderId; } ).sort());
                         that.createFolderListCombo( d3.select( this ), d );
+                        d3.select( this ).property( 'placeholder', Hoot.folders.findBy( 'id', folderId).name );
                     }
                 } );
         } );
@@ -167,15 +170,6 @@ export default class ClipDataset {
                     _value: n.id
                 };
             } ) );
-
-        let data = combobox.data();
-
-        data.sort( ( a, b ) => {
-            let textA = a.value.toLowerCase(),
-                textB = b.value.toLowerCase();
-
-            return textA < textB ? -1 : textA > textB ? 1 : 0;
-        } ).unshift( { value: 'root', _value: 0 } );
 
         input.call( combobox );
     }
