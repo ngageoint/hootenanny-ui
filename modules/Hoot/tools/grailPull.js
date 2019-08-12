@@ -5,7 +5,7 @@ import { formatBbox } from './utilities';
 export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
-        this.maxFeatureCount = 80000;
+        this.maxFeatureCount = null;
     }
 
     render() {
@@ -35,6 +35,8 @@ export default class GrailPull {
 
         Hoot.api.overpassStatsQuery(this.instance.bbox)
             .then(queryData => {
+                this.maxFeatureCount = +queryData.data.maxFeatureCount;
+
                 Hoot.api.getOverpassStats(queryData.data.overpassQuery)
                     .then(queryResult => {
                     this.createTable(queryResult);
@@ -81,6 +83,8 @@ export default class GrailPull {
                 .text( `Max feature count of ${this.maxFeatureCount} exceeded` );
 
             this.submitButton.node().disabled = true;
+        } else {
+            this.submitButton.node().disabled = false;
         }
     }
 
@@ -125,6 +129,8 @@ export default class GrailPull {
                 .append( 'div' )
                 .classed( '_icon _loading float-right', true )
                 .attr( 'id', 'importSpin' );
+
+            this.submitButton.node().disabled = true;
         } else {
             this.submitButton.select('div').remove();
         }
