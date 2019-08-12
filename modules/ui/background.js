@@ -288,6 +288,7 @@ export function uiBackground(context) {
             .text(t('background.imagery_source_faq'));
     }
 
+
     function renderOverlayList(selection) {
         var container = selection.selectAll('.layer-overlay-list')
             .data([0]);
@@ -539,7 +540,6 @@ export function uiBackground(context) {
         uiBackground.hidePane = hidePane;
         uiBackground.togglePane = togglePane;
         uiBackground.setVisible = setVisible;
-        // uiBackground.renderLayerToggle = renderLayerToggle;
     }
 
     return background;

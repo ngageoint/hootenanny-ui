@@ -5,9 +5,7 @@
  *******************************************************************************************************/
 
 import _reject       from 'lodash-es/reject';
-import { svgIcon }    from '../../../svg';
 import LayerMetadata from './layerMetadata';
-import { uiBackground } from '../../../ui';
 
 class SidebarController {
     constructor( form, layer ) {
