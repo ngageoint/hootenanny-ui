@@ -6,6 +6,7 @@
 
 import ExportData from '../modals/exportData';
 import SidebarForm from './sidebarForm';
+import { validationTagSuggestsArea } from '../../../validations';
 
 /**
  * @class LayerReview
@@ -48,8 +49,11 @@ export default class LayerReview extends SidebarForm {
                 this.conflicts.resolve.acceptAll( this.layer );
             } );
 
-        this.conflicts.init( this.layer )
+        if ( this.layer.reviewStats ) {
+            this.conflicts.init( this.layer )
             .then( () => this.listen() );
+        }
+
     }
 
     /**
