@@ -43,7 +43,7 @@ export default class DifferentialUpload {
 
         params.BBOX       = formatBbox( bbox );
 
-        Hoot.api.createDifferential( params )
+        Hoot.api.createDifferentialChangeset( params )
             .then( ( resp ) => Hoot.message.alert( resp ) );
 
         this.form.remove();

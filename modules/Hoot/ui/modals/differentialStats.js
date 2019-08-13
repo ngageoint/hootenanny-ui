@@ -120,7 +120,7 @@ export default class DifferentialStats {
         const params  = {},
               tagsCheck = this.form.select('.applyTags');
 
-        params.folder     = this.jobId;
+        params.parentId   = this.jobId;
         params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
 
         Hoot.api.differentialPush( params )
