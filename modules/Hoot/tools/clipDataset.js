@@ -190,8 +190,12 @@ export default class ClipDataset {
 
             let row         = d3.select( `#row-${ mapId }` ),
                 datasetName = row.select( '.datasetName' ),
-                outputName  = row.select( '.outputName' ),
-                folderId    = parseInt(row.select( '.outputPath' ).attr('_value'), 10);
+                outputName  = row.select( '.outputName' );
+            let checkFolder = Hoot.folders._folders.find( function ( f ) { return f.name === row.select( '.outputPath' ).property( 'value' ); } );
+            let folderId;
+            let getFolders    = _forEach( Hoot.folders._folders, folder => {
+                folderId = parseInt( Hoot.folders.findBy( 'name', checkFolder.name ).id, 10 );
+            });
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = Hoot.layers.checkLayerName(outputName.property( 'value' ) || outputName.attr( 'placeholder' ));
