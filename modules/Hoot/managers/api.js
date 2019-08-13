@@ -692,6 +692,20 @@ export default class API {
             });
     }
 
+    saveChangeset( id ) {
+        const params = {
+            path: `/job/export/${id}?outputname=diff&ext=osc`,
+            responseType: 'arraybuffer',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => {
+                let fileBlob = new Blob( [ resp.data ], { type: 'application/xml' } );
+                saveAs( fileBlob, `changeset_${id}.osc` );
+            });
+    }
+
     exportDataset( data ) {
         data.tagoverrides =  JSON.stringify(
             Object.assign(data.tagoverrides || {}, {
@@ -1127,9 +1141,9 @@ export default class API {
             } );
     }
 
-    createDifferential( data ) {
+    createDifferentialChangeset( data ) {
         const params = {
-            path: '/grail/createdifferential',
+            path: '/grail/createdifferentialchangeset',
             method: 'POST',
             data
         };
@@ -1203,9 +1217,9 @@ export default class API {
             } );
     }
 
-    conflateDifferential( data ) {
+    deriveChangeset( data ) {
         const params = {
-            path: '/grail/conflatedifferential',
+            path: '/grail/derivechangeset',
             method: 'POST',
             data
         };
@@ -1215,7 +1229,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Conflate differential has succeeded.',
+                    message: 'Derive changeset has succeeded.',
                     status: 200,
                     type: 'success'
                 };
@@ -1223,34 +1237,7 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
-                    message: 'Error doing Conflate differential!',
-                    status: err.status,
-                    type: 'error'
-                };
-            } );
-    }
-
-    conflationUpload( data ) {
-        const params = {
-            path: '/grail/conflatepush',
-            method: 'POST',
-            data
-        };
-
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Conflation Upload has succeeded.',
-                    status: 200,
-                    type: 'success'
-                };
-            } )
-            .catch( err => {
-                return {
-                    data: err.data,
-                    message: 'Error doing Conflation Upload!',
+                    message: 'Error doing derive changeset!',
                     status: err.status,
                     type: 'error'
                 };
