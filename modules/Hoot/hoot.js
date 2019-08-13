@@ -98,6 +98,13 @@ class Hoot {
 
             return user;
         };
+
+        if (!this.context.storage('history')) {
+            this.context.storage('history', JSON.stringify({
+                'bboxHistory':[]
+            }));
+        }
+
         Promise.all( [
             this.getAboutData(),
             this.getAllUsers(),

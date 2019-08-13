@@ -7,10 +7,13 @@
 import EventEmitter from 'events';
 import FormFactory  from './formFactory';
 
-import { modeDrawBoundingBox } from '../../modes';
-import ClipDataset             from './clipDataset';
-import GrailPull               from './grailPull';
-import DifferentialUpload      from './differentialUpload';
+import { modeDrawBoundingBox }    from '../../modes';
+import ClipDataset                from './clipDataset';
+import GrailPull                  from './grailPull';
+import DifferentialUpload         from './differentialUpload';
+import { d3combobox }             from '../../lib/hoot/d3.combobox';
+import _map                       from 'lodash-es/map';
+import { geoExtent as GeoExtent } from '../../geo';
 
 export default class SelectBbox extends EventEmitter {
     constructor( context ) {
@@ -129,9 +132,9 @@ export default class SelectBbox extends EventEmitter {
 
                 d3.select( this ).classed( 'selected', true );
                 that.container.classed( 'hidden', true );
+                that.bboxSelectType = 'boundingBox';
 
                 that.context.enter( modeDrawBoundingBox( that, that.context ) );
-                that.bboxSelectType = 'boundingBox';
             } );
 
         bboxOptions
@@ -144,9 +147,9 @@ export default class SelectBbox extends EventEmitter {
                     .classed( 'selected', false );
 
                 d3.select( this ).classed( 'selected', true );
+                that.bboxSelectType = 'visualExtent';
 
                 that.handleBbox( that.context.map().extent() );
-                that.bboxSelectType = 'visualExtent';
             } );
 
         let customDataLayer = this.context.layers().layer('data');
@@ -160,10 +163,43 @@ export default class SelectBbox extends EventEmitter {
                         .classed( 'selected', false );
 
                     d3.select( this ).classed( 'selected', true );
+                    that.bboxSelectType = 'customDataExtent';
 
                     that.handleBbox( customDataLayer.extent() );
-                    that.bboxSelectType = 'customDataExtent';
                 } );
+        }
+
+        if (this.operationName === 'grailPull') {
+            const self = this;
+
+            this.dropdownContainer = this.form
+                .select( '.wrapper div' )
+                .insert( 'div', '.modal-footer' )
+                .classed( 'button-wrap flex justify-left history-options', true )
+                .append( 'input' )
+                .attr('placeholder', 'Previously used bounds');
+
+            let { bboxHistory } = JSON.parse( Hoot.context.storage('history') );
+
+            let combobox = d3combobox()
+                .data( _map( bboxHistory, n => {
+                    return {
+                        value: n
+                    };
+                } ) );
+
+            this.dropdownContainer.call( combobox )
+                .on('change', function() {
+                    const bbox = this.value;
+                    self.dropdownContainer.attr('title', bbox);
+                    self.bboxSelectType = 'boundsHistory';
+
+                    const coords = bbox.split(',').map( data => +data );
+                    self.handleBbox( new GeoExtent( [ coords[0], coords[1] ], [ coords[2], coords[3] ] ) );
+
+                    bboxOptions.selectAll( 'button' )
+                        .classed( 'selected', false );
+                });
         }
     }
 
@@ -175,6 +211,10 @@ export default class SelectBbox extends EventEmitter {
         this.minLonInput.property( 'value', this.minlon );
         this.maxLonInput.property( 'value', this.maxlon );
         this.minLatInput.property( 'value', this.minlat );
+
+        if ( this.bboxSelectType !== 'boundsHistory' ){
+            this.dropdownContainer.node().value = '';
+        }
 
         let inputs = this.extentBox.selectAll( 'input' );
 
