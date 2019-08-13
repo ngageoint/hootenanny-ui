@@ -80,26 +80,7 @@ export default class ConflictMetadata {
                 .merge( tableKeys )
                 .text( function(d) { return d; } );
 
-            if ( this.reverseMergeCheck( this.instance.merge.mergeArrow.to, mergeCheck ) === true ) {
-
-                var reverseData = rows
-                    .selectAll( 'td.feature2' )
-                    .data( function(d) { return [d.value[1]]; } );
-
-                reverseData.exit().remove();
-
-                reverseData = reverseData
-                    .enter()
-                    .append( 'td' )
-                    .classed( 'value-col feature2', true )
-                    .merge( reverseData )
-                    .text( function(d) { return d; })
-                    .on('click', () => {
-                        this.panToEntity(this.data.currentFeatures[0]);
-                        this.selectEntity(this.data.currentFeatures[0]);
-                    });
-            }
-            else if ( this.data.mergedConflicts.length > 0 ) {
+            if ( this.checkForMerge( colData ) === true ) {
 
                 var mergedData = rows
                     .selectAll( 'td.feature1' )
@@ -116,6 +97,25 @@ export default class ConflictMetadata {
                     .on( 'click', () => {
                         this.panToEntity( this.data.currentFeatures[ 0 ]);
                         this.selectEntity( this.data.currentFeatures[ 0 ]);
+                    });
+
+            } else if ( this.reverseMergeCheck( this.instance.merge.mergeArrow.to, mergeCheck ) === true ) {
+
+                var reverseData = rows
+                    .selectAll( 'td.feature2' )
+                    .data( function(d) { return [d.value[1]]; } );
+
+                reverseData.exit().remove();
+
+                reverseData = reverseData
+                    .enter()
+                    .append( 'td' )
+                    .classed( 'value-col feature2', true )
+                    .merge( reverseData )
+                    .text( function(d) { return d; })
+                    .on('click', () => {
+                        this.panToEntity(this.data.currentFeatures[0]);
+                        this.selectEntity(this.data.currentFeatures[0]);
                     });
 
             } else {
@@ -173,8 +173,9 @@ export default class ConflictMetadata {
     }
 
     /**
-     * Check for current features, allowing tag table to build
+     * Check for a complete current features object, if object is not emplty, allow the tag table to build
      */
+
     checkCurrentFeatures() {
 
         if ( this.data.currentFeatures !== null && Hoot.ui.conflicts.info.data.currentFeatures !== null
@@ -182,6 +183,22 @@ export default class ConflictMetadata {
             return true;
         }
     }
+
+    /**
+     * Check the feature being updated for tags signifying successful merge
+     */
+
+    checkForMerge( colData ) {
+        let mergeCheck = colData[ 1 ].tags[ 'hoot:merge:target' ];
+
+        if ( mergeCheck && mergeCheck === 'yes'  ) {
+            return true;
+        }
+    }
+
+    /**
+     * Check for valid reverse merge, if valid, build tag table with second column styling signifying reverse merge w/in UI ( Single blue column )
+     */
 
     reverseMergeCheck( mergeTo, mergeCheck ) {
 

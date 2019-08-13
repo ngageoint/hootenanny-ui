@@ -381,7 +381,7 @@ export default class ImportMultiDatasets {
                     //filter files by name if not merging to single layer
                     importFiles = _filter( files, file => {
 
-                        let fName = file.name.split('.')[0];
+                        let fName = file.name.toLowerCase().split('.')[0];
 
                         return fName === name;
                     } );
