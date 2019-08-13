@@ -8,18 +8,18 @@ export default class DifferentialStats {
     }
 
     render() {
-        let titleText = 'Differential Info';
+        let titleText = 'Changeset summary';
 
         let metadata = {
             title: titleText,
             button: {
-                text: 'Push Differential',
+                text: 'Upload Changeset',
                 id: 'SubmitBtn',
                 onClick: () => this.handleSubmit()
             }
         };
 
-        let formId = 'differentialPushTable';
+        let formId = 'changesetPushTable';
 
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
         this.submitButton = d3.select( `#${ metadata.button.id }` );

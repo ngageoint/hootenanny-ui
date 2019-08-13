@@ -1,20 +1,18 @@
-import _map from 'lodash-es/map';
-
 import FormFactory from './formFactory';
 
-import { uuidv4, formatBbox } from './utilities';
-import { d3combobox }         from '../../lib/hoot/d3.combobox';
+import { formatBbox } from './utilities';
 
 export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
+        this.maxFeatureCount = null;
     }
 
     render() {
         let titleText = this.instance.bboxSelectType === 'visualExtent'
-            ? 'Pull Remote Data to Visual Extent'
+            ? 'Pull Remote Data for Visual Extent'
             : this.instance.bboxSelectType === 'boundingBox'
-                ? 'Pull Remote Data to Bounding Box'
+                ? 'Pull Remote Data for Bounding Box'
                 : 'Pull Remote Data';
 
         let metadata = {
@@ -33,34 +31,61 @@ export default class GrailPull {
 
         this.submitButton.property( 'disabled', false );
 
+        this.loadingState(true);
+
+        Hoot.api.overpassStatsQuery(this.instance.bbox)
+            .then(queryData => {
+                this.maxFeatureCount = +queryData.data.maxFeatureCount;
+
+                Hoot.api.getOverpassStats(queryData.data.overpassQuery)
+                    .then(queryResult => {
+                    this.createTable(queryResult);
+                });
+            });
     }
 
-    /**
-     * Create folder list selection dropdown
-     *
-     * @param input - selected field
-     * @param d     - field metadata
-     **/
-    createFolderListCombo( input, d ) {
-        let combobox = d3combobox()
-            .data( _map( d.combobox, n => {
-                return {
-                    value: n.path,
-                    title: n.path
-                };
-            } ) );
+    createTable(data) {
+        this.loadingState(false);
 
-        let data = combobox.data();
+        const csvValues = data.split('\n')[1],
+              arrayValues = csvValues.split('\t');
+        const rowData = [
+            {label: 'node', count: +arrayValues[1]},
+            {label: 'way', count: +arrayValues[2]},
+            {label: 'relation', count: +arrayValues[3]},
+            {label: 'total', count: +arrayValues[0]}
+        ];
 
-        data.sort( ( a, b ) => {
-            let textA = a.value.toLowerCase(),
-                textB = b.value.toLowerCase();
+        let table = this.form
+            .select( '.wrapper div' )
+            .insert( 'table', '.modal-footer' )
+            .classed( 'pullStatsInfo', true );
 
-            return textA < textB ? -1 : textA > textB ? 1 : 0;
-        } ).unshift( { value: 'root', title: 0 } );
+        let tbody = table.append('tbody');
 
-        input.call( combobox );
-        input.attr( 'placeholder', 'root' );
+        let rows = tbody.selectAll('tr')
+            .data(rowData)
+            .enter()
+            .append('tr');
+
+        rows.append('td')
+            .text( data => data.label );
+
+        rows.append('td')
+            .classed( 'strong', data => data.count > 0 )
+            .classed( 'badData', data => data.label === 'total' && data.count > this.maxFeatureCount )
+            .text( data => data.count );
+
+        if (+arrayValues[0] > this.maxFeatureCount) {
+            this.form.select( '.hoot-menu' )
+                .insert( 'div', '.modal-footer' )
+                .classed( 'badData', true )
+                .text( `Max feature count of ${this.maxFeatureCount} exceeded` );
+
+            this.submitButton.node().disabled = true;
+        } else {
+            this.submitButton.node().disabled = false;
+        }
     }
 
     handleSubmit() {
@@ -90,5 +115,24 @@ export default class GrailPull {
             .then( () => Hoot.events.emit( 'render-dataset-table' ) );
 
         this.form.remove();
+    }
+
+    loadingState(isLoading) {
+
+        this.submitButton
+            .select( 'span' )
+            .text( isLoading ? 'Loading Counts' : 'Submit' );
+
+
+        if (isLoading){
+            this.submitButton
+                .append( 'div' )
+                .classed( '_icon _loading float-right', true )
+                .attr( 'id', 'importSpin' );
+
+            this.submitButton.node().disabled = true;
+        } else {
+            this.submitButton.select('div').remove();
+        }
     }
 }

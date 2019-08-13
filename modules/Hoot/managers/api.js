@@ -1097,6 +1097,23 @@ export default class API {
             } );
     }
 
+    overpassStatsQuery( bbox ) {
+        const params = {
+            path: `/grail/overpassStatsQuery?bbox=${ bbox }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: err.data || 'Error retrieving overpass stats query!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
 
     grailPullRailsPortToDb( data ) {
         const params = {
@@ -1301,6 +1318,20 @@ export default class API {
         return this.request( params )
             .then( resp => resp.data )
             .catch( err => window.console.error( err ) );
+    }
+
+    getOverpassStats(url) {
+        // We do this because only the portion after data= should be encoded
+        const splitData = url.split(/(data=)/),
+            encodedUrl = splitData[0] + splitData[1] + encodeURIComponent(splitData[2]);
+
+        const params = {
+            url: encodedUrl,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
     }
 
 }
