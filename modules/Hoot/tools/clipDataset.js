@@ -128,10 +128,10 @@ export default class ClipDataset {
                         that.createLayerNameField( d3.select( this ), layer );
                     } else {
                         var folderId = Hoot.layers.findBy( 'id', layer.id ).folderId;
-                        d.combobox = [d.combobox.find( function(l) { return l.id === folderId; } )]
-                            .concat( d.combobox.filter( function(l) { return l.id !== folderId; } ).sort());
+                        d.combobox = [ d.combobox.find( function( l ) { return l.id === folderId; } ) ]
+                            .concat( d.combobox.filter( function( l ) { return l.id !== folderId; } ).sort() );
                         that.createFolderListCombo( d3.select( this ), d );
-                        d3.select( this ).property( 'placeholder', Hoot.folders.findBy( 'id', folderId).name );
+                        d3.select( this ).property( 'value', Hoot.folders.findBy( 'id', folderId ).name );
                     }
                 } );
         } );
