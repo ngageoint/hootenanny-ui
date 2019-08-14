@@ -227,8 +227,8 @@ export default class Layers {
 
             if (layerExtent.toParam() !== '-180,-90,180,90') {
                 if (Object.keys(this.loadedLayers).length === 1 //only zoom to the first layer loaded
-                        && !layer.isMerged //and only if not going into review mode
-                        && !skipCheckForReviewsAndZoom //and only if not toggling between merged layer and inputs
+                        && !layer.isMerged //or if showing a merged layer because 3 layers will have been loaded
+                        && !skipCheckForReviewsAndZoom //but only if not toggling between merged layer and inputs
                     ) {
                     this.hoot.context.extent(layerExtent);
                 }
@@ -354,7 +354,8 @@ export default class Layers {
                 params = {
                     name: input1Name,
                     id: input1,
-                    color: 'violet'
+                    color: 'violet',
+                    retType: 'primary'
                 };
 
                 message = 'Could not determine input layer 2. It will not be loaded.';
@@ -364,7 +365,8 @@ export default class Layers {
                 params = {
                     name: input2Name,
                     id: input2,
-                    color: 'orange'
+                    color: 'orange',
+                    refType: 'secondary'
                 };
 
                 message = 'Could not determine input layer 1. It will not be loaded.';
@@ -394,8 +396,12 @@ export default class Layers {
 
     removeLoadedLayer( id, toggle ) {
         if ( id && this.loadedLayers[ id ] ) {
+            if (this.loadedLayers[ id ].isMerged) {
+                this.removeLoadedLayer(Hoot.layers.mergedLayer.tags.input1);
+                this.removeLoadedLayer(Hoot.layers.mergedLayer.tags.input2);
+            }
+
             delete this.loadedLayers[ id ];
-            this.hoot.context.background().removeSource( id );
             this.hootOverlay.removeGeojson( id );
 
             this.hoot.context.flush();
@@ -424,6 +430,11 @@ export default class Layers {
         this.hootOverlay.removeGeojson( id );
 
         this.hoot.context.connection().removeTile( id );
+        this.hoot.context.flush();
+    }
+
+    showLayer( id ) {
+        this.hoot.layers.loadedLayers[ id ].visible = true;
         this.hoot.context.flush();
     }
 

@@ -203,18 +203,14 @@ class SidebarController {
                     // take snapshot of history
                     sources.histories[isMerged ? 'merged' : 'original'] = Hoot.context.history().toJSON();
 
-                    Hoot.layers.loadedLayers = {};
-                    Hoot.context.flush();
-
                     if (isMerged) {
-                        Hoot.layers.removeLoadedLayer(sources.merged.id, true);
-                        await Promise.all([
-                            Hoot.layers.loadLayer(sources.original[0], true),
-                            Hoot.layers.loadLayer(sources.original[1], true)
-                        ]);
+                        Hoot.layers.hideLayer(Hoot.layers.findLoadedBy( 'refType', 'merged' ).id);
+                        Hoot.layers.showLayer(Hoot.layers.findLoadedBy( 'refType', 'primary' ).id);
+                        Hoot.layers.showLayer(Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id);
                     } else {
-                        sources.original.forEach(layer => Hoot.layers.removeLoadedLayer(layer.id, true));
-                        await Hoot.layers.loadLayer(sources.merged, true);
+                        Hoot.layers.hideLayer(Hoot.layers.findLoadedBy( 'refType', 'primary' ).id);
+                        Hoot.layers.hideLayer(Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id);
+                        Hoot.layers.showLayer(Hoot.layers.findLoadedBy( 'refType', 'merged' ).id);
                     }
 
                     if (Object.keys(sources.histories).length === 2) { // the first time we don't want to refresh history, so we just ignore.
