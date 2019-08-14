@@ -155,7 +155,7 @@ export function uiMapData(context) {
 
 
     function drawHootItems(selection) {
-        var hootLayers = Object.values(Hoot.layers.loadedLayers);
+        var hootLayers = Object.values(Hoot.layers.loadedLayers).filter( l => l.visible );
 
         var ul = selection
             .selectAll('.layer-list-hoot')
