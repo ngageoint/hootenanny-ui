@@ -1,6 +1,7 @@
 import FormFactory from './formFactory';
 
-import { formatBbox } from './utilities';
+import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
+import _forEach from 'lodash-es/forEach';
 
 export default class GrailPull {
     constructor( instance ) {
@@ -56,12 +57,12 @@ export default class GrailPull {
             {label: 'total', count: +arrayValues[0]}
         ];
 
-        let table = this.form
+        let statsTable = this.form
             .select( '.wrapper div' )
             .insert( 'table', '.modal-footer' )
             .classed( 'pullStatsInfo', true );
 
-        let tbody = table.append('tbody');
+        let tbody = statsTable.append('tbody');
 
         let rows = tbody.selectAll('tr')
             .data(rowData)
@@ -86,6 +87,77 @@ export default class GrailPull {
         } else {
             this.submitButton.node().disabled = false;
         }
+
+        this.layerNameTable();
+    }
+
+    layerNameTable() {
+        const self = this;
+
+        let columns = [
+            {
+                label: 'Dataset',
+                name: 'datasetName'
+            },
+            {
+                label: 'Output Name',
+                placeholder: 'Save As',
+                name: 'outputName'
+            }
+        ];
+
+        let layerOutputTable = this.form
+            .select( '.wrapper div' )
+            .insert( 'table', '.modal-footer' )
+            .classed( 'grailOutputTable', true );
+
+        layerOutputTable.append( 'thead' )
+            .append( 'tr' )
+            .selectAll( 'th' )
+            .data( columns )
+            .enter()
+            .append( 'th' )
+            .text( d => d.label );
+
+        let tableBody = layerOutputTable.append( 'tbody' ),
+            ingestLayers = [ 'reference', 'secondary' ];
+
+        _forEach( ingestLayers, layer => {
+            tableBody
+                .append( 'tr' )
+                .attr( 'id', `row-${ layer }` )
+                .selectAll( 'td' )
+                .data( columns )
+                .enter()
+                .append( 'td' )
+                .append( 'input' )
+                .attr( 'type', 'text' )
+                .attr( 'class', d => `${ d.name }-${ layer }` )
+                .attr( 'placeholder', d => d.placeholder )
+                .select( function( d ) {
+                    if ( d.name === 'datasetName' ) {
+                        d3.select( this )
+                            .attr( 'placeholder', layer )
+                            .attr( 'readonly', false );
+                    } else if ( d.name === 'outputName' ) {
+                        const saveName = layer + '_' + uuidv4().replace( /-/g, '' ).substring( 0, 7 );
+
+                        d3.select( this ).property( 'value', saveName )
+                            .on( 'input', function() {
+                                let resp = checkForUnallowedChar( this.value );
+                                let dupName = Hoot.layers.findBy( 'name', this.value );
+
+                                if ( dupName || resp !== true || !this.value.length ) {
+                                    d3.select( this ).classed( 'invalid', true ).attr( 'title', resp );
+                                    self.submitButton.property( 'disabled', true );
+                                } else {
+                                    d3.select( this ).classed( 'invalid', false ).attr( 'title', null );
+                                    self.submitButton.property( 'disabled', false );
+                                }
+                            } );
+                    }
+                } );
+        } );
     }
 
     handleSubmit() {
@@ -97,10 +169,9 @@ export default class GrailPull {
             return;
         }
 
-        let osmData     = this.form.select( '.osmName' ),
-            mapEditData = this.form.select( '.mapeditName' );
-
-        params.BBOX     = formatBbox( bbox );
+        params.BBOX          = formatBbox( bbox );
+        params.referenceName = this.form.select( '.outputName-reference' ).property( 'value' );
+        params.secondaryName = this.form.select( '.outputName-secondary' ).property( 'value' );
 
         Promise.all([
                 Hoot.api.grailPullOverpassToDb( params ),
