@@ -396,9 +396,9 @@ export default class Layers {
 
     removeLoadedLayer( id, toggle ) {
         if ( id && this.loadedLayers[ id ] ) {
-            if (this.loadedLayers[ id ].isMerged) {
-                this.removeLoadedLayer(Hoot.layers.mergedLayer.tags.input1);
-                this.removeLoadedLayer(Hoot.layers.mergedLayer.tags.input2);
+            if (this.loadedLayers[ id ].isMerged && this.mergedLayer) {
+                this.removeLoadedLayer(this.mergedLayer.tags.input1);
+                this.removeLoadedLayer(this.mergedLayer.tags.input2);
             }
 
             delete this.loadedLayers[ id ];
