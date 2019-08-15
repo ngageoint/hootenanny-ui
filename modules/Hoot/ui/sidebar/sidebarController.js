@@ -333,11 +333,8 @@ class SidebarController {
             .attr('title', layer.name)
             .text(layer.name);
 
-        if (layer.isMerged) {
+        if ( layer.isMerged ) {
             this.createShowLayersButton();
-        }
-
-        if ( this.isMerged ) {
             this.metadata = new LayerMetadata( this.context, this.form, layer );
             this.metadata.render();
         }

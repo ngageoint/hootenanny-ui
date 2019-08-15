@@ -245,7 +245,8 @@ class LayerConflate extends SidebarForm {
             params = {
                 name: data.OUTPUT_NAME,
                 color: 'green',
-                isConflating: true
+                isConflating: true,
+                isMerged: true
             };
 
         if ( this.advancedOptions.isOpen ) {
@@ -283,9 +284,6 @@ class LayerConflate extends SidebarForm {
             } )
             .then( async (resp) => {
                 if (resp.data && resp.data.status !== 'cancelled') {
-                    // remove input layer controllers
-                    d3.selectAll( '.add-controller' ).remove();
-
                     await Hoot.folders.refreshAll();
                     Hoot.events.emit( 'render-dataset-table' );
                 }
@@ -293,6 +291,9 @@ class LayerConflate extends SidebarForm {
             } )
             .then( (resp) => {
                 if (resp.data && resp.data.status !== 'cancelled') {
+                    // remove input layer controllers
+                    d3.selectAll( '.add-controller' ).remove();
+
                     this.postConflation( params );
                 }
             } )
@@ -315,7 +316,6 @@ class LayerConflate extends SidebarForm {
                 // restore input layer controllers
                 this.controller.restoreInputs();
 
-                // Hoot.ui.sidebar.reset();
                 Hoot.message.alert( { message, type, keepOpen } );
 
             } );
