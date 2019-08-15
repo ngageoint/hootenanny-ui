@@ -412,7 +412,6 @@ export default class Layers {
 
     removeAllLoadedLayers() {
         _forEach( this.loadedLayers, layer => {
-            this.hoot.context.background().removeSource( layer.id );
             this.hootOverlay.removeGeojson( layer.id );
         } );
 
