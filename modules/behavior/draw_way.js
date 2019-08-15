@@ -16,7 +16,7 @@ import { geoChooseEdge, geoHasSelfIntersections } from '../geo';
 import { modeBrowse, modeSelect } from '../modes';
 import { osmNode } from '../osm';
 import { utilKeybinding } from '../util';
-
+import _find from 'lodash-es/find';
 
 export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
     var origWay = context.entity(wayId);
@@ -75,12 +75,13 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
 
         var targetLoc = datum && datum.properties && datum.properties.entity && datum.properties.entity.loc;
         var targetNodes = datum && datum.properties && datum.properties.nodes;
+        var _activeLayer = _find( Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
         var loc = context.map().mouseCoordinates();
 
-        if (targetLoc) {   // snap to node/vertex - a point target with `.loc`
+        if (targetLoc && Number(datum.id.split('_')[1]) === _activeLayer.id) {   // snap to node/vertex - a point target with `.loc`
             loc = targetLoc;
 
-        } else if (targetNodes) {   // snap to way - a line target with `.nodes`
+        } else if (targetNodes && Number(datum.properties.entity.id.split('_')[1]) === _activeLayer.id) {   // snap to way - a line target with `.nodes`
             var choice = geoChooseEdge(targetNodes, context.mouse(), context.projection, end.id);
             if (choice) {
                 loc = choice.loc;
@@ -92,13 +93,11 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
         checkGeometry(false);
     }
 
-
-    // Check whether this edit causes the geometry to break.
-    // If so, class the surface with a nope cursor.
     // `finishDraw` - Only checks the relevant line segments if finishing drawing
     function checkGeometry(finishDraw) {
         var nopeDisabled = context.surface().classed('nope-disabled');
         var isInvalid = isInvalidGeometry(end, context.graph(), finishDraw);
+
 
         if (nopeDisabled) {
             context.surface()

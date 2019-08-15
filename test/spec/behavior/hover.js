@@ -32,8 +32,8 @@ describe('iD.behaviorHover', function() {
 
     describe('mouseover', function () {
         it('adds the .hover class to all elements to which the same datum is bound', function () {
-            var a = iD.osmNode({id: 'a'});
-            var b = iD.osmNode({id: 'b'});
+            var a = iD.osmNode({id: 'a_50'});
+            var b = iD.osmNode({id: 'b_50'});
             _graph = iD.coreGraph([a, b]);
 
             _container.selectAll('span')
@@ -41,15 +41,15 @@ describe('iD.behaviorHover', function() {
                 .enter().append('span').attr('class', function(d) { return d.id; });
 
             _container.call(iD.behaviorHover(_context));
-            iD.utilTriggerEvent(_container.selectAll('.a'), 'mouseover');
+            iD.utilTriggerEvent(_container.selectAll('.a_50'), 'mouseover');
 
-            expect(_container.selectAll('.a.hover').nodes()).to.have.length(2);
-            expect(_container.selectAll('.b.hover').nodes()).to.have.length(0);
+            expect(_container.selectAll('.a_50.hover').nodes()).to.have.length(2);
+            expect(_container.selectAll('.b_50.hover').nodes()).to.have.length(0);
         });
 
         it('adds the .hover class to all members of a relation', function() {
-            var a = iD.osmRelation({id: 'a', members: [{id: 'b'}]});
-            var b = iD.osmNode({id: 'b'});
+            var a = iD.osmRelation({id: 'a_50', members: [{id: 'b_50'}]});
+            var b = iD.osmNode({id: 'b_50'});
             _graph = iD.coreGraph([a, b]);
 
             _container.selectAll('span')
@@ -57,10 +57,10 @@ describe('iD.behaviorHover', function() {
                 .enter().append('span').attr('class', function(d) { return d.id; });
 
             _container.call(iD.behaviorHover(_context));
-            iD.utilTriggerEvent(_container.selectAll('.a'), 'mouseover');
+            iD.utilTriggerEvent(_container.selectAll('.a_50'), 'mouseover');
 
-            expect(_container.selectAll('.a.hover').nodes()).to.have.length(1);
-            expect(_container.selectAll('.b.hover').nodes()).to.have.length(1);
+            expect(_container.selectAll('.a_50.hover').nodes()).to.have.length(1);
+            expect(_container.selectAll('.b_50.hover').nodes()).to.have.length(1);
         });
     });
 

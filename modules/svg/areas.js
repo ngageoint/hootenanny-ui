@@ -1,5 +1,6 @@
 import _map from 'lodash-es/map';
 import _values from 'lodash-es/values';
+import _find from 'lodash-es/find';
 
 import { bisector as d3_bisector } from 'd3-array';
 
@@ -126,14 +127,20 @@ export function svgAreas(projection, context) {
         var nopeClass = context.getDebug('target') ? 'red ' : 'nocolor ';
         var getPath = svgPath(projection).geojson;
         var activeID = context.activeID();
+        var _activeLayer = _find(Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer === true; });
+        var noActiveLayer = !_activeLayer;
 
         // The targets and nopes will be MultiLineString sub-segments of the ways
         var data = { targets: [], nopes: [] };
 
         entities.forEach(function(way) {
             var features = svgSegmentWay(way, graph, activeID);
-            data.targets.push.apply(data.targets, features.passive);
-            data.nopes.push.apply(data.nopes, features.active);
+            var activeLayerCheck = noActiveLayer ? true : Number(way.id.split('_')[1]) === _activeLayer.id;
+            if (activeLayerCheck) {
+                data.targets.push.apply(data.targets, features.passive);
+            } else {
+                data.nopes.push.apply(data.nopes, features.active);
+            }
         });
 
 

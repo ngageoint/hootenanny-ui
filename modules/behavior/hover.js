@@ -8,6 +8,7 @@ import {
 import { osmEntity, osmNote } from '../osm';
 import { utilKeybinding, utilRebind } from '../util';
 
+import _find from 'lodash-es/find';
 
 /*
    The hover behavior adds the `.hover` class on mouseover to all elements to which
@@ -98,6 +99,9 @@ export function behaviorHover(context) {
 
 
         function enter(datum) {
+
+            var _activeLayer = _find(Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer === true; });
+
             if (datum === _target) return;
             _target = datum;
 
@@ -116,30 +120,30 @@ export function behaviorHover(context) {
                 entity = datum;
                 selector = '.note-' + datum.id;
 
-            } else if (datum instanceof osmEntity) {
-                entity = datum;
-                selector = '.' + entity.id;
-                if (entity.type === 'relation') {
-                    entity.members.forEach(function(member) { selector += ', .' + member.id; });
-                }
+            } else if (datum instanceof osmEntity && _activeLayer && _activeLayer.id && Number(datum.id.split('_')[1]) === _activeLayer.id) {
+                    entity = datum;
+                    selector = '.' + entity.id;
+                    if (entity.type === 'relation') {
+                        entity.members.forEach(function(member) { selector += ', .' + member.id; });
+                    }
 
             } else if (datum && datum.properties && (datum.properties.entity instanceof osmEntity)) {
-                entity = datum.properties.entity;
-                selector = '.' + entity.id;
-                if (entity.type === 'relation') {
-                    entity.members.forEach(function(member) { selector += ', .' + member.id; });
-                }
+                    entity = datum.properties.entity;
+                    selector = '.' + entity.id;
+                    if (entity.type === 'relation') {
+                        entity.members.forEach(function(member) { selector += ', .' + member.id; });
+                    }
+
             }
 
             // Update hover state and dispatch event
-            if (entity && entity.id !== _newId) {
+            if (entity && entity.id !== _newId && _activeLayer && _activeLayer.id && Number(entity.id.split('_')[1]) === _activeLayer.id) {
                 // If drawing a way, don't hover on a node that was just placed. #3974
                 var mode = context.mode() && context.mode().id;
                 if ((mode === 'draw-line' || mode === 'draw-area') && !_newId && entity.type === 'node') {
                     _newId = entity.id;
                     return;
                 }
-
                 var suppressed = _altDisables && d3_event && d3_event.altKey;
                 _selection.selectAll(selector)
                     .classed(suppressed ? 'hover-suppressed' : 'hover', true);

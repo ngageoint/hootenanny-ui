@@ -334,6 +334,15 @@ button.disabled {
     border-radius: 4px 0 0 4px;
 }
 
+.select-active-layer {
+    width: -webkit-fill-available;
+    font-weight: bold;
+}
+
+
+.button-active {
+    background: #e6e3e3;
+}
 
 /* Action buttons */
 button.action {
@@ -358,6 +367,53 @@ button[disabled].action:hover {
     color: #888;
     cursor: not-allowed;
 }
+
+.disable-non-active,
+.disable-non-active:hover {
+    background-color: #fff;
+}    /* cursor: not-allowed; */
+
+
+.active-pulse {
+    border-radius: 50%;
+    background: #cccccc;
+    cursor: pointer;
+    box-shadow: 0 0 0 rgba(136,136,136, 0.4);
+    animation: active-pulse 2.5s infinite;
+  }
+  .active-pulse:hover {
+    animation: none;
+  }
+  
+  @-webkit-keyframes active-pulse {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 rgba(136,136,136, 0.4);
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 10px rgba(136,136,136, 0);
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 rgba(136,136,136, 0);
+    }
+  }
+  @keyframes active-pulse {
+    0% {
+      -moz-box-shadow: 0 0 0 0 rgba(136,136,136, 0.4);
+      box-shadow: 0 0 0 0 rgba(136,136,136, 0.4);
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px rgba(136,136,136, 0);
+        box-shadow: 0 0 0 10px rgba(136,136,136, 0);
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(136,136,136, 0);
+        box-shadow: 0 0 0 0 rgba(136,136,136, 0);
+    }
+  }
+
+/* .no-click {
+    pointer-events: none;
+} */
 
 
 /* Icons

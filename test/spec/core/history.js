@@ -391,13 +391,13 @@ describe('iD.History', function () {
             var json = {
                 'stack': [
                     {'entities': {}},
-                    {'entities': {'n-1': {'loc': [1, 2], 'id': 'n-1'}}, 'imageryUsed': ['Bing'], 'annotation': 'Added a point.'}
+                    {'entities': {'n-1_50': {'loc': [1, 2], 'id': 'n-1_50'}}, 'imageryUsed': ['Bing'], 'annotation': 'Added a point.'}
                 ],
                 'nextIDs': {'node': -2, 'way': -1, 'relation': -1},
                 'index': 1
             };
             history.fromJSON(JSON.stringify(json));
-            expect(history.graph().entity('n-1')).to.eql(iD.Node({id: 'n-1', loc: [1, 2]}));
+            expect(history.graph().entity('n-1_50')).to.eql(iD.Node({id: 'n-1_50', loc: [1, 2]}));
             expect(history.undoAnnotation()).to.eql('Added a point.');
             expect(history.imageryUsed()).to.eql(['Bing']);
             expect(iD.Entity.id.next).to.eql({node: -2, way: -1, relation: -1});
@@ -407,14 +407,14 @@ describe('iD.History', function () {
             var json = {
                 'stack': [
                     {'entities': {}},
-                    {'entities': {'n-1': {'loc': [1, 2], 'id': 'n-1'}}, 'imageryUsed': ['Bing'], 'annotation': 'Added a point.'},
-                    {'entities': {'n-1': {'loc': [2, 3], 'id': 'n-1', 'v': 1}}, 'imageryUsed': ['Bing'], 'annotation': 'Moved a point.'}
+                    {'entities': {'n-1_50': {'loc': [1, 2], 'id': 'n-1_50'}}, 'imageryUsed': ['Bing'], 'annotation': 'Added a point.'},
+                    {'entities': {'n-1_50': {'loc': [2, 3], 'id': 'n-1_50', 'v': 1}}, 'imageryUsed': ['Bing'], 'annotation': 'Moved a point.'}
                 ],
                 'nextIDs': {'node': -2, 'way': -1, 'relation': -1},
                 'index': 2
             };
             history.fromJSON(JSON.stringify(json));
-            expect(history.graph().entity('n-1')).to.eql(iD.Node({id: 'n-1', loc: [2, 3], v: 1}));
+            expect(history.graph().entity('n-1_50')).to.eql(iD.Node({id: 'n-1_50', loc: [2, 3], v: 1}));
             expect(history.undoAnnotation()).to.eql('Moved a point.');
             expect(history.imageryUsed()).to.eql(['Bing']);
             expect(iD.Entity.id.next).to.eql({node: -2, way: -1, relation: -1});
@@ -424,14 +424,14 @@ describe('iD.History', function () {
             var json = {
                 'stack': [
                     {'entities': {}},
-                    {'entities': {'n1': 'undefined'}, 'imageryUsed': ['Bing'], 'annotation': 'Deleted a point.'}
+                    {'entities': {'n1_50': 'undefined'}, 'imageryUsed': ['Bing'], 'annotation': 'Deleted a point.'}
                 ],
                 'nextIDs': {'node': -1, 'way': -2, 'relation': -3},
                 'index': 1
             };
             history.fromJSON(JSON.stringify(json));
-            history.merge([iD.Node({id: 'n1'})]);
-            expect(history.graph().hasEntity('n1')).to.be.undefined;
+            history.merge([iD.Node({id: 'n1_50'})]);
+            expect(history.graph().hasEntity('n1_50')).to.be.undefined;
             expect(history.undoAnnotation()).to.eql('Deleted a point.');
             expect(history.imageryUsed()).to.eql(['Bing']);
             expect(iD.Entity.id.next).to.eql({node: -1, way: -2, relation: -3});
@@ -441,17 +441,17 @@ describe('iD.History', function () {
             var json = {
                 'version': 2,
                 'entities': [
-                    {'loc': [1, 2], 'id': 'n-1'}
+                    {'loc': [1, 2], 'id': 'n-1_50'}
                 ],
                 'stack': [
                     {},
-                    {'modified': ['n-1v0'], 'imageryUsed': ['Bing'], 'annotation': 'Added a point.'}
+                    {'modified': ['n-1_50v0'], 'imageryUsed': ['Bing'], 'annotation': 'Added a point.'}
                 ],
                 'nextIDs': {'node': -2, 'way': -1, 'relation': -1},
                 'index': 1
             };
             history.fromJSON(JSON.stringify(json));
-            expect(history.graph().entity('n-1')).to.eql(iD.Node({id: 'n-1', loc: [1, 2]}));
+            expect(history.graph().entity('n-1_50')).to.eql(iD.Node({id: 'n-1_50', loc: [1, 2]}));
             expect(history.undoAnnotation()).to.eql('Added a point.');
             expect(history.imageryUsed()).to.eql(['Bing']);
             expect(iD.Entity.id.next).to.eql({node: -2, way: -1, relation: -1});
@@ -462,18 +462,18 @@ describe('iD.History', function () {
             var json = {
                 'version': 2,
                 'entities': [
-                    {'loc': [2, 3], 'id': 'n1', 'v': 1}
+                    {'loc': [2, 3], 'id': 'n1_50', 'v': 1}
                 ],
                 'stack': [
                     {},
-                    {'modified': ['n1v1'], 'imageryUsed': ['Bing'], 'annotation': 'Moved a point.'}
+                    {'modified': ['n1_50v1'], 'imageryUsed': ['Bing'], 'annotation': 'Moved a point.'}
                 ],
                 'nextIDs': {'node': -2, 'way': -1, 'relation': -1},
                 'index': 1
             };
             history.fromJSON(JSON.stringify(json));
-            history.merge([iD.Node({id: 'n1'})]); // Shouldn't be necessary; flaw in v2 format (see #2135)
-            expect(history.graph().entity('n1')).to.eql(iD.Node({id: 'n1', loc: [2, 3], v: 1}));
+            history.merge([iD.Node({id: 'n1_50'})]); // Shouldn't be necessary; flaw in v2 format (see #2135)
+            expect(history.graph().entity('n1_50')).to.eql(iD.Node({id: 'n1_50', loc: [2, 3], v: 1}));
             expect(history.undoAnnotation()).to.eql('Moved a point.');
             expect(history.imageryUsed()).to.eql(['Bing']);
             expect(iD.Entity.id.next).to.eql({node: -2, way: -1, relation: -1});
@@ -486,14 +486,14 @@ describe('iD.History', function () {
                 'entities': [],
                 'stack': [
                     {},
-                    {'deleted': ['n1'], 'imageryUsed': ['Bing'], 'annotation': 'Deleted a point.'}
+                    {'deleted': ['n1_50'], 'imageryUsed': ['Bing'], 'annotation': 'Deleted a point.'}
                 ],
                 'nextIDs': {'node': -1, 'way': -2, 'relation': -3},
                 'index': 1
             };
             history.fromJSON(JSON.stringify(json));
-            history.merge([iD.Node({id: 'n1'})]); // Shouldn't be necessary; flaw in v2 format (see #2135)
-            expect(history.graph().hasEntity('n1')).to.be.undefined;
+            history.merge([iD.Node({id: 'n1_50'})]); // Shouldn't be necessary; flaw in v2 format (see #2135)
+            expect(history.graph().hasEntity('n1_50')).to.be.undefined;
             expect(history.undoAnnotation()).to.eql('Deleted a point.');
             expect(history.imageryUsed()).to.eql(['Bing']);
             expect(iD.Entity.id.next).to.eql({node: -1, way: -2, relation: -3});
@@ -504,18 +504,18 @@ describe('iD.History', function () {
             var json = {
                 'version': 3,
                 'entities': [
-                    {'loc': [1, 2], 'id': 'n-1'}
+                    {'loc': [1, 2], 'id': 'n-1_50'}
                 ],
                 'baseEntities': [],
                 'stack': [
                     {},
-                    {'modified': ['n-1v0'], 'imageryUsed': ['Bing'], 'annotation': 'Added a point.'}
+                    {'modified': ['n-1_50v0'], 'imageryUsed': ['Bing'], 'annotation': 'Added a point.'}
                 ],
                 'nextIDs': {'node': -2, 'way': -1, 'relation': -1},
                 'index': 1
             };
             history.fromJSON(JSON.stringify(json));
-            expect(history.graph().entity('n-1')).to.eql(iD.Node({id: 'n-1', loc: [1, 2]}));
+            expect(history.graph().entity('n-1_50')).to.eql(iD.Node({id: 'n-1_50', loc: [1, 2]}));
             expect(history.undoAnnotation()).to.eql('Added a point.');
             expect(history.imageryUsed()).to.eql(['Bing']);
             expect(iD.Entity.id.next).to.eql({node: -2, way: -1, relation: -1});
@@ -526,18 +526,18 @@ describe('iD.History', function () {
             var json = {
                 'version': 3,
                 'entities': [
-                    {'loc': [2, 3], 'id': 'n1', 'v': 1}
+                    {'loc': [2, 3], 'id': 'n1_50', 'v': 1}
                 ],
-                'baseEntities': [{'loc': [1, 2], 'id': 'n1'}],
+                'baseEntities': [{'loc': [1, 2], 'id': 'n1_50'}],
                 'stack': [
                     {},
-                    {'modified': ['n1v1'], 'imageryUsed': ['Bing'], 'annotation': 'Moved a point.'}
+                    {'modified': ['n1_50v1'], 'imageryUsed': ['Bing'], 'annotation': 'Moved a point.'}
                 ],
                 'nextIDs': {'node': -2, 'way': -1, 'relation': -1},
                 'index': 1
             };
             history.fromJSON(JSON.stringify(json));
-            expect(history.graph().entity('n1')).to.eql(iD.Node({id: 'n1', loc: [2, 3], v: 1}));
+            expect(history.graph().entity('n1_50')).to.eql(iD.Node({id: 'n1_50', loc: [2, 3], v: 1}));
             expect(history.undoAnnotation()).to.eql('Moved a point.');
             expect(history.imageryUsed()).to.eql(['Bing']);
             expect(iD.Entity.id.next).to.eql({node: -2, way: -1, relation: -1});
@@ -548,16 +548,16 @@ describe('iD.History', function () {
             var json = {
                 'version': 3,
                 'entities': [],
-                'baseEntities': [{'loc': [1, 2], 'id': 'n1'}],
+                'baseEntities': [{'loc': [1, 2], 'id': 'n1_50'}],
                 'stack': [
                     {},
-                    {'deleted': ['n1'], 'imageryUsed': ['Bing'], 'annotation': 'Deleted a point.'}
+                    {'deleted': ['n1_50'], 'imageryUsed': ['Bing'], 'annotation': 'Deleted a point.'}
                 ],
                 'nextIDs': {'node': -1, 'way': -2, 'relation': -3},
                 'index': 1
             };
             history.fromJSON(JSON.stringify(json));
-            expect(history.graph().hasEntity('n1')).to.be.undefined;
+            expect(history.graph().hasEntity('n1_50')).to.be.undefined;
             expect(history.undoAnnotation()).to.eql('Deleted a point.');
             expect(history.imageryUsed()).to.eql(['Bing']);
             expect(iD.Entity.id.next).to.eql({node: -1, way: -2, relation: -3});

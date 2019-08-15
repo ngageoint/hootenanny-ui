@@ -4,10 +4,6 @@
  * @author Matt Putipong on 3/2/18
  *******************************************************************************************************/
 
-import _assign from 'lodash-es/assign';
-import _find   from 'lodash-es/find';
-import _map    from 'lodash-es/map';
-
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
 import { saveAs }    from 'file-saver';
@@ -325,6 +321,25 @@ export default class API {
                 type    = 'error';
 
                 return Promise.reject( { message, type } );
+            } );
+    }
+    /**
+     *
+     * @param {Returns a promise} - mapId
+     */
+
+    getAllIds( mapId ) {
+        const params = {
+            path: `/osm/api/0.6/map/${ mapId }/startingIndex`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( err => {
+                const message = this.internalError( err ) || 'Unable to retrieve all map ids';
+
+                return Promise.reject( message );
             } );
     }
 
@@ -958,6 +973,23 @@ export default class API {
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) );
+    }
+
+    /** Get a folder Id
+     *
+     *
+     *
+     */
+    getFolderId( folderId ) {
+        const params = {
+            path: `/osm/api/0.6/map/folders/${folderId}`,
+            method: 'GET',
+            params: {
+                folderId
+            }
+        };
+
+        return this.request( params );
     }
 
     /**

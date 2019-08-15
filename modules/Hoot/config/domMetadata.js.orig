@@ -27,8 +27,8 @@ export function layerConflateForm( data ) {
             id: 'conflateFolderPath',
             class: 'path-name',
             inputType: 'combobox',
-            value: this.defaultFolder.name,
-            _value: this.defaultFolder.id,
+            value: this.defaultFolder ? this.defaultFolder.name : 'root',
+            _value: this.defaultFolder ? this.defaultFolder.id : 0,
             data: this.folderList,
             itemKey: 'path',
             _valueKey: 'id',
@@ -140,7 +140,6 @@ export function importSingleForm() {
             class: 'layer-name',
             inputType: 'text',
             placeholder: 'Enter name',
-            required: true,
             onChange: d => this.validateTextInput( d )
         },
         {
@@ -193,21 +192,6 @@ export function importMultiForm() {
             disabled: true,
             multipartId: 'ingestFileUploader',
             onChange: () => this.handleMultipartChange()
-        },
-        {
-            label: 'Upload as Single Layer',
-            id: 'importMultiAsSingle',
-            inputType: 'checkbox',
-            checkbox: 'cboxMultiAsSingle',
-            onChange: () => this.handleSingleLayerChange()
-        },
-        {
-            label: 'New Layer Name',
-            id: 'importMultiAsSingleName',
-            inputType: 'text',
-            disabled: true,
-            required: true,
-            onChange: d => this.validateTextInput( d )
         },
         {
             label: 'Import Files List',
@@ -276,6 +260,7 @@ export function addFolderForm() {
     ];
 }
 
+
 export function modifyDatasetForm() {
     return [
         {
@@ -305,7 +290,11 @@ export function modifyDatasetForm() {
             onChange: d => this.validateTextInput( d )
         },
         {
+<<<<<<< HEAD
+            label: 'Visiblity',
+=======
             label: 'Public',
+>>>>>>> hoot2x
             id: 'modifyVisibility',
             inputType: 'checkbox',
             value: 'Public',
@@ -354,7 +343,7 @@ export function exportDataForm( zipOutput ) {
             label: 'Export Format',
             id: exportFormatId,
             inputType: 'combobox',
-            data: [ 'File Geodatabase', 'GeoPackage (GPKG)', 'Shapefile', 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
+            data: [ 'File Geodatabase', 'Shapefile', 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
             value: 'OpenStreetMap (OSM)',
             onChange: changeExport
         },

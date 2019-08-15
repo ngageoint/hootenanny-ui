@@ -1,4 +1,5 @@
 import _without from 'lodash-es/without';
+import _find    from 'lodash-es/find';
 
 import {
     event as d3_event,
@@ -19,7 +20,6 @@ import {
     osmEntity,
     osmNote
 } from '../osm';
-
 
 export function behaviorSelect(context) {
     var lastMouse = null;
@@ -118,7 +118,10 @@ export function behaviorSelect(context) {
         var isMultiselect = d3_event.shiftKey || d3_select('#surface .lasso').node();
         var isShowAlways = +context.storage('edit-menu-show-always') === 1;
         var datum = d3_event.target.__data__ || (lastMouse && lastMouse.target.__data__);
+        var _activeLayer = _find(Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer === true; });
         var mode = context.mode();
+
+
 
         var entity = datum && datum.properties && datum.properties.entity;
         if (entity) datum = entity;
@@ -132,15 +135,14 @@ export function behaviorSelect(context) {
             context.selectedNoteID(null);
 
             if (!isMultiselect) {
-                if (selectedIDs.length > 1 && (!suppressMenu && !isShowAlways)) {
-                    // multiple things already selected, just show the menu...
+                if (selectedIDs.length > 1 && (!suppressMenu && !isShowAlways) ) {
                     mode.suppressMenu(false).reselect();
-                } else {
+                } else if (Number(datum.id.split('_')[1]) === _activeLayer.id) {
                     // select a single thing..
                     context.enter(modeSelect(context, [datum.id]).suppressMenu(suppressMenu));
                 }
-
-            } else {
+            }
+            else {
                 if (selectedIDs.indexOf(datum.id) !== -1) {
                     // clicked entity is already in the selectedIDs list..
                     if (!suppressMenu && !isShowAlways) {
@@ -157,7 +159,6 @@ export function behaviorSelect(context) {
                     context.enter(modeSelect(context, selectedIDs).suppressMenu(suppressMenu));
                 }
             }
-
         } else if (datum && datum.__featurehash__ && !isMultiselect) {    // clicked Data..
             context
                 .selectedNoteID(null)

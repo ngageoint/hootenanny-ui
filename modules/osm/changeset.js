@@ -8,7 +8,6 @@ import _values from 'lodash-es/values';
 import { osmEntity } from './entity';
 import { geoExtent } from '../geo';
 
-
 export function osmChangeset() {
     if (!(this instanceof osmChangeset)) {
         return (new osmChangeset()).initialize(arguments);
@@ -55,6 +54,7 @@ _extend(osmChangeset.prototype, {
     // Generate [osmChange](http://wiki.openstreetmap.org/wiki/OsmChange)
     // XML. Returns a string.
     osmChangeJXON: function(changes) {
+
         var changeset_id = this.id;
 
         function nest(x, order) {
@@ -123,7 +123,6 @@ _extend(osmChangeset.prototype, {
         function rep(entity) {
             return entity.asJXON(changeset_id);
         }
-
         return {
             osmChange: {
                 '@version': 0.6,

@@ -110,7 +110,7 @@ describe('iD.uiFieldWikipedia', function() {
         expect(iD.utilGetSetValue(selection.selectAll('.wiki-lang'))).to.equal('Deutsch');
     });
 
-    it('does not set delayed wikidata tag if graph has changed', function(done) {
+    it('does not set delayed wikidata tag if graph has changed', function (done) {
         var wikipedia = iD.uiFieldWikipedia(field, context).entity(entity);
         wikipedia.on('change', changeTags);
         selection.call(wikipedia);
@@ -135,7 +135,7 @@ describe('iD.uiFieldWikipedia', function() {
         createServer({ autoRespond: true, autoRespondAfter: 60 });
 
         // t30:  graph change - Set title to "Title"
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             iD.utilGetSetValue(selection.selectAll('.wiki-title'), 'Title');
             happen.once(selection.selectAll('.wiki-title').node(), { type: 'change' });
             happen.once(selection.selectAll('.wiki-title').node(), { type: 'blur' });
@@ -144,14 +144,14 @@ describe('iD.uiFieldWikipedia', function() {
         // t60:  at t0 + 60ms (delay), wikidata SHOULD NOT be set because graph has changed.
 
         // t70:  check that wikidata unchanged
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             expect(context.entity(entity.id).tags.wikidata).to.be.undefined;
         }, 70);
 
         // t90:  at t30 + 60ms (delay), wikidata SHOULD be set because graph is unchanged.
 
         // t100:  check that wikidata has changed
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             expect(context.entity(entity.id).tags.wikidata).to.equal('Q216353');
 
             expect(spy.callCount).to.equal(4);
@@ -162,6 +162,6 @@ describe('iD.uiFieldWikipedia', function() {
             done();
         }, 200);
 
-    })
-    .timeout(200);
+    });
+    // .timeout(200);
 });

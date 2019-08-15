@@ -25,12 +25,10 @@ import { svgIcon } from '../svg';
 import { uiDisclosure } from './disclosure';
 import { utilDisplayName, utilNoAuto, utilHighlightEntity } from '../util';
 
-
 export function uiRawMembershipEditor(context) {
     var taginfo = services.taginfo;
     var _entityID;
     var _showBlank;
-
 
     function selectRelation(d) {
         d3_event.preventDefault();

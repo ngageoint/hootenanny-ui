@@ -3,32 +3,35 @@ import _keys from 'lodash-es/keys';
 import _toPairs from 'lodash-es/toPairs';
 import _union from 'lodash-es/union';
 import _without from 'lodash-es/without';
+import _find from 'lodash-es/find';
 
 import { debug } from '../index';
 import { osmIsInterestingTag } from './tags';
 import { dataDeprecated } from '../../data/index';
-
 
 export function osmEntity(attrs) {
     // For prototypal inheritance.
     if (this instanceof osmEntity) return;
 
     // Create the appropriate subtype.
+    var _activeLayer = _find(Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
     if (attrs && attrs.type) {
         return osmEntity[attrs.type].apply(this, arguments);
-    } else if (attrs && attrs.id) {
+    } else if (attrs && attrs.id && attrs.id.includes(String(_activeLayer.id))) {
         return osmEntity[osmEntity.id.type(attrs.id)].apply(this, arguments);
     }
-
     // Initialize a generic Entity (used only in tests).
     return (new osmEntity()).initialize(arguments);
 }
 
-
 osmEntity.id = function(type) {
-    return osmEntity.id.fromOSM(type, osmEntity.id.next[type]--);
+    var _activeLayer = _find(Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
+    var id = osmEntity.id.fromOSM(type, _activeLayer.activeIds[type]--);
+    if (_activeLayer && _activeLayer.id) {
+        id = id + '_' + _activeLayer.id;
+    }
+    return id;
 };
-
 
 osmEntity.id.next = {
     changeset: -1, node: -1, way: -1, relation: -1
@@ -36,7 +39,7 @@ osmEntity.id.next = {
 
 
 osmEntity.id.fromOSM = function(type, id) {
-    return type[0] + id;
+        return type[0] + id;
 };
 
 

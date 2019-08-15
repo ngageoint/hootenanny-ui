@@ -12,12 +12,12 @@ import { behaviorHover } from './hover';
 import { behaviorTail } from './tail';
 import { geoChooseEdge, geoVecLength } from '../geo';
 import { utilKeybinding, utilRebind } from '../util';
+import _find from 'lodash-es/find';
 
 
 var _usedTails = {};
 var _disableSpace = false;
 var _lastSpace = null;
-
 
 export function behaviorDraw(context) {
     var dispatch = d3_dispatch(
@@ -124,20 +124,21 @@ export function behaviorDraw(context) {
     function click() {
         var d = datum();
         var target = d && d.properties && d.properties.entity;
+        var _activeLayer = _find( Hoot.layers.loadedLayers, function(a, b) { return a.activeLayer; });
 
-        if (target && target.type === 'node') {   // Snap to a node
-            dispatch.call('clickNode', this, target, d);
-            return;
-
-        } else if (target && target.type === 'way') {   // Snap to a way
-            var choice = geoChooseEdge(
-                context.childNodes(target), context.mouse(), context.projection, context.activeID()
-            );
-            if (choice) {
-                var edge = [target.nodes[choice.index - 1], target.nodes[choice.index]];
-                dispatch.call('clickWay', this, choice.loc, edge, d);
+        if (target && target.type === 'node' && _activeLayer.id === Number(target.id.split('_')[1])) {   // Snap to a node
+                dispatch.call('clickNode', this, target, d);
                 return;
-            }
+
+        } else if (target && target.type === 'way' && _activeLayer.id === Number(target.id.split('_')[1])) {   // Snap to a way
+                var choice = geoChooseEdge(
+                    context.childNodes(target), context.mouse(), context.projection, context.activeID()
+                );
+                if (choice) {
+                    var edge = [target.nodes[choice.index - 1], target.nodes[choice.index]];
+                    dispatch.call('clickWay', this, choice.loc, edge, d);
+                    return;
+                }
         }
         dispatch.call('click', this, context.map().mouseCoordinates(), d);
     }

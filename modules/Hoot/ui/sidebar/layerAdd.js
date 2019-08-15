@@ -6,12 +6,14 @@
 
 import _map    from 'lodash-es/map';
 import _reject from 'lodash-es/reject';
+import _find   from 'lodash-es/find';
 
 import FolderTree  from '../../tools/folderTree';
 import SidebarForm from './sidebarForm';
 
 import { d3combobox }   from '../../../lib/hoot/d3.combobox';
 import { uiBackground } from '../../../ui/background';
+import hoot from '../../hoot';
 
 export default class LayerAdd extends SidebarForm {
     constructor( container, d ) {
@@ -19,7 +21,9 @@ export default class LayerAdd extends SidebarForm {
 
         this.selectedLayer = {
             name: null,
-            id: null
+            id: null,
+            activeLayer: null,
+            activeIds: null
         };
     }
 
@@ -202,6 +206,8 @@ export default class LayerAdd extends SidebarForm {
             name: d ? d.name : this.selectedLayer.name,
             id: d ? d.id : this.selectedLayer.id,
             refType: this.formMeta.refType,
+            activeLayer: d ? d.activeLayer : this.selectedLayer.activeLayer,
+            activeIds: d ? d.activeIds : this.selectedLayer.activeIds,
             color
         };
 
@@ -211,7 +217,9 @@ export default class LayerAdd extends SidebarForm {
 
         Hoot.events.emit( 'load-layer' );
 
-        uiBackground.renderLayerToggle();
+        if ( Object.keys(Hoot.layers.loadedLayers).length === 1 ) {
+            await Hoot.layers.resetActiveLayers();
+        }
     }
 
     /**

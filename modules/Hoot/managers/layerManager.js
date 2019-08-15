@@ -20,6 +20,7 @@ import { rgb as d3_rgb } from 'd3-color';
 import { geoExtent as GeoExtent } from '../../geo/index';
 import { utilDetect }             from '../../util/detect';
 import colorPalette               from '../config/colorPalette';
+import LayerAdd                   from '../ui/sidebar/layerAdd';
 
 import { osmChangeset } from '../../osm';
 
@@ -40,6 +41,7 @@ export default class Layers {
         this.allLayers          = [];
         this.loadedLayers       = {};
         this.hashLayers         = {};
+        this.allIds             = {};
         this.recentlyUsedLayers = null;
         this.mergedLayer        = null;
         this.mergedConflicts    = null;
@@ -183,13 +185,16 @@ export default class Layers {
 
     async loadLayer( params ) {
         try {
-            let mapId       = params.id,
-                tags        = await this.hoot.api.getMapTags( mapId ),
-                layerExtent = await this.layerExtent( mapId );
+            let mapId           = params.id,
+                tags            = await this.hoot.api.getMapTags( mapId ),
+                layerExtent     = await this.layerExtent( mapId ),
+                activeIds       = await Hoot.api.getAllIds( mapId );
 
             let layer = {
                 name: params.name,
-                id: params.id,
+                id: Number(params.id),
+                activeLayer: !params.activeLayer ? null : params.activeLayer,
+                activeIds: activeIds,
                 refType: params.refType,
                 color: params.color,
                 merged: params.merged || false,
@@ -399,7 +404,27 @@ export default class Layers {
 
             this.hoot.context.flush();
         }
+
+        if ( Object.keys(Hoot.layers.loadedLayers).length === 1 ) {
+            this.resetActiveLayers();
+        }
         this.hoot.events.emit( 'loaded-layer-removed' );
+    }
+
+    /**
+     * After adding/removing second layer, set remaining layer in map to active
+     */
+
+    async resetActiveLayers() {
+
+        let changeActive = new LayerAdd();
+
+        let loadedLayer  = Object.values(Hoot.layers.loadedLayers);
+
+        loadedLayer[0].activeLayer = true;
+
+        changeActive.selectedLayer = loadedLayer[0];
+
     }
 
     removeAllLoadedLayers() {

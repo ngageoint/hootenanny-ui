@@ -6,6 +6,7 @@
 
 import _filter  from 'lodash-es/filter';
 import _forEach from 'lodash-es/forEach';
+import _find    from 'lodash-es/find';
 
 import LayerAdd      from './layerAdd';
 import LayerConflate from './layerConflate';
@@ -127,7 +128,7 @@ export default class Sidebar {
 
                 form.controller.update();
                 form.loadingLayerName = null;
-
+                this.saveChanges();
                 this.conflateCheck();
             }
         } );
@@ -156,9 +157,19 @@ export default class Sidebar {
             Hoot.layers.mergedLayer = null;
             delete this.forms[ d.id ];
             this.reset();
-        } else {
+        }
+        else {
             this.forms[ d.id ].render( d );
             this.conflateCheck();
+
+            if (Object.keys(Hoot.layers.loadedLayers).length === 1) {
+                let loadedLayer    = Object.values(Hoot.layers.loadedLayers)[0];
+                if (loadedLayer.refType === 'primary') {
+                    d3.select('#reference button.select-active-layer').remove();
+                } else {
+                    d3.select('#secondary button.select-active-layer').remove();
+                }
+            }
 
             //update url hash
             var q = utilStringQs(window.location.hash.substring(1));
@@ -168,6 +179,121 @@ export default class Sidebar {
 
         uiBackground.renderLayerToggle();
         this.adjustSize();
+    }
+
+    saveChanges() {
+        let loadedLayers    = Object.values(Hoot.layers.loadedLayers);
+        let selectReference = d3.selectAll('#reference');
+        let selectSecondary = d3.selectAll('#secondary');
+        let referenceActive = _find(loadedLayers, function(a, b) { return a.refType === 'primary'; });
+        let secondaryActive = _find(loadedLayers, function(a, b) { return a.refType === 'secondary'; });
+
+        if (loadedLayers.length === 2) {
+            let changeActive    = new LayerAdd();
+
+            // eslint-disable-next-line no-inner-declarations
+            function updateButton(active, inactive) {
+
+                if (active) {
+                    d3.select(`#${active}`)
+                        .classed('active-pulse', true);
+
+                    d3.select(`#${active}  button.select-active-layer`)
+                        .text('Active Layer')
+                        .classed('button-active', true);
+
+                    d3.select(`#${active} div.controller`)
+                        .classed('disable-non-active', false);
+
+                    d3.select(`#${active} button.delete-button`)
+                        .classed('disable-non-active', false);
+                }
+
+                if (inactive) {
+                    d3.select(`#${inactive}`)
+                        .classed('active-pulse', false);
+
+                    d3.select(`#${inactive}  button.select-active-layer`)
+                        .text('Set as active layer')
+                        .classed('button-active', false);
+
+                    d3.select(`#${inactive} div.controller`)
+                        .classed('disable-non-active', true);
+
+                    d3.select(`#${inactive} button.delete-button`)
+                        .classed('disable-non-active', true);
+                }
+
+            }
+
+            // eslint-disable-next-line no-inner-declarations
+            function onClickActive(layerName) {
+                return function() {
+                    let selection = d3.select(this);
+                    let activeButton = selection.select('button.select-active-layer');
+                    let setAsActive = activeButton.text() === 'Set as active layer';
+                    let currentLayer = layerName === 'reference'
+                        ? { refType: 'primary',  layerName: 'reference', otherLayer: 'secondary' }
+                        : { refType: 'secondary', layerName: 'secondary', otherLayer: 'reference'};
+
+                    let loadedLayers = Object.values(Hoot.layers.loadedLayers);
+
+                    if (setAsActive) {
+                        Object.values(loadedLayers).forEach(function(layer) {
+                            layer.activeLayer = layer.refType === currentLayer.refType ? true : null;
+                        });
+                        updateButton(currentLayer.layerName, currentLayer.otherLayer);
+                    } else {
+                        loadedLayers.find(function(layer){ return layer.refType === currentLayer.refType; }).activeLayer = null;
+                        updateButton(null, currentLayer.layerName);
+                        updateButton(null, currentLayer.otherLayer);
+                    }
+                    d3.event.preventDefault();
+                    activeButton.text(setAsActive ? 'Active Layer': 'Set as active layer');
+                };
+
+            }
+
+            if (d3.select('#reference button.select-active-layer').empty()) {
+
+                selectReference
+                    .append('button')
+                    .classed('select-active-layer', true)
+                    .text('Set as active layer');
+
+                if (referenceActive.activeLayer === true) {
+                    d3.select('#reference button.select-active-layer')
+                        .classed('select-active-layer', true)
+                        .text('Active Layer');
+
+                    updateButton('reference', 'secondary');
+
+                }
+
+                selectReference.on('click', onClickActive('reference'));
+            }
+
+            if (d3.select('#secondary button.select-active-layer').empty()) {
+
+                selectSecondary
+                    .append('button')
+                    .classed('select-active-layer', true)
+                    .text('Set as active layer');
+
+
+                if (secondaryActive.activeLayer === true) {
+
+                    d3.select('#secondary button.select-active-layer')
+                        .classed('select-active-layer', true)
+                        .text('Active Layer');
+
+                    updateButton('secondary', 'reference');
+                }
+
+                selectSecondary.on('click', onClickActive('secondary'));
+
+            }
+        }
     }
 
     conflateCheck() {

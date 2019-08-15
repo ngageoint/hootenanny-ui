@@ -628,91 +628,32 @@ export default {
         return oauth.authenticated();
     },
 
-
-    filterChanges: function( changes ) {
-        let ways = _filter( _flatten( _map( changes, featArr => featArr ) ), feat => feat.type !== 'node' ),
-            visLayers = _map( _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible ), layer => layer.id ),
-            defaultMapId;
-
-        // Make sure there is only one layer visible. Otherwise, return a falsy value to prevent save.
-        if (visLayers.length === 1 || changes.created.length === 0){
-            defaultMapId = visLayers[0];
-        } else {
-            return false;
-        }
-
-        return _reduce( changes, ( obj, featArr, type ) => {
-            let changeTypes = {
-                created: [],
-                deleted: [],
-                modified: []
-            };
-
-            _forEach( featArr, feat => {
-                let mapId = defaultMapId;
-
-                if ( feat.isNew() && feat.type === 'node' ) {
-                    let parent = _find( ways, way => _includes( way.nodes, feat.id ) );
-
-                    if ( parent && parent.mapId ) {
-                        mapId = parent.mapId;
-                    }
-                }
-
-                // create map ID key if not yet exists
-                if ( !obj[ mapId ] ) {
-                    obj[ mapId ] = {};
-                }
-
-                // create change type key if not yet exists
-                if ( !obj[ mapId ][ type ] ) {
-                    obj[ mapId ][ type ] = [];
-                }
-
-                obj[ mapId ][ type ].push( feat );
-
-                // merge object into default types array so that the final result
-                // will contain all keys in case change type is empty
-                obj[ mapId ] = Object.assign( changeTypes, obj[ mapId ] );
-            } );
-
-            return obj;
-        }, {} );
-    },
-
     // Create, upload, and close a changeset
     // PUT /api/0.6/changeset/create
-    // POST /api/0.6/changeset/#id/upload
+    // POST /api/0.6/changeset/#i/upload
     // PUT /api/0.6/changeset/#id/close
-    putChangeset: function(changeset, changes, callback ) {
+    putChangeset: function(changeset, changes, callback, mapId ) {
         var cid = _connectionID;
 
-        let changesArr = this.filterChanges( changes );
-
-        if (_changeset.inflight || !changesArr) {
+        if (_changeset.inflight) {
             return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
 
         } else if (_changeset.open) {   // reuse existing open changeset..
-            return createdChangeset.call(this, null, _changeset.open);
+            return createdChangeset.call(this, null, _changeset.open, mapId);
 
         } else {   // Open a new changeset..
-            _forEach( changesArr, ( changes, mapId ) => {
-                let path = '/api/0.6/changeset/create';
-                path += mapId ? `?mapId=${ mapId }` : '';
-
-                var options = {
-                    method: 'PUT',
-                    path: path,
-                    options: { header: { 'Content-Type': 'text/xml' } },
-                    content: JXON.stringify(changeset.asJXON())
-                };
+            let path = `/api/0.6/changeset/create/?mapId=${ mapId }`;
+            var options = {
+                        method: 'PUT',
+                        path: path,
+                        options: { header: { 'Content-Type': 'text/xml' } },
+                        content: JXON.stringify(changeset.asJXON())
+                    };
                 _changeset.inflight = oauth.xhr(
-                    options,
-                    wrapcb(this, createdChangeset, cid, mapId)
-                );
-            } );
+                        options,
+                        wrapcb(this, createdChangeset, cid, mapId)
+                    );
         }
-
 
         function createdChangeset(err, changesetID, mapId) {
             _changeset.inflight = null;
@@ -757,7 +698,7 @@ export default {
             } );
 
             let path = '/api/0.6/changeset/' + changesetID + '/upload';
-            path += mapId ? `?mapId=${ mapId }` : '';
+            path += `?mapId=${ mapId }`;
 
             // Upload the changeset..
             var options = {
@@ -779,7 +720,7 @@ export default {
 
             // Upload was successful, safe to call the callback.
             // Add delay to allow for postgres replication #1646 #2678
-            window.setTimeout(function() { callback(null, changeset); }, 500);
+            window.setTimeout(function() { callback(null, changeset, mapId); }, 500);
             _changeset.open = null;
 
             // At this point, we don't really care if the connection was switched..
