@@ -116,7 +116,10 @@ export default class GrailPull {
 
 
         let history = JSON.parse( Hoot.context.storage('history') );
-        history.bboxHistory.push( bbox );
+        if ( history.bboxHistory.length === 5 ) {
+            history.bboxHistory.pop();
+        }
+        history.bboxHistory.unshift( bbox );
         Hoot.context.storage( 'history', JSON.stringify( history ) );
 
         this.form.remove();
