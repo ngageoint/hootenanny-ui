@@ -131,7 +131,8 @@ export default class ClipDataset {
                         d.combobox = [ d.combobox.find( function( l ) { return l.id === folderId; } ) ]
                             .concat( d.combobox.filter( function( l ) { return l.id !== folderId; } ).sort() );
                         that.createFolderListCombo( d3.select( this ), d );
-                        d3.select( this ).property( 'value', Hoot.folders.findBy( 'id', folderId ).name );
+                        d3.select( this ).property( 'value', Hoot.folders.findBy( 'id', folderId).name );
+                        d3.select( this ).property( '_value', Hoot.folders.findBy( 'id', folderId ).id );
                     }
                 } );
         } );
@@ -190,12 +191,8 @@ export default class ClipDataset {
 
             let row         = d3.select( `#row-${ mapId }` ),
                 datasetName = row.select( '.datasetName' ),
-                outputName  = row.select( '.outputName' );
-            let checkFolder = Hoot.folders._folders.find( function ( f ) { return f.name === row.select( '.outputPath' ).property( 'value' ); } );
-            let folderId;
-            let getFolders    = _forEach( Hoot.folders._folders, folder => {
-                folderId = parseInt( Hoot.folders.findBy( 'name', checkFolder.name ).id, 10 );
-            });
+                outputName  = row.select( '.outputName' ),
+                folderId    = row.select( '.outputPath').property( '_value' );
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = Hoot.layers.checkLayerName(outputName.property( 'value' ) || outputName.attr( 'placeholder' ));
