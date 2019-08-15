@@ -1097,9 +1097,9 @@ export default class API {
             } );
     }
 
-    overpassStatsQuery( bbox ) {
+    grailMetadataQuery( bbox ) {
         const params = {
-            path: `/grail/overpassStatsQuery?bbox=${ bbox }`,
+            path: `/grail/grailMetadataQuery?bbox=${ bbox }`,
             method: 'GET'
         };
 

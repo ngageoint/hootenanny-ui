@@ -34,21 +34,18 @@ export default class GrailPull {
 
         this.loadingState(true);
 
-        Hoot.api.overpassStatsQuery(this.instance.bbox)
-            .then(queryData => {
-                this.maxFeatureCount = +queryData.data.maxFeatureCount;
-
-                Hoot.api.getOverpassStats(queryData.data.overpassQuery)
-                    .then(queryResult => {
-                    this.createTable(queryResult);
-                });
-            });
+        this.createTable();
     }
 
-    createTable(data) {
+    async createTable() {
+        const { data } = await Hoot.api.grailMetadataQuery(this.instance.bbox);
+        this.maxFeatureCount = +data.maxFeatureCount;
+
+        const overpassStats = await Hoot.api.getOverpassStats( data.overpassQuery );
+
         this.loadingState(false);
 
-        const csvValues = data.split('\n')[1],
+        const csvValues = overpassStats.split('\n')[1],
               arrayValues = csvValues.split('\t');
         const rowData = [
             {label: 'node', count: +arrayValues[1]},
