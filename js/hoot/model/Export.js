@@ -27,7 +27,7 @@ Hoot.model.export = function (context)
             outputname = container.select('#fileExportOutputName').value() ||
                         container.select('#fileExportOutputName').attr('placeholder');
         }
-        selectedInput = data.name || outputname;
+        selectedInput = data.id || outputname;
 
         if (container.exporttype) { selExportTypeDesc = container.exporttype; }
         else {
