@@ -310,7 +310,7 @@ export default class API {
             .then( resp => {
                 let layers = resp.data.layers;
 
-                if ( !layers || !layers.length ){
+                if ( !layers ){
                     return resp.data;
                 } else {
                     return layers;
