@@ -2810,6 +2810,18 @@ div.full-screen > button:hover {
     padding-bottom: 10px;
 }
 
+.layer-list-hoot .list-item:first-of-type i {
+    display: none;
+}
+.layer-list-hoot .list-item button.hoot-layer {
+    border-radius: 0;
+}
+.layer-list-hoot .list-item:first-of-type button.hoot-layer {
+    border-top-right-radius: 3px;
+}
+.layer-list-hoot .list-item:last-of-type button.hoot-layer {
+    border-bottom-right-radius: 3px;
+}
 
 /* Background - Display Options Sliders
 ------------------------------------------------------- */

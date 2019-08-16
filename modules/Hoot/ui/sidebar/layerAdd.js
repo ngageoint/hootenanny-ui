@@ -11,7 +11,6 @@ import FolderTree  from '../../tools/folderTree';
 import SidebarForm from './sidebarForm';
 
 import { d3combobox }   from '../../../lib/hoot/d3.combobox';
-import { uiBackground } from '../../../ui/background';
 
 export default class LayerAdd extends SidebarForm {
     constructor( container, d ) {
@@ -210,8 +209,6 @@ export default class LayerAdd extends SidebarForm {
         await Hoot.layers.loadLayer( params );
 
         Hoot.events.emit( 'load-layer' );
-
-        uiBackground.renderLayerToggle();
     }
 
     /**

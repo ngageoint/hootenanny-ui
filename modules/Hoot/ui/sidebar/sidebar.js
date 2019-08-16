@@ -51,6 +51,7 @@ export default class Sidebar {
                 type: 'conflate',
                 id: 'conflate',
                 class: 'layer-conflate',
+                refType: 'primary',
                 toggleButtonText: 'Conflate'
             },
             {
@@ -107,7 +108,7 @@ export default class Sidebar {
             .data( this.conflateFormData ).enter()
             .select( async function( d ) {
                 try {
-                    const layerConflate = new LayerConflate( d3.select( this), d );
+                    const layerConflate = new LayerConflate( d3.select(this), d );
                     await layerConflate.getData();
                     that.forms[ d.id ] = layerConflate;
                 } catch (e) {
@@ -121,7 +122,7 @@ export default class Sidebar {
             let loadedLayer = Hoot.layers.findLoadedBy( 'name', form.loadingLayerName );
             if ( loadedLayer != null ) {
 
-                if ( loadedLayer.merged ) {
+                if ( loadedLayer.isMerged ) {
                     Hoot.layers.mergedLayer = loadedLayer;
                 }
 
@@ -133,7 +134,7 @@ export default class Sidebar {
         } );
     }
 
-    layerMerged() {
+    layerReviews() {
         let that = this;
 
         let layer = Hoot.layers.mergedLayer;
@@ -159,14 +160,12 @@ export default class Sidebar {
         } else {
             this.forms[ d.id ].render( d );
             this.conflateCheck();
-
-            //update url hash
-            var q = utilStringQs(window.location.hash.substring(1));
-            delete q[d.refType];
-            window.location.replace('#' + utilQsString(q, true));
         }
+        //update url hash
+        var q = utilStringQs(window.location.hash.substring(1));
+        delete q[d.refType];
+        window.location.replace('#' + utilQsString(q, true));
 
-        uiBackground.renderLayerToggle();
         this.adjustSize();
     }
 
@@ -215,7 +214,7 @@ export default class Sidebar {
 
     listen() {
         Hoot.events.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
-        Hoot.events.on( 'layer-merged', () => this.layerMerged() );
+        Hoot.events.on( 'layer-reviews', () => this.layerReviews() );
 
         window.onresize = () => this.adjustSize();
     }

@@ -154,21 +154,22 @@ export function uiMapData(context) {
     }
 
 
-    function drawOsmItems(selection) {
-        var osmKeys = ['osm', 'notes'];
-        var osmLayers = layers.all().filter(function(obj) { return osmKeys.indexOf(obj.id) !== -1; });
+    function drawHootItems(selection) {
+        var hootLayers = Object.values(Hoot.layers.loadedLayers).filter( l => l.visible );
 
         var ul = selection
-            .selectAll('.layer-list-osm')
+            .selectAll('.layer-list-hoot')
             .data([0]);
 
         ul = ul.enter()
             .append('ul')
-            .attr('class', 'layer-list layer-list-osm')
+            .attr('class', 'layer-list layer-list-hoot')
             .merge(ul);
 
         var li = ul.selectAll('.list-item')
-            .data(osmLayers);
+            .data(hootLayers, function(d) {
+                return d.id;
+            });
 
         li.exit()
             .remove();
@@ -177,145 +178,54 @@ export function uiMapData(context) {
             .append('li')
             .attr('class', function(d) { return 'list-item list-item-' + d.id; });
 
+
+        //Button to move layer up
+        liEnter
+            .append('button')
+            .call(tooltip().title('Click to have layer be on top').placement('left'))
+            .attr('class', d => `hoot-layer fill-${d.color}`)
+            .on('click', function(data) {
+                var feature = d3.select(this.parentNode).node();
+                var prev = feature.previousElementSibling;
+
+                if (!prev) {
+                    return;
+                }
+                ul.node()
+                    .insertBefore(feature, prev);
+
+                //turn top layer 'move up' button off
+                d3.select(feature).select('i')
+                    .classed('hidden', true);
+                //turn bottom layer 'move up' button on
+                d3.select(prev).select('i')
+                    .classed('hidden', false);
+
+                Hoot.layers.setTopLayer(Number(data.id));
+            })
+            .append('i')
+            .classed('material-icons', true)
+            .text('arrow_upward');
+
+
         var labelEnter = liEnter
-            .append('label')
-            .each(function(d) {
-                d3_select(this)
-                    .call(tooltip()
-                        .title(t('map_data.layers.' + d.id + '.tooltip'))
-                        .placement('bottom')
-                    );
-            });
+            .append('label');
 
         labelEnter
             .append('input')
             .attr('type', 'checkbox')
-            .on('change', function(d) { toggleLayer(d.id); });
+            .on('change', Hoot.layers.toggleLayerVisibility);
 
         labelEnter
             .append('span')
-            .text(function(d) { return t('map_data.layers.' + d.id + '.title'); });
+            .text(function(d) { return d.name; })
+            ;
 
 
         // Update
-        li
-            .merge(liEnter)
-            .classed('active', function (d) { return d.layer.enabled(); })
+        li.merge(liEnter)
             .selectAll('input')
-            .property('checked', function (d) { return d.layer.enabled(); });
-    }
-
-
-    // Beta feature - sample vector layers to support Detroit Mapping Challenge
-    // https://github.com/osmus/detroit-mapping-challenge
-    function drawVectorItems(selection) {
-        var dataLayer = layers.layer('data');
-        var vtData = [
-            {
-                name: 'Detroit Neighborhoods/Parks',
-                src: 'neighborhoods-parks',
-                tooltip: 'Neighborhood boundaries and parks as compiled by City of Detroit in concert with community groups.',
-                template: 'https://{switch:a,b,c,d}.tiles.mapbox.com/v4/jonahadkins.cjksmur6x34562qp9iv1u3ksf-54hev,jonahadkins.cjksmqxdx33jj2wp90xd9x2md-4e5y2/{z}/{x}/{y}.vector.pbf?access_token=pk.eyJ1Ijoiam9uYWhhZGtpbnMiLCJhIjoiRlVVVkx3VSJ9.9sdVEK_B_VkEXPjssU5MqA'
-            }, {
-                name: 'Detroit Composite POIs',
-                src: 'composite-poi',
-                tooltip: 'Fire Inspections, Business Licenses, and other public location data collated from the City of Detroit.',
-                template: 'https://{switch:a,b,c,d}.tiles.mapbox.com/v4/jonahadkins.cjksmm6a02sli31myxhsr7zf3-2sw8h/{z}/{x}/{y}.vector.pbf?access_token=pk.eyJ1Ijoiam9uYWhhZGtpbnMiLCJhIjoiRlVVVkx3VSJ9.9sdVEK_B_VkEXPjssU5MqA'
-            }, {
-                name: 'Detroit All-The-Places POIs',
-                src: 'alltheplaces-poi',
-                tooltip: 'Public domain business location data created by web scrapers.',
-                template: 'https://{switch:a,b,c,d}.tiles.mapbox.com/v4/jonahadkins.cjksmswgk340g2vo06p1w9w0j-8fjjc/{z}/{x}/{y}.vector.pbf?access_token=pk.eyJ1Ijoiam9uYWhhZGtpbnMiLCJhIjoiRlVVVkx3VSJ9.9sdVEK_B_VkEXPjssU5MqA'
-            }
-        ];
-
-        // Only show this if the map is around Detroit..
-        var detroit = geoExtent([-83.5, 42.1], [-82.8, 42.5]);
-        var showVectorItems = (context.map().zoom() > 9 && detroit.contains(context.map().center()));
-
-        var container = selection.selectAll('.vectortile-container')
-            .data(showVectorItems ? [0] : []);
-
-        container.exit()
-            .remove();
-
-        var containerEnter = container.enter()
-            .append('div')
-            .attr('class', 'vectortile-container');
-
-        containerEnter
-            .append('h4')
-            .attr('class', 'vectortile-header')
-            .text('Detroit Vector Tiles (Beta)');
-
-        containerEnter
-            .append('ul')
-            .attr('class', 'layer-list layer-list-vectortile');
-
-        containerEnter
-            .append('div')
-            .attr('class', 'vectortile-footer')
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .call(svgIcon('#iD-icon-out-link', 'inline'))
-            .attr('href', 'https://github.com/osmus/detroit-mapping-challenge')
-            .append('span')
-            .text('About these layers');
-
-        container = container
-            .merge(containerEnter);
-
-
-        var ul = container.selectAll('.layer-list-vectortile');
-
-        var li = ul.selectAll('.list-item')
-            .data(vtData);
-
-        li.exit()
-            .remove();
-
-        var liEnter = li.enter()
-            .append('li')
-            .attr('class', function(d) { return 'list-item list-item-' + d.src; });
-
-        var labelEnter = liEnter
-            .append('label')
-            .each(function(d) {
-                d3_select(this).call(
-                    tooltip().title(d.tooltip).placement('top')
-                );
-            });
-
-        labelEnter
-            .append('input')
-            .attr('type', 'radio')
-            .attr('name', 'vectortile')
-            .on('change', selectVTLayer);
-
-        labelEnter
-            .append('span')
-            .text(function(d) { return d.name; });
-
-        // Update
-        li
-            .merge(liEnter)
-            .classed('active', isVTLayerSelected)
-            .selectAll('input')
-            .property('checked', isVTLayerSelected);
-
-
-        function isVTLayerSelected(d) {
-            return dataLayer && dataLayer.template() === d.template;
-        }
-
-        function selectVTLayer(d) {
-            context.storage('settings-custom-data-url', d.template);
-            if (dataLayer) {
-                dataLayer.template(d.template, d.src);
-                dataLayer.enabled(true);
-            }
-        }
+            .property('checked', function (d) { return d.visible; });
     }
 
 
@@ -500,10 +410,9 @@ export function uiMapData(context) {
 
     function update() {
         _dataLayerContainer
-            .call(drawOsmItems)
+            .call(drawHootItems)
             .call(drawPhotoItems)
-            .call(drawCustomDataItems)
-            .call(drawVectorItems);      // Beta - Detroit mapping challenge
+            .call(drawCustomDataItems);
 
         _fillList
             .call(drawListItems, fills, 'radio', 'area_fill', setFill, showsFill);
