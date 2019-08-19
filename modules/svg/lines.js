@@ -94,18 +94,17 @@ export function svgLines(projection, context) {
 
 
         function waystack(a, b) {
+            // if top layer set, make top layer lines last to render.
+            var topLayer = Hoot.layers.getTopLayer();
+            if (topLayer) { return +a.mapId === topLayer ? 1 : -1; }
+
+
             var selected = context.selectedIDs();
             var scoreA = selected.indexOf(a.id) !== -1 ? 20 : 0;
             var scoreB = selected.indexOf(b.id) !== -1 ? 20 : 0;
 
-            if (a.tags.highway) { scoreA -= highway_stack[a.tags.highway] || 0; }
-            if (b.tags.highway) { scoreB -= highway_stack[b.tags.highway] || 0; }
-
-            const topLayer = Hoot.layers.getTopLayer();
-            if (topLayer) {
-                if (+a.mapId === topLayer) { scoreA += 20; }
-                if (+b.mapId === topLayer) { scoreB += 20; }
-            }
+            if (a.tags.highway) { scoreA -= highway_stack[a.tags.highway]; }
+            if (b.tags.highway) { scoreB -= highway_stack[b.tags.highway]; }
 
             return scoreA - scoreB;
         }

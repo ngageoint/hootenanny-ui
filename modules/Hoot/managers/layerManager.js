@@ -181,7 +181,7 @@ export default class Layers {
         this.hashLayers[type] = parseInt(mapId, 10);
     }
 
-    async loadLayer( params ) {
+    async loadLayer( params, skipCheckForReviewsAndZoom ) {
         try {
             let mapId       = params.id,
                 tags        = await this.hoot.api.getMapTags( mapId ),
@@ -192,7 +192,7 @@ export default class Layers {
                 id: params.id,
                 refType: params.refType,
                 color: params.color,
-                merged: params.merged || false,
+                isMerged: params.isMerged || false,
                 layers: params.layers || [],
                 extent: layerExtent,
                 polygon: layerExtent.polygon(),
@@ -219,7 +219,7 @@ export default class Layers {
                 window.location.replace('#' + utilQsString(q, true));
             }
 
-            if ( tags.input1 || tags.input2 ) {
+            if ( (tags.input1 || tags.input2) && !skipCheckForReviewsAndZoom) {
                 layer = await this.checkForReview( layer );
             }
 
@@ -227,7 +227,8 @@ export default class Layers {
 
             if (layerExtent.toParam() !== '-180,-90,180,90') {
                 if (Object.keys(this.loadedLayers).length === 1 //only zoom to the first layer loaded
-                        && !layer.merged //and only if not going into review mode
+                        && !layer.isMerged //or if showing a merged layer because 3 layers will have been loaded
+                        && !skipCheckForReviewsAndZoom //but only if not toggling between merged layer and inputs
                     ) {
                     this.hoot.context.extent(layerExtent);
                 }
@@ -265,24 +266,23 @@ export default class Layers {
             reviewStats     = await Hoot.api.getReviewStatistics( mergedLayer.id ),
             unreviewedCount = reviewStats.unreviewedCount;
 
-        if ( !unreviewedCount || unreviewedCount === 0 ) return mergedLayer;
+        if ( !(tags.input1 && tags.input2) ) return mergedLayer;
 
-        if ( tags.reviewtype === 'hgisvalidation' ) {
-            let message = 'The layer has been prepared for validation. Do you want to go into validation mode?',
-                confirm = await Hoot.message.confirm( message );
-
-            if ( !confirm ) return mergedLayer;
-
-            // TODO: begin validation
+        let message, confirm;
+        if (unreviewedCount > 0) {
+            message = 'The layer contains unreviewed items. Do you want to go into review mode?';
+            confirm = await Hoot.message.confirm( message );
         } else {
-            let message = 'The layer contains unreviewed items. Do you want to go into review mode?',
-                confirm = await Hoot.message.confirm( message );
+            message = 'The layer has been conflated. Do you want to view it as a merged layer?';
+            confirm = await Hoot.message.confirm( message );
+        }
+        if ( !confirm ) return mergedLayer;
 
-            if ( !confirm ) return mergedLayer;
+        if ( Hoot.ui.managePanel.isOpen ) {
+            Hoot.ui.navbar.toggleManagePanel();
+        }
 
-            if ( Hoot.ui.managePanel.isOpen ) {
-                Hoot.ui.navbar.toggleManagePanel();
-            }
+        if (unreviewedCount > 0) {
 
             //Get an initial review item
             //and zoom to it's bounds
@@ -299,87 +299,90 @@ export default class Layers {
             mergedLayer.reviewItem = reviewItem;
             mergedLayer.reviewStats = reviewStats;
 
-            mergedLayer.merged = true;
-            mergedLayer.color  = 'green';
-            mergedLayer.refType = 'merged';
+        }
 
-            d3.selectAll( '.layer-loading' ).remove();
-            d3.selectAll( '.layer-add' ).remove();
-            Hoot.ui.sidebar.removeLayerAddForms();
+        mergedLayer.isMerged = true;
+        mergedLayer.color  = 'green';
+        mergedLayer.refType = 'merged';
 
-            let params = {
-                name: mergedLayer.name,
-                color: 'green',
-                isConflate: true
+        d3.selectAll( '.layer-loading' ).remove();
+        d3.selectAll( '.layer-add' ).remove();
+        Hoot.ui.sidebar.removeLayerAddForms();
+
+        let params = {
+            name: mergedLayer.name,
+            color: 'green',
+            isMerged: true
+        };
+
+        Hoot.ui.sidebar.forms.conflate.forceAdd( params );
+        Hoot.layers.mergedLayer = mergedLayer;
+
+        let input1     = tags.input1,
+            input2     = tags.input2,
+            input1Name = tags.input1Name,
+            input2Name = tags.input2Name;
+
+        if ( (input1 && input1Name) && (input2 && input2Name) ) {
+            let params1 = {
+                name: input1Name,
+                id: input1,
+                color: 'violet',
+                refType: 'primary'
             };
 
-            Hoot.ui.sidebar.forms.conflate.forceAdd( params );
-            Hoot.layers.mergedLayer = mergedLayer;
+            let params2 = {
+                name: input2Name,
+                id: input2,
+                color: 'orange',
+                refType: 'secondary'
+            };
 
-            let input1     = tags.input1,
-                input2     = tags.input2,
-                input1Name = tags.input1Name,
-                input2Name = tags.input2Name;
+            Promise.all( [
+                this.loadLayer( params1 ),
+                this.loadLayer( params2 )
+            ] ).then( layers => {
+                this.hideLayer( layers[ 0 ].id );
+                this.hideLayer( layers[ 1 ].id );
+            } );
+        } else {
+            let params,
+                message,
+                type = 'warn';
 
-            if ( (input1 && input1Name) && (input2 && input2Name) ) {
-                let params1 = {
+            if ( input1 && input1Name ) {
+                params = {
                     name: input1Name,
                     id: input1,
                     color: 'violet',
-                    refType: 'primary'
+                    retType: 'primary'
                 };
 
-                let params2 = {
+                message = 'Could not determine input layer 2. It will not be loaded.';
+
+                Hoot.message.alert( { message, type } );
+            } else if ( input2 && input2Name ) {
+                params = {
                     name: input2Name,
                     id: input2,
                     color: 'orange',
                     refType: 'secondary'
                 };
 
-                Promise.all( [
-                    this.loadLayer( params1 ),
-                    this.loadLayer( params2 )
-                ] ).then( layers => {
-                    this.hideLayer( layers[ 0 ].id );
-                    this.hideLayer( layers[ 1 ].id );
-                } );
+                message = 'Could not determine input layer 1. It will not be loaded.';
+
+                Hoot.message.alert( { message, type } );
             } else {
-                let params,
-                    message,
-                    type = 'warn';
+                message = 'Could not determine input layers 1 or 2. Neither will not be loaded.';
 
-                if ( input1 && input1Name ) {
-                    params = {
-                        name: input1Name,
-                        id: input1,
-                        color: 'violet'
-                    };
-
-                    message = 'Could not determine input layer 2. It will not be loaded.';
-
-                    Hoot.message.alert( { message, type } );
-                } else if ( input2 && input2Name ) {
-                    params = {
-                        name: input2Name,
-                        id: input2,
-                        color: 'orange'
-                    };
-
-                    message = 'Could not determine input layer 1. It will not be loaded.';
-
-                    Hoot.message.alert( { message, type } );
-                } else {
-                    message = 'Could not determine input layers 1 or 2. Neither will not be loaded.';
-
-                    Hoot.message.alert( { message, type } );
-                }
-
-                this.loadLayer( params )
-                    .then( layer => this.hideLayer( layer.id ) );
+                Hoot.message.alert( { message, type } );
             }
 
-            return mergedLayer;
+            this.loadLayer( params )
+                .then( layer => this.hideLayer( layer.id ) );
         }
+
+        return mergedLayer;
     }
 
     /**
@@ -391,20 +394,24 @@ export default class Layers {
         _remove( this.allLayers, layer => layer.id === id );
     }
 
-    removeLoadedLayer( id ) {
+    removeLoadedLayer( id, toggle ) {
         if ( id && this.loadedLayers[ id ] ) {
+            if (this.loadedLayers[ id ].isMerged && this.mergedLayer) {
+                this.removeLoadedLayer(this.mergedLayer.tags.input1);
+                this.removeLoadedLayer(this.mergedLayer.tags.input2);
+            }
+
             delete this.loadedLayers[ id ];
-            this.hoot.context.background().removeSource( id );
             this.hootOverlay.removeGeojson( id );
 
             this.hoot.context.flush();
         }
-        this.hoot.events.emit( 'loaded-layer-removed' );
+        if (!toggle)
+            this.hoot.events.emit( 'loaded-layer-removed' );
     }
 
     removeAllLoadedLayers() {
         _forEach( this.loadedLayers, layer => {
-            this.hoot.context.background().removeSource( layer.id );
             this.hootOverlay.removeGeojson( layer.id );
         } );
 
@@ -422,6 +429,11 @@ export default class Layers {
         this.hootOverlay.removeGeojson( id );
 
         this.hoot.context.connection().removeTile( id );
+        this.hoot.context.flush();
+    }
+
+    showLayer( id ) {
+        this.hoot.layers.loadedLayers[ id ].visible = true;
         this.hoot.context.flush();
     }
 
@@ -473,7 +485,7 @@ export default class Layers {
 
     setTopLayer( mapId ) {
         this.topLayer = mapId;
-        this.hoot.context.flush();
+        this.hoot.context.change();
     }
 
     getTopLayer() {

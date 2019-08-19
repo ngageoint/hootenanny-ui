@@ -83,6 +83,7 @@ export default class ConflictMetadata {
             row.selectAll( 'td.feature1' )
                 .data( [ { k: 1 } ] ).enter()
                 .append( 'td' )
+                .attr('title', tag.value[0])
                 .classed( 'value-col feature1', true )
                 .text( tag.value[ 0 ] );
 
@@ -95,6 +96,7 @@ export default class ConflictMetadata {
             row.selectAll( 'td.feature2' )
                 .data( [ { k: 2 } ] ).enter()
                 .append( 'td' )
+                .attr('title', tag.value[1])
                 .classed( 'value-col feature2', true )
                 .text( tag.value[ 1 ] );
 

@@ -94,7 +94,7 @@ export default class Resolve {
 
         // update layer
         Hoot.layers.removeLayer( layer.id );
-        Hoot.layers.loadLayer( key );
+        Hoot.layers.loadLayer( key, true );
 
         // exit controller refresh state
         conflateController.text.html( layer.name );

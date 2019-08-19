@@ -69,13 +69,17 @@ export default class LayerMetadata {
         this.form.select( '.controller' )
             .append( 'button' )
             .attr( 'tabindex', -1 )
-            .classed( 'metadata-button icon-button keyline-left unround inline _icon info', true )
+            .classed( 'metadata-button icon-button keyline-left unround inline', true )
             .on( 'click', () => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
                 this.togglePanel();
-            } );
+            } )
+            .append('i')
+            .classed('material-icons', true)
+            .attr('title', 'show metadata')
+            .text('info_outline');
     }
 
     createInnerWrapper() {
