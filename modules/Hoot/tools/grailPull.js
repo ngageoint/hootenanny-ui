@@ -85,10 +85,10 @@ export default class GrailPull {
             this.submitButton.node().disabled = false;
         }
 
-        this.layerNameTable();
+        this.layerNameTable( data );
     }
 
-    layerNameTable() {
+    layerNameTable( data ) {
         const self = this;
 
         let columns = [
@@ -117,9 +117,12 @@ export default class GrailPull {
             .text( d => d.label );
 
         let tableBody = layerOutputTable.append( 'tbody' ),
-            ingestLayers = [ 'reference', 'secondary' ];
+            ingestLayers = {
+                reference : data.railsCodename,
+                secondary : data.overpassCodename
+            };
 
-        _forEach( ingestLayers, layer => {
+        _forEach( Object.keys(ingestLayers), layer => {
             tableBody
                 .append( 'tr' )
                 .attr( 'id', `row-${ layer }` )
@@ -137,7 +140,7 @@ export default class GrailPull {
                             .attr( 'placeholder', layer )
                             .attr( 'readonly', false );
                     } else if ( d.name === 'outputName' ) {
-                        const saveName = layer + '_' + uuidv4().replace( /-/g, '' ).substring( 0, 7 );
+                        const saveName = ingestLayers[ layer ];
 
                         d3.select( this ).property( 'value', saveName )
                             .on( 'input', function() {
