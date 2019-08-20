@@ -1073,7 +1073,7 @@ export default class API {
 
     grailPullOverpassToDb( data ) {
         const params = {
-            path: `/grail/pulloverpasstodb?bbox=${ data.BBOX }`,
+            path: `/grail/pulloverpasstodb?bbox=${ data.BBOX }&name=${ data.secondaryName }`,
             method: 'GET'
         };
 
@@ -1097,9 +1097,9 @@ export default class API {
             } );
     }
 
-    overpassStatsQuery( bbox ) {
+    grailMetadataQuery( bbox ) {
         const params = {
-            path: `/grail/overpassStatsQuery?bbox=${ bbox }`,
+            path: `/grail/grailMetadataQuery?bbox=${ bbox }`,
             method: 'GET'
         };
 
@@ -1117,7 +1117,7 @@ export default class API {
 
     grailPullRailsPortToDb( data ) {
         const params = {
-            path: `/grail/pullrailsporttodb?bbox=${ data.BBOX }`,
+            path: `/grail/pullrailsporttodb?bbox=${ data.BBOX }&name=${ data.referenceName }`,
             method: 'GET'
         };
 
