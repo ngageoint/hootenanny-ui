@@ -268,8 +268,10 @@ export default class Layers {
 
         if ( !(tags.input1 && tags.input2) ) return mergedLayer;
 
+        mergedLayer.hasReviews = unreviewedCount > 0;
+
         let message, confirm;
-        if (unreviewedCount > 0) {
+        if (mergedLayer.hasReviews) {
             message = 'The layer contains unreviewed items. Do you want to go into review mode?';
             confirm = await Hoot.message.confirm( message );
         } else {
