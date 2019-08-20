@@ -149,7 +149,7 @@ export default class AdvancedOpts {
 
         innerWrapLeft = innerWrapLeft.merge(innerWrapLeftEnter);
 
-        if ( d.name !== 'Cleaning' && d.name !== 'General' && d.name !== 'Attribute' ) {
+        if ( !['Cleaning', 'General', 'Attribute', 'Differential'].includes(d.name) ) {
             let innerInput = innerWrapLeft.selectAll( '.conflate-type-toggle' )
                 .data( [ d ] );
 
@@ -435,13 +435,14 @@ export default class AdvancedOpts {
                 .call(self.innerWrap, self.toggleOption)
                 .call(self.caretWrap);
 
-            if ( d.name === 'Attribute' ) {
-                let isAttribute = d3.select( '#conflateType' ).property( 'value' ) === 'Attribute';
+            let defaultDisables = ['Attribute', 'Differential'];
+            if ( defaultDisables.indexOf(d.name) !== -1 ) {
+                let shouldDisable = d3.select( '#conflateType' ).property( 'value' ) === d.name;
                 group.select( '.adv-opt-title' )
-                    .classed( 'adv-opt-title-disabled', !isAttribute );
+                    .classed( 'adv-opt-title-disabled', !shouldDisable );
 
                 group.select( '.adv-opt-toggle' )
-                    .classed( 'toggle-disabled', !isAttribute );
+                    .classed( 'toggle-disabled', !shouldDisable );
             }
 
 

@@ -75,17 +75,19 @@ export function layerConflateForm( data ) {
                     advancedOpts.createGroups(advOpts);
                 } else {
                     // disable & enable the attribute conflation group.
-                    let attributeGroup = d3.select( '.advanced-opts-content #Attribute_group' ),
-                        isAttribute = d3.select( '#conflateType' ).property( 'value' ) === 'Attribute';
+                    [ 'Attribute', 'Differential' ].forEach((conflationGroup) => {
+                        let confGroup = d3.select( `.advanced-opts-content #${conflationGroup}_group` ),
+                            isGroup = d3.select( '#conflateType' ).property( 'value' ) === conflationGroup;
 
-                    attributeGroup.select( '.adv-opt-title' )
-                        .classed( 'adv-opt-title-disabled', !isAttribute );
+                        confGroup.select( '.adv-opt-title' )
+                            .classed( 'adv-opt-title-disabled', !isGroup );
 
-                    attributeGroup.select( '.adv-opt-toggle' )
-                        .classed( 'toggle-disabled', !isAttribute );
+                        confGroup.select( '.adv-opt-toggle' )
+                            .classed( 'toggle-disabled', !isGroup );
 
-                    attributeGroup
-                        .select( '.group-body', true );
+                        confGroup
+                            .select( '.group-body', true );
+                    })
                 }
             }
         },
