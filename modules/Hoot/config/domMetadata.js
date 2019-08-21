@@ -168,6 +168,53 @@ export function importSingleForm() {
             disabled: true,
             data: this.translations,
             itemKey: 'NAME'
+        },
+        {
+            label: 'Advanced Upload Options',
+            id: 'simplifyBuildings',
+            inputType: 'combobox',
+            placeholder: 'Simplify Complex Buildings',
+            data: this.advancedOptions,
+            readonly: 'readonly',
+            onChange: function(d) {
+                // update the renderd default value to match those in the conflation configs...
+                let type = d3.select( '#simplifyBuildings' ).property( 'value' );
+                let advancedOpts = AdvancedOpts.getInstance();
+                let advOpts = _cloneDeep( advancedOpts.advancedOptions );
+                if ( !_isEmpty(advancedOpts.conflationOptions[type.toLowerCase()]) ) {
+                    let typeDefaults = advancedOpts.conflationOptions[type.toLowerCase()];
+                    advOpts = advOpts.map(function(opt) {
+                        if (opt.name === type) {
+                            opt.members = opt.members.map(function(member) {
+                                if (typeDefaults[member.id]) {
+                                    member.default = typeDefaults[member.id];
+                                }
+                                return member;
+                            });
+                        }
+                        return opt;
+                    });
+
+                }
+
+                if (!_isEqual(advOpts, advancedOpts.advancedOptions)) {
+                    advancedOpts.createGroups(advOpts);
+                } else {
+                    // disable & enable the attribute conflation group.
+                    let attributeGroup = d3.select( '.advanced-opts-content #Buildings_group' ),
+                        isBuildings = d3.select( '#simplifyBuildings' ).property( 'value' ) === 'Buildings';
+
+                    attributeGroup.select( '.adv-opt-title' )
+                        .classed( 'adv-opt-title-disabled', !isBuildings );
+
+                    attributeGroup.select( '.adv-opt-toggle' )
+                        .classed( 'toggle-disabled', !isBuildings );
+
+                    attributeGroup
+                        .select( '.group-body', true );
+                }
+            }
+
         }
     ];
 }
