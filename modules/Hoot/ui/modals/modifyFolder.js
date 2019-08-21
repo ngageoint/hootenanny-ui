@@ -91,7 +91,7 @@ export default class ModifyFolder {
             Hoot.message.alert( { message, type } );
             return false;
         } else if ( folderId === this.data.id ) {
-            let message = 'You cannot move a folder inside of itself. Please select a different folder.',
+            let message = 'The new parent folder cannot be the current folder. Please select a different folder.',
                 type    = 'warn';
 
             Hoot.message.alert( { message, type } );
