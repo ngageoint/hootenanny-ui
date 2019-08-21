@@ -87,7 +87,7 @@ export function layerConflateForm( data ) {
 
                         confGroup
                             .select( '.group-body', true );
-                    })
+                    });
                 }
             }
         },
