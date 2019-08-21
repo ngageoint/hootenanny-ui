@@ -22,6 +22,11 @@ export default class ModifyFolder {
         this.form.splice( 2, 1 );
         this.pathName = _get( _find( this.folderList, folder => folder.id === this.data.parentId ), 'path' ) || 'root';
 
+        // Because dataset and folder share the same settings we had to set a trigger here to tell the formFactory
+        // that we want root in the path dropdown
+        const pathComboboxSettings = _find( this.form, formItem => formItem.itemKey === 'path' );
+        pathComboboxSettings.includeRoot = true;
+
         let metadata = {
             title: 'Modify Folder',
             form: this.form,
@@ -35,10 +40,10 @@ export default class ModifyFolder {
 
         this.container = new FormFactory().generateForm( 'body', 'modify-folder-form', metadata );
 
-        this.folderNameInput     = this.container.select( '#modifyName' );
-        this.pathNameInput = this.container.select( '#modifyPathName' );
+        this.folderNameInput       = this.container.select( '#modifyName' );
+        this.pathNameInput         = this.container.select( '#modifyPathName' );
         this.folderVisibilityInput = this.container.select( '#modifyVisibility' );
-        this.submitButton        = this.container.select( '#modifySubmitBtn' );
+        this.submitButton          = this.container.select( '#modifySubmitBtn' );
 
         this.folderNameInput.property( 'value', this.data.name );
         this.pathNameInput.property( 'value', this.pathName );
@@ -78,8 +83,15 @@ export default class ModifyFolder {
             isPublic   = this.folderVisibilityInput.property( 'checked' ),
             folderId   = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
 
+        // We do this because if user only changes visibility
         if ( ( folderName !== this.data.name || pathName !== this.pathName ) && Hoot.folders.exists( folderName, folderId ) ) {
             let message = 'A folder already exists with this name in the destination path. Please remove the old folder or select a new name for this folder.',
+                type    = 'warn';
+
+            Hoot.message.alert( { message, type } );
+            return false;
+        } else if ( folderId === this.data.id ) {
+            let message = 'You cannot move a folder inside of itself. Please select a different folder.',
                 type    = 'warn';
 
             Hoot.message.alert( { message, type } );
