@@ -109,11 +109,8 @@ export default class Layers {
         return (num === 0) ? namePart : `${namePart} (${num})`;
     }
 
-    async addHashLayer(type, mapId) {
-        Hoot.ui.sidebar.forms[ type ].submitLayer( {
-            id: mapId,
-            name: this.findBy( 'id', mapId).name
-        } );
+    async addHashLayer(type, mapId, skipCheckForReview = false) {
+        Hoot.ui.sidebar.forms[ type ].submitLayer( { id: mapId, name: this.findBy( 'id', mapId).name }, skipCheckForReview );
     }
 
     findBy( key, val ) {

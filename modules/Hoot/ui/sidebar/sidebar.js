@@ -120,7 +120,7 @@ export default class Sidebar {
     layerLoaded() {
         _forEach( this.forms, form => {
             let loadedLayer = Hoot.layers.findLoadedBy( 'name', form.loadingLayerName );
-            if ( loadedLayer !== null ) {
+            if ( loadedLayer ) {
 
                 if ( loadedLayer.isMerged ) {
                     Hoot.layers.mergedLayer = loadedLayer;
@@ -132,8 +132,7 @@ export default class Sidebar {
                             .select( function() {
                                 that.reviewLayer = new LayerReview( d3.select( this ), loadedLayer );
                                 that.reviewLayer.render();
-                                d3.select(this).selectAll('.toggle-button > span').text('Complete Conflation');
-                            })
+                            });
                     }
                 }
 
