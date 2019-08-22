@@ -29,26 +29,11 @@ export default class ModifyDataset {
         if ( this.formType === 'single' ) {
             formTitle = 'Modify Dataset';
 
-            this.pathName = _get( _find( this.folderList, folder => folder.id === this.datasets.folderId ), 'path' ) || 'root';
+            this.pathName = _get( _find( this.folderList, folder => folder.id === this.datasets.folderId ), 'path' );
         } else {
             formTitle = 'Move Datasets';
 
-            let set = d3.set();
-
-            _forEach( this.datasets, dataset => {
-                if ( !set.has( dataset.folderId ) ) {
-                    set.add( dataset.folderId );
-                }
-            } );
-
-            let folderIds = set.values();
-
-            if ( folderIds.length > 1 ) {
-                this.pathName = 'root';
-            } else {
-                let folderId  = parseInt( folderIds[ 0 ], 10 );
-                this.pathName = _get( _find( this.folderList, folder => folder.id === folderId ), 'path' ) || 'root';
-            }
+            this.pathName = null;
 
             this.form.splice( 0, 1 );
         }
@@ -111,7 +96,7 @@ export default class ModifyDataset {
         let pathName      = this.pathNameInput.property( 'value' ),
             newFolderName = this.newFolderNameInput.property( 'value' ),
             layerName     = this.formType === 'single' ? this.layerNameInput.property( 'value' ) : null,
-            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
+            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' );
 
         if ( !newFolderName && layerName ) {
             // make sure another layer with the same name doesn't exist at specified path
@@ -137,8 +122,11 @@ export default class ModifyDataset {
 
         if ( newFolderName ) {
             folderId = (await Hoot.folders.addFolder( pathName, newFolderName )).folderId;
-        } else {
+        } else if ( pathId ) {
             folderId = pathId;
+        } else {
+            Hoot.message.alert( { message: 'Need to specify a path or enter name for new folder!', type: 'error' } );
+            return;
         }
 
         if ( this.formType === 'single' ) {

@@ -10,11 +10,10 @@ import FormFactory         from '../../tools/formFactory';
 import _filter             from 'lodash-es/filter';
 import _find               from 'lodash-es/find';
 import _get                from 'lodash-es/get';
-import _map                from 'lodash-es/map';
 import _forEach            from 'lodash-es/forEach';
 
 export default class ImportMultiDatasets {
-    constructor( translations, path = 'root' ) {
+    constructor( translations, path ) {
         this.folderList     = Hoot.folders._folders;
         this.translations   = translations;
         this.formFactory    = new FormFactory();
@@ -61,7 +60,7 @@ export default class ImportMultiDatasets {
 
         this.container = this.formFactory.generateForm( 'body', 'datasets-import-form', metadata );
 
-        if (this.path !== 'root') {
+        if ( this.path ) {
             this.container.select( '#importPathName' ).property('value', this.path);
         }
 
@@ -307,7 +306,7 @@ export default class ImportMultiDatasets {
         let files         = this.fileIngest.node().files,
             pathName      = this.pathNameInput.property( 'value' ),
             newFolderName = this.newFolderNameInput.property( 'value' ),
-            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0,
+            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ),
 
             transVal      = this.schemaInput.property( 'value' ),
             typeVal       = this.typeInput.property( 'value' ),
@@ -345,8 +344,11 @@ export default class ImportMultiDatasets {
 
         if ( newFolderName ) {
             folderId = (await Hoot.folders.addFolder( pathName, newFolderName )).folderId;
-        } else {
+        } else if ( pathId ) {
             folderId = pathId;
+        } else {
+            Hoot.message.alert( { message: 'Need to specify a path or enter name for new folder!', type: 'error' } );
+            return;
         }
 
         let fileNames = [];

@@ -121,18 +121,18 @@ export default class FolderManager {
     listFolders( folders ) {
         return _map( folders, folder => {
             if ( folder.parentId === 0 ) {
-                folder.folderPath = folder.name;
+                folder.folderPath = '/ ' + folder.name;
             } else {
                 //use links to get parent folder as far back as possible
                 let strPath      = folder.name,
                     parentFolder = _find( folders, { id : folder.parentId } );
 
                 do {
-                    strPath      = parentFolder.name + '/' + strPath;
+                    strPath      = parentFolder.name + ' / ' + strPath;
                     parentFolder = _find( folders, { id : parentFolder.parentId } );
                 } while ( parentFolder );
 
-                folder.folderPath = strPath;
+                folder.folderPath = '/ ' + strPath;
             }
 
             return {

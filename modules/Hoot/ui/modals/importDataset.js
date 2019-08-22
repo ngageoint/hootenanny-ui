@@ -323,7 +323,7 @@ export default class ImportDataset {
         let layerName     = this.layerNameInput.property( 'value' ),
             pathName      = this.pathNameInput.property( 'value' ),
             newFolderName = this.newFolderNameInput.property( 'value' ),
-            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0,
+            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ),
 
             transVal      = this.schemaInput.property( 'value' ),
             typeVal       = this.typeInput.property( 'value' ),
@@ -345,8 +345,11 @@ export default class ImportDataset {
 
         if ( newFolderName ) {
             folderId = (await Hoot.folders.addFolder( pathName, newFolderName )).folderId;
-        } else {
+        } else if ( pathId ) {
             folderId = pathId;
+        } else {
+            Hoot.message.alert( { message: 'Need to specify a path or enter name for new folder!', type: 'error' } );
+            return;
         }
 
         let data = {
