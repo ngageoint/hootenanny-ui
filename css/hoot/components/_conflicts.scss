@@ -55,6 +55,9 @@
 
     td {
         min-width: 75px;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
         text-align: center;
         vertical-align: middle;
         padding: 0 5px;

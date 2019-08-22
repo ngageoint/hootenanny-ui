@@ -62,7 +62,6 @@ export default class ClipDataset {
             },
             {
                 label: 'Path',
-                placeholder: 'root',
                 combobox: folderList,
                 name: 'outputPath'
             }
@@ -128,7 +127,12 @@ export default class ClipDataset {
                     } else if ( d.name === 'outputName' ) {
                         that.createLayerNameField( d3.select( this ), layer );
                     } else {
+                        var folderId = Hoot.layers.findBy( 'id', Number(layer.id) ).folderId;
+                        d.combobox = [ d.combobox.find( function( l ) { return l.id === folderId; } ) ]
+                            .concat( d.combobox.filter( function( l ) { return l.id !== folderId; } ).sort() );
                         that.createFolderListCombo( d3.select( this ), d );
+                        d3.select( this ).property( 'value', Hoot.folders.findBy( 'id', folderId).name );
+                        d3.select( this ).property( '_value', Hoot.folders.findBy( 'id', folderId ).id );
                     }
                 } );
         } );
@@ -168,15 +172,6 @@ export default class ClipDataset {
                 };
             } ) );
 
-        let data = combobox.data();
-
-        data.sort( ( a, b ) => {
-            let textA = a.value.toLowerCase(),
-                textB = b.value.toLowerCase();
-
-            return textA < textB ? -1 : textA > textB ? 1 : 0;
-        } ).unshift( { value: 'root', _value: 0 } );
-
         input.call( combobox );
     }
 
@@ -197,7 +192,7 @@ export default class ClipDataset {
             let row         = d3.select( `#row-${ mapId }` ),
                 datasetName = row.select( '.datasetName' ),
                 outputName  = row.select( '.outputName' ),
-                folderId    = parseInt(row.select( '.outputPath' ).attr('_value'), 10);
+                folderId    = row.select( '.outputPath').property( '_value' );
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = Hoot.layers.checkLayerName(outputName.property( 'value' ) || outputName.attr( 'placeholder' ));

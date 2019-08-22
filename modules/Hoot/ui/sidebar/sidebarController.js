@@ -5,7 +5,6 @@
  *******************************************************************************************************/
 
 import _reject       from 'lodash-es/reject';
-
 import LayerMetadata from './layerMetadata';
 
 class SidebarController {
@@ -16,10 +15,11 @@ class SidebarController {
         this.layerName  = layer.name;
         this.layerId    = layer.id;
         this.layerColor = layer.color;
-        this.isConflate = layer.isConflate;
+        this.isConflating = layer.isConflating;
+        this.isMerged     = layer.isMerged;
         this.jobId      = layer.jobId;
         this.refType    = layer.refType;
-        this.typeClass  = this.isConflate ? 'conflate-controller' : 'add-controller';
+        this.typeClass  = layer.isMerged ? 'conflate-controller' : 'add-controller';
     }
 
     render() {
@@ -47,7 +47,7 @@ class SidebarController {
         this.createColorPalette();
         this.createThumbnail();
         this.createText();
-        if (this.isConflate) {
+        if (this.isConflating) {
             this.createCancelButton();
         } else {
             this.createDeleteButton();
@@ -109,7 +109,7 @@ class SidebarController {
             .append( 'div' )
             .classed( 'keyline-all hoot-form-field palette clearfix round', true );
 
-        if ( !this.isConflate ) {
+        if ( !this.isMerged ) {
             palette = _reject( palette, color => color.name === 'green' );
         }
 
@@ -152,7 +152,7 @@ class SidebarController {
     }
 
     createText() {
-        let text = this.isConflate ? 'Conflating' : 'Loading';
+        let text = this.isConflating ? 'Conflating' : 'Loading';
 
         this.text = this.controller
             .append( 'span' )
@@ -163,7 +163,7 @@ class SidebarController {
     createDeleteButton() {
         this.deleteButton = this.controller
             .append( 'button' )
-            .classed( 'delete-button icon-button keyline-left round-right inline _icon trash', true )
+            .classed( 'delete-button icon-button keyline-left round-right inline', true )
             .on( 'click', async d => {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
@@ -176,6 +176,62 @@ class SidebarController {
                     Hoot.ui.sidebar.layerRemoved( d );
                 }
             } );
+        this.deleteButton.append('i')
+            .classed('material-icons', true)
+            .attr('title', 'remove layer')
+            .text('delete_outline');
+    }
+
+    createShowLayersButton() {
+        let sources,
+            isMerged = true,
+            icon;
+        this.showButton = this.controller
+            .append('button')
+            .classed('showlayers icon-button keyline-left inline unround', true)
+            .on('click', async function () {
+                try {
+                    d3.event.preventDefault();
+                    if (!sources) {
+                        sources = Object.values(Hoot.layers.loadedLayers).reduce((sources, l) => {
+                            let key = l.isMerged ? 'merged' : 'original';
+                            sources[key] = key === 'merged' ? l : (sources[key] || []).concat(l);
+                            return sources;
+                        }, { histories: {} });
+                    }
+
+                    // take snapshot of history
+                    sources.histories[isMerged ? 'merged' : 'original'] = Hoot.context.history().toJSON();
+
+                    if (isMerged) {
+                        Hoot.layers.hideLayer(Hoot.layers.findLoadedBy( 'refType', 'merged' ).id);
+                        Hoot.layers.showLayer(Hoot.layers.findLoadedBy( 'refType', 'primary' ).id);
+                        Hoot.layers.showLayer(Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id);
+                    } else {
+                        Hoot.layers.hideLayer(Hoot.layers.findLoadedBy( 'refType', 'primary' ).id);
+                        Hoot.layers.hideLayer(Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id);
+                        Hoot.layers.showLayer(Hoot.layers.findLoadedBy( 'refType', 'merged' ).id);
+                    }
+
+                    if (Object.keys(sources.histories).length === 2) { // the first time we don't want to refresh history, so we just ignore.
+                        const history = sources.histories[isMerged ? 'original' : 'merged'];
+                        if (history) Hoot.context.history().fromJSON(history); // if no changes occur, toJSON doesn't build anything, so do not refresh history
+                    }
+
+                    isMerged = !isMerged;
+
+                    //toggle swap tooltip
+                    icon.attr('title', `show ${isMerged ? 'inputs' : 'merged'}`);
+
+                } catch (e) {
+                    console.error(e);
+                }
+            });
+        icon = this.showButton.append('i')
+            .classed('material-icons', true)
+            .attr('title', `show ${isMerged ? 'inputs' : 'merged'}`)
+            .text('swap_vert');
+
     }
 
     createCancelButton() {
@@ -228,7 +284,7 @@ class SidebarController {
             .classed( this.typeClass, true );
 
         this.thumbnail.attr( 'class', () => {
-            let icon = layer.merged ? 'conflate' : 'data',
+            let icon = layer.isMerged ? 'conflate' : 'data',
                 osm  = layer.color === 'osm' ? '_osm' : '';
 
             return `pad1 inline thumbnail light big _icon ${ icon } ${ osm }`;
@@ -268,22 +324,21 @@ class SidebarController {
                 } );
             } );
 
+        this.form.selectAll(`button.${this.isConflating ? 'cancel' : 'delete'}-button`).remove();
         this.text.remove();
 
         this.text = this.contextLayer
-            .append( 'span' )
-            .classed( 'strong pad1x', true )
-            .text( layer.name );
+            .append('span')
+            .classed('strong pad1x', true)
+            .attr('title', layer.name)
+            .text(layer.name);
 
-        if ( this.isConflate ) {
-            //turn cancel into remove button
-            d3.selectAll('button.cancel-button').remove();
-            this.createDeleteButton();
-
+        if ( layer.isMerged ) {
+            this.createShowLayersButton();
             this.metadata = new LayerMetadata( this.context, this.form, layer );
             this.metadata.render();
-            this.contextLayer.style( 'width', 'calc( 100% - 145px )' );
         }
+        this.createDeleteButton();
     }
 }
 

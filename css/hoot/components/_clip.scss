@@ -115,9 +115,22 @@
     }
 }
 
-#grailPullTable .hoot-menu {
-    max-width: unset;
-    width: 30%;
+.grailOutputTable {
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    th {
+        padding: 10px;
+    }
+
+    td {
+        padding: 0 10px;
+    }
+
+    input[type="text"] {
+        border: none;
+        padding: 0;
+    }
 }
 
 #grailTable {
