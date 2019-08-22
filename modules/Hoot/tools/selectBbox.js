@@ -213,7 +213,7 @@ export default class SelectBbox extends EventEmitter {
         this.minLatInput.property( 'value', this.minlat );
 
         if ( this.bboxSelectType !== 'boundsHistory' ){
-            this.dropdownContainer.node().value = '';
+            this.dropdownContainer.property( 'value', '' );
         }
 
         let inputs = this.extentBox.selectAll( 'input' );
