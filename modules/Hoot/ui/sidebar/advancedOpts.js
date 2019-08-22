@@ -328,10 +328,6 @@ export default class AdvancedOpts {
                     } );
                 }
 
-                if ( d.class === 'path-name' ) {
-                    comboData = [ { value: 'root', title: 0 } ].concat(comboData);
-                }
-
                 fieldInput
                     .classed( 'form-field-combo-input', true )
                     .attr( 'autocomplete', 'off' )
