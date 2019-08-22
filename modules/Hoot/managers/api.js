@@ -944,6 +944,16 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    getAdvancedUploadOptions() {
+        const params = {
+            path: '/info/ingest/getoptions',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     /**
      * Delete a layer from the database
      *
@@ -1333,5 +1343,4 @@ export default class API {
         return this.request( params )
             .then( resp => resp.data );
     }
-
 }
