@@ -49,19 +49,15 @@
     white-space: nowrap;
     transition: width 250ms ease-in-out, box-shadow 250ms ease-in, visibility 300ms;
 
-    & > div {
-        position: absolute;
-        width: 350px;
-    }
-
     &.visible {
         width: 350px;
         visibility: visible;
         transition: width 250ms ease-in-out;
     }
 
+
     .advanced-opts-header {
-        height: 60px;
+        height: 5%;
         padding: 15px;
         box-shadow: 0 1px 10px 0 $light2;
 
@@ -80,9 +76,9 @@
     }
 
     .advanced-opts-content {
-        top: 60px;
+        height: 95%;
         overflow-x: hidden;
-        overflow-y: auto;
+        overflow-y: scroll;
     }
 
     .advanced-opts-actions {
@@ -127,7 +123,7 @@
             .adv-opts-inner-wrap-left {
                 width: 20px;
                 align-items: center;
-                input { 
+                input {
                     margin-top: 5px;
                 }
             }
@@ -137,9 +133,7 @@
     .group-body {
         display: flex;
         flex-direction: column;
-        overflow: auto;
         align-items: center;
-        max-height: 500px;
         padding: 15px 10px;
     }
 
@@ -167,13 +161,13 @@
 
         input.combobox-input {
             display: inline-block;
-        }    
+        }
     }
 
     .hoot-form-field-checkbox {
         flex-direction: row;
         align-items: center;
-        
+
         .hoot-field-title-checkbox-wrap {
             display: flex;
             height: inherit;
@@ -183,8 +177,8 @@
             }
         }
         .hoot-field-input-checkbox-wrap {
-            width: 15%; 
-            height: inherit;    
+            width: 15%;
+            height: inherit;
             display: flex;
             justify-content: center;
             input {
@@ -246,6 +240,7 @@
 
 @media only screen and (max-width: 1160px) {
     #advanced-opts-panel {
+
         & > div {
             position: absolute;
             width: 300px;
