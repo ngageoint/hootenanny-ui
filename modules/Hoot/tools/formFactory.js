@@ -223,7 +223,7 @@ export default class FormFactory {
 
             // This is only for modify folder path
             if ( data.includeRoot ) {
-                comboData = [ { value: 'root', _value: 0 } ].concat(comboData);
+                comboData = [ { value: '/', _value: 0 } ].concat(comboData);
             }
         }
 

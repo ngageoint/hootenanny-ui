@@ -13,14 +13,31 @@ import { modifyDatasetForm } from '../../config/domMetadata';
 export default class ModifyFolder {
     constructor( d ) {
         this.data       = d.data;
-        this.folderList = Hoot.folders._folders;
+
+        //get list of folder ids and all their descendents
+        function getDescendents(ids, folders) {
+            let children = folders.filter(f => ids.includes(f.parentId))
+                              .map(f => f.id);
+            if (children.length) {
+                return [...new Set(ids.concat(children).concat(getDescendents(children, folders)))];
+            } else {
+                return ids;
+            }
+        }
+        let descendents = getDescendents([d.data.id], Hoot.folders._folders);
+
+        //filter out the folder itself
+        //and all of it's descendents
+        this.folderList = Hoot.folders._folders.filter(f => {
+            return !descendents.includes(f.id);
+        });
         this.form       = modifyDatasetForm.call( this );
     }
 
     render() {
         // remove layer name input
         this.form.splice( 2, 1 );
-        this.pathName = _get( _find( this.folderList, folder => folder.id === this.data.parentId ), 'path' ) || 'root';
+        this.pathName = _get( _find( this.folderList, folder => folder.id === this.data.parentId ), 'path' ) || '/';
 
         // Because dataset and folder share the same settings we had to set a trigger here to tell the formFactory
         // that we want root in the path dropdown
