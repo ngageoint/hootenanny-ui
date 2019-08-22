@@ -169,7 +169,7 @@ export default class SelectBbox extends EventEmitter {
                 } );
         }
 
-        if (this.operationName === 'grailPull') {
+        if ( this.operationName === 'grailPull' || this.operationName === 'createDifferentialChangeset' ) {
             const self = this;
 
             this.dropdownContainer = this.form
@@ -212,7 +212,7 @@ export default class SelectBbox extends EventEmitter {
         this.maxLonInput.property( 'value', this.maxlon );
         this.minLatInput.property( 'value', this.minlat );
 
-        if ( this.bboxSelectType !== 'boundsHistory' ){
+        if ( this.dropdownContainer && this.bboxSelectType !== 'boundsHistory' ){
             this.dropdownContainer.property( 'value', '' );
         }
 
