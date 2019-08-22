@@ -187,8 +187,9 @@ export default class GrailPull {
 
 
         let history = JSON.parse( Hoot.context.storage('history') );
-        if ( history.bboxHistory.length === 5 ) {
-            history.bboxHistory.pop();
+        if ( history.bboxHistory.length >= 5 ) {
+            // Removes oldest (last in list) bbox
+            history.bboxHistory = history.bboxHistory.slice( 0, 4 );
         }
         history.bboxHistory.unshift( bbox );
         Hoot.context.storage( 'history', JSON.stringify( history ) );
