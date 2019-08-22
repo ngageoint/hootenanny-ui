@@ -185,7 +185,7 @@ export default class AdvancedOpts {
 
         let innerLabelEnter = innerLabel.enter()
             .append( 'span' )
-            .classed( 'adv-opt-title', true )
+            .classed( 'adv-opt-title', true );
 
         innerLabel.merge(innerLabelEnter)
             .attr( 'id', d => `${ d.name }_label` )
