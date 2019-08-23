@@ -185,6 +185,15 @@ export default class GrailPull {
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) );
 
+
+        let history = JSON.parse( Hoot.context.storage('history') );
+        if ( history.bboxHistory.length >= 5 ) {
+            // Removes oldest (last in list) bbox
+            history.bboxHistory = history.bboxHistory.slice( 0, 4 );
+        }
+        history.bboxHistory.unshift( bbox );
+        Hoot.context.storage( 'history', JSON.stringify( history ) );
+
         this.form.remove();
     }
 
