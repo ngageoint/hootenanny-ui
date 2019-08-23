@@ -127,7 +127,7 @@ export default class AdvancedOpts {
             .classed( 'adv-opt-title-disabled', !shouldHide );
 
         if (fromLabel) {
-            input.property('checked', shouldHide)
+            input.property('checked', shouldHide);
         }
 
         if (shouldHide) {
@@ -453,7 +453,7 @@ export default class AdvancedOpts {
             groupToggle = groupToggle
                 .merge(groupToggleEnter)
                 .on('click', () => instance.showBody(d));
-                
+
             let toggleWrap = groupToggle.selectAll( '.inner-wrapper' )
                 .data( [ d ] );
 
