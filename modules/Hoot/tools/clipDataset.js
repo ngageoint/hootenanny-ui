@@ -211,7 +211,7 @@ export default class ClipDataset {
                 } )
                 .then( resp => {
                     // remove completed job from jobIdList
-                    self.jobIdList.splice( self.jobIdList.indexOf( resp.data.jobid ), 1 );
+                    self.jobIdList.splice( self.jobIdList.indexOf( resp.data.jobId ), 1 );
 
                     let message;
                     if (resp.data && resp.data.status === 'cancelled') {
