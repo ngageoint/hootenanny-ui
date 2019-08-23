@@ -57,8 +57,10 @@ export default class AdvancedOpts {
                     group = 2;
                 }
 
-                groups[group].push(d);
-                groups[group] = groups[group].sort(function(a, b) { return a.name > b.name; });
+                groups[group] = groups[group].concat(d).sort(function(a, b) {
+                    return a.name > b.name;
+                });
+
                 return groups;
             }, [[],[],[]]).flat();
             this.render(_cloneDeep(this.advancedOptions));
