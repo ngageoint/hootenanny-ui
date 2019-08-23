@@ -107,20 +107,34 @@ export default class AdvancedOpts {
             .style( 'opacity', 1 );
     }
 
-    toggleOption(d, shouldHide) {
+    toggleOption(d, shouldHide = false, fromLabel = false) {
         let label = d3.select( `#${d.name}_label` ),
-            parent = d3.select( `#${d.name}_group` );
+            parent = d3.select( `#${d.name}_group` ),
+            input = d3.select( `#${d.name}-toggle` );
+
+        // do not toggle if the accordion is open
+        if (!d3.select( `#${ d.name }_group .group-body` ).classed( 'hidden' )) {
+            input.property( 'checked', true );
+            return;
+        }
+
 
         parent
             .select( '.group-toggle-caret-wrap' )
-            .classed( 'toggle-disabled', shouldHide );
+            .classed( 'toggle-disabled', !shouldHide );
+
         label
-            .classed( 'adv-opt-title-disabled', !label.classed( 'adv-opt-title-disabled' ) );
+            .classed( 'adv-opt-title-disabled', !shouldHide );
+
+        if (fromLabel) {
+            input.property('checked', shouldHide)
+        }
 
         if (shouldHide) {
             parent.select( '.group-body' )
                 .classed( 'hidden', true );
         }
+
     }
 
     innerWrap(toggleInput, toggleOption) {
@@ -159,10 +173,12 @@ export default class AdvancedOpts {
                 .attr( 'id', d => `${d.name}-toggle` )
                 .classed( 'conflate-type-toggle', true );
 
-
             innerInput.merge(innerInputEnter)
                 .property( 'checked', true )
-                .on( 'click', toggleOption );
+                .on('click', function(d) {
+                    let shouldHide = d3.select(this).property('checked');
+                    instance.toggleOption(d, shouldHide);
+                });
         }
 
 
@@ -190,7 +206,8 @@ export default class AdvancedOpts {
         innerLabel.merge(innerLabelEnter)
             .attr( 'id', d => `${ d.name }_label` )
             .classed( 'adv-opt-title-disabled', false )
-            .text( d => `${d.label} Options` );
+            .classed( 'adv-opts-group-title', true)
+            .text( d => d.members.length ? `${d.label} Options` : d.label);
     }
 
     caretWrap(toggleInput) {
@@ -213,19 +230,38 @@ export default class AdvancedOpts {
     }
 
     showBody(d) {
-        if (d3.event.target && d3.event.target.classList.contains('conflate-type-toggle')) return;
-        if (d.members.length) {
-            let body      = d3.select( `#${ d.name }_group` ).select( '.group-body' ),
-                bodyState = body.classed( 'hidden' );
 
-            // body.classed( 'hidden', !bodyState );
-            // body.classed( 'keyline-bottom', bodyState );
+        if (d3.event.target.classList.contains( 'conflate-type-toggle' )) return;
+
+
+        if (d3.event.target.classList.contains( 'adv-opts-group-title' )) {
+            let input = d3.select( `#${d.name}-toggle` ),
+                shouldHide = !input.empty() && !input.property('checked');
+            instance.toggleOption(d, shouldHide, true);
+        } else if (d.members.length) {
+            let bodyState = d3.select( `#${ d.name }_group .group-body` ).classed( 'hidden' );
             d3.selectAll('.advanced-opts-content .form-group .group-body')
                 .classed('hidden', function(data) {
-                    return data.name === d.name ? !bodyState : true;
+                    if (data.name === d.name) {
+                        let disabled = d3.select(this.parentElement)
+                            .select('.adv-opts-group-title')
+                            .classed('adv-opt-title-disabled');
+
+                        return disabled || !bodyState;
+                    } else {
+                        return true;
+                    }
                 })
                 .classed('keyline-bottom', function(data) {
-                    return data.name === d.name ? bodyState : false;
+                    if (data.name === d.name) {
+                        let disabled = d3.select(this.parentElement)
+                            .select('.adv-opts-group-title')
+                            .classed('adv-opt-title-disabled');
+
+                        return disabled || !bodyState;
+                    } else {
+                        return false;
+                    }
                 });
         }
     }
@@ -414,10 +450,10 @@ export default class AdvancedOpts {
                 .append( 'div' )
                 .classed( 'group-toggle', true );
 
-            groupToggle = groupToggle.merge(groupToggleEnter);
-
-            groupToggle.on('click', () => instance.showBody(d));
-
+            groupToggle = groupToggle
+                .merge(groupToggleEnter)
+                .on('click', () => instance.showBody(d));
+                
             let toggleWrap = groupToggle.selectAll( '.inner-wrapper' )
                 .data( [ d ] );
 
