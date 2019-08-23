@@ -369,10 +369,16 @@ export default class ImportDataset {
 
                 return Hoot.api.statusInterval( this.jobId );
             } )
-            .then( resp => {
+            .then( async resp => {
                 let message;
                 if (resp.data && resp.data.status === 'cancelled') {
                     message = 'Import job cancelled';
+
+                    // Delete the newly created folder
+                    if ( newFolderName ) {
+                        await Hoot.api.deleteFolder( folderId );
+                        await Hoot.folders.removeFolder( folderId );
+                    }
 
                     this.submitButton
                         .select( 'span' )

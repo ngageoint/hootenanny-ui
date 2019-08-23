@@ -14,7 +14,8 @@ import { d3combobox }            from '../../lib/hoot/d3.combobox';
 
 export default class ClipDataset {
     constructor( instance ) {
-        this.instance = instance;
+        this.instance  = instance;
+        this.jobIdList = [];
     }
 
     render() {
@@ -203,11 +204,15 @@ export default class ClipDataset {
 
             self.processRequest = Hoot.api.clipDataset( params )
                 .then( resp => {
-                    self.jobId = resp.data.jobid;
+                    const jobId = resp.data.jobid;
+                    self.jobIdList.push(jobId);
 
-                    return Hoot.api.statusInterval( self.jobId );
+                    return Hoot.api.statusInterval( jobId );
                 } )
                 .then( resp => {
+                    // remove completed job from jobIdList
+                    self.jobIdList.splice( self.jobIdList.indexOf( resp.data.jobId ), 1 );
+
                     let message;
                     if (resp.data && resp.data.status === 'cancelled') {
                         message = 'Clip job cancelled';
@@ -264,11 +269,14 @@ export default class ClipDataset {
 
         // overwrite the submit click action with a cancel action
         this.submitButton.on( 'click', () => {
-            Hoot.api.cancelJob(this.jobId);
+            this.jobIdList.forEach( jobId => Hoot.api.cancelJob( jobId ) );
         } );
 
         this.submitButton
-            .append( 'div' )
+            .selectAll('div')
+            .data([0])
+            .enter()
+            .append('div')
             .classed( '_icon _loading float-right', true )
             .attr( 'id', 'importSpin' );
 
