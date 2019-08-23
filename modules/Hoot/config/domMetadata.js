@@ -3,8 +3,6 @@ import AdvancedOpts from '../ui/sidebar/advancedOpts';
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
-import hoot from '../hoot';
-import { validationTagSuggestsArea } from '../../validations';
 
 /*******************************************************************************************************
  * File: formConfigs.js
@@ -173,9 +171,8 @@ export function importSingleForm() {
         {
             label: 'Advanced Upload Options',
             id: 'simplifyBuildings',
-            inputType: 'combobox',
-            placeholder: 'Simplify Complex Buildings',
-            data: this.advancedOptions,
+            class: 'advanced-opts-content',
+            readOnly: true,
             onChange: () => this.buildAdvancedUploadOptions()
         }
     ];

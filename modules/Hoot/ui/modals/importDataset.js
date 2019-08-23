@@ -4,7 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/12/18
  *******************************************************************************************************/
 
-import _cloneDeep from 'lodash-es/cloneDeep';
 import _filter  from 'lodash-es/filter';
 import _find    from 'lodash-es/find';
 import _forEach from 'lodash-es/forEach';
@@ -17,6 +16,7 @@ import {
     importSingleForm,
 }           from '../../config/domMetadata';
 import _get from 'lodash-es/get';
+import AdvancedOpts from '../sidebar/advancedOpts';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -336,42 +336,33 @@ export default class ImportDataset {
 
         if ( Object.keys( optionData ).length > 0 ) {
 
-            this.simplifyBuildings  = this.simplifyBuildings
-            .select( '#simplifyBuildings' )
-            .data( [ 0 ] );
+            this.optionFields = this.simplifyBuildings
+                .selectAll( '.advUploadOpts' )
+                .data( optionData.members );
 
-        this.simplifyBuildings.exit().remove();
+            this.optionFields.exit().remove();
 
-        this.simplifyBuildings = this.simplifyBuildings
-            .enter()
-            .append( 'combobox-input' )
-            .classed( 'combobox-input', true )
-            .merge( this.simplifyBuildings );
+            this.optionFields = this.optionFields
+                .enter()
+                .append( 'input' )
+                .classed( 'advUploadOpts', true )
+                .merge( this.optionFields )
+                .attr( 'type', 'checkbox' )
+                .call( AdvancedOpts.getInstance().fieldInput );
 
-        var uploadOptions = this.simplifyBuildings
-            .selectAll( 'combobox-input' )
-            .data( optionData.members );
+            var optionKeys = this.optionFields
+                .selectAll( '.hoot-field-input' )
+                .data( function(d) { return [d.label]; } );
 
-        uploadOptions.exit().remove();
+            optionKeys.exit().remove();
 
-        uploadOptions = uploadOptions
-            .enter()
-            .append( 'combobox-input' )
-            .merge( uploadOptions );
-
-        var optionKeys = uploadOptions
-            .selectAll( 'combobox-input' )
-            .data( function(d) {return [d.label]; } );
-
-        optionKeys.exit().remove();
-
-        optionKeys = optionKeys
-            .enter()
-            .append( 'combobox-input' )
-            .classed( 'fillD', true )
-            .merge( optionKeys )
-            .text( function(d) { return d; } );
-
+            optionKeys = optionKeys
+                .enter()
+                .append( 'input' )
+                .merge( optionKeys )
+                .attr(  'id', function(d) { return d; } )
+                .attr( 'type', 'checkbox' )
+                .text( function(d) { return d; } );
         }
     }
 
