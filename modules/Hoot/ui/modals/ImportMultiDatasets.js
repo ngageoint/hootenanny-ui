@@ -37,6 +37,7 @@ export default class ImportMultiDatasets {
                 value: 'GPKG'
             }
         ];
+        this.jobIdList = [];
     }
 
     /**
@@ -61,7 +62,7 @@ export default class ImportMultiDatasets {
         this.container = this.formFactory.generateForm( 'body', 'datasets-import-form', metadata );
 
         if ( this.path ) {
-            this.container.select( '#importPathName' ).property('value', this.path);
+            this.container.select( '#importPathName' ).property('value', '/ ' + this.path);
         }
 
         this.typeInput          = this.container.select( '#importType' );
@@ -392,8 +393,16 @@ export default class ImportMultiDatasets {
                 };
 
                 Hoot.api.uploadDataset( params )
-                    .then( resp => Hoot.api.statusInterval( resp.data[ 0 ].jobid ) )
-                    .then( () => resolve( name ) )
+                    .then( resp => {
+                        const jobId = resp.data[ 0 ].jobid;
+                        this.jobIdList.push(jobId);
+                        return Hoot.api.statusInterval( jobId );
+                    })
+                    .then( resp => {
+                        // remove completed job from jobIdList
+                        this.jobIdList.splice( this.jobIdList.indexOf( resp.data.jobId ), 1 );
+                        resolve( {fileName: name, status: resp.data.status} );
+                    })
                     .catch( err => {
                         console.error(err);
 
@@ -411,16 +420,30 @@ export default class ImportMultiDatasets {
             });
         });
 
-        this.processRequest = this.allProgress( proms, ( n, fileName ) => {
+        this.processRequest = this.allProgress( proms, ( n, fileName, status ) => {
                 this.progressBar.property( 'value', n );
                 this.fileListInput
                     .selectAll( asSingle ? 'option' : `option[value="${fileName}"]` )
-                    .classed( 'import-success', true );
+                    .classed( 'import-success', status !== 'cancelled' )
+                    .classed( 'import-cancel', status === 'cancelled' )
+                    ;
             } )
-            .then( () => Hoot.message.alert( {
-                message: 'All datasets successfully imported',
-                type: 'success'
-            } ) )
+            .then( resp => {
+                let statuses = resp.reduce((map, obj) => {
+                    if (map[obj.status]) {
+                        map[obj.status]++;
+                    } else {
+                        map[obj.status] = 1;
+                    }
+                    map.total++;
+
+                    return map;
+                }, {total: 0});
+                Hoot.message.alert( {
+                    message: (statuses.cancelled) ? `${statuses.cancelled} of ${statuses.total} dataset imports cancelled` :'All datasets successfully imported',
+                    type: (statuses.cancelled) ? 'warn' : 'success'
+                } );
+            })
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .finally( () => {
@@ -435,9 +458,9 @@ export default class ImportMultiDatasets {
         cb( 0 );
 
         proms.forEach( p => {
-            p.then( fileName => {
+            p.then( resp => {
                 n++;
-                cb( n, fileName );
+                cb( n, resp.fileName, resp.status );
             } );
         } );
 
@@ -461,13 +484,27 @@ export default class ImportMultiDatasets {
 
     loadingState( fileCount ) {
         this.submitButton
-            .select( 'span' )
-            .text( 'Uploading...' );
-
-        this.submitButton
             .append( 'div' )
             .classed( '_icon _loading float-right', true )
             .attr( 'id', 'importSpin' );
+
+        this.submitButton
+            .select( 'span' )
+            .classed( 'label', true )
+            .text( 'Cancel Import' );
+
+        // overwrite the submit click action with a cancel action
+        this.submitButton.on( 'click', () => {
+            this.jobIdList.forEach( jobId => Hoot.api.cancelJob( jobId ) );
+            this.submitButton
+                .select( 'span' )
+                .text( 'Cancelling...' );
+
+        } );
+
+        this.submitButton.insert('i', 'span')
+            .classed('material-icons', true)
+            .text('cancel');
 
         this.container.selectAll( 'input' )
             .each( function() {
@@ -479,7 +516,7 @@ export default class ImportMultiDatasets {
         this.progressBar = this.progressContainer
             .append( 'span' )
             .append( 'progress' )
-            .classed( 'form-field', true )
+            .classed( 'hoot-form-field', true )
             .property( 'value', 0 )
             .attr( 'max', fileCount );
     }
