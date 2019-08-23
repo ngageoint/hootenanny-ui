@@ -47,6 +47,20 @@ export default class AdvancedOpts {
         }
         if ( !this.advancedOptions.length ) {
             this.advancedOptions = await Hoot.api.getAdvancedOptions('hoot2');
+            this.advancedOptions = this.advancedOptions.reduce(function(groups, d) {
+                let group;
+                if (['Attribute', 'Differential'].includes(d.name)) {
+                    group = 0;
+                } else if (['Cleaning', 'General'].includes(d.name)) {
+                    group = 1;
+                } else {
+                    group = 2;
+                }
+
+                groups[group].push(d);
+                groups[group] = groups[group].sort(function(a, b) { return a.name > b.name; });
+                return groups;
+            }, [[],[],[]]).flat();
             this.render(_cloneDeep(this.advancedOptions));
         }
     }
