@@ -171,8 +171,9 @@ export function importSingleForm() {
         {
             label: 'Advanced Upload Options',
             id: 'simplifyBuildings',
-            class: 'advanced-opts-content',
-            readOnly: true,
+            class: 'advanced-opts-header big keyline-bottom flex justify-between align-center',
+            inputType: 'combobox',
+            readonly: 'readonly',
             onChange: () => this.buildAdvancedUploadOptions()
         }
     ];
