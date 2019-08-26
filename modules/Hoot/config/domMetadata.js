@@ -77,7 +77,7 @@ export function layerConflateForm( data ) {
                     // disable & enable the attribute conflation group.
                     [ 'Attribute', 'Differential' ].forEach((conflationGroup) => {
                         let confGroup = d3.select( `.advanced-opts-content #${conflationGroup}_group` ),
-                            isGroup = d3.select( '#conflateType' ).property( 'value' ) === conflationGroup;
+                            isGroup = d3.select( '#conflateType' ).property( 'value' ).includes(conflationGroup);
 
                         confGroup.select( '.adv-opt-title' )
                             .classed( 'adv-opt-title-disabled', !isGroup );
