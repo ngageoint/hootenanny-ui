@@ -110,14 +110,8 @@ export default class AdvancedOpts {
     toggleOption(d, shouldHide = false, fromLabel = false) {
         let label = d3.select( `#${d.name}_label` ),
             parent = d3.select( `#${d.name}_group` ),
-            input = d3.select( `#${d.name}-toggle` );
-
-        // do not toggle if the accordion is open
-        if (!d3.select( `#${ d.name }_group .group-body` ).classed( 'hidden' )) {
-            input.property( 'checked', true );
-            return;
-        }
-
+            input = d3.select( `#${d.name}-toggle` ),
+            body = d3.select( `#${ d.name }_group .group-body`);
 
         parent
             .select( '.group-toggle-caret-wrap' )
@@ -133,6 +127,10 @@ export default class AdvancedOpts {
         if (shouldHide) {
             parent.select( '.group-body' )
                 .classed( 'hidden', true );
+        }
+
+        if (!body.classed( 'hidden' )) {
+            body.classed('hidden', true);
         }
 
     }
@@ -203,11 +201,19 @@ export default class AdvancedOpts {
             .append( 'span' )
             .classed( 'adv-opt-title', true );
 
-        innerLabel.merge(innerLabelEnter)
+        innerLabel = innerLabel.merge(innerLabelEnter)
             .attr( 'id', d => `${ d.name }_label` )
             .classed( 'adv-opt-title-disabled', false )
             .classed( 'adv-opts-group-title', true)
             .text( d => d.members.length ? `${d.label} Options` : d.label);
+
+        innerLabel.on('click', () => {
+            let input = d3.select( `#${d.name}-toggle` ),
+                shouldHide = !input.empty() && !input.property('checked');
+
+            instance.toggleOption(d, shouldHide, true);
+        })
+
     }
 
     caretWrap(toggleInput) {
@@ -230,15 +236,11 @@ export default class AdvancedOpts {
     }
 
     showBody(d) {
-
-        if (d3.event.target.classList.contains( 'conflate-type-toggle' )) return;
-
-
-        if (d3.event.target.classList.contains( 'adv-opts-group-title' )) {
-            let input = d3.select( `#${d.name}-toggle` ),
-                shouldHide = !input.empty() && !input.property('checked');
-            instance.toggleOption(d, shouldHide, true);
-        } else if (d.members.length) {
+        if (d3.event.target.classList.contains( 'conflate-type-toggle' ) ||
+            d3.event.target.classList.contains( 'adv-opts-group-title' )) {
+            return;
+        }
+        if (d.members.length) {
             let bodyState = d3.select( `#${ d.name }_group .group-body` ).classed( 'hidden' );
             d3.selectAll('.advanced-opts-content .form-group .group-body')
                 .classed('hidden', function(data) {
