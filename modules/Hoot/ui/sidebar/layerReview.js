@@ -30,26 +30,32 @@ export default class LayerReview extends SidebarForm {
 
         this.fieldset = this.innerWrapper.append( 'fieldset' );
 
-        this.reviewInfo = this.fieldset.append( 'div' )
-            .classed( 'hoot-form-field', true )
-            .append( 'span' )
-            .classed( '_icon info review-count', true )
-            .text( 'There are 0 reviews' );
+        if ( this.layer.hasReviews )  {
 
-        this.acceptAll = this.fieldset.append( 'div' )
-            .classed( 'hoot-form-field', true )
-            .append( 'a' )
-            // .attr( 'href', '!#' )
-            .text( 'Resolve all remaining reviews' )
-            .on( 'click', () => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
+            this.reviewInfo = this.fieldset.append( 'div' )
+                .classed( 'hoot-form-field', true )
+                .append( 'span' )
+                .classed( '_icon info review-count', true )
+                .text( 'There are 0 reviews' );
 
-                this.conflicts.resolve.acceptAll( this.layer );
-            } );
+            this.acceptAll = this.fieldset.append( 'div' )
+                .classed( 'hoot-form-field', true )
+                .append( 'a' )
+                // .attr( 'href', '!#' )
+                .text( 'Resolve all remaining reviews' )
+                .on( 'click', () => {
+                    d3.event.stopPropagation();
+                    d3.event.preventDefault();
 
-        this.conflicts.init( this.layer )
-            .then( () => this.listen() );
+                    this.conflicts.resolve.acceptAll( this.layer );
+                } );
+
+            this.conflicts.init( this.layer )
+                .then( () => this.listen() );
+
+        } else {
+            this.reviewCompleteButtons();
+        }
     }
 
     /**
@@ -71,7 +77,10 @@ export default class LayerReview extends SidebarForm {
     reviewComplete() {
         this.reviewInfo.text( 'All reviews resolved!' );
         this.acceptAll.remove();
+        this.reviewCompleteButtons();
+    }
 
+    reviewCompleteButtons() {
         let layer = this.layer;
         let btnContainer = this.fieldset.append('div')
             .classed( 'hoot-form-field action-container', true );
@@ -90,8 +99,9 @@ export default class LayerReview extends SidebarForm {
             .on('click', async () => {
                 await Hoot.layers.refreshLayers();
                 Hoot.layers.removeAllLoadedLayers();
-                await Hoot.layers.addHashLayer('reference', layer.id);
+                await Hoot.layers.addHashLayer('reference', layer.id, true);
             });
+
     }
 
     /**

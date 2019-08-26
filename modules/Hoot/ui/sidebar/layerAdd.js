@@ -194,7 +194,7 @@ export default class LayerAdd extends SidebarForm {
      *
      * @param d - form data
      */
-    async submitLayer( d ) {
+    async submitLayer( d, skipCheckForReview = false ) {
         let color = this.form.select( '.palette .active' ).attr( 'data-color' );
 
         let params = {
@@ -206,7 +206,7 @@ export default class LayerAdd extends SidebarForm {
 
         this.loadingState( params );
 
-        await Hoot.layers.loadLayer( params );
+        await Hoot.layers.loadLayer( params, skipCheckForReview );
 
         Hoot.events.emit( 'load-layer' );
     }

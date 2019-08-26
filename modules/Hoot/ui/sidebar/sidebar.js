@@ -120,10 +120,20 @@ export default class Sidebar {
     layerLoaded() {
         _forEach( this.forms, form => {
             let loadedLayer = Hoot.layers.findLoadedBy( 'name', form.loadingLayerName );
-            if ( loadedLayer != null ) {
+            if ( loadedLayer ) {
 
                 if ( loadedLayer.isMerged ) {
                     Hoot.layers.mergedLayer = loadedLayer;
+                    if ( !loadedLayer.hasReviews ) {
+                        let that = this;
+                        this.wrapper
+                            .selectAll( '.layer-review' )
+                            .data( this.reviewFormData ).enter()
+                            .select( function() {
+                                that.reviewLayer = new LayerReview( d3.select( this ), loadedLayer );
+                                that.reviewLayer.render();
+                            });
+                    }
                 }
 
                 form.controller.update();
@@ -132,6 +142,11 @@ export default class Sidebar {
                 this.conflateCheck();
             }
         } );
+    }
+
+    renderReviews(that, layer) {
+        that.reviewLayer = new LayerReview( d3.select( this ), layer );
+        that.reviewLayer.render();
     }
 
     layerReviews() {
@@ -146,7 +161,6 @@ export default class Sidebar {
             .data( this.reviewFormData ).enter()
             .select( function() {
                 that.reviewLayer = new LayerReview( d3.select( this ), layer );
-
                 that.reviewLayer.render();
             } );
     }
