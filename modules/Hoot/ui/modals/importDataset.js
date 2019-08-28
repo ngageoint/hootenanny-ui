@@ -108,7 +108,7 @@ export default class ImportDataset {
         this.newFolderNameInput = this.container.select( '#importNewFolderName' );
         this.schemaInput        = this.container.select( '#importSchema' );
         this.fileIngest         = this.container.select( '#ingestFileUploader' );
-        this.simplifyBuildings  = this.container.select( '#simplifyBuildings' );
+        this.advUploadOpts      = this.container.select( '#advUploadOpts' );
         this.submitButton       = this.container.select( '#importSubmitBtn' );
 
         this.init();
@@ -332,12 +332,14 @@ export default class ImportDataset {
 
         let optionData = this.advancedOptions;
 
+        let advUploadOptsContainer = d3.selectAll( '#advUploadOpts_container' );
+
         if ( Object.keys( optionData ).length > 0 ) {
 
             let simplifyBuildingsChk = Object.values( optionData.members );
             let optionCheckboxes = simplifyBuildingsChk.filter( ({ input }) => input === 'checkbox' );
 
-            this.optionFields = d3.selectAll('#simplifyBuildings_container')
+            this.optionFields = advUploadOptsContainer
                 .selectAll( '.advUploadOpts' )
                 .data( optionCheckboxes );
 
@@ -348,9 +350,14 @@ export default class ImportDataset {
                 .append( 'div' )
                 .classed( 'advUploadOpts', true )
                 .merge( this.optionFields )
-                .call( AdvancedOpts.getInstance().fieldInput.bind( AdvancedOpts.getInstance() ) )
-                .call( AdvancedOpts.getInstance().fieldLabel.bind( AdvancedOpts.getInstance() ) )
-                .attr( 'id', function( d ) { return d.id; });
+                .each( function( d ) {
+                    d3.select( this )
+                        .call( AdvancedOpts.getInstance().fieldInput.bind( AdvancedOpts.getInstance() ) )
+                        .call( AdvancedOpts.getInstance().fieldLabel.bind( AdvancedOpts.getInstance() ) );
+                } );
+
+
+
         }
     }
 
@@ -371,11 +378,12 @@ export default class ImportDataset {
             typeCombo     = this.typeInput.datum(),
 
             translation   = _filter( transCombo.data, o => o.NAME === transVal )[ 0 ],
-            simplifyBuildings = d3.select( '#SimplifyComplexBuildings input').property( 'checked' ),
+            getAdvUploadOpts = d3.selectAll('.hoot-field-input').property( 'checked' ),
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
 
             translationName,
-            folderId;
+            folderId,
+            advUploadOpts;
 
         if ( translation.DEFAULT && ( translation.PATH && translation.PATH.length ) ) {
             translationName = translation.PATH;
@@ -389,11 +397,26 @@ export default class ImportDataset {
             folderId = pathId;
         }
 
+        if ( getAdvUploadOpts ) {
+            advUploadOpts = this.advancedOptions.members;
+            let checkUploadOpts = [];
+
+            checkUploadOpts.push( d3.selectAll( '.hoot-field-input' ) );
+
+            _forEach( checkUploadOpts, function( d ) {
+                console.log( d );
+            } );
+
+
+
+         }
+
         let data = {
             NONE_TRANSLATION: translation.NONE === 'true',
             TRANSLATION: translationName,
             INPUT_TYPE: importType.value,
             INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
+            ADV_UPLOAD_OPTS: advUploadOpts,
             formData: this.getFormData( this.fileIngest.node().files ),
             folderId
         };

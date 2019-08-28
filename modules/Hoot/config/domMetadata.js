@@ -170,7 +170,7 @@ export function importSingleForm() {
         },
         {
             label: 'Advanced Upload Options',
-            id: 'simplifyBuildings',
+            id: 'advUploadOpts',
             class: 'advanced-opts-header big keyline-bottom flex justify-between align-center',
             inputType: 'combobox',
             readonly: 'readonly',
