@@ -439,6 +439,11 @@ export default class ImportDataset {
             .classed( 'label', true )
             .text( 'Cancel Import' );
 
+        this.submitButton
+            .append( 'div' )
+            .classed( '_icon _loading float-right', true )
+            .attr( 'id', 'importSpin' );
+
         // overwrite the submit click action with a cancel action
         this.submitButton.on( 'click', () => {
             Hoot.api.cancelJob(this.jobId);

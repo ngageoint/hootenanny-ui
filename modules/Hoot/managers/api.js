@@ -308,13 +308,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => {
-                let layers = resp.data.layers;
-
-                if ( !layers || !layers.length ){
-                    return resp.data;
-                } else {
-                    return layers;
-                }
+                return resp.data.layers || [];
             } )
             .catch( err => {
                 if ( err ) throw new Error( err );
