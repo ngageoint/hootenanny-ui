@@ -380,7 +380,11 @@ export default class Layers {
             if (params) {
                 this.loadLayer( params )
                 .then( layer => this.hideLayer( layer.id ) );
-            };
+            } else {
+                //Set layer colors manually since loadLayers won't be called
+                this.setLayerColor( '1', 'violet' );
+                this.setLayerColor( '2', 'orange' );
+            }
         }
 
         return mergedLayer;
