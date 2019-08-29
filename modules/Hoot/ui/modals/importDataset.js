@@ -400,14 +400,14 @@ export default class ImportDataset {
             TRANSLATION: translationName,
             INPUT_TYPE: importType.value,
             INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
-            ADV_UPLOAD_OPTS: {},
+            ADV_UPLOAD_OPTS: [],
             formData: this.getFormData( this.fileIngest.node().files ),
             folderId
         };
 
         d3.selectAll( '.hoot-field-input' ).each( function(d) {
             if ( d3.select( this ).property( 'checked' ) ) {
-                data.ADV_UPLOAD_OPTS[d.id] = true;
+                data.ADV_UPLOAD_OPTS.push( d.id );
             }
          });
 

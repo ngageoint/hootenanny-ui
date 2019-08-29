@@ -648,6 +648,10 @@ export default class API {
             data: data.formData
         };
 
+        if ( data.ADV_UPLOAD_OPTS.length ) {
+            params.params.ADV_UPLOAD_OPTS = data.ADV_UPLOAD_OPTS.join(',');
+        }
+
         return this.request( params );
     }
 
