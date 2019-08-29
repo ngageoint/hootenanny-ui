@@ -1254,9 +1254,7 @@ export default class API {
         const params = {
             url: `${ this.translationUrl }schema`,
             method: 'GET',
-            params: {
-                ...data
-            }
+            params: data
         };
 
         return this.request( params )
@@ -1304,9 +1302,7 @@ export default class API {
         const params = {
             url: `${ this.translationUrl }translateTo`,
             method: 'GET',
-            params: {
-                ...p
-            }
+            params: p
         };
 
         return this.request( params )

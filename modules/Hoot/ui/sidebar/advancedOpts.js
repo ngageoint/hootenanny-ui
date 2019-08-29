@@ -107,21 +107,32 @@ export default class AdvancedOpts {
             .style( 'opacity', 1 );
     }
 
-    toggleOption(d, shouldHide) {
+    toggleOption(d, shouldHide = false, fromLabel = false) {
         let label = d3.select( `#${d.name}_label` ),
-            parent = d3.select( `#${d.name}_group` );
+            parent = d3.select( `#${d.name}_group` ),
+            input = d3.select( `#${d.name}-toggle` ),
+            body = d3.select( `#${ d.name }_group .group-body`);
 
         parent
             .select( '.group-toggle-caret-wrap' )
-            .classed( 'toggle-disabled', shouldHide );
+            .classed( 'toggle-disabled', !shouldHide );
 
         label
-            .classed( 'adv-opt-title-disabled', !label.classed( 'adv-opt-title-disabled' ) );
+            .classed( 'adv-opt-title-disabled', !shouldHide );
+
+        if (fromLabel) {
+            input.property('checked', shouldHide);
+        }
 
         if (shouldHide) {
             parent.select( '.group-body' )
                 .classed( 'hidden', true );
         }
+
+        if (!body.classed( 'hidden' )) {
+            body.classed('hidden', true);
+        }
+
     }
 
     innerWrap(toggleInput, toggleOption) {
@@ -146,10 +157,9 @@ export default class AdvancedOpts {
             .append( 'div' )
             .classed( 'adv-opts-inner-wrap-left', true );
 
-
         innerWrapLeft = innerWrapLeft.merge(innerWrapLeftEnter);
 
-        if ( d.name !== 'Cleaning' && d.name !== 'General' && d.name !== 'Attribute' ) {
+        if ( !['Cleaning', 'General', 'Attribute', 'Differential'].includes(d.name) ) {
             let innerInput = innerWrapLeft.selectAll( '.conflate-type-toggle' )
                 .data( [ d ] );
 
@@ -161,10 +171,12 @@ export default class AdvancedOpts {
                 .attr( 'id', d => `${d.name}-toggle` )
                 .classed( 'conflate-type-toggle', true );
 
-
             innerInput.merge(innerInputEnter)
                 .property( 'checked', true )
-                .on( 'click', toggleOption );
+                .on('click', function(d) {
+                    let shouldHide = d3.select(this).property('checked');
+                    instance.toggleOption(d, shouldHide);
+                });
         }
 
 
@@ -180,16 +192,6 @@ export default class AdvancedOpts {
 
         innerLabelWrap = innerLabelWrap.merge(innerLabelWrapEnter);
 
-        innerLabelWrap
-            .on('click', d => {
-                let toggle = d3.select( `#${d.name}-toggle`),
-                    checked = toggle.property( 'checked' );
-
-                toggle.property( 'checked', !checked );
-
-                toggleOption( d, checked );
-            } );
-
         let innerLabel = innerLabelWrap.selectAll( '.adv-opt-title' )
             .data([ d ]);
 
@@ -199,10 +201,21 @@ export default class AdvancedOpts {
             .append( 'span' )
             .classed( 'adv-opt-title', true );
 
-        innerLabel.merge(innerLabelEnter)
+        innerLabel = innerLabel.merge(innerLabelEnter)
             .attr( 'id', d => `${ d.name }_label` )
             .classed( 'adv-opt-title-disabled', false )
-            .text( d => `${d.label} Options` );
+            .classed( 'adv-opts-group-title', true)
+            .text( d => d.members.length ? `${d.label} Options` : d.label);
+
+        innerLabel.on('click', () => {
+            let input = d3.select( `#${d.name}-toggle` );
+
+            if (input.empty()) return;
+
+            let shouldHide = d3.select(this).classed('adv-opt-title-disabled');
+            instance.toggleOption(d, shouldHide, true);
+        });
+
     }
 
     caretWrap(toggleInput) {
@@ -218,18 +231,43 @@ export default class AdvancedOpts {
             .classed( 'group-toggle-caret-wrap', true)
             .append( 'div' )
             .attr( 'class', 'adv-opt-toggle' )
-            .classed( 'combobox-caret', d => d.members.length )
-            .on( 'click', function(d) {
-                if (d.members.length) {
-                    let body      = d3.select( `#${ d.name }_group` ).select( '.group-body' ),
-                        bodyState = body.classed( 'hidden' );
-
-                    body.classed( 'hidden', !bodyState );
-                    body.classed( 'keyline-bottom', bodyState );
-                }
-            });
+            .classed( 'combobox-caret', d => d.members.length );
 
         caretWrap.merge(caretWrapEnter);
+        caretWrap.on( 'click', instance.showBody);
+    }
+
+    showBody(d) {
+        if (d3.event.target.classList.contains( 'conflate-type-toggle' ) ||
+            d3.event.target.classList.contains( 'adv-opts-group-title' )) {
+            return;
+        }
+        if (d.members.length) {
+            let bodyState = d3.select( `#${ d.name }_group .group-body` ).classed( 'hidden' );
+            d3.selectAll('.advanced-opts-content .form-group .group-body')
+                .classed('hidden', function(data) {
+                    if (data.name === d.name) {
+                        let disabled = d3.select(this.parentElement)
+                            .select('.adv-opts-group-title')
+                            .classed('adv-opt-title-disabled');
+
+                        return disabled || !bodyState;
+                    } else {
+                        return true;
+                    }
+                })
+                .classed('keyline-bottom', function(data) {
+                    if (data.name === d.name) {
+                        let disabled = d3.select(this.parentElement)
+                            .select('.adv-opts-group-title')
+                            .classed('adv-opt-title-disabled');
+
+                        return disabled || !bodyState;
+                    } else {
+                        return false;
+                    }
+                });
+        }
     }
 
     fieldLabel(fieldContainer) {
@@ -347,7 +385,7 @@ export default class AdvancedOpts {
                         d.send = value !== d.default;
                         if ([ 'double', 'int', 'long' ].indexOf ( d.type ) !== -1 ) {
                             d3.select( `#${d.id}-label-wrao` )
-                                .call(self.notNumber, value);
+                                .call(instance.notNumber, value);
                         }
                     });
             }
@@ -387,8 +425,7 @@ export default class AdvancedOpts {
     }
 
     createGroups(advOpts) {
-        let self = this,
-            group = this.contentDiv
+        let group = this.contentDiv
                 .selectAll( '.form-group' )
                 .data( advOpts );
 
@@ -413,7 +450,9 @@ export default class AdvancedOpts {
                 .append( 'div' )
                 .classed( 'group-toggle', true );
 
-            groupToggle = groupToggle.merge(groupToggleEnter);
+            groupToggle = groupToggle
+                .merge(groupToggleEnter)
+                .on('click', () => instance.showBody(d));
 
             let toggleWrap = groupToggle.selectAll( '.inner-wrapper' )
                 .data( [ d ] );
@@ -428,16 +467,17 @@ export default class AdvancedOpts {
             toggleWrap = toggleWrap.merge(toggleWrapEnter);
 
             toggleWrap
-                .call(self.innerWrap, self.toggleOption)
-                .call(self.caretWrap);
+                .call(instance.innerWrap, instance.toggleOption)
+                .call(instance.caretWrap);
 
-            if ( d.name === 'Attribute' ) {
-                let isAttribute = d3.select( '#conflateType' ).property( 'value' ) === 'Attribute';
+            let defaultDisables = ['Attribute', 'Differential'];
+            if ( defaultDisables.indexOf(d.name) !== -1 ) {
+                let shouldDisable = d3.select( '#conflateType' ).property( 'value' ) === d.name;
                 group.select( '.adv-opt-title' )
-                    .classed( 'adv-opt-title-disabled', !isAttribute );
+                    .classed( 'adv-opt-title-disabled', !shouldDisable );
 
                 group.select( '.adv-opt-toggle' )
-                    .classed( 'toggle-disabled', !isAttribute );
+                    .classed( 'toggle-disabled', !shouldDisable );
             }
 
 
@@ -479,8 +519,8 @@ export default class AdvancedOpts {
                 let fieldContainer = d3.select( this );
 
                 fieldContainer
-                    .call(self.fieldLabel)
-                    .call(self.fieldInput, isCleaning );
+                    .call(instance.fieldLabel)
+                    .call(instance.fieldInput, isCleaning );
             });
 
         });
