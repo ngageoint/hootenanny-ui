@@ -100,6 +100,33 @@
 //    left: 400px;
 //}
 
+path.area {
+    &.highlight.stroke {
+        stroke-width: 7;
+        stroke-opacity: .9;
+    }
+    &.highlight.shadow {
+        stroke-width: 20;
+        stroke-opacity: .6;
+
+        &.hover {
+            stroke-width: 10;
+        }
+
+        &.extra-highlight {
+            stroke-width: 12;
+            stroke-opacity: .9;
+        }
+
+        &.review-feature1 {
+            stroke: #F00;
+        }
+
+        &.review-feature2 {
+            stroke: #00F;
+        }
+    }
+}
 path.line {
     &.stroke {
         stroke-width: 3;

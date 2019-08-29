@@ -338,8 +338,8 @@ export default class Layers {
             };
 
             Promise.all( [
-                this.loadLayer( params1 ),
-                this.loadLayer( params2 )
+                this.loadLayer( params1, true ),
+                this.loadLayer( params2, true )
             ] ).then( layers => {
                 this.hideLayer( layers[ 0 ].id );
                 this.hideLayer( layers[ 1 ].id );
