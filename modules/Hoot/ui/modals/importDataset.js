@@ -378,12 +378,10 @@ export default class ImportDataset {
             typeCombo     = this.typeInput.datum(),
 
             translation   = _filter( transCombo.data, o => o.NAME === transVal )[ 0 ],
-            getAdvUploadOpts = d3.selectAll('.hoot-field-input').property( 'checked' ),
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
 
             translationName,
-            folderId,
-            advUploadOpts;
+            folderId;
 
         if ( translation.DEFAULT && ( translation.PATH && translation.PATH.length ) ) {
             translationName = translation.PATH;
@@ -397,29 +395,21 @@ export default class ImportDataset {
             folderId = pathId;
         }
 
-        if ( getAdvUploadOpts ) {
-            advUploadOpts = this.advancedOptions.members;
-            let checkUploadOpts = [];
-
-            checkUploadOpts.push( d3.selectAll( '.hoot-field-input' ) );
-
-            _forEach( checkUploadOpts, function( d ) {
-                console.log( d );
-            } );
-
-
-
-         }
-
         let data = {
             NONE_TRANSLATION: translation.NONE === 'true',
             TRANSLATION: translationName,
             INPUT_TYPE: importType.value,
             INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
-            ADV_UPLOAD_OPTS: advUploadOpts,
+            ADV_UPLOAD_OPTS: {},
             formData: this.getFormData( this.fileIngest.node().files ),
             folderId
         };
+
+        d3.selectAll( '.hoot-field-input' ).each( function(d) {
+            if ( d3.select( this ).property( 'checked' ) ) {
+                data.ADV_UPLOAD_OPTS[d.id] = true;
+            }
+         });
 
         this.processRequest = Hoot.api.uploadDataset( data )
             .then( resp => {
