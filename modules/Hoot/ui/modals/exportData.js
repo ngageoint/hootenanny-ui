@@ -7,8 +7,9 @@
 import FormFactory       from '../../tools/formFactory';
 import { exportDataForm } from '../../config/domMetadata';
 
-import _flattenDeep from 'lodash-es/flattenDeep';
-import _isEmpty from 'lodash-es/isEmpty';
+import _flattenDeep   from 'lodash-es/flattenDeep';
+import _isEmpty       from 'lodash-es/isEmpty';
+import { formatSize } from '../../tools/utilities';
 
 export default class ExportData {
     constructor( translations, d, type ) {
@@ -18,6 +19,9 @@ export default class ExportData {
         this.id = isDatasets ? d.map(n => n.id).join(',') : d.data.id;
         this.type = type;
         this.form = exportDataForm.call(this, isDatasets );
+        this.data = d;
+
+        this.maxExportSize = 500000000; // 500 Megabytes
     }
 
     render() {
@@ -44,6 +48,14 @@ export default class ExportData {
 
         if ( this.type === 'Datasets' ) {
             this.dataExportNameTextInput.attr( 'placeholder', this.input.split(',').join('_') );
+        } else if ( this.type === 'Folder' ) {
+            const folderSize = this.calculateFolderSize( this.data );
+
+            if ( folderSize > this.maxExportSize ) {
+                this.container.select( 'form' ).append( 'div' ).text(
+                    `Max export size of ${ this.maxExportSize } exceeded with current export size of ${ folderSize }`
+                );
+            }
         }
 
         let container = this.container;
@@ -52,6 +64,31 @@ export default class ExportData {
         });
 
         return this;
+    }
+
+    /**
+     * Recurses through the folder down and calculates the size, in bytes, of all the datasets under the root file
+     * @param root
+     * @returns total folder size in bytes
+     */
+    calculateFolderSize ( root ) {
+        let stack = [ root ];
+        let totalSize = 0;
+
+        while ( stack.length > 0 ) {
+            const folder = stack.pop();
+            // children are stored in different locations in the object based on whether the folder is open or not
+            const children = folder.children || folder._children || folder.data._children;
+
+            totalSize += children.filter( child => child.size ).reduce( ( acc, dataset ) => {
+                return acc + dataset.size;
+            }, 0 );
+
+            const folders = children.filter( child => child.type === 'folder' );
+            stack = stack.concat(folders);
+        }
+
+        return totalSize;
     }
 
     validate ( name ) {
