@@ -216,7 +216,7 @@ export default class Layers {
                 window.location.replace('#' + utilQsString(q, true));
             }
 
-            if ( (tags.input1 || tags.input2) && !skipCheckForReviewsAndZoom) {
+            if (!skipCheckForReviewsAndZoom) {
                 layer = await this.checkForReview( layer );
             }
 
@@ -263,9 +263,9 @@ export default class Layers {
             reviewStats     = await Hoot.api.getReviewStatistics( mergedLayer.id ),
             unreviewedCount = reviewStats.unreviewedCount;
 
-        if ( !(tags.input1 && tags.input2) ) return mergedLayer;
-
         mergedLayer.hasReviews = unreviewedCount > 0;
+
+        if ( !(mergedLayer.hasReviews) && !(tags.input1 || tags.input2) ) return mergedLayer;
 
         let message, confirm;
         if (mergedLayer.hasReviews) {
@@ -377,8 +377,14 @@ export default class Layers {
                 Hoot.message.alert( { message, type } );
             }
 
-            this.loadLayer( params )
+            if (params) {
+                this.loadLayer( params )
                 .then( layer => this.hideLayer( layer.id ) );
+            } else {
+                //Set layer colors manually since loadLayers won't be called
+                this.setLayerColor( '1', 'violet' );
+                this.setLayerColor( '2', 'orange' );
+            }
         }
 
         return mergedLayer;

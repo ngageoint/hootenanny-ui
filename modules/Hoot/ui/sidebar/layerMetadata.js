@@ -181,6 +181,9 @@ export default class LayerMetadata {
 
 
     parseTags() {
+        //null check
+        if (!this.tags.params) return;
+
         let tags = JSON.parse( this.tags.params.replace( /\\"/g, '"' ) );
 
         let RefLayerName = this.tags.input1Name || 'Reference Layer Missing',
