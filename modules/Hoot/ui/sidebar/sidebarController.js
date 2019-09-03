@@ -204,12 +204,12 @@ class SidebarController {
                     sources.histories[isMerged ? 'merged' : 'original'] = Hoot.context.history().toJSON();
 
                     if (isMerged) {
-                        Hoot.layers.hideLayer(Hoot.layers.findLoadedBy( 'refType', 'merged' ).id);
+                        Hoot.layers.deactivateLayer(Hoot.layers.findLoadedBy( 'refType', 'merged' ).id);
                         Hoot.layers.showLayer(Hoot.layers.findLoadedBy( 'refType', 'primary' ).id);
                         Hoot.layers.showLayer(Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id);
                     } else {
-                        Hoot.layers.hideLayer(Hoot.layers.findLoadedBy( 'refType', 'primary' ).id);
-                        Hoot.layers.hideLayer(Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id);
+                        Hoot.layers.deactivateLayer(Hoot.layers.findLoadedBy( 'refType', 'primary' ).id);
+                        Hoot.layers.deactivateLayer(Hoot.layers.findLoadedBy( 'refType', 'secondary' ).id);
                         Hoot.layers.showLayer(Hoot.layers.findLoadedBy( 'refType', 'merged' ).id);
                     }
 

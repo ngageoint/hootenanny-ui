@@ -228,12 +228,13 @@ class LayerConflate extends SidebarForm {
         let layers = Hoot.layers.loadedLayers;
 
 
-        _forEach( layers, d => Hoot.layers.hideLayer( d.id ) );
+        _forEach( layers, d => Hoot.layers.deactivateLayer( d.id ) );
 //handle layer not found here
         params.id     = Hoot.layers.findBy( 'name', params.name ).id;
         params.refType = 'merged';
         params.isMerged = true;
         params.layers = layers;
+        params.active = true;
         Hoot.layers.loadLayer( params );
     }
 
