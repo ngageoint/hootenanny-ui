@@ -9,7 +9,6 @@ import _filter    from 'lodash-es/filter';
 import _flatten   from 'lodash-es/flatten';
 import _forEach   from 'lodash-es/forEach';
 import _map       from 'lodash-es/map';
-import _startCase from 'lodash-es/startCase';
 import { modeSelect } from '../../../modes';
 import Map  from './map';
 
@@ -78,7 +77,7 @@ export default class ConflictMetadata {
 
             row.append( 'td' )
                 .classed( 'fillD', true )
-                .text( _startCase( tag.key ) );
+                .text( tag.key );
 
             row.selectAll( 'td.feature1' )
                 .data( [ { k: 1 } ] ).enter()
