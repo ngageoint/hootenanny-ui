@@ -672,6 +672,11 @@ export default class FolderTree extends EventEmitter {
                 this.selectedNodes    = _uniq( this.selectedNodes );
                 this.lastBasePosition = basePosition;
             }
+            else if ( d3.event.ctrlKey && d3.event.which === 1  && this.isDatasetTable ) {
+
+                data.selected = !data.selected ? !data.selected : data.selected;
+                this.selectedNodes.push( data );
+            }
             else {
                 // get all currently selected nodes
                 let selectedNodes = _filter( this.root.descendants(), d => d.data.selected );
