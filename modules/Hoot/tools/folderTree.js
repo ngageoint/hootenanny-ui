@@ -680,7 +680,6 @@ export default class FolderTree extends EventEmitter {
                 if ( d3.event.ctrlKey && selected ) {
                     data.selected = false;
                 }
-
             }
             else {
                 // get all currently selected nodes
