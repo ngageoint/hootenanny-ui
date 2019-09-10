@@ -58,7 +58,7 @@ export function layerConflateForm( data ) {
                 if ( !_isEmpty(advancedOpts.conflationOptions[type.toLowerCase()]) ) {
                     let typeDefaults = advancedOpts.conflationOptions[type.toLowerCase()];
                     advOpts = advOpts.map(function(opt) {
-                        if (opt.name === type) {
+                        if (opt.members.findIndex(m => typeDefaults.hasOwnProperty(m.id)) !== -1) {
                             opt.members = opt.members.map(function(member) {
                                 if (typeDefaults[member.id]) {
                                     member.default = typeDefaults[member.id];
