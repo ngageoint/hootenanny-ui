@@ -1,12 +1,12 @@
 pipeline {
-    
+
     agent { label 'master' }
-    
+
     parameters {
         booleanParam(name: 'UI', defaultValue: true)
         string(name: 'Box', defaultValue: 'default', description: 'Vagrant Box')
     }
-    
+
     stages {
         stage("Setup") {
             steps {
@@ -18,7 +18,7 @@ pipeline {
         stage('Clone Repos') {
             steps {
                 // Checkout hootenanny
-                git url: 'https://github.com/ngageoint/hootenanny', branch: 'develop'
+                git url: 'https://github.com/ngageoint/hootenanny', branch: 'master'
                 sh "git submodule init; git submodule update; cd hoot-ui-2x; git checkout ${env.GIT_COMMIT}"
                 // Remove any screenshots from previous builds
                 sh "rm -rf ./test-files/ui/screenshot_*.png"
@@ -33,7 +33,7 @@ pipeline {
                 sh "vagrant ssh ${params.Box} -c 'sudo yum-config-manager --add-repo https://s3.amazonaws.com/hoot-repo/el7/develop/hoot.repo'"
                 sh "vagrant ssh ${params.Box} -c 'sudo yum makecache -y'"
                 sh "vagrant ssh ${params.Box} -c 'sudo yum install -y hootenanny-autostart'"
-            }       
+            }
         }
         stage("UI") {
             when {
