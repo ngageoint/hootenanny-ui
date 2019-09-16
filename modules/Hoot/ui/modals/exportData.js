@@ -21,7 +21,7 @@ export default class ExportData {
         this.form = exportDataForm.call(this, isDatasets );
         this.data = d;
 
-        this.maxExportSize = 500000000; // 500 Megabytes
+        this.maxExportSize = 2000000000; // 2GB
     }
 
     render() {
@@ -52,8 +52,11 @@ export default class ExportData {
             const folderSize = this.calculateFolderSize( this.data );
 
             if ( folderSize > this.maxExportSize ) {
-                this.container.select( 'form' ).append( 'div' ).text(
-                    `Max export size of ${ this.maxExportSize } exceeded with current export size of ${ folderSize }`
+                this.container.select( 'form' )
+                .append( 'div' )
+                .classed( 'keyline-all round center alert-warn', true )
+                .text(
+                    `WARNING: Exporting ${ formatSize(folderSize) } will take a long time.`
                 );
             }
         }
@@ -78,7 +81,11 @@ export default class ExportData {
         while ( stack.length > 0 ) {
             const folder = stack.pop();
             // children are stored in different locations in the object based on whether the folder is open or not
-            const children = folder.children || folder._children || folder.data._children;
+            // return an empty array if null or undefined
+            const children = folder.children || folder._children || (folder.data ? folder.data._children : []) || [];
+
+            // skip if no children
+            if (!children.length === 0) continue;
 
             totalSize += children.filter( child => child.size ).reduce( ( acc, dataset ) => {
                 return acc + dataset.size;

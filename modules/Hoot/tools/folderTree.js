@@ -200,6 +200,7 @@ export default class FolderTree extends EventEmitter {
                 n.depth = parentDepth + 1;
             }
 
+            //this causes a circular reference
             if ( !n.data ) {
                 n.data = n;
             }
