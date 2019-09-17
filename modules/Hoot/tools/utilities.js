@@ -178,3 +178,20 @@ export const duration = (start, end, ago) => {
 
     return duration;
 };
+
+export const formatSize = fileSize => {
+    let size  = fileSize,
+        units = [ 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ],
+        u     = -1;
+
+    if ( Math.abs( size ) < 1000 ) {
+        return size + ' B';
+    }
+
+    do {
+        size /= 1000;
+        ++u;
+    } while ( Math.abs( size ) >= 1000 && u < units.length - 1 );
+
+    return size.toFixed( 1 ) + ' ' + units[ u ];
+};

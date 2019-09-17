@@ -17,7 +17,7 @@ import _slice      from 'lodash-es/slice';
 import _uniq       from 'lodash-es/uniq';
 import _without from 'lodash-es/without';
 
-import { duration } from './utilities';
+import { duration, formatSize } from './utilities';
 
 import EventEmitter from 'events';
 
@@ -200,6 +200,7 @@ export default class FolderTree extends EventEmitter {
                 n.depth = parentDepth + 1;
             }
 
+            //this causes a circular reference
             if ( !n.data ) {
                 n.data = n;
             }
@@ -352,20 +353,7 @@ export default class FolderTree extends EventEmitter {
             .attr( 'dx', '98%' )
             .attr( 'text-anchor', 'end' )
             .text( d => {
-                let size  = d.data.size,
-                    units = [ 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ],
-                    u     = -1;
-
-                if ( Math.abs( size ) < 1000 ) {
-                    return size + ' B';
-                }
-
-                do {
-                    size /= 1000;
-                    ++u;
-                } while ( Math.abs( size ) >= 1000 && u < units.length - 1 );
-
-                return size.toFixed( 1 ) + ' ' + units[ u ];
+                return formatSize( d.data.size );
             } );
 
         if ( this.isDatasetTable ) {
