@@ -427,13 +427,9 @@ export default class Layers {
         this.hoot.ui.sidebar.reset();
     }
 
-    deactivateLayer( id ) {
-        this.hoot.layers.loadedLayers[ id ].active = false;
-        this.hideLayer( id );
-    }
-
     hideLayer( id ) {
         this.hoot.layers.loadedLayers[ id ].visible = false;
+        this.hoot.layers.loadedLayers[ id ].active = false;
 
         d3.select( '#map' ).selectAll( `[class*="_${ id }-"]` ).remove();
 
