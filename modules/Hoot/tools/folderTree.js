@@ -497,11 +497,7 @@ export default class FolderTree extends EventEmitter {
     bindContextMenu( d ) {
         let { data } = d,
             selected = d.data.selected || false;
-
-        if ( d3.event.ctrlKey && d3.event.which === 1 ) {
-            data.selected = !data.selected ? !data.selected : data.selected;
-            this.selectedNodes.push( data );
-        } else if ( d.data.type === 'dataset' ) {
+        if ( d.data.type === 'dataset' ) {
             if ( !selected ) {
                 let selectedNodes = _filter( this.root.descendants(), node => node.data.selected );
 
@@ -659,6 +655,17 @@ export default class FolderTree extends EventEmitter {
 
                 this.selectedNodes    = _uniq( this.selectedNodes );
                 this.lastBasePosition = basePosition;
+            }
+            else if ( d3.event.ctrlKey && this.isDatasetTable ) {
+                data.selected = !data.selected;
+                if (data.selected) {
+                    this.selectedNodes.push( data );
+                } else {
+                    this.selectedNodes = this.selectedNodes.filter(function(d) {
+                        return d.id !== data.id;
+                    });
+                }
+
             }
             else {
                 // get all currently selected nodes
