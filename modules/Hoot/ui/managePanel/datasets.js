@@ -289,6 +289,7 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'exportFolder': {
+//probably don't need to get translations but once on init
                 let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT);
                 this.exportDatasetModal = new ExportData( translations, d, 'Folder' ).render();
                 Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);

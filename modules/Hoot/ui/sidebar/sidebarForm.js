@@ -12,8 +12,6 @@ export default class SidebarForm {
         this.formMeta     = d;
         this.form         = null;
         this.controller   = null;
-        this.loadingLayer = null;
-        this.loadedLayer  = null;
     }
 
     render( data ) {
