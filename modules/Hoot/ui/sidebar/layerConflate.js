@@ -234,6 +234,7 @@ class LayerConflate extends SidebarForm {
         params.refType = 'merged';
         params.isMerged = true;
         params.layers = layers;
+        params.active = true;
         Hoot.layers.loadLayer( params );
     }
 

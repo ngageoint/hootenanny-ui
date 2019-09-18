@@ -155,7 +155,7 @@ export function uiMapData(context) {
 
 
     function drawHootItems(selection) {
-        var hootLayers = Object.values(Hoot.layers.loadedLayers).filter( l => l.visible );
+        var hootLayers = Object.values(Hoot.layers.loadedLayers).filter( l => l.active );
 
         var ul = selection
             .selectAll('.layer-list-hoot')
@@ -214,6 +214,7 @@ export function uiMapData(context) {
         labelEnter
             .append('input')
             .attr('type', 'checkbox')
+            .property( 'checked', data => data.visible )
             .on('change', Hoot.layers.toggleLayerVisibility);
 
         labelEnter

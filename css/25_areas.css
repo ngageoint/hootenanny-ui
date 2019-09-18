@@ -2,7 +2,7 @@
 /* Default - light gray */
 path.area.stroke {
     stroke: #ddd;
-    stroke-width: 1;
+    stroke-width: 2;
 }
 path.area.fill {
     stroke-width: 0;

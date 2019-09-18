@@ -194,7 +194,8 @@ export default class Layers {
                 extent: layerExtent,
                 polygon: layerExtent.polygon(),
                 tags: tags,
-                visible: true
+                visible: true, // Denotes whether the layer is toggled on/off
+                active: params.active || true // Whether the layer is loaded and can be toggled on/off
             };
 
             //update url hash
@@ -428,6 +429,7 @@ export default class Layers {
 
     hideLayer( id ) {
         this.hoot.layers.loadedLayers[ id ].visible = false;
+        this.hoot.layers.loadedLayers[ id ].active = false;
 
         d3.select( '#map' ).selectAll( `[class*="_${ id }-"]` ).remove();
 
@@ -439,6 +441,7 @@ export default class Layers {
 
     showLayer( id ) {
         this.hoot.layers.loadedLayers[ id ].visible = true;
+        this.hoot.layers.loadedLayers[ id ].active = true;
         this.hoot.context.flush();
     }
 
@@ -446,10 +449,19 @@ export default class Layers {
         const isVisible = layer.visible = !layer.visible,
               id = layer.id;
 
-        if (isVisible) {
-            d3.selectAll(`.tag-hoot-${id}`).attr('display','');
+        let selector;
+
+        if ( layer.refType === 'merged' ) {
+            const { input1, input2 } = layer.tags;
+            selector = `.tag-hoot-${id},.tag-hoot-${input1},.tag-hoot-${input2}`;
         } else {
-            d3.selectAll(`.tag-hoot-${id}`).attr('display','none');
+            selector = `.tag-hoot-${id}`;
+        }
+
+        if (isVisible) {
+            d3.selectAll(selector).attr('display','');
+        } else {
+            d3.selectAll(selector).attr('display','none');
         }
     }
 
