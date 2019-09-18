@@ -13,6 +13,7 @@ import Translations        from './translations';
 import Basemaps            from './basemaps';
 import ReviewBookmarks     from './reviewBookmarks/reviewBookmarks';
 import ReviewBookmarkNotes from './reviewBookmarks/reviewBookmarkNotes';
+import AdminPanel          from './adminPanel';
 
 /**
  * Creates the settings panel
@@ -38,6 +39,17 @@ export default class ManagePanel {
     }
 
     /**
+     * Check to see if user has admin panel privileges
+     */
+    async adminPanelCheck() {
+        const isAdmin = await Hoot.api.getPrivileges();
+
+        if ( isAdmin.admin && isAdmin.admin === 'true' ) {
+            this.manageTabs.push( AdminPanel );
+        }
+    }
+
+    /**
      * Render base panel and all of its components
      */
     async render() {
@@ -56,6 +68,8 @@ export default class ManagePanel {
             .classed( 'manage-header pad1y strong center', true )
             .append( 'label' )
             .text( 'Manage Panel' );
+
+        await this.adminPanelCheck();
 
         // Render all tabs
         Promise.all( _map( this.manageTabs, Tab => new Tab( this ).render() ) )

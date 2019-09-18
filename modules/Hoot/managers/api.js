@@ -158,6 +158,50 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    getPrivileges() {
+        const params = {
+            path: '/osm/api/0.6/user/getPrivileges',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getPrivilegeOptions() {
+        const params = {
+            path: '/osm/api/0.6/user/getPrivilegeOptions',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    savePrivileges( data ) {
+        const params = {
+            path: '/osm/api/0.6/user/savePrivileges',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'User privileges saved',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      type = err.type;
+
+                return Promise.reject( { message, type } );
+            } );
+    }
+
     getOAuthRedirectUrl() {
         const params = {
             path: '/auth/oauth1/request',
