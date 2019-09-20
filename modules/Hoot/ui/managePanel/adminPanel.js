@@ -18,10 +18,6 @@ export default class AdminPanel extends Tab {
             {
                 title: 'Save',
                 icon: 'save'
-            },
-            {
-                title: 'Refresh',
-                icon: 'refresh'
             }
         ];
 
@@ -86,13 +82,15 @@ export default class AdminPanel extends Tab {
               privilegeOptions = await Hoot.api.getPrivilegeOptions();
 
         this.userInfoTable = this.panelWrapper
-            .append( 'div' )
+            .selectAll('div.admin-table')
+            .data([0]);
+        var userInfoTableEnter = this.userInfoTable.enter().append( 'div' )
             .classed( 'admin-table keyline-all fill-white', true );
 
-        this.table = this.userInfoTable
+        let table = userInfoTableEnter
             .append('table');
 
-        this.table.append('thead')
+        table.append('thead')
             .append('tr')
             .selectAll('th')
             .data( this.adminTableHeaders )
@@ -101,51 +99,86 @@ export default class AdminPanel extends Tab {
             .attr( 'style', d => `width: ${ d.width }` )
             .text( d => d.title );
 
-        let tbody = this.table.append( 'tbody' );
+        table.append( 'tbody' );
 
+        this.userInfoTable = this.userInfoTable.merge(userInfoTableEnter);
+        this.table = this.userInfoTable.selectAll('table');
+
+        let tbody = this.userInfoTable.selectAll('tbody');
         let rows = tbody.selectAll( 'tr' )
-            .data( users )
-            .enter()
+            .data( users );
+
+        let rowsEnter = rows.enter()
             .append( 'tr' )
             .classed( 'user-item', true );
+        rows.exit().remove();
+        rows = rows.merge(rowsEnter)
+            .classed('modified', false); //reset modified marker class
 
-        rows.selectAll( 'td' )
-            .data( this.adminTableHeaders )
-            .enter()
-            .append( 'td' )
-            .select( function( columnItem ) {
-                const user = d3.select( this.parentElement ).data()[0];
-                const currentElement = d3.select( this );
+        let tds = rows.selectAll( 'td' )
+            .data( d => [
+                    d.display_name,
+                    d.last_authorized || 'N/A',
+                    d.privileges
+                ] );
+        tds.exit().remove();
+        let tdsEnter = tds.enter()
+            .append( 'td' );
+        tds.merge(tdsEnter)
+            .each(function(d, i) {
+                // console.log(d);
+                // console.log(i);
+                // console.log(this);
+                let datum = d;
+                let content;
+                switch (i) {
+                    case 0:
+                    default:
+                        content = d3.select(this).selectAll('span')
+                            .data(d => [d]);
+                        content.exit().remove();
+                        content.enter().append('span')
+                            .merge(content)
+                            .text(d => d);
+                        break;
+                    case 1:
+                        content = d3.select(this).selectAll('span')
+                            .data(d => [d]);
+                        content.exit().remove();
+                        content.enter().append('span')
+                            .merge(content)
+                            .text(d => {
+                                return isNaN(d) ? d : duration( d, Date.now(), true );
+                            });
+                        break;
+                    case 2:
+                        d3.select(this).classed( 'privileges', true )
+                            .style( 'display', 'inline-flex' );
 
-                if ( columnItem.name === 'displayName' ) {
-                    currentElement.append( 'span' )
-                        .text(user.display_name);
-                } else if ( columnItem.name === 'lastAuthorized' ) {
-                    const timeSinceAuth = user.last_authorized ? duration( user.last_authorized, Date.now(), true ) : 'N/A';
-
-                    currentElement.append( 'span' )
-                        .text( timeSinceAuth );
-                } else if ( columnItem.name === 'privileges' ) {
-                    currentElement.classed( 'privileges', true )
-                        .style( 'display', 'inline-flex' );
-
-                    privilegeOptions.forEach( key => {
-                        currentElement.append( 'input' )
-                            .attr( 'type', 'checkbox' )
-                            .attr( 'id', key )
-                            .property( 'checked', user.privileges[key] === 'true' );
-
-                        currentElement.append( 'label' )
-                            .text( key );
-                    });
+                        content = d3.select(this).selectAll('label')
+                            .data(privilegeOptions);
+                        content.exit().remove();
+                        let labelEnter = content.enter().append( 'label' )
+                            .text( d => d );
+                        labelEnter.append('input')
+                            .attr( 'type', 'checkbox' );
+                        content = content.merge(labelEnter);
+                        content.selectAll('input')
+                            .attr( 'id', d => d )
+                            .property( 'checked', d => datum[d] === 'true' )
+                            .on('click', () => {
+                                //mark the user row as modified
+                                d3.select( this.parentElement ).classed('modified', true);
+                            });
+                        break;
                 }
-            } );
+            });
     }
 
     submitPrivileges() {
         let userList = [];
 
-        this.table.selectAll( '.user-item' ).each( function(data) {
+        this.table.selectAll( '.user-item.modified' ).each( function(data) {
             const user = {
                 id: data.id,
                 privileges: {}
@@ -162,7 +195,10 @@ export default class AdminPanel extends Tab {
         } );
 
         Hoot.api.savePrivileges( userList )
-            .then( ( resp ) => Hoot.message.alert( resp ) )
+            .then( ( resp ) => {
+                this.populateAdminPanel();
+                Hoot.message.alert( resp );
+            } )
             .catch( err => Hoot.message.alert( err ) );
 
     }

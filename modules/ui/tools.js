@@ -15,14 +15,6 @@ import selectBbox       from '../Hoot/tools/selectBbox';
 import { tooltip }      from '../util/tooltip';
 
 export function uiTools( context ) {
-    let isAdvancedUser = false;
-    if ( localStorage ) {
-        const user = JSON.parse( localStorage.getItem( 'user' ) );
-
-        if (user && user.privileges) {
-            isAdvancedUser = user.privileges.advanced === 'true';
-        }
-    }
 
     let menuItemMeta = [
         {
@@ -62,11 +54,8 @@ export function uiTools( context ) {
                     action: 'clipData'
                 }
             ]
-        }
-    ];
-
-    if (isAdvancedUser) {
-        const grailMenuItem = {
+        },
+        {
             title: 'Grail Tools',
             icon: 'line',
             group: 'grail',
@@ -90,10 +79,8 @@ export function uiTools( context ) {
                     action: 'createDifferentialChangeset'
                 }
             ]
-        };
-
-        menuItemMeta.push(grailMenuItem);
-    }
+        }
+    ];
 
     let toolsToggle,
         toolsMenu,
@@ -101,7 +88,9 @@ export function uiTools( context ) {
         subMenu,
         subItems;
 
-    function renderMenu( selection ) {
+    async function renderMenu( selection ) {
+        const privs = await Hoot.api.getPrivileges();
+
         toolsToggle = selection
             .append( 'button' )
             .classed( 'tools-toggle', true )
@@ -118,10 +107,14 @@ export function uiTools( context ) {
 
         menuItems = toolsMenu
             .selectAll( 'li' )
-            .data( menuItemMeta )
-            .enter();
+            .data( menuItemMeta.filter(m => {
+                return m.group !== 'grail' || (privs.advanced && privs.advanced === 'true');
+            }) );
+
+        menuItems.exit().remove();
 
         let item = menuItems
+            .enter()
             .append( 'li' )
             .attr( 'class', d => `menu-item tools-${ d.group }` )
             .on( 'click', () => d3.event.stopPropagation() )
