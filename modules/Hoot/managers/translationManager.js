@@ -36,9 +36,9 @@ export default class TranslationManager {
 
     async getTranslations() {
         try {
-            let translations = await this.hoot.api.getCapabilities();
+            let translations = await this.hoot.api.getTranslationSchemas();
 
-            this.availableTranslations = [ this.defaultTranslation ].concat( Object.keys( translations ) );
+            this.availableTranslations = [ this.defaultTranslation ].concat( translations );
         } catch ( e ) {
             // TODO: alert error
         }
