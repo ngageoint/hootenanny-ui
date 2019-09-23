@@ -24,6 +24,18 @@ function getDoc( url, done ) {
         getCreates = response.getElementsByTagName('create');
         getModify = response.getElementsByTagName('modify');
         getDeletes = response.getElementsByTagName('delete');
+
+        [ 'create', 'modify','delete' ].forEach( function(name) {
+
+            let osmElements = response.getElementsByTagName(name);
+        });
+
+
+
+
+
+
+
         function getParsed(children) {
             if ( children.getElementsByTagName('node') ) {
                 _forEach( children.children, function(nodeObj) {
@@ -71,6 +83,7 @@ function getDoc( url, done ) {
 
         if ( getCreates ) {
             _forEach( getCreates, function(find) {
+
                 return find.nodeName ? getParsed(find) : null;
             } );
         }
