@@ -1240,9 +1240,9 @@ export default class API {
 
     /****************** TRANSLATIONS *******************/
 
-    getCapabilities() {
+    getTranslationSchemas() {
         const params = {
-            url: `${ this.translationUrl }capabilities`,
+            url: `${ this.translationUrl }translations`,
             method: 'GET'
         };
 
