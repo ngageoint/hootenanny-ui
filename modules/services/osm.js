@@ -1327,6 +1327,8 @@ export default {
         _noteCache.note[note.id] = note;
         updateRtree(encodeNoteRtree(note), true);  // true = replace
         return note;
-    }
+    },
+
+    parsers: parsers
 
 };

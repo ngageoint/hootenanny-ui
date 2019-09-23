@@ -19,6 +19,7 @@ import UI                 from './ui/init';
 import { tagInfo }        from '../../data/index';
 import buildInfo          from './config/buildInfo.json';
 import { duration }       from './tools/utilities';
+import { services } from '../services';
 
 class Hoot {
     constructor() {
@@ -114,6 +115,8 @@ class Hoot {
 
         this.ui = new UI();
         this.ui.render();
+        let oscUrl = this.api.config.host + '/osc/changeset_grail_542eb3eb72244125b1cae5838f348995.osc';
+        services.oscChangeset.getChangeset( oscUrl, function() {} );
 
         // prevent this class from being modified in any way.
         // this does not affect children objects

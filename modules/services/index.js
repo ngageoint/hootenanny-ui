@@ -1,5 +1,6 @@
 import serviceMapillary from './mapillary';
 import serviceNominatim from './nominatim';
+import serviceOsc from './visualizeChangeset';
 import serviceOpenstreetcam from './openstreetcam';
 import serviceOsm from './osm';
 import serviceStreetside from './streetside';
@@ -11,6 +12,7 @@ import serviceWikipedia from './wikipedia';
 export var services = {
     geocoder: serviceNominatim,
     mapillary: serviceMapillary,
+    oscChangeset: serviceOsc,
     openstreetcam: serviceOpenstreetcam,
     osm: serviceOsm,
     streetside: serviceStreetside,
@@ -23,6 +25,7 @@ export var services = {
 export {
     serviceMapillary,
     serviceNominatim,
+    serviceOsc,
     serviceOpenstreetcam,
     serviceOsm,
     serviceStreetside,

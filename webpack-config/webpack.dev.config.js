@@ -22,6 +22,11 @@ module.exports = Merge( CommonConfig, {
         proxy: {
             '/hoot-services': 'http://localhost:8888',
             '/capabilities': 'http://localhost:8094',
+            '/osc': {
+                target: 'http://localhost:8000',
+                pathRewrite: { '^/osc': ''}
+
+            },
             '/switcher': {
                 target: 'http://localhost:8094',
                 pathRewrite: { '^/switcher': '' }
