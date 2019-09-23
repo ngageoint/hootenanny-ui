@@ -1,7 +1,7 @@
 pipeline {
     agent { label 'master' }
     parameters {
-        
+
         booleanParam(name: 'npm', defaultValue: true)
         booleanParam(name: 'cucumber', defaultValue: true)
         string(name: 'Box', defaultValue: 'default', description: 'Vagrant Box')
@@ -20,7 +20,7 @@ pipeline {
         stage('Clone Repos') {
             steps {
                 // Checkout hootenanny
-                git url: 'https://github.com/ngageoint/hootenanny', branch: 'develop'
+                git url: 'https://github.com/ngageoint/hootenanny', branch: 'master'
                 sh "git submodule init; git submodule update; cd hoot-ui; git checkout ${env.GIT_COMMIT}"
                 // Remove any screenshots from previous builds
                 sh "rm -rf ./test-files/ui/screenshot_*.png"
@@ -36,10 +36,10 @@ pipeline {
                 '''
 
                 sh "vagrant up ${params.Box} --provider aws"
-            }       
+            }
         }
         stage("npm test") {
-            when { 
+            when {
                 expression { return params.npm }
             }
             steps {
