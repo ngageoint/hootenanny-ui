@@ -91,12 +91,12 @@ iD.translationserver = function(context) {
 
     if (!iD.debug) {
         d3.json(window.location.protocol + '//' + window.location.hostname +
-            formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) + '/capabilities')
+            formatNodeJsPortOrPath(iD.data.hootConfig.translationServerPort) + '/translations')
             .get(function(error, json) {
                 if (error) {
                     window.console.error(error);
                 } else {
-                    availableTranslations = [defaultTranslation].concat(Object.keys(json));
+                    availableTranslations = [defaultTranslation].concat(json);
                 }
             });
     }
