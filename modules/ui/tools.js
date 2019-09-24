@@ -15,15 +15,6 @@ import selectBbox       from '../Hoot/tools/selectBbox';
 import { tooltip }      from '../util/tooltip';
 
 export function uiTools( context ) {
-    let isAdvancedUser = false;
-    if ( localStorage ) {
-        const user = JSON.parse( localStorage.getItem( 'user' ) );
-
-        if (user && user.privileges) {
-            isAdvancedUser = user.privileges.advanced === 'true';
-        }
-    }
-
     let menuItemMeta = [
         {
             title: 'Measurement Tools',
@@ -62,11 +53,8 @@ export function uiTools( context ) {
                     action: 'clipData'
                 }
             ]
-        }
-    ];
-
-    if (isAdvancedUser) {
-        const grailMenuItem = {
+        },
+        {
             title: 'Grail Tools',
             icon: 'line',
             group: 'grail',
@@ -90,10 +78,8 @@ export function uiTools( context ) {
                     action: 'createDifferentialChangeset'
                 }
             ]
-        };
-
-        menuItemMeta.push(grailMenuItem);
-    }
+        }
+    ];
 
     let toolsToggle,
         toolsMenu,
@@ -101,16 +87,24 @@ export function uiTools( context ) {
         subMenu,
         subItems;
 
-    function renderMenu( selection ) {
+    function renderButton( selection ) {
         toolsToggle = selection
             .append( 'button' )
             .classed( 'tools-toggle', true )
-            .call( svgIcon( '#iD-icon-tools', 'pre-text' ) );
+            .call( svgIcon( '#iD-icon-tools', 'pre-text' ) )
+            .on('click', function() {
+                renderMenu();
+                d3.select(this).on('click', null);
+            });
 
         toolsToggle
             .append( 'span' )
             .classed( 'label', true )
             .text( 'Tools' );
+
+    }
+
+    function renderMenu( ) {
 
         toolsMenu = d3.select( '.hoot-tools' )
             .append( 'ul' )
@@ -118,10 +112,14 @@ export function uiTools( context ) {
 
         menuItems = toolsMenu
             .selectAll( 'li' )
-            .data( menuItemMeta )
-            .enter();
+            .data( menuItemMeta.filter(m => {
+                return m.group !== 'grail' || Hoot.users.isAdvanced();
+            }) );
+
+        menuItems.exit().remove();
 
         let item = menuItems
+            .enter()
             .append( 'li' )
             .attr( 'class', d => `menu-item tools-${ d.group }` )
             .on( 'click', () => d3.event.stopPropagation() )
@@ -137,6 +135,7 @@ export function uiTools( context ) {
             .text( 'arrow_right' );
 
         initDropdown();
+        toggle();
     }
 
     function renderSubMenu( node, items ) {
@@ -207,8 +206,7 @@ export function uiTools( context ) {
     }
 
     function initDropdown() {
-        let duration     = 50,
-            toolsToggle = d3.select( '.tools-toggle' );
+        let toolsToggle = d3.select( '.tools-toggle' );
 
         toolsToggle.on( 'click', () => {
             if ( toolsToggle.text() === 'Clear' ) {
@@ -225,28 +223,28 @@ export function uiTools( context ) {
                 toggle();
             }
         } );
-
-        function toggle( cb ) {
-            d3.select('.hoot-tools').selectAll('.tools-menu')
-                .style('display', function(d) {
-                    if ( cb ) cb();
-                    if ( d3.select(this).style( 'display' ) === 'none' ) {
-                        setTimeout(bindSingleBodyClick, 100);
-                        return 'block';
-                    } else {
-                        setTimeout(destroySubMenu, 100);
-                        return 'none';
-                    }
-                });
-        }
-
-        function bindSingleBodyClick() {
-            d3.select( 'body' ).on( 'click', () => {
-                toggle( () => initDropdown() );
-                d3.select( 'body' ).on('click', null);
-            });
-        }
     }
 
-    return renderMenu;
+    function toggle( cb ) {
+        d3.select('.hoot-tools').selectAll('.tools-menu')
+            .style('display', function(d) {
+                if ( cb ) cb();
+                if ( d3.select(this).style( 'display' ) === 'none' ) {
+                    setTimeout(bindSingleBodyClick, 100);
+                    return 'block';
+                } else {
+                    setTimeout(destroySubMenu, 100);
+                    return 'none';
+                }
+            });
+    }
+
+    function bindSingleBodyClick() {
+        d3.select( 'body' ).on( 'click', () => {
+            toggle( () => initDropdown() );
+            d3.select( 'body' ).on('click', null);
+        });
+    }
+
+    return renderButton;
 }

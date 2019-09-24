@@ -109,7 +109,8 @@ class Hoot {
             this.getAboutData(),
             this.getAllUsers(),
             this.getMapSizeThresholds(),
-            this.translations.getTranslations()
+            this.translations.getTranslations(),
+            this.users.init()
         ] );
 
         this.ui = new UI();

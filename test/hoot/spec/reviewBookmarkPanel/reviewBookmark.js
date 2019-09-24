@@ -8,9 +8,9 @@ describe( 'Review Bookmark component rendered', () => {
 
     it( 'Review bookmark tab selected', done => {
         d3.select('div.menu-button').dispatch('click');
-        var reveiwBookmarks = d3.select('#manage-sidebar-menu div.tab-header:nth-child(6)');
-        reveiwBookmarks.dispatch('click');
         setTimeout(() => {
+            var reviewBookmarks = d3.select('#manage-sidebar-menu div.tab-header:nth-child(6)');
+            reviewBookmarks.dispatch('click');
             var reviewComponent = d3.selectAll('#util-review-bookmarks').attr('id');
             expect(reviewComponent).to.be.eql('util-review-bookmarks');
             done();
