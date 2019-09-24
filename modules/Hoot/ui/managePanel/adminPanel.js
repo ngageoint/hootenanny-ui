@@ -130,7 +130,7 @@ export default class AdminPanel extends Tab {
                 // console.log(i);
                 // console.log(this);
                 let datum = d;
-                let content;
+                let content, labelEnter;
                 switch (i) {
                     case 0:
                     default:
@@ -158,7 +158,7 @@ export default class AdminPanel extends Tab {
                         content = d3.select(this).selectAll('label')
                             .data(privilegeOptions);
                         content.exit().remove();
-                        let labelEnter = content.enter().append( 'label' )
+                        labelEnter = content.enter().append( 'label' )
                             .text( d => d );
                         labelEnter.append('input')
                             .attr( 'type', 'checkbox' );
