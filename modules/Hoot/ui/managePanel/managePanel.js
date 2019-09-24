@@ -39,20 +39,9 @@ export default class ManagePanel {
     }
 
     /**
-     * Check to see if user has admin panel privileges
-     */
-    async adminPanelCheck() {
-        const isAdmin = await Hoot.api.getPrivileges();
-
-        if ( isAdmin.admin && isAdmin.admin === 'true' ) {
-            this.manageTabs.push( AdminPanel );
-        }
-    }
-
-    /**
      * Render base panel and all of its components
      */
-    async render() {
+    render() {
         this.container = d3.select( 'body' )
             .insert( 'div', '#id-container' )
             .attr( 'id', 'manage-panel' )
@@ -69,10 +58,15 @@ export default class ManagePanel {
             .append( 'label' )
             .text( 'Manage Panel' );
 
-        await this.adminPanelCheck();
+        return this;
+    }
 
+    renderTabs() {
+        if ( Hoot.users.isAdmin() ) {
+            this.manageTabs.push( AdminPanel );
+        }
         // Render all tabs
-        Promise.all( _map( this.manageTabs, Tab => new Tab( this ).render() ) )
+        return Promise.all( _map( this.manageTabs, Tab => new Tab( this ).render() ) )
             .then( modules => {
                 this.datasets        = modules[ 0 ];
                 this.jobs            = modules[ 1 ];
@@ -83,8 +77,6 @@ export default class ManagePanel {
                 this.bookmarkNotes   = modules[ 6 ];
                 this.tabs = modules;
             } );
-
-        return this;
     }
 
 }

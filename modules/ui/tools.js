@@ -15,7 +15,6 @@ import selectBbox       from '../Hoot/tools/selectBbox';
 import { tooltip }      from '../util/tooltip';
 
 export function uiTools( context ) {
-
     let menuItemMeta = [
         {
             title: 'Measurement Tools',
@@ -88,18 +87,24 @@ export function uiTools( context ) {
         subMenu,
         subItems;
 
-    async function renderMenu( selection ) {
-        const privs = await Hoot.api.getPrivileges();
-
+    function renderButton( selection ) {
         toolsToggle = selection
             .append( 'button' )
             .classed( 'tools-toggle', true )
-            .call( svgIcon( '#iD-icon-tools', 'pre-text' ) );
+            .call( svgIcon( '#iD-icon-tools', 'pre-text' ) )
+            .on('click', function() {
+                renderMenu();
+                d3.select(this).on('click', null);
+            });
 
         toolsToggle
             .append( 'span' )
             .classed( 'label', true )
             .text( 'Tools' );
+
+    }
+
+    function renderMenu( ) {
 
         toolsMenu = d3.select( '.hoot-tools' )
             .append( 'ul' )
@@ -108,7 +113,7 @@ export function uiTools( context ) {
         menuItems = toolsMenu
             .selectAll( 'li' )
             .data( menuItemMeta.filter(m => {
-                return m.group !== 'grail' || (privs.advanced && privs.advanced === 'true');
+                return m.group !== 'grail' || Hoot.users.isAdvanced();
             }) );
 
         menuItems.exit().remove();
@@ -130,6 +135,7 @@ export function uiTools( context ) {
             .text( 'arrow_right' );
 
         initDropdown();
+        toggle();
     }
 
     function renderSubMenu( node, items ) {
@@ -200,8 +206,7 @@ export function uiTools( context ) {
     }
 
     function initDropdown() {
-        let duration     = 50,
-            toolsToggle = d3.select( '.tools-toggle' );
+        let toolsToggle = d3.select( '.tools-toggle' );
 
         toolsToggle.on( 'click', () => {
             if ( toolsToggle.text() === 'Clear' ) {
@@ -218,28 +223,28 @@ export function uiTools( context ) {
                 toggle();
             }
         } );
-
-        function toggle( cb ) {
-            d3.select('.hoot-tools').selectAll('.tools-menu')
-                .style('display', function(d) {
-                    if ( cb ) cb();
-                    if ( d3.select(this).style( 'display' ) === 'none' ) {
-                        setTimeout(bindSingleBodyClick, 100);
-                        return 'block';
-                    } else {
-                        setTimeout(destroySubMenu, 100);
-                        return 'none';
-                    }
-                });
-        }
-
-        function bindSingleBodyClick() {
-            d3.select( 'body' ).on( 'click', () => {
-                toggle( () => initDropdown() );
-                d3.select( 'body' ).on('click', null);
-            });
-        }
     }
 
-    return renderMenu;
+    function toggle( cb ) {
+        d3.select('.hoot-tools').selectAll('.tools-menu')
+            .style('display', function(d) {
+                if ( cb ) cb();
+                if ( d3.select(this).style( 'display' ) === 'none' ) {
+                    setTimeout(bindSingleBodyClick, 100);
+                    return 'block';
+                } else {
+                    setTimeout(destroySubMenu, 100);
+                    return 'none';
+                }
+            });
+    }
+
+    function bindSingleBodyClick() {
+        d3.select( 'body' ).on( 'click', () => {
+            toggle( () => initDropdown() );
+            d3.select( 'body' ).on('click', null);
+        });
+    }
+
+    return renderButton;
 }
