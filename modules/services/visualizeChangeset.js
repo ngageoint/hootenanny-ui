@@ -7,105 +7,67 @@ import { utilQsString, utilRebind, utilTiler } from '../util';
 
 import { services } from './index';
 import { osmNode  } from '../osm/node';
+import { uiContributors } from '../ui';
+
 
 var dispatch = d3_dispatch('osmChange');
 var _mlyCache;
-var getCreates;
-var getModify;
-var getDeletes;
-var allCreates = [];
-var allModify = [];
-var allDeletes = [];
+var allViz = [];
+
 
 function getDoc( url, done ) {
 
     d3_xml( url, function ( err, response ) {
         if ( err ) return;
-        getCreates = response.getElementsByTagName('create');
-        getModify = response.getElementsByTagName('modify');
-        getDeletes = response.getElementsByTagName('delete');
 
         [ 'create', 'modify','delete' ].forEach( function(name) {
 
             let osmElements = response.getElementsByTagName(name);
 
-            for ( let item in osmElements ) {
+            for ( let item = 0; item < osmElements.length; item++ ) {
 
-                var parser = services.osm.parsers[item.nodeName];
+                var getItems = osmElements[item].children;
 
-                var element = parser(item);
+                var getType = getItems[item] ? getItems[item].nodeName : getItems[item - 1].nodeName;
 
-                console.log(element);
-
+                let getParse = parseObj( getItems, getType );
+                if ( name === 'create' ) {
+                    allViz.push( { [name]: getParse } );
+                }
+                if ( name === 'modify' ) {
+                   allViz.push( { [name]: getParse } );
+                }
+                if ( name === 'delete' ) {
+                   allViz.push( { [name]: getParse } );
+                }
             }
         });
 
+        function parseObj(children, osmType ) {
 
+            var parser = services.osm.parsers;
 
+            let parsedObj = [];
 
+            for ( let i = 0; i < children.length; i++ ) {
 
+                if ( osmType === 'node' ) {
+                    let getParsedNode = parser.node( children[i] );
+                    parsedObj.push( getParsedNode );
+                }
+                if ( osmType === 'way' ) {
+                    let getParsedWay = parser.way( children[i] );
+                    parsedObj.push( getParsedWay );
+                }
+                if  ( osmType === 'relation' ) {
+                    let getParsedRelation = parser.relation( children[i] );
+                    parsedObj.push( getParsedRelation );
+                }
 
-
-        function getParsed(children) {
-            if ( children.getElementsByTagName('node') ) {
-                _forEach( children.children, function(nodeObj) {
-                    let getParsedNode = services.osm.parsers.node(nodeObj);
-                    if ( children.nodeName === 'create' ) {
-                        allCreates.push( getParsedNode );
-                    }
-                    if ( children.nodeName === 'delete' ) {
-                        allDeletes.push( getParsedNode );
-                    }
-                    if ( children.nodeName === 'modify' ) {
-                        allModify.push( getParsedNode );
-                    }
-                } );
             }
-            if ( children.getElementsByTagName('way') ) {
-                _forEach( children.children, function(wayObj) {
-                    let getParsedWay = services.osm.parsers.node(wayObj);
-                    if ( children.nodeName === 'create' ) {
-                        allCreates.push( getParsedWay );
-                    }
-                    if ( children.nodeName === 'delete' ) {
-                        allDeletes.push( getParsedWay );
-                    }
-                    if ( children.nodeName === 'modify' ) {
-                        allModify.push( getParsedWay );
-                    }
-                } );
-            }
-            if ( children.getElementsByTagName('relation') ) {
-                _forEach( children.children, function(relationObj) {
-                    let getParsedRel = services.osm.parsers.node(relationObj);
-                    if ( children.nodeName === 'create' ) {
-                        allCreates.push( getParsedRel );
-                    }
-                    if ( children.nodeName === 'delete' ) {
-                        allDeletes.push( getParsedRel );
-                    }
-                    if ( children.nodeName === 'modify' ) {
-                        allModify.push( getParsedRel );
-                    }
-                } );
-            }
-        }
 
-        if ( getCreates ) {
-            _forEach( getCreates, function(find) {
+            return parsedObj;
 
-                return find.nodeName ? getParsed(find) : null;
-            } );
-        }
-        if ( getModify ) {
-            _forEach( getModify, function(find) {
-                return find.nodeName ? getParsed(find) : null;
-            } );
-        }
-        if ( getDeletes ) {
-            _forEach( getDeletes, function(find) {
-                return find.nodeName ? getParsed(find) : null;
-            });
         }
     });
 }
