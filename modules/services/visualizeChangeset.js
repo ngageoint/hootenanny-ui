@@ -28,6 +28,16 @@ function getDoc( url, done ) {
         [ 'create', 'modify','delete' ].forEach( function(name) {
 
             let osmElements = response.getElementsByTagName(name);
+
+            for ( let item in osmElements ) {
+
+                var parser = services.osm.parsers[item.nodeName];
+
+                var element = parser(item);
+
+                console.log(element);
+
+            }
         });
 
 
