@@ -28,47 +28,16 @@ function getDoc( url, done ) {
 
                 var getItems = osmElements[item].children;
 
-                var getType = getItems[item] ? getItems[item].nodeName : getItems[item - 1].nodeName;
+                for ( let j = 0; j < getItems.length; j++ ) {
 
-                let getParse = parseObj( getItems, getType );
-                if ( name === 'create' ) {
-                    allViz.push( { [name]: getParse } );
-                }
-                if ( name === 'modify' ) {
-                   allViz.push( { [name]: getParse } );
-                }
-                if ( name === 'delete' ) {
-                   allViz.push( { [name]: getParse } );
+                    var osmElement = getItems[j];
+
+                    var parsed = services.osm.parsers[osmElement.nodeName]( osmElement, `${name[0]}${osmElement.id}` );
+
+                    allViz.push( parsed );
                 }
             }
         });
-
-        function parseObj(children, osmType ) {
-
-            var parser = services.osm.parsers;
-
-            let parsedObj = [];
-
-            for ( let i = 0; i < children.length; i++ ) {
-
-                if ( osmType === 'node' ) {
-                    let getParsedNode = parser.node( children[i] );
-                    parsedObj.push( getParsedNode );
-                }
-                if ( osmType === 'way' ) {
-                    let getParsedWay = parser.way( children[i] );
-                    parsedObj.push( getParsedWay );
-                }
-                if  ( osmType === 'relation' ) {
-                    let getParsedRelation = parser.relation( children[i] );
-                    parsedObj.push( getParsedRelation );
-                }
-
-            }
-
-            return parsedObj;
-
-        }
     });
 }
 
