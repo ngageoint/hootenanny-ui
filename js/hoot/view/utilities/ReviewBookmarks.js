@@ -580,23 +580,23 @@ Hoot.view.utilities.reviewbookmarks = function(context) {
 
         var date = new Date(createdAt);
         var dateToStr = date.toLocaleString();
-        var createdByEmail = 'anonymous';
+        var createdByName = 'anonymous';
         if(createdBy && (1*createdBy) > -1) {
-            createdByEmail = iD.data.hootConfig.users[1*createdBy].email;
+            createdByName = iD.data.hootConfig.users[1*createdBy].display_name;
         }
-        var subStr = '#' + bookmarkId + ' created at ' + dateToStr + ' by user ' + createdByEmail;
+        var subStr = '#' + bookmarkId + ' created at ' + dateToStr + ' by user ' + createdByName;
 
         if(lastModifiedAt) {
             var lastMddate = new Date(lastModifiedAt);
             var lastMdDateStr = lastMddate.toLocaleString();
             subStr += ' modified at ' + lastMdDateStr;
 
-            var modifiedByEmail = 'anonymous';
+            var modifiedByName = 'anonymous';
             if(lastModifiedBy && (1*lastModifiedBy) > -1) {
-                modifiedByEmail = iD.data.hootConfig.users[1*lastModifiedBy].email;
+                modifiedByName = iD.data.hootConfig.users[1*lastModifiedBy].display_name;
             }
 
-            subStr += ' modified by ' + modifiedByEmail;
+            subStr += ' modified by ' + modifiedByName;
         }
 
         return subStr;

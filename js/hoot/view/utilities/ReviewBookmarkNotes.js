@@ -275,16 +275,16 @@ Hoot.view.utilities.reviewbookmarknotes = function(context){
         var dateToStr = date.toLocaleString();
         var meta = {};
 
-        var createdByEmail = 'anonymous';
+        var createdByName = 'anonymous';
         var ntUid = nt.userId;
         if(nt.modifiedBy) {
           ntUid = nt.modifiedBy;
         }
         if(ntUid && (1*ntUid) > -1) {
-            createdByEmail = iD.data.hootConfig.users[1*ntUid].email;
+            createdByName = iD.data.hootConfig.users[1*ntUid].display_name;
         }
 
-        meta.title = 'User ' + createdByEmail + ' commented at ' + dateToStr;
+        meta.title = 'User ' + createdByName + ' commented at ' + dateToStr;
         meta.form = d_form;
         meta.rawData = nt;
         meta.modifyHandler = _modifyNoteHandler;
