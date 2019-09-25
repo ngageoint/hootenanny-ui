@@ -39,9 +39,12 @@ export default class GrailPull {
 
     async createTable() {
         const params = {
-            BBOX: this.instance.bbox,
-            customQuery: this.instance.userInputContainer.select( 'textarea' ).property( 'value' )
+            BBOX: this.instance.bbox
         };
+
+        if ( this.instance.userInputContainer.select('input').property('checked') ) {
+            params.customQuery = this.instance.userInputContainer.select( 'textarea' ).property( 'value' );
+        }
 
         const { data } = await Hoot.api.grailMetadataQuery( params );
         this.maxFeatureCount = +data.maxFeatureCount;
