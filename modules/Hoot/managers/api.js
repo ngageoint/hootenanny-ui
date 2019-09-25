@@ -1111,8 +1111,9 @@ export default class API {
 
     grailPullOverpassToDb( data ) {
         const params = {
-            path: `/grail/pulloverpasstodb?bbox=${ data.BBOX }&name=${ data.secondaryName }`,
-            method: 'GET'
+            path: '/grail/pulloverpasstodb',
+            method: 'POST',
+            data
         };
 
         return this.request( params )
@@ -1135,10 +1136,11 @@ export default class API {
             } );
     }
 
-    grailMetadataQuery( bbox ) {
+    grailMetadataQuery( data ) {
         const params = {
-            path: `/grail/grailMetadataQuery?bbox=${ bbox }`,
-            method: 'GET'
+            path: '/grail/grailMetadataQuery',
+            method: 'POST',
+            data
         };
 
         return this.request( params )
@@ -1155,8 +1157,9 @@ export default class API {
 
     grailPullRailsPortToDb( data ) {
         const params = {
-            path: `/grail/pullrailsporttodb?bbox=${ data.BBOX }&name=${ data.referenceName }`,
-            method: 'GET'
+            path: '/grail/pullrailsporttodb',
+            method: 'POST',
+            data
         };
 
         return this.request( params )

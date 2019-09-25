@@ -38,7 +38,12 @@ export default class GrailPull {
     }
 
     async createTable() {
-        const { data } = await Hoot.api.grailMetadataQuery(this.instance.bbox);
+        const params = {
+            BBOX: this.instance.bbox,
+            customQuery: this.instance.userInputContainer.select( 'textarea' ).property( 'value' )
+        };
+
+        const { data } = await Hoot.api.grailMetadataQuery( params );
         this.maxFeatureCount = +data.maxFeatureCount;
 
         const overpassStats = await Hoot.api.getOverpassStats( data.overpassQuery );
@@ -161,21 +166,30 @@ export default class GrailPull {
     }
 
     handleSubmit() {
-        const bbox   = this.instance.bbox,
-              params = {};
+        const bbox = this.instance.bbox;
 
         if ( !bbox ) {
             Hoot.message.alert( 'Need a bounding box!' );
             return;
         }
 
-        params.BBOX          = formatBbox( bbox );
-        params.referenceName = this.form.select( '.outputName-reference' ).property( 'value' );
-        params.secondaryName = this.form.select( '.outputName-secondary' ).property( 'value' );
+        const railsParams = {
+            BBOX   : formatBbox( bbox ),
+            input1 : this.form.select( '.outputName-reference' ).property( 'value' )
+        };
+
+        const overpassParams = {
+            BBOX   : formatBbox( bbox ),
+            input1 : this.form.select( '.outputName-secondary' ).property( 'value' )
+        };
+
+        if ( this.instance.userInputContainer.select('input').property('checked') ) {
+            overpassParams.customQuery = this.instance.userInputContainer.select( 'textarea' ).property( 'value' );
+        }
 
         Promise.all([
-                Hoot.api.grailPullOverpassToDb( params ),
-                Hoot.api.grailPullRailsPortToDb( params )
+                Hoot.api.grailPullOverpassToDb( overpassParams ),
+                Hoot.api.grailPullRailsPortToDb( railsParams )
             ])
             .then( ( resp ) => {
                 resp.forEach( jobResp => {

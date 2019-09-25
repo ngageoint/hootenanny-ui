@@ -72,6 +72,19 @@
     }
 }
 
+.user-input {
+    margin-top: 20px;
+
+    div {
+        font-weight: bold;
+    }
+
+    textarea {
+        width: 100%;
+        min-height: 125px;
+    }
+}
+
 #minlat {
     margin-bottom: -1px;
     border-radius: 4px 4px 0 0;

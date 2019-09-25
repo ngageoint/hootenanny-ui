@@ -200,6 +200,34 @@ export default class SelectBbox extends EventEmitter {
                     bboxOptions.selectAll( 'button' )
                         .classed( 'selected', false );
                 });
+
+            // construct input section for user custom overpass queries
+            this.userInputContainer = this.form
+                .select( '.wrapper div' )
+                .insert( 'div', '.modal-footer' )
+                .classed( 'button-wrap user-input', true );
+
+            this.userInputContainer.append( 'input' )
+                .attr( 'type', 'checkbox' )
+                .on('click', function() {
+                    const isChecked = d3.select( this ).property( 'checked' );
+                    customQueryInput.classed( 'hidden', !isChecked );
+                });
+
+            this.userInputContainer.append('div').text('Use custom query for public overpass data');
+
+            const placeholder = 'Example Query:\n' +
+                '[out:json][bbox:{{bbox}}];\n' +
+                '(\n' +
+                '   node;<;>;\n' +
+                ')->.all;\n' +
+                '.all;\n' +
+                'out meta;\n' +
+                '>;\n';
+
+            const customQueryInput = this.userInputContainer.append( 'textarea' )
+                .classed( 'hidden', true )
+                .attr( 'placeholder', placeholder );
         }
     }
 
