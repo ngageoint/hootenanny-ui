@@ -5,7 +5,6 @@
  *******************************************************************************************************/
 
 import _cloneDeep  from 'lodash-es/cloneDeep';
-import _concat     from 'lodash-es/concat';
 import _difference from 'lodash-es/difference';
 import _drop       from 'lodash-es/drop';
 import _filter     from 'lodash-es/filter';
@@ -16,6 +15,8 @@ import _remove     from 'lodash-es/remove';
 import _slice      from 'lodash-es/slice';
 import _uniq       from 'lodash-es/uniq';
 import _without from 'lodash-es/without';
+
+import { apiConfig } from '../config/apiConfig';
 
 import { duration, formatSize } from './utilities';
 
@@ -47,6 +48,11 @@ export default class FolderTree extends EventEmitter {
                 title: 'Export',
                 icon: 'export',
                 click: 'exportDataset'
+            },
+            conflationProjectOpts: {
+                title:'Create Conflation Task Project',
+                icon:'sprocket',
+                click:'taskManager'
             },
             addDatasetOpts: [
                 {
@@ -570,7 +576,12 @@ export default class FolderTree extends EventEmitter {
                     click: 'modifyDataset'
                 } );
 
-                opts = _concat( opts, this.datasetContextMenu.singleDatasetOpts );
+                opts.push(this.datasetContextMenu.singleDatasetOpts);
+
+                // console.log(data);
+                if (apiConfig.taskingManagerUrl && Hoot.users.isAdvanced()) {
+                    opts.push(this.datasetContextMenu.conflationProjectOpts);
+                }
             }
         } else if ( data.type === 'folder' ) {
             opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals

@@ -15,6 +15,7 @@ import AddFolder          from '../modals/addFolder';
 import ModifyDataset      from '../modals/modifyDataset';
 import ModifyFolder       from '../modals/modifyFolder';
 import ExportData from '../modals/exportData';
+import CreateConflationProject from '../modals/createConflationProject';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -311,6 +312,12 @@ export default class Datasets extends Tab {
                 this.modifyFolderModal = new ModifyFolder( d ).render();
 
                 Hoot.events.once( 'modal-closed', () => delete this.modifyFolderModal );
+                break;
+            }
+            case 'taskManager': {
+                this.createConflationProjectModal = new CreateConflationProject( d ).render();
+
+                Hoot.events.once( 'modal-closed', () => delete this.createConflationProjectModal );
                 break;
             }
         }
