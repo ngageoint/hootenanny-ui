@@ -3,116 +3,54 @@ import _forEach from 'lodash-es/forEach';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { xml as d3_xml } from 'd3-request';
 import { request as d3_request } from 'd3-request';
-import { utilQsString, utilRebind, utilTiler } from '../util';
+import {
+    select as d3_select,
+    selectAll as d3_selectAll
+} from 'd3-selection';
 
 import { services } from './index';
-import { osmNode  } from '../osm/node';
-import { uiContributors } from '../ui';
 
 
-var dispatch = d3_dispatch('osmChange');
-var _mlyCache;
+var dispatch = d3_dispatch('visualize-changeset');
 var allViz = [];
-
-
-function getDoc( url, done ) {
-
-    d3_xml( url, function ( err, response ) {
-        if ( err ) return;
-
-        [ 'create', 'modify','delete' ].forEach( function(name) {
-
-            let osmElements = response.getElementsByTagName(name);
-
-            for ( let item = 0; item < osmElements.length; item++ ) {
-
-                var getItems = osmElements[item].children;
-
-                for ( let j = 0; j < getItems.length; j++ ) {
-
-                    var osmElement = getItems[j];
-
-                    var parsed = services.osm.parsers[osmElement.nodeName]( osmElement, `${name[0]}${osmElement.id}` );
-
-                    allViz.push( parsed );
-                }
-            }
-        });
-    });
-}
-
 
 export default {
     init: function() {
-        if (!_mlyCache) {
-            this.reset();
-        }
 
-        this.event = utilRebind(this, dispatch, 'on');
     },
     reset: function() {
-        var cache = _mlyCache;
+        allViz = [];
     },
 
-    buildFidMap: function(features) {
-        var map = {};
-
-        for (var i = 0; features.length > 0; i++) {
-            map[features[i].fid] = features[i];
-        }
+    entities: function() {
+        return allViz;
     },
 
-    getChangeset: function(url) {
-        getDoc(url);
-    },
+    getChangeset: function(url, context) {
+        d3_xml( url, function ( err, response ) {
+            if ( err ) return;
 
-    viewChangeset: function (oscFeatures, osmFeatures) {
-    },
+            [ 'create', 'modify','delete' ].forEach( function(name) {
 
-    setHasTags: function ( osmFeatures, oscFeatures ) {
-        var osmHasTags = false;
+                let osmElements = response.getElementsByTagName(name);
 
-        if ( osmFeatures ) {
-            osmHasTags = this.getHasTags( osmFeatures );
-            osmFeatures.hasTags = osmHasTags;
-        }
-        if ( oscFeatures ) {
-            oscFeatures.hasTags = osmHasTags || this.getHasTags( oscFeatures );
-        }
-    },
+                for ( let item = 0; item < osmElements.length; item++ ) {
 
-    setModifyAction: function ( osmFeatures, oscFeatures ) {
-    },
+                    var getItems = osmElements[item].children;
 
-    displayChanges: function (entity) {
+                    for ( let j = 0; j < getItems.length; j++ ) {
 
-        var displayRules = {
-            'create': {
-            },
-            'modify': {
-            },
-            'delete':{
-            }
-        };
-    },
+                        var osmElement = getItems[j];
 
-    displayOld: function (entity) {
-        var staleEntity = {
-            'create': {
-                display: 'none'
-            },
-            'modify': {
-                display: 'none'
-            },
-            'modify:geometry': {
+                        var parsed = services.osm.parsers[osmElement.nodeName]( osmElement, `${name[0]}${osmElement.id}` );
 
-            },
-            'delete': {
-
-            },
-            'augment': {
-
-            }
-        };
+                        allViz.push( parsed );
+                    }
+                }
+            });
+            let visualizeChangeset = context.layers().layer('visualize-changeset');
+            visualizeChangeset.enabled(true);
+            dispatch.call('visualize-changeset');
+        });
     }
 };

@@ -13,6 +13,7 @@ import { svgHoot } from './hoot';
 import { svgStreetside } from './streetside';
 import { svgMapillaryImages } from './mapillary_images';
 import { svgMapillarySigns } from './mapillary_signs';
+import { svgVisualizeChangeset } from './visulaizeChangeset';
 import { svgMeasure } from './measure';
 import { svgOpenstreetcamImages } from './openstreetcam_images';
 import { svgOsm } from './osm';
@@ -33,12 +34,12 @@ export function svgLayers(projection, context) {
         { id: 'streetside', layer: svgStreetside(projection, context, dispatch)},
         { id: 'mapillary-images', layer: svgMapillaryImages(projection, context, dispatch) },
         { id: 'mapillary-signs',  layer: svgMapillarySigns(projection, context, dispatch) },
+        { id: 'visualize-changeset', layer: svgVisualizeChangeset(projection, context, dispatch)},
         { id: 'measure', layer: svgMeasure(projection, context, dispatch) },
         { id: 'openstreetcam-images', layer: svgOpenstreetcamImages(projection, context, dispatch) },
         { id: 'debug', layer: svgDebug(projection, context, dispatch) },
         { id: 'touch', layer: svgTouch(projection, context, dispatch) }
     ];
-
 
     function drawLayers(selection) {
         svg = selection.selectAll('.surface')
