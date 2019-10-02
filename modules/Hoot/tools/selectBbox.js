@@ -12,7 +12,6 @@ import ClipDataset                from './clipDataset';
 import GrailPull                  from './grailPull';
 import DifferentialUpload         from './differentialUpload';
 import { d3combobox }             from '../../lib/hoot/d3.combobox';
-import _map                       from 'lodash-es/map';
 import { geoExtent as GeoExtent } from '../../geo';
 
 export default class SelectBbox extends EventEmitter {
@@ -115,92 +114,72 @@ export default class SelectBbox extends EventEmitter {
     }
 
     createBboxOptions() {
-        let that = this;
+        const self = this;
 
-        let bboxOptions = this.form
-            .select( '.wrapper div' )
-            .insert( 'div', '.modal-footer' )
-            .classed( 'bbox-options button-wrap flex justify-center', true );
-
-        bboxOptions
-            .append( 'button' )
-            .text( 'Draw Bounding Box' )
-            .on( 'click', function() {
-                d3.select( this.parentNode )
-                    .selectAll( 'button' )
-                    .classed( 'selected', false );
-
-                d3.select( this ).classed( 'selected', true );
-                that.container.classed( 'hidden', true );
-                that.bboxSelectType = 'boundingBox';
-
-                that.context.enter( modeDrawBoundingBox( that, that.context ) );
-            } );
-
-        bboxOptions
-            .append( 'button' )
-            .classed( 'selected', true )
-            .text( 'Visual Extent' )
-            .on( 'click', function() {
-                d3.select( this.parentNode )
-                    .selectAll( 'button' )
-                    .classed( 'selected', false );
-
-                d3.select( this ).classed( 'selected', true );
-                that.bboxSelectType = 'visualExtent';
-
-                that.handleBbox( that.context.map().extent() );
-            } );
+        const boundOptionsList = [ 'Draw Bounding Box', 'Visual Extent' ];
 
         let customDataLayer = this.context.layers().layer('data');
-        if (customDataLayer.hasData() && customDataLayer.enabled()) {
-            bboxOptions
-                .append( 'button' )
-                .text( 'Custom Data Extent' )
-                .on( 'click', function() {
-                    d3.select( this.parentNode )
-                        .selectAll( 'button' )
-                        .classed( 'selected', false );
-
-                    d3.select( this ).classed( 'selected', true );
-                    that.bboxSelectType = 'customDataExtent';
-
-                    that.handleBbox( customDataLayer.extent() );
-                } );
+        if ( customDataLayer.hasData() && customDataLayer.enabled() ) {
+            boundOptionsList.push( 'Custom Data Extent' );
         }
 
         if ( this.operationName === 'grailPull' || this.operationName === 'createDifferentialChangeset' ) {
-            const self = this;
-
-            this.dropdownContainer = this.form
-                .select( '.wrapper div' )
-                .insert( 'div', '.modal-footer' )
-                .classed( 'button-wrap flex justify-left history-options', true )
-                .append( 'input' )
-                .attr('placeholder', 'Previously used bounds');
-
-            let { bboxHistory } = JSON.parse( Hoot.context.storage('history') );
-
-            let combobox = d3combobox()
-                .data( _map( bboxHistory, n => {
-                    return {
-                        value: n
-                    };
-                } ) );
-
-            this.dropdownContainer.call( combobox )
-                .on('change', function() {
-                    const bbox = this.value;
-                    self.dropdownContainer.attr('title', bbox);
-                    self.bboxSelectType = 'boundsHistory';
-
-                    const coords = bbox.split(',').map( data => +data );
-                    self.handleBbox( new GeoExtent( [ coords[0], coords[1] ], [ coords[2], coords[3] ] ) );
-
-                    bboxOptions.selectAll( 'button' )
-                        .classed( 'selected', false );
-                });
+            const primaryLayer = Hoot.layers.findLoadedBy( 'refType', 'primary' ),
+                  secondaryLayer = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
+            if (primaryLayer) {
+                boundOptionsList.push( 'Primary Layer Extent' );
+            }
+            if (secondaryLayer) {
+                boundOptionsList.push( 'Secondary Layer Extent' );
+            }
         }
+
+        // Build dropdown for historical bounds
+        this.dropdownContainer = this.form
+            .select( '.wrapper div' )
+            .insert( 'div', '.modal-footer' )
+            .classed( 'button-wrap flex justify-left history-options', true )
+            .append( 'input' )
+            .attr('placeholder', 'Select a bounds');
+
+        let { bboxHistory } = JSON.parse( Hoot.context.storage('history') );
+
+        const dropdownOptions = boundOptionsList.concat( bboxHistory );
+        const historyOptions = dropdownOptions.map( option => { return { value: option }; } );
+
+        let combobox = d3combobox()
+            .data( historyOptions );
+
+        this.dropdownContainer.call( combobox )
+            .attr( 'readonly', true )
+            .on('change', function() {
+                const selectedValue = this.value;
+
+                if ( selectedValue === 'Draw Bounding Box' ) {
+                    self.container.classed( 'hidden', true );
+                    self.bboxSelectType = 'boundingBox';
+                    self.context.enter( modeDrawBoundingBox( self, self.context ) );
+                } else if ( selectedValue === 'Visual Extent' ) {
+                    self.bboxSelectType = 'visualExtent';
+                    self.handleBbox( self.context.map().extent() );
+                } else if ( selectedValue === 'Custom Data Extent' ) {
+                    self.bboxSelectType = 'customDataExtent';
+                    self.handleBbox( customDataLayer.extent() );
+                } else if ( selectedValue === 'Primary Layer Extent' ) {
+                    self.bboxSelectType = 'primaryLayerExtent';
+                    self.handleBbox( primaryLayer.extent );
+                } else if ( selectedValue === 'Secondary Layer Extent' ) {
+                    self.bboxSelectType = 'secondaryLayerExtent';
+                    self.handleBbox( secondaryLayer.extent );
+                } else {
+                    self.bboxSelectType = 'boundsHistory';
+                    const coords = selectedValue.split(',').map( data => +data );
+                    self.handleBbox( new GeoExtent( [ coords[0], coords[1] ], [ coords[2], coords[3] ] ) );
+                }
+
+                self.dropdownContainer.property( 'value', selectedValue );
+            });
+
     }
 
     handleBbox( extent ) {
@@ -211,10 +190,6 @@ export default class SelectBbox extends EventEmitter {
         this.minLonInput.property( 'value', this.minlon );
         this.maxLonInput.property( 'value', this.maxlon );
         this.minLatInput.property( 'value', this.minlat );
-
-        if ( this.dropdownContainer && this.bboxSelectType !== 'boundsHistory' ){
-            this.dropdownContainer.property( 'value', '' );
-        }
 
         let inputs = this.extentBox.selectAll( 'input' );
 
