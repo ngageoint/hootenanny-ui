@@ -15,7 +15,8 @@ import AddFolder          from '../modals/addFolder';
 import ModifyDataset      from '../modals/modifyDataset';
 import ModifyFolder       from '../modals/modifyFolder';
 import ExportData from '../modals/exportData';
-import CreateConflationProject from '../modals/createConflationProject';
+import ExportAlphaShape from '../modals/exportAlphaShape';
+import ExportTaskGrid from '../modals/exportTaskGrid';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -314,10 +315,16 @@ export default class Datasets extends Tab {
                 Hoot.events.once( 'modal-closed', () => delete this.modifyFolderModal );
                 break;
             }
-            case 'taskManager': {
-                this.createConflationProjectModal = new CreateConflationProject( d ).render();
+            case 'exportTaskGrid': {
+                this.exportTaskGridModal = new ExportTaskGrid( d ).render();
 
-                Hoot.events.once( 'modal-closed', () => delete this.createConflationProjectModal );
+                Hoot.events.once( 'modal-closed', () => delete this.exportTaskGridModal );
+                break;
+            }
+            case 'exportAlphaShape': {
+                this.exportAlphaShapeModal = new ExportAlphaShape( d ).render();
+
+                Hoot.events.once( 'modal-closed', () => delete this.exportAlphaShapeModal );
                 break;
             }
         }
