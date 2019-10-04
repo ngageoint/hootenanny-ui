@@ -52,6 +52,7 @@ import {
 import { utilBindOnce } from '../util/bind_once';
 import { utilDetect } from '../util/detect';
 import { utilGetDimensions } from '../util/dimensions';
+import { svgVisualizeChangeset } from '../svg/visulaizeChangeset';
 
 // constants
 var TAU = 2 * Math.PI;
@@ -69,6 +70,7 @@ export function rendererMap(context) {
     var drawVertices = svgVertices(projection, context);
     var drawLines = svgLines(projection, context);
     var drawAreas = svgAreas(projection, context);
+    var drawVisChangeset = svgVisualizeChangeset(projection, context);
     var drawMidpoints = svgMidpoints(projection, context);
     var drawLabels = svgLabels(projection, context);
 
@@ -338,6 +340,7 @@ export function rendererMap(context) {
             .call(drawVertices, graph, data, filter, map.extent(), fullRedraw)
             .call(drawLines, graph, data, filter)
             .call(drawAreas, graph, data, filter)
+            .call(drawVisChangeset, graph, data, filter)
             .call(drawMidpoints, graph, data, filter, map.trimmedExtent())
             .call(drawLabels, graph, data, filter, dimensions, fullRedraw)
             .call(drawPoints, graph, data, filter);

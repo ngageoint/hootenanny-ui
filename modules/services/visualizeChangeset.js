@@ -7,19 +7,27 @@ import {
     select as d3_select,
     selectAll as d3_selectAll
 } from 'd3-selection';
+import { utilQsString, utilRebind, utilTiler } from '../util';
+
 
 import { services } from './index';
+import { all } from 'q';
 
 
 var dispatch = d3_dispatch('visualize-changeset');
 var allViz = [];
+var svgContext;
 
 export default {
     init: function() {
-
+        this.event = utilRebind(this, dispatch, 'on');
     },
     reset: function() {
         allViz = [];
+    },
+
+    getContext: function() {
+        return svgContext;
     },
 
     entities: function() {
@@ -27,6 +35,7 @@ export default {
     },
 
     getChangeset: function(url, context) {
+        svgContext = context;
         d3_xml( url, function ( err, response ) {
             if ( err ) return;
 
@@ -50,7 +59,7 @@ export default {
             });
             let visualizeChangeset = context.layers().layer('visualize-changeset');
             visualizeChangeset.enabled(true);
-            dispatch.call('visualize-changeset');
+
         });
     }
 };
