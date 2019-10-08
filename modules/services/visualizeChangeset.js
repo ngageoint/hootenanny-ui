@@ -1,17 +1,17 @@
 import _forEach from 'lodash-es/forEach';
+import _extend from 'lodash-es/extend';
 
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { xml as d3_xml } from 'd3-request';
-import { request as d3_request } from 'd3-request';
 import {
     select as d3_select,
     selectAll as d3_selectAll
 } from 'd3-selection';
+
 import { utilQsString, utilRebind, utilTiler } from '../util';
 
-
 import { services } from './index';
-import { all } from 'q';
+import { osmEntity } from '../osm';
 
 
 var dispatch = d3_dispatch('visualize-changeset');
@@ -36,6 +36,8 @@ export default {
 
     getChangeset: function(url, context) {
         svgContext = context;
+        var options = _extend({ skipSeen: true }, options);
+        var _tileCache = { loaded: {}, inflight: {}, seen: {} };
         d3_xml( url, function ( err, response ) {
             if ( err ) return;
 
@@ -51,9 +53,17 @@ export default {
 
                         var osmElement = getItems[j];
 
-                        var parsed = services.osm.parsers[osmElement.nodeName]( osmElement, `${name[0]}${osmElement.id}` );
+                        var uid = osmEntity.id.fromOSM(osmElement.nodeName, osmElement.attributes.id.value);
+
+                        var parsed = services.osm.parsers[osmElement.nodeName]( osmElement, uid, name );
+
+                        if (options.skipSeen) {
+                            if (_tileCache.seen[uid]) return null;  // avoid reparsing a "seen" entity
+                            _tileCache.seen[uid] = true;
+                        }
 
                         allViz.push( parsed );
+
                     }
                 }
             });

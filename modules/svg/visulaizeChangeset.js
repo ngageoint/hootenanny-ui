@@ -1,7 +1,12 @@
-import _forEach from 'lodash-es/forEach';
+import _chunk from 'lodash-es/chunk';
 import _compact from 'lodash-es/compact';
-import _values from 'lodash-es/values';
+import _forEach from 'lodash-es/forEach';
+import _groupBy from 'lodash-es/groupBy';
 import _map from 'lodash-es/map';
+import _uniq from 'lodash-es/uniq';
+import _values from 'lodash-es/values';
+
+
 
 import { utilFunctor } from '../util';
 import { set as d3_set } from 'd3-collection';
@@ -24,9 +29,10 @@ import {
 export function svgVisualizeChangeset( projection, context, dispatch ) {
 
     var surface;
+    var enabled = true;
 
     function showLayer() {
-        var layer = context.surface().selectAll('.layer-visualize-changeset');
+        var layer = context.surface().selectAll('.data-layer.visualize-changeset');
         layer.interrupt();
 
         layer
@@ -41,7 +47,7 @@ export function svgVisualizeChangeset( projection, context, dispatch ) {
     }
 
     function hideLayer() {
-        var layer = context.surface().selectAll('.layer-visualize-changeset');
+        var layer = context.surface().selectAll('.data-layer.visualize-changeset');
         layer.interrupt();
 
         layer
@@ -57,9 +63,11 @@ export function svgVisualizeChangeset( projection, context, dispatch ) {
     function update() {
         var getContext = services.oscChangeset.getContext();
         var getGraph = getContext.graph();
+        dispatch = d3_dispatch('change', 'drawn');
         var data = services.oscChangeset.entities();
-        var extent = context.map().extent();
-        var filter;
+        var all = getContext.intersects(getContext.map().extent());
+        var extent = getContext.map().extent();
+        var features = getContext.features();
         var fullRedraw = false;
         var dimensions = [1, 1];
         var drawPoints = svgPoints(projection, getContext);
@@ -70,11 +78,23 @@ export function svgVisualizeChangeset( projection, context, dispatch ) {
         var drawMidpoints = svgMidpoints(projection, getContext);
         var drawLabels = svgLabels(projection, getContext);
 
-        if (extent) {
-            //data = getContext.intersects(extent.intersection(extent));
-            var set = d3_set(_map(data, 'id'));
-            filter = function(d) { return set.has(d.id); };
-        }
+        var selectedAndParents = {};
+
+        data.forEach(function(id) {
+            let entity = id;
+            if (entity) {
+               selectedAndParents[entity.id] = entity;
+                if (entity.type === 'node') {
+                    Object.assign( getGraph.entities, selectedAndParents );
+                }
+            }
+        });
+
+        data = _values(selectedAndParents);
+        var filter = function(d) {
+            console.log(d);
+            return d.id in selectedAndParents;
+        };
 
         surface
             .call(drawVertices, getGraph, data, filter, extent, fullRedraw)
@@ -85,11 +105,13 @@ export function svgVisualizeChangeset( projection, context, dispatch ) {
             .call(drawLabels, getGraph, data, filter, dimensions, fullRedraw)
             .call(drawPoints, getGraph, data, filter);
 
+        dispatch.call( 'drawn', this, { full: true } );
     }
 
     function drawChangeset(selection) {
-        surface = selection;
+
         var entities = services.oscChangeset.entities();
+        surface = selection;
 
         selection.selectAll('.layer-visualize-changeset')
             .data(['covered', 'areas', 'lines', 'points', 'labels'])
@@ -112,11 +134,10 @@ export function svgVisualizeChangeset( projection, context, dispatch ) {
     }
 
     drawChangeset.enabled = function(_) {
-        if (!arguments.length) return svgVisualizeChangeset.enabled;
-        svgVisualizeChangeset.enabled = _;
-        if (svgVisualizeChangeset.enabled) {
-            //showLayer();
-            console.log('enabled');
+        if (!arguments.length) return enabled;
+        enabled = _;
+        if (enabled) {
+            showLayer();
         } else {
             console.log('disabled');
         }

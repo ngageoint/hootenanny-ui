@@ -229,7 +229,14 @@ export function svgSegmentWay(way, graph, activeID) {
         var node, type;
 
         for (var i = 0; i < way.nodes.length; i++) {
-            node = graph.entity(way.nodes[i]);
+            let oscNodes = way.nodes[i].split('_');
+            if ( oscNodes ) {
+                node = graph.entity( oscNodes[0] );
+            }
+            else {
+                node = graph.entity(way.nodes[i]);
+            }
+
             type = svgPassiveVertex(node, graph, activeID);
             end = { node: node, type: type };
 

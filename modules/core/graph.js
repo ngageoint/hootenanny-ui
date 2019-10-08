@@ -109,7 +109,15 @@ coreGraph.prototype = {
 
         var nodes = [];
         for (var i = 0; i < entity.nodes.length; i++) {
-            nodes[i] = this.entity(entity.nodes[i]);
+
+            let oscCheck = entity.nodes[i].split('_');
+
+            if ( oscCheck[1] === 'create' || oscCheck[1] === 'modify' || oscCheck[1] === 'delete' ) {
+                nodes[i] = this.entity(oscCheck[0]);
+            }
+            else {
+                nodes[i] = this.entity(entity.nodes[i]);
+            }
         }
 
         if (debug) Object.freeze(nodes);
