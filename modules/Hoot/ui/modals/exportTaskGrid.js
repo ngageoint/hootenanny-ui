@@ -25,6 +25,9 @@ export default class ExportTaskGrid {
         this.submitButton = d3.select( `#${ metadata.button.id }` );
         this.submitButton.property( 'disabled', false );
 
+        this.alphaContainer = this.container.select('#alpha_container');
+        this.bufferContainer = this.container.select('#buffer_container');
+
         let container = this.container;
         Hoot.events.once( 'modal-closed', () => {
             container.remove();
@@ -50,16 +53,79 @@ export default class ExportTaskGrid {
 
         this.container.selectAll( 'input' )
             .each( function() {
-                d3.select( this ).node().disabled = true;
+                d3.select( this ).property('disabled', true);
             } );
     }
 
+    cancelOrErrorState() {
+        this.submitButton
+            .select( 'span' )
+            .text( 'Export' );
+
+        this.submitButton.on( 'click', () => {
+            this.handleSubmit();
+        } );
+
+        this.submitButton.selectAll( 'div._loading' )
+            .remove();
+
+        this.container.selectAll( 'input' )
+            .each( function() {
+                d3.select( this ).property('disabled', false);
+            } );
+    }
+
+    /**
+     * Validate user input to make sure it's a number
+     *
+     * @param d - element data
+     */
+    validateTextInput( d ) {
+        let target           = d3.select( `#${ d.id }` ),
+            str              = target.property('value'),
+            valid            = true;
+
+        if ( str.length && isNaN(str) ) {
+            valid = false;
+        }
+
+        target.classed( 'invalid', !valid );
+        this.formValid = valid;
+        this.updateButtonState();
+    }
+
+    /**
+     * Enable/disable button based on form validity
+     */
+    updateButtonState() {
+        this.submitButton.property('disabled', !this.formValid);
+    }
+
+    toggleAlphaInputs( d ) {
+        this.alphaContainer.classed( 'hidden', !this.alphaContainer.classed( 'hidden' ) );
+        this.bufferContainer.classed( 'hidden', !this.bufferContainer.classed( 'hidden' ) );
+    }
+
     getMaxNodes() {
-        return this.container.select('#maxnodes').property('value');
+        return this.container.select('#maxnodes').property('value')
+            || this.container.select('#maxnodes').attr('placeholder');
     }
 
     getPixelSize() {
-        return this.container.select('#pxsize').property('value');
+        return this.container.select('#pxsize').property('value')
+            || this.container.select('#pxsize').attr('placeholder');
+    }
+
+    getClipToAlpha() {
+        return this.container.select('#clipToAlpha').property('checked');
+    }
+
+    getAlpha() {
+        return this.container.select('#alpha').property('value');
+    }
+
+    getBuffer() {
+        return this.container.select('#buffer').property('value');
     }
 
     getAddToMap() {
@@ -81,8 +147,14 @@ export default class ExportTaskGrid {
             // so stray features don't make the task extent too big
         };
 
-        if (self.getMaxNodes()) param.MAX_NODE_COUNT_PER_TILE = self.getMaxNodes();
-        if (self.getPixelSize()) param.PIXEL_SIZE = self.getPixelSize();
+        param.MAX_NODE_COUNT_PER_TILE = self.getMaxNodes();
+        param.PIXEL_SIZE = self.getPixelSize();
+        if (self.getClipToAlpha()) {
+            param.CLIP_TO_ALPHA = self.getClipToAlpha();
+            param.outputtype = 'alpha.tiles.geojson';
+            if (self.getAlpha()) param.alpha = self.getAlpha();
+            if (self.getBuffer()) param.buffer = self.getBuffer();
+        }
         let addToMap = self.getAddToMap();
 
         Hoot.api.exportDataset(param)
@@ -107,17 +179,19 @@ export default class ExportTaskGrid {
                 }
                 return resp;
             } )
-            .then( resp => {
-                Hoot.events.emit( 'modal-closed' );
-                return resp;
-            })
+            // .then( resp => {
+            //     Hoot.events.emit( 'modal-closed' );
+            //     return resp;
+            // })
             .then( async resp => {
                 let message;
                 if (resp.data && resp.data.status === 'cancelled') {
                     message = 'Export task grid job cancelled';
+                    this.cancelOrErrorState();
                 } else {
                     message = 'Task grid geojson exported';
                     if (addToMap) message += ' and added to the map';
+                    Hoot.events.emit( 'modal-closed' );
                 }
 
                 Hoot.message.alert( {
@@ -132,11 +206,13 @@ export default class ExportTaskGrid {
             .catch( (err) => {
                 console.error(err);
 
+                this.cancelOrErrorState();
+
                 let message = 'Error exporting conflation task grid',
                     type = err.type,
                     keepOpen = true;
 
-                if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                if (err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
                     message = err.data.commandDetail[0].stderr;
                 }
 

@@ -54,6 +54,32 @@ export default class ExportAlphaShape {
             } );
     }
 
+    /**
+     * Validate user input to make sure it's a number
+     *
+     * @param d - element data
+     */
+    validateTextInput( d ) {
+        let target           = d3.select( `#${ d.id }` ),
+            str              = target.property('value'),
+            valid            = true;
+
+        if ( str.length && isNaN(str) ) {
+            valid = false;
+        }
+
+        target.classed( 'invalid', !valid );
+        this.formValid = valid;
+        this.updateButtonState();
+    }
+
+    /**
+     * Enable/disable button based on form validity
+     */
+    updateButtonState() {
+        this.submitButton.property('disabled', !this.formValid);
+    }
+
     getAlpha() {
         return this.container.select('#alpha').property('value');
     }
