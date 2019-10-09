@@ -222,8 +222,8 @@ export default class ExportData {
                 includehoottags: self.includeHootTagsCheckbox.property( 'checked' ),
                 outputname: self.getOutputName(),
                 outputtype: self.getOutputType(),
-                tagoverrides: {},
-                textstatus: false,
+                // tagoverrides: "{}",
+                // textstatus: false,
                 translation: self.getTranslationPath()
             };
 
@@ -271,7 +271,7 @@ export default class ExportData {
                     type = err.type,
                     keepOpen = true;
 
-                if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                if (err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
                     message = err.data.commandDetail[0].stderr;
                 }
 
