@@ -150,7 +150,6 @@ export default class ExportTaskGrid {
         param.MAX_NODE_COUNT_PER_TILE = self.getMaxNodes();
         param.PIXEL_SIZE = self.getPixelSize();
         if (self.getClipToAlpha()) {
-            param.CLIP_TO_ALPHA = self.getClipToAlpha();
             param.outputtype = 'alpha.tiles.geojson';
             if (self.getAlpha()) param.alpha = self.getAlpha();
             if (self.getBuffer()) param.buffer = self.getBuffer();
