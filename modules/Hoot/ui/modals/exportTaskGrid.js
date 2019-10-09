@@ -179,10 +179,6 @@ export default class ExportTaskGrid {
                 }
                 return resp;
             } )
-            // .then( resp => {
-            //     Hoot.events.emit( 'modal-closed' );
-            //     return resp;
-            // })
             .then( async resp => {
                 let message;
                 if (resp.data && resp.data.status === 'cancelled') {

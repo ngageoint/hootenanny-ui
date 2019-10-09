@@ -50,7 +50,25 @@ export default class ExportAlphaShape {
 
         this.container.selectAll( 'input' )
             .each( function() {
-                d3.select( this ).node().disabled = true;
+                d3.select( this ).property('disabled', true);
+            } );
+    }
+
+    cancelOrErrorState() {
+        this.submitButton
+            .select( 'span' )
+            .text( 'Export' );
+
+        this.submitButton.on( 'click', () => {
+            this.handleSubmit();
+        } );
+
+        this.submitButton.selectAll( 'div._loading' )
+            .remove();
+
+        this.container.selectAll( 'input' )
+            .each( function() {
+                d3.select( this ).property('disabled', false);
             } );
     }
 
@@ -133,17 +151,15 @@ export default class ExportAlphaShape {
                 }
                 return resp;
             } )
-            .then( resp => {
-                Hoot.events.emit( 'modal-closed' );
-                return resp;
-            })
             .then( async resp => {
                 let message;
                 if (resp.data && resp.data.status === 'cancelled') {
                     message = 'Export alpha shape job cancelled';
+                    this.cancelOrErrorState();
                 } else {
                     message = 'Alpha shape geojson exported';
                     if (addToMap) message += ' and added to the map';
+                    Hoot.events.emit( 'modal-closed' );
                 }
 
                 Hoot.message.alert( {
@@ -158,11 +174,13 @@ export default class ExportAlphaShape {
             .catch( (err) => {
                 console.error(err);
 
+                this.cancelOrErrorState();
+
                 let message = 'Error exporting alpha shape',
                     type = err.type,
                     keepOpen = true;
 
-                if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                if (err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
                     message = err.data.commandDetail[0].stderr;
                 }
 
