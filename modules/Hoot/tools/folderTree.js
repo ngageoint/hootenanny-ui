@@ -16,8 +16,6 @@ import _slice      from 'lodash-es/slice';
 import _uniq       from 'lodash-es/uniq';
 import _without from 'lodash-es/without';
 
-import { apiConfig } from '../config/apiConfig';
-
 import { duration, formatSize } from './utilities';
 
 import EventEmitter from 'events';
@@ -587,8 +585,7 @@ export default class FolderTree extends EventEmitter {
 
                 opts.push(this.datasetContextMenu.singleDatasetOpts);
 
-                // console.log(data);
-                if (apiConfig.taskingManagerUrl && Hoot.users.isAdvanced()) {
+                if (Hoot.users.isAdvanced()) {
                     opts = opts.concat(this.datasetContextMenu.conflationProjectOpts);
                 }
             }

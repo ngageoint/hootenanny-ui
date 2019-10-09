@@ -22,7 +22,6 @@ export const apiConfig = {
     path: relativePath(),
     translationServerPort: '8094',
     mergeServerPort: '8096',
-    taskingManagerUrl: 'http://localhost:6543',
     queryInterval: 2000
 };
 
