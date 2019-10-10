@@ -4,6 +4,7 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "hoot/centos7-minimal"
   config.vm.hostname = "hoot-centos"
+  config.vm.synced_folder ".", "/home/vagrant/hoot-ui"
 
   def aws_provider(config, os)
     # AWS Provider.  Set enviornment variables for values below to use
