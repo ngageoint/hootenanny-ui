@@ -4,18 +4,6 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "hoot/centos7-minimal"
   config.vm.hostname = "hoot-centos"
-  aws_provider(config, 'CentOS7')
-
-  # tomcat service
-  config.vm.network "forwarded_port", guest: 8080, host: 8888
-  # translation nodejs service
-  config.vm.network "forwarded_port", guest: 8094, host: 8094
-  # merge nodejs service
-  config.vm.network "forwarded_port", guest: 8096, host: 8096
-  # node-mapnik-server nodejs service
-  config.vm.network "forwarded_port", guest: 8000, host: 8000
-  # node-export-server nodejs service
-  config.vm.network "forwarded_port", guest: 8101, host: 8101
 
   def aws_provider(config, os)
     # AWS Provider.  Set enviornment variables for values below to use
@@ -52,5 +40,18 @@ Vagrant.configure(2) do |config|
       end
     end
   end
+
+  aws_provider(config, 'CentOS7')
+
+  # tomcat service
+  config.vm.network "forwarded_port", guest: 8080, host: 8888
+  # translation nodejs service
+  config.vm.network "forwarded_port", guest: 8094, host: 8094
+  # merge nodejs service
+  config.vm.network "forwarded_port", guest: 8096, host: 8096
+  # node-mapnik-server nodejs service
+  config.vm.network "forwarded_port", guest: 8000, host: 8000
+  # node-export-server nodejs service
+  config.vm.network "forwarded_port", guest: 8101, host: 8101
 
 end
