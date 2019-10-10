@@ -12,7 +12,6 @@ pipeline {
             steps {
                 // Attempt to destroy exiting VM but don't stop job if not there
                 sh "vagrant destroy -f ${params.Box} || true"
-                cleanWs()
             }
         }
         stage("Vagrant Up") {
