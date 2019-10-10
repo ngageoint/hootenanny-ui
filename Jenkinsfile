@@ -31,9 +31,9 @@ pipeline {
             }
             steps {
                 // Build ui-2x
-                sh "vagrant ssh ${params.Box} -c 'cd hootenanny-ui; npm i -s; npm run production -s'"
+                sh "vagrant ssh ${params.Box} -c 'npm i -s; npm run production -s'"
                 // Run ui-2x tests
-                sh "vagrant ssh ${params.Box} -c 'cd hootenanny-ui; ./scripts/AddKarmaTestUser.sh; npm test'"
+                sh "vagrant ssh ${params.Box} -c './scripts/AddKarmaTestUser.sh; npm test'"
             }
         }
     }
