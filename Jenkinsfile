@@ -18,11 +18,14 @@ pipeline {
             steps {
                 // TODO: Vagrant up --noprovision, install hoot from daily develop RPMs
                 sh "vagrant up ${params.Box} --provider aws"
-                sh "vagrant ssh ${params.Box} -c 'sudo yum install -y epel-release yum-utils'"
+                sh "vagrant ssh ${params.Box} -c 'sudo yum install -y epel-release yum-utils git bzip2'"
                 sh "vagrant ssh ${params.Box} -c 'sudo yum-config-manager --add-repo https://s3.amazonaws.com/hoot-repo/el7/pgdg95.repo'"
                 sh "vagrant ssh ${params.Box} -c 'sudo yum-config-manager --add-repo https://s3.amazonaws.com/hoot-repo/el7/master/hoot.repo'"
                 sh "vagrant ssh ${params.Box} -c 'sudo yum makecache -y'"
                 sh "vagrant ssh ${params.Box} -c 'sudo yum install -y hootenanny-autostart'"
+                sh "vagrant ssh ${params.Box} -c 'cd hoot-ui; ./scripts/jenkins/AddKarmaTestUser.sh;'"
+                sh "vagrant ssh ${params.Box} -c 'cd hoot-ui; ./scripts/jenkins/chrome-install.sh;'"
+                sh "vagrant ssh ${params.Box} -c 'cd hoot-ui; ./scripts/jenkins/driver-install.sh;'"
             }
         }
         stage("UI") {
@@ -33,7 +36,7 @@ pipeline {
                 // Build ui-2x
                 sh "vagrant ssh ${params.Box} -c 'cd hoot-ui; npm i; npm run production'"
                 // Run ui-2x tests
-                sh "vagrant ssh ${params.Box} -c 'cd hoot-ui; ./scripts/AddKarmaTestUser.sh; npm test'"
+                sh "vagrant ssh ${params.Box} -c 'cd hoot-ui; npm test'"
             }
         }
     }
