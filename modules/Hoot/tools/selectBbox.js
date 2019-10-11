@@ -115,7 +115,8 @@ export default class SelectBbox extends EventEmitter {
 
     createBboxOptions() {
         const self = this;
-
+        const primaryLayer = Hoot.layers.findLoadedBy( 'refType', 'primary' ),
+              secondaryLayer = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
         const boundOptionsList = [ 'Draw Bounding Box', 'Visual Extent' ];
 
         let customDataLayer = this.context.layers().layer('data');
@@ -124,10 +125,8 @@ export default class SelectBbox extends EventEmitter {
         }
 
         if ( this.operationName === 'grailPull' || this.operationName === 'createDifferentialChangeset' ) {
-            const primaryLayer = Hoot.layers.findLoadedBy( 'refType', 'primary' ),
-                  secondaryLayer = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
             if (primaryLayer) {
-                boundOptionsList.push( 'Primary Layer Extent' );
+                boundOptionsList.push( 'Reference Layer Extent' );
             }
             if (secondaryLayer) {
                 boundOptionsList.push( 'Secondary Layer Extent' );
@@ -140,7 +139,7 @@ export default class SelectBbox extends EventEmitter {
             .insert( 'div', '.modal-footer' )
             .classed( 'button-wrap flex justify-left history-options', true )
             .append( 'input' )
-            .attr('placeholder', 'Select a bounds');
+            .attr('placeholder', 'Select a bounds from...');
 
         let { bboxHistory } = JSON.parse( Hoot.context.storage('history') );
 
@@ -165,7 +164,7 @@ export default class SelectBbox extends EventEmitter {
                 } else if ( selectedValue === 'Custom Data Extent' ) {
                     self.bboxSelectType = 'customDataExtent';
                     self.handleBbox( customDataLayer.extent() );
-                } else if ( selectedValue === 'Primary Layer Extent' ) {
+                } else if ( selectedValue === 'Reference Layer Extent' ) {
                     self.bboxSelectType = 'primaryLayerExtent';
                     self.handleBbox( primaryLayer.extent );
                 } else if ( selectedValue === 'Secondary Layer Extent' ) {
