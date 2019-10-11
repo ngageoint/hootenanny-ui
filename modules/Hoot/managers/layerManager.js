@@ -416,6 +416,14 @@ export default class Layers {
             this.hoot.events.emit( 'loaded-layer-removed' );
     }
 
+    removeActiveLayer(layerId, refId, refType) {
+        Hoot.layers.removeLoadedLayer( layerId );
+        Hoot.ui.sidebar.layerRemoved( {
+            id: refId,
+            refType: refType
+        } );
+    }
+
     removeAllLoadedLayers() {
         _forEach( this.loadedLayers, layer => {
             this.hootOverlay.removeGeojson( layer.id );
