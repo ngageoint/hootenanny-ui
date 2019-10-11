@@ -745,34 +745,12 @@ export default class API {
     }
 
     exportDataset( data ) {
-        data.tagoverrides =  JSON.stringify(
-            Object.assign(data.tagoverrides || {}, {
-                // 'error:circular':'',
-                // 'hoot:building:match':'',
-                // 'hoot:status':'',
-                // 'hoot:review:members':'',
-                // 'hoot:review:score':'',
-                // 'hoot:review:note':'',
-                // 'hoot:review:sort_order':'',
-                // 'hoot:review:type':'',
-                // 'hoot:review:needs':'',
-                // 'hoot:score:match':'',
-                // 'hoot:score:miss':'',
-                // 'hoot:score:review':'',
-                // 'hoot:score:uuid':''
-            })
-        );
 
         const requiredKeys = [
-            'append',
-            'includehoottags',
             'input',
             'inputtype',
             'outputname',
-            'outputtype',
-            'tagoverrides',
-            'textstatus' ,
-            'translation'
+            'outputtype'
         ];
 
         if (!requiredKeys.every( k => data.hasOwnProperty(k) )) {
@@ -784,10 +762,6 @@ export default class API {
             method: 'POST',
             data: data
         };
-
-        if ( data.inputtype === 'folder' ) {
-            params.path = `${params.path}?ext=zip`;
-        }
 
         return this.request( params );
     }
@@ -1369,6 +1343,24 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data );
+    }
+
+    /**
+     * Used to load geojson output (alpha shape, task grids) to the map
+     *
+     * @param id - the job id that produced the output
+     * @param outputname - the output file name
+     * @param ext - the output file extension
+     * @returns {Promise} - request
+     */
+    fetchGeojson( id, outputname, ext ) {
+        const params = {
+            path: `/job/export/geojson/${id}?outputname=${outputname}&ext=${ext}`,
+            responseType: 'json',
+            method: 'GET'
+        };
+
+        return this.request( params );
     }
 
 }
