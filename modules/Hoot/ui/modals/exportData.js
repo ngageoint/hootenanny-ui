@@ -222,6 +222,8 @@ export default class ExportData {
                 includehoottags: self.includeHootTagsCheckbox.property( 'checked' ),
                 outputname: self.getOutputName(),
                 outputtype: self.getOutputType(),
+                //these hardcoded properties are for features from hoot1
+                //that have not been implemented in hoot2x yet
                 // tagoverrides: "{}",
                 // textstatus: false,
                 translation: self.getTranslationPath()
