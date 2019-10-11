@@ -9,7 +9,7 @@ import FormFactory  from './formFactory';
 
 import { modeDrawBoundingBox }    from '../../modes';
 import ClipDataset                from './clipDataset';
-import GrailPull                  from './grailPull';
+import OverpassQueryPanel         from './overpassQueryPanel';
 import DifferentialUpload         from './differentialUpload';
 import { d3combobox }             from '../../lib/hoot/d3.combobox';
 import _map                       from 'lodash-es/map';
@@ -201,33 +201,6 @@ export default class SelectBbox extends EventEmitter {
                         .classed( 'selected', false );
                 });
 
-            // construct input section for user custom overpass queries
-            this.userInputContainer = this.form
-                .select( '.wrapper div' )
-                .insert( 'div', '.modal-footer' )
-                .classed( 'button-wrap user-input', true );
-
-            this.userInputContainer.append( 'input' )
-                .attr( 'type', 'checkbox' )
-                .on('click', function() {
-                    const isChecked = d3.select( this ).property( 'checked' );
-                    customQueryInput.classed( 'hidden', !isChecked );
-                });
-
-            this.userInputContainer.append('div').text('Use custom query for public overpass data');
-
-            const placeholder = 'Example Query:\n' +
-                '[out:json][bbox:{{bbox}}];\n' +
-                '(\n' +
-                '   node;<;>;\n' +
-                ')->.all;\n' +
-                '.all;\n' +
-                'out meta;\n' +
-                '>;\n';
-
-            const customQueryInput = this.userInputContainer.append( 'textarea' )
-                .classed( 'hidden', true )
-                .attr( 'placeholder', placeholder );
         }
     }
 
@@ -267,7 +240,7 @@ export default class SelectBbox extends EventEmitter {
         if ( this.operationName === 'clipData' ) {
             new ClipDataset( this ).render();
         } else if ( this.operationName === 'grailPull' ) {
-            new GrailPull( this ).render();
+            new OverpassQueryPanel( this ).render();
         } else if ( this.operationName === 'createDifferentialChangeset' ) {
             new DifferentialUpload( this ).render();
         }

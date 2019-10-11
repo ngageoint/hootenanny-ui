@@ -1,6 +1,6 @@
 import FormFactory from './formFactory';
 
-import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
+import { checkForUnallowedChar, formatBbox } from './utilities';
 import _forEach from 'lodash-es/forEach';
 
 export default class GrailPull {
@@ -42,8 +42,8 @@ export default class GrailPull {
             BBOX: this.instance.bbox
         };
 
-        if ( this.instance.userInputContainer.select('input').property('checked') ) {
-            params.customQuery = this.instance.userInputContainer.select( 'textarea' ).property( 'value' );
+        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+            params.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
         const { data } = await Hoot.api.grailMetadataQuery( params );
@@ -186,8 +186,8 @@ export default class GrailPull {
             input1 : this.form.select( '.outputName-secondary' ).property( 'value' )
         };
 
-        if ( this.instance.userInputContainer.select('input').property('checked') ) {
-            overpassParams.customQuery = this.instance.userInputContainer.select( 'textarea' ).property( 'value' );
+        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+            overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
         Promise.all([
