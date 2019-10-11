@@ -200,6 +200,23 @@ export default class GrailPull {
                 });
             } )
             .then( () => Hoot.folders.refreshAll() )
+            .then( () => {
+                if (this.instance.bboxSelectType === 'secondaryLayerExtent') {
+                    const loadedRef = Hoot.layers.findLoadedBy( 'refType', 'primary' );
+                    // Remove reference layer if there is one
+                    if ( loadedRef ) {
+                        Hoot.layers.removeActiveLayer( loadedRef.id, 'reference', 'primary' );
+                    }
+
+                    // load newly pulled layer
+                    let layerInfo = {
+                        name: params.referenceName,
+                        id: Hoot.layers.findBy( 'name', params.referenceName ).id
+                    };
+
+                    return Hoot.ui.sidebar.forms.reference.submitLayer( layerInfo );
+                }
+            })
             .then( () => Hoot.events.emit( 'render-dataset-table' ) );
 
 
