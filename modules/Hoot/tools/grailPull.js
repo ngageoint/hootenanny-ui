@@ -1,6 +1,6 @@
 import FormFactory from './formFactory';
 
-import { checkForUnallowedChar, formatBbox } from './utilities';
+import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
 import _forEach from 'lodash-es/forEach';
 
 export default class GrailPull {
@@ -98,10 +98,11 @@ export default class GrailPull {
 
     layerNameTable( data ) {
         const self = this;
+        const uuid = uuidv4().slice(0,6);
 
         let columns = [
             {
-                label: 'Dataset',
+                label: 'Data Source',
                 name: 'datasetName'
             },
             {
@@ -125,45 +126,36 @@ export default class GrailPull {
             .text( d => d.label );
 
         let tableBody = layerOutputTable.append( 'tbody' ),
-            ingestLayers = {
-                reference : data.railsCodename,
-                secondary : data.overpassCodename
-            };
+            ingestLayers = [data.railsLabel, data.overpassLabel];
 
-        _forEach( Object.keys(ingestLayers), layer => {
-            tableBody
+        _forEach( ingestLayers, layer => {
+            let tRow = tableBody
                 .append( 'tr' )
-                .attr( 'id', `row-${ layer }` )
-                .selectAll( 'td' )
-                .data( columns )
-                .enter()
-                .append( 'td' )
+                .attr( 'id', `row-${ layer }` );
+            tRow.append( 'td' )
+                .append( 'label' )
+                .text(layer);
+            tRow.append( 'td' )
                 .append( 'input' )
                 .attr( 'type', 'text' )
-                .attr( 'class', d => `${ d.name }-${ layer }` )
-                .attr( 'placeholder', d => d.placeholder )
-                .select( function( d ) {
-                    if ( d.name === 'datasetName' ) {
-                        d3.select( this )
-                            .attr( 'placeholder', layer )
-                            .attr( 'readonly', false );
-                    } else if ( d.name === 'outputName' ) {
-                        const saveName = ingestLayers[ layer ];
+                .attr( 'class', 'outputName-' + layer )
+                .attr( 'placeholder', 'Save As' )
+                .select( function( ) {
+                    const saveName = layer + '_' + uuid;
 
-                        d3.select( this ).property( 'value', saveName )
-                            .on( 'input', function() {
-                                let resp = checkForUnallowedChar( this.value );
-                                let dupName = Hoot.layers.findBy( 'name', this.value );
+                    d3.select( this ).property( 'value', saveName )
+                        .on( 'input', function() {
+                            let resp = checkForUnallowedChar( this.value );
+                            let dupName = Hoot.layers.findBy( 'name', this.value );
 
-                                if ( dupName || resp !== true || !this.value.length ) {
-                                    d3.select( this ).classed( 'invalid', true ).attr( 'title', resp );
-                                    self.submitButton.property( 'disabled', true );
-                                } else {
-                                    d3.select( this ).classed( 'invalid', false ).attr( 'title', null );
-                                    self.submitButton.property( 'disabled', false );
-                                }
-                            } );
-                    }
+                            if ( dupName || resp !== true || !this.value.length ) {
+                                d3.select( this ).classed( 'invalid', true ).attr( 'title', resp );
+                                self.submitButton.property( 'disabled', true );
+                            } else {
+                                d3.select( this ).classed( 'invalid', false ).attr( 'title', null );
+                                self.submitButton.property( 'disabled', false );
+                            }
+                        } );
                 } );
         } );
     }
