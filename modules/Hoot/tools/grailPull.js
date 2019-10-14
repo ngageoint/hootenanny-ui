@@ -210,8 +210,8 @@ export default class GrailPull {
 
                     // load newly pulled layer
                     let layerInfo = {
-                        name: params.referenceName,
-                        id: Hoot.layers.findBy( 'name', params.referenceName ).id
+                        name: railsParams.input1,
+                        id: Hoot.layers.findBy( 'name', railsParams.input1 ).id
                     };
 
                     return Hoot.ui.sidebar.forms.reference.submitLayer( layerInfo );
