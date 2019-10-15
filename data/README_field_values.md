@@ -8,19 +8,18 @@ The `XXX_field_values.json` file has this structure:
 {
   "mgcpFieldValues":[
   {
-    "key":"Aerodrome Elevation",
+    "key":"AFA::Available Vessel Service",
     "value":[
-      "Value"
+      "Helipad",
+      "None Available",
+      "Other",
+      "Unknown"
     ]
   },
   {
-    "key":"Aerodrome Pavement Functional Status",
+    "key":"AOO::Angle of Orientation",
     "value":[
-      "Fair",
-      "Good",
-      "Not Applicable",
-      "Poor",
-      "Unknown"
+      "Value"
     ]
   }
   ]
