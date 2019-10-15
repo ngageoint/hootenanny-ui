@@ -418,7 +418,7 @@ export default class TagMapForm {
                         let isValid = this.validateMapping(this.jsonMapping);
 
                         if ( !isValid.state ) {
-                            Hoot.message.alert( { message:'A mapping for Feature Code is required for ' + isValid.layers.join(', '), 
+                            Hoot.message.alert( { message:'A mapping for Feature Code is required for ' + isValid.layers.join(', '),
                                                   type:'warn',
                                                   keepOpen:true });
                             return;
@@ -452,7 +452,7 @@ export default class TagMapForm {
                 var valid = d3.entries(e.value).some(function(d) {
                     return typeof d.value === 'object' && d3.keys(d.value).find(function(f) {
                         return f.indexOf('Feature Code') > -1;
-                        })
+                        });
                     }) || d3.entries(e.value).every(function(d) {
                     return typeof d.value === 'string' && d.value.indexOf('IGNORED') > -1;
                 });
@@ -464,7 +464,7 @@ export default class TagMapForm {
                 var valid = d3.entries(e.value).some(function(d) {
                     return typeof d.value === 'object' && d3.keys(d.value).find(function(f) {
                         return f.indexOf('Feature Code') > -1;
-                        })
+                        });
                 });
                 if (!valid) lyrs.push('at least one layer');
                 return valid;
