@@ -401,21 +401,31 @@ export default class TagMapForm {
                         'var fcode;\n' +
                         'var schema;\n' +
                         '\n' +
-                        '//translateToOsm - takes \'attrs\' and returns OSM \'tags\'\n' +
                         'var translateToOsm = function(attrs, layerName) {\n' +
                         '    return translation_assistant.translateAttributes(attrs, layerName, attributeMapping, fcode, schema);\n' +
                         '};\n';
 
                 let schema = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
 
-                if ( schema === 'TDSv61' ) {
-                    let isValid = this.validateMapping();
+                switch (schema) {
+                    case 'OSM':
+                    default:
+                        break;
 
-                    if ( !isValid.state ) {
-                        //TODO: handle error
+                    case 'MGCP':
+                    case 'TDSv61':
+                    case 'TDSv70': {
+                        let isValid = this.validateMapping(this.jsonMapping);
+
+                        if ( !isValid.state ) {
+                            Hoot.message.alert( { message:'A mapping for Feature Code is required for ' + isValid.layers.join(', '), 
+                                                  type:'warn',
+                                                  keepOpen:true });
+                            return;
+                        }
+                        output = output.replace('var schema;', 'var schema = \'' + schema + '\';');
+                        break;
                     }
-
-                    output = output.replace( 'var schema;', `var schema = ${ schema };` );
                 }
 
                 let message = 'Do you want to add this to internal translation list?',
@@ -431,7 +441,35 @@ export default class TagMapForm {
             .text( 'Save Translations' );
     }
 
-    validateMapping() {
+    // Make sure Feature Code was mapped
+    // Every layer must have a Feature Code or be entirely ignored
+    // At least one layer must be mapped (all layers cannot be entirely ignored)
+    validateMapping(jsonMapping) {
+        var lyrs = [];
 
+        // this is taken from the Hoot UI 1.x code
+        var rule1 = d3.entries(jsonMapping).every(function(e) {
+                var valid = d3.entries(e.value).some(function(d) {
+                    return typeof d.value === 'object' && d3.keys(d.value).find(function(f) {
+                        return f.indexOf('Feature Code') > -1;
+                        })
+                    }) || d3.entries(e.value).every(function(d) {
+                    return typeof d.value === 'string' && d.value.indexOf('IGNORED') > -1;
+                });
+                if (!valid) lyrs.push(e.key);
+                return valid;
+            });
+
+        var rule2 = d3.entries(jsonMapping).some(function(e) {
+                var valid = d3.entries(e.value).some(function(d) {
+                    return typeof d.value === 'object' && d3.keys(d.value).find(function(f) {
+                        return f.indexOf('Feature Code') > -1;
+                        })
+                });
+                if (!valid) lyrs.push('at least one layer');
+                return valid;
+            });
+
+        return {state: rule1 && rule2, layers: lyrs};
     }
 }

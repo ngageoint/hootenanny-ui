@@ -1,0 +1,1573 @@
+{
+  "mgcpFieldValues":[
+  {
+    "key":"Aerodrome Elevation",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Aerodrome Pavement Functional Status",
+    "value":[
+      "Fair",
+      "Good",
+      "Not Applicable",
+      "Poor",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Aeronautical Light Function",
+    "value":[
+      "ALSF-I",
+      "ALSF-II",
+      "MALSF",
+      "MALSR",
+      "Other",
+      "SSALF",
+      "SSALR",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Airfield Type",
+    "value":[
+      "Major",
+      "Minor and Hard",
+      "Minor and Soft",
+      "Other",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Angle of Orientation",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Aqueduct Type",
+    "value":[
+      "Qanat Shaft",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Associated Text",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Available Vessel Service",
+    "value":[
+      "Helipad",
+      "None Available",
+      "Other",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Bog Type",
+    "value":[
+      "Cranberry Bog",
+      "Other",
+      "Peat Bog",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Branch Railway Type",
+    "value":[
+      "Passing",
+      "Siding",
+      "Spur",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Bridge Opening Type",
+    "value":[
+      "Bascule",
+      "Fixed",
+      "Lift-bridge",
+      "Not Applicable",
+      "Retractable",
+      "Swing-bridge",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Bridge Structure Type",
+    "value":[
+      "Bowstring-bridge",
+      "Cable Stayed",
+      "Cantilever",
+      "Closed Spandrel Arch",
+      "Deck",
+      "Floating",
+      "Girder",
+      "Open Spandrel Arch",
+      "Other",
+      "Slab",
+      "Stringer Beam",
+      "Suspension",
+      "Tower Suspension",
+      "Transporter",
+      "Truss",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Built-up Area Density Category",
+    "value":[
+      "Dense",
+      "Sparse",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"By-product",
+    "value":[
+      "Other",
+      "Refuse",
+      "Slag",
+      "Spoil",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Cable Type",
+    "value":[
+      "Communication Line",
+      "Not Applicable",
+      "Other",
+      "Power Line",
+      "Transmission Line",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Cableway Type",
+    "value":[
+      "Aerial Tramway",
+      "Chair-lift",
+      "Gondola Lift",
+      "Industrial Ropeway",
+      "Material Tramway",
+      "Not Applicable",
+      "Other",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Canopy Cover",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Commercial Copyright Notice",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Condition of Facility",
+    "value":[
+      "Abandoned",
+      "Damaged",
+      "Destroyed",
+      "Dismantled",
+      "Fully Functional",
+      "Under Construction",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Controlled",
+    "value":[
+      "Controlled",
+      "Uncontrolled",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Controlling Authority",
+    "value":[
+      "Civilian",
+      "Joint Military and Civilian",
+      "Military",
+      "Other",
+      "Private",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Cover Closure Type",
+    "value":[
+      "Complete",
+      "Moveable",
+      "Open",
+      "Other",
+      "Partial",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Covered Drain",
+    "value":[
+      "Covered",
+      "Uncovered",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Crane Mobility Type",
+    "value":[
+      "Fixed",
+      "Floating",
+      "Travelling",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Crane Type",
+    "value":[
+      "Bridge Crane",
+      "Container Crane",
+      "Other",
+      "Rotating Crane",
+      "Tower Crane",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Crop Species",
+    "value":[
+      "Banana",
+      "Cotton",
+      "Dry Crop",
+      "Fruit Tree",
+      "Nut",
+      "Other",
+      "Palm",
+      "Rubber",
+      "Tea",
+      "Unknown",
+      "Vegetable Crop"
+    ]
+  },
+  {
+    "key":"Delineation Known",
+    "value":[
+      "Limits and Information Known",
+      "Limits and Information Unknown"
+    ]
+  },
+  {
+    "key":"Divided",
+    "value":[
+      "Absent",
+      "Present",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Embankment Type",
+    "value":[
+      "Dyke",
+      "Fill",
+      "Mound",
+      "Other",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Engineered Earthwork Type",
+    "value":[
+      "Battery",
+      "Military Parapet",
+      "Military Trench",
+      "Other",
+      "Rampart",
+      "Redoubt",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Extraction Mine Type",
+    "value":[
+      "Area Strip-mine",
+      "Below Surface",
+      "Opencast",
+      "Peatery",
+      "Placer",
+      "Prospect",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Farming Method",
+    "value":[
+      "Fallow",
+      "Other",
+      "Permanent",
+      "Permanent Irrigation",
+      "Slash and Burn",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Farming Pattern",
+    "value":[
+      "Intermingled Trees",
+      "Other",
+      "Regular",
+      "Terraced",
+      "Treeless",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Feature Code",
+    "value":[
+      "AA010",
+      "AA012",
+      "AA040",
+      "AA050",
+      "AA052",
+      "AB000",
+      "AB010",
+      "AC000",
+      "AC020",
+      "AC030",
+      "AD010",
+      "AD020",
+      "AD030",
+      "AD050",
+      "AF010",
+      "AF020",
+      "AF040",
+      "AF070",
+      "AH025",
+      "AH050",
+      "AH070",
+      "AI030",
+      "AJ010",
+      "AJ030",
+      "AJ050",
+      "AJ051",
+      "AJ110",
+      "AK030",
+      "AK040",
+      "AK060",
+      "AK090",
+      "AK100",
+      "AK120",
+      "AK130",
+      "AK150",
+      "AK160",
+      "AK170",
+      "AK180",
+      "AK190",
+      "AL010",
+      "AL012",
+      "AL015",
+      "AL019",
+      "AL020",
+      "AL025",
+      "AL030",
+      "AL060",
+      "AL070",
+      "AL099",
+      "AL105",
+      "AL130",
+      "AL140",
+      "AL170",
+      "AL200",
+      "AL208",
+      "AL210",
+      "AL241",
+      "AL260",
+      "AM010",
+      "AM020",
+      "AM030",
+      "AM040",
+      "AM060",
+      "AM070",
+      "AN010",
+      "AN050",
+      "AN060",
+      "AN075",
+      "AN076",
+      "AP010",
+      "AP030",
+      "AP050",
+      "AQ040",
+      "AQ063",
+      "AQ065",
+      "AQ070",
+      "AQ075",
+      "AQ090",
+      "AQ110",
+      "AQ113",
+      "AQ116",
+      "AQ125",
+      "AQ130",
+      "AQ135",
+      "AQ140",
+      "AT010",
+      "AT030",
+      "AT041",
+      "AT042",
+      "AT045",
+      "AT050",
+      "AT060",
+      "BA010",
+      "BA030",
+      "BA040",
+      "BA050",
+      "BB005",
+      "BB041",
+      "BB043",
+      "BB090",
+      "BB140",
+      "BB155",
+      "BB190",
+      "BB230",
+      "BB240",
+      "BD100",
+      "BD110",
+      "BD120",
+      "BD130",
+      "BD180",
+      "BH010",
+      "BH015",
+      "BH020",
+      "BH030",
+      "BH040",
+      "BH050",
+      "BH051",
+      "BH060",
+      "BH070",
+      "BH080",
+      "BH090",
+      "BH110",
+      "BH120",
+      "BH130",
+      "BH135",
+      "BH140",
+      "BH145",
+      "BH150",
+      "BH155",
+      "BH160",
+      "BH165",
+      "BH170",
+      "BH180",
+      "BI010",
+      "BI020",
+      "BI030",
+      "BI040",
+      "BI041",
+      "BI050",
+      "BJ020",
+      "BJ030",
+      "BJ031",
+      "BJ040",
+      "BJ060",
+      "BJ100",
+      "BJ110",
+      "DA010",
+      "DB010",
+      "DB029",
+      "DB061",
+      "DB070",
+      "DB071",
+      "DB090",
+      "DB100",
+      "DB110",
+      "DB115",
+      "DB150",
+      "DB160",
+      "DB170",
+      "DB180",
+      "DB200",
+      "EA010",
+      "EA020",
+      "EA040",
+      "EA050",
+      "EA055",
+      "EB010",
+      "EB020",
+      "EC010",
+      "EC020",
+      "EC030",
+      "EC040",
+      "EC060",
+      "ED010",
+      "ED020",
+      "ED030",
+      "FA015",
+      "FA090",
+      "FA100",
+      "GA034",
+      "GB005",
+      "GB015",
+      "GB030",
+      "GB035",
+      "GB040",
+      "GB045",
+      "GB050",
+      "GB055",
+      "GB065",
+      "GB075",
+      "GB220",
+      "GB230",
+      "GB485",
+      "GMGCP",
+      "SU001",
+      "ZD020",
+      "ZD040"
+    ]
+  },
+  {
+    "key":"Feature Function",
+    "value":[
+      "Accommodation",
+      "Administration",
+      "Agriculture",
+      "Aircraft Repair",
+      "Animal Boarding",
+      "Auditorium",
+      "Botanical and/or Zoological Reserve Activities",
+      "Commerce",
+      "Community Centre",
+      "Cooling",
+      "Defence Activities",
+      "Diplomacy",
+      "Education",
+      "Embassy",
+      "Firefighting",
+      "General Repair",
+      "Government",
+      "Grain Milling",
+      "Guard",
+      "Harbour Control",
+      "Higher Education",
+      "Human Health Activities",
+      "Imprisonment",
+      "In-patient Care",
+      "Institution",
+      "Law Enforcement",
+      "Library",
+      "Manufacturing",
+      "Maritime Pilotage",
+      "Market",
+      "Motor Vehicle Manufacture",
+      "Motor Vehicle Parking",
+      "Motor Vehicle Repair",
+      "Museum",
+      "Observation Station",
+      "Oil-mill",
+      "Opera House",
+      "Other",
+      "Palace",
+      "Paper-mill",
+      "Petrol Sale",
+      "Petroleum Refining",
+      "Place of Worship",
+      "Postal Activities",
+      "Power Generation",
+      "Print Publishing",
+      "Pumping",
+      "Radio Broadcasting",
+      "Religious Activities",
+      "Residence",
+      "Restaurant",
+      "Retail Banking",
+      "Satellite Ground Control",
+      "Sawmilling",
+      "Scientific Research and Development",
+      "Signalling",
+      "Social Work",
+      "Sports Centre",
+      "Steel Mill",
+      "Telecommunications",
+      "Television Broadcasting",
+      "Terminal",
+      "Theatre",
+      "Transport",
+      "Unknown",
+      "Utilities",
+      "Warehousing and Storage",
+      "Water Treatment",
+      "Weather Station",
+      "Wind Tunnel",
+      "Yacht-club"
+    ]
+  },
+  {
+    "key":"Foliage Type",
+    "value":[
+      "Deciduous",
+      "Evergreen",
+      "Mixed",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Functional Use",
+    "value":[
+      "Commercial",
+      "Industrial",
+      "Other",
+      "Recreational",
+      "Refugee",
+      "Residential",
+      "Transportation",
+      "Unknown",
+      "Urbanized Multi-functional"
+    ]
+  },
+  {
+    "key":"Harbour Facility Function",
+    "value":[
+      "Container Terminal",
+      "Ferry Terminal",
+      "Fishing Harbour",
+      "Marina",
+      "Naval Base",
+      "Other",
+      "Tanker Terminal",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Height Above Surface Level",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Helipad Associated Facility",
+    "value":[
+      "Heliport",
+      "Hospital",
+      "Land Aerodrome",
+      "Non-hospital Building",
+      "Offshore Construction",
+      "Other",
+      "Rig",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Horizontal Accuracy Category",
+    "value":[
+      "Accurate",
+      "Approximate"
+    ]
+  },
+  {
+    "key":"House of Worship Type",
+    "value":[
+      "Cathedral",
+      "Chapel",
+      "Church",
+      "Marabout",
+      "Minaret",
+      "Mosque",
+      "Not Applicable",
+      "Other",
+      "Pagoda",
+      "Religious Community",
+      "Shrine",
+      "Stupa",
+      "Synagogue",
+      "Tabernacle",
+      "Temple",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Hydrologic Persistence",
+    "value":[
+      "Dry",
+      "Intermittent",
+      "Not Applicable",
+      "Perennial",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"ICAO Location Indicator",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Length",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Linear Feature Arrangement",
+    "value":[
+      "Double Arrangement",
+      "Juxtaposition",
+      "Multiple Arrangements",
+      "Single Arrangement",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Load-bearing Surface Type",
+    "value":[
+      "Grass/Sod (Soft)",
+      "Hard/Paved",
+      "Loose/Unpaved",
+      "Other",
+      "Temporary",
+      "Unimproved",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"MGCP Feature universally unique identifier",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Man-made",
+    "value":[
+      "Man-made",
+      "Natural",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Maritime Station Type",
+    "value":[
+      "Bridge Signal Station",
+      "Coast Guard Station",
+      "Fireboat Station",
+      "Ice Signal Station",
+      "International Port Signals Station",
+      "Lock Signal Station",
+      "Military Practice Signal Station",
+      "Other",
+      "Pilot Lookout Station",
+      "Pilot Station",
+      "Port Control Station",
+      "Radar Surveillance Station",
+      "Rescue Station",
+      "Signal Station",
+      "Storm Signal Station",
+      "Tidal Stream Station",
+      "Tide Station",
+      "Time Signal Station",
+      "Traffic Signal Station",
+      "Unknown",
+      "Warning Signal Station",
+      "Water-police Station",
+      "Weather Signal Station"
+    ]
+  },
+  {
+    "key":"Median Present",
+    "value":[
+      "Unknown",
+      "With Median",
+      "Without Median"
+    ]
+  },
+  {
+    "key":"Name",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Name Identifier",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Named Feature Identifier",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Natural Pool Type",
+    "value":[
+      "Other",
+      "Spring",
+      "Unknown",
+      "Water-hole"
+    ]
+  },
+  {
+    "key":"Navigation System Type",
+    "value":[
+      "Aeronautical Radio",
+      "Distance Measuring Equipment (DME)",
+      "ILS Back Course",
+      "Instrument Landing System (ILS)",
+      "Instrument Landing System (ILS) with Distance Measuring Equipment (DME) (ILS/DME)",
+      "Localizer (LOC)",
+      "Localizer (LOC) Back Course Marker",
+      "Localizer (LOC) with Distance Measuring Equipment (DME) (LOC/DME)",
+      "Locator Middle Marker (LMM)",
+      "Locator Outer Marker (LOM)",
+      "Marker Radio Beacon (MKR)",
+      "Microwave",
+      "Microwave Landing System (MLS)",
+      "Middle Marker (MM)",
+      "Non-Directional Radio Beacon (NDB)",
+      "Non-Directional Radio Beacon (NDB) with Distance Measuring Equipment (DME) (NDB/DME)",
+      "Other",
+      "Outer Marker (OM)",
+      "Precision Approach Radar (PAR)",
+      "Radar Antenna",
+      "Radio",
+      "Radio Telephone",
+      "Radio-telegraph",
+      "Rotating Beacon Light",
+      "Tactical Air Navigation Aid (TACAN)",
+      "Television (TV)",
+      "Unknown",
+      "VHF Omnidirectional Radio Beacon (VOR)",
+      "VHF Omnidirectional Radio Beacon (VOR) with Distance Measuring Equipment (DME) (VOR/DME)",
+      "VHF Omnidirectional Radio Beacon (VOR) with Tactical Air Navigation Aid (TACAN) (VORTAC)"
+    ]
+  },
+  {
+    "key":"Offshore Platform Type",
+    "value":[
+      "Accommodation Platform",
+      "Articulated Loading Platform (ALP)",
+      "Navigation Aid Support",
+      "Observation Platform",
+      "Other",
+      "Production Platform",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Overall Bridge Height",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Permanent",
+    "value":[
+      "Permanent",
+      "Temporary",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Power Station Type",
+    "value":[
+      "Geothermal",
+      "Hydro-electric",
+      "Nuclear",
+      "Other",
+      "Solar",
+      "Thermal",
+      "Tidal",
+      "Unknown",
+      "Wind"
+    ]
+  },
+  {
+    "key":"Product",
+    "value":[
+      "Aircraft",
+      "Aluminum",
+      "Ammunition",
+      "Asphalt",
+      "Bauxite",
+      "Biochemical",
+      "Brick",
+      "Cement",
+      "Chemical",
+      "Clay",
+      "Coal",
+      "Coke",
+      "Concrete",
+      "Copper",
+      "Diamond",
+      "Dolomite",
+      "Explosive",
+      "Fish",
+      "Food",
+      "Gas",
+      "Glass",
+      "Gold",
+      "Granite",
+      "Gravel",
+      "Ice",
+      "Iron",
+      "Lead",
+      "Lumber",
+      "Madrepore",
+      "Manganese",
+      "Marble",
+      "Metal",
+      "Multiple",
+      "Oil",
+      "Other",
+      "Palm",
+      "Paper",
+      "Petrochemical",
+      "Petrol",
+      "Petroleum",
+      "Plastic",
+      "Quartz",
+      "Radioactive Material",
+      "Rock",
+      "Rubber",
+      "Salt",
+      "Sand",
+      "Sewage",
+      "Silver",
+      "Snow",
+      "Steel",
+      "Stone",
+      "Sugar",
+      "Textile",
+      "Tobacco",
+      "Unknown",
+      "Uranium",
+      "Vegetation Product",
+      "Water",
+      "Wood",
+      "Zinc"
+    ]
+  },
+  {
+    "key":"Racing Type",
+    "value":[
+      "Bicycle",
+      "Camel",
+      "Greyhound",
+      "Harness",
+      "Horse",
+      "Ice Skate",
+      "Motor Vehicle",
+      "Other",
+      "Roller Skate",
+      "Track and Field",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Radar Antenna Configuration",
+    "value":[
+      "Dome Enclosed",
+      "Mast Mounted",
+      "Other",
+      "Radome on Tower",
+      "Scanner",
+      "Tower Mounted",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Railway Class",
+    "value":[
+      "Branch-line",
+      "High Speed Rail",
+      "Main Line"
+    ]
+  },
+  {
+    "key":"Railway Gauge",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Railway Gauge Classification",
+    "value":[
+      "Broad",
+      "Monorail",
+      "Narrow",
+      "Standard",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Railway Power Method",
+    "value":[
+      "Electrified Track",
+      "Non-electrified",
+      "Overhead Electrified",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Railway Use",
+    "value":[
+      "Automated Transit System",
+      "Carline",
+      "Funicular",
+      "Logging",
+      "Long-haul",
+      "Other",
+      "Tramway",
+      "Underground Railway",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Railway in Road",
+    "value":[
+      "In road",
+      "Separated from road",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Relative Importance",
+    "value":[
+      "Fifth",
+      "First",
+      "Fourth",
+      "Other",
+      "Second",
+      "Third",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Religious Designation",
+    "value":[
+      "Buddhism",
+      "Christian",
+      "Islam",
+      "Judaism",
+      "Other",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Road Weather Restriction",
+    "value":[
+      "All-weather",
+      "Closed in Winter",
+      "Fair-weather",
+      "Unknown",
+      "Winter Only"
+    ]
+  },
+  {
+    "key":"Rock Formation Structure",
+    "value":[
+      "Columnar",
+      "Other",
+      "Pinnacle",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Route Minimum Travelled Way Width",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Route Width Constriction Type",
+    "value":[
+      "Not Applicable",
+      "Road Interchange"
+    ]
+  },
+  {
+    "key":"Sand Dune Orientation",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Sand Dune Type",
+    "value":[
+      "Crescent",
+      "Dome",
+      "Dome and Transverse",
+      "Linear",
+      "Parabolic",
+      "Ripple",
+      "Star",
+      "Transverse",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Shed Type",
+    "value":[
+      "Other",
+      "Rock Shed",
+      "Rock and Snow Shed",
+      "Snow Shed",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Shoreline Construction Type",
+    "value":[
+      "Pier",
+      "Quay",
+      "Unknown",
+      "Wharf"
+    ]
+  },
+  {
+    "key":"Shoreline Type",
+    "value":[
+      "Building Rubble",
+      "Mangrove",
+      "Marshy",
+      "Other",
+      "Sandy",
+      "Shingly",
+      "Stony",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Solid Maritime Construction",
+    "value":[
+      "Open",
+      "Solid Face",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Source Date and Time",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Source Description",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Source Type",
+    "value":[
+      "1:100k Vector Data",
+      "1:25k Vector Data",
+      "1:50k Vector Data",
+      "AAFIF",
+      "ADRG",
+      "CADRG",
+      "CHUM",
+      "CIB1",
+      "CIB5",
+      "City Graphic",
+      "Combat Chart",
+      "DNC",
+      "DPF",
+      "DTOP 1",
+      "DTOP 2",
+      "DTOP 3",
+      "DTOP 4",
+      "DTOP 5",
+      "DVOF",
+      "FFD",
+      "GPS",
+      "GeoNames",
+      "High Resolution Commercial Monoscopic Imagery",
+      "High Resolution Commercial Stereoscopic Imagery",
+      "ICM",
+      "ITD",
+      "IVD",
+      "Imagery",
+      "International Boundaries",
+      "JOG",
+      "LWD",
+      "Land Cover",
+      "Low Resolution Commercial Monoscopic Imagery",
+      "Low Resolution Commercial Stereoscopic Imagery",
+      "MC&G",
+      "MIDB",
+      "MSD 1",
+      "MSD 2",
+      "MSD 3",
+      "MSD 4",
+      "MSD 5",
+      "Map 1:100k",
+      "Map 1:25k",
+      "Map 1:50k",
+      "Medical Facilities",
+      "Medium Resolution Commercial Monoscopic Imagery",
+      "Medium Resolution Commercial Stereoscopic Imagery",
+      "Multiple",
+      "NATE",
+      "NTM Imagery",
+      "Native Data",
+      "Native Map",
+      "Not Applicable",
+      "Other",
+      "Planning Graphic",
+      "Routing Data",
+      "SPOT HRG Digital Terrain Model",
+      "SRTM",
+      "Site Map",
+      "TOD 0",
+      "TOD 1",
+      "TOD 2",
+      "TOD 3",
+      "TOD 4",
+      "TOD 5",
+      "UN Data",
+      "UVMap",
+      "Unknown",
+      "Unpopulated",
+      "VITD",
+      "VMap 0",
+      "VMap 1",
+      "VMap 2",
+      "Vector Data",
+      "Very High Resolution Commercial Monoscopic Imagery",
+      "Very High Resolution Commercial Stereoscopic Imagery",
+      "WVS Plus"
+    ]
+  },
+  {
+    "key":"Span Count",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Structural Material Type",
+    "value":[
+      "Asphalt",
+      "Brick",
+      "Clay",
+      "Composition",
+      "Concrete",
+      "Conglomerate",
+      "Gravel",
+      "Macadam",
+      "Masonry",
+      "Metal",
+      "Other",
+      "Part Metal",
+      "Pebbles",
+      "Prestressed Concrete",
+      "Reinforced Concrete",
+      "Rock",
+      "Rubble",
+      "Sand",
+      "Soil",
+      "Stone",
+      "Unknown",
+      "Wood"
+    ]
+  },
+  {
+    "key":"Structure Shape",
+    "value":[
+      "Arched",
+      "Cylindrical with Flat Top",
+      "Cylindrical with Framework",
+      "Horizontal Capped Cylindrical",
+      "Obelisk",
+      "Other",
+      "Pyramidal",
+      "Spherical",
+      "Spherical on Column",
+      "Statue",
+      "Unknown",
+      "Vertical Capped Cylindrical"
+    ]
+  },
+  {
+    "key":"Surface Material Type",
+    "value":[
+      "Asphalt",
+      "Boulders",
+      "Cinders",
+      "Clay",
+      "Concrete",
+      "Evaporite",
+      "Frozen Water",
+      "Gravel",
+      "Ice",
+      "Lava",
+      "Limestone",
+      "Loess",
+      "Mud",
+      "Not Applicable",
+      "Oil",
+      "Other",
+      "Pebbles",
+      "Rock",
+      "Rubber",
+      "Salt",
+      "Sand",
+      "Sand and Boulders",
+      "Sand and Gravel",
+      "Sand and Mud",
+      "Snow",
+      "Sod",
+      "Soil",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Thoroughfare Class",
+    "value":[
+      "Local Route",
+      "National Motorway",
+      "Primary Route",
+      "Secondary Route",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Tide Influenced",
+    "value":[
+      "Non-Tidal",
+      "Tidal/Tidal Fluctuating",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Touristic Name",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Tower Shape",
+    "value":[
+      "'A' Frame",
+      "'H' Frame",
+      "'I' Frame",
+      "'T' Frame",
+      "'Y' Frame",
+      "Mast",
+      "Other",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Tower Type",
+    "value":[
+      "Bridge Tower",
+      "Cell Tower",
+      "Communication Tower",
+      "Control Tower",
+      "Cooling Tower",
+      "Drop Tower",
+      "Fire Tower",
+      "Guard Tower",
+      "Industrial Tower",
+      "Light Tower",
+      "Lookout Tower",
+      "Mine Shaft Superstructure",
+      "Observation Tower",
+      "Other",
+      "Unknown",
+      "Water Tower"
+    ]
+  },
+  {
+    "key":"Track or Lane Count",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Transportation System Type",
+    "value":[
+      "Aeronautical",
+      "Aqueduct",
+      "Bus",
+      "Canal",
+      "Maritime",
+      "Not Applicable",
+      "Other",
+      "Pedestrian",
+      "Pipeline",
+      "Railway",
+      "Road",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Transportation Use",
+    "value":[
+      "Cargo",
+      "General",
+      "Other",
+      "Passenger",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Undergrowth Density",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Vegetation Characteristic",
+    "value":[
+      "Brush",
+      "Grassland",
+      "Grassland with Trees",
+      "Herb and Brush",
+      "Other",
+      "Unknown",
+      "Wood"
+    ]
+  },
+  {
+    "key":"Vegetation Species",
+    "value":[
+      "Casuarina",
+      "Conifer",
+      "Cypress",
+      "Eucalyptus",
+      "Filao",
+      "Nipa",
+      "Other",
+      "Palm",
+      "Umbrella Thorn",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Vertical Obstruction Identifier",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"Vertical Relative Location",
+    "value":[
+      "Above Surface",
+      "Above Waterbody Bottom",
+      "Below Ground Surface",
+      "Below Waterbody Bottom",
+      "On Surface",
+      "On Waterbody Bottom",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Volcano Shape",
+    "value":[
+      "Caldera",
+      "Cinder Cone",
+      "Composite",
+      "Cone",
+      "Other",
+      "Shield",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Water Gate Type",
+    "value":[
+      "Dyke Gate",
+      "Flood Barrage Gate",
+      "Lock Gate",
+      "Other",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Water Level Effect",
+    "value":[
+      "Always Dry",
+      "Always Submerged",
+      "Covers and Uncovers",
+      "Floating",
+      "Not Applicable",
+      "Other",
+      "Partly Submerged",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Water Type",
+    "value":[
+      "Alkaline",
+      "Brackish",
+      "Fresh",
+      "Mineral",
+      "Not Applicable",
+      "Other",
+      "Potable",
+      "Salty",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Watercourse Channel Type",
+    "value":[
+      "Braided Stream",
+      "Channelized Stream",
+      "Gorge",
+      "Normal Channel",
+      "Unknown",
+      "Wadi"
+    ]
+  },
+  {
+    "key":"Watercourse Sink Type",
+    "value":[
+      "Disappearing",
+      "Dissipating",
+      "Not Applicable",
+      "Other",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Weapons Range Type",
+    "value":[
+      "Demolition Area",
+      "Field Artillery",
+      "Grenade",
+      "Impact Area",
+      "Other",
+      "Small Arms",
+      "Tank",
+      "Unknown"
+    ]
+  },
+  {
+    "key":"Well Type",
+    "value":[
+      "Artesian",
+      "Drilled",
+      "Dug",
+      "Other",
+      "Unknown",
+      "Walled-in"
+    ]
+  },
+  {
+    "key":"Width",
+    "value":[
+      "Value"
+    ]
+  }
+  ]
+}

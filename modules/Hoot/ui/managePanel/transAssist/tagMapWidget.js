@@ -142,6 +142,7 @@ export default class TagMapWidget {
         let searchResult = this.resultsList.selectAll( '.search-result' )
             .data( results );
 
+
         searchResult
             .enter()
             .append( 'div' )
