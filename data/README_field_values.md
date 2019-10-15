@@ -52,8 +52,8 @@ $HOOT_HOME/scripts/schema/ConvertTDSv61Schema.py  --fieldvalues \
 TDSv70:
 ```
 $HOOT_HOME/scripts/schema/ConvertTDSv70Schema.py --fieldvalues \
-  $HOOT_HOME/conf/translations/TDSv70_Features.csv \
-  $HOOT_HOME/conf/translations/TDSv70_Values.csv > $HOOT_HOME/hoot-ui-2x/data/tdsv70_field_values.json
+  $HOOT_HOME/conf/translations/TDSv70_Features.csv.gz \
+  $HOOT_HOME/conf/translations/TDSv70_Values.csv.gz > $HOOT_HOME/hoot-ui-2x/data/tdsv70_field_values.json
 ```
 
 GGDMv30:
