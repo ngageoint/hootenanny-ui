@@ -245,12 +245,13 @@
 }
 
 .pullStatsInfo {
-    width: 200px;
+    width: 225px;
+    margin-left: 40px;
 
-    th:first-child,
-    td:first-child {
-        width: 120px;
+    th, td {
+        width: 90px;
     }
+
 
     th,td {
         text-align: right;

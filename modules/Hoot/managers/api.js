@@ -1110,14 +1110,32 @@ export default class API {
             } );
     }
 
-    grailMetadataQuery( data ) {
+    grailMetadataQuery() {
         const params = {
             path: '/grail/grailMetadataQuery',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: err.data || 'Error retrieving grail metadata!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+    overpassStats( data ) {
+        const params = {
+            path: '/grail/overpassStats',
             method: 'POST',
             data
         };
 
         return this.request( params )
+            .then( resp => resp.data )
             .catch( err => {
                 return {
                     data: err.data,
@@ -1127,7 +1145,6 @@ export default class API {
                 };
             } );
     }
-
 
     grailPullRailsPortToDb( data ) {
         const params = {

@@ -1,6 +1,7 @@
 import FormFactory from './formFactory';
 
 import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
+import _find                                         from 'lodash-es/find';
 
 export default class GrailPull {
     constructor( instance ) {
@@ -37,37 +38,57 @@ export default class GrailPull {
     }
 
     async createTable() {
-        const params = {
-            BBOX: this.instance.bbox
-        };
-
-        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
-            params.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
-        }
-
-        const { data } = await Hoot.api.grailMetadataQuery( params );
+        const { data } = await Hoot.api.grailMetadataQuery();
         this.maxFeatureCount = +data.maxFeatureCount;
 
-        const overpassStats = await Hoot.api.getOverpassStats( data.overpassQuery );
+        const overpassParams = { BBOX: this.instance.bbox };
+        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+            overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
+        }
+
+        const { publicStats, privateStats } = await Hoot.api.overpassStats( overpassParams );
 
         this.loadingState(false);
 
-        const csvValues = overpassStats.split('\n')[1],
-              arrayValues = csvValues.split('\t');
+        const publicValuesRow = publicStats.split('\n')[1],
+              publicValues = publicValuesRow.split('\t');
+
         const rowData = [
-            {label: 'node', count: +arrayValues[1]},
-            {label: 'way', count: +arrayValues[2]},
-            {label: 'relation', count: +arrayValues[3]},
-            {label: 'total', count: +arrayValues[0]}
+            { valueColumn: 1, label: 'node' },
+            { valueColumn: 2, label: 'way' },
+            { valueColumn: 3, label: 'relation' },
+            { valueColumn: 0, label: 'total' }
         ];
+
+        rowData.forEach( row => { row.publicCount = +publicValues[ row.valueColumn ]; } );
+
+        // if there are private overpass stats then add them to our rowData object
+        if ( privateStats ) {
+            const privateValuesRow = privateStats.split('\n')[1],
+                  privateValues = privateValuesRow.split('\t');
+
+            rowData.forEach( row => { row.privateCount = +privateValues[ row.valueColumn ]; } );
+        }
 
         let statsTable = this.form
             .select( '.wrapper div' )
             .insert( 'table', '.modal-footer' )
             .classed( 'pullStatsInfo', true );
 
-        let tbody = statsTable.append('tbody');
+        const columns = [ '', data.overpassLabel];
+        if ( privateStats ) {
+            columns.splice( 1, 0, data.railsLabel ); // add to index 1
+        }
 
+        let thead = statsTable.append('thead');
+        thead.append('tr')
+            .selectAll('th')
+            .data(columns)
+            .enter()
+            .append('th')
+            .text(function (d) { return d; });
+
+        let tbody = statsTable.append('tbody');
         let rows = tbody.selectAll('tr')
             .data(rowData)
             .enter()
@@ -76,12 +97,25 @@ export default class GrailPull {
         rows.append('td')
             .text( data => data.label );
 
-        rows.append('td')
-            .classed( 'strong', data => data.count > 0 )
-            .classed( 'badData', data => data.label === 'total' && data.count > this.maxFeatureCount )
-            .text( data => data.count );
+        // add private overpass data first if exists
+        if ( privateStats ) {
+            rows.append('td')
+                .classed( 'strong', data => data.privateCount > 0 )
+                .classed( 'badData', data => data.label === 'total' && data.privateCount > this.maxFeatureCount )
+                .text( data => data.privateCount );
+        }
 
-        if (+arrayValues[0] > this.maxFeatureCount) {
+        // column for public overpass counts
+        rows.append('td')
+            .classed( 'strong', data => data.publicCount > 0 )
+            .classed( 'badData', data => data.label === 'total' && data.publicCount > this.maxFeatureCount )
+            .text( data => data.publicCount );
+
+        const { publicCount, privateCount } = _find( rowData, row => row.label === 'total' );
+
+        if ( ( publicCount && publicCount > this.maxFeatureCount )
+            || ( privateCount && privateCount > this.maxFeatureCount )
+        ) {
             this.form.select( '.hoot-menu' )
                 .insert( 'div', '.modal-footer' )
                 .classed( 'badData', true )
@@ -100,6 +134,10 @@ export default class GrailPull {
         const uuid = uuidv4().slice(0,6);
 
         let columns = [
+            {
+                label: '',
+                name: 'downloadDataset'
+            },
             {
                 label: 'Data Source',
                 name: 'datasetName'
@@ -131,9 +169,16 @@ export default class GrailPull {
             let tRow = tableBody
                 .append( 'tr' )
                 .attr( 'id', `row-${ i }` );
+
+            tRow.append( 'td' )
+                .append( 'input' )
+                .attr( 'type', 'checkbox' )
+                .property( 'checked', true );
+
             tRow.append( 'td' )
                 .append( 'label' )
                 .text(layer);
+
             tRow.append( 'td' )
                 .append( 'input' )
                 .attr( 'type', 'text' )
@@ -181,10 +226,17 @@ export default class GrailPull {
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
-        Promise.all([
-                Hoot.api.grailPullOverpassToDb( overpassParams ),
-                Hoot.api.grailPullRailsPortToDb( railsParams )
-            ])
+        const jobsList = [],
+              referenceCheckbox = d3.select( '#row-0 input' ).property( 'checked' ),
+              secondaryCheckbox = d3.select( '#row-1 input' ).property( 'checked' );
+        if ( referenceCheckbox ) {
+            jobsList.push(Hoot.api.grailPullRailsPortToDb( railsParams ));
+        }
+        if ( secondaryCheckbox ) {
+            jobsList.push(Hoot.api.grailPullOverpassToDb( overpassParams ));
+        }
+
+        Promise.all( jobsList )
             .then( ( resp ) => {
                 resp.forEach( jobResp => {
                     Hoot.message.alert( jobResp );
