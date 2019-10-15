@@ -1,7 +1,6 @@
 import FormFactory from './formFactory';
 
 import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
-import _forEach from 'lodash-es/forEach';
 
 export default class GrailPull {
     constructor( instance ) {
@@ -128,17 +127,17 @@ export default class GrailPull {
         let tableBody = layerOutputTable.append( 'tbody' ),
             ingestLayers = [data.railsLabel, data.overpassLabel];
 
-        _forEach( ingestLayers, layer => {
+        ingestLayers.forEach( (layer, i) => {
             let tRow = tableBody
                 .append( 'tr' )
-                .attr( 'id', `row-${ layer }` );
+                .attr( 'id', `row-${ i }` );
             tRow.append( 'td' )
                 .append( 'label' )
                 .text(layer);
             tRow.append( 'td' )
                 .append( 'input' )
                 .attr( 'type', 'text' )
-                .attr( 'class', 'outputName-' + layer )
+                .attr( 'class', 'outputName-' + i )
                 .attr( 'placeholder', 'Save As' )
                 .select( function( ) {
                     const saveName = layer + '_' + uuid;
@@ -170,12 +169,12 @@ export default class GrailPull {
 
         const railsParams = {
             BBOX   : formatBbox( bbox ),
-            input1 : this.form.select( '.outputName-reference' ).property( 'value' )
+            input1 : this.form.select( '.outputName-0' ).property( 'value' )
         };
 
         const overpassParams = {
             BBOX   : formatBbox( bbox ),
-            input1 : this.form.select( '.outputName-secondary' ).property( 'value' )
+            input1 : this.form.select( '.outputName-1' ).property( 'value' )
         };
 
         if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
