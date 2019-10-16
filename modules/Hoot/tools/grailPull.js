@@ -2,6 +2,8 @@ import FormFactory from './formFactory';
 
 import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
 import _find                                         from 'lodash-es/find';
+import selectBbox                                    from './selectBbox';
+import OverpassQueryPanel                            from './overpassQueryPanel';
 
 export default class GrailPull {
     constructor( instance ) {
@@ -30,11 +32,26 @@ export default class GrailPull {
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
         this.submitButton = d3.select( `#${ metadata.button.id }` );
 
+        this.addBackButton( metadata.button.id );
         this.submitButton.property( 'disabled', false );
 
         this.loadingState(true);
 
         this.createTable();
+    }
+
+    addBackButton( nextButtonId ) {
+        const backButton = this.form.select( '.modal-footer' )
+            .insert( 'button', `#${ nextButtonId }` )
+            .classed( 'round strong primary', true )
+            .on( 'click', () => {
+                this.form.remove();
+
+                new OverpassQueryPanel( this.instance ).render();
+            } );
+
+        backButton.append( 'span' )
+            .text( 'Back' );
     }
 
     async createTable() {

@@ -15,17 +15,17 @@ import { d3combobox }             from '../../lib/hoot/d3.combobox';
 import { geoExtent as GeoExtent } from '../../geo';
 
 export default class SelectBbox extends EventEmitter {
-    constructor( context ) {
+    constructor( context, predefinedData ) {
         super();
 
-        this.context = context;
-
-        this.minlon         = null;
-        this.minlat         = null;
-        this.maxlon         = null;
-        this.maxlat         = null;
-        this.bboxSelectType = 'visualExtent';
+        this.context        = predefinedData && predefinedData.context ? predefinedData.context : context;
+        this.minlon         = predefinedData && predefinedData.minlon ? parseFloat(predefinedData.minlon) : null;
+        this.minlat         = predefinedData && predefinedData.minlat ? parseFloat(predefinedData.minlat) : null;
+        this.maxlon         = predefinedData && predefinedData.maxlon ? parseFloat(predefinedData.maxlon) : null;
+        this.maxlat         = predefinedData && predefinedData.maxlat ? parseFloat(predefinedData.maxlat) : null;
+        this.bboxSelectType = predefinedData && predefinedData.bboxSelectType ? predefinedData.bboxSelectType : 'visualExtent';
         this.operationName  = '';
+        this.selectedBoundOption = predefinedData && predefinedData.selectedBoundOption ? predefinedData.selectedBoundOption : 'Visual Extent';
     }
 
     render( operationName ) {
@@ -48,7 +48,13 @@ export default class SelectBbox extends EventEmitter {
 
         this.nextButton.property( 'disabled', false );
 
-        let mapExtent = this.context.map().extent();
+        let mapExtent;
+        if (this.minlon && this.minlat && this.maxlon && this.maxlat) {
+            mapExtent = new GeoExtent( [ this.minlon, this.minlat ], [ this.maxlon,this.maxlat ] );
+        }
+        else {
+            mapExtent = this.context.map().extent();
+        }
 
         this.updateCoords( mapExtent );
         this.createCoordsField();
@@ -134,24 +140,25 @@ export default class SelectBbox extends EventEmitter {
         }
 
         // Build dropdown for historical bounds
-            this.dropdownContainer = this.form
-                .select( '.wrapper div' )
-                .insert( 'div', '.modal-footer' )
-                .classed( 'button-wrap flex justify-left history-options', true )
-                .append( 'input' )
+        this.dropdownContainer = this.form
+            .select( '.wrapper div' )
+            .insert( 'div', '.modal-footer' )
+            .classed( 'button-wrap flex justify-left history-options', true )
+            .append( 'input' )
             .attr('placeholder', 'Select a bounds from...');
 
-            let { bboxHistory } = JSON.parse( Hoot.context.storage('history') );
+        let { bboxHistory } = JSON.parse( Hoot.context.storage('history') );
 
         const dropdownOptions = boundOptionsList.concat( bboxHistory );
         const historyOptions = dropdownOptions.map( option => { return { value: option }; } );
 
-            let combobox = d3combobox()
+        let combobox = d3combobox()
             .data( historyOptions );
 
-            this.dropdownContainer.call( combobox )
+        this.dropdownContainer.call( combobox )
             .attr( 'readonly', true )
-                .on('change', function() {
+            .property( 'value', self.selectedBoundOption)
+            .on('change', function() {
                 const selectedValue = this.value;
 
                 if ( selectedValue === 'Draw Bounding Box' ) {
@@ -176,8 +183,9 @@ export default class SelectBbox extends EventEmitter {
                     self.handleBbox( new GeoExtent( [ coords[0], coords[1] ], [ coords[2], coords[3] ] ) );
                 }
 
-                self.dropdownContainer.property( 'value', selectedValue );
-                });
+                self.selectedBoundOption = selectedValue;
+                self.dropdownContainer.property( 'value', self.selectedBoundOption );
+            });
 
     }
 

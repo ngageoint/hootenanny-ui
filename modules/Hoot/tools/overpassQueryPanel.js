@@ -1,5 +1,6 @@
 import FormFactory from './formFactory';
 import GrailPull   from './grailPull';
+import selectBbox  from './selectBbox';
 
 export default class OverpassQueryPanel {
     constructor( instance ) {
@@ -24,9 +25,25 @@ export default class OverpassQueryPanel {
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
         this.submitButton = d3.select( `#${ metadata.button.id }` );
 
+        this.addBackButton( metadata.button.id );
         this.submitButton.property( 'disabled', false );
 
         this.overpassQueryPanel();
+    }
+
+    addBackButton( nextButtonId ) {
+        const backButton = this.form.select( '.modal-footer' )
+            .insert( 'button', `#${ nextButtonId }` )
+            .classed( 'round strong primary', true )
+            .on( 'click', () => {
+                this.form.remove();
+
+                const grailSelectBbox = new selectBbox( this.formData.context, this.formData );
+                grailSelectBbox.render( this.formData.operationName );
+            } );
+
+        backButton.append( 'span' )
+            .text( 'Back' );
     }
 
     overpassQueryPanel() {
@@ -38,8 +55,17 @@ export default class OverpassQueryPanel {
             .insert( 'div', '.modal-footer' )
             .classed( 'button-wrap user-input', true );
 
-        this.overpassQueryContainer.append( 'input' )
+        let overpassQueryValue = '',
+            checkboxStatus = false;
+        const containerExists = this.formData.overpassQueryContainer;
+        if ( containerExists ) {
+            checkboxStatus = containerExists.select('input').property('checked');
+            overpassQueryValue = containerExists.select( 'textarea' ).property( 'value' );
+        }
+
+        const queryCheckbox = this.overpassQueryContainer.append( 'input' )
             .attr( 'type', 'checkbox' )
+            .property( 'checked', checkboxStatus )
             .on('click', function() {
                 const isChecked = d3.select( this ).property( 'checked' );
                 customQueryInput.classed( 'hidden', !isChecked );
@@ -54,8 +80,9 @@ export default class OverpassQueryPanel {
             'out meta;';
 
         const customQueryInput = this.overpassQueryContainer.append( 'textarea' )
-            .classed( 'hidden', true )
+            .classed( 'hidden', !checkboxStatus )
             .attr( 'placeholder', placeholder )
+            .property( 'value', overpassQueryValue )
             .on( 'input', () => {
                 const value = customQueryInput.node().value;
                 let errorText = '';
@@ -67,7 +94,14 @@ export default class OverpassQueryPanel {
                     errorText += '* Query needs to specify "out meta"\n';
                 }
 
-                errorInfoContainer.text( errorText );
+                if ( errorText !== '' && value !== '' ) {
+                    errorInfoContainer.text( errorText );
+                    this.submitButton.property( 'disabled', true );
+                } else {
+                    errorInfoContainer.text( '' );
+                    this.submitButton.select( 'span' ).text( 'Next' );
+                    this.submitButton.property( 'disabled', false );
+                }
             });
 
         const errorInfoContainer = this.form.select( '.hoot-menu' )

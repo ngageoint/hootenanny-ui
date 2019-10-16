@@ -61,6 +61,8 @@
 
     .modal-footer {
         display: flex;
+        margin: auto;
+        width: 145px;
 
         .sideContainer {
             display: initial;
@@ -72,7 +74,7 @@
             align-items: center;
             justify-content: space-between;
             width: auto;
-            margin: 10px auto 0;
+            margin: 10px 10px 0;
             padding: 0 15px;
 
             ._icon {
