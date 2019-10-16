@@ -31,6 +31,7 @@ export function svgVisualizeChangeset( projection, context, dispatch ) {
     var surface;
     var enabled = true;
 
+
     function showLayer() {
         var layer = context.surface().selectAll('.data-layer.visualize-changeset');
         layer.interrupt();
@@ -84,9 +85,9 @@ export function svgVisualizeChangeset( projection, context, dispatch ) {
             let entity = id;
             if (entity) {
                selectedAndParents[entity.id] = entity;
-                if (entity.type === 'node') {
-                    Object.assign( getGraph.entities, selectedAndParents );
-                }
+                // if (entity.type === 'node') {
+                //     Object.assign( getGraph.entities, selectedAndParents );
+                // }
             }
         });
 
