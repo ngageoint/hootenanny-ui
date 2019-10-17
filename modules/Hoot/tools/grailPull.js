@@ -173,16 +173,37 @@ export default class GrailPull {
         params.referenceName = this.form.select( '.outputName-reference' ).property( 'value' );
         params.secondaryName = this.form.select( '.outputName-secondary' ).property( 'value' );
 
-        Promise.all([
-                Hoot.api.grailPullOverpassToDb( params ),
-                Hoot.api.grailPullRailsPortToDb( params )
-            ])
+        const apiRequests = [];
+        apiRequests.push(Hoot.api.grailPullRailsPortToDb( params ));
+
+        if (this.instance.bboxSelectType !== 'secondaryLayerExtent') {
+            apiRequests.push(Hoot.api.grailPullOverpassToDb( params ));
+        }
+
+        Promise.all(apiRequests)
             .then( ( resp ) => {
                 resp.forEach( jobResp => {
                     Hoot.message.alert( jobResp );
                 });
             } )
             .then( () => Hoot.folders.refreshAll() )
+            .then( () => {
+                if (this.instance.bboxSelectType === 'secondaryLayerExtent') {
+                    const loadedRef = Hoot.layers.findLoadedBy( 'refType', 'primary' );
+                    // Remove reference layer if there is one
+                    if ( loadedRef ) {
+                        Hoot.layers.removeActiveLayer( loadedRef.id, 'reference', 'primary' );
+                    }
+
+                    // load newly pulled layer
+                    let layerInfo = {
+                        name: params.referenceName,
+                        id: Hoot.layers.findBy( 'name', params.referenceName ).id
+                    };
+
+                    return Hoot.ui.sidebar.forms.reference.submitLayer( layerInfo );
+                }
+            })
             .then( () => Hoot.events.emit( 'render-dataset-table' ) );
 
 

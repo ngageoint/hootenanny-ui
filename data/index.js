@@ -25,6 +25,8 @@ import { categories } from './presets/categories.json';
 import { fields } from './presets/fields.json';
 import { osmTagInfo } from './osm-plus-taginfo.json';
 import { tdsv61FieldValues } from './tdsv61_field_values.json';
+import { tdsv70FieldValues } from './tdsv70_field_values.json';
+import { mgcpFieldValues } from './mgcp_field_values.json';
 
 import { geoArea as d3_geoArea } from 'd3-geo';
 import whichPolygon from 'which-polygon';
@@ -63,5 +65,7 @@ export var data = {
 // data for Translation Assistant tag lookup
 export var tagInfo = {
     OSM: osmTagInfo,
-    TDSv61: tdsv61FieldValues
+    TDSv61: tdsv61FieldValues,
+    TDSv70: tdsv70FieldValues,
+    MGCP: mgcpFieldValues
 };

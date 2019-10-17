@@ -15,7 +15,15 @@ export default class Upload {
                 checked: true
             },
             {
+                name: 'TDSv70',
+                enabled: true
+            },
+            {
                 name: 'TDSv61',
+                enabled: true
+            },
+            {
+                name: 'MGCP',
                 enabled: true
             }
         ];

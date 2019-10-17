@@ -522,3 +522,74 @@ export function conflictActions() {
         }
     ];
 }
+
+export function exportAlphaShape() {
+    return [
+        {
+            label: 'Alpha (meters)',
+            id: 'alpha',
+            inputType: 'text',
+            placeholder: '10000',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Buffer (meters)',
+            id: 'buffer',
+            inputType: 'text',
+            placeholder: '0',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Add alpha shape to map?',
+            id: 'addToMap',
+            inputType: 'checkbox',
+            checked: true
+        }
+    ];
+}
+
+export function exportTaskGrid() {
+    return [
+        {
+            label: 'Maximum nodes per task grid',
+            id: 'maxnodes',
+            inputType: 'text',
+            placeholder: '10000',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Pixel size (decimal degrees)',
+            id: 'pxsize',
+            inputType: 'text',
+            placeholder: '0.001',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Clip task grid to alpha shape?',
+            id: 'clipToAlpha',
+            inputType: 'checkbox',
+            onChange: d => this.toggleAlphaInputs( d ),
+            checked: true
+        },
+        {
+            label: 'Alpha (meters)',
+            id: 'alpha',
+            inputType: 'text',
+            placeholder: '10000',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Buffer (meters)',
+            id: 'buffer',
+            inputType: 'text',
+            placeholder: '0',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Add task grid to map?',
+            id: 'addToMap',
+            inputType: 'checkbox',
+            checked: true
+        }
+    ];
+}
