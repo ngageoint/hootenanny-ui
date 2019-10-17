@@ -528,7 +528,7 @@ export default class ImportDataset {
         } else if ( typeVal === 'FILE' ) {
             uploader
                 .property( 'multiple', true )
-                .attr( 'accept', '.shp, .shx, .dbf, .prj' );
+                .attr( 'accept', '.shp, .shx, .dbf, .prj, .zip' );
         } else if ( typeVal === 'GEOJSON' ) {
             uploader
                 .property( 'multiple', false )
