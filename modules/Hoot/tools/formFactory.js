@@ -44,6 +44,13 @@ export default class FormFactory {
      * @returns {d3} - form container
      */
     createContainer( selector, formId ) {
+
+        // Check if it already exists and delete it if it does
+        const formCheck = d3.select( `#${formId}` );
+        if ( formCheck ) {
+            formCheck.remove();
+        }
+
         let overlay = d3.select( selector )
             .append( 'div' )
             .attr( 'id', formId )

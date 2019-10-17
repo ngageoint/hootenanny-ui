@@ -7,12 +7,12 @@
 import EventEmitter from 'events';
 import FormFactory  from './formFactory';
 
-import { modeDrawBoundingBox }    from '../../modes';
-import ClipDataset                from './clipDataset';
-import OverpassQueryPanel         from './overpassQueryPanel';
-import DifferentialUpload         from './differentialUpload';
-import { d3combobox }             from '../../lib/hoot/d3.combobox';
-import { geoExtent as GeoExtent } from '../../geo';
+import { modeBrowse, modeDrawBoundingBox } from '../../modes';
+import ClipDataset                         from './clipDataset';
+import OverpassQueryPanel                  from './overpassQueryPanel';
+import DifferentialUpload                  from './differentialUpload';
+import { d3combobox }                      from '../../lib/hoot/d3.combobox';
+import { geoExtent as GeoExtent }          from '../../geo';
 
 export default class SelectBbox extends EventEmitter {
     constructor( context, predefinedData ) {
@@ -29,6 +29,10 @@ export default class SelectBbox extends EventEmitter {
     }
 
     render( operationName ) {
+        // if user does something like starts drawing and then midway selects a bbox operation the context will
+        // remain as the old one so good to double check
+        this.context.enter( modeBrowse( this.context ) );
+
         this.operationName = operationName;
 
         const metadata = {
@@ -42,8 +46,7 @@ export default class SelectBbox extends EventEmitter {
 
         const formId = 'drawBboxForm';
 
-        this.container  = new FormFactory().generateForm( 'body', formId, metadata );
-        this.form       = d3.select( `#${formId}` );
+        this.form       = new FormFactory().generateForm( 'body', formId, metadata );
         this.nextButton = d3.select( `#${metadata.button.id}` );
 
         this.nextButton.property( 'disabled', false );
@@ -162,7 +165,7 @@ export default class SelectBbox extends EventEmitter {
                 const selectedValue = this.value;
 
                 if ( selectedValue === 'Draw Bounding Box' ) {
-                    self.container.classed( 'hidden', true );
+                    self.form.classed( 'hidden', true );
                     self.bboxSelectType = 'boundingBox';
                     self.context.enter( modeDrawBoundingBox( self, self.context ) );
                 } else if ( selectedValue === 'Visual Extent' ) {
@@ -191,7 +194,7 @@ export default class SelectBbox extends EventEmitter {
 
     handleBbox( extent ) {
         this.updateCoords( extent );
-        this.container.classed( 'hidden', false );
+        this.form.classed( 'hidden', false );
 
         this.maxLatInput.property( 'value', this.maxlat );
         this.minLonInput.property( 'value', this.minlon );
@@ -215,7 +218,7 @@ export default class SelectBbox extends EventEmitter {
             this.maxLonInput.property( 'value' ) + ',' +
             this.maxLatInput.property( 'value' );
 
-        this.container.remove();
+        this.form.remove();
         this.nextButton = null;
 
         if ( this.operationName === 'clipData' ) {
