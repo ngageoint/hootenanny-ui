@@ -212,6 +212,13 @@ class LayerConflate extends SidebarForm {
             delete data.HOOT2_ADV_OPTIONS.RoadEngines;
         }
 
+
+        //If a task grid is present in custom data, use it to restrict conflation
+        let customDataLayer = Hoot.context.layers().layer('data');
+        if ( customDataLayer.hasData() && customDataLayer.enabled() ) {
+            data.TASK_BBOX = customDataLayer.extent().toParam();
+        }
+
         return data;
     }
 
