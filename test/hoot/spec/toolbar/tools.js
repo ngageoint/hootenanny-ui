@@ -22,7 +22,7 @@ describe( 'UI tools', () => {
         var menuItems = d3.selectAll('li.menu-item');
 
         setTimeout(() => {
-            expect(menuItems.size( )).to.be.equal( 2 );
+            expect(menuItems.size( )).to.be.equal( 3 );
             done();
         }, 1000);
 
@@ -53,13 +53,13 @@ describe( 'UI tools', () => {
         });
     } );
 
-    it( 'All grail tools hidden for non-advanced', done => {
+    it( 'All grail tools shown for advanced user', done => {
 
         var grailTools = d3.select('.tools-grail');
         grailTools.dispatch('mouseenter');
         setTimeout(() => {
             var grailMenu = d3.selectAll('.tools-grail');
-            expect(grailMenu.size()).to.be.equal( 0 );
+            expect(grailMenu.size()).to.be.equal( 3 );
             done();
         });
     } );
