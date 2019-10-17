@@ -23,9 +23,9 @@ pipeline {
                 sh "vagrant ssh ${params.Box} -c 'sudo yum-config-manager --add-repo https://s3.amazonaws.com/hoot-repo/el7/master/hoot.repo'"
                 sh "vagrant ssh ${params.Box} -c 'sudo yum makecache -y'"
                 sh "vagrant ssh ${params.Box} -c 'sudo yum install -y hootenanny-autostart'"
-                sh "vagrant ssh ${params.Box} -c 'cd hoot-ui; ./scripts/jenkins/AddKarmaTestUser.sh;'"
-                sh "vagrant ssh ${params.Box} -c 'cd hoot-ui; ./scripts/jenkins/chrome-install.sh;'"
-                sh "vagrant ssh ${params.Box} -c 'cd hoot-ui; ./scripts/jenkins/driver-install.sh;'"
+                sh "vagrant ssh ${params.Box} -c '$HOOT_HOME/scripts/database/AddKarmaTestUser.sh;'"
+                sh "vagrant ssh ${params.Box} -c '$HOOT_HOME/scripts/chrome/chrome-install.sh;'"
+                sh "vagrant ssh ${params.Box} -c '$HOOT_HOME/scripts/chrome/driver-install.sh;'"
             }
         }
         stage("UI") {
