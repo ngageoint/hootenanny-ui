@@ -11,6 +11,7 @@ import SidebarForm                from './sidebarForm';
 import AdvancedOpts               from './advancedOpts';
 import FormFactory                from '../../tools/formFactory';
 import { layerConflateForm }      from '../../config/domMetadata';
+//import { utilQsString }           from '../../../util';
 
 class LayerConflate extends SidebarForm {
     constructor( container, d ) {
@@ -210,6 +211,18 @@ class LayerConflate extends SidebarForm {
         if ( data.HOOT2_ADV_OPTIONS.hasOwnProperty( 'RoadEngines' ) && data.HOOT2_ADV_OPTIONS.RoadEngines === 'Network' ) {
             data.CONFLATION_ALGORITHM = 'Network';
             delete data.HOOT2_ADV_OPTIONS.RoadEngines;
+        }
+
+
+        //If a task grid is present in custom data, use it to restrict conflation
+        let customDataLayer = Hoot.context.layers().layer('data');
+        //Should we also check that a gpx url hash is present?
+        //Or should a manually added (not necessarily TM added)
+        //data layer be availabe for use?
+        //var q = utilStringQs(window.location.hash.substring(1));
+
+        if ( customDataLayer.hasData() && customDataLayer.enabled() /*&& q.gpx*/) {
+            data.TASK_BBOX = customDataLayer.extent().toParam();
         }
 
         return data;
