@@ -240,6 +240,7 @@ export default class GrailPull {
         };
 
         if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+            railsParams.customQuery    = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
