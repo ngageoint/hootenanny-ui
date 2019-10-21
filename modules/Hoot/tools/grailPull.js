@@ -2,13 +2,13 @@ import FormFactory from './formFactory';
 
 import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
 import _find                                         from 'lodash-es/find';
-import selectBbox                                    from './selectBbox';
 import OverpassQueryPanel                            from './overpassQueryPanel';
 
 export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
         this.maxFeatureCount = null;
+        this.grailMetadata = null;
     }
 
     render() {
@@ -56,7 +56,8 @@ export default class GrailPull {
 
     async createTable() {
         const { data } = await Hoot.api.grailMetadataQuery();
-        this.maxFeatureCount = +data.maxFeatureCount;
+        this.grailMetadata = data;
+        this.maxFeatureCount = +this.grailMetadata.maxFeatureCount;
 
         const overpassParams = { BBOX: this.instance.bbox };
         if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
@@ -92,9 +93,9 @@ export default class GrailPull {
             .insert( 'table', '.modal-footer' )
             .classed( 'pullStatsInfo', true );
 
-        const columns = [ '', data.overpassLabel];
+        const columns = [ '', this.grailMetadata.overpassLabel];
         if ( privateStats ) {
-            columns.splice( 1, 0, data.railsLabel ); // add to index 1
+            columns.splice( 1, 0, this.grailMetadata.railsLabel ); // add to index 1
         }
 
         let thead = statsTable.append('thead');
@@ -248,10 +249,10 @@ export default class GrailPull {
               referenceCheckbox = d3.select( '#row-0 input' ).property( 'checked' ),
               secondaryCheckbox = d3.select( '#row-1 input' ).property( 'checked' );
         if ( referenceCheckbox ) {
-            jobsList.push(Hoot.api.grailPullRailsPortToDb( railsParams ));
+            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, this.grailMetadata.railsLabel) );
         }
         if ( secondaryCheckbox ) {
-            jobsList.push(Hoot.api.grailPullOverpassToDb( overpassParams ));
+            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, this.grailMetadata.overpassLabel) );
         }
 
         Promise.all( jobsList )

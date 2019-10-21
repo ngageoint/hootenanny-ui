@@ -1083,7 +1083,7 @@ export default class API {
             } );
     }
 
-    grailPullOverpassToDb( data ) {
+    grailPullOverpassToDb( data, overpassLabel ) {
         const params = {
             path: '/grail/pulloverpasstodb',
             method: 'POST',
@@ -1095,7 +1095,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Pull from Overpass API has succeeded.',
+                    message: `Pull from ${overpassLabel} has succeeded.`,
                     status: 200,
                     type: 'success'
                 };
@@ -1146,7 +1146,7 @@ export default class API {
             } );
     }
 
-    grailPullRailsPortToDb( data ) {
+    grailPullRailsPortToDb( data, railsLabel ) {
         const params = {
             path: '/grail/pullrailsporttodb',
             method: 'POST',
@@ -1158,7 +1158,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Pull from Rails Port API has succeeded.',
+                    message: `Pull from ${railsLabel} has succeeded.`,
                     status: 200,
                     type: 'success'
                 };
