@@ -63,15 +63,16 @@ export default class OverpassQueryPanel {
             overpassQueryValue = containerExists.select( 'textarea' ).property( 'value' );
         }
 
-        const queryCheckbox = this.overpassQueryContainer.append( 'input' )
-            .attr( 'type', 'checkbox' )
-            .property( 'checked', checkboxStatus )
-            .on('click', function() {
-                const isChecked = d3.select( this ).property( 'checked' );
-                customQueryInput.classed( 'hidden', !isChecked );
-            });
-
-        this.overpassQueryContainer.append('div').text('Custom Overpass query');
+        const checkboxLabel = this.overpassQueryContainer
+            .append( 'label' )
+            .text( 'Custom Overpass query' )
+                .append( 'input' )
+                .attr( 'type', 'checkbox' )
+                .property( 'checked', checkboxStatus )
+                .on('click', function() {
+                    const isChecked = d3.select( this ).property( 'checked' );
+                    customQueryInput.classed( 'hidden', !isChecked );
+                });
 
         const placeholder = '[out:json][bbox:{{bbox}}];\n' +
             '(\n' +

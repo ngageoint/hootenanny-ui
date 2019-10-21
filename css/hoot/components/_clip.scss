@@ -84,6 +84,10 @@
         min-height: 125px;
         height: 125px;
     }
+
+    label:hover {
+        cursor: pointer;
+    }
 }
 
 #minlat {
