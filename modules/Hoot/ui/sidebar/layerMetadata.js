@@ -233,6 +233,11 @@ export default class LayerMetadata {
                 stats[d.shift()] = d;
                 return stats;
             }, {});
+            console.log(stats);
+
+            //Ugly hack, but sometimes the first line of stats output doesn't get a hard return
+            //causing it to munge with Nodes
+            let statsNodes = stats.Nodes || stats['stats = (stat) OR (input map 1 stat) (input map 2 stat) (output map stat)Nodes'];
 
             const tableConfig = {
                 layercounts: {
@@ -242,17 +247,17 @@ export default class LayerMetadata {
                         3: 'relations'
                     },
                     [RefLayerName]: {
-                        nodes: stats.Nodes[0],
+                        nodes: statsNodes[0],
                         ways: stats.Ways[0],
                         relations: stats.Relations[0]
                     },
                     [SecLayerName]: {
-                        nodes: stats.Nodes[1],
+                        nodes: statsNodes[1],
                         ways: stats.Ways[1],
                         relations: stats.Relations[1]
                     },
                     [ConflatedLayer]: {
-                        nodes: stats.Nodes[2],
+                        nodes: statsNodes[2],
                         ways: stats.Ways[2],
                         relations: stats.Relations[2]
                     }
