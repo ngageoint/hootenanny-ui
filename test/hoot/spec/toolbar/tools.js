@@ -53,7 +53,7 @@ describe( 'UI tools', () => {
         });
     } );
 
-    it( 'All grail tools active', done => {
+    it( 'All grail tools shown for advanced user', done => {
 
         var grailTools = d3.select('.tools-grail');
         grailTools.dispatch('mouseenter');

@@ -5,7 +5,6 @@
  *******************************************************************************************************/
 
 import _cloneDeep  from 'lodash-es/cloneDeep';
-import _concat     from 'lodash-es/concat';
 import _difference from 'lodash-es/difference';
 import _drop       from 'lodash-es/drop';
 import _filter     from 'lodash-es/filter';
@@ -17,9 +16,11 @@ import _slice      from 'lodash-es/slice';
 import _uniq       from 'lodash-es/uniq';
 import _without from 'lodash-es/without';
 
-import { duration } from './utilities';
+import { duration, formatSize } from './utilities';
 
 import EventEmitter from 'events';
+
+import { svgIcon } from '../../svg';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy
@@ -40,27 +41,39 @@ export default class FolderTree extends EventEmitter {
         this.datasetContextMenu = {
             multiDatasetOpts: {
                 title: 'Export Selected Datasets',
-                icon: 'export',
+                _icon: 'export',
                 click: 'exportMultiDataset'
             },
             singleDatasetOpts: {
                 title: 'Export',
-                icon: 'export',
+                _icon: 'export',
                 click: 'exportDataset'
             },
+            conflationProjectOpts: [
+                {
+                    title:'Export Alpha Shape',
+                    icon:'alpha-shape',
+                    click:'exportAlphaShape'
+                },
+                {
+                    title:'Export Task Grid',
+                    icon:'task-grid',
+                    click:'exportTaskGrid'
+                }
+            ],
             addDatasetOpts: [
                 {
                     title: 'Add as Reference Dataset',
                     formId: 'reference',
                     refType: 'primary',
-                    icon: 'plus',
+                    _icon: 'plus',
                     click: 'addDataset'
                 },
                 {
                     title: 'Add as Secondary Dataset',
                     formId: 'secondary',
                     refType: 'secondary',
-                    icon: 'plus',
+                    _icon: 'plus',
                     click: 'addDataset'
                 }
             ]
@@ -69,22 +82,22 @@ export default class FolderTree extends EventEmitter {
         this.folderContextMenu = [
             {
                 title: 'Delete',
-                icon: 'trash',
+                _icon: 'trash',
                 click: 'delete'
             },
             {
                 title: 'Add Datasets',
-                icon: 'data',
+                _icon: 'data',
                 click: 'importDatasets'
             },
             {
                 title: 'Add Folder',
-                icon: 'folder',
+                _icon: 'folder',
                 click: 'addFolder'
             },
             {
                 title: 'Export Data in Folder',
-                icon: 'export',
+                _icon: 'export',
                 click: 'exportFolder'
             }
         ];
@@ -200,6 +213,7 @@ export default class FolderTree extends EventEmitter {
                 n.depth = parentDepth + 1;
             }
 
+            //this causes a circular reference
             if ( !n.data ) {
                 n.data = n;
             }
@@ -352,20 +366,7 @@ export default class FolderTree extends EventEmitter {
             .attr( 'dx', '98%' )
             .attr( 'text-anchor', 'end' )
             .text( d => {
-                let size  = d.data.size,
-                    units = [ 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ],
-                    u     = -1;
-
-                if ( Math.abs( size ) < 1000 ) {
-                    return size + ' B';
-                }
-
-                do {
-                    size /= 1000;
-                    ++u;
-                } while ( Math.abs( size ) >= 1000 && u < units.length - 1 );
-
-                return size.toFixed( 1 ) + ' ' + units[ u ];
+                return formatSize( d.data.size );
             } );
 
         if ( this.isDatasetTable ) {
@@ -509,11 +510,7 @@ export default class FolderTree extends EventEmitter {
     bindContextMenu( d ) {
         let { data } = d,
             selected = d.data.selected || false;
-
-        if ( d3.event.ctrlKey && d3.event.which === 1 ) {
-            data.selected = !data.selected ? !data.selected : data.selected;
-            this.selectedNodes.push( data );
-        } else if ( d.data.type === 'dataset' ) {
+        if ( d.data.type === 'dataset' ) {
             if ( !selected ) {
                 let selectedNodes = _filter( this.root.descendants(), node => node.data.selected );
 
@@ -552,7 +549,7 @@ export default class FolderTree extends EventEmitter {
             opts = [
                 {
                     title: `Delete (${ selectedCount })`,
-                    icon: 'trash',
+                    _icon: 'trash',
                     click: 'delete'
                 }
             ];
@@ -563,7 +560,7 @@ export default class FolderTree extends EventEmitter {
 
                 opts.splice( 1, 0, {
                     title: `Move (${ selectedCount })`,
-                    icon: 'info',
+                    _icon: 'info',
                     click: 'modifyDataset'
                 } );
             } else {
@@ -582,17 +579,21 @@ export default class FolderTree extends EventEmitter {
 
                 opts.splice( 4, 0, {
                     title: `Move/Rename ${ data.name }`,
-                    icon: 'info',
+                    _icon: 'info',
                     click: 'modifyDataset'
                 } );
 
-                opts = _concat( opts, this.datasetContextMenu.singleDatasetOpts );
+                opts.push(this.datasetContextMenu.singleDatasetOpts);
+
+                if (Hoot.users.isAdvanced()) {
+                    opts = opts.concat(this.datasetContextMenu.conflationProjectOpts);
+                }
             }
         } else if ( data.type === 'folder' ) {
             opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
             opts.splice( 1, 0, {
                 title: `Modify Folder ${ data.name }`,
-                icon: 'info',
+                _icon: 'info',
                 click: 'modifyFolder'
             } );
         }
@@ -612,9 +613,18 @@ export default class FolderTree extends EventEmitter {
             .data( opts )
             .enter()
             .append( 'li' )
-            .attr( 'class', item => `_icon ${ item.icon }` )
-            .text( item => item.title )
-            .on( 'click', item => Hoot.events.emit( 'context-menu', this, d, item ) );
+            //trying to deprecate the _icon class and replace with svgIcon
+            //in the meantime, both are supported though shold be exclusive
+            .attr( 'class', item => (item._icon) ? `_icon ${ item._icon }` : null )
+            .each( function(item) {
+                if (item.icon) {
+                    d3.select(this)
+                    .call(svgIcon(`#iD-icon-${ item.icon }`));
+                }
+            })
+            .on( 'click', item => Hoot.events.emit( 'context-menu', this, d, item ) )
+            .append('span').text( item => item.title );
+
 
         this.contextMenu
             .style( 'left', `${ d3.event.pageX - 2 }px` )
@@ -671,6 +681,17 @@ export default class FolderTree extends EventEmitter {
 
                 this.selectedNodes    = _uniq( this.selectedNodes );
                 this.lastBasePosition = basePosition;
+            }
+            else if ( d3.event.ctrlKey && this.isDatasetTable ) {
+                data.selected = !data.selected;
+                if (data.selected) {
+                    this.selectedNodes.push( data );
+                } else {
+                    this.selectedNodes = this.selectedNodes.filter(function(d) {
+                        return d.id !== data.id;
+                    });
+                }
+
             }
             else {
                 // get all currently selected nodes

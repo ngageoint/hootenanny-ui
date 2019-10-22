@@ -13,6 +13,7 @@ import Translations        from './translations';
 import Basemaps            from './basemaps';
 import ReviewBookmarks     from './reviewBookmarks/reviewBookmarks';
 import ReviewBookmarkNotes from './reviewBookmarks/reviewBookmarkNotes';
+import AdminPanel          from './adminPanel';
 
 /**
  * Creates the settings panel
@@ -40,7 +41,7 @@ export default class ManagePanel {
     /**
      * Render base panel and all of its components
      */
-    async render() {
+    render() {
         this.container = d3.select( 'body' )
             .insert( 'div', '#id-container' )
             .attr( 'id', 'manage-panel' )
@@ -57,8 +58,15 @@ export default class ManagePanel {
             .append( 'label' )
             .text( 'Manage Panel' );
 
+        return this;
+    }
+
+    renderTabs() {
+        if ( Hoot.users.isAdmin() ) {
+            this.manageTabs.push( AdminPanel );
+        }
         // Render all tabs
-        Promise.all( _map( this.manageTabs, Tab => new Tab( this ).render() ) )
+        return Promise.all( _map( this.manageTabs, Tab => new Tab( this ).render() ) )
             .then( modules => {
                 this.datasets        = modules[ 0 ];
                 this.jobs            = modules[ 1 ];
@@ -69,8 +77,6 @@ export default class ManagePanel {
                 this.bookmarkNotes   = modules[ 6 ];
                 this.tabs = modules;
             } );
-
-        return this;
     }
 
 }

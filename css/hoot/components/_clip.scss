@@ -64,6 +64,14 @@
     }
 }
 
+.history-options {
+    input {
+        width: 100%;
+        padding-left: 10px;
+        padding-right: 20px;
+    }
+}
+
 #minlat {
     margin-bottom: -1px;
     border-radius: 4px 4px 0 0;
@@ -107,9 +115,22 @@
     }
 }
 
-#grailPullTable .hoot-menu {
-    max-width: unset;
-    width: 30%;
+.grailOutputTable {
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    th {
+        padding: 10px;
+    }
+
+    td {
+        padding: 0 10px;
+    }
+
+    input[type="text"] {
+        border: none;
+        padding: 0;
+    }
 }
 
 #grailTable {

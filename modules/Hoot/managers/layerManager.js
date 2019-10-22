@@ -109,11 +109,8 @@ export default class Layers {
         return (num === 0) ? namePart : `${namePart} (${num})`;
     }
 
-    async addHashLayer(type, mapId) {
-        Hoot.ui.sidebar.forms[ type ].submitLayer( {
-            id: mapId,
-            name: this.findBy( 'id', mapId).name
-        } );
+    async addHashLayer(type, mapId, skipCheckForReview = false) {
+        Hoot.ui.sidebar.forms[ type ].submitLayer( { id: mapId, name: this.findBy( 'id', mapId).name }, skipCheckForReview );
     }
 
     findBy( key, val ) {
@@ -197,7 +194,8 @@ export default class Layers {
                 extent: layerExtent,
                 polygon: layerExtent.polygon(),
                 tags: tags,
-                visible: true
+                visible: true, // Denotes whether the layer is toggled on/off
+                active: params.active || true // Whether the layer is loaded and can be toggled on/off
             };
 
             //update url hash
@@ -219,7 +217,7 @@ export default class Layers {
                 window.location.replace('#' + utilQsString(q, true));
             }
 
-            if ( (tags.input1 || tags.input2) && !skipCheckForReviewsAndZoom) {
+            if (!skipCheckForReviewsAndZoom) {
                 layer = await this.checkForReview( layer );
             }
 
@@ -266,10 +264,12 @@ export default class Layers {
             reviewStats     = await Hoot.api.getReviewStatistics( mergedLayer.id ),
             unreviewedCount = reviewStats.unreviewedCount;
 
-        if ( !(tags.input1 && tags.input2) ) return mergedLayer;
+        mergedLayer.hasReviews = unreviewedCount > 0;
+
+        if ( !(mergedLayer.hasReviews) && !(tags.input1 || tags.input2) ) return mergedLayer;
 
         let message, confirm;
-        if (unreviewedCount > 0) {
+        if (mergedLayer.hasReviews) {
             message = 'The layer contains unreviewed items. Do you want to go into review mode?';
             confirm = await Hoot.message.confirm( message );
         } else {
@@ -339,8 +339,8 @@ export default class Layers {
             };
 
             Promise.all( [
-                this.loadLayer( params1 ),
-                this.loadLayer( params2 )
+                this.loadLayer( params1, true ),
+                this.loadLayer( params2, true )
             ] ).then( layers => {
                 this.hideLayer( layers[ 0 ].id );
                 this.hideLayer( layers[ 1 ].id );
@@ -378,8 +378,14 @@ export default class Layers {
                 Hoot.message.alert( { message, type } );
             }
 
-            this.loadLayer( params )
+            if (params) {
+                this.loadLayer( params )
                 .then( layer => this.hideLayer( layer.id ) );
+            } else {
+                //Set layer colors manually since loadLayers won't be called
+                this.setLayerColor( '1', 'violet' );
+                this.setLayerColor( '2', 'orange' );
+            }
         }
 
         return mergedLayer;
@@ -410,6 +416,14 @@ export default class Layers {
             this.hoot.events.emit( 'loaded-layer-removed' );
     }
 
+    removeActiveLayer(layerId, refId, refType) {
+        Hoot.layers.removeLoadedLayer( layerId );
+        Hoot.ui.sidebar.layerRemoved( {
+            id: refId,
+            refType: refType
+        } );
+    }
+
     removeAllLoadedLayers() {
         _forEach( this.loadedLayers, layer => {
             this.hootOverlay.removeGeojson( layer.id );
@@ -423,6 +437,7 @@ export default class Layers {
 
     hideLayer( id ) {
         this.hoot.layers.loadedLayers[ id ].visible = false;
+        this.hoot.layers.loadedLayers[ id ].active = false;
 
         d3.select( '#map' ).selectAll( `[class*="_${ id }-"]` ).remove();
 
@@ -434,6 +449,7 @@ export default class Layers {
 
     showLayer( id ) {
         this.hoot.layers.loadedLayers[ id ].visible = true;
+        this.hoot.layers.loadedLayers[ id ].active = true;
         this.hoot.context.flush();
     }
 
@@ -441,10 +457,19 @@ export default class Layers {
         const isVisible = layer.visible = !layer.visible,
               id = layer.id;
 
-        if (isVisible) {
-            d3.selectAll(`.tag-hoot-${id}`).attr('display','');
+        let selector;
+
+        if ( layer.refType === 'merged' ) {
+            const { input1, input2 } = layer.tags;
+            selector = `.tag-hoot-${id},.tag-hoot-${input1},.tag-hoot-${input2}`;
         } else {
-            d3.selectAll(`.tag-hoot-${id}`).attr('display','none');
+            selector = `.tag-hoot-${id}`;
+        }
+
+        if (isVisible) {
+            d3.selectAll(selector).attr('display','');
+        } else {
+            d3.selectAll(selector).attr('display','none');
         }
     }
 

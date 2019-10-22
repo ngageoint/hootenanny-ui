@@ -369,7 +369,7 @@ export default class ImportDataset {
         let layerName     = this.layerNameInput.property( 'value' ),
             pathName      = this.pathNameInput.property( 'value' ),
             newFolderName = this.newFolderNameInput.property( 'value' ),
-            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0,
+            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ),
 
             transVal      = this.schemaInput.property( 'value' ),
             typeVal       = this.typeInput.property( 'value' ),
@@ -391,8 +391,11 @@ export default class ImportDataset {
 
         if ( newFolderName ) {
             folderId = (await Hoot.folders.addFolder( pathName, newFolderName )).folderId;
-        } else {
+        } else if ( pathId ) {
             folderId = pathId;
+        } else {
+            Hoot.message.alert( { message: 'Need to specify a path or enter name for new folder!', type: 'error' } );
+            return;
         }
 
         let data = {
@@ -419,10 +422,16 @@ export default class ImportDataset {
 
                 return Hoot.api.statusInterval( this.jobId );
             } )
-            .then( resp => {
+            .then( async resp => {
                 let message;
                 if (resp.data && resp.data.status === 'cancelled') {
                     message = 'Import job cancelled';
+
+                    // Delete the newly created folder
+                    if ( newFolderName ) {
+                        await Hoot.api.deleteFolder( folderId );
+                        await Hoot.folders.removeFolder( folderId );
+                    }
 
                     this.submitButton
                         .select( 'span' )
@@ -482,6 +491,11 @@ export default class ImportDataset {
             .select( 'span' )
             .classed( 'label', true )
             .text( 'Cancel Import' );
+
+        this.submitButton
+            .append( 'div' )
+            .classed( '_icon _loading float-right', true )
+            .attr( 'id', 'importSpin' );
 
         // overwrite the submit click action with a cancel action
         this.submitButton.on( 'click', () => {
@@ -574,7 +588,7 @@ export default class ImportDataset {
         } else if ( typeVal === 'FILE' ) {
             uploader
                 .property( 'multiple', true )
-                .attr( 'accept', '.shp, .shx, .dbf, .prj' );
+                .attr( 'accept', '.shp, .shx, .dbf, .prj, .zip' );
         } else if ( typeVal === 'GEOJSON' ) {
             uploader
                 .property( 'multiple', false )

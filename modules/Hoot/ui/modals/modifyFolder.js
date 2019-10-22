@@ -13,14 +13,36 @@ import { modifyDatasetForm } from '../../config/domMetadata';
 export default class ModifyFolder {
     constructor( d ) {
         this.data       = d.data;
-        this.folderList = Hoot.folders._folders;
+
+        //get list of folder ids and all their descendents
+        function getDescendents(ids, folders) {
+            let children = folders.filter(f => ids.includes(f.parentId))
+                              .map(f => f.id);
+            if (children.length) {
+                return [...new Set(ids.concat(children).concat(getDescendents(children, folders)))];
+            } else {
+                return ids;
+            }
+        }
+        let descendents = getDescendents([d.data.id], Hoot.folders._folders);
+
+        //filter out the folder itself
+        //and all of it's descendents
+        this.folderList = Hoot.folders._folders.filter(f => {
+            return !descendents.includes(f.id);
+        });
         this.form       = modifyDatasetForm.call( this );
     }
 
     render() {
         // remove layer name input
         this.form.splice( 2, 1 );
-        this.pathName = _get( _find( this.folderList, folder => folder.id === this.data.parentId ), 'path' ) || 'root';
+        this.pathName = _get( _find( this.folderList, folder => folder.id === this.data.parentId ), 'path' ) || '/';
+
+        // Because dataset and folder share the same settings we had to set a trigger here to tell the formFactory
+        // that we want root in the path dropdown
+        const pathComboboxSettings = _find( this.form, formItem => formItem.itemKey === 'path' );
+        pathComboboxSettings.includeRoot = true;
 
         let metadata = {
             title: 'Modify Folder',
@@ -35,10 +57,10 @@ export default class ModifyFolder {
 
         this.container = new FormFactory().generateForm( 'body', 'modify-folder-form', metadata );
 
-        this.folderNameInput     = this.container.select( '#modifyName' );
-        this.pathNameInput = this.container.select( '#modifyPathName' );
+        this.folderNameInput       = this.container.select( '#modifyName' );
+        this.pathNameInput         = this.container.select( '#modifyPathName' );
         this.folderVisibilityInput = this.container.select( '#modifyVisibility' );
-        this.submitButton        = this.container.select( '#modifySubmitBtn' );
+        this.submitButton          = this.container.select( '#modifySubmitBtn' );
 
         this.folderNameInput.property( 'value', this.data.name );
         this.pathNameInput.property( 'value', this.pathName );
@@ -78,8 +100,15 @@ export default class ModifyFolder {
             isPublic   = this.folderVisibilityInput.property( 'checked' ),
             folderId   = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
 
+        // We do this because if user only changes visibility
         if ( ( folderName !== this.data.name || pathName !== this.pathName ) && Hoot.folders.exists( folderName, folderId ) ) {
             let message = 'A folder already exists with this name in the destination path. Please remove the old folder or select a new name for this folder.',
+                type    = 'warn';
+
+            Hoot.message.alert( { message, type } );
+            return false;
+        } else if ( folderId === this.data.id ) {
+            let message = 'The new parent folder cannot be the current folder. Please select a different folder.',
                 type    = 'warn';
 
             Hoot.message.alert( { message, type } );

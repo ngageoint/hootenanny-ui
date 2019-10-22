@@ -26,8 +26,8 @@ export function layerConflateForm( data ) {
             id: 'conflateFolderPath',
             class: 'path-name',
             inputType: 'combobox',
-            value: this.defaultFolder ? this.defaultFolder.name : 'root',
-            _value: this.defaultFolder ? this.defaultFolder.id : 0,
+            value: this.defaultFolder.path,
+            _value: this.defaultFolder.id,
             data: this.folderList,
             itemKey: 'path',
             _valueKey: 'id',
@@ -57,7 +57,7 @@ export function layerConflateForm( data ) {
                 if ( !_isEmpty(advancedOpts.conflationOptions[type.toLowerCase()]) ) {
                     let typeDefaults = advancedOpts.conflationOptions[type.toLowerCase()];
                     advOpts = advOpts.map(function(opt) {
-                        if (opt.name === type) {
+                        if (opt.members.findIndex(m => typeDefaults.hasOwnProperty(m.id)) !== -1) {
                             opt.members = opt.members.map(function(member) {
                                 if (typeDefaults[member.id]) {
                                     member.default = typeDefaults[member.id];
@@ -74,17 +74,19 @@ export function layerConflateForm( data ) {
                     advancedOpts.createGroups(advOpts);
                 } else {
                     // disable & enable the attribute conflation group.
-                    let attributeGroup = d3.select( '.advanced-opts-content #Attribute_group' ),
-                        isAttribute = d3.select( '#conflateType' ).property( 'value' ) === 'Attribute';
+                    [ 'Attribute', 'Differential' ].forEach((conflationGroup) => {
+                        let confGroup = d3.select( `.advanced-opts-content #${conflationGroup}_group` ),
+                            isGroup = d3.select( '#conflateType' ).property( 'value' ).includes(conflationGroup);
 
-                    attributeGroup.select( '.adv-opt-title' )
-                        .classed( 'adv-opt-title-disabled', !isAttribute );
+                        confGroup.select( '.adv-opt-title' )
+                            .classed( 'adv-opt-title-disabled', !isGroup );
 
-                    attributeGroup.select( '.adv-opt-toggle' )
-                        .classed( 'toggle-disabled', !isAttribute );
+                        confGroup.select( '.adv-opt-toggle' )
+                            .classed( 'toggle-disabled', !isGroup );
 
-                    attributeGroup
-                        .select( '.group-body', true );
+                        confGroup
+                            .select( '.group-body', true );
+                    });
                 }
             }
         },
@@ -147,7 +149,7 @@ export function importSingleForm() {
             id: 'importPathName',
             class: 'path-name',
             inputType: 'combobox',
-            placeholder: 'root',
+            placeholder: 'Select a path',
             data: this.folderList,
             sort: true,
             itemKey: 'path'
@@ -227,7 +229,7 @@ export function importMultiForm() {
             id: 'importPathName',
             class: 'path-name',
             inputType: 'combobox',
-            placeholder: 'root',
+            placeholder: 'Select a path',
             data: this.folderList,
             sort: true,
             itemKey: 'path'
@@ -298,7 +300,7 @@ export function modifyDatasetForm() {
             id: 'modifyPathName',
             class: 'path-name',
             inputType: 'combobox',
-            placeholder: 'root',
+            placeholder: 'Select a path',
             data: this.folderList,
             readonly: 'readonly',
             sort: true,
@@ -524,6 +526,77 @@ export function conflictActions() {
             class: '_icon check primary pad1x',
             cmd: this.cmd( 'r' ),
             action: () => this.resolve.retainFeature()
+        }
+    ];
+}
+
+export function exportAlphaShape() {
+    return [
+        {
+            label: 'Alpha (meters)',
+            id: 'alpha',
+            inputType: 'text',
+            placeholder: '10000',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Buffer (meters)',
+            id: 'buffer',
+            inputType: 'text',
+            placeholder: '0',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Add alpha shape to map?',
+            id: 'addToMap',
+            inputType: 'checkbox',
+            checked: true
+        }
+    ];
+}
+
+export function exportTaskGrid() {
+    return [
+        {
+            label: 'Maximum nodes per task grid',
+            id: 'maxnodes',
+            inputType: 'text',
+            placeholder: '10000',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Pixel size (decimal degrees)',
+            id: 'pxsize',
+            inputType: 'text',
+            placeholder: '0.001',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Clip task grid to alpha shape?',
+            id: 'clipToAlpha',
+            inputType: 'checkbox',
+            onChange: d => this.toggleAlphaInputs( d ),
+            checked: true
+        },
+        {
+            label: 'Alpha (meters)',
+            id: 'alpha',
+            inputType: 'text',
+            placeholder: '10000',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Buffer (meters)',
+            id: 'buffer',
+            inputType: 'text',
+            placeholder: '0',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Add task grid to map?',
+            id: 'addToMap',
+            inputType: 'checkbox',
+            checked: true
         }
     ];
 }

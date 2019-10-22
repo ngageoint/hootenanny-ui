@@ -15,6 +15,8 @@ import AddFolder          from '../modals/addFolder';
 import ModifyDataset      from '../modals/modifyDataset';
 import ModifyFolder       from '../modals/modifyFolder';
 import ExportData from '../modals/exportData';
+import ExportAlphaShape from '../modals/exportAlphaShape';
+import ExportTaskGrid from '../modals/exportTaskGrid';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -289,6 +291,7 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'exportFolder': {
+//probably don't need to get translations but once on init
                 let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT);
                 this.exportDatasetModal = new ExportData( translations, d, 'Folder' ).render();
                 Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
@@ -310,6 +313,18 @@ export default class Datasets extends Tab {
                 this.modifyFolderModal = new ModifyFolder( d ).render();
 
                 Hoot.events.once( 'modal-closed', () => delete this.modifyFolderModal );
+                break;
+            }
+            case 'exportTaskGrid': {
+                this.exportTaskGridModal = new ExportTaskGrid( d ).render();
+
+                Hoot.events.once( 'modal-closed', () => delete this.exportTaskGridModal );
+                break;
+            }
+            case 'exportAlphaShape': {
+                this.exportAlphaShapeModal = new ExportAlphaShape( d ).render();
+
+                Hoot.events.once( 'modal-closed', () => delete this.exportAlphaShapeModal );
                 break;
             }
         }

@@ -158,6 +158,50 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    getPrivileges() {
+        const params = {
+            path: '/osm/api/0.6/user/getPrivileges',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getPrivilegeOptions() {
+        const params = {
+            path: '/osm/api/0.6/user/getPrivilegeOptions',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    savePrivileges( data ) {
+        const params = {
+            path: '/osm/api/0.6/user/savePrivileges',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'User privileges saved',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data,
+                      type = err.type;
+
+                return Promise.reject( { message, type } );
+            } );
+    }
+
     getOAuthRedirectUrl() {
         const params = {
             path: '/auth/oauth1/request',
@@ -308,13 +352,7 @@ export default class API {
 
         return this.request( params )
             .then( resp => {
-                let layers = resp.data.layers;
-
-                if ( !layers || !layers.length ){
-                    return resp.data;
-                } else {
-                    return layers;
-                }
+                return resp.data.layers || [];
             } )
             .catch( err => {
                 if ( err ) throw new Error( err );
@@ -711,34 +749,12 @@ export default class API {
     }
 
     exportDataset( data ) {
-        data.tagoverrides =  JSON.stringify(
-            Object.assign(data.tagoverrides || {}, {
-                // 'error:circular':'',
-                // 'hoot:building:match':'',
-                // 'hoot:status':'',
-                // 'hoot:review:members':'',
-                // 'hoot:review:score':'',
-                // 'hoot:review:note':'',
-                // 'hoot:review:sort_order':'',
-                // 'hoot:review:type':'',
-                // 'hoot:review:needs':'',
-                // 'hoot:score:match':'',
-                // 'hoot:score:miss':'',
-                // 'hoot:score:review':'',
-                // 'hoot:score:uuid':''
-            })
-        );
 
         const requiredKeys = [
-            'append',
-            'includehoottags',
             'input',
             'inputtype',
             'outputname',
-            'outputtype',
-            'tagoverrides',
-            'textstatus' ,
-            'translation'
+            'outputtype'
         ];
 
         if (!requiredKeys.every( k => data.hasOwnProperty(k) )) {
@@ -750,10 +766,6 @@ export default class API {
             method: 'POST',
             data: data
         };
-
-        if ( data.inputtype === 'folder' ) {
-            params.path = `${params.path}?ext=zip`;
-        }
 
         return this.request( params );
     }
@@ -1087,7 +1099,7 @@ export default class API {
 
     grailPullOverpassToDb( data ) {
         const params = {
-            path: `/grail/pulloverpasstodb?bbox=${ data.BBOX }`,
+            path: `/grail/pulloverpasstodb?bbox=${ data.BBOX }&name=${ data.secondaryName }`,
             method: 'GET'
         };
 
@@ -1111,9 +1123,9 @@ export default class API {
             } );
     }
 
-    overpassStatsQuery( bbox ) {
+    grailMetadataQuery( bbox ) {
         const params = {
-            path: `/grail/overpassStatsQuery?bbox=${ bbox }`,
+            path: `/grail/grailMetadataQuery?bbox=${ bbox }`,
             method: 'GET'
         };
 
@@ -1131,7 +1143,7 @@ export default class API {
 
     grailPullRailsPortToDb( data ) {
         const params = {
-            path: `/grail/pullrailsporttodb?bbox=${ data.BBOX }`,
+            path: `/grail/pullrailsporttodb?bbox=${ data.BBOX }&name=${ data.referenceName }`,
             method: 'GET'
         };
 
@@ -1260,9 +1272,9 @@ export default class API {
 
     /****************** TRANSLATIONS *******************/
 
-    getCapabilities() {
+    getTranslationSchemas() {
         const params = {
-            url: `${ this.translationUrl }capabilities`,
+            url: `${ this.translationUrl }translations`,
             method: 'GET'
         };
 
@@ -1274,9 +1286,7 @@ export default class API {
         const params = {
             url: `${ this.translationUrl }schema`,
             method: 'GET',
-            params: {
-                ...data
-            }
+            params: data
         };
 
         return this.request( params )
@@ -1324,9 +1334,7 @@ export default class API {
         const params = {
             url: `${ this.translationUrl }translateTo`,
             method: 'GET',
-            params: {
-                ...p
-            }
+            params: p
         };
 
         return this.request( params )
@@ -1346,5 +1354,23 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data );
+    }
+
+    /**
+     * Used to load geojson output (alpha shape, task grids) to the map
+     *
+     * @param id - the job id that produced the output
+     * @param outputname - the output file name
+     * @param ext - the output file extension
+     * @returns {Promise} - request
+     */
+    fetchGeojson( id, outputname, ext ) {
+        const params = {
+            path: `/job/export/geojson/${id}?outputname=${outputname}&ext=${ext}`,
+            responseType: 'json',
+            method: 'GET'
+        };
+
+        return this.request( params );
     }
 }

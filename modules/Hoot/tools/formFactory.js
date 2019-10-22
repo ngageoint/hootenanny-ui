@@ -221,8 +221,9 @@ export default class FormFactory {
                 return textA < textB ? -1 : textA > textB ? 1 : 0;
             } );
 
-            if ( data.class === 'path-name' ) {//FIXME should handle folder data outside here
-                comboData = [ { value: 'root', _value: 0 } ].concat(comboData);
+            // This is only for modify folder path
+            if ( data.includeRoot ) {
+                comboData = [ { value: '/', _value: 0 } ].concat(comboData);
             }
         }
 
@@ -260,7 +261,7 @@ export default class FormFactory {
                         textB = b.value.toLowerCase();
 
                     return textA < textB ? -1 : textA > textB ? 1 : 0;
-                } ).unshift( { value: 'root', title: 0 } );
+                } );
             }
 
             d3.select( input.node() )
