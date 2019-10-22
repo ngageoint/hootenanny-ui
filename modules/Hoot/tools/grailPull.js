@@ -249,10 +249,10 @@ export default class GrailPull {
               referenceCheckbox = d3.select( '#row-0 input' ).property( 'checked' ),
               secondaryCheckbox = d3.select( '#row-1 input' ).property( 'checked' );
         if ( referenceCheckbox ) {
-            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, this.grailMetadata.railsLabel) );
+            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, this.grailMetadata.railsLabel ) );
         }
         if ( secondaryCheckbox ) {
-            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, this.grailMetadata.overpassLabel) );
+            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, this.grailMetadata.overpassLabel ) );
         }
 
         Promise.all( jobsList )
@@ -263,11 +263,34 @@ export default class GrailPull {
             } )
             .then( () => Hoot.folders.refreshAll() )
             .then( () => {
-                if (this.instance.bboxSelectType === 'secondaryLayerExtent') {
-                    const loadedRef = Hoot.layers.findLoadedBy( 'refType', 'primary' );
+                const loadedPrimary   = Hoot.layers.findLoadedBy( 'refType', 'primary' ),
+                      loadedSecondary = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
+
+                // add grail pulled layers if nothing is on map
+                if ( !loadedPrimary && !loadedSecondary ) {
+                    // Finding layer id by name is fine here because we check for duplicate name in the grail pull
+                    let refParams = {
+                        name: railsParams.input1,
+                        id: Hoot.layers.findBy( 'name', railsParams.input1 ).id,
+                        color: 'violet',
+                        refType: 'primary'
+                    };
+
+                    let secParams = {
+                        name: overpassParams.input1,
+                        id: Hoot.layers.findBy( 'name', overpassParams.input1 ).id,
+                        color: 'orange',
+                        refType: 'secondary'
+                    };
+
+                    return Promise.all( [
+                        Hoot.ui.sidebar.forms.reference.submitLayer( refParams ),
+                        Hoot.ui.sidebar.forms.secondary.submitLayer( secParams )
+                    ] );
+                } else if (this.instance.bboxSelectType === 'secondaryLayerExtent') {
                     // Remove reference layer if there is one
-                    if ( loadedRef ) {
-                        Hoot.layers.removeActiveLayer( loadedRef.id, 'reference', 'primary' );
+                    if ( loadedPrimary ) {
+                        Hoot.layers.removeActiveLayer( loadedPrimary.id, 'reference', 'primary' );
                     }
 
                     // load newly pulled layer
@@ -278,8 +301,9 @@ export default class GrailPull {
 
                     return Hoot.ui.sidebar.forms.reference.submitLayer( layerInfo );
                 }
-            })
-            .then( () => Hoot.events.emit( 'render-dataset-table' ) );
+            } )
+            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+            .then( () => this.form.remove() );
 
 
         let history = JSON.parse( Hoot.context.storage('history') );
@@ -290,7 +314,6 @@ export default class GrailPull {
         history.bboxHistory.unshift( bbox );
         Hoot.context.storage( 'history', JSON.stringify( history ) );
 
-        this.form.remove();
     }
 
     loadingState(isLoading) {
