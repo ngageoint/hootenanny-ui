@@ -233,7 +233,6 @@ export default class LayerMetadata {
                 stats[d.shift()] = d;
                 return stats;
             }, {});
-            console.log(stats);
 
             //Ugly hack, but sometimes the first line of stats output doesn't get a hard return
             //causing it to munge with Nodes
