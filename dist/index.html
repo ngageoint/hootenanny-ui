@@ -25,6 +25,10 @@
 
             Hoot.api.getServicesVersionInfo()
                 .then( () => {
+                    // apply cached hash
+                    window.location.hash = localStorage.getItem('hootQueryString');
+                    localStorage.removeItem('hootQueryString');
+
                     // user logged in - continue with render
                     if (typeof iD == 'undefined' || !iD.Detect().support) {
                         document.getElementById('id-container').innerHTML = 'Sorry, your browser is not currently supported.';
@@ -45,6 +49,7 @@
                     }
                 } )
                 .catch( err => {
+                     localStorage.setItem('hootQueryString', window.location.hash);
                     console.error(err);
                     // user not logged in - redirect to login page
                     window.location.replace( 'login.html' ); // no slash appends relative URI to end of base path
