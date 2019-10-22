@@ -35,7 +35,7 @@ export default class GrailPull {
         this.addBackButton( metadata.button.id );
         this.submitButton.property( 'disabled', false );
 
-        this.loadingState(true);
+        this.loadingState();
 
         this.createTable();
     }
@@ -66,7 +66,7 @@ export default class GrailPull {
 
         const { publicStats, privateStats } = await Hoot.api.overpassStats( overpassParams );
 
-        this.loadingState(false);
+        this.loadingState();
 
         const publicValuesRow = publicStats.split('\n')[1],
               publicValues = publicValuesRow.split('\t');
@@ -223,6 +223,8 @@ export default class GrailPull {
     }
 
     handleSubmit() {
+        this.loadingState();
+
         const bbox = this.instance.bbox;
 
         if ( !bbox ) {
@@ -316,22 +318,16 @@ export default class GrailPull {
 
     }
 
-    loadingState(isLoading) {
+    loadingState() {
+        const overlay = this.form.select( '.grail-loading' );
 
-        this.submitButton
-            .select( 'span' )
-            .text( isLoading ? 'Loading Counts' : 'Submit' );
-
-
-        if (isLoading){
-            this.submitButton
-                .append( 'div' )
-                .classed( '_icon _loading float-right', true )
-                .attr( 'id', 'importSpin' );
-
-            this.submitButton.node().disabled = true;
+        if ( !overlay.empty() ){
+            overlay.remove();
         } else {
-            this.submitButton.select('div').remove();
+            // Add overlay with spinner
+            this.form.select( '.wrapper div' )
+                .insert( 'div', '.modal-footer' )
+                .classed('grail-loading', true);
         }
     }
 }
