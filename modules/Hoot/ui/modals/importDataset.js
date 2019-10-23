@@ -342,7 +342,7 @@ export default class ImportDataset {
         this.advOpts.forEach(function(d) {
             let inputIsHidden = that.container.select('#' + d.id + '_container').classed('hidden');
             let propName;
-            switch(d.input) {
+            switch (d.input) {
                 case 'checkbox':
                     propName = 'checked';
                     break;
