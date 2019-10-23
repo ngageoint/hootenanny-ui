@@ -12,7 +12,6 @@ import _isBoolean from 'lodash-es/isBoolean';
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
 import { tooltip }    from '../../../util/tooltip';
-import FormFactory    from '../../tools/formFactory';
 
 let instance = null;
 export default class AdvancedOpts {
@@ -28,14 +27,6 @@ export default class AdvancedOpts {
         }
         return instance;
     }
-
-    getFactory() {
-        if (!this.hasOwnProperty( 'factory' )) {
-            this.factory = new FormFactory();
-        }
-        return this.factory;
-    }
-
 
     get isOpen() {
         return this.form.classed( 'visible' );

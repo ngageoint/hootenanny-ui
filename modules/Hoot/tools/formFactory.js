@@ -117,9 +117,10 @@ export default class FormFactory {
             .selectAll( '.hoot-form-field' )
             .data( formMeta ).enter()
             .append( 'div' )
+            .attr( 'class', d => d.class )
             .classed( 'hoot-form-field fill-white small keyline-all round', true )
             .classed( 'hoot-field-checkbox', d => d.inputType === 'checkbox' )
-            .classed('hidden', d => d.class === 'hidden' );
+            .classed('hidden', d => d.hidden );
 
         if ( fieldContainer.datum().id ) {
             fieldContainer.attr( 'id', d => `${d.id}_container` );
@@ -424,5 +425,28 @@ export default class FormFactory {
 
         spinner.transition().style( 'opacity', 0 );
         spinnerContainer.remove();
+    }
+
+    /*
+    * Reformats an advanced opt object
+    * to one compatible with Form Factory
+    */
+    advOpt2DomMeta( opt ) {
+        let domMeta = {
+            label: opt.label,
+            id: opt.id,
+            inputType: opt.input,
+            hidden: true,
+            class: 'advOpt'
+        };
+
+        if (opt.input === 'checkbox') {
+            if (opt.default === 'true')
+                domMeta.checked = true;
+        } else {
+            domMeta.placeholder = opt.default;
+        }
+
+        return domMeta;
     }
 }

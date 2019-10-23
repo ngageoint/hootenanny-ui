@@ -35,6 +35,7 @@ export default class API {
 
         this.queryInterval = this.config.queryInterval;
         this.conflateTypes = null;
+        this.importOpts = null;
     }
 
     /**
@@ -686,6 +687,10 @@ export default class API {
             data: data.formData
         };
 
+        if ( data.ADV_UPLOAD_OPTS.length ) {
+            params.params.ADV_UPLOAD_OPTS = data.ADV_UPLOAD_OPTS.join(',');
+        }
+
         return this.request( params );
     }
 
@@ -954,6 +959,22 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data );
+    }
+
+    getAdvancedImportOptions() {
+        if ( this.importOpts ) {
+            return Promise.resolve( this.importOpts );
+        } else {
+            const params = {
+                path: '/info/ingest/getoptions',
+                method: 'GET'
+            };
+            let that = this;
+            return this.request( params ).then( resp => {
+                that.importOpts = resp.data.hoot2[0].members; //might need to refactor this response
+                return that.importOpts;
+            });
+        }
     }
 
     /**
@@ -1359,5 +1380,4 @@ export default class API {
 
         return this.request( params );
     }
-
 }

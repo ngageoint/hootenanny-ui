@@ -12,7 +12,6 @@ import _remove  from 'lodash-es/remove';
 
 import FormFactory        from '../../tools/formFactory';
 import { getBrowserInfo } from '../../tools/utilities';
-
 import {
     importSingleForm,
 }           from '../../config/domMetadata';
@@ -71,13 +70,17 @@ export default class ImportDataset {
     /**
      * Set form parameters and create the form using the form factory
      */
-    render() {
+    async render() {
         if ( this.browserInfo.name.substring( 0, 6 ) !== 'Chrome' ) {
             _remove( this.importTypes, o => o.value === 'DIR' );
         }
 
         this.form           = importSingleForm.call( this );
         this.form[ 0 ].data = this.importTypes;
+
+        //Add advanced options to form
+        this.advOpts = await Hoot.api.getAdvancedImportOptions();
+        this.form = this.form.concat(this.advOpts.map(this.formFactory.advOpt2DomMeta));
 
         let metadata = {
             title: 'Import Dataset',
@@ -100,6 +103,7 @@ export default class ImportDataset {
         this.schemaInput        = this.container.select( '#importSchema' );
         this.fileIngest         = this.container.select( '#ingestFileUploader' );
         this.submitButton       = this.container.select( '#importSubmitBtn' );
+        this.advOptsInputs      = this.container.selectAll( '.advOpt' );
 
         return this;
     }
@@ -142,6 +146,16 @@ export default class ImportDataset {
         this.formFactory.populateCombobox( this.schemaInput );
 
         this.schemaInput.property( 'value', translationsList[ 0 ].NAME );
+
+        // wish this could be expressed in the import opts from the server
+        // but we need this hack right now to make the advanced import options
+        // only available for ogr types
+
+        function isOgr(type) {
+            return ['FILE', 'GPKG', 'DIR'].indexOf(type) > -1;
+        }
+
+        this.advOptsInputs.classed('hidden', !isOgr(selectedType));
     }
 
     /**
@@ -317,6 +331,38 @@ export default class ImportDataset {
     }
 
     /**
+     * If adv opt inputs not hidden, compares state of
+     * advanced options to defaults and
+     * adds to import params if different
+     */
+    getAdvOpts() {
+        let that = this;
+        let advParams = [];
+
+        this.advOpts.forEach(function(d) {
+            let inputIsHidden = that.container.select('#' + d.id + '_container').classed('hidden');
+            let propName;
+            switch (d.input) {
+                case 'checkbox':
+                    propName = 'checked';
+                    break;
+                case 'text':
+                default:
+                    propName = 'value';
+                    break;
+            }
+            let inputValue = that.container.select('#' + d.id).property(propName).toString();
+
+            // Need .length check because empty text box should be considered equal to default
+            if ( !inputIsHidden && (inputValue.length && inputValue !== d.default) ) {
+                advParams.push(d.id + '=' + inputValue);
+            }
+        });
+
+        return advParams;
+    }
+
+    /**
      * Submit form data
      */
     async handleSubmit() {
@@ -357,6 +403,7 @@ export default class ImportDataset {
             TRANSLATION: translationName,
             INPUT_TYPE: importType.value,
             INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
+            ADV_UPLOAD_OPTS: this.getAdvOpts(),
             formData: this.getFormData( this.fileIngest.node().files ),
             folderId
         };
