@@ -169,14 +169,6 @@ export function importSingleForm() {
             disabled: true,
             data: this.translations,
             itemKey: 'NAME'
-        },
-        {
-            label: 'Advanced Upload Options',
-            id: 'advUploadOpts',
-            class: 'advanced-opts-header big keyline-bottom flex justify-between align-center',
-            inputType: 'combobox',
-            readonly: 'readonly',
-            onChange: () => this.buildAdvancedUploadOptions()
         }
     ];
 }
@@ -370,7 +362,6 @@ export function exportDataForm( zipOutput ) {
         {
             label: 'Append to ESRI FGDB Template?',
             id: exportFgdbId,
-            class: 'hidden',
             inputType: 'checkbox',
             checked: false,
             hidden: true
