@@ -36,7 +36,7 @@ export default class ExportAlphaShape {
     loadingState() {
         this.submitButton
             .select( 'span' )
-            .text( 'Cancel Job' );
+            .text( 'Cancel' );
 
         // overwrite the submit click action with a cancel action
         this.submitButton.on( 'click', () => {

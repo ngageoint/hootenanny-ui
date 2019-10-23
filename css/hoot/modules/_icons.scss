@@ -239,3 +239,13 @@
 .translate-icon {
     background-size: 40px 40px;
 }
+
+.grail-loading {
+    background: rgba(0, 0, 0, 0.5) url(./img/loading-spin.svg) no-repeat center;
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}

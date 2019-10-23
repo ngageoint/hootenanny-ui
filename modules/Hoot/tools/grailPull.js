@@ -1,12 +1,14 @@
 import FormFactory from './formFactory';
 
 import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
-import _forEach from 'lodash-es/forEach';
+import _find                                         from 'lodash-es/find';
+import OverpassQueryPanel                            from './overpassQueryPanel';
 
 export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
         this.maxFeatureCount = null;
+        this.grailMetadata = null;
     }
 
     render() {
@@ -30,37 +32,81 @@ export default class GrailPull {
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
         this.submitButton = d3.select( `#${ metadata.button.id }` );
 
+        this.addBackButton( metadata.button.id );
         this.submitButton.property( 'disabled', false );
 
-        this.loadingState(true);
+        this.loadingState();
 
         this.createTable();
     }
 
+    addBackButton( nextButtonId ) {
+        const backButton = this.form.select( '.modal-footer' )
+            .insert( 'button', `#${ nextButtonId }` )
+            .classed( 'round strong primary', true )
+            .on( 'click', () => {
+                this.form.remove();
+
+                new OverpassQueryPanel( this.instance ).render();
+            } );
+
+        backButton.append( 'span' )
+            .text( 'Back' );
+    }
+
     async createTable() {
-        const { data } = await Hoot.api.grailMetadataQuery(this.instance.bbox);
-        this.maxFeatureCount = +data.maxFeatureCount;
+        const { data } = await Hoot.api.grailMetadataQuery();
+        this.grailMetadata = data;
+        this.maxFeatureCount = +this.grailMetadata.maxFeatureCount;
 
-        const overpassStats = await Hoot.api.getOverpassStats( data.overpassQuery );
+        const overpassParams = { BBOX: this.instance.bbox };
+        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+            overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
+        }
 
-        this.loadingState(false);
+        const { publicStats, privateStats } = await Hoot.api.overpassStats( overpassParams );
 
-        const csvValues = overpassStats.split('\n')[1],
-              arrayValues = csvValues.split('\t');
+        this.loadingState();
+
+        const publicValuesRow = publicStats.split('\n')[1],
+              publicValues = publicValuesRow.split('\t');
+
         const rowData = [
-            {label: 'node', count: +arrayValues[1]},
-            {label: 'way', count: +arrayValues[2]},
-            {label: 'relation', count: +arrayValues[3]},
-            {label: 'total', count: +arrayValues[0]}
+            { valueColumn: 1, label: 'node' },
+            { valueColumn: 2, label: 'way' },
+            { valueColumn: 3, label: 'relation' },
+            { valueColumn: 0, label: 'total' }
         ];
+
+        rowData.forEach( row => { row.publicCount = +publicValues[ row.valueColumn ]; } );
+
+        // if there are private overpass stats then add them to our rowData object
+        if ( privateStats ) {
+            const privateValuesRow = privateStats.split('\n')[1],
+                  privateValues = privateValuesRow.split('\t');
+
+            rowData.forEach( row => { row.privateCount = +privateValues[ row.valueColumn ]; } );
+        }
 
         let statsTable = this.form
             .select( '.wrapper div' )
             .insert( 'table', '.modal-footer' )
             .classed( 'pullStatsInfo', true );
 
-        let tbody = statsTable.append('tbody');
+        const columns = [ '', this.grailMetadata.overpassLabel];
+        if ( privateStats ) {
+            columns.splice( 1, 0, this.grailMetadata.railsLabel ); // add to index 1
+        }
 
+        let thead = statsTable.append('thead');
+        thead.append('tr')
+            .selectAll('th')
+            .data(columns)
+            .enter()
+            .append('th')
+            .text(function (d) { return d; });
+
+        let tbody = statsTable.append('tbody');
         let rows = tbody.selectAll('tr')
             .data(rowData)
             .enter()
@@ -69,12 +115,25 @@ export default class GrailPull {
         rows.append('td')
             .text( data => data.label );
 
-        rows.append('td')
-            .classed( 'strong', data => data.count > 0 )
-            .classed( 'badData', data => data.label === 'total' && data.count > this.maxFeatureCount )
-            .text( data => data.count );
+        // add private overpass data first if exists
+        if ( privateStats ) {
+            rows.append('td')
+                .classed( 'strong', data => data.privateCount > 0 )
+                .classed( 'badData', data => data.label === 'total' && data.privateCount > this.maxFeatureCount )
+                .text( data => data.privateCount );
+        }
 
-        if (+arrayValues[0] > this.maxFeatureCount) {
+        // column for public overpass counts
+        rows.append('td')
+            .classed( 'strong', data => data.publicCount > 0 )
+            .classed( 'badData', data => data.label === 'total' && data.publicCount > this.maxFeatureCount )
+            .text( data => data.publicCount );
+
+        const { publicCount, privateCount } = _find( rowData, row => row.label === 'total' );
+
+        if ( ( publicCount && publicCount > this.maxFeatureCount )
+            || ( privateCount && privateCount > this.maxFeatureCount )
+        ) {
             this.form.select( '.hoot-menu' )
                 .insert( 'div', '.modal-footer' )
                 .classed( 'badData', true )
@@ -90,10 +149,15 @@ export default class GrailPull {
 
     layerNameTable( data ) {
         const self = this;
+        const uuid = uuidv4().slice(0,6);
 
         let columns = [
             {
-                label: 'Dataset',
+                label: '',
+                name: 'downloadDataset'
+            },
+            {
+                label: 'Data Source',
                 name: 'datasetName'
             },
             {
@@ -117,70 +181,83 @@ export default class GrailPull {
             .text( d => d.label );
 
         let tableBody = layerOutputTable.append( 'tbody' ),
-            ingestLayers = {
-                reference : data.railsCodename,
-                secondary : data.overpassCodename
-            };
+            ingestLayers = [data.railsLabel, data.overpassLabel];
 
-        _forEach( Object.keys(ingestLayers), layer => {
-            tableBody
+        ingestLayers.forEach( (layer, i) => {
+            let tRow = tableBody
                 .append( 'tr' )
-                .attr( 'id', `row-${ layer }` )
-                .selectAll( 'td' )
-                .data( columns )
-                .enter()
-                .append( 'td' )
+                .attr( 'id', `row-${ i }` );
+
+            tRow.append( 'td' )
+                .append( 'input' )
+                .attr( 'type', 'checkbox' )
+                .property( 'checked', true );
+
+            tRow.append( 'td' )
+                .append( 'label' )
+                .text(layer);
+
+            tRow.append( 'td' )
                 .append( 'input' )
                 .attr( 'type', 'text' )
-                .attr( 'class', d => `${ d.name }-${ layer }` )
-                .attr( 'placeholder', d => d.placeholder )
-                .select( function( d ) {
-                    if ( d.name === 'datasetName' ) {
-                        d3.select( this )
-                            .attr( 'placeholder', layer )
-                            .attr( 'readonly', false );
-                    } else if ( d.name === 'outputName' ) {
-                        const saveName = ingestLayers[ layer ];
+                .attr( 'class', 'outputName-' + i )
+                .attr( 'placeholder', 'Save As' )
+                .select( function( ) {
+                    const saveName = layer + '_' + uuid;
 
-                        d3.select( this ).property( 'value', saveName )
-                            .on( 'input', function() {
-                                let resp = checkForUnallowedChar( this.value );
-                                let dupName = Hoot.layers.findBy( 'name', this.value );
+                    d3.select( this ).property( 'value', saveName )
+                        .on( 'input', function() {
+                            let resp = checkForUnallowedChar( this.value );
+                            let dupName = Hoot.layers.findBy( 'name', this.value );
 
-                                if ( dupName || resp !== true || !this.value.length ) {
-                                    d3.select( this ).classed( 'invalid', true ).attr( 'title', resp );
-                                    self.submitButton.property( 'disabled', true );
-                                } else {
-                                    d3.select( this ).classed( 'invalid', false ).attr( 'title', null );
-                                    self.submitButton.property( 'disabled', false );
-                                }
-                            } );
-                    }
+                            if ( dupName || resp !== true || !this.value.length ) {
+                                d3.select( this ).classed( 'invalid', true ).attr( 'title', resp );
+                                self.submitButton.property( 'disabled', true );
+                            } else {
+                                d3.select( this ).classed( 'invalid', false ).attr( 'title', null );
+                                self.submitButton.property( 'disabled', false );
+                            }
+                        } );
                 } );
         } );
     }
 
     handleSubmit() {
-        const bbox   = this.instance.bbox,
-              params = {};
+        this.loadingState();
+
+        const bbox = this.instance.bbox;
 
         if ( !bbox ) {
             Hoot.message.alert( 'Need a bounding box!' );
             return;
         }
 
-        params.BBOX          = formatBbox( bbox );
-        params.referenceName = this.form.select( '.outputName-reference' ).property( 'value' );
-        params.secondaryName = this.form.select( '.outputName-secondary' ).property( 'value' );
+        const railsParams = {
+            BBOX   : formatBbox( bbox ),
+            input1 : this.form.select( '.outputName-0' ).property( 'value' )
+        };
 
-        const apiRequests = [];
-        apiRequests.push(Hoot.api.grailPullRailsPortToDb( params ));
+        const overpassParams = {
+            BBOX   : formatBbox( bbox ),
+            input1 : this.form.select( '.outputName-1' ).property( 'value' )
+        };
 
-        if (this.instance.bboxSelectType !== 'secondaryLayerExtent') {
-            apiRequests.push(Hoot.api.grailPullOverpassToDb( params ));
+        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+            railsParams.customQuery    = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
+            overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
-        Promise.all(apiRequests)
+        const jobsList = [],
+              referenceCheckbox = d3.select( '#row-0 input' ).property( 'checked' ),
+              secondaryCheckbox = d3.select( '#row-1 input' ).property( 'checked' );
+        if ( referenceCheckbox ) {
+            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, this.grailMetadata.railsLabel ) );
+        }
+        if ( secondaryCheckbox ) {
+            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, this.grailMetadata.overpassLabel ) );
+        }
+
+        Promise.all( jobsList )
             .then( ( resp ) => {
                 resp.forEach( jobResp => {
                     Hoot.message.alert( jobResp );
@@ -188,23 +265,47 @@ export default class GrailPull {
             } )
             .then( () => Hoot.folders.refreshAll() )
             .then( () => {
-                if (this.instance.bboxSelectType === 'secondaryLayerExtent') {
-                    const loadedRef = Hoot.layers.findLoadedBy( 'refType', 'primary' );
+                const loadedPrimary   = Hoot.layers.findLoadedBy( 'refType', 'primary' ),
+                      loadedSecondary = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
+
+                // add grail pulled layers if nothing is on map
+                if ( !loadedPrimary && !loadedSecondary ) {
+                    // Finding layer id by name is fine here because we check for duplicate name in the grail pull
+                    let refParams = {
+                        name: railsParams.input1,
+                        id: Hoot.layers.findBy( 'name', railsParams.input1 ).id,
+                        color: 'violet',
+                        refType: 'primary'
+                    };
+
+                    let secParams = {
+                        name: overpassParams.input1,
+                        id: Hoot.layers.findBy( 'name', overpassParams.input1 ).id,
+                        color: 'orange',
+                        refType: 'secondary'
+                    };
+
+                    return Promise.all( [
+                        Hoot.ui.sidebar.forms.reference.submitLayer( refParams ),
+                        Hoot.ui.sidebar.forms.secondary.submitLayer( secParams )
+                    ] );
+                } else if (this.instance.bboxSelectType === 'secondaryLayerExtent') {
                     // Remove reference layer if there is one
-                    if ( loadedRef ) {
-                        Hoot.layers.removeActiveLayer( loadedRef.id, 'reference', 'primary' );
+                    if ( loadedPrimary ) {
+                        Hoot.layers.removeActiveLayer( loadedPrimary.id, 'reference', 'primary' );
                     }
 
                     // load newly pulled layer
                     let layerInfo = {
-                        name: params.referenceName,
-                        id: Hoot.layers.findBy( 'name', params.referenceName ).id
+                        name: railsParams.input1,
+                        id: Hoot.layers.findBy( 'name', railsParams.input1 ).id
                     };
 
                     return Hoot.ui.sidebar.forms.reference.submitLayer( layerInfo );
                 }
-            })
-            .then( () => Hoot.events.emit( 'render-dataset-table' ) );
+            } )
+            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+            .then( () => this.form.remove() );
 
 
         let history = JSON.parse( Hoot.context.storage('history') );
@@ -215,25 +316,18 @@ export default class GrailPull {
         history.bboxHistory.unshift( bbox );
         Hoot.context.storage( 'history', JSON.stringify( history ) );
 
-        this.form.remove();
     }
 
-    loadingState(isLoading) {
+    loadingState() {
+        const overlay = this.form.select( '.grail-loading' );
 
-        this.submitButton
-            .select( 'span' )
-            .text( isLoading ? 'Loading Counts' : 'Submit' );
-
-
-        if (isLoading){
-            this.submitButton
-                .append( 'div' )
-                .classed( '_icon _loading float-right', true )
-                .attr( 'id', 'importSpin' );
-
-            this.submitButton.node().disabled = true;
+        if ( !overlay.empty() ){
+            overlay.remove();
         } else {
-            this.submitButton.select('div').remove();
+            // Add overlay with spinner
+            this.form.select( '.wrapper div' )
+                .insert( 'div', '.modal-footer' )
+                .classed('grail-loading', true);
         }
     }
 }

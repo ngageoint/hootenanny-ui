@@ -1104,10 +1104,11 @@ export default class API {
             } );
     }
 
-    grailPullOverpassToDb( data ) {
+    grailPullOverpassToDb( data, overpassLabel ) {
         const params = {
-            path: `/grail/pulloverpasstodb?bbox=${ data.BBOX }&name=${ data.secondaryName }`,
-            method: 'GET'
+            path: '/grail/pulloverpasstodb',
+            method: 'POST',
+            data
         };
 
         return this.request( params )
@@ -1115,7 +1116,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Pull from Overpass API has succeeded.',
+                    message: `Pull from ${overpassLabel} has succeeded.`,
                     status: 200,
                     type: 'success'
                 };
@@ -1130,13 +1131,32 @@ export default class API {
             } );
     }
 
-    grailMetadataQuery( bbox ) {
+    grailMetadataQuery() {
         const params = {
-            path: `/grail/grailMetadataQuery?bbox=${ bbox }`,
+            path: '/grail/grailMetadataQuery',
             method: 'GET'
         };
 
         return this.request( params )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: err.data || 'Error retrieving grail metadata!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+    overpassStats( data ) {
+        const params = {
+            path: '/grail/overpassStats',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
             .catch( err => {
                 return {
                     data: err.data,
@@ -1147,11 +1167,11 @@ export default class API {
             } );
     }
 
-
-    grailPullRailsPortToDb( data ) {
+    grailPullRailsPortToDb( data, railsLabel ) {
         const params = {
-            path: `/grail/pullrailsporttodb?bbox=${ data.BBOX }&name=${ data.referenceName }`,
-            method: 'GET'
+            path: '/grail/pullrailsporttodb',
+            method: 'POST',
+            data
         };
 
         return this.request( params )
@@ -1159,7 +1179,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Pull from Rails Port API has succeeded.',
+                    message: `Pull from ${railsLabel} has succeeded.`,
                     status: 200,
                     type: 'success'
                 };

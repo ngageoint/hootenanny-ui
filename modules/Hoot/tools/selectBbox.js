@@ -7,28 +7,32 @@
 import EventEmitter from 'events';
 import FormFactory  from './formFactory';
 
-import { modeDrawBoundingBox }    from '../../modes';
-import ClipDataset                from './clipDataset';
-import GrailPull                  from './grailPull';
-import DifferentialUpload         from './differentialUpload';
-import { d3combobox }             from '../../lib/hoot/d3.combobox';
-import { geoExtent as GeoExtent } from '../../geo';
+import { modeBrowse, modeDrawBoundingBox } from '../../modes';
+import ClipDataset                         from './clipDataset';
+import OverpassQueryPanel                  from './overpassQueryPanel';
+import DifferentialUpload                  from './differentialUpload';
+import { d3combobox }                      from '../../lib/hoot/d3.combobox';
+import { geoExtent as GeoExtent }          from '../../geo';
 
 export default class SelectBbox extends EventEmitter {
-    constructor( context ) {
+    constructor( context, predefinedData ) {
         super();
 
-        this.context = context;
-
-        this.minlon         = null;
-        this.minlat         = null;
-        this.maxlon         = null;
-        this.maxlat         = null;
-        this.bboxSelectType = 'visualExtent';
+        this.context        = predefinedData && predefinedData.context ? predefinedData.context : context;
+        this.minlon         = predefinedData && predefinedData.minlon ? parseFloat(predefinedData.minlon) : null;
+        this.minlat         = predefinedData && predefinedData.minlat ? parseFloat(predefinedData.minlat) : null;
+        this.maxlon         = predefinedData && predefinedData.maxlon ? parseFloat(predefinedData.maxlon) : null;
+        this.maxlat         = predefinedData && predefinedData.maxlat ? parseFloat(predefinedData.maxlat) : null;
+        this.bboxSelectType = predefinedData && predefinedData.bboxSelectType ? predefinedData.bboxSelectType : 'visualExtent';
         this.operationName  = '';
+        this.selectedBoundOption = predefinedData && predefinedData.selectedBoundOption ? predefinedData.selectedBoundOption : 'Visual Extent';
     }
 
     render( operationName ) {
+        // if user does something like starts drawing and then midway selects a bbox operation the context will
+        // remain as the old one so good to double check
+        this.context.enter( modeBrowse( this.context ) );
+
         this.operationName = operationName;
 
         const metadata = {
@@ -42,13 +46,18 @@ export default class SelectBbox extends EventEmitter {
 
         const formId = 'drawBboxForm';
 
-        this.container  = new FormFactory().generateForm( 'body', formId, metadata );
-        this.form       = d3.select( `#${formId}` );
+        this.form       = new FormFactory().generateForm( 'body', formId, metadata );
         this.nextButton = d3.select( `#${metadata.button.id}` );
 
         this.nextButton.property( 'disabled', false );
 
-        let mapExtent = this.context.map().extent();
+        let mapExtent;
+        if (this.minlon && this.minlat && this.maxlon && this.maxlat) {
+            mapExtent = new GeoExtent( [ this.minlon, this.minlat ], [ this.maxlon,this.maxlat ] );
+        }
+        else {
+            mapExtent = this.context.map().extent();
+        }
 
         this.updateCoords( mapExtent );
         this.createCoordsField();
@@ -120,7 +129,7 @@ export default class SelectBbox extends EventEmitter {
         const boundOptionsList = [ 'Draw Bounding Box', 'Visual Extent' ];
 
         let customDataLayer = this.context.layers().layer('data');
-        if ( customDataLayer.hasData() && customDataLayer.enabled() ) {
+        if (customDataLayer.hasData() && customDataLayer.enabled()) {
             boundOptionsList.push( 'Custom Data Extent' );
         }
 
@@ -151,11 +160,12 @@ export default class SelectBbox extends EventEmitter {
 
         this.dropdownContainer.call( combobox )
             .attr( 'readonly', true )
+            .property( 'value', self.selectedBoundOption)
             .on('change', function() {
                 const selectedValue = this.value;
 
                 if ( selectedValue === 'Draw Bounding Box' ) {
-                    self.container.classed( 'hidden', true );
+                    self.form.classed( 'hidden', true );
                     self.bboxSelectType = 'boundingBox';
                     self.context.enter( modeDrawBoundingBox( self, self.context ) );
                 } else if ( selectedValue === 'Visual Extent' ) {
@@ -176,14 +186,15 @@ export default class SelectBbox extends EventEmitter {
                     self.handleBbox( new GeoExtent( [ coords[0], coords[1] ], [ coords[2], coords[3] ] ) );
                 }
 
-                self.dropdownContainer.property( 'value', selectedValue );
+                self.selectedBoundOption = selectedValue;
+                self.dropdownContainer.property( 'value', self.selectedBoundOption );
             });
 
     }
 
     handleBbox( extent ) {
         this.updateCoords( extent );
-        this.container.classed( 'hidden', false );
+        this.form.classed( 'hidden', false );
 
         this.maxLatInput.property( 'value', this.maxlat );
         this.minLonInput.property( 'value', this.minlon );
@@ -207,13 +218,13 @@ export default class SelectBbox extends EventEmitter {
             this.maxLonInput.property( 'value' ) + ',' +
             this.maxLatInput.property( 'value' );
 
-        this.container.remove();
+        this.form.remove();
         this.nextButton = null;
 
         if ( this.operationName === 'clipData' ) {
             new ClipDataset( this ).render();
         } else if ( this.operationName === 'grailPull' ) {
-            new GrailPull( this ).render();
+            new OverpassQueryPanel( this ).render();
         } else if ( this.operationName === 'createDifferentialChangeset' ) {
             new DifferentialUpload( this ).render();
         }
