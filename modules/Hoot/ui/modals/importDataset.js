@@ -147,7 +147,7 @@ export default class ImportDataset {
 
         this.schemaInput.property( 'value', translationsList[ 0 ].NAME );
 
-        // wish his could be expressed in the import opts from the server
+        // wish this could be expressed in the import opts from the server
         // but we need this hack right now to make the advanced import options
         // only available for ogr types
 
@@ -194,7 +194,7 @@ export default class ImportDataset {
 
         if ( !valid ) {
             this.formValid = false;
-            this.updateButtonState( selectedType );
+            this.updateButtonState();
 
             return;
         }
