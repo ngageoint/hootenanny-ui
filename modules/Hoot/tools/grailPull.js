@@ -3,6 +3,7 @@ import FormFactory from './formFactory';
 import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
 import _find                                         from 'lodash-es/find';
 import OverpassQueryPanel                            from './overpassQueryPanel';
+import _get                                          from 'lodash-es/get';
 
 export default class GrailPull {
     constructor( instance ) {
@@ -222,7 +223,7 @@ export default class GrailPull {
         } );
     }
 
-    handleSubmit() {
+    async handleSubmit() {
         this.loadingState();
 
         const bbox = this.instance.bbox;
@@ -232,14 +233,24 @@ export default class GrailPull {
             return;
         }
 
+        let folderName = 'grail_' + bbox.replace( /,/g, '_' ),
+            pathId = _get( _find( Hoot.folders._folders, folder => folder.name === folderName ), 'id' );
+
+        let folderId;
+        if ( !pathId ) {
+            folderId = (await Hoot.folders.addFolder( '', folderName )).folderId;
+        } else {
+            folderId = pathId;
+        }
+
         const railsParams = {
-            BBOX   : formatBbox( bbox ),
-            input1 : this.form.select( '.outputName-0' ).property( 'value' )
+            BBOX     : formatBbox( bbox ),
+            input1   : this.form.select( '.outputName-0' ).property( 'value' )
         };
 
         const overpassParams = {
-            BBOX   : formatBbox( bbox ),
-            input1 : this.form.select( '.outputName-1' ).property( 'value' )
+            BBOX     : formatBbox( bbox ),
+            input1   : this.form.select( '.outputName-1' ).property( 'value' )
         };
 
         if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
@@ -247,14 +258,15 @@ export default class GrailPull {
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
+        // Check to see which datasets to pull
         const jobsList = [],
               referenceCheckbox = d3.select( '#row-0 input' ).property( 'checked' ),
               secondaryCheckbox = d3.select( '#row-1 input' ).property( 'checked' );
         if ( referenceCheckbox ) {
-            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, this.grailMetadata.railsLabel ) );
+            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, folderId, this.grailMetadata.railsLabel ) );
         }
         if ( secondaryCheckbox ) {
-            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, this.grailMetadata.overpassLabel ) );
+            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, folderId, this.grailMetadata.overpassLabel ) );
         }
 
         Promise.all( jobsList )

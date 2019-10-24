@@ -1104,10 +1104,13 @@ export default class API {
             } );
     }
 
-    grailPullOverpassToDb( data, overpassLabel ) {
+    grailPullOverpassToDb( data, folderId, overpassLabel ) {
         const params = {
             path: '/grail/pulloverpasstodb',
             method: 'POST',
+            params: {
+                folderId: folderId
+            },
             data
         };
 
@@ -1167,10 +1170,13 @@ export default class API {
             } );
     }
 
-    grailPullRailsPortToDb( data, railsLabel ) {
+    grailPullRailsPortToDb( data, folderId, railsLabel ) {
         const params = {
             path: '/grail/pullrailsporttodb',
             method: 'POST',
+            params: {
+                folderId: folderId
+            },
             data
         };
 
