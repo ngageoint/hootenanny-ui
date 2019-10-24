@@ -22,9 +22,15 @@
             <div id="id-sink"></div>
         </div>
         <script>
+            var hootHash = 'hootUrlHash';
 
             Hoot.api.getServicesVersionInfo()
                 .then( () => {
+                    // apply cached hash if present
+                    if (localStorage.getItem(hootHash)) {
+                        window.location.hash = localStorage.getItem(hootHash);
+                        localStorage.removeItem(hootHash);
+                    }
                     // user logged in - continue with render
                     if (typeof iD == 'undefined' || !iD.Detect().support) {
                         document.getElementById('id-container').innerHTML = 'Sorry, your browser is not currently supported.';
@@ -45,6 +51,7 @@
                     }
                 } )
                 .catch( err => {
+                     localStorage.setItem(hootHash, window.location.hash);
                     console.error(err);
                     // user not logged in - redirect to login page
                     window.location.replace( 'login.html' ); // no slash appends relative URI to end of base path
