@@ -43,8 +43,8 @@ export default class DifferentialUpload {
 
         params.BBOX = formatBbox( bbox );
 
-        if ( this.instance.userInputContainer.select('input').property('checked') ) {
-            params.customQuery = this.instance.userInputContainer.select( 'textarea' ).property( 'value' );
+        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+            params.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
         Hoot.api.createDifferentialChangeset( params )
