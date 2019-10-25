@@ -688,9 +688,7 @@ export default class FolderTree extends EventEmitter {
                 this.lastBasePosition = basePosition;
             }
             else if ( d3.event.ctrlKey && this.isDatasetTable ) {
-
                 data.selected = !data.selected;
-
                 if (data.selected) {
                     this.selectedNodes.push( data );
                 } else {
@@ -734,7 +732,8 @@ export default class FolderTree extends EventEmitter {
                     data.selected  = false;
                 }
             }
-            else {// open folder
+            else {
+                // open folder
                 data.state = 'open';
 
                 d3.select( elem.parentNode )
