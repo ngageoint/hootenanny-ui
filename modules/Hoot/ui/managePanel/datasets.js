@@ -247,7 +247,7 @@ export default class Datasets extends Tab {
 
                 if ( !confirm ) return;
 
-                let items = d.data.type === 'folder' ? new Array( d ) : tree.selectedNodes;
+                let items = d.data.type === 'folder' && !d.data.selected ? new Array( d ) : tree.selectedNodes;
 
                 this.processRequest = this.deleteItems( items )
                     .then( () => Hoot.folders.refreshAll() )

@@ -436,7 +436,12 @@ export default class FolderTree extends EventEmitter {
         let { data } = d;
 
         if ( data.type === 'folder' ) {
-            return (data.public) ? '#7092ff' : '#efefef';
+            if ( data.selected ) {
+                return '#ffff99';
+            }
+            else {
+                return (data.public) ? '#7092ff' : '#efefef';
+            }
         }
         else if ( data.type === 'dataset' ) {
             if ( data.selected ) {
@@ -543,7 +548,7 @@ export default class FolderTree extends EventEmitter {
         let { data } = d,
             opts;
 
-        if ( data.type === 'dataset' ) {
+        if ( data.type === 'dataset' || data.type === 'folder' && data.selected ) {
             const selectedCount = this.selectedNodes.length;
 
             opts = [
@@ -643,7 +648,7 @@ export default class FolderTree extends EventEmitter {
             selected = data.selected || false,
             isOpen   = data.state === 'open';
 
-        if ( data.type === 'dataset' ) {
+        if ( data.type === 'dataset' || data.type === 'folder' && d3.event.ctrlKey ) {
             if ( d3.event.metaKey && this.isDatasetTable ) {
                 data.selected = !data.selected;
                 this.selectedNodes.push( data );
@@ -683,7 +688,9 @@ export default class FolderTree extends EventEmitter {
                 this.lastBasePosition = basePosition;
             }
             else if ( d3.event.ctrlKey && this.isDatasetTable ) {
+
                 data.selected = !data.selected;
+
                 if (data.selected) {
                     this.selectedNodes.push( data );
                 } else {
@@ -691,7 +698,6 @@ export default class FolderTree extends EventEmitter {
                         return d.id !== data.id;
                     });
                 }
-
             }
             else {
                 // get all currently selected nodes
@@ -712,7 +718,7 @@ export default class FolderTree extends EventEmitter {
                 this.selectedNodes    = [ data ];
                 this.lastSelectedNode = data.selected ? data.id : null;
             }
-        } else { // folder
+        } else {
             if ( isOpen ) {
                 // close folder
                 data.state = 'closed';
@@ -727,8 +733,8 @@ export default class FolderTree extends EventEmitter {
                     d.children     = null;
                     data.selected  = false;
                 }
-            } else {
-                // open folder
+            }
+            else {// open folder
                 data.state = 'open';
 
                 d3.select( elem.parentNode )
@@ -740,7 +746,7 @@ export default class FolderTree extends EventEmitter {
                 data._children = null;
             }
 
-            if ( this.isDatasetTable ) {
+            if ( this.isDatasetTable && !d3.event.ctrlKey ) {
                 Hoot.folders.setOpenFolders( data.id, !isOpen );
             }
         }
