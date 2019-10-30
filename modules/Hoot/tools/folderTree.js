@@ -548,7 +548,7 @@ export default class FolderTree extends EventEmitter {
         let { data } = d,
             opts;
 
-        if ( data.type === 'dataset' || data.type === 'folder' && data.selected ) {
+        if ( data.type === 'dataset' ) {
             const selectedCount = this.selectedNodes.length;
 
             opts = [
@@ -595,6 +595,14 @@ export default class FolderTree extends EventEmitter {
                 }
             }
         } else if ( data.type === 'folder' ) {
+            if ( data.selected ) {
+                opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
+                opts.splice( 1, 0, {
+                    title: `Modify Folder ${ data.name }`,
+                    _icon: 'info',
+                    click: 'modifyFolder'
+                } );
+            }
             opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
             opts.splice( 1, 0, {
                 title: `Modify Folder ${ data.name }`,
