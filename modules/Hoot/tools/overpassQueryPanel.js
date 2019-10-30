@@ -1,6 +1,8 @@
-import FormFactory from './formFactory';
-import GrailPull   from './grailPull';
-import selectBbox  from './selectBbox';
+import FormFactory          from './formFactory';
+import GrailPull            from './grailPull';
+import selectBbox           from './selectBbox';
+import DifferentialUpload   from './differentialUpload';
+
 
 export default class OverpassQueryPanel {
     constructor( instance ) {
@@ -115,7 +117,11 @@ export default class OverpassQueryPanel {
 
         this.formData.overpassQueryContainer = this.overpassQueryContainer;
 
-        new GrailPull( this.formData ).render();
+        if ( this.formData.operationName === 'grailPull' ) {
+            new GrailPull( this.formData ).render();
+        } else if ( this.formData.operationName === 'createDifferentialChangeset' ) {
+            new DifferentialUpload( this.formData ).render();
+        }
     }
 
 }
