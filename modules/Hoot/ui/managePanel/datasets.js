@@ -17,7 +17,6 @@ import ModifyFolder       from '../modals/modifyFolder';
 import ExportData from '../modals/exportData';
 import ExportAlphaShape from '../modals/exportAlphaShape';
 import ExportTaskGrid from '../modals/exportTaskGrid';
-import { bearingToAngle } from '@turf/helpers';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -316,7 +315,7 @@ export default class Datasets extends Tab {
                    this.modifyFolderModal = new ModifyFolder( tree.selectedNodes ).render();
                 }
                 else {
-                    this.modifyFolderModal = new ModifyFolder( d ).render();
+                    this.modifyFolderModal = new ModifyFolder( [d] ).render();
                 }
                 Hoot.events.once( 'modal-closed', () => delete this.modifyFolderModal );
                 break;
