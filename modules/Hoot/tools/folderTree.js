@@ -595,7 +595,14 @@ export default class FolderTree extends EventEmitter {
                 }
             }
         } else if ( data.type === 'folder' ) {
-            if ( data.selected ) {
+            if ( data.type === 'folder' && data.selected && this.selectedNodes.length > 1 ) {
+                opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
+                opts.splice( 1, 0, {
+                    title: `Modify Folder ${ this.selectedNodes.length > 1 ? data.name + ' ...' : data.name }`,
+                    _icon: 'info',
+                    click: 'modifyFolder'
+                } );
+            } else {
                 opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
                 opts.splice( 1, 0, {
                     title: `Modify Folder ${ data.name }`,
@@ -603,12 +610,7 @@ export default class FolderTree extends EventEmitter {
                     click: 'modifyFolder'
                 } );
             }
-            opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
-            opts.splice( 1, 0, {
-                title: `Modify Folder ${ data.name }`,
-                _icon: 'info',
-                click: 'modifyFolder'
-            } );
+
         }
 
         let body = d3.select( 'body' )

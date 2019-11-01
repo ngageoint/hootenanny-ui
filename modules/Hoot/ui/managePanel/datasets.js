@@ -17,6 +17,7 @@ import ModifyFolder       from '../modals/modifyFolder';
 import ExportData from '../modals/exportData';
 import ExportAlphaShape from '../modals/exportAlphaShape';
 import ExportTaskGrid from '../modals/exportTaskGrid';
+import { bearingToAngle } from '@turf/helpers';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -291,7 +292,7 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'exportFolder': {
-//probably don't need to get translations but once on init
+                //probably don't need to get translations but once on init
                 let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT);
                 this.exportDatasetModal = new ExportData( translations, d, 'Folder' ).render();
                 Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
@@ -310,10 +311,16 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'modifyFolder': {
-                this.modifyFolderModal = new ModifyFolder( d ).render();
 
+                if ( tree.selectedNodes.length > 1 ) {
+                   this.modifyFolderModal = new ModifyFolder( tree.selectedNodes ).render();
+                }
+                else {
+                    this.modifyFolderModal = new ModifyFolder( d ).render();
+                }
                 Hoot.events.once( 'modal-closed', () => delete this.modifyFolderModal );
                 break;
+
             }
             case 'exportTaskGrid': {
                 this.exportTaskGridModal = new ExportTaskGrid( d ).render();

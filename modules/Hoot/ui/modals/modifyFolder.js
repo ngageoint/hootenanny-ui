@@ -6,25 +6,29 @@
 
 import _find from 'lodash-es/find';
 import _get  from 'lodash-es/get';
+import _map  from 'lodash-es/map';
 
 import FormFactory           from '../../tools/formFactory';
 import { modifyDatasetForm } from '../../config/domMetadata';
 
 export default class ModifyFolder {
     constructor( d ) {
-        this.data       = d.data;
+        this.data           = Array.isArray(d) ? d : d.data;
+        this.modifyType     = Array.isArray(d) ? 'multi' : 'single';
 
         //get list of folder ids and all their descendents
         function getDescendents(ids, folders) {
-            let children = folders.filter(f => ids.includes(f.parentId))
-                              .map(f => f.id);
+
+            let children = folders.filter(f => ids.findIndex( getId => getId.id === f.parentId) !== -1 );
+
             if (children.length) {
                 return [...new Set(ids.concat(children).concat(getDescendents(children, folders)))];
             } else {
                 return ids;
             }
         }
-        let descendents = getDescendents([d.data.id], Hoot.folders._folders);
+        let descendents = getDescendents( Array.isArray(d) ? d : [d.data.id],
+            Hoot.folders._folders);
 
         //filter out the folder itself
         //and all of it's descendents
@@ -37,6 +41,7 @@ export default class ModifyFolder {
     render() {
         // remove layer name input
         this.form.splice( 2, 1 );
+
         this.pathName = _get( _find( this.folderList, folder => folder.id === this.data.parentId ), 'path' ) || '/';
 
         // Because dataset and folder share the same settings we had to set a trigger here to tell the formFactory
@@ -115,40 +120,80 @@ export default class ModifyFolder {
             return false;
         }
 
-        let modParams = {
-            mapId: this.data.id,
-            inputType: this.data.type,
-            modName: folderName
-        };
-
-        let updateParams = {
-            folderId: this.data.id,
-            parentId: folderId
-        };
-
-        let visibilityParams = {
-            folderId: this.data.id,
-            visibility: (isPublic) ? 'public' : 'private'
-        };
-
         let requests = [];
-        let message = 'Successfully ';
+        let message;
 
-        if ( folderName !== this.data.name ) {
-            requests.push( Hoot.api.modify( modParams ) );
-            message += 'renamed folder';
+        if ( this.modifyType === 'multi' ) {
+            requests = this.data.forEach( function(folder) {
+
+                let modMultiParams = {
+                    mapId: folder.id,
+                    inputType: folder.type,
+                    modName: folder.name
+                };
+
+                let updateMultiParams = {
+                    folderId: folder.id,
+                    parentId: folderId
+                };
+
+                let multiVisibilityParams = {
+                    folderId: folder.id,
+                    visibility: (isPublic) ? 'public' : 'private'
+                };
+
+                message = 'Successfully ';
+
+                if ( folderName !== folder.name ) {
+                    requests.push( Hoot.api.modify( modMultiParams ) );
+                    message += 'renamed folder';
+                }
+                if ( pathName !== folder.path ) {
+                    requests.push( Hoot.api.updateFolder( updateMultiParams ) );
+                    if (message.substr(-1) !== ' ') message += ' & ';
+                    message += 'moved folder';
+                }
+                if ( folder.public !== isPublic ) {
+                    requests.push( Hoot.api.updateVisibility( multiVisibilityParams ) );
+                    if (message.substr(-1) !== ' ') message += ' & ';
+                    message += `changed visibility to ${ multiVisibilityParams.visibility }`;
+                }
+
+            } );
         }
+        else {
+            let modParams = {
+                mapId: this.data.id,
+                inputType: this.data.type,
+                modName: folderName
+            };
 
-        if ( pathName !== this.pathName ) {
-            requests.push( Hoot.api.updateFolder( updateParams ) );
-            if (message.substr(-1) !== ' ') message += ' & ';
-            message += 'moved folder';
-        }
+            let updateParams = {
+                folderId: this.data.id,
+                parentId: folderId
+            };
 
-        if ( this.data.public !== isPublic ) {
-            requests.push( Hoot.api.updateVisibility( visibilityParams ) );
-            if (message.substr(-1) !== ' ') message += ' & ';
-            message += `changed visibility to ${ visibilityParams.visibility }`;
+            let visibilityParams = {
+                folderId: this.data.id,
+                visibility: (isPublic) ? 'public' : 'private'
+            };
+
+            let message = 'Successfully ';
+
+            if ( folderName !== this.data.name ) {
+                requests.push( Hoot.api.modify( modParams ) );
+                message += 'renamed folder';
+            }
+            if ( pathName !== this.pathName ) {
+                requests.push( Hoot.api.updateFolder( updateParams ) );
+                if (message.substr(-1) !== ' ') message += ' & ';
+                message += 'moved folder';
+            }
+            if ( this.data.public !== isPublic ) {
+                requests.push( Hoot.api.updateVisibility( visibilityParams ) );
+                if (message.substr(-1) !== ' ') message += ' & ';
+                message += `changed visibility to ${ visibilityParams.visibility }`;
+            }
         }
 
         this.processRequest = Promise.all(requests)
