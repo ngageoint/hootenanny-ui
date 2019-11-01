@@ -12,7 +12,7 @@ import { modifyDatasetForm } from '../../config/domMetadata';
 
 export default class ModifyFolder {
     constructor( d ) {
-        this.data           = Array.isArray(d) ? d : d.data;
+        this.data           = d;
 
         //get list of folder ids and all their descendents
         function getDescendents(ids, folders) {
@@ -25,8 +25,7 @@ export default class ModifyFolder {
                 return ids;
             }
         }
-        let descendents = getDescendents( Array.isArray(d) ? d : [d.data.id],
-            Hoot.folders._folders);
+        let descendents = getDescendents( d, Hoot.folders._folders);
 
         //filter out the folder itself
         //and all of it's descendents
@@ -47,8 +46,14 @@ export default class ModifyFolder {
         const pathComboboxSettings = _find( this.form, formItem => formItem.itemKey === 'path' );
         pathComboboxSettings.includeRoot = true;
 
+        if ( this.data.length > 1 ) {
+
+            this.form.splice( 0, 1 );
+
+        }
+
         let metadata = {
-            title: 'Modify Folder',
+            title: this.data.length > 1 ? 'Modify Folders' : 'Modify Folder',
             form: this.form,
             button: {
                 text: 'Modify',
@@ -98,7 +103,7 @@ export default class ModifyFolder {
     }
 
     async handleSubmit() {
-        let folderName = this.folderNameInput.property( 'value' ),
+        let folderName = this.folderNameInput.node() ? this.folderNameInput.property( 'value' ) : '',
             pathName   = this.pathNameInput.property( 'value' ),
             isPublic   = this.folderVisibilityInput.property( 'checked' ),
             folderId   = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
