@@ -14,7 +14,6 @@ import { modifyDatasetForm } from '../../config/domMetadata';
 export default class ModifyFolder {
     constructor( d ) {
         this.data           = Array.isArray(d) ? d : d.data;
-        this.modifyType     = Array.isArray(d) ? 'multi' : 'single';
 
         //get list of folder ids and all their descendents
         function getDescendents(ids, folders) {
@@ -123,78 +122,41 @@ export default class ModifyFolder {
         let requests = [];
         let message;
 
-        if ( this.modifyType === 'multi' ) {
-            requests = this.data.forEach( function(folder) {
-
-                let modMultiParams = {
-                    mapId: folder.id,
-                    inputType: folder.type,
-                    modName: folder.name
-                };
-
-                let updateMultiParams = {
-                    folderId: folder.id,
-                    parentId: folderId
-                };
-
-                let multiVisibilityParams = {
-                    folderId: folder.id,
-                    visibility: (isPublic) ? 'public' : 'private'
-                };
-
-                message = 'Successfully ';
-
-                if ( folderName !== folder.name ) {
-                    requests.push( Hoot.api.modify( modMultiParams ) );
-                    message += 'renamed folder';
-                }
-                if ( pathName !== folder.path ) {
-                    requests.push( Hoot.api.updateFolder( updateMultiParams ) );
-                    if (message.substr(-1) !== ' ') message += ' & ';
-                    message += 'moved folder';
-                }
-                if ( folder.public !== isPublic ) {
-                    requests.push( Hoot.api.updateVisibility( multiVisibilityParams ) );
-                    if (message.substr(-1) !== ' ') message += ' & ';
-                    message += `changed visibility to ${ multiVisibilityParams.visibility }`;
-                }
-
-            } );
-        }
-        else {
-            let modParams = {
-                mapId: this.data.id,
-                inputType: this.data.type,
-                modName: folderName
+        this.data.forEach( function(folder) {
+            let modMultiParams = {
+                mapId: folder.id,
+                inputType: folder.type,
+                modName: folder.name
             };
 
-            let updateParams = {
-                folderId: this.data.id,
+            let updateMultiParams = {
+                folderId: folder.id,
                 parentId: folderId
             };
 
-            let visibilityParams = {
-                folderId: this.data.id,
+            let multiVisibilityParams = {
+                folderId: folder.id,
                 visibility: (isPublic) ? 'public' : 'private'
             };
 
-            let message = 'Successfully ';
+            message = 'Successfully ';
 
-            if ( folderName !== this.data.name ) {
-                requests.push( Hoot.api.modify( modParams ) );
+            if ( folderName !== folder.name ) {
+                requests.push( Hoot.api.modify( modMultiParams ) );
                 message += 'renamed folder';
             }
-            if ( pathName !== this.pathName ) {
-                requests.push( Hoot.api.updateFolder( updateParams ) );
+            if ( pathName !== folder.path ) {
+                requests.push( Hoot.api.updateFolder( updateMultiParams ) );
                 if (message.substr(-1) !== ' ') message += ' & ';
                 message += 'moved folder';
             }
-            if ( this.data.public !== isPublic ) {
-                requests.push( Hoot.api.updateVisibility( visibilityParams ) );
+            if ( folder.public !== isPublic ) {
+                requests.push( Hoot.api.updateVisibility( multiVisibilityParams ) );
                 if (message.substr(-1) !== ' ') message += ' & ';
-                message += `changed visibility to ${ visibilityParams.visibility }`;
+                message += `changed visibility to ${ multiVisibilityParams.visibility }`;
             }
-        }
+
+        } );
 
         this.processRequest = Promise.all(requests)
             .then( () => Hoot.folders.refreshAll() )
