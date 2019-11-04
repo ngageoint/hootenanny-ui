@@ -24,12 +24,13 @@ import _get from 'lodash-es/get';
  * @constructor
  */
 export default class ImportDataset {
-    constructor( translations ) {
+    constructor( translations, data ) {
         this.folderList     = Hoot.folders._folders;
         this.translations   = translations;
         this.browserInfo    = getBrowserInfo();
         this.formFactory    = new FormFactory();
         this.processRequest = null;
+        this.path = data.path;
 
         // Add "NONE" option to beginning of array
         this.translations.unshift( {
@@ -94,6 +95,10 @@ export default class ImportDataset {
         };
 
         this.container = this.formFactory.generateForm( 'body', 'datasets-import-form', metadata );
+
+        if ( this.path ) {
+            this.container.select( '#importPathName' ).property('value', this.path);
+        }
 
         this.typeInput          = this.container.select( '#importType' );
         this.fileInput          = this.container.select( '#importFile' );
