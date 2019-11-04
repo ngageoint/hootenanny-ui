@@ -51,14 +51,11 @@ export default class ModifyFolder {
 
             this.form.splice( 0, 1 );
 
-
             let that = this;
 
+            that = that.folderList.filter( f => this.data.findIndex( folder => folder.parentId === f.id || folder.id === f.id || folder.name === f.name ) === -1 );
 
-            that = that.folderList.filter( f => this.data.findIndex( folder => folder.parentId === f.id ) === -1 );
-
-
-            this.form.data = that;
+            this.form[0].data = that;
 
         }
 
