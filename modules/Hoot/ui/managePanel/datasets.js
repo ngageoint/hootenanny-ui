@@ -257,7 +257,7 @@ export default class Datasets extends Tab {
             }
             case 'importDataset': {
                 let translations = await Hoot.api.getTranslations();
-                this.importSingleModal = new ImportDataset( translations, d.data.name ).render();
+                this.importSingleModal = new ImportDataset( translations, d.data ).render();
                 Hoot.events.once('modal-closed', () => delete this.importSingleModal );
                 break;
             }
