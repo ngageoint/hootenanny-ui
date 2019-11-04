@@ -69,7 +69,8 @@ export default class GrailPull {
 
         this.loadingState();
 
-        const publicValuesRow = publicStats.split('\n')[1],
+        const allPublicStats = publicStats.split('\n'),
+              publicValuesRow = allPublicStats[ allPublicStats.length - 1 ],
               publicValues = publicValuesRow.split('\t');
 
         const rowData = [
@@ -83,7 +84,8 @@ export default class GrailPull {
 
         // if there are private overpass stats then add them to our rowData object
         if ( privateStats ) {
-            const privateValuesRow = privateStats.split('\n')[1],
+            const allPrivateStats = privateStats.split('\n'),
+                  privateValuesRow = allPrivateStats[ allPrivateStats.length - 1 ],
                   privateValues = privateValuesRow.split('\t');
 
             rowData.forEach( row => { row.privateCount = +privateValues[ row.valueColumn ]; } );
@@ -254,8 +256,9 @@ export default class GrailPull {
         };
 
         if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
-            railsParams.customQuery    = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
-            overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
+            const customQuery          = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
+            railsParams.customQuery    = customQuery;
+            overpassParams.customQuery = customQuery;
         }
 
         // Check to see which datasets to pull
