@@ -12,11 +12,22 @@ export default class OverpassQueryPanel {
 
     render() {
         const titleText = 'Enter Custom Query or Skip to Use Default';
+        let buttonText = 'Skip';
+
+        // If user clicks back from grail pull stats modal we want the button to say next instead of skip if there
+        // was previous input
+        const containerExists = this.formData.overpassQueryContainer;
+        if ( containerExists ) {
+            let checkboxStatus = containerExists.select('input').property('checked');
+            if (checkboxStatus) {
+                buttonText = 'Next';
+            }
+        }
 
         let metadata = {
             title: titleText,
             button: {
-                text: 'Skip',
+                text: buttonText,
                 id: 'SubmitBtn',
                 onClick: () => this.handleSubmit()
             }
@@ -49,8 +60,6 @@ export default class OverpassQueryPanel {
     }
 
     overpassQueryPanel() {
-        this.submitButton.select( 'span' ).text( 'Skip' );
-
         // construct input section for user custom overpass queries
         this.overpassQueryContainer = this.form
             .select( '.wrapper div' )
@@ -71,9 +80,15 @@ export default class OverpassQueryPanel {
                 .append( 'input' )
                 .attr( 'type', 'checkbox' )
                 .property( 'checked', checkboxStatus )
-                .on('click', function() {
-                    const isChecked = d3.select( this ).property( 'checked' );
+                .on('click', () => {
+                    const isChecked = checkboxLabel.property( 'checked' );
                     customQueryInput.classed( 'hidden', !isChecked );
+
+                    if ( isChecked ) {
+                        this.submitButton.select( 'span' ).text( 'Next' );
+                    } else {
+                        this.submitButton.select( 'span' ).text( 'Skip' );
+                    }
                 });
 
         const placeholder = '[out:json][bbox:{{bbox}}];\n' +
