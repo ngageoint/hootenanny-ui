@@ -93,7 +93,7 @@ export default class FolderTree extends EventEmitter {
             {
                 title: 'Add Multiple Datasets',
                 _icon: 'data',
-                click: 'importDatasets'
+                click: 'importMultiDatasets'
             },
             {
                 title: 'Add Folder',
