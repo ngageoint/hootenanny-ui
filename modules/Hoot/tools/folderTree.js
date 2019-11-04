@@ -86,7 +86,12 @@ export default class FolderTree extends EventEmitter {
                 click: 'delete'
             },
             {
-                title: 'Add Datasets',
+                title: 'Add Dataset',
+                _icon: 'data',
+                click: 'importDataset'
+            },
+            {
+                title: 'Add Multiple Datasets',
                 _icon: 'data',
                 click: 'importDatasets'
             },
