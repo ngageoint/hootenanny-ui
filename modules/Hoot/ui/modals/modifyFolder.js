@@ -12,7 +12,7 @@ import { modifyDatasetForm } from '../../config/domMetadata';
 
 export default class ModifyFolder {
     constructor( d ) {
-        this.data           = d;
+        this.data = d;
 
         //get list of folder ids and all their descendents
         function getDescendents(ids, folders) {
@@ -53,7 +53,7 @@ export default class ModifyFolder {
         }
 
         let metadata = {
-            title: this.data.length > 1 ? 'Modify Folders' : 'Modify Folder',
+            title: this.data.length > 1 ? 'Move Folders' : 'Modify Folder',
             form: this.form,
             button: {
                 text: 'Modify',
