@@ -85,7 +85,7 @@ export default class GrailPull {
         // if there are private overpass stats then add them to our rowData object
         if ( privateStats ) {
             const allPrivateStats = privateStats.split('\n'),
-                  privateValuesRow = allPrivateStats.split('\n')[ allPrivateStats.length - 1 ],
+                  privateValuesRow = allPrivateStats[ allPrivateStats.length - 1 ],
                   privateValues = privateValuesRow.split('\t');
 
             rowData.forEach( row => { row.privateCount = +privateValues[ row.valueColumn ]; } );
