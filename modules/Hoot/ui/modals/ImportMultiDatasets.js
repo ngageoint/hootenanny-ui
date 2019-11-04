@@ -13,12 +13,12 @@ import _get                from 'lodash-es/get';
 import _forEach            from 'lodash-es/forEach';
 
 export default class ImportMultiDatasets {
-    constructor( translations, data ) {
+    constructor( translations, path ) {
         this.folderList     = Hoot.folders._folders;
         this.translations   = translations;
         this.formFactory    = new FormFactory();
         this.processRequest = null;
-        this.path = data.path;
+        this.path = path;
         this.importTypes = [
             {
                 title: 'Shapefile',
