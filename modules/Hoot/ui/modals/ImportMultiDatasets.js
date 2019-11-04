@@ -62,7 +62,7 @@ export default class ImportMultiDatasets {
         this.container = this.formFactory.generateForm( 'body', 'datasets-import-form', metadata );
 
         if ( this.path ) {
-            this.container.select( '#importPathName' ).property('value', '/ ' + this.path);
+            this.container.select( '#importPathName' ).property('value', this.path);
         }
 
         this.typeInput          = this.container.select( '#importType' );
