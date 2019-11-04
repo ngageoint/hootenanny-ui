@@ -541,7 +541,7 @@ export default class FolderTree extends EventEmitter {
 
     checkMultiSelectFolder( d ) {
         if ( d.type === 'folder' && d.selected && this.selectedNodes.length > 1 ) {
-            return d.name + ' ...';
+            return d.name + '...';
         }
     }
 
@@ -603,7 +603,7 @@ export default class FolderTree extends EventEmitter {
         } else if ( data.type === 'folder' ) {
                 opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
                 opts.splice( 1, 0, {
-                    title: `Modify Folder ${ this.selectedNodes.length > 1 ? this.checkMultiSelectFolder(data) : data.name }`,
+                    title: this.selectedNodes.length ? `Move Folders ${ this.checkMultiSelectFolder(data) }` : `Modify Folder ${ data.name }`,
                     _icon: 'info',
                     click: 'modifyFolder'
                 } );

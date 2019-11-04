@@ -32,6 +32,7 @@ export default class ModifyFolder {
         this.folderList = Hoot.folders._folders.filter(f => {
             return !descendents.includes(f.id);
         });
+
         this.form       = modifyDatasetForm.call( this );
     }
 
@@ -49,6 +50,15 @@ export default class ModifyFolder {
         if ( this.data.length > 1 ) {
 
             this.form.splice( 0, 1 );
+
+
+            let that = this;
+
+
+            that = that.folderList.filter( f => this.data.findIndex( folder => folder.parentId === f.id ) === -1 );
+
+
+            this.form.data = that;
 
         }
 
