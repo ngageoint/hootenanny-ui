@@ -439,9 +439,7 @@ export default class FolderTree extends EventEmitter {
             if ( data.selected ) {
                 return '#ffff99';
             }
-            else {
-                return (data.public) ? '#7092ff' : '#efefef';
-            }
+            return (data.public) ? '#7092ff' : '#efefef';
         }
         else if ( data.type === 'dataset' ) {
             if ( data.selected ) {
@@ -539,8 +537,9 @@ export default class FolderTree extends EventEmitter {
         this.update( d );
     }
 
-    checkMultiSelectFolder( d ) {
+    ellipsizedFolderNames( d ) {
         if ( d.type === 'folder' && d.selected && this.selectedNodes.length > 1 ) {
+            d.name.slice(0, -1);
             return d.name + '...';
         }
     }
@@ -603,9 +602,9 @@ export default class FolderTree extends EventEmitter {
         } else if ( data.type === 'folder' ) {
                 opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
                 opts.splice( 1, 0, {
-                    title: this.selectedNodes.length ? `Move Folders ${ this.checkMultiSelectFolder(data) }` : `Modify Folder ${ data.name }`,
-                    _icon: 'info',
-                    click: 'modifyFolder'
+                title: this.selectedNodes.length ? `Move Folders ${ this.ellipsizedFolderNames(data) }` : `Modify Folder ${ data.name }`,
+                _icon: 'info',
+                click: 'modifyFolder'
                 } );
         }
 
@@ -737,8 +736,7 @@ export default class FolderTree extends EventEmitter {
                     d.children     = null;
                     data.selected  = false;
                 }
-            }
-            else {
+            } else {
                 // open folder
                 data.state = 'open';
 
