@@ -528,7 +528,7 @@ export default class Jobs extends Tab {
                     if (d.jobType.toUpperCase() === 'CONFLATE') {
                         let currentLayer = this.findLayer( d.mapId );
 
-                        if (currentLayer && currentLayer.grail) {
+                        if (currentLayer && currentLayer.grailMerged) {
                             //Get info for the derive
                             actions.push({
                                 title: 'derive changeset',
@@ -553,7 +553,7 @@ export default class Jobs extends Tab {
                     ) {
                         let currentLayer = this.findLayer( d.mapId );
 
-                        if (currentLayer) {
+                        if (currentLayer && !currentLayer.grailReference) {
                             //Get info for the derive
                             actions.push({
                                 title: 'derive changeset replacement',

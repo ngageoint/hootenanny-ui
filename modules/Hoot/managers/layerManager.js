@@ -128,8 +128,7 @@ export default class Layers {
         //the geo extent of the layer secondary layer
         const bboxCoords = lyr.bbox.split(',').map( data => +data );
         let extBbox = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
-        return this.allLayers.filter( d => d.bbox )
-            .filter( d => d.id !== lyr.id )
+        return this.allLayers.filter( d => d.grailReference && d.bbox && d.id !== lyr.id )
             .filter( d => {
                 //the geo extent of the candidate reference layer
                 //i.e. the one to be replaced in derive changeset replacement
