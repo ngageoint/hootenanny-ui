@@ -121,13 +121,20 @@ export default class Layers {
         return _find( this.loadedLayers, layer => layer[ key ] === val );
     }
 
-    grailReferenceLayers( bbox ) {
+    //returns layers that have a bbox (i.e. were pulled from an api by bbox)
+    //and are not the input layer
+    //and have a bbox that fully contains the bbox (or mbr extent) of the input layer
+    grailReferenceLayers( lyr ) {
+        //the geo extent of the layer secondary layer
+        const bboxCoords = lyr.bbox.split(',').map( data => +data );
+        let extBbox = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
         return this.allLayers.filter( d => d.bbox )
+            .filter( d => d.id !== lyr.id )
             .filter( d => {
+                //the geo extent of the candidate reference layer
+                //i.e. the one to be replaced in derive changeset replacement
                 const coords = d.bbox.split(',').map( data => +data );
                 let extLayer = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
-                const bboxCoords = bbox.split(',').map( data => +data );
-                let extBbox = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
                 return extLayer.contains(extBbox);
             });
     }

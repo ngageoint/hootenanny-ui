@@ -20,7 +20,7 @@ export default class GrailDatasetPicker {
                 id: 'refDataset',
                 inputType: 'combobox',
                 placeholder: 'Select a dataset',
-                data: Hoot.layers.grailReferenceLayers(this.layer.bbox),
+                data: Hoot.layers.grailReferenceLayers(this.layer),
                 readonly: 'readonly',
                 sort: false,
                 itemKey: 'name',
