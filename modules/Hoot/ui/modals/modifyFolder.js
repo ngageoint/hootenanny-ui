@@ -6,6 +6,7 @@
 
 import _find from 'lodash-es/find';
 import _get  from 'lodash-es/get';
+import _clone from 'lodash-es/clone';
 
 import FormFactory           from '../../tools/formFactory';
 import { modifyDatasetForm } from '../../config/domMetadata';
@@ -30,24 +31,25 @@ export default class ModifyFolder {
         //filter out the folder itself
         //and all of it's descendents
 
-        let allFolders = Hoot.folders._folders;
+        function findFolders() {
+            let allFolders = _clone(Hoot.folders._folders);
+            for ( var i = 0; i < allFolders.length; i++ ) {
+                let fldrs = allFolders[i];
 
-        for ( var i = 0; i < allFolders.length; i++ ) {
-            let checkIt = allFolders[i];
+                for ( var j = 0; j < descendents.length; j++ ) {
+                    let desc = descendents[j];
 
-            for ( var j = 0; j < descendents.length; j++ ) {
-                let desc = descendents[j];
-
-
-                // assure that the user can only move selected folders to a destination at level
-                // that is not directly below or at the same level that is currently located
-                if ( desc.id === checkIt.id || desc.parentId === checkIt.id || desc.parentId === checkIt.parentId ) {
-                    allFolders.splice(i, 1);
+                    // assure that the user can only move selected folders to a destination at level
+                    // that is not directly below or at the same level that is currently located
+                    if ( fldrs.id === desc.parentId || fldrs.id === desc.id ) {
+                        allFolders.splice(i, 1);
+                    }
                 }
             }
+            return allFolders;
         }
 
-        this.folderList = allFolders;
+        this.folderList = findFolders();
 
         this.form       = modifyDatasetForm.call( this );
     }
