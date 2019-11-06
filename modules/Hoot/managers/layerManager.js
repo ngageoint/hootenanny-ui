@@ -121,6 +121,17 @@ export default class Layers {
         return _find( this.loadedLayers, layer => layer[ key ] === val );
     }
 
+    grailReferenceLayers( bbox ) {
+        return this.allLayers.filter( d => d.bbox )
+            .filter( d => {
+                const coords = d.bbox.split(',').map( data => +data );
+                let extLayer = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+                const bboxCoords = bbox.split(',').map( data => +data );
+                let extBbox = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
+                return extLayer.contains(extBbox);
+            });
+    }
+
     noApi() {
         return Object.keys(this.loadedLayers).every( id => id > -1);
     }

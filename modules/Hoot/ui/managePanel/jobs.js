@@ -2,6 +2,7 @@ import Tab            from './tab';
 import ProgressBar    from 'progressbar.js';
 import DifferentialStats from '../modals/differentialStats';
 import JobCommandInfo from '../modals/jobCommandInfo';
+import GrailDatasetPicker from '../modals/GrailDatasetPicker';
 import { duration } from '../../tools/utilities';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
@@ -542,6 +543,28 @@ export default class Jobs extends Tab {
 
                                     Hoot.api.deriveChangeset( params )
                                         .then( resp => Hoot.message.alert( resp ) );
+                                }
+                            });
+                        }
+                    }
+
+                    if (d.jobType.toUpperCase() === 'CONFLATE'
+                        || d.jobType.toUpperCase() === 'IMPORT'
+                    ) {
+                        let currentLayer = this.findLayer( d.mapId );
+
+                        if (currentLayer) {
+                            //Get info for the derive
+                            actions.push({
+                                title: 'derive changeset replacement',
+                                icon: 'flip_to_front',
+                                action: async () => {
+                                    let gpr = new GrailDatasetPicker(currentLayer);
+                                    gpr.render();
+
+                                    Hoot.events.once( 'modal-closed', () => {
+
+                                    });
                                 }
                             });
                         }
