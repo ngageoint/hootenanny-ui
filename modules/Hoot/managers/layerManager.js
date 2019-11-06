@@ -193,7 +193,15 @@ export default class Layers {
         try {
             let mapId       = params.id,
                 tags        = await this.hoot.api.getMapTags( mapId ),
+                layerExtent;
+
+            let lyr = this.findBy( 'id', mapId);
+            if (lyr.bbox) {
+                const coords = lyr.bbox.split(',').map( d => +d );
+                layerExtent = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+            } else {
                 layerExtent = await this.layerExtent( mapId );
+            }
 
             let layer = {
                 name: params.name,
