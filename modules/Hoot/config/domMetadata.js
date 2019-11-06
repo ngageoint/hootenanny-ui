@@ -3,7 +3,6 @@ import AdvancedOpts from '../ui/sidebar/advancedOpts';
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
-import hoot from '../hoot';
 
 /*******************************************************************************************************
  * File: formConfigs.js
@@ -363,7 +362,6 @@ export function exportDataForm( zipOutput ) {
         {
             label: 'Append to ESRI FGDB Template?',
             id: exportFgdbId,
-            class: 'hidden',
             inputType: 'checkbox',
             checked: false,
             hidden: true

@@ -35,6 +35,7 @@ export default class API {
 
         this.queryInterval = this.config.queryInterval;
         this.conflateTypes = null;
+        this.importOpts = null;
     }
 
     /**
@@ -686,6 +687,10 @@ export default class API {
             data: data.formData
         };
 
+        if ( data.ADV_UPLOAD_OPTS && data.ADV_UPLOAD_OPTS.length ) {
+            params.params.ADV_UPLOAD_OPTS = data.ADV_UPLOAD_OPTS.join(',');
+        }
+
         return this.request( params );
     }
 
@@ -956,6 +961,22 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    getAdvancedImportOptions() {
+        if ( this.importOpts ) {
+            return Promise.resolve( this.importOpts );
+        } else {
+            const params = {
+                path: '/info/ingest/getoptions',
+                method: 'GET'
+            };
+            let that = this;
+            return this.request( params ).then( resp => {
+                that.importOpts = resp.data.hoot2[0].members; //might need to refactor this response
+                return that.importOpts;
+            });
+        }
+    }
+
     /**
      * Delete a layer from the database
      *
@@ -1083,10 +1104,14 @@ export default class API {
             } );
     }
 
-    grailPullOverpassToDb( data ) {
+    grailPullOverpassToDb( data, folderId, overpassLabel ) {
         const params = {
-            path: `/grail/pulloverpasstodb?bbox=${ data.BBOX }&name=${ data.secondaryName }`,
-            method: 'GET'
+            path: '/grail/pulloverpasstodb',
+            method: 'POST',
+            params: {
+                folderId: folderId
+            },
+            data
         };
 
         return this.request( params )
@@ -1094,7 +1119,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Pull from Overpass API has succeeded.',
+                    message: `Pull from ${overpassLabel} has succeeded.`,
                     status: 200,
                     type: 'success'
                 };
@@ -1109,13 +1134,32 @@ export default class API {
             } );
     }
 
-    grailMetadataQuery( bbox ) {
+    grailMetadataQuery() {
         const params = {
-            path: `/grail/grailMetadataQuery?bbox=${ bbox }`,
+            path: '/grail/grailMetadataQuery',
             method: 'GET'
         };
 
         return this.request( params )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: err.data || 'Error retrieving grail metadata!',
+                    status: err.status,
+                    type: 'error'
+                };
+            } );
+    }
+
+    overpassStats( data ) {
+        const params = {
+            path: '/grail/overpassStats',
+            method: 'POST',
+            data
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
             .catch( err => {
                 return {
                     data: err.data,
@@ -1126,11 +1170,14 @@ export default class API {
             } );
     }
 
-
-    grailPullRailsPortToDb( data ) {
+    grailPullRailsPortToDb( data, folderId, railsLabel ) {
         const params = {
-            path: `/grail/pullrailsporttodb?bbox=${ data.BBOX }&name=${ data.referenceName }`,
-            method: 'GET'
+            path: '/grail/pullrailsporttodb',
+            method: 'POST',
+            params: {
+                folderId: folderId
+            },
+            data
         };
 
         return this.request( params )
@@ -1138,7 +1185,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Pull from Rails Port API has succeeded.',
+                    message: `Pull from ${railsLabel} has succeeded.`,
                     status: 200,
                     type: 'success'
                 };
@@ -1359,5 +1406,4 @@ export default class API {
 
         return this.request( params );
     }
-
 }
