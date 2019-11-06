@@ -29,9 +29,25 @@ export default class ModifyFolder {
 
         //filter out the folder itself
         //and all of it's descendents
-        this.folderList = Hoot.folders._folders.filter(f => {
-            return !descendents.includes(f.id);
-        });
+
+        let allFolders = Hoot.folders._folders;
+
+        for ( var i = 0; i < allFolders.length; i++ ) {
+            let checkIt = allFolders[i];
+
+            for ( var j = 0; j < descendents.length; j++ ) {
+                let desc = descendents[j];
+
+
+                // assure that the user can only move selected folders to a destination at level
+                // that is not directly below or at the same level that is currently located
+                if ( desc.id === checkIt.id || desc.parentId === checkIt.id || desc.parentId === checkIt.parentId ) {
+                    allFolders.splice(i, 1);
+                }
+            }
+        }
+
+        this.folderList = allFolders;
 
         this.form       = modifyDatasetForm.call( this );
     }
@@ -50,12 +66,6 @@ export default class ModifyFolder {
         if ( this.data.length > 1 ) {
 
             this.form.splice( 0, 1 );
-
-            let that = this;
-
-            that = that.folderList.filter( f => this.data.findIndex( folder => folder.parentId === f.id || folder.id === f.id || folder.name === f.name ) === -1 );
-
-            this.form[0].data = that;
 
         }
 
@@ -77,7 +87,7 @@ export default class ModifyFolder {
         this.folderVisibilityInput = this.container.select( '#modifyVisibility' );
         this.submitButton          = this.container.select( '#modifySubmitBtn' );
 
-        this.folderNameInput.property( 'value', this.data.name );
+        this.folderNameInput.property( 'value', this.data[0].data.name );
         this.pathNameInput.property( 'value', this.pathName );
         this.folderVisibilityInput.property( 'checked', this.data.public );
         this.submitButton.node().disabled = false;
