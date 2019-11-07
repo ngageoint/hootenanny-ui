@@ -518,7 +518,7 @@ export default class FolderTree extends EventEmitter {
     bindContextMenu( d ) {
         let { data } = d,
             selected = d.data.selected || false;
-        if ( d.data.type === 'dataset' ) {
+        if ( d.data.type === 'dataset' || d.data.type === 'folder' ) {
             if ( !selected ) {
                 let selectedNodes = _filter( this.root.descendants(), node => node.data.selected );
 
@@ -558,8 +558,9 @@ export default class FolderTree extends EventEmitter {
         let { data } = d,
             opts;
 
+        const selectedCount = this.selectedNodes.length;
+
         if ( data.type === 'dataset' ) {
-            const selectedCount = this.selectedNodes.length;
 
             opts = [
                 {
@@ -605,12 +606,24 @@ export default class FolderTree extends EventEmitter {
                 }
             }
         } else if ( data.type === 'folder' ) {
+
+            if ( selectedCount === 1 ) {
                 opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
                 opts.splice( 1, 0, {
-                title: this.selectedNodes.length ? `Move Folders ${ this.ellipsizedFolderNames(data) }` : `Modify Folder ${ data.name }`,
+                title: `Modify/Move Folder ${ data.name }`,
                 _icon: 'info',
                 click: 'modifyFolder'
                 } );
+            }
+            else if ( selectedCount > 1 ) {
+                opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
+                opts.splice( 1, 0, {
+                title: `Move Folders ${ this.ellipsizedFolderNames(data) }`,
+                _icon: 'info',
+                click: 'modifyFolder'
+                } );
+            }
+
         }
 
         let body = d3.select( 'body' )
@@ -659,6 +672,9 @@ export default class FolderTree extends EventEmitter {
             isOpen   = data.state === 'open';
 
         if ( data.type === 'dataset' || data.type === 'folder' && d3.event.ctrlKey ) {
+            if ( data.type === 'folder ') {
+                data.singleFolder = false;
+            }
             if ( d3.event.metaKey && this.isDatasetTable ) {
                 data.selected = !data.selected;
                 this.selectedNodes.push( data );
