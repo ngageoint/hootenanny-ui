@@ -121,9 +121,9 @@ export default class Layers {
         return _find( this.loadedLayers, layer => layer[ key ] === val );
     }
 
-    //returns layers that have a bbox (i.e. were pulled from an api by bbox)
-    //and are not the input layer
-    //and have a bbox that fully contains the bbox (or mbr extent) of the input layer
+    //returns grail reference layers that have a bbox (i.e. were pulled from an api by bbox)
+    //and are not same as the secondary input layer
+    //and have a bbox that fully contains the bbox (or mbr extent) of the secondary input layer
     grailReferenceLayers( lyr ) {
         //the geo extent of the layer secondary layer
         const bboxCoords = lyr.bbox.split(',').map( data => +data );
