@@ -201,7 +201,7 @@ export default class Layers {
                 tags        = await this.hoot.api.getMapTags( mapId ),
                 layerExtent;
 
-            let lyr = this.findBy( 'id', mapId);
+            let lyr = this.findBy( 'id', +mapId);
             if (lyr.bbox) {
                 const coords = lyr.bbox.split(',').map( d => +d );
                 layerExtent = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
