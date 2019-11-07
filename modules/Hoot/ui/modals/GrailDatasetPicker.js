@@ -11,7 +11,7 @@ export default class GrailDatasetPicker {
 
         //if layer has no bbox (reflecting filter when pulling data)
         //use the layer mbr extent
-        if (!this.layer.bbox) this.layer.bbox = await this.layerExtent( layer.id ).toParams();
+        if (!this.layer.bbox) this.layer.bbox = await this.layerExtent( this.layer.id ).toParams();
 
         let metadata = {
             title: 'Grail Datasets',
