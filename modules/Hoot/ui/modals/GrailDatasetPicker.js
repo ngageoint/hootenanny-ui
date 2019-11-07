@@ -13,23 +13,31 @@ export default class GrailDatasetPicker {
         //use the layer mbr extent
         if (!this.layer.bbox) this.layer.bbox = (await Hoot.layers.layerExtent( this.layer.id )).toParam();
 
-        let metadata = {
-            title: 'Grail Datasets',
-            form: [{
-                label: 'Select Reference Dataset',
-                id: 'refDataset',
-                inputType: 'combobox',
-                placeholder: 'Select a dataset',
-                data: Hoot.layers.grailReferenceLayers(this.layer),
-                readonly: 'readonly',
-                sort: false,
-                itemKey: 'name',
-                _value: this.layer.id,
-                _valueKey: 'id',
-                onChange: d => this.handleSubmit( d )
-            }]
-        };
+        let data = Hoot.layers.grailReferenceLayers(this.layer);
+        let metadata;
+        if (data .length) {
+            metadata = {
+                title: 'Grail Datasets',
+                form: [{
+                    label: 'Select Reference Dataset',
+                    id: 'refDataset',
+                    inputType: 'combobox',
+                    placeholder: 'Select a dataset',
+                    data: data,
+                    readonly: 'readonly',
+                    sort: false,
+                    itemKey: 'name',
+                    _value: this.layer.id,
+                    _valueKey: 'id',
+                    onChange: d => this.handleSubmit( d )
+                }]
+            };
+        } else {
+            metadata = {
+                title: 'No Suitable Grail Reference Datasets'
+            };
 
+        }
         let formId = 'grailDatasetForm';
         this.form  = new FormFactory().generateForm( 'body', formId, metadata );
 
