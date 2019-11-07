@@ -15,7 +15,7 @@ export default class GrailDatasetPicker {
 
         let data = Hoot.layers.grailReferenceLayers(this.layer);
         let metadata;
-        if (data .length) {
+        if (data.length) {
             metadata = {
                 title: 'Grail Datasets',
                 form: [{
