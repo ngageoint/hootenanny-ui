@@ -541,6 +541,8 @@ export default class Jobs extends Tab {
                                     params.input2 = d.mapId;
                                     params.parentId = d.jobId;
 
+                                    if (currentLayer.bbox) params.BBOX = currentLayer.bbox;
+
                                     Hoot.api.deriveChangeset( params )
                                         .then( resp => Hoot.message.alert( resp ) );
                                 }
