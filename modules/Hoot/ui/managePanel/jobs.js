@@ -559,7 +559,7 @@ export default class Jobs extends Tab {
                                 title: 'derive changeset replacement',
                                 icon: 'flip_to_front',
                                 action: async () => {
-                                    let gpr = new GrailDatasetPicker(currentLayer);
+                                    let gpr = new GrailDatasetPicker(currentLayer, d.jobId);
                                     gpr.render();
 
                                     Hoot.events.once( 'modal-closed', () => {

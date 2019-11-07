@@ -24,14 +24,10 @@ export default class GrailDatasetPicker {
                 readonly: 'readonly',
                 sort: false,
                 itemKey: 'name',
-                _valueKey: 'id'
-            }],
-            button: {
-                text: 'Submit',
-                location: 'right',
-                id: 'submitBtn',
-                onClick: () => this.handleSubmit()
-            }
+                _value: this.layer.id,
+                _valueKey: 'id',
+                onChange: d => this.handleSubmit( d )
+            }]
         };
 
         let formId = 'grailDatasetForm';
@@ -40,10 +36,12 @@ export default class GrailDatasetPicker {
     }
 
 
-    handleSubmit() {
+    handleSubmit(d) {
+        let target = d3.select( `#${ d.id }` ),
+            refId  = parseInt(target.attr( '_value' ), 10);
 
         const params  = {};
-        params.input1 = null;
+        params.input1 = refId;
         params.input2 = this.layer.id;
         params.parentId = this.parentId;
         params.BBOX = this.layer.bbox;
