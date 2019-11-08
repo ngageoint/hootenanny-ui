@@ -7908,9 +7908,9 @@
                 "description": "Yellow = Public domain map data from the US Census. Red = Data not found in OpenStreetMap",
                 "name": "TIGER Roads 2017"
             },
-            "US-TIGER-Roads-2019": {
+            "US-TIGER-Roads-2018": {
                 "description": "Yellow = Public domain map data from the US Census. Red = Data not found in OpenStreetMap",
-                "name": "TIGER Roads 2019"
+                "name": "TIGER Roads 2018"
             },
             "USDA-NAIP": {
                 "description": "The most recent year of DOQQs from the National Agriculture Imagery Program (NAIP) for each state in the contiguous United States.",
