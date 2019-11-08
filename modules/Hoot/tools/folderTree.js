@@ -616,12 +616,23 @@ export default class FolderTree extends EventEmitter {
                 } );
             }
             else if ( selectedCount > 1 ) {
-                opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
-                opts.splice( 1, 0, {
-                title: `Move Folders ${ this.ellipsizedFolderNames(data) }`,
-                _icon: 'info',
-                click: 'modifyFolder'
-                } );
+                opts = [
+                    {
+                    title: 'Delete',
+                    _icon: 'trash',
+                    click: 'delete'
+                    },
+                    {
+                    title: `Move Folders ${ this.ellipsizedFolderNames(data) }`,
+                    _icon: 'info',
+                    click: 'modifyFolder'
+                    },
+                    {
+                    title: 'Export Data in Folder',
+                    _icon: 'export',
+                     click: 'exportFolder'
+                    }
+                ];
             }
 
         }
