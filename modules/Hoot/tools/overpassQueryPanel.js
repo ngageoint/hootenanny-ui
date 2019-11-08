@@ -78,11 +78,13 @@ export default class OverpassQueryPanel {
             .append( 'label' )
             .text( 'Custom Overpass query' )
                 .append( 'input' )
+                .attr( 'id', 'customQueryToggle' )
                 .attr( 'type', 'checkbox' )
                 .property( 'checked', checkboxStatus )
                 .on('click', () => {
                     const isChecked = checkboxLabel.property( 'checked' );
                     customQueryInput.classed( 'hidden', !isChecked );
+                    this.queryOptions.classed( 'hidden', !isChecked );
 
                     if ( isChecked ) {
                         this.submitButton.select( 'span' ).text( 'Next' );
@@ -122,9 +124,55 @@ export default class OverpassQueryPanel {
                 }
             });
 
+        this.buildQueryOptions();
+
         const errorInfoContainer = this.form.select( '.hoot-menu' )
             .insert( 'div', '.modal-footer' )
             .classed( 'badData', true );
+    }
+
+    buildQueryOptions() {
+        const options = [ 'Buildings', 'Highways' ];
+
+        this.queryOptions = this.overpassQueryContainer.append( 'div' )
+            .classed( 'queryBuilder hidden', true )
+            .text( 'Build query options' );
+
+        options.forEach( option => {
+            this.queryOptions.append( 'label' )
+                .text( option )
+                .append( 'input' )
+                .attr( 'id', option )
+                .attr( 'type', 'checkbox' )
+                .on( 'click', () => {
+                    this.queryBuilder();
+                } );
+        } );
+
+    }
+
+    queryBuilder() {
+        let queryString = '[out:json][bbox:{{bbox}}];\n' +
+            '(\n';
+
+        if ( this.queryOptions.select( '#Buildings' ).property( 'checked' ) ) {
+            queryString += 'node["building"]({{bbox}});\n' +
+                'way["building"]({{bbox}});\n' +
+                'relation["building"]({{bbox}});\n';
+        }
+
+        if ( this.queryOptions.select( '#Highways' ).property( 'checked' ) ) {
+            queryString += 'node["highway"]({{bbox}});\n' +
+                'way["highway"]({{bbox}});\n' +
+                'relation["highway"]({{bbox}});\n';
+        }
+
+        // Close out and recurse down
+        queryString += ');\n'+
+            '(._;>;);\n' +
+            'out meta;';
+
+        this.overpassQueryContainer.select( 'textarea' ).property( 'value', queryString );
     }
 
     handleSubmit() {
