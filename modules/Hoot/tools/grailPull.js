@@ -240,7 +240,7 @@ export default class GrailPull {
         }
 
         let folderName = 'grail_' + bbox.replace( /,/g, '_' ),
-            pathId = _get( _find( Hoot.folders._folders, folder => folder.name === folderName ), 'id' );
+            pathId = _get( _find( Hoot.folders.folderPaths, folder => folder.name === folderName ), 'id' );
 
         let folderId;
         if ( !pathId ) {

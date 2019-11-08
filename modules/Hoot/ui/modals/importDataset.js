@@ -25,7 +25,7 @@ import _get from 'lodash-es/get';
  */
 export default class ImportDataset {
     constructor( translations, path ) {
-        this.folderList     = Hoot.folders._folders;
+        this.folderList     = Hoot.folders.folderPaths;
         this.translations   = translations;
         this.browserInfo    = getBrowserInfo();
         this.formFactory    = new FormFactory();
@@ -374,7 +374,7 @@ export default class ImportDataset {
         let layerName     = this.layerNameInput.property( 'value' ),
             pathName      = this.pathNameInput.property( 'value' ),
             newFolderName = this.newFolderNameInput.property( 'value' ),
-            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ),
+            pathId        = _get( _find( Hoot.folders.folderPaths, folder => folder.path === pathName ), 'id' ),
 
             transVal      = this.schemaInput.property( 'value' ),
             typeVal       = this.typeInput.property( 'value' ),

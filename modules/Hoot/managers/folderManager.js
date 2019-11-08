@@ -78,13 +78,18 @@ export default class FolderManager {
         } else return true;
     }
 
+    filterVisible(f) {
+        return JSON.parse(Hoot.context.storage( 'publicVisibility' )) || f.userId === Hoot.user().id;
+    }
+
     /**
      * Get all available folders
+     * filtered by public visibility setting
      *
      * @returns {array} - folders
      */
     get folderPaths() {
-        return this.listFolders( this._folders );
+        return this._folders.filter(this.filterVisible);
     }
 
     get datasetList() {
@@ -239,7 +244,7 @@ export default class FolderManager {
 
         folderList = _union( folderList, rootLayers );
 
-        return this.unflattenFolders( folderList ).filter(f => JSON.parse(Hoot.context.storage( 'publicVisibility' )) || f.userId === Hoot.user().id);
+        return this.unflattenFolders( folderList ).filter(this.filterVisible);
     }
 
     /**

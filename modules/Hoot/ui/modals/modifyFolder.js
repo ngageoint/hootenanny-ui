@@ -24,11 +24,11 @@ export default class ModifyFolder {
                 return ids;
             }
         }
-        let descendents = getDescendents([d.data.id], Hoot.folders._folders);
+        let descendents = getDescendents([d.data.id], Hoot.folders.folderPaths);
 
         //filter out the folder itself
         //and all of it's descendents
-        this.folderList = Hoot.folders._folders.filter(f => {
+        this.folderList = Hoot.folders.folderPaths.filter(f => {
             return !descendents.includes(f.id);
         });
         this.form       = modifyDatasetForm.call( this );
@@ -98,7 +98,7 @@ export default class ModifyFolder {
         let folderName = this.folderNameInput.property( 'value' ),
             pathName   = this.pathNameInput.property( 'value' ),
             isPublic   = this.folderVisibilityInput.property( 'checked' ),
-            folderId   = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
+            folderId   = _get( _find( Hoot.folders.folderPaths, folder => folder.path === pathName ), 'id' ) || 0;
 
         // We do this because if user only changes visibility
         if ( ( folderName !== this.data.name || pathName !== this.pathName ) && Hoot.folders.exists( folderName, folderId ) ) {
