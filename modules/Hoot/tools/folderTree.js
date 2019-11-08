@@ -618,9 +618,9 @@ export default class FolderTree extends EventEmitter {
             else if ( selectedCount > 1 ) {
                 opts = [
                     {
-                    title: 'Delete',
+                    title: `Delete (${ selectedCount })`,
                     _icon: 'trash',
-                    click: 'delete'
+                     click: 'delete'
                     },
                     {
                     title: `Move Folders ${ this.ellipsizedFolderNames(data) }`,
