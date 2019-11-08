@@ -121,6 +121,23 @@ export default class Layers {
         return _find( this.loadedLayers, layer => layer[ key ] === val );
     }
 
+    //returns grail reference layers that have a bbox (i.e. were pulled from an api by bbox)
+    //and are not same as the secondary input layer
+    //and have a bbox that fully contains the bbox (or mbr extent) of the secondary input layer
+    grailReferenceLayers( lyr ) {
+        //the geo extent of the layer secondary layer
+        const bboxCoords = lyr.bbox.split(',').map( data => +data );
+        let extBbox = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
+        return this.allLayers.filter( d => d.grailReference && d.bbox && d.id !== lyr.id )
+            .filter( d => {
+                //the geo extent of the candidate reference layer
+                //i.e. the one to be replaced in derive changeset replacement
+                const coords = d.bbox.split(',').map( data => +data );
+                let extLayer = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+                return extLayer.contains(extBbox);
+            });
+    }
+
     noApi() {
         return Object.keys(this.loadedLayers).every( id => id > -1);
     }
@@ -182,7 +199,15 @@ export default class Layers {
         try {
             let mapId       = params.id,
                 tags        = await this.hoot.api.getMapTags( mapId ),
+                layerExtent;
+
+            let lyr = this.findBy( 'id', +mapId);
+            if (lyr.bbox) {
+                const coords = lyr.bbox.split(',').map( d => +d );
+                layerExtent = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+            } else {
                 layerExtent = await this.layerExtent( mapId );
+            }
 
             let layer = {
                 name: params.name,
