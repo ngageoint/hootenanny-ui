@@ -6,7 +6,6 @@
 
 import _find from 'lodash-es/find';
 import _get  from 'lodash-es/get';
-import _clone from 'lodash-es/clone';
 
 import FormFactory           from '../../tools/formFactory';
 import { modifyDatasetForm } from '../../config/domMetadata';
@@ -18,7 +17,7 @@ export default class ModifyFolder {
         //get list of folder ids and all their descendents
         function getDescendents(ids, folders) {
 
-            let children = folders.filter(f => ids.findIndex( getId => getId.id === f.parentId) !== -1 );
+            let children = folders.filter(f => ids.findIndex( getId => getId.id === f.parentId ) !== -1 );
 
             if (children.length) {
                 return [...new Set(ids.concat(children).concat(getDescendents(children, folders)))];
@@ -26,27 +25,17 @@ export default class ModifyFolder {
                 return ids;
             }
         }
-        let descendents = getDescendents( d, Hoot.folders._folders);
 
         //filter out the folder itself
         //and all of it's descendents
 
         function findFolders() {
-            let allFolders = _clone(Hoot.folders._folders);
-            for ( var i = 0; i < allFolders.length; i++ ) {
-                let fldrs = allFolders[i];
-
-                for ( var j = 0; j < descendents.length; j++ ) {
-                    let desc = descendents[j];
-
-                    // assure that the user can only move selected folders to a destination at level
-                    // that is not directly below or at the same level that is currently located
-                    if ( fldrs.id === desc.parentId || fldrs.id === desc.id ) {
-                        allFolders.splice(i, 1);
-                    }
-                }
-            }
-            return allFolders;
+            let descendents = getDescendents( d, Hoot.folders._folders);
+            return Hoot.folders._folders.filter( function(fldrs) {
+                return descendents.findIndex( function(d)  {
+                    return fldrs.id === d.parentId || fldrs.id === d.id || d.id === fldrs.parentId;
+                }) === -1;
+            } );
         }
 
         this.folderList = findFolders();
@@ -89,7 +78,7 @@ export default class ModifyFolder {
         this.folderVisibilityInput = this.container.select( '#modifyVisibility' );
         this.submitButton          = this.container.select( '#modifySubmitBtn' );
 
-        this.folderNameInput.property( 'value', this.data[0].data.name );
+        this.folderNameInput.property( 'value', this.data[0].name );
         this.pathNameInput.property( 'value', this.pathName );
         this.folderVisibilityInput.property( 'checked', this.data.public );
         this.submitButton.node().disabled = false;
