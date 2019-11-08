@@ -7908,10 +7908,6 @@
                 "description": "Yellow = Public domain map data from the US Census. Red = Data not found in OpenStreetMap",
                 "name": "TIGER Roads 2017"
             },
-            "US-TIGER-Roads-2018": {
-                "description": "Yellow = Public domain map data from the US Census. Red = Data not found in OpenStreetMap",
-                "name": "TIGER Roads 2018"
-            },
             "US-TIGER-Roads-2019": {
                 "description": "Yellow = Public domain map data from the US Census. Red = Data not found in OpenStreetMap",
                 "name": "TIGER Roads 2019"
@@ -7941,12 +7937,6 @@
                     "text": "Realized by means of Brussels UrbIS®© - Distribution & Copyright CIRB"
                 },
                 "name": "UrbIS-Ortho 2018"
-            },
-            "UrbISOrtho2019": {
-                "attribution": {
-                    "text": "Realized by means of Brussels UrbIS®© - Distribution & Copyright CIRB"
-                },
-                "name": "UrbIS-Ortho 2019"
             },
             "UrbisAdmFR": {
                 "attribution": {
