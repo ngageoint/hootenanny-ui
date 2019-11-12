@@ -247,7 +247,7 @@ export default class Datasets extends Tab {
 
                 if ( !confirm ) return;
 
-                let items = (d.data.type === 'folder' && !d.data.selected) ? new Array( d ) : tree.selectedNodes;
+                let items = tree.selectedNodes;
 
                 this.processRequest = this.deleteItems( items )
                     .then( () => Hoot.folders.refreshAll() )
@@ -316,15 +316,10 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'modifyFolder': {
+                this.modifyFolderModal = new ModifyFolder( tree.selectedNodes ).render();
 
-                if ( tree.selectedNodes.length > 1 ) {
-                   this.modifyFolderModal = new ModifyFolder( tree.selectedNodes ).render();
-                } else {
-                   this.modifyFolderModal = new ModifyFolder( [d] ).render();
-                }
                 Hoot.events.once( 'modal-closed', () => delete this.modifyFolderModal );
                 break;
-
             }
             case 'exportTaskGrid': {
                 this.exportTaskGridModal = new ExportTaskGrid( d ).render();
