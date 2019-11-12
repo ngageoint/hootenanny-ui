@@ -16,7 +16,7 @@ export default class ModifyDataset {
     constructor( datasets ) {
         this.formType   = datasets.length === 1 ? 'single' : 'multi';
         this.datasets   = datasets.length === 1 ? datasets[ 0 ] : datasets;
-        this.folderList = Hoot.folders._folders;
+        this.folderList = Hoot.folders.folderPaths;
         this.form       = modifyDatasetForm.call( this );
     }
 
@@ -96,7 +96,7 @@ export default class ModifyDataset {
         let pathName      = this.pathNameInput.property( 'value' ),
             newFolderName = this.newFolderNameInput.property( 'value' ),
             layerName     = this.formType === 'single' ? this.layerNameInput.property( 'value' ) : null,
-            pathId        = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' );
+            pathId        = _get( _find( Hoot.folders.folderPaths, folder => folder.path === pathName ), 'id' );
 
         if ( !newFolderName && layerName ) {
             // make sure another layer with the same name doesn't exist at specified path
