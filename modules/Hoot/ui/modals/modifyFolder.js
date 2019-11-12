@@ -14,34 +14,30 @@ export default class ModifyFolder {
     constructor( d ) {
         this.data = d;
 
-        //get list of folder ids and all their descendents
-        function getDescendents(ids, folders) {
-
-            let children = folders.filter(f => ids.findIndex( getId => getId.id === f.parentId ) !== -1 );
-
-            if (children.length) {
-                return [...new Set(ids.concat(children).concat(getDescendents(children, folders)))];
-            } else {
-                return ids;
-            }
-        }
+        let descendents = this.getDescendents(d.map(f => f.id), Hoot.folders._folders);
 
         //filter out the folder itself
         //and all of it's descendents
+        this.folderList = Hoot.folders._folders.filter(f => {
+            return !descendents.includes(f.id);
+        });
 
-        function findFolders() {
-            let descendents = getDescendents( d, Hoot.folders._folders);
-            return Hoot.folders._folders.filter( function(fldrs) {
-                return descendents.findIndex( function(d)  {
-                    return fldrs.id === d.parentId || fldrs.id === d.id || d.id === fldrs.parentId;
-                }) === -1;
-            } );
-        }
-
-        this.folderList = findFolders();
-
-        this.form       = modifyDatasetForm.call( this );
+        this.form = modifyDatasetForm.call( this );
     }
+
+    //get list of folder ids and all their descendents
+    getDescendents(ids, folders) {
+
+        let children = folders.filter(f => ids.includes(f.parentId))
+                          .map(f => f.id);
+
+        if (children.length) {
+            return [...new Set(ids.concat(children).concat(this.getDescendents(children, folders)))];
+        } else {
+            return ids;
+        }
+    }
+
 
     render() {
         // remove layer name input
