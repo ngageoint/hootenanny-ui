@@ -215,8 +215,11 @@ class LayerConflate extends SidebarForm {
 
         //If a task grid is present in custom data, use it to restrict conflation
         let customDataLayer = Hoot.context.layers().layer('data');
+        let refBbox = Hoot.layers.findBy( 'id', data.INPUT1 ).bbox;
         if ( customDataLayer.hasData() && customDataLayer.enabled() ) {
             data.TASK_BBOX = customDataLayer.extent().toParam();
+        } else if (refBbox) { //the reference layer has a bbox property indicating data is constrained via API pull
+            data.TASK_BBOX = refBbox;
         }
 
         return data;

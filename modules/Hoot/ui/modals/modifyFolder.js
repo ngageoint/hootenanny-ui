@@ -25,19 +25,27 @@ export default class ModifyFolder {
         this.form = modifyDatasetForm.call( this );
     }
 
-    //get list of folder ids and all their descendents
+        //get list of folder ids and all their descendents
     getDescendents(ids, folders) {
 
-        let children = folders.filter(f => ids.includes(f.parentId))
-                          .map(f => f.id);
+            let children = folders.filter(f => ids.includes(f.parentId))
+                              .map(f => f.id);
 
-        if (children.length) {
+            if (children.length) {
             return [...new Set(ids.concat(children).concat(this.getDescendents(children, folders)))];
-        } else {
-            return ids;
+            } else {
+                return ids;
+            }
         }
-    }
+        let descendents = getDescendents([d.data.id], Hoot.folders.folderPaths);
 
+        //filter out the folder itself
+        //and all of it's descendents
+        this.folderList = Hoot.folders.folderPaths.filter(f => {
+            return !descendents.includes(f.id);
+        });
+        this.form       = modifyDatasetForm.call( this );
+    }
 
     render() {
         // remove layer name input
@@ -110,7 +118,7 @@ export default class ModifyFolder {
         let folderName = this.folderNameInput.node() ? this.folderNameInput.property( 'value' ) : '',
             pathName   = this.pathNameInput.property( 'value' ),
             isPublic   = this.folderVisibilityInput.property( 'checked' ),
-            folderId   = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
+            folderId   = _get( _find( Hoot.folders.folderPaths, folder => folder.path === pathName ), 'id' ) || 0;
 
         // We do this because if user only changes visibility
         if ( ( folderName !== this.data.name || pathName !== this.pathName ) && Hoot.folders.exists( folderName, folderId ) ) {
@@ -135,34 +143,34 @@ export default class ModifyFolder {
                 mapId: folder.id,
                 inputType: folder.type,
                 modName: folder.name
-            };
+        };
 
             let updateMultiParams = {
                 folderId: folder.id,
-                parentId: folderId
-            };
+            parentId: folderId
+        };
 
             let multiVisibilityParams = {
                 folderId: folder.id,
-                visibility: (isPublic) ? 'public' : 'private'
-            };
+            visibility: (isPublic) ? 'public' : 'private'
+        };
 
             message = 'Successfully ';
 
             if ( folderName !== folder.name ) {
                 requests.push( Hoot.api.modify( modMultiParams ) );
-                message += 'renamed folder';
-            }
+            message += 'renamed folder';
+        }
             if ( pathName !== folder.path ) {
                 requests.push( Hoot.api.updateFolder( updateMultiParams ) );
-                if (message.substr(-1) !== ' ') message += ' & ';
-                message += 'moved folder';
-            }
+            if (message.substr(-1) !== ' ') message += ' & ';
+            message += 'moved folder';
+        }
             if ( folder.public !== isPublic ) {
                 requests.push( Hoot.api.updateVisibility( multiVisibilityParams ) );
-                if (message.substr(-1) !== ' ') message += ' & ';
+            if (message.substr(-1) !== ' ') message += ' & ';
                 message += `changed visibility to ${ multiVisibilityParams.visibility }`;
-            }
+        }
 
         } );
 

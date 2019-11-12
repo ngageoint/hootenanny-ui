@@ -69,9 +69,7 @@ export default class GrailPull {
 
         this.loadingState();
 
-        const allPublicStats = publicStats.split('\n'),
-              publicValuesRow = allPublicStats[ allPublicStats.length - 1 ],
-              publicValues = publicValuesRow.split('\t');
+        const allPublicStats = publicStats.split('\n');
 
         const rowData = [
             { valueColumn: 1, label: 'node' },
@@ -79,16 +77,22 @@ export default class GrailPull {
             { valueColumn: 3, label: 'relation' },
             { valueColumn: 0, label: 'total' }
         ];
-
-        rowData.forEach( row => { row.publicCount = +publicValues[ row.valueColumn ]; } );
+        for (let i = 1; i < allPublicStats.length; i++) {
+            let publicValues = allPublicStats[ i ].split( '\t' );
+            rowData.forEach( row => {
+                row.publicCount  = +publicValues[ row.valueColumn ] + (row.publicCount || 0);
+            } );
+        }
 
         // if there are private overpass stats then add them to our rowData object
         if ( privateStats ) {
-            const allPrivateStats = privateStats.split('\n'),
-                  privateValuesRow = allPrivateStats[ allPrivateStats.length - 1 ],
-                  privateValues = privateValuesRow.split('\t');
-
-            rowData.forEach( row => { row.privateCount = +privateValues[ row.valueColumn ]; } );
+            const allPrivateStats = privateStats.split('\n');
+            for (let i = 1; i < allPrivateStats.length; i++) {
+                let privateValues = allPrivateStats[ i ].split( '\t' );
+                rowData.forEach( row => {
+                    row.privateCount  = +privateValues[ row.valueColumn ] + (row.privateCount || 0);
+                } );
+            }
         }
 
         let statsTable = this.form
@@ -236,7 +240,7 @@ export default class GrailPull {
         }
 
         let folderName = 'grail_' + bbox.replace( /,/g, '_' ),
-            pathId = _get( _find( Hoot.folders._folders, folder => folder.name === folderName ), 'id' );
+            pathId = _get( _find( Hoot.folders.folderPaths, folder => folder.name === folderName ), 'id' );
 
         let folderId;
         if ( !pathId ) {
@@ -285,25 +289,32 @@ export default class GrailPull {
 
                 // add grail pulled layers if nothing is on map
                 if ( !loadedPrimary && !loadedSecondary ) {
+                    let submitPromises = [];
+
                     // Finding layer id by name is fine here because we check for duplicate name in the grail pull
-                    let refParams = {
-                        name: railsParams.input1,
-                        id: Hoot.layers.findBy( 'name', railsParams.input1 ).id,
-                        color: 'violet',
-                        refType: 'primary'
-                    };
+                    if ( referenceCheckbox ) {
+                        let refParams = {
+                            name: railsParams.input1,
+                            id: Hoot.layers.findBy( 'name', railsParams.input1 ).id,
+                            color: 'violet',
+                            refType: 'primary'
+                        };
 
-                    let secParams = {
-                        name: overpassParams.input1,
-                        id: Hoot.layers.findBy( 'name', overpassParams.input1 ).id,
-                        color: 'orange',
-                        refType: 'secondary'
-                    };
+                        submitPromises.push( Hoot.ui.sidebar.forms.reference.submitLayer( refParams ) );
+                    }
 
-                    return Promise.all( [
-                        Hoot.ui.sidebar.forms.reference.submitLayer( refParams ),
-                        Hoot.ui.sidebar.forms.secondary.submitLayer( secParams )
-                    ] );
+                    if ( secondaryCheckbox ) {
+                        let secParams = {
+                            name: overpassParams.input1,
+                            id: Hoot.layers.findBy( 'name', overpassParams.input1 ).id,
+                            color: 'orange',
+                            refType: 'secondary'
+                        };
+
+                        submitPromises.push( Hoot.ui.sidebar.forms.secondary.submitLayer( secParams ) );
+                    }
+
+                    return Promise.all( submitPromises );
                 } else if (this.instance.bboxSelectType === 'secondaryLayerExtent') {
                     // Remove reference layer if there is one
                     if ( loadedPrimary ) {

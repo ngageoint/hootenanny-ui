@@ -13,10 +13,10 @@ import { modifyDatasetForm } from '../../config/domMetadata';
 
 export default class ModifyDataset {
     constructor( datasets ) {
-        this.formType       = datasets.length === 1 ? 'single' : 'multi';
-        this.datasets       = datasets.length === 1 ? datasets[ 0 ] : datasets;
-        this.folderList     = Hoot.folders._folders;
-        this.form           = modifyDatasetForm.call( this );
+        this.formType   = datasets.length === 1 ? 'single' : 'multi';
+        this.datasets   = datasets.length === 1 ? datasets[ 0 ] : datasets;
+        this.folderList = Hoot.folders.folderPaths;
+        this.form       = modifyDatasetForm.call( this );
     }
 
     render() {
@@ -25,10 +25,10 @@ export default class ModifyDataset {
 
         let formTitle;
 
-        if ( this.formType === 'single'  ) {
+        if ( this.formType === 'single' ) {
             formTitle = 'Modify Dataset';
 
-            this.pathName = _get( _find(this.folderList, folder => folder.id === this.datasets.folderId), 'path' );
+            this.pathName = _get( _find( this.folderList, folder => folder.id === this.datasets.folderId ), 'path' );
         } else {
             formTitle = 'Move Datasets';
 
@@ -92,10 +92,10 @@ export default class ModifyDataset {
     }
 
     async handleSubmit() {
-        let pathName          = this.pathNameInput.property( 'value' ),
-            newFolderName     = this.newFolderNameInput.property( 'value' ),
-            layerName         = this.formType === 'single' ? this.layerNameInput.property( 'value' ) : null,
-            pathId            = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' );
+        let pathName      = this.pathNameInput.property( 'value' ),
+            newFolderName = this.newFolderNameInput.property( 'value' ),
+            layerName     = this.formType === 'single' ? this.layerNameInput.property( 'value' ) : null,
+            pathId        = _get( _find( Hoot.folders.folderPaths, folder => folder.path === pathName ), 'id' );
 
         if ( !newFolderName && layerName ) {
             // make sure another layer with the same name doesn't exist at specified path
