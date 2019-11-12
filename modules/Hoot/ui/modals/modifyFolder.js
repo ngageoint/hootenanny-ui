@@ -28,15 +28,15 @@ export default class ModifyFolder {
         //get list of folder ids and all their descendents
     getDescendents(ids, folders) {
 
-            let children = folders.filter(f => ids.includes(f.parentId))
-                              .map(f => f.id);
+        let children = folders.filter(f => ids.includes(f.parentId))
+                          .map(f => f.id);
 
-            if (children.length) {
+        if (children.length) {
             return [...new Set(ids.concat(children).concat(this.getDescendents(children, folders)))];
-            } else {
+        } else {
                 return ids;
-            }
         }
+
         let descendents = getDescendents([d.data.id], Hoot.folders.folderPaths);
 
         //filter out the folder itself
