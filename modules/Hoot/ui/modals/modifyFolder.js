@@ -15,11 +15,12 @@ export default class ModifyFolder {
         this.data = d;
 
         let descendents = this.getDescendents(d.map(f => f.id), Hoot.folders.folderPaths);
+        let parents = [...new Set(d.map(f => f.parentId))];
 
         //filter out the folder itself
         //and all of it's descendents
         this.folderList = Hoot.folders.folderPaths.filter(f => {
-            return !descendents.includes(f.id);
+            return !descendents.includes(f.id) && !parents.includes(f.id);
         });
 
         this.form = modifyDatasetForm.call( this );
@@ -40,24 +41,15 @@ export default class ModifyFolder {
 
 
     render() {
-        // remove layer name input
+        // remove new folder input
         this.form.splice( 2, 1 );
+        this.pathName = _get( _find( this.folderList, folder => folder.id === this.data.parentId ), 'path' );
 
-        this.pathName = _get( _find( this.folderList, folder => folder.id === this.data.parentId ), 'path' ) || '/';
+        if ( this.data.length > 1 ) this.form[0].hidden = true; // hide folder name input for multi folder selection
 
-        // Because dataset and folder share the same settings we had to set a trigger here to tell the formFactory
-        // that we want root in the path dropdown
-        const pathComboboxSettings = _find( this.form, formItem => formItem.itemKey === 'path' );
-        pathComboboxSettings.includeRoot = true;
-
-        if ( this.data.length > 1 ) {
-
-            this.form.splice( 0, 1 );
-
-        }
 
         let metadata = {
-            title: this.data.length > 1 ? 'Move Folders' : 'Modify Folder',
+            title: 'Modify Folder',
             form: this.form,
             button: {
                 text: 'Modify',
@@ -107,10 +99,10 @@ export default class ModifyFolder {
     }
 
     async handleSubmit() {
-        let folderName = this.folderNameInput.node() ? this.folderNameInput.property( 'value' ) : '',
+        let folderName = this.folderNameInput.property( 'value' ),
             pathName   = this.pathNameInput.property( 'value' ),
             isPublic   = this.folderVisibilityInput.property( 'checked' ),
-            folderId   = _get( _find( Hoot.folders._folders, folder => folder.path === pathName ), 'id' ) || 0;
+            folderId   = _get( _find( Hoot.folders.folderPaths, folder => folder.path === pathName ), 'id' ) || 0;
 
         // We do this because if user only changes visibility
         if ( ( folderName !== this.data.name || pathName !== this.pathName ) && Hoot.folders.exists( folderName, folderId ) ) {
@@ -131,18 +123,18 @@ export default class ModifyFolder {
         let message;
 
         this.data.forEach( function(folder) {
-            let modMultiParams = {
+            let modParams = {
                 mapId: folder.id,
                 inputType: folder.type,
                 modName: folder.name
             };
 
-            let updateMultiParams = {
+            let updateParams = {
                 folderId: folder.id,
                 parentId: folderId
             };
 
-            let multiVisibilityParams = {
+            let visibilityParams = {
                 folderId: folder.id,
                 visibility: (isPublic) ? 'public' : 'private'
             };
@@ -150,18 +142,18 @@ export default class ModifyFolder {
             message = 'Successfully ';
 
             if ( folderName !== folder.name ) {
-                requests.push( Hoot.api.modify( modMultiParams ) );
+                requests.push( Hoot.api.modify( modParams ) );
                 message += 'renamed folder';
             }
             if ( pathName !== folder.path ) {
-                requests.push( Hoot.api.updateFolder( updateMultiParams ) );
+                requests.push( Hoot.api.updateFolder( updateParams ) );
                 if (message.substr(-1) !== ' ') message += ' & ';
                 message += 'moved folder';
             }
             if ( folder.public !== isPublic ) {
-                requests.push( Hoot.api.updateVisibility( multiVisibilityParams ) );
+                requests.push( Hoot.api.updateVisibility( visibilityParams ) );
                 if (message.substr(-1) !== ' ') message += ' & ';
-                message += `changed visibility to ${ multiVisibilityParams.visibility }`;
+                message += `changed visibility to ${ visibilityParams.visibility }`;
             }
 
         } );
