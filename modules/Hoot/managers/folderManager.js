@@ -128,6 +128,7 @@ export default class FolderManager {
             {
                 path : '/',
                 id : 0,
+                name: 'root',
                 userId: Hoot.user().id //hack to make root always visible to user
             }
         ].concat(_map( folders, folder => {
