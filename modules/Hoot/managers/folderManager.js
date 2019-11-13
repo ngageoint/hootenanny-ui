@@ -124,7 +124,13 @@ export default class FolderManager {
      * @returns {Array} - updated folder array
      */
     listFolders( folders ) {
-        return _map( folders, folder => {
+        return [
+            {
+                path : '/',
+                id : 0,
+                userId: Hoot.user().id //hack to make root always visible to user
+            }
+        ].concat(_map( folders, folder => {
             if ( folder.parentId === 0 ) {
                 folder.folderPath = '/ ' + folder.name;
             } else {
@@ -148,7 +154,7 @@ export default class FolderManager {
                 public : folder.public,
                 userId: folder.userId
             };
-        } );
+        } ) );
     }
 
     ///**
