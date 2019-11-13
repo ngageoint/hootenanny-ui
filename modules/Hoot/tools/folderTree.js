@@ -660,8 +660,11 @@ export default class FolderTree extends EventEmitter {
 
             // select nodes starting from base position to current position
             _forEach( rangeNodes, node => {
-                //omit non-matching nodes from selection
-                if (this.selectedNodes[0].type === node.data.type) {
+                //omit non-matching nodes
+                if (this.selectedNodes[0].type === node.data.type
+                    //and children if folders
+                    && !(this.selectedNodes.map(n => n.id).includes(node.data.parentId))
+                    ) { //from selection
                     node.data.selected = true;
                     this.selectedNodes.push( node.data );
                     this.lastSelectedRangeNodes.push( node );
