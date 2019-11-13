@@ -587,7 +587,7 @@ export default class FolderTree extends EventEmitter {
             if ( selectedCount === 1 ) {
                 opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
                 opts.splice( 1, 0, {
-                title: `Modify/Move Folder`,
+                title: 'Modify/Move Folder',
                 _icon: 'info',
                 click: 'modifyFolder'
                 } );
