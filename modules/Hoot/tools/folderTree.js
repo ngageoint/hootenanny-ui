@@ -439,22 +439,12 @@ export default class FolderTree extends EventEmitter {
      */
     fillColor( d ) {
         let { data } = d;
+        if ( data.selected )  return '#ffff99';
 
-        if ( data.type === 'folder' ) {
-            if ( data.selected ) {
-                return '#ffff99';
-            }
-            return (data.public) ? '#7092ff' : '#efefef';
-        }
-        else if ( data.type === 'dataset' ) {
-            if ( data.selected ) {
-                return '#ffff99';
-            }
-            return (data.public) ? '#7092ff' : '#efefef';
-        }
-        else {
-            return '#ffffff';
-        }
+        if (data.type) return (data.public) ? '#7092ff' : '#efefef';
+
+        return '#ffffff';
+
     }
 
     /**
@@ -468,15 +458,9 @@ export default class FolderTree extends EventEmitter {
 
         if ( data.selected ) return '#7092ff';
 
-        if ( data.type === 'folder' ) {
-            return (data.public) ? '#ffffff' : '#7092ff';
-        }
-        else if ( data.type === 'dataset' ) {
-            return (data.public) ? '#ffffff' : '#7092ff';
-        }
-        else {
-            return '#ffffff';
-        }
+        if ( data.type ) return (data.public) ? '#ffffff' : '#7092ff';
+
+        return '#ffffff';
     }
 
     /**
@@ -518,7 +502,7 @@ export default class FolderTree extends EventEmitter {
     bindContextMenu( d ) {
         let { data } = d,
             selected = d.data.selected || false;
-        if ( d.data.type === 'dataset' || d.data.type === 'folder' ) {
+        // if ( d.data.type === 'dataset' || d.data.type === 'folder' ) {
             if ( !selected ) {
                 let selectedNodes = _filter( this.root.descendants(), node => node.data.selected );
 
@@ -531,7 +515,7 @@ export default class FolderTree extends EventEmitter {
                 this.selectedNodes    = [ data ];
                 this.lastSelectedNode = data.id;
             }
-        }
+        // }
 
         if ( this.contextMenu ) {
             this.contextMenu.remove();
@@ -540,13 +524,6 @@ export default class FolderTree extends EventEmitter {
         this.openContextMenu( d );
 
         this.update( d );
-    }
-
-    ellipsizedFolderNames( d ) {
-        if ( d.type === 'folder' && d.selected && this.selectedNodes.length > 1 ) {
-            d.name.slice(0, -1);
-            return d.name + '...';
-        }
     }
 
     /**
@@ -610,7 +587,7 @@ export default class FolderTree extends EventEmitter {
             if ( selectedCount === 1 ) {
                 opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
                 opts.splice( 1, 0, {
-                title: `Modify/Move Folder ${ data.name }`,
+                title: `Modify/Move Folder`,
                 _icon: 'info',
                 click: 'modifyFolder'
                 } );
@@ -623,12 +600,12 @@ export default class FolderTree extends EventEmitter {
                      click: 'delete'
                     },
                     {
-                    title: `Move Folders ${ this.ellipsizedFolderNames(data) }`,
+                    title: 'Move Folders',
                     _icon: 'info',
                     click: 'modifyFolder'
                     },
                     {
-                    title: 'Export Data in Folder',
+                    title: 'Export Data in Folders',
                     _icon: 'export',
                      click: 'exportFolder'
                     }
@@ -682,11 +659,8 @@ export default class FolderTree extends EventEmitter {
             selected = data.selected || false,
             isOpen   = data.state === 'open';
 
-        if ( data.type === 'dataset' || data.type === 'folder' && d3.event.ctrlKey ) {
-            if ( data.type === 'folder ') {
-                data.singleFolder = false;
-            }
-            if ( d3.event.metaKey && this.isDatasetTable ) {
+        if ( data.type === 'dataset' || ( data.type === 'folder' && d3.event.ctrlKey ) ) {
+           if ( d3.event.metaKey && this.isDatasetTable ) {
                 data.selected = !data.selected;
                 this.selectedNodes.push( data );
                 this.lastSelectedNode = data.selected ? data.id : null;
@@ -753,7 +727,7 @@ export default class FolderTree extends EventEmitter {
                 this.selectedNodes    = [ data ];
                 this.lastSelectedNode = data.selected ? data.id : null;
             }
-        } else {
+        } else {  // folder click
             if ( isOpen ) {
                 // close folder
                 data.state = 'closed';
