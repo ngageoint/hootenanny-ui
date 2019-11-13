@@ -5,7 +5,7 @@ describe( 'modify folder', function() {
 
     beforeEach(function() {
         // runs before all tests in this file regardless where this line is defined.
-        modifyFolder = new ModifyFolder();
+        modifyFolder = new ModifyFolder([]);
 
         folders = [
             {
