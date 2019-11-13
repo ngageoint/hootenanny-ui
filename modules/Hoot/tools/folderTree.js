@@ -400,13 +400,6 @@ export default class FolderTree extends EventEmitter {
         }
     }
 
-    // wrapText( d, elem ) {
-    //     let parent = elem.node().parentNode.parentNode;
-    //
-    //     //elem.text( d.data.name );
-    //     d3.select( parent ).append( 'title' ).text( d.data.name );
-    // }
-
     updateLastAccessed( node ) {
         let row = d3.select( node.parentNode );
 
@@ -473,20 +466,6 @@ export default class FolderTree extends EventEmitter {
     rectClass( d ) {
         let { data } = d;
 
-        // // set selected layers
-        // if ( data.type === 'dataset' && this.containerId === 'datasets-table' ) {
-        //     if ( data.selected ) {
-        //         if ( this.selectedLayerIDs.indexOf( data.layerId ) === -1 ) {
-        //             this.selectedLayerIDs.push( data.layerId );
-        //         }
-        //     } else {
-        //         let idx = this.selectedLayerIDs.indexOf( data.layerId );
-        //         if ( idx > -1 ) {
-        //             this.selectedLayerIDs.splice( idx, 1 );
-        //         }
-        //     }
-        // }
-
         return data.selected
             ? 'sel'
             : data._children
@@ -502,20 +481,19 @@ export default class FolderTree extends EventEmitter {
     bindContextMenu( d ) {
         let { data } = d,
             selected = d.data.selected || false;
-        // if ( d.data.type === 'dataset' || d.data.type === 'folder' ) {
-            if ( !selected ) {
-                let selectedNodes = _filter( this.root.descendants(), node => node.data.selected );
 
-                // Un-select all other nodes
-                _forEach( selectedNodes, node => {
-                    node.data.selected = false;
-                } );
+        if ( !selected ) {
+            let selectedNodes = _filter( this.root.descendants(), node => node.data.selected );
 
-                data.selected         = true;
-                this.selectedNodes    = [ data ];
-                this.lastSelectedNode = data.id;
-            }
-        // }
+            // Un-select all other nodes
+            _forEach( selectedNodes, node => {
+                node.data.selected = false;
+            } );
+
+            data.selected         = true;
+            this.selectedNodes    = [ data ];
+            this.lastSelectedNode = data.id;
+        }
 
         if ( this.contextMenu ) {
             this.contextMenu.remove();
@@ -591,8 +569,7 @@ export default class FolderTree extends EventEmitter {
                 _icon: 'info',
                 click: 'modifyFolder'
                 } );
-            }
-            else if ( selectedCount > 1 ) {
+            } else if ( selectedCount > 1 ) {
                 opts = [
                     {
                     title: `Delete (${ selectedCount })`,
