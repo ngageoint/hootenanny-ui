@@ -228,11 +228,6 @@ export default class FormFactory {
 
                 return textA < textB ? -1 : textA > textB ? 1 : 0;
             } );
-
-            // This is only for modify folder path
-            if ( data.includeRoot ) {
-                comboData = [ { value: '/', _value: 0 } ].concat(comboData);
-            }
         }
 
         field

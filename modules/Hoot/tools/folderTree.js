@@ -400,13 +400,6 @@ export default class FolderTree extends EventEmitter {
         }
     }
 
-    // wrapText( d, elem ) {
-    //     let parent = elem.node().parentNode.parentNode;
-    //
-    //     //elem.text( d.data.name );
-    //     d3.select( parent ).append( 'title' ).text( d.data.name );
-    // }
-
     updateLastAccessed( node ) {
         let row = d3.select( node.parentNode );
 
@@ -439,19 +432,12 @@ export default class FolderTree extends EventEmitter {
      */
     fillColor( d ) {
         let { data } = d;
+        if ( data.selected )  return '#ffff99';
 
-        if ( data.type === 'folder' ) {
-            return (data.public) ? '#7092ff' : '#efefef';
-        }
-        else if ( data.type === 'dataset' ) {
-            if ( data.selected ) {
-                return '#ffff99';
-            }
-            return (data.public) ? '#7092ff' : '#efefef';
-        }
-        else {
-            return '#ffffff';
-        }
+        if (data.type) return (data.public) ? '#7092ff' : '#efefef';
+
+        return '#ffffff';
+
     }
 
     /**
@@ -465,15 +451,9 @@ export default class FolderTree extends EventEmitter {
 
         if ( data.selected ) return '#7092ff';
 
-        if ( data.type === 'folder' ) {
-            return (data.public) ? '#ffffff' : '#7092ff';
-        }
-        else if ( data.type === 'dataset' ) {
-            return (data.public) ? '#ffffff' : '#7092ff';
-        }
-        else {
-            return '#ffffff';
-        }
+        if ( data.type ) return (data.public) ? '#ffffff' : '#7092ff';
+
+        return '#ffffff';
     }
 
     /**
@@ -485,20 +465,6 @@ export default class FolderTree extends EventEmitter {
      */
     rectClass( d ) {
         let { data } = d;
-
-        // // set selected layers
-        // if ( data.type === 'dataset' && this.containerId === 'datasets-table' ) {
-        //     if ( data.selected ) {
-        //         if ( this.selectedLayerIDs.indexOf( data.layerId ) === -1 ) {
-        //             this.selectedLayerIDs.push( data.layerId );
-        //         }
-        //     } else {
-        //         let idx = this.selectedLayerIDs.indexOf( data.layerId );
-        //         if ( idx > -1 ) {
-        //             this.selectedLayerIDs.splice( idx, 1 );
-        //         }
-        //     }
-        // }
 
         return data.selected
             ? 'sel'
@@ -515,19 +481,18 @@ export default class FolderTree extends EventEmitter {
     bindContextMenu( d ) {
         let { data } = d,
             selected = d.data.selected || false;
-        if ( d.data.type === 'dataset' ) {
-            if ( !selected ) {
-                let selectedNodes = _filter( this.root.descendants(), node => node.data.selected );
 
-                // Un-select all other nodes
-                _forEach( selectedNodes, node => {
-                    node.data.selected = false;
-                } );
+        if ( !selected ) {
+            let selectedNodes = _filter( this.root.descendants(), node => node.data.selected );
 
-                data.selected         = true;
-                this.selectedNodes    = [ data ];
-                this.lastSelectedNode = data.id;
-            }
+            // Un-select all other nodes
+            _forEach( selectedNodes, node => {
+                node.data.selected = false;
+            } );
+
+            data.selected         = true;
+            this.selectedNodes    = [ data ];
+            this.lastSelectedNode = data.id;
         }
 
         if ( this.contextMenu ) {
@@ -548,8 +513,9 @@ export default class FolderTree extends EventEmitter {
         let { data } = d,
             opts;
 
+        const selectedCount = this.selectedNodes.length;
+
         if ( data.type === 'dataset' ) {
-            const selectedCount = this.selectedNodes.length;
 
             opts = [
                 {
@@ -595,12 +561,34 @@ export default class FolderTree extends EventEmitter {
                 }
             }
         } else if ( data.type === 'folder' ) {
-            opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
-            opts.splice( 1, 0, {
-                title: `Modify Folder ${ data.name }`,
+
+            if ( selectedCount === 1 ) {
+                opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
+                opts.splice( 1, 0, {
+                title: 'Modify/Move Folder',
                 _icon: 'info',
                 click: 'modifyFolder'
-            } );
+                } );
+            } else if ( selectedCount > 1 ) {
+                opts = [
+                    {
+                    title: `Delete (${ selectedCount })`,
+                    _icon: 'trash',
+                     click: 'delete'
+                    },
+                    {
+                    title: 'Move Folders',
+                    _icon: 'info',
+                    click: 'modifyFolder'
+                    },
+                    {
+                    title: 'Export Data in Folders',
+                    _icon: 'export',
+                     click: 'exportFolder'
+                    }
+                ];
+            }
+
         }
 
         let body = d3.select( 'body' )
@@ -648,105 +636,112 @@ export default class FolderTree extends EventEmitter {
             selected = data.selected || false,
             isOpen   = data.state === 'open';
 
-        if ( data.type === 'dataset' ) {
-            if ( d3.event.metaKey && this.isDatasetTable ) {
-                data.selected = !data.selected;
-                this.selectedNodes.push( data );
-                this.lastSelectedNode = data.selected ? data.id : null;
+        if ( d3.event.shiftKey && this.lastSelectedNode && this.isDatasetTable ) {
+            let nodes        = _drop( this.nodes, 1 ),
+                basePosition = _findIndex( nodes, node => node.data.id === this.lastSelectedNode ),
+                position     = _findIndex( nodes, node => node.data.id === data.id ),
+                selectBegin  = Math.min( basePosition, position ),
+                selectEnd    = Math.max( basePosition, position ) + 1,
+
+                rangeNodes   = _slice( nodes, selectBegin, selectEnd );
+
+            if ( basePosition !== this.lastBasePosition ) {
+                // user ctrl+clicked on a new location
+                this.lastSelectedRangeNodes = [];
+            } else {
+                // unselect nodes from previous range that don't match the new range
+                let oldNodes = _difference( this.lastSelectedRangeNodes, rangeNodes );
+
+                _forEach( oldNodes, node => {
+                    node.data.selected = false;
+                    _remove( this.selectedNodes, layer => layer.id === node.data.id );
+                } );
             }
-            else if ( d3.event.shiftKey && this.lastSelectedNode && this.isDatasetTable ) {
-                let nodes        = _drop( this.nodes, 1 ),
-                    basePosition = _findIndex( nodes, node => node.data.type === 'dataset' && node.data.id === this.lastSelectedNode ),
-                    position     = _findIndex( nodes, node => node.data.type === 'dataset' && node.data.id === data.id ),
-                    selectBegin  = Math.min( basePosition, position ),
-                    selectEnd    = Math.max( basePosition, position ) + 1,
 
-                    rangeNodes   = _slice( nodes, selectBegin, selectEnd );
-
-                if ( basePosition !== this.lastBasePosition ) {
-                    // user ctrl+clicked on a new location
-                    this.lastSelectedRangeNodes = [];
-                }
-                else {
-                    // unselect nodes from previous range that don't match the new range
-                    let oldNodes = _difference( this.lastSelectedRangeNodes, rangeNodes );
-
-                    _forEach( oldNodes, node => {
-                        node.data.selected = false;
-                        _remove( this.selectedNodes, layer => layer.id === node.data.id );
-                    } );
-                }
-
-                // select nodes starting from base position to current position
-                _forEach( rangeNodes, node => {
+            // select nodes starting from base position to current position
+            _forEach( rangeNodes, node => {
+                //omit non-matching nodes
+                if (this.selectedNodes[0].type === node.data.type
+                    //and children if folders
+                    && !(this.selectedNodes.map(n => n.id).includes(node.data.parentId))
+                    ) { //from selection
                     node.data.selected = true;
                     this.selectedNodes.push( node.data );
                     this.lastSelectedRangeNodes.push( node );
-                } );
-
-                this.selectedNodes    = _uniq( this.selectedNodes );
-                this.lastBasePosition = basePosition;
-            }
-            else if ( d3.event.ctrlKey && this.isDatasetTable ) {
-                data.selected = !data.selected;
-                if (data.selected) {
-                    this.selectedNodes.push( data );
-                } else {
-                    this.selectedNodes = this.selectedNodes.filter(function(d) {
-                        return d.id !== data.id;
-                    });
                 }
+            } );
 
-            }
-            else {
-                // get all currently selected nodes
-                let selectedNodes = _filter( this.root.descendants(), d => d.data.selected );
 
-                // un-select all other nodes
-                _forEach( selectedNodes, node => {
-                    node.data.selected = false;
-                } );
-
-                // if multiple are already selected, keep the target node selected
-                if ( selectedNodes.length > 1 && selected ) {
-                    data.selected = true;
-                } else {
-                    data.selected = !selected;
-                }
-
-                this.selectedNodes    = [ data ];
-                this.lastSelectedNode = data.selected ? data.id : null;
-            }
-        } else { // folder
-            if ( isOpen ) {
-                // close folder
-                data.state = 'closed';
-
-                d3.select( elem.parentNode )
-                    .select( 'i' )
-                    .classed( 'folder', true )
-                    .classed( 'open-folder', false );
-
-                if ( d.children ) {
-                    data._children = d.children;
-                    d.children     = null;
-                    data.selected  = false;
-                }
+            this.selectedNodes    = _uniq( this.selectedNodes );
+            this.lastBasePosition = basePosition;
+        } else if ( d3.event.ctrlKey && this.isDatasetTable ) {
+            data.selected = !data.selected;
+            if (data.selected) {
+                this.selectedNodes.push( data );
+                //filter selected nodes of different type
+                //multiselect must be all folders or all datasets
+                this.selectedNodes = this.selectedNodes.filter(function(d) {
+                    //remove highlighting from non-matching
+                    if (d.type !== data.type) d.selected = false;
+                    //remove node non-matching from selection
+                    return d.type === data.type;
+                });
             } else {
-                // open folder
-                data.state = 'open';
+                this.selectedNodes = this.selectedNodes.filter(function(d) {
+                    return d.id !== data.id;
+                });
+            }
+        } else {
+            // get all currently selected nodes
+            let selectedNodes = _filter( this.root.descendants(), d => d.data.selected );
 
-                d3.select( elem.parentNode )
-                    .select( 'i' )
-                    .classed( 'folder', false )
-                    .classed( 'open-folder', true );
+            // un-select all other nodes
+            _forEach( selectedNodes, node => {
+                node.data.selected = false;
+            } );
 
-                d.children     = data._children || null;
-                data._children = null;
+            // if multiple are already selected, keep the target node selected
+            if ( selectedNodes.length > 1 && selected ) {
+                data.selected = true;
+            } else {
+                data.selected = !selected;
             }
 
-            if ( this.isDatasetTable ) {
-                Hoot.folders.setOpenFolders( data.id, !isOpen );
+            this.selectedNodes    = [ data ];
+            this.lastSelectedNode = data.selected ? data.id : null;
+
+            //also handle open/close folder
+            if (data.type === 'folder') {
+                if ( isOpen ) {
+                    // close folder
+                    data.state = 'closed';
+
+                    d3.select( elem.parentNode )
+                        .select( 'i' )
+                        .classed( 'folder', true )
+                        .classed( 'open-folder', false );
+
+                    if ( d.children ) {
+                        data._children = d.children;
+                        d.children     = null;
+                        data.selected  = false;
+                    }
+                } else {
+                    // open folder
+                    data.state = 'open';
+
+                    d3.select( elem.parentNode )
+                        .select( 'i' )
+                        .classed( 'folder', false )
+                        .classed( 'open-folder', true );
+
+                    d.children     = data._children || null;
+                    data._children = null;
+                }
+
+                if ( this.isDatasetTable && !d3.event.ctrlKey ) {
+                    Hoot.folders.setOpenFolders( data.id, !isOpen );
+                }
             }
         }
 

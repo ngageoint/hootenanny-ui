@@ -12,37 +12,41 @@ import { modifyDatasetForm } from '../../config/domMetadata';
 
 export default class ModifyFolder {
     constructor( d ) {
-        this.data       = d.data;
+        this.data = d;
 
-        //get list of folder ids and all their descendents
-        function getDescendents(ids, folders) {
-            let children = folders.filter(f => ids.includes(f.parentId))
-                              .map(f => f.id);
-            if (children.length) {
-                return [...new Set(ids.concat(children).concat(getDescendents(children, folders)))];
-            } else {
-                return ids;
-            }
-        }
-        let descendents = getDescendents([d.data.id], Hoot.folders.folderPaths);
+        let descendents = this.getDescendents(d.map(f => f.id), Hoot.folders.folderPaths);
+        let parents = [...new Set(d.map(f => f.parentId))];
 
         //filter out the folder itself
         //and all of it's descendents
         this.folderList = Hoot.folders.folderPaths.filter(f => {
-            return !descendents.includes(f.id);
+            return !descendents.includes(f.id) && !parents.includes(f.id);
         });
-        this.form       = modifyDatasetForm.call( this );
+
+        this.form = modifyDatasetForm.call( this );
     }
 
-    render() {
-        // remove layer name input
-        this.form.splice( 2, 1 );
-        this.pathName = _get( _find( this.folderList, folder => folder.id === this.data.parentId ), 'path' ) || '/';
+    //get list of folder ids and all their descendents
+    getDescendents(ids, folders) {
 
-        // Because dataset and folder share the same settings we had to set a trigger here to tell the formFactory
-        // that we want root in the path dropdown
-        const pathComboboxSettings = _find( this.form, formItem => formItem.itemKey === 'path' );
-        pathComboboxSettings.includeRoot = true;
+        let children = folders.filter(f => ids.includes(f.parentId))
+                          .map(f => f.id);
+
+        if (children.length) {
+            return [...new Set(ids.concat(children).concat(this.getDescendents(children, folders)))];
+        } else {
+            return ids;
+        }
+    }
+
+
+    render() {
+        // remove new folder input
+        this.form.splice( 2, 1 );
+        this.pathName = _get( _find( this.folderList, folder => folder.id === this.data.parentId ), 'path' );
+
+        if ( this.data.length > 1 ) this.form[0].hidden = true; // hide folder name input for multi folder selection
+
 
         let metadata = {
             title: 'Modify Folder',
@@ -62,7 +66,7 @@ export default class ModifyFolder {
         this.folderVisibilityInput = this.container.select( '#modifyVisibility' );
         this.submitButton          = this.container.select( '#modifySubmitBtn' );
 
-        this.folderNameInput.property( 'value', this.data.name );
+        this.folderNameInput.property( 'value', this.data[0].name );
         this.pathNameInput.property( 'value', this.pathName );
         this.folderVisibilityInput.property( 'checked', this.data.public );
         this.submitButton.node().disabled = false;
@@ -115,41 +119,44 @@ export default class ModifyFolder {
             return false;
         }
 
-        let modParams = {
-            mapId: this.data.id,
-            inputType: this.data.type,
-            modName: folderName
-        };
-
-        let updateParams = {
-            folderId: this.data.id,
-            parentId: folderId
-        };
-
-        let visibilityParams = {
-            folderId: this.data.id,
-            visibility: (isPublic) ? 'public' : 'private'
-        };
-
         let requests = [];
-        let message = 'Successfully ';
+        let message;
 
-        if ( folderName !== this.data.name ) {
-            requests.push( Hoot.api.modify( modParams ) );
-            message += 'renamed folder';
-        }
+        this.data.forEach( function(folder) {
+            let modParams = {
+                mapId: folder.id,
+                inputType: folder.type,
+                modName: folder.name
+            };
 
-        if ( pathName !== this.pathName ) {
-            requests.push( Hoot.api.updateFolder( updateParams ) );
-            if (message.substr(-1) !== ' ') message += ' & ';
-            message += 'moved folder';
-        }
+            let updateParams = {
+                folderId: folder.id,
+                parentId: folderId
+            };
 
-        if ( this.data.public !== isPublic ) {
-            requests.push( Hoot.api.updateVisibility( visibilityParams ) );
-            if (message.substr(-1) !== ' ') message += ' & ';
-            message += `changed visibility to ${ visibilityParams.visibility }`;
-        }
+            let visibilityParams = {
+                folderId: folder.id,
+                visibility: (isPublic) ? 'public' : 'private'
+            };
+
+            message = 'Successfully ';
+
+            if ( folderName !== folder.name ) {
+                requests.push( Hoot.api.modify( modParams ) );
+                message += 'renamed folder';
+            }
+            if ( pathName !== folder.path ) {
+                requests.push( Hoot.api.updateFolder( updateParams ) );
+                if (message.substr(-1) !== ' ') message += ' & ';
+                message += 'moved folder';
+            }
+            if ( folder.public !== isPublic ) {
+                requests.push( Hoot.api.updateVisibility( visibilityParams ) );
+                if (message.substr(-1) !== ' ') message += ' & ';
+                message += `changed visibility to ${ visibilityParams.visibility }`;
+            }
+
+        } );
 
         this.processRequest = Promise.all(requests)
             .then( () => Hoot.folders.refreshAll() )
