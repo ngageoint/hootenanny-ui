@@ -554,7 +554,7 @@ module.exports = () => {
             } );
         } );
 
-        describe( 'move multiple folders', () => {
+        describe( 'move multiple folders', async () => {
             let moveMultiple;
 
             it( 'opens move multiple modal', () => {
@@ -595,7 +595,7 @@ module.exports = () => {
 
             });
 
-            it( 'moves selected folders into a new folder', () => {
+            it( 'moves selected folders into a new folder', async () => {
 
                 let pathNameInput = moveMultiple.pathNameInput,
                     submitButton  = moveMultiple.submitButton,
