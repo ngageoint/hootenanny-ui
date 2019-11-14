@@ -193,7 +193,7 @@ export default class ClipDataset {
             let row         = d3.select( `#row-${ mapId }` ),
                 datasetName = row.select( '.datasetName' ),
                 outputName  = row.select( '.outputName' ),
-                folderId    = row.select( '.outputPath').property( '_value' );
+                folderId    = Hoot.folders.findBy( 'path', row.select( '.outputPath' ).property( 'value' ) ).id;
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = Hoot.layers.checkLayerName(outputName.property( 'value' ) || outputName.attr( 'placeholder' ));
@@ -232,6 +232,7 @@ export default class ClipDataset {
                 .then( resp => {
                     if (resp.data && resp.data.status !== 'cancelled') {
                         Hoot.folders.refreshDatasets();
+                        Hoot.folders.refreshAll();
                     }
 
                     return resp;
