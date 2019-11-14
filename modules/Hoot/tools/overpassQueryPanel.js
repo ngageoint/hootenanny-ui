@@ -132,45 +132,50 @@ export default class OverpassQueryPanel {
     }
 
     buildQueryOptions() {
-        const options = [ 'Buildings', 'Highways' ];
+        const options = [
+            { label: 'Buildings', searchTerm: 'building' },
+            { label: 'Highways', searchTerm: 'highway' }
+        ];
 
         this.queryOptions = this.overpassQueryContainer.append( 'div' )
             .classed( 'queryBuilder hidden', true )
             .text( 'Build query options' );
 
-        options.forEach( option => {
-            this.queryOptions.append( 'label' )
-                .text( option )
+        this.queryOptions.selectAll( 'label' )
+            .data( options )
+            .enter()
+            .append( 'label' )
+            .text( data => data.label )
                 .append( 'input' )
-                .attr( 'id', option )
                 .attr( 'type', 'checkbox' )
                 .on( 'click', () => {
                     this.queryBuilder();
-                } );
-        } );
-
+            } );
     }
 
     queryBuilder() {
-        let queryString = '[out:json][bbox:{{bbox}}];\n' +
+        const checkedInput = this.queryOptions.selectAll( 'input' )
+            .filter( function() {
+                return d3.select( this ).property( 'checked' ) === true;
+            });
+
+        let queryString = '';
+
+        if ( checkedInput.size() !== 0 ) {
+            queryString = '[out:json][bbox:{{bbox}}];\n' +
             '(\n';
 
-        if ( this.queryOptions.select( '#Buildings' ).property( 'checked' ) ) {
-            queryString += 'node["building"]({{bbox}});\n' +
-                'way["building"]({{bbox}});\n' +
-                'relation["building"]({{bbox}});\n';
-        }
+            checkedInput.each( option => {
+                queryString += `node["${ option.searchTerm }"]({{bbox}});\n`+
+                    `way["${ option.searchTerm }"]({{bbox}});\n` +
+                    `relation["${ option.searchTerm }"]({{bbox}});\n`;
+            } );
 
-        if ( this.queryOptions.select( '#Highways' ).property( 'checked' ) ) {
-            queryString += 'node["highway"]({{bbox}});\n' +
-                'way["highway"]({{bbox}});\n' +
-                'relation["highway"]({{bbox}});\n';
+            // Close out and recurse down
+            queryString += ');\n'+
+                '(._;>;);\n' +
+                'out meta;';
         }
-
-        // Close out and recurse down
-        queryString += ');\n'+
-            '(._;>;);\n' +
-            'out meta;';
 
         this.overpassQueryContainer.select( 'textarea' ).property( 'value', queryString );
     }
