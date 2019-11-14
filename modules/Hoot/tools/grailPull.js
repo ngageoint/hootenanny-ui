@@ -69,24 +69,20 @@ export default class GrailPull {
 
         this.loadingState();
 
-        const publicValuesRow = publicStats.split('\n')[1],
-              publicValues = publicValuesRow.split('\t');
-
+        // Need this object to maintain row order
         const rowData = [
-            { valueColumn: 1, label: 'node' },
-            { valueColumn: 2, label: 'way' },
-            { valueColumn: 3, label: 'relation' },
-            { valueColumn: 0, label: 'total' }
+            { label: 'node' },
+            { label: 'way' },
+            { label: 'relation' },
+            { label: 'total' }
         ];
 
-        rowData.forEach( row => { row.publicCount  = +publicValues[ row.valueColumn ]; } );
+        if ( publicStats ) {
+            rowData.forEach( row => { row.publicCount  = publicStats[ row.label ]; } );
+        }
 
-        // if there are private overpass stats then add them to our rowData object
         if ( privateStats ) {
-            const privateValuesRow = privateStats.split('\n')[1],
-                  privateValues = privateValuesRow.split('\t');
-
-            rowData.forEach( row => { row.privateCount  = +privateValues[ row.valueColumn ]; } );
+            rowData.forEach( row => { row.privateCount  = privateStats[ row.label ]; } );
         }
 
         let statsTable = this.form
