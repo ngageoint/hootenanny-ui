@@ -554,6 +554,76 @@ module.exports = () => {
             } );
         } );
 
+        describe( 'move multiple folders', async () => {
+            let moveMultiple;
+
+            it( 'opens move multiple modal', () => {
+                table.select( 'g[data-name="UnitTestLayer0"]' ).node().dispatchEvent( contextClick );
+                table.select( 'g[data-name="UnitTestLayer1"]' ).node().dispatchEvent( contextClick );
+
+                d3.select( '.context-menu' )
+                    .select( 'li:nth-child(4)' )
+                    .dispatch( 'click' );
+
+                d3.select( 'body' )
+                    .dispatch( 'click' );
+
+                    moveMultiple = datasetsPanel.modifyLayerModal;
+
+                let form           = d3.select( '#modify-folder-form' ),
+                    layerNameInput = moveMultiple.layerNameInput,
+                    pathNameInput  = moveMultiple.pathNameInput;
+
+                expect( form.size() ).to.equal( 1 );
+                expect( form.select( '.modal-header h3' ).text() ).to.equal( 'Move Folders' );
+                expect( form.selectAll( '.hoot-form-field' ).size() ).to.equal( 1 );
+                expect( layerNameInput.property( 'value' ) ).to.equal( 'UnitTestLayer0' );
+                expect( pathNameInput.property( 'value' ) ).to.equal( 'root' );
+            } );
+
+            it( 'confirms no field available to change folder name', () => {
+                let layerNameInput = moveMultiple.layerNameInput,
+                    submitButton   = moveMultiple.submitButton;
+
+                layerNameInput
+                    .property( 'value', '' )
+                    .dispatch( 'keyup' );
+
+                expect( layerNameInput.classed( 'invalid' ) ).to.be.true;
+                expect( submitButton.property( 'disabled' ) ).to.be.false;
+
+
+            });
+
+            it( 'moves selected folders into a new folder', async () => {
+
+                let pathNameInput = moveMultiple.pathNameInput,
+                    submitButton  = moveMultiple.submitButton,
+                    folderNames   = [
+                        'UnitTestFolder1',
+                        'UnitTestFolder2'
+                    ];
+                pathNameInput
+                    .property( 'value', 'UnitTestFolder' )
+                    .dispatch( 'change' );
+
+                submitButton.dispatch( 'click' );
+
+                await moveMultiple.processRequest;
+
+                expect( d3.select( '#modify-folder-form' ) ).size().to.equal( 0 );
+                expect( datasetPanel.moveMultiple ).to.be.undefined;
+
+                await Promise.all( _.map( folderNames, name => {
+                    let folderId   = _.get( Hoot.folders.fnidBy( 'name', name ), 'folderId' ),
+                        folderName = _.get( Hoot.folders.findBy( 'id', folderId ), 'name' );
+
+                    expect( folderName ).to.equal( 'UnitTestFolder' );
+                }))
+
+            });
+        });
+
         describe( 'item delete', () => {
             it( 'shows delete confirmation', () => {
                 ensureFolderOpen( 'UnitTestFolder' );
