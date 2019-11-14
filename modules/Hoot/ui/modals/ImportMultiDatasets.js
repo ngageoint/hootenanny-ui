@@ -345,7 +345,7 @@ export default class ImportMultiDatasets {
 
         if ( newFolderName ) {
             folderId = (await Hoot.folders.addFolder( pathName, newFolderName )).folderId;
-        } else if ( !folderId ) {
+        } else if ( pathId ) {
             folderId = pathId;
         } else {
             Hoot.message.alert( { message: 'Need to specify a path or enter name for new folder!', type: 'error' } );
