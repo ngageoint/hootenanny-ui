@@ -387,7 +387,9 @@ export default class ImportMultiDatasets {
                         return fName === name;
                     } );
 
-                    name = name + '_' + customSuffix;
+                    if ( customSuffix ) {
+                        name = name + '_' + customSuffix;
+                    }
                 }
 
                 let params = {
