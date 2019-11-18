@@ -202,13 +202,19 @@ export function coreHistory(context) {
         undo: function() {
             d3_select(document).interrupt('history.perform');
 
+            var getMergeButton = d3.select( '.action-buttons .merge' );
+
             var previous = _stack[_index].graph;
             while (_index > 0) {
                 _index--;
                 if (_stack[_index].annotation) break;
             }
-
             dispatch.call('undone', this, _stack[_index]);
+
+            if ( getMergeButton.classed( 'hidden', true )  && Object.keys( previous.entities ).length === 1 ) {
+                getMergeButton.classed( 'hidden', false );
+            }
+
             return change(previous);
         },
 
@@ -220,6 +226,7 @@ export function coreHistory(context) {
             var previous = _stack[_index].graph;
             var tryIndex = _index;
             while (tryIndex < _stack.length - 1) {
+
                 tryIndex++;
                 if (_stack[tryIndex].annotation) {
                     _index = tryIndex;
