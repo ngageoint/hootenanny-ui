@@ -209,6 +209,17 @@ export function coreHistory(context) {
             }
 
             dispatch.call('undone', this, _stack[_index]);
+
+            let hasChanges = Hoot.context.history().hasChanges();
+
+            if ( hasChanges ) {
+                let message = 'Please resolve or undo the current feature changes before proceeding to the next review.',
+                type    = 'warn';
+
+            Hoot.message.alert( { message, type } );
+            return;
+            }
+
             return change(previous);
         },
 
