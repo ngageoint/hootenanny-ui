@@ -290,10 +290,11 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getJobsHistory() {
+    getJobsHistory(p) {
         const params = {
             path: '/jobs/history',
-            method: 'GET'
+            method: 'GET',
+            params: p
         };
 
         return this.request( params )

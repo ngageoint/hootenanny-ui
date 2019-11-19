@@ -21,6 +21,14 @@ export default class Jobs extends Tab {
         this.id   = 'util-jobs';
 
         this.privileges = Hoot.user().privileges;
+
+        this.params = {
+            sort: '',
+            offset: '',
+            limit: '',
+            type: '',
+            status: ''
+        }
     }
 
     render() {
@@ -60,7 +68,7 @@ export default class Jobs extends Tab {
 
     async loadJobs() {
         let jobsRunning = await Hoot.api.getJobsRunning();
-        let jobsHistory = await Hoot.api.getJobsHistory();
+        let jobsHistory = await Hoot.api.getJobsHistory(this.params);
         await Hoot.layers.refreshLayers();
         this.populateJobsHistory( jobsHistory );
         this.populateJobsRunning( jobsRunning );
@@ -288,20 +296,48 @@ export default class Jobs extends Tab {
 
         let thead = tableEnter
             .append('thead');
-        thead.selectAll('tr')
+        let th = thead.selectAll('tr')
             .data([0])
             .enter().append('tr')
             .selectAll('th')
             .data([
-                'Job Type',
-                'Output',
-                'Status',
-                'Started',
-                'Duration',
-                'Actions'
+                {label: 'Job Type', sort: 'type'},
+                {label: 'Output'},
+                {label: 'Status', sort: 'status'},
+                {label: 'Started', sort: 'start'},
+                {label: 'Duration', sort: 'duration'},
+                {label: 'Actions'}
                 ])
             .enter().append('th')
-            .text(d => d);
+            .classed('sort', d => d.sort)
+            .on('click', d => {
+                let dir = this.params.sort.slice(0,1),
+                    col = this.params.sort.slice(1),
+                    newSort;
+
+                if (col === d.sort) {
+                    newSort = ((dir === '+') ? '-' : '+') + col;
+                } else {
+                    newSort = '-' + d.sort;
+                }
+
+                this.params.sort = newSort;
+            });
+
+        th.append('span')
+            .text(d => d.label);
+        th.append('i')
+            .classed( 'sort material-icons', true );
+
+        table.selectAll('i.sort').text(d => {
+                let dir = this.params.sort.slice(0,1),
+                    col = this.params.sort.slice(1);
+
+                if (col === d.sort) {
+                    return ((dir === '+') ? 'arrow_drop_up' : 'arrow_drop_down');
+                }
+                return '';
+            });
 
         table = table.merge(tableEnter);
 

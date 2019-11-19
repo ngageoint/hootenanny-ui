@@ -47,9 +47,17 @@ h3.jobs-history {
         display: flex;
         align-items: baseline;
     }
+}
 
-    i {
-        vertical-align: bottom;
-        cursor: pointer;
+th.sort {
+    cursor: pointer;
+
+    span {
+        cursor:pointer;
     }
+}
+
+.jobs-item i, i.sort {
+    vertical-align: bottom;
+    cursor: pointer;
 }
