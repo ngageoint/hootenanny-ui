@@ -1,4 +1,5 @@
 import Tab            from './tab';
+import Paging         from './paging';
 import ProgressBar    from 'progressbar.js';
 import DifferentialStats from '../modals/differentialStats';
 import JobCommandInfo from '../modals/jobCommandInfo';
@@ -23,12 +24,23 @@ export default class Jobs extends Tab {
         this.privileges = Hoot.user().privileges;
 
         this.params = {
-            sort: '',
-            offset: '',
-            limit: '',
-            type: '',
-            status: ''
+            sort: null,
+            offset: null,
+            limit: 25,
+            type: null,
+            status: null
         }
+
+        this.paging = new Paging(this);
+    }
+
+    setPage(p) {
+        this.params.offset = (p - 1) * this.params.limit;
+        this.loadJobs();
+    }
+
+    getPages() {
+        return Math.round(this.total / this.params.limit);
     }
 
     render() {
@@ -43,7 +55,7 @@ export default class Jobs extends Tab {
 
     activate() {
         this.loadJobs();
-        this.poller = window.setInterval( this.loadJobs.bind(this), 5000 );
+        this.poller = window.setInterval( this.loadJobs.bind(this), 50000 );
     }
 
     deactivate() {
@@ -57,10 +69,13 @@ export default class Jobs extends Tab {
         this.jobsRunningTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-running keyline-all fill-white', true );
-        this.panelWrapper
+        let pager = this.panelWrapper
             .append( 'h3' )
             .classed( 'jobs-history', true )
-            .text( 'Jobs History' );
+            .text( 'Jobs History' )
+            .append('div')
+            .classed('fr', true);
+        this.paging.render(pager);
         this.jobsHistoryTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-history keyline-all fill-white', true );
@@ -70,7 +85,9 @@ export default class Jobs extends Tab {
         let jobsRunning = await Hoot.api.getJobsRunning();
         let jobsHistory = await Hoot.api.getJobsHistory(this.params);
         await Hoot.layers.refreshLayers();
-        this.populateJobsHistory( jobsHistory );
+        this.total = jobsHistory.total;
+        this.paging.updatePages();
+        this.populateJobsHistory( jobsHistory.jobs );
         this.populateJobsRunning( jobsRunning );
     }
 
@@ -307,12 +324,12 @@ export default class Jobs extends Tab {
                 {label: 'Started', sort: 'start'},
                 {label: 'Duration', sort: 'duration'},
                 {label: 'Actions'}
-                ])
+            ])
             .enter().append('th')
             .classed('sort', d => d.sort)
             .on('click', d => {
-                let dir = this.params.sort.slice(0,1),
-                    col = this.params.sort.slice(1),
+                let dir = (this.params.sort || '').slice(0,1),
+                    col = (this.params.sort || '').slice(1),
                     newSort;
 
                 if (col === d.sort) {
@@ -322,6 +339,7 @@ export default class Jobs extends Tab {
                 }
 
                 this.params.sort = newSort;
+                this.loadJobs();
             });
 
         th.append('span')
@@ -330,8 +348,8 @@ export default class Jobs extends Tab {
             .classed( 'sort material-icons', true );
 
         table.selectAll('i.sort').text(d => {
-                let dir = this.params.sort.slice(0,1),
-                    col = this.params.sort.slice(1);
+                let dir = (this.params.sort || '').slice(0,1),
+                    col = (this.params.sort || '').slice(1);
 
                 if (col === d.sort) {
                     return ((dir === '+') ? 'arrow_drop_up' : 'arrow_drop_down');
@@ -350,7 +368,7 @@ export default class Jobs extends Tab {
 
         let rows = tbody
             .selectAll( 'tr.jobs-item' )
-            .data( jobs, d => d.jobId );
+            .data( jobs );
 
         rows.exit().remove();
 
