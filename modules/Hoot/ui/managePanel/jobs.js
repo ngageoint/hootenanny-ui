@@ -32,15 +32,6 @@ export default class Jobs extends Tab {
             status: null
         }
 
-        this.filters = [
-            {
-                label: 'Jobs Per Page',
-                name: 'jobsPerPage',
-                readonly: 'readonly',
-                options: [ 25, 50, 100 ]
-            }
-        ];
-
         this.filtering = new Filtering(this);
         this.paging = new Paging(this);
 
@@ -69,6 +60,11 @@ export default class Jobs extends Tab {
             jobType: this.jobTypeIcon,
             status: this.statusIcon
         };
+    }
+
+    setLimit(limit) {
+        this.params.limit = limit;
+        this.loadJobs();
     }
 
     setFilter(column, values) {
@@ -415,7 +411,7 @@ export default class Jobs extends Tab {
 
                 //Job Type
                 props.push({
-                    i: [{icon: this[getJobTypeIcon](d.jobType), action: () => {} }],
+                    i: [{icon: this[getJobTypeIcon](d.jobType)}],
                     span: [{text: d.jobType.toUpperCase()}]
                 });
 
@@ -652,6 +648,7 @@ export default class Jobs extends Tab {
         i.exit().remove();
         i.enter().insert('i', 'span')
             .classed( 'material-icons', true )
+            .classed( 'action', d => d.action)
             .merge(i)
             .text( d => d.icon )
             .attr('title', d => d.title )

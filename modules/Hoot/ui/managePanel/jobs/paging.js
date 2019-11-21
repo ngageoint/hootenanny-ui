@@ -1,3 +1,5 @@
+import { d3combobox } from '../../../../lib/hoot/d3.combobox';
+
 export default class Paging {
     constructor(container) {
         this.container = container
@@ -45,7 +47,48 @@ export default class Paging {
             .on('click', () => this.forwardPage(that));
 
         this.ofElement = selection.append('span')
-            .on('click', () => {
+            .classed('pages', true)
+            .on('contextmenu', () => {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+
+                function bindSingleBodyClick() {
+                    d3.select( 'body' ).on( 'click', () => {
+                        d3.selectAll('div.limit-value').remove();
+                        //send updated filter to container
+                        updateLimit();
+                        d3.select( 'body' ).on('click', null);
+                    });
+                }
+
+                function updateLimit() {
+                    that.container.setLimit(pagesize.property('value'));
+                }
+
+                bindSingleBodyClick();
+
+                let filter = d3.select('body')
+                    .append('div')
+                    .classed('limit-value', true)
+                    .style('top', d3.event.pageY + 'px')
+                    .style('right', (window.innerWidth - d3.event.pageX) + 'px')
+                    .on('click', () => {
+                        d3.event.stopPropagation();
+                    });
+
+                filter.append('h3')
+                    .text('Page Size');
+
+                let combobox = d3combobox()
+                    .data([25, 50, 100].map(d => {
+                        return {value: d, title: d};
+                    }));
+
+                let pagesize = filter.append('input')
+                    .attr('type', 'number')
+                    .property('value', this.container.params.limit)
+                    .call( combobox );
+
 
             });
 
