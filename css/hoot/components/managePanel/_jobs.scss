@@ -61,3 +61,42 @@ th.sort {
     vertical-align: bottom;
     cursor: pointer;
 }
+
+.filter-container {
+    white-space: nowrap;
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 15px;
+
+    .filter-control {
+        margin-right: 20px;
+    }
+
+    .reset-button {
+        position: relative;
+        width: 30px;
+        height: 30px;
+        border-radius: 100%;
+    }
+}
+
+.filter-column {
+    padding: 10px;
+    z-index: 15;
+    display: block;
+    position: absolute;
+    background-color: white;
+    border-radius: 4px;
+
+    .filter-value {
+        display: flex;
+    }
+
+    i {
+        vertical-align: bottom;
+    }
+}
+
+.filter-column:hover {
+    background-color: #f6f6f6
+}

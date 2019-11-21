@@ -1,5 +1,6 @@
 import Tab            from './tab';
-import Paging         from './paging';
+import Filtering      from './jobs/filtering';
+import Paging         from './jobs/paging';
 import ProgressBar    from 'progressbar.js';
 import DifferentialStats from '../modals/differentialStats';
 import JobCommandInfo from '../modals/jobCommandInfo';
@@ -27,11 +28,52 @@ export default class Jobs extends Tab {
             sort: null,
             offset: null,
             limit: 25,
-            type: null,
+            jobType: null,
             status: null
         }
 
+        this.filters = [
+            {
+                label: 'Jobs Per Page',
+                name: 'jobsPerPage',
+                readonly: 'readonly',
+                options: [ 25, 50, 100 ]
+            }
+        ];
+
+        this.filtering = new Filtering(this);
         this.paging = new Paging(this);
+
+        this.jobTypeIcon = {
+            import: 'publish',
+            export: 'get_app',
+            conflate: 'layers',
+            clip: 'crop',
+            attributes: 'list_alt',
+            basemap: 'map',
+            delete: 'delete',
+            derive_changeset: 'change_history',
+            upload_changeset: 'cloud_upload',
+            unknown: 'help'
+        };
+
+        this.statusIcon = {
+            running: 'autorenew',
+            complete: 'check_circle_outline',
+            failed: 'warning',
+            cancelled: 'cancel',
+            unknown: 'help'
+        };
+
+        this.columnFilters = {
+            jobType: this.jobTypeIcon,
+            status: this.statusIcon
+        };
+    }
+
+    setFilter(column, values) {
+        this.params[column] = values;
+        this.loadJobs();
     }
 
     setPage(p) {
@@ -40,7 +82,7 @@ export default class Jobs extends Tab {
     }
 
     getPages() {
-        return Math.round(this.total / this.params.limit);
+        return Math.ceil(this.total / this.params.limit) || 1; //still need page 1 for zero results
     }
 
     render() {
@@ -69,11 +111,11 @@ export default class Jobs extends Tab {
         this.jobsRunningTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-running keyline-all fill-white', true );
-        let pager = this.panelWrapper
+        let header = this.panelWrapper
             .append( 'h3' )
             .classed( 'jobs-history', true )
-            .text( 'Jobs History' )
-            .append('div')
+            .text( 'Jobs History' );
+        let pager = header.append('div')
             .classed('fr', true);
         this.paging.render(pager);
         this.jobsHistoryTable = this.panelWrapper
@@ -92,41 +134,7 @@ export default class Jobs extends Tab {
     }
 
     [getJobTypeIcon](type) {
-        let typeIcon;
-        switch (type) {
-            case 'import':
-                typeIcon = 'publish';
-                break;
-            case 'export':
-                typeIcon = 'get_app';
-                break;
-            case 'conflate':
-                typeIcon = 'layers';
-                break;
-            case 'clip':
-                typeIcon = 'crop';
-                break;
-            case 'attributes':
-                typeIcon = 'list_alt';
-                break;
-            case 'basemap':
-                typeIcon = 'map';
-                break;
-            case 'delete':
-                typeIcon = 'delete';
-                break;
-            case 'derive_changeset':
-                typeIcon = 'change_history';
-                break;
-            case 'upload_changeset':
-                typeIcon = 'cloud_upload';
-                break;
-            case 'unknown':
-            default:
-                typeIcon = 'help';
-                break;
-        }
-        return typeIcon;
+        return this.jobTypeIcon[type] || 'help';
     }
 
     populateJobsRunning( jobs ) {
@@ -318,9 +326,9 @@ export default class Jobs extends Tab {
             .enter().append('tr')
             .selectAll('th')
             .data([
-                {label: 'Job Type', sort: 'type'},
+                {column: 'jobType', label: 'Job Type', sort: 'type'},
                 {label: 'Output'},
-                {label: 'Status', sort: 'status'},
+                {column: 'status', label: 'Status', sort: 'status'},
                 {label: 'Started', sort: 'start'},
                 {label: 'Duration', sort: 'duration'},
                 {label: 'Actions'}
@@ -340,6 +348,22 @@ export default class Jobs extends Tab {
 
                 this.params.sort = newSort;
                 this.loadJobs();
+            })
+            .on('contextmenu', d => {
+                d3.event.stopPropagation();
+                d3.event.preventDefault();
+
+                if (this.columnFilters[d.column]) {
+                    let filterData = {
+                        label: d.column[0].toUpperCase() + d.column.slice(1).split(/(?=[A-Z])/).join(' '),
+                        column: d.column,
+                        selected: this.params[d.column],
+                        values: d3.entries(this.columnFilters[d.column])
+                    };
+
+                    this.filtering.render(filterData);
+                }
+
             });
 
         th.append('span')
@@ -409,25 +433,7 @@ export default class Jobs extends Tab {
                 }
 
                 //Status
-                let statusIcon;
-                switch (d.status) {
-                    case 'running':
-                        statusIcon = 'autorenew';
-                        break;
-                    case 'complete':
-                        statusIcon = 'check_circle_outline';
-                        break;
-                    case 'failed':
-                        statusIcon = 'warning';
-                        break;
-                    case 'cancelled':
-                        statusIcon = 'cancel';
-                        break;
-                    case 'unknown':
-                    default:
-                        statusIcon = 'help';
-                        break;
-                }
+                let statusIcon = this.statusIcon[d.status] || 'help';
 
                 if (d.status === 'failed') {
                     props.push({
