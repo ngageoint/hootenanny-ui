@@ -1,6 +1,6 @@
 export default class Filtering {
     constructor(container) {
-        this.container = container
+        this.container = container;
 
     }
 

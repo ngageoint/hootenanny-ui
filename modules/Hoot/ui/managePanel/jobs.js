@@ -30,7 +30,7 @@ export default class Jobs extends Tab {
             limit: 25,
             jobType: null,
             status: null
-        }
+        };
 
         this.filtering = new Filtering(this);
         this.paging = new Paging(this);
