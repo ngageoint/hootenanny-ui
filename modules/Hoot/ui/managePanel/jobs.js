@@ -331,6 +331,7 @@ export default class Jobs extends Tab {
             ])
             .enter().append('th')
             .classed('sort', d => d.sort)
+            .classed('filter', d => this.columnFilters[d.column])
             .on('click', d => {
                 let dir = (this.params.sort || '').slice(0,1),
                     col = (this.params.sort || '').slice(1),

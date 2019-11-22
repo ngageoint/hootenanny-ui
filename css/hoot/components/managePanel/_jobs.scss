@@ -21,6 +21,10 @@
     }
 
     th.sort {
+        cursor: pointer;
+    }
+
+    th.filter {
         cursor: context-menu;
     }
 
