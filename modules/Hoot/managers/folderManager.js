@@ -79,7 +79,7 @@ export default class FolderManager {
     }
 
     filterVisible(f) {
-        return JSON.parse(Hoot.context.storage( 'publicVisibility' )) || f.userId === Hoot.user().id;
+        return f.id !== 0  && (JSON.parse(Hoot.context.storage( 'publicVisibility' )) ||  f.userId === Hoot.user().id);
     }
 
     /**
