@@ -311,6 +311,7 @@ export default class ImportMultiDatasets {
 
             transVal      = this.schemaInput.property( 'value' ),
             typeVal       = this.typeInput.property( 'value' ),
+            customSuffix  = this.customSuffixInput.property( 'value' ),
 
             transCombo    = this.schemaInput.datum(),
             typeCombo     = this.typeInput.datum(),
@@ -352,6 +353,10 @@ export default class ImportMultiDatasets {
             return;
         }
 
+        if ( customSuffix ) {
+            typeVal = '_' + customSuffix;
+        }
+
         let fileNames = [];
 
         //if import as single layer, use new layer name
@@ -381,6 +386,10 @@ export default class ImportMultiDatasets {
 
                         return fName === name;
                     } );
+
+                    if ( customSuffix ) {
+                        name = name + '_' + customSuffix;
+                    }
                 }
 
                 let params = {
