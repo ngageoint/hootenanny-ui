@@ -133,7 +133,7 @@ export default class ClipDataset {
                             .concat( d.combobox.filter( function( l ) { return l.id !== folderId; } ).sort() );
                         that.createFolderListCombo( d3.select( this ), d );
                         d3.select( this ).property( 'value', Hoot.folders.findBy( 'id', folderId).name );
-                        d3.select( this ).property( '_value', Hoot.folders.findBy( 'id', folderId ).id );
+                        d3.select( this ).attr( '_value', Hoot.folders.findBy( 'id', folderId ).id );
                     }
                 } );
         } );
@@ -193,7 +193,7 @@ export default class ClipDataset {
             let row         = d3.select( `#row-${ mapId }` ),
                 datasetName = row.select( '.datasetName' ),
                 outputName  = row.select( '.outputName' ),
-                folderId    = row.select( '.outputPath').property( '_value' );
+                folderId    = row.select( '.outputPath').attr('_value');
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = Hoot.layers.checkLayerName(outputName.property( 'value' ) || outputName.attr( 'placeholder' ));
@@ -231,20 +231,11 @@ export default class ClipDataset {
                 } )
                 .then( resp => {
                     if (resp.data && resp.data.status !== 'cancelled') {
-                        Hoot.folders.refreshDatasets();
+                        Hoot.folders.refreshAll();
+                        Hoot.events.emit( 'render-dataset-table' );
                     }
 
                     return resp;
-                } )
-                .then( resp => {
-                    if (resp.data && resp.data.status !== 'cancelled') {
-                        Hoot.folders.refreshLinks();
-                    }
-
-                    return resp;
-                } )
-                .then( () => {
-                    Hoot.events.emit( 'render-dataset-table' );
                 } )
                 .catch( err => {
                     console.error(err);
