@@ -133,7 +133,7 @@ export default class ClipDataset {
                             .concat( d.combobox.filter( function( l ) { return l.id !== folderId; } ).sort() );
                         that.createFolderListCombo( d3.select( this ), d );
                         d3.select( this ).property( 'value', Hoot.folders.findBy( 'id', folderId).name );
-                        d3.select( this ).property( '_value', Hoot.folders.findBy( 'id', folderId ).id );
+                        d3.select( this ).attr( '_value', Hoot.folders.findBy( 'id', folderId ).id );
                     }
                 } );
         } );
