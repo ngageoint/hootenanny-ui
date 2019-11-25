@@ -6,6 +6,7 @@ import DifferentialStats from '../modals/differentialStats';
 import JobCommandInfo from '../modals/jobCommandInfo';
 import GrailDatasetPicker from '../modals/GrailDatasetPicker';
 import { duration } from '../../tools/utilities';
+import { utilKeybinding }    from '../../../util/keybinding';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
 
@@ -18,6 +19,8 @@ const getJobTypeIcon = Symbol('getJobTypeIcon');
 export default class Jobs extends Tab {
     constructor( instance ) {
         super( instance );
+
+        this.keybinding = utilKeybinding('jobs');
 
         this.name = 'Jobs';
         this.id   = 'util-jobs';
@@ -60,6 +63,13 @@ export default class Jobs extends Tab {
             jobType: this.jobTypeIcon,
             status: this.statusIcon
         };
+
+        this.lastClick = 0;
+    }
+
+    selectNone() {
+        this.jobsHistoryTable.selectAll('tr.jobs-item')
+            .classed('selected', false);
     }
 
     setLimit(limit) {
@@ -67,14 +77,22 @@ export default class Jobs extends Tab {
         this.loadJobs();
     }
 
+    setSort(sort) {
+        this.params.sort = sort;
+        this.loadJobs();
+        this.selectNone();
+    }
+
     setFilter(column, values) {
         this.params[column] = values;
         this.loadJobs();
+        this.selectNone();
     }
 
     setPage(p) {
         this.params.offset = (p - 1) * this.params.limit;
         this.loadJobs();
+        this.selectNone();
     }
 
     getPages() {
@@ -83,17 +101,14 @@ export default class Jobs extends Tab {
 
     render() {
         super.render();
-
         this.createJobsTable();
-
         this.loadJobs();
-
         return this;
     }
 
     activate() {
         this.loadJobs();
-        this.poller = window.setInterval( this.loadJobs.bind(this), 50000 );
+        this.poller = window.setInterval( this.loadJobs.bind(this), 5000 );
     }
 
     deactivate() {
@@ -117,6 +132,39 @@ export default class Jobs extends Tab {
         this.jobsHistoryTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-history keyline-all fill-white', true );
+
+        let that = this;
+        this.keybinding
+            .on('⌫', () => this.deleteJobs(that))
+            .on('⌦', () => this.deleteJobs(that));
+        d3.select(document)
+            .call(this.keybinding);
+    }
+
+    async deleteJobs(self) {
+        function deleteJobs() {
+            d3.select('#util-jobs').classed('wait', true);
+            Promise.all( delIds.map( id => Hoot.api.deleteJobStatus(id)) )
+                .then( resp => self.loadJobs() )
+                .finally( () => {
+                    self.selectNone();
+                    d3.select('#util-jobs').classed('wait', false);
+                });
+        }
+
+        let delIds = self.jobsHistoryTable.selectAll('tr.jobs-item.selected')
+            .data().map(d => d.jobId);
+
+        if (d3.event.shiftKey) { //omit confirm prompt
+            deleteJobs();
+        } else {
+            let message = `Are you sure you want to clear the ${delIds.length} selected job records?`,
+                confirm = await Hoot.message.confirm( message );
+
+            if ( confirm ) {
+                deleteJobs();
+            }
+        }
     }
 
     async loadJobs() {
@@ -152,7 +200,7 @@ export default class Jobs extends Tab {
                 'Started',
                 'Progress',
                 'Actions'
-                ])
+            ])
             .enter().append('th')
             .text(d => d);
 
@@ -343,8 +391,8 @@ export default class Jobs extends Tab {
                     newSort = '-' + d.sort;
                 }
 
-                this.params.sort = newSort;
-                this.loadJobs();
+                this.setSort(newSort);
+
             })
             .on('contextmenu', d => {
                 d3.event.stopPropagation();
@@ -393,10 +441,41 @@ export default class Jobs extends Tab {
 
         rows.exit().remove();
 
+        let that = this;
         let rowsEnter = rows
             .enter()
             .append( 'tr' )
-            .classed( 'jobs-item keyline-bottom', true );
+            .classed( 'jobs-item keyline-bottom', true )
+            .on('click', function(d, i) {
+                let r = d3.select(this);
+                if (d3.event.ctrlKey) {
+                    //Toggle current row
+                    r.classed('selected', !r.classed('selected'));
+                    that.lastClick = i;
+                } else if (d3.event.shiftKey) {
+                    //Unselect everything
+                    tbody.selectAll('tr').classed('selected', false);
+
+                    //Select all rows between this and last click selected
+                    let min = Math.min(that.lastClick, i);
+                    let max = Math.max(that.lastClick, i);
+                    console.log(min + ' -> ' + max);
+                    tbody.selectAll('tr')
+                        .each(function(r, k) {
+                            if (min <= k && k <= max) {
+                                d3.select(this).classed('selected', true);
+                            }
+                        });
+                } else {
+                    //Unselect everything
+                    tbody.selectAll('tr').classed('selected', false);
+
+                    //Select current row
+                    r.classed('selected', true);
+                    console.log(i);
+                    that.lastClick = i;
+                }
+            });
 
         rows = rows.merge(rowsEnter);
 
@@ -465,32 +544,6 @@ export default class Jobs extends Tab {
 
                 //Actions
                 let actions = [];
-
-                //Clear job
-                actions.push({
-                    title: 'clear job',
-                    icon: 'clear',
-                    action: async () => {
-                        let self = this;
-                        function deleteJob(id) {
-                            d3.select('#util-jobs').classed('wait', true);
-                            Hoot.api.deleteJobStatus(id)
-                                .then( resp => self.loadJobs() )
-                                .finally( () => d3.select('#util-jobs').classed('wait', false));
-                        }
-                        if (d3.event.shiftKey) { //omit confirm prompt
-                            deleteJob(d.jobId);
-                        } else {
-                            let message = 'Are you sure you want to clear this job record?',
-                                confirm = await Hoot.message.confirm( message );
-
-                            if ( confirm ) {
-                                deleteJob(d.jobId);
-                            }
-                        }
-
-                    }
-                });
 
                 //Get logging for the job
                 actions.push({
