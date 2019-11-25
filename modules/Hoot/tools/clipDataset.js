@@ -231,21 +231,11 @@ export default class ClipDataset {
                 } )
                 .then( resp => {
                     if (resp.data && resp.data.status !== 'cancelled') {
-                        Hoot.folders.refreshDatasets();
                         Hoot.folders.refreshAll();
+                        Hoot.events.emit( 'render-dataset-table' );
                     }
 
                     return resp;
-                } )
-                .then( resp => {
-                    if (resp.data && resp.data.status !== 'cancelled') {
-                        Hoot.folders.refreshLinks();
-                    }
-
-                    return resp;
-                } )
-                .then( () => {
-                    Hoot.events.emit( 'render-dataset-table' );
                 } )
                 .catch( err => {
                     console.error(err);
