@@ -1,9 +1,12 @@
 import Tab            from './tab';
+import Filtering      from './jobs/filtering';
+import Paging         from './jobs/paging';
 import ProgressBar    from 'progressbar.js';
 import DifferentialStats from '../modals/differentialStats';
 import JobCommandInfo from '../modals/jobCommandInfo';
 import GrailDatasetPicker from '../modals/GrailDatasetPicker';
 import { duration } from '../../tools/utilities';
+import { utilKeybinding }    from '../../../util/keybinding';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
 
@@ -17,19 +20,89 @@ export default class Jobs extends Tab {
     constructor( instance ) {
         super( instance );
 
+        this.keybinding = utilKeybinding('jobs');
+
         this.name = 'Jobs';
         this.id   = 'util-jobs';
 
         this.privileges = Hoot.user().privileges;
+
+        this.params = {
+            sort: '-start',
+            offset: null,
+            limit: 25,
+            jobType: null,
+            status: null
+        };
+
+        this.filtering = new Filtering(this);
+        this.paging = new Paging(this);
+
+        this.jobTypeIcon = {
+            import: 'publish',
+            export: 'get_app',
+            conflate: 'layers',
+            clip: 'crop',
+            attributes: 'list_alt',
+            basemap: 'map',
+            delete: 'delete',
+            derive_changeset: 'change_history',
+            upload_changeset: 'cloud_upload',
+            unknown: 'help'
+        };
+
+        this.statusIcon = {
+            // running: 'autorenew',
+            complete: 'check_circle_outline',
+            failed: 'warning',
+            cancelled: 'cancel',
+            unknown: 'help'
+        };
+
+        this.columnFilters = {
+            jobType: this.jobTypeIcon,
+            status: this.statusIcon
+        };
+
+        this.lastClick = 0;
+    }
+
+    selectNone() {
+        this.jobsHistoryTable.selectAll('tr.jobs-item')
+            .classed('selected', false);
+    }
+
+    setLimit(limit) {
+        this.params.limit = limit;
+        this.loadJobs();
+    }
+
+    setSort(sort) {
+        this.params.sort = sort;
+        this.loadJobs();
+        this.selectNone();
+    }
+
+    setFilter(column, values) {
+        this.params[column] = values;
+        this.loadJobs();
+        this.selectNone();
+    }
+
+    setPage(page) {
+        this.params.offset = (page - 1) * this.params.limit;
+        this.loadJobs();
+        this.selectNone();
+    }
+
+    getPages() {
+        return Math.ceil(this.total / this.params.limit) || 1; //still need page 1 for zero results
     }
 
     render() {
         super.render();
-
         this.createJobsTable();
-
         this.loadJobs();
-
         return this;
     }
 
@@ -49,59 +122,63 @@ export default class Jobs extends Tab {
         this.jobsRunningTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-running keyline-all fill-white', true );
-        this.panelWrapper
+        let header = this.panelWrapper
             .append( 'h3' )
             .classed( 'jobs-history', true )
             .text( 'Jobs History' );
+        let pager = header.append('div')
+            .classed('paging fr', true);
+        this.paging.render(pager);
         this.jobsHistoryTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-history keyline-all fill-white', true );
+
+        let that = this;
+        this.keybinding
+            .on('⌫', () => this.deleteJobs(that))
+            .on('⌦', () => this.deleteJobs(that));
+        d3.select(document)
+            .call(this.keybinding);
+    }
+
+    async deleteJobs(self) {
+        function deleteJobs() {
+            d3.select('#util-jobs').classed('wait', true);
+            Promise.all( delIds.map( id => Hoot.api.deleteJobStatus(id)) )
+                .then( resp => self.loadJobs() )
+                .finally( () => {
+                    self.selectNone();
+                    d3.select('#util-jobs').classed('wait', false);
+                });
+        }
+
+        let delIds = self.jobsHistoryTable.selectAll('tr.jobs-item.selected')
+            .data().map(d => d.jobId);
+
+        if (d3.event.shiftKey) { //omit confirm prompt
+            deleteJobs();
+        } else {
+            let message = `Are you sure you want to clear the ${delIds.length} selected job records?`,
+                confirm = await Hoot.message.confirm( message );
+
+            if ( confirm ) {
+                deleteJobs();
+            }
+        }
     }
 
     async loadJobs() {
         let jobsRunning = await Hoot.api.getJobsRunning();
-        let jobsHistory = await Hoot.api.getJobsHistory();
+        let jobsHistory = await Hoot.api.getJobsHistory(this.params);
         await Hoot.layers.refreshLayers();
-        this.populateJobsHistory( jobsHistory );
+        this.total = jobsHistory.total;
+        this.paging.updatePages();
+        this.populateJobsHistory( jobsHistory.jobs );
         this.populateJobsRunning( jobsRunning );
     }
 
     [getJobTypeIcon](type) {
-        let typeIcon;
-        switch (type) {
-            case 'import':
-                typeIcon = 'publish';
-                break;
-            case 'export':
-                typeIcon = 'get_app';
-                break;
-            case 'conflate':
-                typeIcon = 'layers';
-                break;
-            case 'clip':
-                typeIcon = 'crop';
-                break;
-            case 'attributes':
-                typeIcon = 'list_alt';
-                break;
-            case 'basemap':
-                typeIcon = 'map';
-                break;
-            case 'delete':
-                typeIcon = 'delete';
-                break;
-            case 'derive_changeset':
-                typeIcon = 'change_history';
-                break;
-            case 'upload_changeset':
-                typeIcon = 'cloud_upload';
-                break;
-            case 'unknown':
-            default:
-                typeIcon = 'help';
-                break;
-        }
-        return typeIcon;
+        return this.jobTypeIcon[type] || 'help';
     }
 
     populateJobsRunning( jobs ) {
@@ -123,7 +200,7 @@ export default class Jobs extends Tab {
                 'Started',
                 'Progress',
                 'Actions'
-                ])
+            ])
             .enter().append('th')
             .text(d => d);
 
@@ -280,6 +357,7 @@ export default class Jobs extends Tab {
 
 
     populateJobsHistory( jobs ) {
+        let that = this;
         let table = this.jobsHistoryTable
             .selectAll('table')
             .data([0]);
@@ -288,20 +366,80 @@ export default class Jobs extends Tab {
 
         let thead = tableEnter
             .append('thead');
-        thead.selectAll('tr')
+        let th = thead.selectAll('tr')
             .data([0])
             .enter().append('tr')
             .selectAll('th')
             .data([
-                'Job Type',
-                'Output',
-                'Status',
-                'Started',
-                'Duration',
-                'Actions'
-                ])
+                {column: 'jobType', label: 'Job Type', sort: 'type'},
+                {label: 'Output'},
+                {column: 'status', label: 'Status', sort: 'status'},
+                {label: 'Started', sort: 'start'},
+                {label: 'Duration', sort: 'duration'},
+                {label: 'Actions'}
+            ])
             .enter().append('th')
-            .text(d => d);
+            .classed('sort', d => d.sort)
+            .classed('filter', d => this.columnFilters[d.column])
+            .on('click', d => {
+                let dir = (this.params.sort || '').slice(0,1),
+                    col = (this.params.sort || '').slice(1),
+                    newSort;
+
+                if (col === d.sort) {
+                    newSort = ((dir === '+') ? '-' : '+') + col;
+                } else {
+                    newSort = '-' + d.sort;
+                }
+
+                this.setSort(newSort);
+
+            })
+            .on('contextmenu', openFilter);
+
+        function openFilter(d) {
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+
+            if (that.columnFilters[d.column]) {
+                let filterData = {
+                    label: d.column[0].toUpperCase() + d.column.slice(1).split(/(?=[A-Z])/).join(' '),
+                    column: d.column,
+                    selected: that.params[d.column],
+                    values: d3.entries(that.columnFilters[d.column])
+                };
+
+                that.filtering.render(filterData);
+            }
+        }
+
+        th.append('span')
+            .text(d => d.label);
+
+        th.each(function(d) {
+            if (that.columnFilters[d.column]) {
+                d3.select(this).append('i')
+                    .classed( 'filter material-icons', true )
+                    .text('menu_open')
+                    .attr('title', 'filter')
+                    .on('click', openFilter);
+            }
+        });
+
+        th.append('i')
+            .classed( 'sort material-icons', true );
+
+        table.selectAll('i.sort')
+            .text(d => {
+                let dir = (this.params.sort || '').slice(0,1),
+                    col = (this.params.sort || '').slice(1);
+
+                if (col === d.sort) {
+                    return ((dir === '+') ? 'arrow_drop_up' : 'arrow_drop_down');
+                }
+                return '';
+            })
+            .attr('title', 'sort');
 
         table = table.merge(tableEnter);
 
@@ -314,14 +452,42 @@ export default class Jobs extends Tab {
 
         let rows = tbody
             .selectAll( 'tr.jobs-item' )
-            .data( jobs, d => d.jobId );
+            .data( jobs );
 
         rows.exit().remove();
 
         let rowsEnter = rows
             .enter()
             .append( 'tr' )
-            .classed( 'jobs-item keyline-bottom', true );
+            .classed( 'jobs-item keyline-bottom', true )
+            .on('click', function(d, i) {
+                let r = d3.select(this);
+                if (d3.event.ctrlKey || d3.event.metaKey) {
+                    //Toggle current row
+                    r.classed('selected', !r.classed('selected'));
+                    that.lastClick = i;
+                } else if (d3.event.shiftKey) {
+                    //Unselect everything
+                    tbody.selectAll('tr').classed('selected', false);
+
+                    //Select all rows between this and last click selected
+                    let min = Math.min(that.lastClick, i);
+                    let max = Math.max(that.lastClick, i);
+                    tbody.selectAll('tr')
+                        .each(function(r, k) {
+                            if (min <= k && k <= max) {
+                                d3.select(this).classed('selected', true);
+                            }
+                        });
+                } else {
+                    //Unselect everything
+                    tbody.selectAll('tr').classed('selected', false);
+
+                    //Select current row
+                    r.classed('selected', true);
+                    that.lastClick = i;
+                }
+            });
 
         rows = rows.merge(rowsEnter);
 
@@ -337,7 +503,7 @@ export default class Jobs extends Tab {
 
                 //Job Type
                 props.push({
-                    i: [{icon: this[getJobTypeIcon](d.jobType), action: () => {} }],
+                    i: [{icon: this[getJobTypeIcon](d.jobType)}],
                     span: [{text: d.jobType.toUpperCase()}]
                 });
 
@@ -355,25 +521,7 @@ export default class Jobs extends Tab {
                 }
 
                 //Status
-                let statusIcon;
-                switch (d.status) {
-                    case 'running':
-                        statusIcon = 'autorenew';
-                        break;
-                    case 'complete':
-                        statusIcon = 'check_circle_outline';
-                        break;
-                    case 'failed':
-                        statusIcon = 'warning';
-                        break;
-                    case 'cancelled':
-                        statusIcon = 'cancel';
-                        break;
-                    case 'unknown':
-                    default:
-                        statusIcon = 'help';
-                        break;
-                }
+                let statusIcon = this.statusIcon[d.status] || 'help';
 
                 if (d.status === 'failed') {
                     props.push({
@@ -408,32 +556,6 @@ export default class Jobs extends Tab {
 
                 //Actions
                 let actions = [];
-
-                //Clear job
-                actions.push({
-                    title: 'clear job',
-                    icon: 'clear',
-                    action: async () => {
-                        let self = this;
-                        function deleteJob(id) {
-                            d3.select('#util-jobs').classed('wait', true);
-                            Hoot.api.deleteJobStatus(id)
-                                .then( resp => self.loadJobs() )
-                                .finally( () => d3.select('#util-jobs').classed('wait', false));
-                        }
-                        if (d3.event.shiftKey) { //omit confirm prompt
-                            deleteJob(d.jobId);
-                        } else {
-                            let message = 'Are you sure you want to clear this job record?',
-                                confirm = await Hoot.message.confirm( message );
-
-                            if ( confirm ) {
-                                deleteJob(d.jobId);
-                            }
-                        }
-
-                    }
-                });
 
                 //Get logging for the job
                 actions.push({
@@ -518,7 +640,7 @@ export default class Jobs extends Tab {
 
                         actions.push({
                             title: 'download changeset',
-                            icon: 'save_alt',
+                            icon: 'archive',
                             action: async () => {
                                 Hoot.api.saveChangeset( d.jobId );
                             }
@@ -592,6 +714,7 @@ export default class Jobs extends Tab {
         i.exit().remove();
         i.enter().insert('i', 'span')
             .classed( 'material-icons', true )
+            .classed( 'action', d => d.action)
             .merge(i)
             .text( d => d.icon )
             .attr('title', d => d.title )
