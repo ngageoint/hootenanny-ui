@@ -61,7 +61,7 @@ export default class GrailPull {
         this.maxFeatureCount = +this.grailMetadata.maxFeatureCount;
 
         const overpassParams = { BBOX: this.instance.bbox };
-        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+        if ( this.instance.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
@@ -226,7 +226,7 @@ export default class GrailPull {
             input1   : this.form.select( '.outputName-1' ).property( 'value' )
         };
 
-        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+        if ( this.instance.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
             const customQuery          = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
             railsParams.customQuery    = customQuery;
             overpassParams.customQuery = customQuery;
