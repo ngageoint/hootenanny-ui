@@ -124,6 +124,8 @@ export default class DifferentialStats {
         params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
 
         Hoot.api.differentialPush( params )
+            .then( () => Hoot.layers.refreshLayers() )
+            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( resp => Hoot.message.alert( resp ) )
             .catch( err => {
                 Hoot.message.alert( err );
