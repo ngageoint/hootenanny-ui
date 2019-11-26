@@ -526,7 +526,7 @@ export default class Jobs extends Tab {
                     }
 
                     if (d.jobType.toUpperCase() === 'CONFLATE') {
-                        let currentLayer = this.findLayer( d.mapId );
+                        let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
 
                         if (currentLayer && currentLayer.grailMerged) {
                             //Get info for the derive
@@ -553,7 +553,7 @@ export default class Jobs extends Tab {
                     if (d.jobType.toUpperCase() === 'CONFLATE'
                         || d.jobType.toUpperCase() === 'IMPORT'
                     ) {
-                        let currentLayer = this.findLayer( d.mapId );
+                        let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
 
                         if (currentLayer && !currentLayer.grailReference) {
                             //Get info for the derive
@@ -608,12 +608,6 @@ export default class Jobs extends Tab {
             .merge(span)
             .text( d => d.text );
 
-    }
-
-    findLayer( layerId ) {
-        return Hoot.layers.allLayers.find( layer => {
-            return layer.id === layerId;
-        });
     }
 
 }

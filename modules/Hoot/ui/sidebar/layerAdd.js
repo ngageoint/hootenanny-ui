@@ -64,7 +64,7 @@ export default class LayerAdd extends SidebarForm {
                     input.node().blur();
 
                     this.selectedLayer.name = gNode.attr( 'data-name' );
-                    this.selectedLayer.id   = gNode.attr( 'data-id' );
+                    this.selectedLayer.id   = Number(gNode.attr( 'data-id' ));
                 } else {
                     this.selectedLayer.name = null;
                     this.selectedLayer.id   = null;
