@@ -65,57 +65,28 @@ export default class GrailPull {
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
-        const { publicStats, privateStats } = await Hoot.api.overpassStats( overpassParams );
+        const rowData = await Hoot.api.overpassStats( overpassParams );
 
         this.loadingState();
 
-        const allPublicStats = publicStats.split('\n');
-
-        const rowData = [
-            { valueColumn: 1, label: 'node' },
-            { valueColumn: 2, label: 'way' },
-            { valueColumn: 3, label: 'relation' },
-            { valueColumn: 0, label: 'total' }
-        ];
-        for (let i = 1; i < allPublicStats.length; i++) {
-            let publicValues = allPublicStats[ i ].split( '\t' );
-            rowData.forEach( row => {
-                row.publicCount  = +publicValues[ row.valueColumn ] + (row.publicCount || 0);
-            } );
-        }
-
-        // if there are private overpass stats then add them to our rowData object
-        if ( privateStats ) {
-            const allPrivateStats = privateStats.split('\n');
-            for (let i = 1; i < allPrivateStats.length; i++) {
-                let privateValues = allPrivateStats[ i ].split( '\t' );
-                rowData.forEach( row => {
-                    row.privateCount  = +privateValues[ row.valueColumn ] + (row.privateCount || 0);
-                } );
-            }
-        }
 
         let statsTable = this.form
             .select( '.wrapper div' )
             .insert( 'table', '.modal-footer' )
             .classed( 'pullStatsInfo', true );
 
-        const columns = [ '', this.grailMetadata.overpassLabel];
-        if ( privateStats ) {
-            columns.splice( 1, 0, this.grailMetadata.railsLabel ); // add to index 1
-        }
 
         let thead = statsTable.append('thead');
         thead.append('tr')
             .selectAll('th')
-            .data(columns)
+            .data([''].concat(rowData.columns.reverse()))
             .enter()
             .append('th')
             .text(function (d) { return d; });
 
         let tbody = statsTable.append('tbody');
         let rows = tbody.selectAll('tr')
-            .data(rowData)
+            .data(rowData.data)
             .enter()
             .append('tr');
 
@@ -123,24 +94,20 @@ export default class GrailPull {
             .text( data => data.label );
 
         // add private overpass data first if exists
-        if ( privateStats ) {
+        if ( rowData.columns.length === 2 ) {
             rows.append('td')
-                .classed( 'strong', data => data.privateCount > 0 )
-                .classed( 'badData', data => data.label === 'total' && data.privateCount > this.maxFeatureCount )
-                .text( data => data.privateCount );
+                .classed( 'strong', data => data[rowData.columns[1]] > 0 )
+                .classed( 'badData', data => data.label === 'total' && data[rowData.columns[1]] > this.maxFeatureCount )
+                .text( data => data[rowData.columns[1]] );
         }
 
         // column for public overpass counts
         rows.append('td')
-            .classed( 'strong', data => data.publicCount > 0 )
-            .classed( 'badData', data => data.label === 'total' && data.publicCount > this.maxFeatureCount )
-            .text( data => data.publicCount );
+            .classed( 'strong', data => data[rowData.columns[0]] > 0 )
+            .classed( 'badData', data => data.label === 'total' && data[rowData.columns[0]] > this.maxFeatureCount )
+            .text( data => data[rowData.columns[0]] );
 
-        const { publicCount, privateCount } = _find( rowData, row => row.label === 'total' );
-
-        if ( ( publicCount && publicCount > this.maxFeatureCount )
-            || ( privateCount && privateCount > this.maxFeatureCount )
-        ) {
+        if ( rows.selectAll('td.badData').size() ) {
             this.form.select( '.hoot-menu' )
                 .insert( 'div', '.modal-footer' )
                 .classed( 'badData', true )
