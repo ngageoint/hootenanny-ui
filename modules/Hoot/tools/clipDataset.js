@@ -231,7 +231,7 @@ export default class ClipDataset {
                 } )
                 .then( resp => {
                     if (resp.data && resp.data.status !== 'cancelled') {
-                        Hoot.folders.refreshAll();
+                        await Hoot.folders.refreshAll();
                         Hoot.events.emit( 'render-dataset-table' );
                     }
 
