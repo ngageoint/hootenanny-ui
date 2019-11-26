@@ -154,10 +154,7 @@ export default class OverpassQueryPanel {
     }
 
     queryBuilder() {
-        const checkedInput = this.queryOptions.selectAll( 'input' )
-            .filter( function() {
-                return d3.select( this ).property( 'checked' ) === true;
-            });
+        const checkedInput = this.queryOptions.selectAll( 'input[type=checkbox]:checked' );
 
         let queryString = '';
 
