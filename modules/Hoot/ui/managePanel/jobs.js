@@ -127,7 +127,7 @@ export default class Jobs extends Tab {
             .classed( 'jobs-history', true )
             .text( 'Jobs History' );
         let pager = header.append('div')
-            .classed('fr', true);
+            .classed('paging fr', true);
         this.paging.render(pager);
         this.jobsHistoryTable = this.panelWrapper
             .append( 'div' )
