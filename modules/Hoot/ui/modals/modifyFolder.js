@@ -19,7 +19,15 @@ export default class ModifyFolder {
 
         //filter out the folder itself
         //and all of it's descendents
-        this.folderList = Hoot.folders.folderPaths.filter(f => {
+        this.folderList = [
+            {
+                path : '/',
+                id : 0,
+                name: 'root',
+                userId: Hoot.user().id //hack to make root always visible to user
+            }
+        ].concat(Hoot.folders.folderPaths)
+        .filter(f => {
             return !descendents.includes(f.id) && !parents.includes(f.id);
         });
 
