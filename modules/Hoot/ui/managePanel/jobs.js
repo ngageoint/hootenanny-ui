@@ -28,7 +28,7 @@ export default class Jobs extends Tab {
         this.privileges = Hoot.user().privileges;
 
         this.params = {
-            sort: null,
+            sort: '-start',
             offset: null,
             limit: 25,
             jobType: null,
@@ -52,7 +52,7 @@ export default class Jobs extends Tab {
         };
 
         this.statusIcon = {
-            running: 'autorenew',
+            // running: 'autorenew',
             complete: 'check_circle_outline',
             failed: 'warning',
             cancelled: 'cancel',
@@ -459,7 +459,6 @@ export default class Jobs extends Tab {
                     //Select all rows between this and last click selected
                     let min = Math.min(that.lastClick, i);
                     let max = Math.max(that.lastClick, i);
-                    console.log(min + ' -> ' + max);
                     tbody.selectAll('tr')
                         .each(function(r, k) {
                             if (min <= k && k <= max) {
@@ -472,7 +471,6 @@ export default class Jobs extends Tab {
 
                     //Select current row
                     r.classed('selected', true);
-                    console.log(i);
                     that.lastClick = i;
                 }
             });
