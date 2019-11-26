@@ -89,8 +89,8 @@ export default class Jobs extends Tab {
         this.selectNone();
     }
 
-    setPage(p) {
-        this.params.offset = (p - 1) * this.params.limit;
+    setPage(page) {
+        this.params.offset = (page - 1) * this.params.limit;
         this.loadJobs();
         this.selectNone();
     }
