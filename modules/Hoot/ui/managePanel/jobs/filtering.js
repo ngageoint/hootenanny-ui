@@ -44,7 +44,7 @@ export default class Filtering {
             .enter()
             .append('li')
             .classed('filter-value', true);
-        let checks = vals.append('input')
+        vals.append('input')
             .attr('type', 'checkbox')
             .attr('id', d => d.key)
             .property('checked', d => data.selected && data.selected.includes(d.key))
