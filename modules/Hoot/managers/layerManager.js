@@ -198,7 +198,7 @@ export default class Layers {
     async loadLayer( params, skipCheckForReviewsAndZoom ) {
         //Some type checking
         if (typeof params.id !== 'number') {
-            throw 'params.id must be a number';
+            throw new Error('params.id must be a number');
         }
         try {
             let mapId       = params.id,
