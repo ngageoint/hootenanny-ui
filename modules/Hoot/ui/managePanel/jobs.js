@@ -357,6 +357,7 @@ export default class Jobs extends Tab {
 
 
     populateJobsHistory( jobs ) {
+        let that = this;
         let table = this.jobsHistoryTable
             .selectAll('table')
             .data([0]);
@@ -394,22 +395,33 @@ export default class Jobs extends Tab {
                 this.setSort(newSort);
 
             })
-            .on('contextmenu', d => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
+            .on('contextmenu', openFilter);
 
-                if (this.columnFilters[d.column]) {
-                    let filterData = {
-                        label: d.column[0].toUpperCase() + d.column.slice(1).split(/(?=[A-Z])/).join(' '),
-                        column: d.column,
-                        selected: this.params[d.column],
-                        values: d3.entries(this.columnFilters[d.column])
-                    };
+        function openFilter(d) {
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
 
-                    this.filtering.render(filterData);
-                }
+            if (that.columnFilters[d.column]) {
+                let filterData = {
+                    label: d.column[0].toUpperCase() + d.column.slice(1).split(/(?=[A-Z])/).join(' '),
+                    column: d.column,
+                    selected: that.params[d.column],
+                    values: d3.entries(that.columnFilters[d.column])
+                };
 
-            });
+                that.filtering.render(filterData);
+            }
+        }
+
+        th.each(function(d) {
+            if (that.columnFilters[d.column]) {
+                d3.select(this).append('i')
+                    .classed( 'filter material-icons', true )
+                    .text('menu_open')
+                    .attr('title', 'filter')
+                    .on('click', openFilter);
+            }
+        });
 
         th.append('span')
             .text(d => d.label);
@@ -441,7 +453,6 @@ export default class Jobs extends Tab {
 
         rows.exit().remove();
 
-        let that = this;
         let rowsEnter = rows
             .enter()
             .append( 'tr' )
@@ -626,7 +637,7 @@ export default class Jobs extends Tab {
 
                         actions.push({
                             title: 'download changeset',
-                            icon: 'save_alt',
+                            icon: 'archive',
                             action: async () => {
                                 Hoot.api.saveChangeset( d.jobId );
                             }

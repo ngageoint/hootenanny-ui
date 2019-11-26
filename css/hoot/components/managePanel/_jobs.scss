@@ -60,8 +60,12 @@
     i.material-icons {
          vertical-align: bottom;
     }
-    i.action, i.sort, i.page {
+    i.action, i.sort, i.filter {
         cursor: pointer;
+    }
+    i.filter {
+        font-size: 14px;
+        vertical-align: text-top;
     }
 }
 
@@ -75,7 +79,7 @@ h3.jobs-history {
     i.material-icons {
          vertical-align: bottom;
     }
-    i.action, i.sort, i.page {
+    i.page {
         cursor: pointer;
     }
 }
