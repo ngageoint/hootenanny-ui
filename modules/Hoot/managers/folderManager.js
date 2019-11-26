@@ -79,7 +79,7 @@ export default class FolderManager {
     }
 
     filterVisible(f) {
-        return f.id !== 0  && (JSON.parse(Hoot.context.storage( 'publicVisibility' )) ||  f.userId === Hoot.user().id);
+        return JSON.parse(Hoot.context.storage( 'publicVisibility' )) || f.userId === Hoot.user().id;
     }
 
     /**
@@ -124,14 +124,7 @@ export default class FolderManager {
      * @returns {Array} - updated folder array
      */
     listFolders( folders ) {
-        return [
-            {
-                path : '/',
-                id : 0,
-                name: 'root',
-                userId: Hoot.user().id //hack to make root always visible to user
-            }
-        ].concat(_map( folders, folder => {
+        return _map( folders, folder => {
             if ( folder.parentId === 0 ) {
                 folder.folderPath = '/ ' + folder.name;
             } else {
@@ -155,7 +148,7 @@ export default class FolderManager {
                 public : folder.public,
                 userId: folder.userId
             };
-        } ) );
+        } );
     }
 
     ///**
