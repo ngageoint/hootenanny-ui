@@ -462,7 +462,7 @@ export default class Jobs extends Tab {
             .classed( 'jobs-item keyline-bottom', true )
             .on('click', function(d, i) {
                 let r = d3.select(this);
-                if (d3.event.ctrlKey) {
+                if (d3.event.ctrlKey || d3.event.metaKey) {
                     //Toggle current row
                     r.classed('selected', !r.classed('selected'));
                     that.lastClick = i;
