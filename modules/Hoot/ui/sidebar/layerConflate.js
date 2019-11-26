@@ -26,14 +26,13 @@ class LayerConflate extends SidebarForm {
 
     render( layers ) {
         this.folderList = Hoot.folders.folderPaths;
-
         this.selectedLayers = {
             primary: _find( layers, layer => layer.refType === 'primary' ),
             secondary: _find( layers, layer => layer.refType === 'secondary' )
         };
 
-        this.defaultFolderId = Hoot.layers.findBy('id', parseInt(this.selectedLayers.primary.id, 10)).folderId
-                    || Hoot.layers.findBy('id', parseInt(this.selectedLayers.secondary.id, 10)).folderId;
+        this.defaultFolderId = Hoot.layers.findBy('id', this.selectedLayers.primary.id).folderId
+                    || Hoot.layers.findBy('id', this.selectedLayers.secondary.id).folderId;
 
         this.defaultFolder = _find( this.folderList, folder => folder.id === this.defaultFolderId);
 

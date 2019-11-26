@@ -196,12 +196,16 @@ export default class Layers {
     }
 
     async loadLayer( params, skipCheckForReviewsAndZoom ) {
+        //Some type checking
+        if (typeof params.id !== 'number') {
+            throw 'params.id must be a number';
+        }
         try {
             let mapId       = params.id,
                 tags        = await this.hoot.api.getMapTags( mapId ),
                 layerExtent;
 
-            let lyr = this.findBy( 'id', +mapId);
+            let lyr = this.findBy( 'id', mapId);
             if (lyr.bbox) {
                 const coords = lyr.bbox.split(',').map( d => +d );
                 layerExtent = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
@@ -211,7 +215,7 @@ export default class Layers {
 
             let layer = {
                 name: params.name,
-                id: Number(params.id),
+                id: params.id,
                 refType: params.refType,
                 color: params.color,
                 isMerged: params.isMerged || false,
@@ -343,8 +347,8 @@ export default class Layers {
         Hoot.ui.sidebar.forms.conflate.forceAdd( params );
         Hoot.layers.mergedLayer = mergedLayer;
 
-        let input1     = tags.input1,
-            input2     = tags.input2,
+        let input1     = Number(tags.input1),
+            input2     = Number(tags.input2),
             input1Name = tags.input1Name,
             input2Name = tags.input2Name;
 

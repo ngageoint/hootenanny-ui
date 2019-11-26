@@ -128,7 +128,7 @@ export default class ClipDataset {
                     } else if ( d.name === 'outputName' ) {
                         that.createLayerNameField( d3.select( this ), layer );
                     } else {
-                        var folderId = Hoot.layers.findBy( 'id', Number(layer.id) ).folderId;
+                        var folderId = Hoot.layers.findBy( 'id', layer.id ).folderId;
                         d.combobox = [ d.combobox.find( function( l ) { return l.id === folderId; } ) ]
                             .concat( d.combobox.filter( function( l ) { return l.id !== folderId; } ).sort() );
                         that.createFolderListCombo( d3.select( this ), d );
