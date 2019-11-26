@@ -413,6 +413,9 @@ export default class Jobs extends Tab {
             }
         }
 
+        th.append('span')
+            .text(d => d.label);
+
         th.each(function(d) {
             if (that.columnFilters[d.column]) {
                 d3.select(this).append('i')
@@ -423,12 +426,11 @@ export default class Jobs extends Tab {
             }
         });
 
-        th.append('span')
-            .text(d => d.label);
         th.append('i')
             .classed( 'sort material-icons', true );
 
-        table.selectAll('i.sort').text(d => {
+        table.selectAll('i.sort')
+            .text(d => {
                 let dir = (this.params.sort || '').slice(0,1),
                     col = (this.params.sort || '').slice(1);
 
@@ -436,7 +438,8 @@ export default class Jobs extends Tab {
                     return ((dir === '+') ? 'arrow_drop_up' : 'arrow_drop_down');
                 }
                 return '';
-            });
+            })
+            .attr('title', 'sort');
 
         table = table.merge(tableEnter);
 
