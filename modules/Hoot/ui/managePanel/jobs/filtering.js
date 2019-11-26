@@ -11,7 +11,6 @@ export default class Filtering {
             d3.select( 'body' ).on( 'click', () => {
                 d3.selectAll('div.filter-column').remove();
                 //send updated filter to container
-                updateFilter();
                 d3.select( 'body' ).on('click', null);
             });
         }
@@ -49,8 +48,8 @@ export default class Filtering {
             .attr('type', 'checkbox')
             .attr('id', d => d.key)
             .property('checked', d => data.selected && data.selected.includes(d.key))
-            .property('value', d => d.key); //.key is the enum string, .value is the icon
-
+            .property('value', d => d.key) //.key is the enum string, .value is the icon
+            .on('click', updateFilter);
         let labs = vals.append('label')
             .attr('for', d => d.key );
         labs.append('i')
