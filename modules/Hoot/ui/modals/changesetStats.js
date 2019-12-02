@@ -1,10 +1,33 @@
 import FormFactory from '../../tools/formFactory';
+import { uiChangesetEditor } from '../../../ui/changeset_editor';
 
 export default class ChangesetStats {
     constructor( jobId, data ) {
         this.jobId    = jobId;
-        this.diffInfo = data;
+        this.changesetInfo = data;
         this.includeTags = false;
+        this.changesetEditor = uiChangesetEditor(Hoot.context)
+            .on('change', changeTags);
+
+        function changeTags(changed, onInput) {
+            if (changed.hasOwnProperty('comment')) {
+                if (changed.comment === undefined) {
+                    changed.comment = '';
+                }
+                if (!onInput) {
+                    Hoot.context.storage('comment', changed.comment);
+                    Hoot.context.storage('commentDate', Date.now());
+                }
+            }
+            if (changed.hasOwnProperty('source')) {
+                if (changed.source === undefined) {
+                    Hoot.context.storage('source', null);
+                } else if (!onInput) {
+                    Hoot.context.storage('source', changed.source);
+                    Hoot.context.storage('commentDate', Date.now());
+                }
+            }
+        }
     }
 
     render() {
@@ -27,15 +50,17 @@ export default class ChangesetStats {
         this.submitButton.property( 'disabled', false );
 
         this.createTable();
+
+        this.createComment();
     }
 
     createTable() {
-        const { hasTags } = this.diffInfo;
+        const { hasTags } = this.changesetInfo;
 
         let table = this.form
             .select( '.wrapper div' )
             .insert( 'table', '.modal-footer' )
-            .classed( 'diffInfo', true );
+            .classed( 'changesetInfo', true );
 
         this.infoGrid(table);
 
@@ -55,7 +80,7 @@ export default class ChangesetStats {
                 .on('click', async ()  => {
                     this.includeTags = checkbox.property( 'checked' );
                     const stats = await Hoot.api.changesetStats(this.jobId, this.includeTags);
-                    this.diffInfo = stats.data;
+                    this.changesetInfo = stats.data;
 
                     this.form.select('table').remove();
                     tagsOption.remove();
@@ -65,7 +90,7 @@ export default class ChangesetStats {
     }
 
     infoGrid (tableElement) {
-        const diffStats = this.parseStats();
+        const changesetStats = this.parseStats();
         let thead = tableElement.append('thead');
         let tbody = tableElement.append('tbody');
 
@@ -78,7 +103,7 @@ export default class ChangesetStats {
             .text(function (d) { return d; });
 
         let rows = tbody.selectAll('tr')
-            .data(diffStats)
+            .data(changesetStats)
             .enter()
             .append('tr');
 
@@ -93,26 +118,59 @@ export default class ChangesetStats {
     }
 
     //Add changeset comment, hashtags, source
+    createComment() {
+
+        // expire stored comment, hashtags, source after cutoff datetime - #3947 #4899
+        var commentDate = +Hoot.context.storage('commentDate') || 0;
+        var currDate = Date.now();
+        var cutoff = 2 * 86400 * 1000;   // 2 days
+        if (commentDate > currDate || currDate - commentDate > cutoff) {
+            Hoot.context.storage('comment', null);
+            Hoot.context.storage('hashtags', null);
+            Hoot.context.storage('source', null);
+        }
+
+        // Changeset Section
+        var changesetSection = this.form
+            .select( '.wrapper div' )
+            .selectAll('.changeset-editor')
+            .data([0]);
+
+        changesetSection = changesetSection.enter()
+            .insert('div', '.modal-footer')
+            .attr('class', 'modal-section changeset-editor')
+            .merge(changesetSection);
+
+        changesetSection
+            .call(this.changesetEditor
+                .tags({
+                    comment: Hoot.context.storage('comment') || '',
+                    // hashtags: '#conflation;#hootenanny',
+                    // source: 'Hootenanny'
+                })
+            );
+
+    }
 
     // Mainly to control order of the text displayed to the user
     parseStats() {
-        let diffStats = {
+        let changesetStats = {
             'create' : { 'node' : 0, 'way' : 0, 'relation' : 0 },
             'modify' : { 'node' : 0, 'way' : 0, 'relation' : 0 },
             'delete' : { 'node' : 0, 'way' : 0, 'relation' : 0 }
         };
 
         // populate object
-        Object.keys(this.diffInfo).forEach( data => {
+        Object.keys(this.changesetInfo).forEach( data => {
             let [changeType, element] = data.split('-');
-            if (changeType in diffStats) {
-                diffStats[changeType][element] = this.diffInfo[data];
+            if (changeType in changesetStats) {
+                changesetStats[changeType][element] = this.changesetInfo[data];
             }
         });
 
         // convert object to list of arrays
-        const dataList = Object.keys(diffStats).map( data => {
-            return [data].concat(Object.values(diffStats[data]));
+        const dataList = Object.keys(changesetStats).map( data => {
+            return [data].concat(Object.values(changesetStats[data]));
         });
 
         return dataList;
@@ -123,6 +181,11 @@ export default class ChangesetStats {
               tagsCheck = this.form.select('.applyTags');
 
         params.parentId   = this.jobId;
+
+        //Changeset tags
+        params.comment = context.storage('comment') || '';
+
+
         params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
 
         Hoot.api.changesetPush( params )

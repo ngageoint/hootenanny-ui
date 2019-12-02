@@ -627,11 +627,12 @@ export default class Jobs extends Tab {
                             action: async () => {
                                 Hoot.api.changesetStats(d.jobId, false)
                                     .then( resp => {
-                                        this.diffStats = new ChangesetStats( d.jobId, resp.data ).render();
+                                        this.changesetStats = new ChangesetStats( d.jobId, resp.data ).render();
 
-                                        Hoot.events.once( 'modal-closed', () => delete this.diffStats );
+                                        Hoot.events.once( 'modal-closed', () => delete this.changesetStats );
                                     } )
                                     .catch( err => {
+                                        console.error(err);
                                         Hoot.message.alert( err );
                                         return false;
                                     } );
