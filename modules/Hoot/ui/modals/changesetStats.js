@@ -1,6 +1,6 @@
 import FormFactory from '../../tools/formFactory';
 
-export default class DifferentialStats {
+export default class ChangesetStats {
     constructor( jobId, data ) {
         this.jobId    = jobId;
         this.diffInfo = data;
@@ -54,7 +54,7 @@ export default class DifferentialStats {
                 .attr( 'class', 'applyTags' )
                 .on('click', async ()  => {
                     this.includeTags = checkbox.property( 'checked' );
-                    const stats = await Hoot.api.differentialStats(this.jobId, this.includeTags);
+                    const stats = await Hoot.api.changesetStats(this.jobId, this.includeTags);
                     this.diffInfo = stats.data;
 
                     this.form.select('table').remove();
@@ -92,6 +92,8 @@ export default class DifferentialStats {
             .text( data => data );
     }
 
+    //Add changeset comment, hashtags, source
+
     // Mainly to control order of the text displayed to the user
     parseStats() {
         let diffStats = {
@@ -123,7 +125,7 @@ export default class DifferentialStats {
         params.parentId   = this.jobId;
         params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
 
-        Hoot.api.differentialPush( params )
+        Hoot.api.changesetPush( params )
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( resp => Hoot.message.alert( resp ) )

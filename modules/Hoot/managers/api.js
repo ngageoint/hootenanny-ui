@@ -1227,9 +1227,9 @@ export default class API {
             } );
     }
 
-    differentialStats( jobId, includeTags ) {
+    changesetStats( jobId, includeTags ) {
         const params = {
-            path: `/grail/differentialstats?jobId=${ jobId }&includeTags=${ includeTags }`,
+            path: `/grail/changesetstats?jobId=${ jobId }&includeTags=${ includeTags }`,
             method: 'GET'
         };
 
@@ -1237,7 +1237,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Differential stats retrieved.',
+                    message: 'Changeset stats retrieved.',
                     status: 200,
                     type: 'success'
                 };
@@ -1251,9 +1251,9 @@ export default class API {
             } );
     }
 
-    differentialPush( data ) {
+    changesetPush( data ) {
         const params = {
-            path: '/grail/differentialpush',
+            path: '/grail/changesetpush',
             method: 'POST',
             data
         };
@@ -1263,7 +1263,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Differential push complete.',
+                    message: 'Changeset push complete.',
                     status: 200,
                     type: 'success'
                 };
