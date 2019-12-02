@@ -87,6 +87,13 @@ class Hoot {
         }
     }
 
+    async getGrailMetadata() {
+        const { data } = await this.api.grailMetadataQuery();
+        this.config.referenceLabel = data.railsLabel;
+        this.config.secondaryLabel = data.overpassLabel;
+        this.config.maxFeatureCount = Number(data.maxFeatureCount);
+    }
+
     init( context ) {
         let user;
 
@@ -109,6 +116,7 @@ class Hoot {
             this.getAboutData(),
             this.getAllUsers(),
             this.getMapSizeThresholds(),
+            this.getGrailMetadata(),
             this.translations.getTranslations(),
             this.users.init()
         ] );

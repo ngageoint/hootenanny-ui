@@ -8,8 +8,7 @@ import _get                                          from 'lodash-es/get';
 export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
-        this.maxFeatureCount = null;
-        this.grailMetadata = null;
+        this.maxFeatureCount = Hoot.config.maxFeatureCount;
     }
 
     render() {
@@ -56,10 +55,6 @@ export default class GrailPull {
     }
 
     async createTable() {
-        const { data } = await Hoot.api.grailMetadataQuery();
-        this.grailMetadata = data;
-        this.maxFeatureCount = +this.grailMetadata.maxFeatureCount;
-
         const overpassParams = { BBOX: this.instance.bbox };
         if ( this.instance.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
@@ -118,10 +113,10 @@ export default class GrailPull {
             this.submitButton.node().disabled = false;
         }
 
-        this.layerNameTable( data );
+        this.layerNameTable();
     }
 
-    layerNameTable( data ) {
+    layerNameTable() {
         const self = this;
         const uuid = uuidv4().slice(0,6);
 
@@ -155,7 +150,7 @@ export default class GrailPull {
             .text( d => d.label );
 
         let tableBody = layerOutputTable.append( 'tbody' ),
-            ingestLayers = [data.railsLabel, data.overpassLabel];
+            ingestLayers = [Hoot.config.referenceLabel, Hoot.config.secondaryLabel];
 
         ingestLayers.forEach( (layer, i) => {
             let tRow = tableBody
@@ -237,10 +232,10 @@ export default class GrailPull {
               referenceCheckbox = d3.select( '#row-0 input' ).property( 'checked' ),
               secondaryCheckbox = d3.select( '#row-1 input' ).property( 'checked' );
         if ( referenceCheckbox ) {
-            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, folderId, this.grailMetadata.railsLabel ) );
+            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, folderId, Hoot.config.referenceLabel ) );
         }
         if ( secondaryCheckbox ) {
-            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, folderId, this.grailMetadata.overpassLabel ) );
+            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, folderId, Hoot.config.secondaryLabel ) );
         }
 
         Promise.all( jobsList )
