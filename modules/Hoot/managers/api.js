@@ -78,7 +78,7 @@ export default class API {
 
     internalError( { response } ) {
         if ( response.status > 500 ) {
-            return 'API is not responding. Please try again later.';
+            return 'Hoot API is not responding.';
         } else {
             return false;
         }
@@ -478,7 +478,7 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
-                    message: 'Error deleting bookmark. Please try again later.',
+                    message: 'Error deleting bookmark.',
                     status: err.status || 500,
                     type: 'error'
                 };

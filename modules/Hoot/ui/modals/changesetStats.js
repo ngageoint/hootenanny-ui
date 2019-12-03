@@ -183,7 +183,7 @@ export default class ChangesetStats {
         params.parentId   = this.jobId;
 
         //Changeset tags
-        params.comment = context.storage('comment') || '';
+        params.comment = Hoot.context.storage('comment') || '';
 
 
         params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
