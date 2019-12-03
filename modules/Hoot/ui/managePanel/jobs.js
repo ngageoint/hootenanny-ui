@@ -643,7 +643,12 @@ export default class Jobs extends Tab {
                             title: 'download changeset',
                             icon: 'archive',
                             action: async () => {
-                                Hoot.api.saveChangeset( d.jobId );
+                                Hoot.api.saveChangeset( d.jobId )
+                                    .catch( err => {
+                                        console.error(err);
+                                        Hoot.message.alert( err );
+                                        return false;
+                                    } );
                             }
                         });
                     }

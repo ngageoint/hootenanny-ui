@@ -747,7 +747,14 @@ export default class API {
             .then( resp => {
                 let fileBlob = new Blob( [ resp.data ], { type: 'application/xml' } );
                 saveAs( fileBlob, `changeset_${id}.osc` );
-            });
+            })
+            .catch( err => {
+                console.log(err);
+                return Promise.reject({
+                    message: 'Changeset file not found.',
+                    type: 'error'
+                });
+            } );
     }
 
     exportDataset( data ) {
@@ -1243,6 +1250,7 @@ export default class API {
                 };
             } )
             .catch( err => {
+                console.log(err);
                 const message = err.data,
                       status  = err.status,
                       type    = err.type;
