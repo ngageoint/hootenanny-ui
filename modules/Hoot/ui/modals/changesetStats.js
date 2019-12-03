@@ -2,8 +2,8 @@ import FormFactory from '../../tools/formFactory';
 import { uiChangesetEditor } from '../../../ui/changeset_editor';
 
 export default class ChangesetStats {
-    constructor( jobId, data ) {
-        this.jobId    = jobId;
+    constructor( job, data ) {
+        this.job = job;
         this.changesetInfo = data;
         this.includeTags = false;
         this.changesetEditor = uiChangesetEditor(Hoot.context)
@@ -31,7 +31,7 @@ export default class ChangesetStats {
     }
 
     render() {
-        let titleText = 'Changeset summary';
+        let titleText = 'Upload Changeset';
 
         let metadata = {
             title: titleText,
@@ -79,7 +79,7 @@ export default class ChangesetStats {
                 .attr( 'class', 'applyTags' )
                 .on('click', async ()  => {
                     this.includeTags = checkbox.property( 'checked' );
-                    const stats = await Hoot.api.changesetStats(this.jobId, this.includeTags);
+                    const stats = await Hoot.api.changesetStats(this.job.id, this.includeTags);
                     this.changesetInfo = stats.data;
 
                     this.form.select('table').remove();
@@ -141,12 +141,17 @@ export default class ChangesetStats {
             .attr('class', 'modal-section changeset-editor')
             .merge(changesetSection);
 
+        let secondaryName;
+        if (this.job.tags && this.job.tags.input2) {
+            secondaryName = Hoot.layers.findBy('id', Number(this.job.tags.input2)).name;
+        }
+
         changesetSection
             .call(this.changesetEditor
                 .tags({
                     comment: Hoot.context.storage('comment') || '',
-                    // hashtags: '#conflation;#hootenanny',
-                    // source: 'Hootenanny'
+                    hashtags: '#conflation;#hootenanny',
+                    source: secondaryName
                 })
             );
 
@@ -180,7 +185,7 @@ export default class ChangesetStats {
         const params  = {},
               tagsCheck = this.form.select('.applyTags');
 
-        params.parentId   = this.jobId;
+        params.parentId   = this.job.id;
 
         //Changeset tags
         params.comment = Hoot.context.storage('comment') || '';
