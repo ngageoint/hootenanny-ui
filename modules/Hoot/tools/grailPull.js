@@ -79,7 +79,7 @@ export default class GrailPull {
         let thead = statsTable.append('thead');
         thead.append('tr')
             .selectAll('th')
-            .data([''].concat(rowData.columns.reverse()))
+            .data([''].concat(rowData.columns.slice().reverse()))
             .enter()
             .append('th')
             .text(function (d) { return d; });
