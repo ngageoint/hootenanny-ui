@@ -19,6 +19,22 @@
         padding-left: 10px;
     }
 
+    i.material-icons {
+        vertical-align: bottom;
+    }
+
+    th.filter {
+        cursor: context-menu;
+    }
+
+    i.action, i.sort, i.filter {
+        cursor: pointer;
+    }
+    i.filter {
+        font-size: 14px;
+        padding: 5px 0 5px 5px;
+    }
+
 }
 
 .user-item {
