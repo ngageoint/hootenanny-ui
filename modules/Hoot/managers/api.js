@@ -149,10 +149,11 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getAllUsers() {
+    getAllUsers( data ) {
         const params = {
             path: '/osm/api/0.6/user/all',
-            method: 'GET'
+            method: 'GET',
+            params: data
         };
 
         return this.request( params )
@@ -162,16 +163,6 @@ export default class API {
     getPrivileges() {
         const params = {
             path: '/osm/api/0.6/user/getPrivileges',
-            method: 'GET'
-        };
-
-        return this.request( params )
-            .then( resp => resp.data );
-    }
-
-    getPrivilegeOptions() {
-        const params = {
-            path: '/osm/api/0.6/user/getPrivilegeOptions',
             method: 'GET'
         };
 

@@ -382,18 +382,19 @@ export default class Jobs extends Tab {
             .classed('sort', d => d.sort)
             .classed('filter', d => this.columnFilters[d.column])
             .on('click', d => {
-                let dir = (this.params.sort || '').slice(0,1),
-                    col = (this.params.sort || '').slice(1),
-                    newSort;
+                if (d.sort) {
+                    let dir = (this.params.sort || '').slice(0,1),
+                        col = (this.params.sort || '').slice(1),
+                        newSort;
 
-                if (col === d.sort) {
-                    newSort = ((dir === '+') ? '-' : '+') + col;
-                } else {
-                    newSort = '-' + d.sort;
+                    if (col === d.sort) {
+                        newSort = ((dir === '+') ? '-' : '+') + col;
+                    } else {
+                        newSort = '-' + d.sort;
+                    }
+
+                    this.setSort(newSort);
                 }
-
-                this.setSort(newSort);
-
             })
             .on('contextmenu', openFilter);
 
