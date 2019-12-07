@@ -122,18 +122,22 @@ export default class AdminPanel extends Tab {
             .attr( 'style', d => `width: ${ d.width }` )
             .text( d => d.title )
             .classed('sort', d => d.sort)
+            .classed('filter', d => this.columnFilters[d.column])
             .on('click', d => {
-                let dir = (this.params.sort || '').slice(0,1),
-                    col = (this.params.sort || '').slice(1);
+                if (d.sort) {
+                    let dir = (this.params.sort || '').slice(0,1),
+                        col = (this.params.sort || '').slice(1);
 
-                if (col === d.sort) {
-                    this.params.sort = ((dir === '+') ? '-' : '+') + col;
-                } else {
-                    this.params.sort = '+' + d.sort;
+                    if (col === d.sort) {
+                        this.params.sort = ((dir === '+') ? '-' : '+') + col;
+                    } else {
+                        this.params.sort = '+' + d.sort;
+                    }
+
+                    this.populateAdminPanel();
                 }
-
-                this.populateAdminPanel();
-            });
+            })
+            .on('contextmenu', openFilter);
 
         function openFilter(d) {
             d3.event.stopPropagation();
