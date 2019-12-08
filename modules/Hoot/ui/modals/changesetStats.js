@@ -27,6 +27,14 @@ export default class ChangesetStats {
                     Hoot.context.storage('commentDate', Date.now());
                 }
             }
+            if (changed.hasOwnProperty('hashtags')) {
+                if (changed.hashtags === undefined) {
+                    Hoot.context.storage('hashtags', null);
+                } else if (!onInput) {
+                    Hoot.context.storage('hashtags', changed.hashtags);
+                    Hoot.context.storage('commentDate', Date.now());
+                }
+            }
         }
     }
 
@@ -182,25 +190,28 @@ export default class ChangesetStats {
     }
 
     handleSubmit() {
+        console.log(this.job);
         const params  = {},
               tagsCheck = this.form.select('.applyTags');
 
-        params.parentId   = this.job.id;
+        params.parentId   = this.job.jobId;
 
         //Changeset tags
         params.comment = Hoot.context.storage('comment') || '';
+        params.hashtags = Hoot.context.storage('hashtags') || '';
+        params.source = Hoot.context.storage('source') || '';
 
 
         params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
-
-        Hoot.api.changesetPush( params )
-            .then( () => Hoot.layers.refreshLayers() )
-            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
-            .then( resp => Hoot.message.alert( resp ) )
-            .catch( err => {
-                Hoot.message.alert( err );
-                return false;
-            } );
+console.log(params);
+        // Hoot.api.changesetPush( params )
+        //     .then( () => Hoot.layers.refreshLayers() )
+        //     .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+        //     .then( resp => Hoot.message.alert( resp ) )
+        //     .catch( err => {
+        //         Hoot.message.alert( err );
+        //         return false;
+        //     } );
 
         this.form.remove();
     }
