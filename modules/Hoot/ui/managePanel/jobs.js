@@ -109,10 +109,23 @@ export default class Jobs extends Tab {
     activate() {
         this.loadJobs();
         this.poller = window.setInterval( this.loadJobs.bind(this), 5000 );
+
+        let that = this;
+        this.keybinding
+            .on('⌫', () => this.deleteJobs(that))
+            .on('⌦', () => this.deleteJobs(that));
+        d3.select(document)
+            .call(this.keybinding);
     }
 
     deactivate() {
         window.clearInterval(this.poller);
+
+        this.keybinding
+            .off('⌫')
+            .off('⌦');
+        d3.select(document)
+            .call(this.keybinding);
     }
 
     createJobsTable() {
@@ -132,13 +145,6 @@ export default class Jobs extends Tab {
         this.jobsHistoryTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-history keyline-all fill-white', true );
-
-        let that = this;
-        this.keybinding
-            .on('⌫', () => this.deleteJobs(that))
-            .on('⌦', () => this.deleteJobs(that));
-        d3.select(document)
-            .call(this.keybinding);
     }
 
     async deleteJobs(self) {
