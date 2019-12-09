@@ -121,7 +121,6 @@ export default class Jobs extends Tab {
     deactivate() {
         window.clearInterval(this.poller);
 
-        let that = this;
         this.keybinding
             .off('⌫')
             .off('⌦');
