@@ -87,7 +87,7 @@ export default class ChangesetStats {
                 .attr( 'class', 'applyTags' )
                 .on('click', async ()  => {
                     this.includeTags = checkbox.property( 'checked' );
-                    const stats = await Hoot.api.changesetStats(this.job.id, this.includeTags);
+                    const stats = await Hoot.api.changesetStats(this.job.jobId, this.includeTags);
                     this.changesetInfo = stats.data;
 
                     this.form.select('table').remove();
