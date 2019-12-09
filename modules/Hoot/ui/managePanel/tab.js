@@ -62,5 +62,7 @@ export default class Tab {
         this.tabHeader.classed( 'strong', true );
         this.panelBody.classed( 'active', true );
         this.activate();
+
+        Hoot.ui.managePanel.active = this;
     }
 }
