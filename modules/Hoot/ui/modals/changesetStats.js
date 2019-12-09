@@ -8,7 +8,7 @@ export default class ChangesetStats {
         this.includeTags = false;
         this.changesetEditor = uiChangesetEditor(Hoot.context)
             .on('change', changeTags);
-
+        var that = this;
         function changeTags(changed, onInput) {
             if (changed.hasOwnProperty('comment')) {
                 if (changed.comment === undefined) {
@@ -35,6 +35,13 @@ export default class ChangesetStats {
                     Hoot.context.storage('commentDate', Date.now());
                 }
             }
+
+            that.tags = Object.assign(that.tags, changed);
+
+            that.changesetSection
+                .call(that.changesetEditor
+                    .tags(that.tags)
+                );
         }
     }
 
@@ -57,9 +64,9 @@ export default class ChangesetStats {
 
         this.submitButton.property( 'disabled', false );
 
-        this.createTable();
-
         this.createComment();
+
+        this.createTable();
     }
 
     createTable() {
@@ -67,7 +74,7 @@ export default class ChangesetStats {
 
         let table = this.form
             .select( '.wrapper div' )
-            .insert( 'table', '.modal-footer' )
+            .insert( 'table', '.changeset-editor' )
             .classed( 'changesetInfo', true );
 
         this.infoGrid(table);
@@ -75,7 +82,7 @@ export default class ChangesetStats {
         if (hasTags) {
             let tagsOption = this.form
                 .select( '.wrapper div' )
-                .insert( 'div', '.modal-footer' )
+                .insert( 'div', '.changeset-editor' )
                 .classed( 'tagInput', true );
 
             tagsOption.append( 'label' )
@@ -139,28 +146,30 @@ export default class ChangesetStats {
         }
 
         // Changeset Section
-        var changesetSection = this.form
+        this.changesetSection = this.form
             .select( '.wrapper div' )
             .selectAll('.changeset-editor')
             .data([0]);
 
-        changesetSection = changesetSection.enter()
+        this.changesetSection = this.changesetSection.enter()
             .insert('div', '.modal-footer')
             .attr('class', 'modal-section changeset-editor')
-            .merge(changesetSection);
+            .merge(this.changesetSection);
 
         let secondaryName;
         if (this.job.tags && this.job.tags.input2) {
             secondaryName = Hoot.layers.findBy('id', Number(this.job.tags.input2)).name;
         }
 
-        changesetSection
-            .call(this.changesetEditor
-                .tags({
+        this.tags = {
                     comment: Hoot.context.storage('comment') || '',
                     hashtags: '#conflation;#hootenanny',
                     source: secondaryName
-                })
+                };
+
+        this.changesetSection
+            .call(this.changesetEditor
+                .tags(this.tags)
             );
 
     }
@@ -190,7 +199,6 @@ export default class ChangesetStats {
     }
 
     handleSubmit() {
-        console.log(this.job);
         const params  = {},
               tagsCheck = this.form.select('.applyTags');
 
@@ -203,15 +211,15 @@ export default class ChangesetStats {
 
 
         params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
-console.log(params);
-        // Hoot.api.changesetPush( params )
-        //     .then( () => Hoot.layers.refreshLayers() )
-        //     .then( () => Hoot.events.emit( 'render-dataset-table' ) )
-        //     .then( resp => Hoot.message.alert( resp ) )
-        //     .catch( err => {
-        //         Hoot.message.alert( err );
-        //         return false;
-        //     } );
+
+        Hoot.api.changesetPush( params )
+            .then( () => Hoot.layers.refreshLayers() )
+            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+            .then( resp => Hoot.message.alert( resp ) )
+            .catch( err => {
+                Hoot.message.alert( err );
+                return false;
+            } );
 
         this.form.remove();
     }
