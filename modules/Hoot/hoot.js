@@ -38,7 +38,11 @@ class Hoot {
             exportSizeThreshold: null,
             ingestSizeThreshold: null,
             conflateSizeThreshold: null,
-            presetMaxDisplayNum: 12
+            presetMaxDisplayNum: 12,
+            privilegeIcons: {
+                admin: 'verified_user',
+                advanced: 'star'
+            }
         };
     }
 
@@ -88,10 +92,14 @@ class Hoot {
     }
 
     async getGrailMetadata() {
-        const { data } = await this.api.grailMetadataQuery();
-        this.config.referenceLabel = data.railsLabel;
-        this.config.secondaryLabel = data.overpassLabel;
-        this.config.maxFeatureCount = Number(data.maxFeatureCount);
+        const privileges = this.user().privileges;
+
+        if ( privileges.advanced && privileges.advanced === 'true' ) {
+            const { data } = await this.api.grailMetadataQuery();
+            this.config.referenceLabel = data.railsLabel;
+            this.config.secondaryLabel = data.overpassLabel;
+            this.config.maxFeatureCount = Number(data.maxFeatureCount);
+        }
     }
 
     init( context ) {
