@@ -151,6 +151,14 @@ export default class Navbar {
 
         }
 
+        if (Hoot.ui.managePanel.active) {
+            if (vis) { //deactivate tab on hide
+                Hoot.ui.managePanel.active.deactivate();
+            } else { //activate tab on show
+                Hoot.ui.managePanel.active.activate();
+            }
+        }
+
         this.menuButton.classed( 'active', !vis );
         managePanel.container.classed( 'hidden', vis );
 
