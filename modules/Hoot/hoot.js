@@ -40,7 +40,7 @@ class Hoot {
             conflateSizeThreshold: null,
             presetMaxDisplayNum: 12,
             privilegeIcons: {
-                admin: 'verified_user',
+                admin: 'people_alt',
                 advanced: 'star'
             }
         };
