@@ -48,13 +48,8 @@ export default class AdminPanel extends Tab {
             }
         ];
 
-        this.privilegeIcons = {
-            admin: 'verified_user',
-            advanced: 'star'
-        };
-
         this.columnFilters = {
-            privileges: this.privilegeIcons
+            privileges: Hoot.config.privilegeIcons
         };
     }
 
@@ -234,7 +229,7 @@ export default class AdminPanel extends Tab {
                             .style( 'display', 'inline-flex' );
 
                         content = d3.select(this).selectAll('label')
-                            .data( Object.keys( self.privilegeIcons ) );
+                            .data( Object.keys( Hoot.config.privilegeIcons ) );
                         content.exit().remove();
                         labelEnter = content.enter().append( 'label' )
                             .text( d => d );

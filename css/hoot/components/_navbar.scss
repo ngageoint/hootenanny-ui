@@ -80,4 +80,15 @@
             background-color: $light;
         }
     }
+
+    .user-info-container {
+        span {
+            padding-right: 5px;
+        }
+
+        i {
+            font-size: 15px;
+            cursor: default;
+        }
+    }
 }

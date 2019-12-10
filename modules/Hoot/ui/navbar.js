@@ -73,11 +73,20 @@ export default class Navbar {
         if ( this.isLoggedIn ) {
             let user = JSON.parse( localStorage.getItem( 'user' ) );
 
-            rightContainer
+            const userContainer = rightContainer
                 .append( 'div' )
-                .classed( 'light strong small info pad2x flex align-center text-light', true )
-                .append( 'span' )
+                .classed( 'light strong small info pad2x flex align-center text-light user-info-container', true );
+            userContainer.append( 'span' )
                 .text( 'Logged in as ' + user.display_name );
+
+            Object.keys( user.privileges ).forEach( privilege => {
+                if ( user.privileges[ privilege ] === 'true' ) {
+                    userContainer.append( 'i' )
+                        .classed( 'material-icons', true )
+                        .text( Hoot.config.privilegeIcons[ privilege ] )
+                        .attr( 'title', privilege );
+                }
+            } );
 
             let dropdownToggle = rightContainer
                 .append( 'div' )
