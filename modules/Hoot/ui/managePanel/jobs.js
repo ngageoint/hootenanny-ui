@@ -2,9 +2,9 @@ import Tab            from './tab';
 import Filtering      from './jobs/filtering';
 import Paging         from './jobs/paging';
 import ProgressBar    from 'progressbar.js';
-import DifferentialStats from '../modals/differentialStats';
+import ChangesetStats from '../modals/changesetStats';
 import JobCommandInfo from '../modals/jobCommandInfo';
-import GrailDatasetPicker from '../modals/GrailDatasetPicker';
+import GrailDatasetPicker from '../modals/grailDatasetPicker';
 import { duration } from '../../tools/utilities';
 import { utilKeybinding }    from '../../../util/keybinding';
 
@@ -632,13 +632,14 @@ export default class Jobs extends Tab {
                             title: 'upload changeset',
                             icon: 'cloud_upload',
                             action: async () => {
-                                Hoot.api.differentialStats(d.jobId, false)
+                                Hoot.api.changesetStats(d.jobId, false)
                                     .then( resp => {
-                                        this.diffStats = new DifferentialStats( d.jobId, resp.data ).render();
+                                        this.changesetStats = new ChangesetStats( d, resp.data ).render();
 
-                                        Hoot.events.once( 'modal-closed', () => delete this.diffStats );
+                                        Hoot.events.once( 'modal-closed', () => delete this.changesetStats );
                                     } )
                                     .catch( err => {
+                                        console.error(err);
                                         Hoot.message.alert( err );
                                         return false;
                                     } );
@@ -649,7 +650,12 @@ export default class Jobs extends Tab {
                             title: 'download changeset',
                             icon: 'archive',
                             action: async () => {
-                                Hoot.api.saveChangeset( d.jobId );
+                                Hoot.api.saveChangeset( d.jobId )
+                                    .catch( err => {
+                                        console.error(err);
+                                        Hoot.message.alert( err );
+                                        return false;
+                                    } );
                             }
                         });
                     }

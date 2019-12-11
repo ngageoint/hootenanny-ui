@@ -2,7 +2,7 @@ import FormFactory from './formFactory';
 
 import { formatBbox } from './utilities';
 
-export default class DifferentialUpload {
+export default class DifferentialChangeset {
     constructor( instance ) {
         this.instance = instance;
     }

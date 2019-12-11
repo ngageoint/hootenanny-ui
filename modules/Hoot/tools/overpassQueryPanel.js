@@ -1,7 +1,7 @@
 import FormFactory          from './formFactory';
 import GrailPull            from './grailPull';
 import selectBbox           from './selectBbox';
-import DifferentialUpload   from './differentialUpload';
+import DifferentialChangeset   from './differentialChangeset';
 
 
 export default class OverpassQueryPanel {
@@ -185,7 +185,7 @@ export default class OverpassQueryPanel {
         if ( this.formData.operationName === 'grailPull' ) {
             new GrailPull( this.formData ).render();
         } else if ( this.formData.operationName === 'createDifferentialChangeset' ) {
-            new DifferentialUpload( this.formData ).render();
+            new DifferentialChangeset( this.formData ).render();
         }
     }
 
