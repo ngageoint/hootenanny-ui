@@ -26,7 +26,7 @@ class Login {
 
             this.launchOAuthLogin();
         } catch (e) {
-            console.log(e);
+            console.error(e);
         } finally { /* eslint-disable */
             return this;
         }
