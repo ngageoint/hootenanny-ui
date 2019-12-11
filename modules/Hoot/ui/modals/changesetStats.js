@@ -8,7 +8,7 @@ export default class ChangesetStats {
         this.includeTags = false;
         this.changesetEditor = uiChangesetEditor(Hoot.context)
             .on('change', changeTags);
-        var that = this;
+        const that = this;
         function changeTags(changed, onInput) {
             if (changed.hasOwnProperty('comment')) {
                 if (changed.comment === undefined) {
@@ -144,9 +144,9 @@ export default class ChangesetStats {
     createComment() {
 
         // expire stored comment, hashtags, source after cutoff datetime - #3947 #4899
-        var commentDate = +Hoot.context.storage('commentDate') || 0;
-        var currDate = Date.now();
-        var cutoff = 2 * 86400 * 1000;   // 2 days
+        const commentDate = +Hoot.context.storage('commentDate') || 0;
+        const currDate = Date.now();
+        const cutoff = 2 * 86400 * 1000;   // 2 days
         if (commentDate > currDate || currDate - commentDate > cutoff) {
             Hoot.context.storage('comment', null);
             Hoot.context.storage('hashtags', null);

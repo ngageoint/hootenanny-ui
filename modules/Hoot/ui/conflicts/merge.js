@@ -73,7 +73,7 @@ export default class Merge {
 
             mergedFeature = featureUpdate; // feature that is updated is now the new merged node
         } catch ( e ) {
-            window.console.log( e );
+            window.console.error( e );
             throw new Error( 'Unable to merge features' );
         }
 

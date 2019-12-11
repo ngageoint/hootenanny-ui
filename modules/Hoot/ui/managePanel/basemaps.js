@@ -53,7 +53,7 @@ export default class Basemaps extends Tab {
 
             this.populateBasemaps( basemaps );
         } catch ( e ) {
-            window.console.log( 'Unable to retrieve basemaps' );
+            window.console.error( 'Unable to retrieve basemaps' );
             throw new Error( e );
         }
     }

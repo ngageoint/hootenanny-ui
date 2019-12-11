@@ -740,7 +740,7 @@ export default class API {
                 saveAs( fileBlob, `changeset_${id}.osc` );
             })
             .catch( err => {
-                console.log(err);
+                console.error(err);
                 return Promise.reject({
                     message: 'Changeset file not found.',
                     type: 'error'
@@ -1241,7 +1241,7 @@ export default class API {
                 };
             } )
             .catch( err => {
-                console.log(err);
+                console.error(err);
                 const message = err.data,
                       status  = err.status,
                       type    = err.type;
