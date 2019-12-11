@@ -31,6 +31,14 @@ export default class ChangesetStats {
                 if (changed.hashtags === undefined) {
                     Hoot.context.storage('hashtags', null);
                 } else if (!onInput) {
+                    // format hashtags so there is # in front of each one
+                    changed.hashtags = changed.hashtags.split(/[,;\s]+/)
+                        .map(function (s) {
+                            if (s[0] !== '#') { s = '#' + s; } // prepend '#'
+                            return s;
+                        })
+                        .join(';');
+
                     Hoot.context.storage('hashtags', changed.hashtags);
                     Hoot.context.storage('commentDate', Date.now());
                 }
@@ -162,10 +170,10 @@ export default class ChangesetStats {
         }
 
         this.tags = {
-                    comment: Hoot.context.storage('comment') || '',
-                    hashtags: '#conflation;#hootenanny',
-                    source: secondaryName
-                };
+            comment: Hoot.context.storage('comment') || '',
+            hashtags: Hoot.context.storage('hashtags') || '#hootenanny',
+            source: secondaryName || Hoot.context.storage('source')
+        };
 
         this.changesetSection
             .call(this.changesetEditor
