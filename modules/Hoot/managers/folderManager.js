@@ -146,7 +146,8 @@ export default class FolderManager {
                 id : folder.id,
                 parentId : folder.parentId,
                 public : folder.public,
-                userId: folder.userId
+                userId : folder.userId,
+                date : folder.createdAt
             };
         } );
     }

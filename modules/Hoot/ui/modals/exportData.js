@@ -85,7 +85,7 @@ export default class ExportData {
             const children = folder.children || folder._children || (folder.data ? folder.data._children : []) || [];
 
             // skip if no children
-            if (!children.length === 0) continue;
+            if (children.length === 0) continue;
 
             totalSize += children.filter( child => child.size ).reduce( ( acc, dataset ) => {
                 return acc + dataset.size;
