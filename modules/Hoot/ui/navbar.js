@@ -79,14 +79,16 @@ export default class Navbar {
             userContainer.append( 'span' )
                 .text( 'Logged in as ' + user.display_name );
 
-            Object.keys( user.privileges ).forEach( privilege => {
-                if ( user.privileges[ privilege ] === 'true' ) {
-                    userContainer.append( 'i' )
+            if ( user.privileges ) {
+                Object.keys( user.privileges ).forEach( privilege => {
+                    if ( user.privileges[ privilege ] === 'true' ) {
+                        userContainer.append( 'i' )
                         .classed( 'material-icons', true )
                         .text( Hoot.config.privilegeIcons[ privilege ] )
                         .attr( 'title', privilege );
-                }
-            } );
+                    }
+                } );
+            }
 
             let dropdownToggle = rightContainer
                 .append( 'div' )

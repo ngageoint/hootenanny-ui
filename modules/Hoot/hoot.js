@@ -94,7 +94,7 @@ class Hoot {
     async getGrailMetadata() {
         const privileges = this.user().privileges;
 
-        if ( privileges.advanced && privileges.advanced === 'true' ) {
+        if ( privileges && privileges.advanced && privileges.advanced === 'true' ) {
             const { data } = await this.api.grailMetadataQuery();
             this.config.referenceLabel = data.railsLabel;
             this.config.secondaryLabel = data.overpassLabel;
