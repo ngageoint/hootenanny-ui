@@ -15,8 +15,8 @@ export default class DifferentialChangeset {
                 ? 'Create Differential from Bounding Box'
                 : 'Create Differential';
 
-        let advOpts = await Hoot.api.getAdvancedOptions('differential')
-        let advForm = advOpts.map(this.formFactory.advOpt2DomMeta);
+        this.advOpts = await Hoot.api.getAdvancedOptions('differential');
+        let advForm = this.advOpts.map(this.formFactory.advOpt2DomMeta);
 
         let metadata = {
             title: titleText,
@@ -30,11 +30,42 @@ export default class DifferentialChangeset {
 
         let formId = 'differentialTable';
 
-        this.form         = this.formFactory.generateForm( 'body', formId, metadata );
-        this.submitButton = this.form.select( `#${ metadata.button.id }` );
+        this.container         = this.formFactory.generateForm( 'body', formId, metadata );
+        this.submitButton = this.container.select( `#${ metadata.button.id }` );
 
         this.submitButton.property( 'disabled', false );
 
+    }
+
+    /**
+     * Compares state of
+     * advanced options to defaults and
+     * adds to params if different
+     */
+    getAdvOpts() {
+        let that = this;
+        let advParams = {};
+
+        this.advOpts.forEach(function(d) {
+            let propName;
+            switch (d.input) {
+                case 'checkbox':
+                    propName = 'checked';
+                    break;
+                case 'text':
+                default:
+                    propName = 'value';
+                    break;
+            }
+            let inputValue = that.container.select('#' + d.id).property(propName).toString();
+
+            // Need .length check because empty text box should be considered equal to default
+            if ( inputValue.length && inputValue !== d.default ) {
+                advParams[d.id] = inputValue;
+            }
+        });
+
+        return advParams;
     }
 
     handleSubmit() {
@@ -51,6 +82,8 @@ export default class DifferentialChangeset {
         if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
             params.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
+
+        params.ADV_OPTS = this.getAdvOpts();
 
         Hoot.api.createDifferentialChangeset( params )
             .then( ( resp ) => Hoot.message.alert( resp ) );
