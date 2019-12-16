@@ -81,6 +81,9 @@ export default class ImportDataset {
 
         //Add advanced options to form
         this.advOpts = await Hoot.api.getAdvancedImportOptions();
+        this.advOpts.forEach(opt => {
+            opt.hidden = true;
+        });
         this.form = this.form.concat(this.advOpts.map(this.formFactory.advOpt2DomMeta));
 
         let metadata = {

@@ -5,17 +5,22 @@ import { formatBbox } from './utilities';
 export default class DifferentialChangeset {
     constructor( instance ) {
         this.instance = instance;
-    }
+        this.formFactory    = new FormFactory();
+   }
 
-    render() {
+    async render() {
         let titleText = this.instance.bboxSelectType === 'visualExtent'
             ? 'Create Differential from Visual Extent'
             : this.instance.bboxSelectType === 'boundingBox'
                 ? 'Create Differential from Bounding Box'
                 : 'Create Differential';
 
+        let advOpts = await Hoot.api.getAdvancedOptions('differential')
+        let advForm = advOpts.map(this.formFactory.advOpt2DomMeta);
+
         let metadata = {
             title: titleText,
+            form: advForm,
             button: {
                 text: 'Generate Differential',
                 id: 'SubmitBtn',
@@ -25,7 +30,7 @@ export default class DifferentialChangeset {
 
         let formId = 'differentialTable';
 
-        this.form         = new FormFactory().generateForm( 'body', formId, metadata );
+        this.form         = this.formFactory.generateForm( 'body', formId, metadata );
         this.submitButton = this.form.select( `#${ metadata.button.id }` );
 
         this.submitButton.property( 'disabled', false );

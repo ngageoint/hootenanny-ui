@@ -438,7 +438,7 @@ export default class FormFactory {
             label: opt.label,
             id: opt.id,
             inputType: opt.input,
-            hidden: true,
+            hidden: opt.hidden || false,
             class: 'advOpt'
         };
 
