@@ -151,13 +151,13 @@ export default class FolderTree extends EventEmitter {
             folders = _without( folders, _find( folders, { id: -1 } ) );
         }
 
-        folders = {
+        const foldersTree = {
             name: 'Datasets',
             id: 'Datasets',
             children: folders // prevent collision of data
         };
 
-        this.root    = d3.hierarchy( folders );
+        this.root    = d3.hierarchy( foldersTree );
         this.root.x0 = 0;
         this.root.y0 = 0;
 
