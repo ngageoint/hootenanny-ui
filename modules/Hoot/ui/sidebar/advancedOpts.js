@@ -225,7 +225,6 @@ export default class AdvancedOpts {
             .classed( 'combobox-caret', d => d.members.length );
 
         caretWrap.merge(caretWrapEnter);
-        caretWrap.on( 'click', instance.showBody);
     }
 
     showBody(d) {
