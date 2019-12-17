@@ -401,6 +401,10 @@ export default class FolderTree extends EventEmitter {
             .style( 'stroke', '#444444' );
     }
 
+    getNavigatorLanguage() {
+        return (navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
+    }
+
     /**
      * Render text values for each node
      *
@@ -425,7 +429,13 @@ export default class FolderTree extends EventEmitter {
                 .attr( 'dy', 3.5 )
                 .attr( 'dx', '85%' )
                 .attr( 'text-anchor', 'end' )
-                .text( d => d.data.date );
+                .text( d => {
+                    let createDate = new Date(d.data.date);
+
+                    return createDate.toLocaleString(this.getNavigatorLanguage(), {timeZone:
+                        Intl.DateTimeFormat().resolvedOptions().timeZone
+                    });
+                });
 
             nodes.append( 'text' )
                 .style( 'fill', this.fontColor )
