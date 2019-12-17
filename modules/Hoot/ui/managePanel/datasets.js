@@ -75,7 +75,7 @@ export default class Datasets extends Tab {
                 width: '6%'
             },
             {
-                title: 'Import Date',
+                title: 'Created Date',
                 width: '6%'
             },
             {
