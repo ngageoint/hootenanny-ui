@@ -265,10 +265,11 @@ export default class FolderTree extends EventEmitter {
                     data.lastAccessed = lastAccessed;
                 }
 
-                return acc + dataset.size;
+                return acc + (dataset.size || dataset.data.size);
             }, 0 );
 
-            const folders = children.filter( child => child.type === 'folder' );
+            const folders = children.filter( child => (child.type === 'folder') || (child.data && child.data.type && child.data.type === 'folder') );
+
             stack = stack.concat(folders);
         }
 
