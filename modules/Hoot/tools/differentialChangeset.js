@@ -22,19 +22,50 @@ export default class DifferentialChangeset {
             title: titleText,
             form: advForm,
             button: {
-                text: 'Generate Differential',
+                text: 'Submit',
                 id: 'SubmitBtn',
+                disabled: null,
                 onClick: () => this.handleSubmit()
             }
         };
 
         let formId = 'differentialTable';
 
-        this.container         = this.formFactory.generateForm( 'body', formId, metadata );
-        this.submitButton = this.container.select( `#${ metadata.button.id }` );
+        this.container = this.formFactory.generateForm( 'body', formId, metadata );
 
-        this.submitButton.property( 'disabled', false );
+        this.createToggle();
 
+    }
+
+    createToggle() {
+        let iconText = 'arrow_right';
+        let fldset = this.container.selectAll('fieldset');
+        fldset.classed('hidden', true);
+        let toggle = this.container
+            .select('form')
+            .insert( 'h4', 'fieldset' )
+            .attr( 'id', 'advOpts' )
+            .on('click', () => {
+                let shown = icon.text() !== iconText;
+                if (!shown) {
+                    fldset.classed('hidden', false);
+                    icon.text('arrow_drop_down');
+                }
+                fldset.transition()
+                    .duration(200)
+                    .style('height', shown ? '0px' : fldset.clientHeight)
+                    .on('end', () => {
+                        if (shown) {
+                            fldset.classed('hidden', true);
+                            icon.text(iconText);
+                        }
+                    });
+            });
+        let icon = toggle.append('i')
+            .classed( 'material-icons', true )
+            .text(iconText);
+        let text = toggle.append('span')
+            .text( 'Advanced Options' );
     }
 
     /**

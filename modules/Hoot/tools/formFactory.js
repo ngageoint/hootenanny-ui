@@ -396,7 +396,7 @@ export default class FormFactory {
 
         let button = buttonContainer
             .append( 'button' )
-            .attr( 'disabled', true )
+            .attr( 'disabled', (buttonMeta.disabled !== undefined) ? buttonMeta.disabled : true )
             .attr( 'id', buttonMeta.id )
             .classed( 'round strong primary', true )
             .on( 'click', buttonMeta.onClick );
