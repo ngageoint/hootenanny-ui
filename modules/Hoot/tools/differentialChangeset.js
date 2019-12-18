@@ -64,7 +64,7 @@ export default class DifferentialChangeset {
         let icon = toggle.append('i')
             .classed( 'material-icons', true )
             .text(iconText);
-        let text = toggle.append('span')
+        toggle.append('span')
             .text( 'Advanced Options' );
     }
 

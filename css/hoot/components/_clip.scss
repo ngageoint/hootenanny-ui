@@ -160,6 +160,7 @@
 
 #differentialTable .hoot-menu {
     max-width: unset;
+    min-width: 350px;
     width: 20%;
 }
 
@@ -172,11 +173,6 @@
         padding-top: 10px;
         padding-right: 10px;
     }
-
-/*    input[type="text"] {
-        border: none;
-        padding: 0;
-    }*/
 
     .material-icons {
         vertical-align: bottom;
