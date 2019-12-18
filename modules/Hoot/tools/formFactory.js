@@ -396,7 +396,7 @@ export default class FormFactory {
 
         let button = buttonContainer
             .append( 'button' )
-            .attr( 'disabled', true )
+            .attr( 'disabled', (buttonMeta.disabled !== undefined) ? buttonMeta.disabled : true )
             .attr( 'id', buttonMeta.id )
             .classed( 'round strong primary', true )
             .on( 'click', buttonMeta.onClick );
@@ -438,7 +438,7 @@ export default class FormFactory {
             label: opt.label,
             id: opt.id,
             inputType: opt.input,
-            hidden: true,
+            hidden: opt.hidden || false,
             class: 'advOpt'
         };
 

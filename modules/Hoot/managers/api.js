@@ -1217,11 +1217,11 @@ export default class API {
                 };
             } )
             .catch( err => {
-                const message = err.data,
-                      status  = err.status,
-                      type    = err.type;
-
-                return Promise.reject( { message, status, type } );
+                return {
+                    message : err.data,
+                    status  : err.status,
+                    type    : err.type
+                };
             } );
     }
 

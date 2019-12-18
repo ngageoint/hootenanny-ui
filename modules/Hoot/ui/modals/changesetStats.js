@@ -17,6 +17,8 @@ export default class ChangesetStats {
                 if (!onInput) {
                     Hoot.context.storage('comment', changed.comment);
                     Hoot.context.storage('commentDate', Date.now());
+                } else {
+                    that.updateSubmitButton();
                 }
             }
             if (changed.hasOwnProperty('source')) {
@@ -70,11 +72,18 @@ export default class ChangesetStats {
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
         this.submitButton = d3.select( `#${ metadata.button.id }` );
 
-        this.submitButton.property( 'disabled', false );
-
         this.createComment();
 
         this.createTable();
+
+        this.updateSubmitButton();
+    }
+
+    updateSubmitButton() {
+        this.submitButton.attr( 'disabled', function() {
+                var n = d3.select('#preset-input-comment').node();
+                return (n && n.value.length) ? null : true;
+            });
     }
 
     createTable() {
