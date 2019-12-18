@@ -254,10 +254,11 @@ export default class GrailPull {
                     let submitPromises = [];
 
                     // Finding layer id by name is fine here because we check for duplicate name in the grail pull
-                    if ( referenceCheckbox ) {
+                    let refLayer = Hoot.layers.findBy( 'name', railsParams.input1 );
+                    if ( referenceCheckbox && refLayer ) {
                         let refParams = {
                             name: railsParams.input1,
-                            id: Hoot.layers.findBy( 'name', railsParams.input1 ).id,
+                            id: refLayer.id,
                             color: 'violet',
                             refType: 'primary'
                         };
@@ -265,10 +266,11 @@ export default class GrailPull {
                         submitPromises.push( Hoot.ui.sidebar.forms.reference.submitLayer( refParams ) );
                     }
 
-                    if ( secondaryCheckbox ) {
+                    let secLayer = Hoot.layers.findBy( 'name', overpassParams.input1 );
+                    if ( secondaryCheckbox && secLayer ) {
                         let secParams = {
                             name: overpassParams.input1,
-                            id: Hoot.layers.findBy( 'name', overpassParams.input1 ).id,
+                            id: secLayer.id,
                             color: 'orange',
                             refType: 'secondary'
                         };
