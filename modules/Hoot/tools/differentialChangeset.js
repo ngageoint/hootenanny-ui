@@ -5,7 +5,7 @@ import { formatBbox } from './utilities';
 export default class DifferentialChangeset {
     constructor( instance ) {
         this.instance = instance;
-        this.formFactory    = new FormFactory();
+        this.formFactory = new FormFactory();
    }
 
     async render() {
@@ -119,6 +119,6 @@ export default class DifferentialChangeset {
         Hoot.api.createDifferentialChangeset( params )
             .then( ( resp ) => Hoot.message.alert( resp ) );
 
-        this.form.remove();
+        this.container.remove();
     }
 }
