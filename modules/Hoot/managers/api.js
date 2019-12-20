@@ -993,6 +993,50 @@ export default class API {
     }
 
     /**
+     * Delete maps older than X months
+     *
+     * @param months - maps last accessed over X months ago will be deleted
+     * @returns {Promise<any>}
+     */
+    deleteStaleLayers( months ) {
+        const params = {
+            path: `/osm/api/0.6/map/older/${ months }`,
+            method: 'DELETE'
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) );
+    }
+
+    /**
+     * Delete maps older than X months
+     *
+     * @param months - maps last accessed over X months ago will be deleted
+     * @returns {Promise<any>}
+     */
+    getStaleLayers( months ) {
+        const params = {
+            path: `/osm/api/0.6/map/older/${ months }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return resp.data.layers || [];
+            } )
+            .catch( err => {
+                if ( err ) throw new Error( err );
+
+                let message, type;
+
+                message = 'Unable to retrieve layers';
+                type    = 'error';
+
+                return Promise.reject( { message, type } );
+            } );
+    }
+
+    /**
      * Delete a folder from the database
      *
      * @param folderId - ID of folder to delete
