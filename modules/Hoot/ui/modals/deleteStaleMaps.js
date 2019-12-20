@@ -80,7 +80,7 @@ export default class deleteStaleMaps {
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( resp => Hoot.message.alert( {
-                message: `Deleting stale map datasets complete.`,
+                message: 'Deleting stale map datasets complete.',
                 type: 'success'
             } ) )
             .catch( err => {
