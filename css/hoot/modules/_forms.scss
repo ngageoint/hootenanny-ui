@@ -246,9 +246,11 @@
     }
 }
 
+.deleteStaleInfo,
 .pullStatsInfo {
     width: 225px;
     margin-left: 40px;
+    margin-bottom: 20px;
 
     th, td {
         width: 90px;
