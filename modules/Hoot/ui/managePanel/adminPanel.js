@@ -2,6 +2,7 @@ import Tab          from './tab';
 import { duration } from '../../tools/utilities';
 import Filtering from './jobs/filtering';
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
+import deleteStaleMaps from '../modals/deleteStaleMaps';
 
 /**
  * Creates the admin tab in the settings panel
@@ -69,7 +70,7 @@ export default class AdminPanel extends Tab {
         this.panelWrapper
             .append( 'h3' )
             .classed( 'maps', true )
-            .text( 'Delete Map Datasets' );
+            .text( 'Delete Stale Map Datasets' );
         this.createOldData();
 
         return this;
@@ -81,25 +82,17 @@ export default class AdminPanel extends Tab {
         });
 
         this.panelWrapper.append('span')
-            .text('Last accessed more than ');
+            .classed('lastAccessed', true)
+            .text('Last accessed over ');
         let months = this.panelWrapper
             .append( 'input' )
+            .classed('lastAccessed', true)
             .attr( 'type', 'text' )
-            // .attr( 'id', d => d.id )
-            // .attr( 'class', d => d.class )
-            // .attr( 'autocomplete', 'off' )
-            // .attr( 'placeholder', 6 )
-            // .attr( 'value', d => d.value )
-            // .attr( '_value', d => d._value )
-            // .attr( 'disabled', d => d.disabled )
             .attr( 'readonly', true )
             .call(d3combobox().data(monthOptions.reverse()))
-            .on( 'change', d => {
+            .on('change', async d => {
                 buttons.classed('disabled', false);
-                let months = months.attr('_value');
-                await Hoot.api.getStaleLayers(months);
-            } )
-            ;
+            });
 
         let buttonContainer = this.panelWrapper
             .append( 'div' )
@@ -113,10 +106,15 @@ export default class AdminPanel extends Tab {
         let buttons = buttonContainer.enter()
             .append( 'button' )
             .classed( 'admin-action-button primary text-light flex align-center disabled', true )
-            .on( 'click', async button => {
+            .on( 'click', button => {
                 d3.event.preventDefault();
-                console.log(months.attr('_value'));
+                let m = months.attr('_value');
+                this.deleteStale = new deleteStaleMaps(m);
+                this.deleteStale.render();
 
+                Hoot.events.once( 'modal-closed', () => {
+                    delete this.deleteStale;
+                });
             } );
 
         buttons.append( 'i' )

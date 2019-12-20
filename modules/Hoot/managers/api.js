@@ -1000,7 +1000,7 @@ export default class API {
      */
     deleteStaleLayers( months ) {
         const params = {
-            path: `/osm/api/0.6/map/older/${ months }`,
+            path: `/osm/api/0.6/map/stale/${ months }`,
             method: 'DELETE'
         };
 
@@ -1016,13 +1016,13 @@ export default class API {
      */
     getStaleLayers( months ) {
         const params = {
-            path: `/osm/api/0.6/map/older/${ months }`,
+            path: `/osm/api/0.6/map/stale/${ months }`,
             method: 'GET'
         };
 
         return this.request( params )
             .then( resp => {
-                return resp.data.layers || [];
+                return resp.data || [];
             } )
             .catch( err => {
                 if ( err ) throw new Error( err );
