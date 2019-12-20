@@ -691,7 +691,19 @@ export default class Jobs extends Tab {
                         let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
 
                         if (currentLayer && !currentLayer.grailReference) {
-                            //Get info for the derive
+                            actions.push({
+                                title: 'derive changeset [adds only]',
+                                icon: 'add_to_photos',
+                                action: async () => {
+                                    const params  = {};
+                                    params.input1 = d.mapId;
+                                    params.parentId = d.jobId;
+
+                                    Hoot.api.deriveChangeset( params )
+                                        .then( resp => Hoot.message.alert( resp ) );
+                                }
+                            });
+
                             actions.push({
                                 title: 'derive changeset replacement',
                                 icon: 'flip_to_front',
