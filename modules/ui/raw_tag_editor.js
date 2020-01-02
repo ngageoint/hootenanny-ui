@@ -222,7 +222,7 @@ export function uiRawTagEditor(context) {
             key.call(d3_combobox()
                 .container(context.container())
                 .fetcher(function(value, callback) {
-                    if (context.hoot.translations.activeTranslation === 'OSM') {
+                    if (Hoot.translations.activeTranslation === 'OSM') {
                         taginfo.keys({
                             debounce: true,
                             geometry: geometry,
@@ -239,7 +239,7 @@ export function uiRawTagEditor(context) {
             value.call(d3_combobox()
                 .container(context.container())
                 .fetcher(function(value, callback) {
-                    if (context.hoot.translations.activeTranslation === 'OSM') {
+                    if (Hoot.translations.activeTranslation === 'OSM') {
                         taginfo.values({
                             debounce: true,
                             key: utilGetSetValue(key),
@@ -253,6 +253,7 @@ export function uiRawTagEditor(context) {
                         callback(sort(value, data));
                     }
                 }));
+
 
 
             function sort(value, data) {
