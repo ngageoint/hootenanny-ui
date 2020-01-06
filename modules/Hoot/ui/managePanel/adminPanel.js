@@ -90,7 +90,7 @@ export default class AdminPanel extends Tab {
             .attr( 'type', 'text' )
             .attr( 'readonly', true )
             .call(d3combobox().data(monthOptions.reverse()))
-            .on('change', async d => {
+            .on('change', async () => {
                 buttons.classed('disabled', false);
             });
 
@@ -106,7 +106,7 @@ export default class AdminPanel extends Tab {
         let buttons = buttonContainer.enter()
             .append( 'button' )
             .classed( 'admin-action-button primary text-light flex align-center disabled', true )
-            .on( 'click', button => {
+            .on( 'click', () => {
                 d3.event.preventDefault();
                 let m = months.attr('_value');
                 this.deleteStale = new deleteStaleMaps(m);
