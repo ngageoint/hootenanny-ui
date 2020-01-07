@@ -183,7 +183,7 @@ export default class FolderManager {
             this._openFolders.push( id );
         } else {
             let index = this._openFolders.indexOf( id );
-            if ( index > 1 ) {
+            if ( index > -1 ) {
                 this._openFolders.splice( index, 1 );
             }
         }
