@@ -727,9 +727,9 @@ export default class API {
             });
     }
 
-    saveChangeset( id ) {
+    saveChangeset( id, name ) {
         const params = {
-            path: `/job/export/${id}?outputname=diff&ext=osc`,
+            path: `/job/export/${id}?outputname=${name || 'diff'}&ext=osc`,
             responseType: 'arraybuffer',
             method: 'GET'
         };
