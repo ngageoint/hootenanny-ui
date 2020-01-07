@@ -1,6 +1,8 @@
 import Tab          from './tab';
 import { duration } from '../../tools/utilities';
 import Filtering from './jobs/filtering';
+import { d3combobox } from '../../../lib/hoot/d3.combobox';
+import deleteStaleMaps from '../modals/deleteStaleMaps';
 
 /**
  * Creates the admin tab in the settings panel
@@ -56,10 +58,74 @@ export default class AdminPanel extends Tab {
     async render() {
         super.render();
 
+
+        this.panelWrapper
+            .append( 'h3' )
+            .classed( 'users', true )
+            .text( 'User Accounts/Privileges' );
+
         this.createButtons();
         this.populateAdminPanel();
 
+        this.panelWrapper
+            .append( 'h3' )
+            .classed( 'maps', true )
+            .text( 'Delete Stale Map Datasets' );
+        this.createOldData();
+
         return this;
+    }
+
+    createOldData() {
+        let monthOptions = ['one', 'two', 'three', 'four', 'five', 'six'].map((d, i) => {
+            return {value: `${d} month${(d === 'one') ? '' : 's'} ago`, _value: i+1};
+        });
+
+        this.panelWrapper.append('span')
+            .classed('lastAccessed', true)
+            .text('Last accessed over ');
+        let months = this.panelWrapper
+            .append( 'input' )
+            .classed('lastAccessed', true)
+            .attr( 'type', 'text' )
+            .attr( 'readonly', true )
+            .call(d3combobox().data(monthOptions.reverse()))
+            .on('change', async () => {
+                buttons.classed('disabled', false);
+            });
+
+        let buttonContainer = this.panelWrapper
+            .append( 'div' )
+            .classed( 'admin-buttons flex', true )
+            .selectAll( 'button.admin-action-button' )
+            .data( [{
+                title: 'Delete',
+                icon: 'delete_sweep'
+            }] );
+
+        let buttons = buttonContainer.enter()
+            .append( 'button' )
+            .classed( 'admin-action-button primary text-light flex align-center disabled', true )
+            .on( 'click', () => {
+                d3.event.preventDefault();
+                let m = months.attr('_value');
+                this.deleteStale = new deleteStaleMaps(m);
+                this.deleteStale.render();
+
+                Hoot.events.once( 'modal-closed', () => {
+                    delete this.deleteStale;
+                });
+            } );
+
+        buttons.append( 'i' )
+            .attr( 'class', d => d.iconClass )
+            .classed( 'material-icons', true )
+            .text( d => d.icon );
+
+        buttons.append( 'span' )
+            .classed( 'label', true )
+            .text( d => d.title );
+
     }
 
     setFilter(column, values) {
@@ -97,7 +163,6 @@ export default class AdminPanel extends Tab {
 
     async populateAdminPanel() {
         const self = this;
-        const users = await Hoot.api.getAllUsers(this.params);
 
         this.userInfoTable = this.panelWrapper
             .selectAll('div.admin-table')
@@ -179,6 +244,8 @@ export default class AdminPanel extends Tab {
         table.append( 'tbody' );
 
         this.table = this.userInfoTable.selectAll('table');
+
+        const users = await Hoot.api.getAllUsers(this.params);
 
         let tbody = this.userInfoTable.selectAll('tbody');
         let rows = tbody.selectAll( 'tr' )
