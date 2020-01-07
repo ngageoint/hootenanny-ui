@@ -782,7 +782,6 @@ export default class FolderTree extends EventEmitter {
 
                     if ( d.children ) {
                         data._children = d.children;
-                        d.children     = null;
                         data.selected  = false;
                     }
                 } else {
@@ -795,7 +794,6 @@ export default class FolderTree extends EventEmitter {
                         .classed( 'open-folder', true );
 
                     d.children     = data._children || null;
-                    data._children = null;
                 }
 
                 if ( this.isDatasetTable && !d3.event.ctrlKey ) {
