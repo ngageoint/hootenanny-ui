@@ -782,6 +782,7 @@ export default class FolderTree extends EventEmitter {
 
                     if ( d.children ) {
                         data._children = d.children;
+                        d.children     = null;
                         data.selected  = false;
                     }
                 } else {
