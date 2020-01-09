@@ -625,9 +625,9 @@ export default class Jobs extends Tab {
                 // Only advanced user may perform these
                 if (this.privileges && this.privileges.advanced === 'true') {
 
-                    // If the upload changeset job failed
-                    // add acction to download conflicted changes
-                    if (d.status.toUpperCase() === 'FAILED'
+                    // If the upload changeset job is marked having conflicts
+                    // add action to download conflicted changes
+                    if (d.statusDetail.toUpperCase() === 'CONFLICTS'
                         && d.jobType.toUpperCase() === 'UPLOAD_CHANGESET'
                     ) {
 
