@@ -216,6 +216,7 @@ export default class ChangesetStats {
     }
 
     handleSubmit() {
+
         const params  = {},
               tagsCheck = this.form.select('.applyTags');
 
@@ -233,6 +234,17 @@ export default class ChangesetStats {
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( resp => Hoot.message.alert( resp ) )
+            .then( () => { //refresh the ref layer if it's grail eligible
+                let refLayer = Hoot.layers.findBy( 'id', +this.job.tags.input1 );
+                if (refLayer && refLayer.grailReference) {
+                    let refreshParams = {
+                        BBOX: this.job.tags.bbox,
+                        input1: refLayer.name
+                    };
+                    let folderId = refLayer.folderId;
+                    Hoot.api.grailPullRailsPortToDb(refreshParams, folderId, Hoot.config.referenceLabel );
+                }
+            })
             .catch( err => {
                 Hoot.message.alert( err );
                 return false;
