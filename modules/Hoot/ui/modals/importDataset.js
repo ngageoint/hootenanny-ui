@@ -72,10 +72,6 @@ export default class ImportDataset {
      * Set form parameters and create the form using the form factory
      */
     async render() {
-        if ( this.browserInfo.name.substring( 0, 6 ) !== 'Chrome' ) {
-            _remove( this.importTypes, o => o.value === 'DIR' );
-        }
-
         this.form           = importSingleForm.call( this );
         this.form[ 0 ].data = this.importTypes;
 
@@ -207,16 +203,18 @@ export default class ImportDataset {
             return;
         }
 
+        let saveName;
         if ( selectedType === 'DIR' ) {
-            //TODO: get back to this
+            // Get the first file just to get the directory name since it should be same as rest of the files
+            const relativePath = files[0].webkitRelativePath;
+            saveName = relativePath.split('/')[0];
         } else {
-            let firstFile = fileNames[ 0 ],
-                saveName  = firstFile.indexOf( '.' ) ? firstFile.substring( 0, firstFile.indexOf( '.' ) ) : firstFile;
-
-            this.fileInput.property( 'value', fileNames.join( '; ' ) );
-
-            this.layerNameInput.property( 'value', Hoot.layers.checkLayerName(saveName) );
+            saveName = fileNames[ 0 ];
         }
+
+        saveName = saveName.indexOf( '.' ) ? saveName.substring( 0, saveName.indexOf( '.' ) ) : saveName;
+        this.fileInput.property( 'value', fileNames.join( '; ' ) );
+        this.layerNameInput.property( 'value', Hoot.layers.checkLayerName(saveName) );
 
         this.formValid = true;
         this.updateButtonState();
@@ -561,17 +559,11 @@ export default class ImportDataset {
             .attr( 'directory', null );
 
         if ( typeVal === 'DIR' ) {
-            if ( this.browserInfo.name.substring( 0, 6 ) === 'Chrome' ) {
-                uploader
-                    .property( 'multiple', false )
-                    .attr( 'accept', null )
-                    .attr( 'webkitdirectory', '' )
-                    .attr( 'directory', '' );
-            } else {
-                uploader
-                    .property( 'multiple', false )
-                    .attr( 'accept', '.zip' );
-            }
+            uploader
+                .property( 'multiple', false )
+                .attr( 'accept', null )
+                .attr( 'webkitdirectory', '' )
+                .attr( 'directory', '' );
         } else if ( typeVal === 'GEONAMES' ) {
             uploader
                 .property( 'multiple', false )
