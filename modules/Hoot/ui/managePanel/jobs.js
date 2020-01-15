@@ -628,8 +628,7 @@ export default class Jobs extends Tab {
                     // If the upload changeset job is marked having conflicts
                     // add action to download conflicted changes
                     if (d.statusDetail.toUpperCase() === 'CONFLICTS'
-                        && d.jobType.toUpperCase() === 'UPLOAD_CHANGESET'
-                    ) {
+                        && d.jobType.toUpperCase() === 'UPLOAD_CHANGESET') {
 
                         actions.push({
                             title: 'download conflicted changes',
@@ -714,8 +713,7 @@ export default class Jobs extends Tab {
                         // creating an adds-only changeset
                         // or a replacement changeset
                         if (d.jobType.toUpperCase() === 'CONFLATE'
-                            || d.jobType.toUpperCase() === 'IMPORT'
-                        ) {
+                            || d.jobType.toUpperCase() === 'IMPORT') {
                             let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
 
                             if (currentLayer && !currentLayer.grailReference) {
