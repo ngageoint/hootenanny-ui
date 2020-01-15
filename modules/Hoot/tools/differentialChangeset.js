@@ -114,7 +114,7 @@ export default class DifferentialChangeset {
             params.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
-        params.ADV_OPTS = this.getAdvOpts();
+        params.ADV_OPTIONS = this.getAdvOpts();
 
         Hoot.api.createDifferentialChangeset( params )
             .then( ( resp ) => Hoot.message.alert( resp ) );
