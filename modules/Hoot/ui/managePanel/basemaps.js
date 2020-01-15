@@ -55,6 +55,7 @@ export default class Basemaps extends Tab {
             let basemapCheck = this.checkBasemapStatus( basemaps );
 
             this.populateBasemaps( basemapCheck );
+
         } catch ( e ) {
             window.console.error( 'Unable to retrieve basemaps' );
             throw new Error( e );
@@ -66,7 +67,7 @@ export default class Basemaps extends Tab {
         let basemap = [];
 
         _forEach( basemaps, function( d ) {
-            if ( d.status !== 'processing' ) {
+            if ( d.status === 'enabled' || d.status === 'disabled' ) {
                 basemap.push(d);
             }
         } );
@@ -165,9 +166,10 @@ export default class Basemaps extends Tab {
     renderBasemap( d ) {
         let newSource = {
             name: d.name,
+            id: d.name,
             type: 'tms',
             projection: 'mercator',
-            template: `${ Hoot.api.config.host }:${ Hoot.api.config.port }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
+            template: `${ Hoot.api.config.host }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
             default: true,
             nocache: true,
             extent: new GeoExtent( [ d.extent.minx, d.extent.miny ], [ d.extent.maxx, d.extent.maxy ] )

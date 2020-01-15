@@ -90,6 +90,7 @@ export default class AddBasemap {
     }
 
     loadingState() {
+
         this.submitButton
             .select( 'span' )
             .text( 'Uploading...' );
