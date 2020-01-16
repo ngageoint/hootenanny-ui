@@ -7394,6 +7394,146 @@
                     "name": "Military Installation (SU001)",
                     "terms": ""
                 },
+                "tdsv70/AH070": {
+                    "name": "Checkpoint (AH070)",
+                    "terms": ""
+                },
+                "tdsv70/AL010": {
+                    "name": "Facility (AL010)",
+                    "terms": ""
+                },
+                "tdsv70/AL013": {
+                    "name": "Building (AL013)",
+                    "terms": ""
+                },
+                "tdsv70/AL020": {
+                    "name": "Built-up Area (AL020)",
+                    "terms": ""
+                },
+                "tdsv70/AL030": {
+                    "name": "Cemetery (AL030)",
+                    "terms": ""
+                },
+                "tdsv70/AL099": {
+                    "name": "Hut (AL099)",
+                    "terms": ""
+                },
+                "tdsv70/AL105": {
+                    "name": "Settlement (AL105)",
+                    "terms": ""
+                },
+                "tdsv70/AL351": {
+                    "name": "Space Facility (AL351)",
+                    "terms": ""
+                },
+                "tdsv70/AN010": {
+                    "name": "Railway (AN010)",
+                    "terms": ""
+                },
+                "tdsv70/AN050": {
+                    "name": "Railway Sidetrack (AN050)",
+                    "terms": ""
+                },
+                "tdsv70/AN060": {
+                    "name": "Railway Yard (AN060)",
+                    "terms": ""
+                },
+                "tdsv70/AP010": {
+                    "name": "Cart Track (AP010)",
+                    "terms": ""
+                },
+                "tdsv70/AP030": {
+                    "name": "Road (AP030)",
+                    "terms": ""
+                },
+                "tdsv70/AP041": {
+                    "name": "Vehicle Barrier (AP041)",
+                    "terms": ""
+                },
+                "tdsv70/AP050": {
+                    "name": "Trail (AP050)",
+                    "terms": ""
+                },
+                "tdsv70/AQ040": {
+                    "name": "Bridge (AQ040)",
+                    "terms": ""
+                },
+                "tdsv70/AQ060": {
+                    "name": "Control Tower (AQ060)",
+                    "terms": ""
+                },
+                "tdsv70/AQ063": {
+                    "name": "Causeway Structure (AQ063)",
+                    "terms": ""
+                },
+                "tdsv70/AQ065": {
+                    "name": "Culvert (AQ065)",
+                    "terms": ""
+                },
+                "tdsv70/AQ070": {
+                    "name": "Ferry Crossing (AQ070)",
+                    "terms": ""
+                },
+                "tdsv70/AQ080": {
+                    "name": "Ferry Station (AQ080)",
+                    "terms": ""
+                },
+                "tdsv70/AQ125": {
+                    "name": "Transportation Station (AQ125)",
+                    "terms": ""
+                },
+                "tdsv70/AQ130": {
+                    "name": "Tunnel (AQ130)",
+                    "terms": ""
+                },
+                "tdsv70/AT012": {
+                    "name": "Aerial Farm (AT012)",
+                    "terms": ""
+                },
+                "tdsv70/BB081": {
+                    "name": "Shoreline Construction (BB081)",
+                    "terms": ""
+                },
+                "tdsv70/BH030": {
+                    "name": "Ditch (BH030)",
+                    "terms": ""
+                },
+                "tdsv70/BH070": {
+                    "name": "Ford (BH070)",
+                    "terms": ""
+                },
+                "tdsv70/BH140": {
+                    "name": "River (BH140)",
+                    "terms": ""
+                },
+                "tdsv70/GB005": {
+                    "name": "Land Aerodrome (GB005)",
+                    "terms": ""
+                },
+                "tdsv70/GB035": {
+                    "name": "Heliport (GB035)",
+                    "terms": ""
+                },
+                "tdsv70/GB050": {
+                    "name": "Aircraft Revetment (GB050)",
+                    "terms": ""
+                },
+                "tdsv70/GB055": {
+                    "name": "Runway (GB055)",
+                    "terms": ""
+                },
+                "tdsv70/GB065": {
+                    "name": "Water Aerodrome (GB065)",
+                    "terms": ""
+                },
+                "tdsv70/GB075": {
+                    "name": "Taxiway (GB075)",
+                    "terms": ""
+                },
+                "tdsv70/SU001": {
+                    "name": "Military Installation (SU001)",
+                    "terms": ""
+                },
                 "tourism": {
                     "name": "Tourism",
                     "terms": ""
