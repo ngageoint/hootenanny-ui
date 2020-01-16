@@ -166,6 +166,7 @@ export default class Basemaps extends Tab {
     renderBasemap( d ) {
         let newSource = {
             name: d.name,
+            id: d.name,
             type: 'tms',
             projection: 'mercator',
             template: `${ Hoot.api.config.host }:${ Hoot.api.config.port }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
