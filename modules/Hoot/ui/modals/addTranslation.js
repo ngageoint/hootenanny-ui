@@ -67,9 +67,6 @@ export default class AddTranslation {
             .finally( () => {
                 this.container.remove();
             } );
-
-        let mappingForm = d3.select( '.ta-attribute-mapping');
-        mappingForm.remove();
     }
 
 }
