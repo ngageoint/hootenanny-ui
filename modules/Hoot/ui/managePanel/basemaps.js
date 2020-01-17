@@ -7,7 +7,6 @@
 import AddBasemap                 from '../modals/addBasemap';
 import Tab                        from './tab';
 import { geoExtent as GeoExtent } from '../../../geo/index';
-import _forEach                   from 'lodash-es/forEach';
 
 /**
  * Creates the basemaps tab in the settings panel
@@ -52,26 +51,12 @@ export default class Basemaps extends Tab {
         try {
             let basemaps = await Hoot.api.getBasemaps();
 
-            let basemapCheck = this.checkBasemapStatus( basemaps );
-
-            this.populateBasemaps( basemapCheck );
+            this.populateBasemaps( basemaps );
 
         } catch ( e ) {
             window.console.error( 'Unable to retrieve basemaps' );
             throw new Error( e );
         }
-    }
-
-    checkBasemapStatus( basemaps ) {
-        let basemap = [];
-
-        _forEach( basemaps, function(d) {
-            if ( d.status === 'enabled' || d.status === 'disabled' ) {
-                basemap.push(d);
-            }
-
-        } );
-        return basemap;
     }
 
     populateBasemaps( basemaps ) {
@@ -133,8 +118,8 @@ export default class Basemaps extends Tab {
                 let button = d3.select( this );
 
                 if ( d.status === 'processing' ) {
-                    //TODO: get back to this
-                    window.console.log( 'processing' );
+                    button.classed( 'closedeye' , true );
+                    button.classed( 'disabled', true );
                 } else if ( d.status === 'failed' ) {
                     window.console.log( 'failed' );
                 } else if ( d.status === 'disabled' ) {
@@ -155,11 +140,19 @@ export default class Basemaps extends Tab {
                 d3.event.stopPropagation();
                 d3.event.preventDefault();
 
-                let r = confirm( `Are you sure you want to delete: ${ d.name }?` );
-                if ( !r ) return;
-
-                Hoot.api.deleteBasemap( d.name )
+                if ( d.status === 'processing' ) {
+                    let alert = {
+                            message: 'Basemap is still processing, please wait before deleting',
+                            type: 'warn'
+                    };
+                    Hoot.message.alert( alert );
+                }
+                else {
+                    let r = confirm( `Are you sure you want to delete: ${ d.name }?` );
+                    if ( !r ) return;
+                    Hoot.api.deleteBasemap( d.name )
                     .then( () => instance.loadBasemaps() );
+                }
             } );
     }
 
