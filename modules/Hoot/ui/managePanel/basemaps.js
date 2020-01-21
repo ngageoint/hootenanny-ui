@@ -65,7 +65,6 @@ export default class Basemaps extends Tab {
             available: [],
             unavailable: []
         };
-
         _forEach(basemaps, function (d) {
 
             if (d.status === 'enabled' || d.status === 'disabled') {
@@ -180,7 +179,6 @@ export default class Basemaps extends Tab {
             else {
                 Hoot.api.deleteBasemap(b.name);
             }
-
         } );
     }
 
