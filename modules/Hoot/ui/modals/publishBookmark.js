@@ -8,12 +8,6 @@ import FormFactory from '../../tools/formFactory';
 
 export default class PublishBookmark {
     constructor() {
-        let currentUser = Hoot.context.storage( 'currentUser' ),
-            userEmail;
-
-        if ( Hoot.config.users[ currentUser ] > -1 ) {
-            userEmail = Hoot.config.users[ currentUser ].email;
-        }
 
         this.formMeta = {
             title: 'Bookmark Review',
@@ -31,14 +25,6 @@ export default class PublishBookmark {
                     placeholder: '',
                     inpuType: 'text',
                     onChange: d => this.validateTextInput( d )
-                },
-                {
-                    label: 'Creator Email',
-                    id: 'bookmarkCreatorEmail',
-                    placeholder: '',
-                    inputType: 'text',
-                    onChange: d => this.validateTextInput( d ),
-                    value: userEmail
                 },
                 {
                     label: 'Note (Optional)',
@@ -60,7 +46,6 @@ export default class PublishBookmark {
 
         this.titleInput       = this.container.select( '#bookmarkTitle' );
         this.descriptionInput = this.container.select( '#bookmarkDescription' );
-        this.emailInput       = this.container.select( '#bookmarkCreatorEmail' );
         this.noteInput        = this.container.select( '#bookmarkNote' );
         this.submitButton     = this.container.select( '#bookmarkSubmitButton' );
     }
@@ -115,35 +100,21 @@ export default class PublishBookmark {
     async handleSubmit() {
         let title = this.titleInput.property( 'value' ),
             desc  = this.descriptionInput.property( 'value' ),
-            email = this.emailInput.property( 'value' ),
             note  = this.noteInput.property( 'value' );
 
-        let currentReviewItem = Hoot.ui.conflicts.data.currentReviewItem,
-            userInfo;
-
-        if ( !email.length ) {
-            let message = 'If you continue this bookmark will be published by as anonymous user. Do you want to continue?',
-                confirm = await Hoot.message.confirm( message );
-
-            if ( !confirm ) return;
-
-            userInfo = { id: '-1' };
-        } else {
-            userInfo = await Hoot.api.getSaveUser( email );
-        }
+        let currentReviewItem = Hoot.ui.conflicts.data.currentReviewItem;
+        let user = Hoot.user().id;
 
         let params = {
             detail: {
                 bookmarkdetail: { title, desc },
-                bookmarknotes: [ { userId: userInfo.id, note } ],
+                bookmarknotes: [ { userId: user, note } ],
                 bookmarkreviewitem: currentReviewItem
             },
             mapId: currentReviewItem.mapId,
             relationId: currentReviewItem.relationId,
-            userId: userInfo.id
+            userId: user
         };
-
-        Hoot.context.storage( 'currentUser', userInfo.id );
 
         Hoot.api.saveReviewBookmark( params )
             .then( resp => Hoot.message.alert( resp ) )

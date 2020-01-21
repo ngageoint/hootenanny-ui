@@ -436,11 +436,20 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getReviewBookmarks( bookmarkId ) {
-        const path = bookmarkId ? `get?bookmarkId=${ bookmarkId }` : 'getall';
-
+    getReviewBookmarks( paramData ) {
         const params = {
-            path: `/job/review/bookmarks/${ path }`,
+            path: '/job/review/bookmarks/getall',
+            method: 'GET',
+            params: paramData
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getBookmarkById( bookmarkId ) {
+        const params = {
+            path: `/job/review/bookmarks/get?bookmarkId=${ bookmarkId }`,
             method: 'GET'
         };
 
