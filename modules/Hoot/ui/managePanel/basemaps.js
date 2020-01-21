@@ -52,9 +52,7 @@ export default class Basemaps extends Tab {
         try {
             let basemaps = await Hoot.api.getBasemaps();
 
-            let basemapCheck = this.checkBasemapStatus( basemaps );
-
-            this.populateBasemaps( basemapCheck );
+            this.populateBasemaps( basemaps );
 
         } catch ( e ) {
             window.console.error( 'Unable to retrieve basemaps' );
@@ -62,23 +60,32 @@ export default class Basemaps extends Tab {
         }
     }
 
-    checkBasemapStatus( basemaps ) {
-        let basemap = [];
+    checkBasemapStatus(basemaps) {
+        let basemap = {
+            available: [],
+            unavailable: []
+        };
 
-        _forEach( basemaps, function(d) {
-            if ( d.status !== 'processing' ) {
-                basemap.push(d);
+        _forEach(basemaps, function (d) {
+
+            if (d.status === 'enabled' || d.status === 'disabled') {
+                basemap.available.push(d);
             }
-        } );
+            else {
+                basemap.unavailable.push(d);
+            }
+        });
         return basemap;
     }
 
     populateBasemaps( basemaps ) {
         let instance = this;
 
+        let allBasemaps = this.checkBasemapStatus( basemaps );
+
         let rows = this.basemapTable
             .selectAll( '.basemap-item' )
-            .data( basemaps, d => d.name );
+            .data( allBasemaps.available, d => d.name );
 
         rows.exit().remove();
 
@@ -135,7 +142,8 @@ export default class Basemaps extends Tab {
                     button.classed( 'closedeye' , true );
                     button.classed( 'disabled', true );
                 } else if ( d.status === 'failed' ) {
-                    window.console.log( 'failed' );
+                    button.classed( 'closedeye' , true );
+                    button.classed( 'disabled', true );
                 } else if ( d.status === 'disabled' ) {
                     button.classed( 'closedeye', true );
                     button.classed( 'openeye', false );
@@ -159,6 +167,20 @@ export default class Basemaps extends Tab {
 
             Hoot.api.deleteBasemap( d.name )
                 .then( () => instance.loadBasemaps() );
+        } );
+
+        _forEach( allBasemaps.unavailable, function( b ) {
+            if ( b.status === 'processing' ) {
+                let alert = {
+                    message: `${b.name} is still processing`,
+                    type: 'warn'
+                };
+                Hoot.message.alert( alert );
+            }
+            else {
+                Hoot.api.deleteBasemap(b.name);
+            }
+
         } );
     }
 
