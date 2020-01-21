@@ -171,13 +171,13 @@ export default class Basemaps extends Tab {
         _forEach( allBasemaps.unavailable, function( b ) {
             if ( b.status === 'processing' ) {
                 let alert = {
-                    message: `${b.name} is still processing`,
+                    message: `[Basemap]: ${b.name} \nis still processing`,
                     type: 'warn'
                 };
                 Hoot.message.alert( alert );
             }
             else {
-                Hoot.api.deleteBasemap(b.name);
+                Hoot.api.deleteBasemap( b.name );
             }
         } );
     }
