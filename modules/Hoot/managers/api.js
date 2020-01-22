@@ -36,6 +36,7 @@ export default class API {
         this.queryInterval = this.config.queryInterval;
         this.conflateTypes = null;
         this.importOpts = null;
+        this.changesetOpts = null;
     }
 
     /**
@@ -972,6 +973,22 @@ export default class API {
             return this.request( params ).then( resp => {
                 that.importOpts = resp.data.hoot2[0].members; //might need to refactor this response
                 return that.importOpts;
+            });
+        }
+    }
+
+    getAdvancedChangesetOptions() {
+        if ( this.changesetOpts ) {
+            return Promise.resolve( this.changesetOpts );
+        } else {
+            const params = {
+                path: '/info/getChangesetOptions',
+                method: 'GET'
+            };
+            let that = this;
+            return this.request( params ).then( resp => {
+                that.changesetOpts = resp.data.members;
+                return that.changesetOpts;
             });
         }
     }

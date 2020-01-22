@@ -125,6 +125,7 @@ export default class FormFactory {
             .data( formMeta ).enter()
             .append( 'div' )
             .attr( 'class', d => d.class )
+            .attr( 'title', d => d.title )
             .classed( 'hoot-form-field fill-white small keyline-all round', true )
             .classed( 'hoot-field-checkbox', d => d.inputType === 'checkbox' )
             .classed('hidden', d => d.hidden );
@@ -287,6 +288,7 @@ export default class FormFactory {
             .attr( 'value', d => d.value )
             .attr( 'readonly', d => d.readOnly )
             .attr( 'disabled', d => d.disabled )
+            .attr( 'title', d => d.title )
             .classed( 'text-input', true )
             .on( 'keyup', function( d ) {
                 if ( d.onChange ) {
@@ -307,6 +309,7 @@ export default class FormFactory {
             .append( 'input' )
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
+            .attr( 'title', d => d.title )
             .property( 'checked', d => d.checked )
             .on( 'change', d => d.onChange && d.onChange(d) );
     }
@@ -438,6 +441,7 @@ export default class FormFactory {
             label: opt.label,
             id: opt.id,
             inputType: opt.input,
+            title: opt.description,
             hidden: opt.hidden || false,
             class: 'advOpt'
         };
@@ -450,5 +454,70 @@ export default class FormFactory {
         }
 
         return domMeta;
+    }
+
+    /*
+    * Creates an advanced options section toggle
+    * to control visibility of advanced option controls
+    */
+    createToggle( container ) {
+        let iconText = 'arrow_right';
+        let fldset = container.selectAll('fieldset');
+        fldset.classed('hidden', true);
+        let toggle = container
+            .select('form')
+            .insert( 'h4', 'fieldset' )
+            .attr( 'id', 'advOpts' )
+            .on('click', () => {
+                let shown = icon.text() !== iconText;
+                if (!shown) {
+                    fldset.classed('hidden', false);
+                    icon.text('arrow_drop_down');
+                }
+                fldset.transition()
+                    .duration(200)
+                    .style('height', shown ? '0px' : fldset.clientHeight)
+                    .on('end', () => {
+                        if (shown) {
+                            fldset.classed('hidden', true);
+                            icon.text(iconText);
+                        }
+                    });
+            });
+        let icon = toggle.append('i')
+            .classed( 'material-icons', true )
+            .text(iconText);
+        toggle.append('span')
+            .text( 'Advanced Options' );
+    }
+
+    /**
+     * Compares state of
+     * advanced options to defaults and
+     * adds to params if different
+     */
+    getAdvOpts(container, advOpts) {
+        let advParams = {};
+
+        advOpts.forEach(function(d) {
+            let propName;
+            switch (d.input) {
+                case 'checkbox':
+                    propName = 'checked';
+                    break;
+                case 'text':
+                default:
+                    propName = 'value';
+                    break;
+            }
+            let inputValue = container.select('#' + d.id).property(propName).toString();
+
+            // Need .length check because empty text box should be considered equal to default
+            if ( inputValue.length && inputValue !== d.default ) {
+                advParams[d.id] = inputValue;
+            }
+        });
+
+        return advParams;
     }
 }
