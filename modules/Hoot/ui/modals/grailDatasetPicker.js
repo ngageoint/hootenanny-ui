@@ -27,7 +27,6 @@ export default class GrailDatasetPicker {
                     readonly: 'readonly',
                     sort: false,
                     itemKey: 'name',
-                    _value: this.layer.id,
                     _valueKey: 'id',
                     onChange: d => this.handleSubmit( d )
                 }]
@@ -47,6 +46,10 @@ export default class GrailDatasetPicker {
     handleSubmit(d) {
         let target = d3.select( `#${ d.id }` ),
             refId  = parseInt(target.attr( '_value' ), 10);
+
+        if ( isNaN(refId) ) {
+            return;
+        }
 
         const params  = {};
         params.input1 = refId;
