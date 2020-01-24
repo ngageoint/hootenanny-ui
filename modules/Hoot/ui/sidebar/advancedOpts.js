@@ -17,6 +17,7 @@ import {
     event as d3_event,
     select as d3_select
 } from 'd3-selection';
+import { get } from 'lodash-es';
 
 let instance = null;
 export default class AdvancedOpts {
@@ -278,6 +279,7 @@ export default class AdvancedOpts {
             .append( 'div' )
             .classed('hoot-field-label-wrap', true );
 
+
         fieldLabelWrap = fieldLabelWrap.merge(fieldLabelWrapEnter);
 
         fieldLabelWrap
@@ -297,6 +299,60 @@ export default class AdvancedOpts {
             .text( d => d.label );
 
         fieldLabel.merge(fieldLabelEnter);
+
+        let fieldLabelButton = fieldLabelWrap.selectAll( '.hoot-field-label-button' )
+            .data( [d] );
+
+        fieldLabelButton.exit().remove();
+
+        let fieldButtonEnter = fieldLabelButton.enter()
+            .append('button')
+            .classed('hoot-field-label-button', true )
+            .call(svgIcon('#iD-icon-inspect', 'adv-opt-icon', ''))
+                 .on('click', function () {
+                        d3.event.stopPropagation();
+                        d3.event.preventDefault();
+
+                        let getDescId = d3.select(`#${d.id}`);
+
+                        let getParent = d3.select(this.parentNode.parentNode);
+
+                        if (this.showing) {
+                            d3.select('.form-field').remove();
+                            d3.select('.adv-opt-reference').remove();
+                            this.showing = false;
+                        }
+                        else {
+                            if (d.input === 'checkbox') {
+                                getParent
+                                    .append('div')
+                                    .classed('form-field', true)
+                                    .append('div')
+                                    .classed('adv-opt-reference keyline-top', true)
+                                    .style('max-height', '200px')
+                                    .append('p')
+                                    .classed('adv-opts-reference-description adv-top', true)
+                                    .text( d.description ? d.description : 'no description available');
+
+                                this.showing = true;
+                            } else {
+                                getDescId
+                                    .append('div')
+                                    .classed('form-field', true)
+                                    .append('div')
+                                    .classed('adv-opt-reference keyline-top', true)
+                                    .style('max-height', '200px')
+                                    .append('p')
+                                    .classed('adv-opts-reference-description adv-top', true)
+                                    .text(d.description ? d.description : 'no description available' );
+
+                                this.showing = true;
+                            }
+
+                        }
+                    });
+
+        fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
     }
 
     fieldInput(fieldContainer, isCleaning) {
@@ -511,74 +567,12 @@ export default class AdvancedOpts {
 
             const isCleaning = d.name === 'Cleaning';
 
-            function keylineCheck(check) {
-               if ( check.datum().input === 'checkbox' ) {
-                return 'keyline-left';
-               }
-               else {
-                   return 'keyline-top';
-               }
-
-            }
-
             fieldContainer.each(function (d) {
                 let fieldContainer = d3.select(this);
 
                 fieldContainer
                     .call(instance.fieldLabel)
                     .call(instance.fieldInput, isCleaning);
-
-                fieldContainer
-                    .append('button')
-                    .classed(keylineCheck(fieldContainer), true)
-                    .attr('id', 'adv-opt-btn')
-                    .call(svgIcon('#iD-icon-inspect', 'adv-opt-icon', ''))
-                    .on('click', function () {
-                        d3.event.stopPropagation();
-                        d3.event.preventDefault();
-
-                        d3.select(this).classed('tag-reference-loading', true);
-
-                        let getDescId = d3.select(`#${d.id}`);
-
-                        let getParent = d3.select(this.parentNode.parentNode);
-
-                        if (this.showing) {
-                            d3.select('.form-field').remove();
-                            d3.select('.adv-opt-reference').remove();
-                            this.showing = false;
-                            d3.select(this).classed('tag-reference-loading', false);
-
-                        }
-                        else {
-                            if (d.input === 'checkbox') {
-                                getParent
-                                    .append('div')
-                                    .classed('form-field', true)
-                                    .append('div')
-                                    .classed('adv-opt-reference keyline-top', true)
-                                    .style('max-height', '200px')
-                                    .append('p')
-                                    .classed('adv-opts-reference-description adv-top', true)
-                                    .text( d.description ? d.description : 'no description available');
-
-                                this.showing = true;
-                            } else {
-                                getDescId
-                                    .append('div')
-                                    .classed('form-field', true)
-                                    .append('div')
-                                    .classed('adv-opt-reference keyline-top', true)
-                                    .style('max-height', '200px')
-                                    .append('p')
-                                    .classed('adv-opts-reference-description adv-top', true)
-                                    .text(d.description ? d.description : 'no description available' );
-
-                                this.showing = true;
-                            }
-
-                        }
-                    });
             });
         });
     }
