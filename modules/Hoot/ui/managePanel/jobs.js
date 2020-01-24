@@ -270,7 +270,7 @@ export default class Jobs extends Tab {
                 let user = JSON.parse( localStorage.getItem( 'user' ) );
 
 
-                if (d.userId === user.id) {
+                if (d.userId === user.id || Hoot.users.isAdmin()) {
                     //Get logging for the job
                     actions.push({
                         title: 'view log',
