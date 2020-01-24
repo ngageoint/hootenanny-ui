@@ -288,7 +288,6 @@ export default class FormFactory {
             .attr( 'value', d => d.value )
             .attr( 'readonly', d => d.readOnly )
             .attr( 'disabled', d => d.disabled )
-            .attr( 'title', d => d.title )
             .classed( 'text-input', true )
             .on( 'keyup', function( d ) {
                 if ( d.onChange ) {
@@ -309,7 +308,6 @@ export default class FormFactory {
             .append( 'input' )
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
-            .attr( 'title', d => d.title )
             .property( 'checked', d => d.checked )
             .on( 'change', d => d.onChange && d.onChange(d) );
     }

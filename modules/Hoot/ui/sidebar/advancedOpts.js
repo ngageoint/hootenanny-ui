@@ -494,6 +494,7 @@ export default class AdvancedOpts {
             let fieldContainerEnter = fieldContainer.enter()
                 .append( 'div' )
                 .attr( 'id', d => d.id )
+                .attr( 'title', d => d.description )
                 .classed( 'hoot-form-field small contain keyline-all round', true );
 
             fieldContainer = fieldContainer.merge(fieldContainerEnter);
