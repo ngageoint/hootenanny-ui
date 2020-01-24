@@ -379,17 +379,10 @@ export default class ReviewBookmarks extends Tab {
     }
 
     paginateBookmarks() {
-        if ( this.bookmarks.length === 0 ) {
-            // last bookmark on page was deleted so move back one page and re-render
-            if ( this.currentPageIdx > 0 ) {
-                this.currentPageIdx--;
-                this.loadBookmarks();
-            }
-            // When user no longer has any bookmarks under their name
-            else {
-                this.clearFilter();
-            }
-
+        // last bookmark on page was deleted so move back one page and re-render
+        if ( this.bookmarks.length === 0 && this.currentPageIdx > 0 ) {
+            this.currentPageIdx--;
+            this.loadBookmarks();
             return;
         }
 
