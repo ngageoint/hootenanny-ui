@@ -53,7 +53,6 @@ export default class GrailDatasetPicker {
         let formId = 'grailDatasetForm';
         this.form  = this.formFactory.generateForm( 'body', formId, metadata );
 
-        // this.formFactory.createToggle(this.form);
         this.submitButton = d3.select( `#${ metadata.button.id }` );
         this.updateSubmitButton();
     }
@@ -65,7 +64,7 @@ export default class GrailDatasetPicker {
             });
     }
 
-    handleSubmit(d) {
+    handleSubmit() {
         let target = d3.select('#refDataset'),
             refId  = parseInt(target.attr( '_value' ), 10);
 
