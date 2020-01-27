@@ -319,7 +319,6 @@ export default class AdvancedOpts {
                             if (d.input === 'checkbox') {
                                 getDescId.classed('hoot-form-field-checkbox', true);
                                 getDescId.classed('hoot-form-field-checkbox-clicked', false);
-
                             }
 
                             d3.select('.adv-opt-reference').remove();
@@ -329,6 +328,8 @@ export default class AdvancedOpts {
                             if (d.input === 'checkbox') {
                                 getDescId.classed('hoot-form-field-checkbox', false);
                                 getDescId.classed('hoot-form-field-checkbox-clicked', true );
+
+                            }
                                 getDescId
                                     .append('div')
                                     .classed('adv-opt-reference keyline-top', true)
@@ -337,19 +338,21 @@ export default class AdvancedOpts {
                                     .text( d.description ? d.description : 'no description available');
 
                                 this.showing = true;
-                            } else {
-                                getDescId
-                                    .append('div')
-                                    .classed('adv-opt-reference keyline-top', true)
-                                    .style('max-height', '200px')
-                                    .append('p')
-                                    .classed('adv-opts-reference-description adv-top', true)
-                                    .text(d.description ? d.description : 'no description available' );
-
-                                this.showing = true;
                             }
 
-                        }
+                            // else {
+                            //     getDescId
+                            //         .append('div')
+                            //         .classed('adv-opt-reference keyline-top', true)
+                            //         .style('max-height', '200px')
+                            //         .append('p')
+                            //         .classed('adv-opts-reference-description adv-top', true)
+                            //         .text(d.description ? d.description : 'no description available' );
+
+                            //     this.showing = true;
+                            // }
+
+
                     });
 
         fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
