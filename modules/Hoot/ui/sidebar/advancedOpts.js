@@ -339,20 +339,6 @@ export default class AdvancedOpts {
 
                                 this.showing = true;
                             }
-
-                            // else {
-                            //     getDescId
-                            //         .append('div')
-                            //         .classed('adv-opt-reference keyline-top', true)
-                            //         .style('max-height', '200px')
-                            //         .append('p')
-                            //         .classed('adv-opts-reference-description adv-top', true)
-                            //         .text(d.description ? d.description : 'no description available' );
-
-                            //     this.showing = true;
-                            // }
-
-
                     });
 
         fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
