@@ -2209,6 +2209,7 @@ div.combobox {
     white-space: normal !important;
     overflow-wrap: break-word;
     word-wrap: break-word;
+    padding: 0px 5px 0px 5px;
 }
 
 .adv-top {
@@ -2220,17 +2221,12 @@ div.combobox {
 }
 
 .hoot-field-label-button {
-    height: 100%;
-    border: 1px solid #ccc;
-    border-radius: 0 3px 3px 0;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 32px;
-    height: 32px;
-    background: #f6f6f6;
-    border-left-width: 1px;
-    border-right-width: 0;
+        border: 1px solid #ccc;
+        border-radius: 0 3px 3px 0;
+        height: inherit;
+        width: 10%;
+        background: #f6f6f6;
+        border-left-width: 1px;
 }
 
 .checkbox-opt {
@@ -2240,6 +2236,7 @@ div.combobox {
 .adv-opts-reference .adv-opts-reference-description {
     margin: 10px 5px 0 5px;
     margin-top: 10px;
+
 }
 
 .tag-reference-body .tag-reference-description {

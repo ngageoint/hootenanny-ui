@@ -145,14 +145,13 @@
 
         .adv-opts-header {
             font-weight: bold;
-            padding: 5px 15px;
-            flex: none;
+            padding: 0px 0px 0px 5px;
         }
 
         label {
             display: inline-block;
             white-space: initial;
-            padding: 0;
+            //padding: 0;
 
             span {
                 line-height: 22px;
@@ -164,16 +163,28 @@
         }
     }
 
-    .tag-reference-body {
-        flex: 1 1 auto;
-        width: 100%;
-        overflow: hidden;
-    }
+    .hoot-form-field-checkbox-clicked {
+        flex-wrap: wrap;
+        align-items: center;
 
-    .tag-reference-body .tag-reference-description {
-        margin: 10px 5px 0 5px;
+        .hoot-field-title-checkbox-wrap {
+            display: flex;
+            height: inherit;
+            width: 90%;
+            label {
+                align-self: center;
+            }
+        }
+        .hoot-field-input-checkbox-wrap {
+            width: 10%;
+            height: inherit;
+            display: flex;
+            justify-content: center;
+            input {
+                margin: initial;
+            }
+        }
     }
-
 
     .hoot-form-field-checkbox {
         flex-direction: row;
@@ -182,13 +193,13 @@
         .hoot-field-title-checkbox-wrap {
             display: flex;
             height: inherit;
-            width: 75%;
+            width: 90%;
             label {
                 align-self: center;
             }
         }
         .hoot-field-input-checkbox-wrap {
-            width: 15%;
+            width: 10%;
             height: inherit;
             display: flex;
             justify-content: center;

@@ -315,21 +315,23 @@ export default class AdvancedOpts {
 
                         let getDescId = d3.select(`#${d.id}`);
 
-                        let getParent = d3.select(this.parentNode.parentNode);
+                        if (this.showing && d3.select('.adv-opt-reference').datum().id  === d.id ) {
+                            if (d.input === 'checkbox') {
+                                getDescId.classed('hoot-form-field-checkbox', true);
+                                getDescId.classed('hoot-form-field-checkbox-clicked', false);
 
-                        if (this.showing) {
-                            d3.select('.form-field').remove();
+                            }
+
                             d3.select('.adv-opt-reference').remove();
                             this.showing = false;
                         }
                         else {
                             if (d.input === 'checkbox') {
-                                getParent
-                                    .append('div')
-                                    .classed('form-field', true)
+                                getDescId.classed('hoot-form-field-checkbox', false);
+                                getDescId.classed('hoot-form-field-checkbox-clicked', true );
+                                getDescId
                                     .append('div')
                                     .classed('adv-opt-reference keyline-top', true)
-                                    .style('max-height', '200px')
                                     .append('p')
                                     .classed('adv-opts-reference-description adv-top', true)
                                     .text( d.description ? d.description : 'no description available');
@@ -337,8 +339,6 @@ export default class AdvancedOpts {
                                 this.showing = true;
                             } else {
                                 getDescId
-                                    .append('div')
-                                    .classed('form-field', true)
                                     .append('div')
                                     .classed('adv-opt-reference keyline-top', true)
                                     .style('max-height', '200px')
