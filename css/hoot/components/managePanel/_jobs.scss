@@ -57,9 +57,7 @@
         }
     }
 
-    i.material-icons {
-         vertical-align: bottom;
-    }
+
     i.action, i.sort, i.filter {
         cursor: pointer;
     }
@@ -105,4 +103,8 @@ h3.jobs-history {
     &:hover {
         background-color: #f6f6f6
     }
+}
+
+i.material-icons {
+     vertical-align: bottom;
 }
