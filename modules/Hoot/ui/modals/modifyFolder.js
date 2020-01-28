@@ -76,7 +76,7 @@ export default class ModifyFolder {
 
         this.folderNameInput.property( 'value', this.data[0].name );
         this.pathNameInput.property( 'value', this.pathName );
-        this.folderVisibilityInput.property( 'checked', this.data.public );
+        this.folderVisibilityInput.property( 'checked', this.calcVisibility() );
         this.submitButton.node().disabled = false;
 
         return this;
@@ -88,7 +88,7 @@ export default class ModifyFolder {
             str              = node.value,
 
             reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
-            unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
+            unallowedPattern = new RegExp( /[~`#$%\^&*+=\[\]\\';/!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
         if ( !str.length ||
@@ -106,6 +106,21 @@ export default class ModifyFolder {
         this.submitButton.node().disabled = !valid;
     }
 
+    /**
+     * checks all the folders in the list (move operation will be multiple folders while modife is only 1)
+     * if all folders are public it will return true, else returns false (even if all are public but 1 selected isn't)
+     * @returns {boolean}
+     */
+    calcVisibility() {
+        let allPublic = true;
+
+        this.data.forEach( data => {
+            allPublic = (allPublic && data.public);
+        } );
+
+        return allPublic;
+    }
+
     async handleSubmit() {
         let folderName = this.folderNameInput.property( 'value' ),
             pathName   = this.pathNameInput.property( 'value' ),
@@ -113,7 +128,9 @@ export default class ModifyFolder {
             folderId   = _get( _find( Hoot.folders.folderPaths, folder => folder.path === pathName ), 'id' ) || 0;
 
         // We do this because if user only changes visibility
-        if ( ( folderName !== this.data.name || pathName !== this.pathName ) && Hoot.folders.exists( folderName, folderId ) ) {
+        if ( ( folderName !== this.data.name || pathName !== this.pathName ) &&
+            Hoot.folders.exists( folderName, folderId ) &&
+            this.calcVisibility() === isPublic) {
             let message = 'A folder already exists with this name in the destination path. Please remove the old folder or select a new name for this folder.',
                 type    = 'warn';
 
@@ -134,7 +151,7 @@ export default class ModifyFolder {
             let modParams = {
                 mapId: folder.id,
                 inputType: folder.type,
-                modName: folder.name
+                modName: folderName
             };
 
             let updateParams = {
