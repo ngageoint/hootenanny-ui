@@ -13,11 +13,6 @@ import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
 import { tooltip }    from '../../../util/tooltip';
 
-import {
-    event as d3_event,
-    select as d3_select
-} from 'd3-selection';
-import { get } from 'lodash-es';
 
 let instance = null;
 export default class AdvancedOpts {
