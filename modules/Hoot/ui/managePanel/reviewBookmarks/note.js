@@ -59,14 +59,8 @@ export default class Note {
     }
 
     renderTitle() {
-        let date          = new Date( this.data.modifiedAt ).toLocaleString(),
-            createByEmail = 'anonymous',
-            uid           = this.data.modifiedBy ? this.data.modifiedBy : this.data.userId;
+        let date = new Date( this.data.modifiedAt ).toLocaleString();
 
-        if ( uid && uid > -1 ) {
-            createByEmail = Hoot.config.users[ uid ].email;
-        }
-
-        return `User ${ createByEmail } commented at ${ date }`;
+        return `User ${ Hoot.user().display_name } commented at ${ date }`;
     }
 }
