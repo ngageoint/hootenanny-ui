@@ -310,13 +310,13 @@ export default class AdvancedOpts {
 
                         let getDescId = d3.select(`#${d.id}`);
 
-                        if (this.showing && d3.select('.adv-opt-reference').datum().id  === d.id ) {
+                        if ( this.showing && d.id === d3.select(this).datum().id ) {
                             if (d.input === 'checkbox') {
                                 getDescId.classed('hoot-form-field-checkbox', true);
                                 getDescId.classed('hoot-form-field-checkbox-clicked', false);
                             }
 
-                            d3.select('.adv-opt-reference').remove();
+                            getDescId.select('.adv-opt-reference').remove();
                             this.showing = false;
                         }
                         else {

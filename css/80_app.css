@@ -2221,12 +2221,9 @@ div.combobox {
 }
 
 .hoot-field-label-button {
-        border: 1px solid #ccc;
-        border-radius: 0 3px 3px 0;
         height: inherit;
         width: 10%;
         background: #f6f6f6;
-        border-left-width: 1px;
 }
 
 .checkbox-opt {
