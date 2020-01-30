@@ -145,6 +145,7 @@ export default class ModifyFolder {
         }
 
         let requests = [];
+        let visibilityParamsList = [];
         let message;
 
         this.data.forEach( function(folder) {
@@ -170,20 +171,29 @@ export default class ModifyFolder {
                 requests.push( Hoot.api.modify( modParams ) );
                 message += 'renamed folder';
             }
-            if ( pathName !== folder.path ) {
+            if ( pathName !== '' && pathName !== folder.path ) {
                 requests.push( Hoot.api.updateFolder( updateParams ) );
                 if (message.substr(-1) !== ' ') message += ' & ';
                 message += 'moved folder';
             }
+
             if ( folder.public !== isPublic ) {
-                requests.push( Hoot.api.updateVisibility( visibilityParams ) );
+                visibilityParamsList.push( visibilityParams );
                 if (message.substr(-1) !== ' ') message += ' & ';
-                message += `changed visibility to ${ visibilityParams.visibility }`;
+                message += `changed visibility to ${ visibilityParamsList.visibility }`;
             }
 
         } );
 
         this.processRequest = Promise.all(requests)
+            .then( () => {
+                let visibilityRequests = [];
+                visibilityParamsList.forEach( params => {
+                    visibilityRequests.push( Hoot.api.updateVisibility( params ) );
+                } );
+
+                return Promise.all(visibilityRequests);
+            })
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( () => {
