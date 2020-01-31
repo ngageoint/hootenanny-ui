@@ -2223,7 +2223,11 @@ div.combobox {
 .hoot-field-label-button {
         height: inherit;
         width: 10%;
-        background: #f6f6f6;
+        background-color: #f6f6f6 !important;
+}
+
+.hoot-field-label-button:hover {
+    background-color: #ececec !important;
 }
 
 .checkbox-opt {
