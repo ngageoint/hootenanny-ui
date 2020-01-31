@@ -8,6 +8,7 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
+import _forEach   from 'lodash-es/forEach';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
@@ -415,9 +416,15 @@ export default class AdvancedOpts {
     }
 
     createGroups(advOpts) {
+        let cleanOpts = _forEach( advOpts, function(a) {
+            if ( a.name.includes('/') ) {
+                a.name = a.name.replace('/', '');
+            }
+            return a;
+        }, {});
         let group = this.contentDiv
                 .selectAll( '.form-group' )
-                .data( advOpts );
+                .data( cleanOpts );
 
         group.exit()
             .remove();
