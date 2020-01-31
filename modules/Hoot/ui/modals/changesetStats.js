@@ -176,12 +176,17 @@ export default class ChangesetStats {
         let secondaryName;
         if (this.job.tags && this.job.tags.input2) {
             secondaryName = Hoot.layers.findBy('id', Number(this.job.tags.input2)).name;
+            Hoot.context.storage('source', secondaryName);
+        }
+
+        if (!Hoot.context.storage('hashtags')) {
+            Hoot.context.storage('hashtags', '#hootenanny');
         }
 
         this.tags = {
             comment: Hoot.context.storage('comment') || '',
-            hashtags: Hoot.context.storage('hashtags') || '#hootenanny',
-            source: secondaryName || Hoot.context.storage('source')
+            hashtags: Hoot.context.storage('hashtags') || '',
+            source: Hoot.context.storage('source') || ''
         };
 
         this.changesetSection
