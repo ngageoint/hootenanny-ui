@@ -180,7 +180,7 @@ export default class ModifyFolder {
             if ( folder.public !== isPublic ) {
                 visibilityParamsList.push( visibilityParams );
                 if (message.substr(-1) !== ' ') message += ' & ';
-                message += `changed visibility to ${ visibilityParamsList.visibility }`;
+                message += `changed visibility to ${ visibilityParams.visibility }`;
             }
 
         } );
