@@ -1,0 +1,13 @@
+{
+    "icon": "maki-airport",
+    "geometry": [
+        "area",
+        "line"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Taxiway",
+    "hoot:tagschema":"TDSv70",
+    "hoot:fcode": "GB075",
+    "name": "Taxiway (GB075)"
+}
