@@ -416,12 +416,9 @@ export default class AdvancedOpts {
     }
 
     createGroups(advOpts) {
-        let cleanOpts = _forEach( advOpts, function(a) {
-            if ( a.name.includes('/') ) {
-                a.name = a.name.replace('/', '');
-            }
-            return a;
-        }, {});
+
+        let cleanOpts = instance.checkName(advOpts);
+
         let group = this.contentDiv
                 .selectAll( '.form-group' )
                 .data( cleanOpts );
@@ -540,6 +537,20 @@ export default class AdvancedOpts {
             } );
 
         return disabledFeatures;
+    }
+
+    /**
+     * clean opt names, allows GenericPoint/Polygon opts to render in advopts panel
+     */
+    checkName(opts) {
+       let allOpts =_forEach( opts, function(a) {
+                if ( a.name.includes('/') ) {
+                    a.name = a.name.replace('/', '');
+                }
+                return a;
+        }, {} );
+
+        return allOpts;
     }
 
     getOptions() {
