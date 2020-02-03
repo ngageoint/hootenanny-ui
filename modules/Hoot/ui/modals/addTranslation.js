@@ -32,6 +32,7 @@ export default class AddTranslation {
         this.descriptionInput = d3.select( '#translationSaveDescription' );
         this.templateInput    = d3.select( '#translationTemplate' );
         this.submitButton     = d3.select( '#addTranslationBtn' );
+        this.mappingForm      = d3.select( '.ta-attribute-mapping' );
     }
 
     handleFileDrop() {
@@ -67,6 +68,8 @@ export default class AddTranslation {
             .finally( () => {
                 this.container.remove();
             } );
+
+        this.mappingForm.remove();
     }
 
 }
