@@ -46,7 +46,7 @@ export default class JobCommandInfo {
     parseStatus( jobStatus ) {
         const uuidRegex = '[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}';
         let verbose = false;
-        let cbox = this.form.select('#cboxVerbose')
+        let cbox = this.form.select('#cboxVerbose');
         if (cbox.size() > 0) {
             verbose = cbox.property('checked');
         }
