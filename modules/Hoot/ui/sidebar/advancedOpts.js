@@ -262,6 +262,23 @@ export default class AdvancedOpts {
         }
     }
 
+    toggleDescription(fieldContainer) {
+        fieldContainer.select('.hoot-field-label-button')
+            .on('click', function(d) {
+                let checkHidden = fieldContainer.select('p').property('hidden');
+
+                if ( checkHidden ) {
+                    fieldContainer.select('p').classed('hidden', false);
+                    fieldContainer.select('p').property('hidden', false );
+                }
+                else {
+                    fieldContainer.select('p').classed('hidden', true);
+                    fieldContainer.select('p').property('hidden', true );
+                }
+
+            });
+    }
+
     fieldLabel(fieldContainer) {
         let d = fieldContainer.datum(),
             fieldLabelWrap = fieldContainer
@@ -303,38 +320,7 @@ export default class AdvancedOpts {
         let fieldButtonEnter = fieldLabelButton.enter()
             .append('button')
             .classed('hoot-field-label-button', true )
-            .call(svgIcon('#iD-icon-inspect', 'adv-opt-icon', ''))
-                 .on('click', function () {
-                        d3.event.stopPropagation();
-                        d3.event.preventDefault();
-
-                        let getDescId = d3.select(`#${d.id}`);
-
-                        if ( this.showing && d.id === d3.select(this).datum().id ) {
-                            if (d.input === 'checkbox') {
-                                getDescId.classed('hoot-form-field-checkbox', true);
-                                getDescId.classed('hoot-form-field-checkbox-clicked', false);
-                            }
-
-                            getDescId.select('.adv-opt-reference').remove();
-                            this.showing = false;
-                        }
-                        else {
-                            if (d.input === 'checkbox') {
-                                getDescId.classed('hoot-form-field-checkbox', false);
-                                getDescId.classed('hoot-form-field-checkbox-clicked', true );
-
-                            }
-                                getDescId
-                                    .append('div')
-                                    .classed('adv-opt-reference keyline-top', true)
-                                    .append('p')
-                                    .classed('adv-opts-reference-description adv-top', true)
-                                    .text( d.description ? d.description : 'no description available');
-
-                                this.showing = true;
-                            }
-                    });
+            .call(svgIcon('#iD-icon-inspect', 'adv-opt-icon', ''));
 
         fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
     }
@@ -428,6 +414,44 @@ export default class AdvancedOpts {
 
         }
 
+    }
+
+    fieldDescription(fieldContainer) {
+
+        let d = fieldContainer.datum(),
+            fieldDescriptionWrap = fieldContainer
+                .selectAll( `#${d.id}` )
+                .data([ d ]);
+
+        fieldDescriptionWrap.exit().remove();
+
+        let fieldDescriptionWrapEnter = fieldDescriptionWrap.enter()
+            .append('div');
+
+        fieldDescriptionWrap = fieldDescriptionWrap.merge(fieldDescriptionWrapEnter);
+
+        let fieldOpt = fieldContainer.selectAll(`#${d.id}`)
+            .data([d]);
+
+        fieldOpt.exit().remove();
+
+        let fieldOptDescEnter = fieldOpt.enter()
+            .append('p')
+            .classed('hidden', true )
+            .property('hidden', true)
+            .classed( 'adv-opt-reference keyline-top', true )
+            .text( d.description ? d.description : 'no description available');
+
+        fieldOpt = fieldOpt.merge(fieldOptDescEnter);
+
+        if ( d.input === 'checkbox') {
+            fieldContainer.classed('hoot-form-field-checkbox-clicked', true);
+            instance.toggleDescription(fieldContainer);
+        }
+        else {
+            fieldContainer.classed('hoot-form-field-checkbox-clicked', false);
+            instance.toggleDescription(fieldContainer);
+        }
     }
 
     notNumber(selection, value) {
@@ -556,7 +580,8 @@ export default class AdvancedOpts {
 
                 fieldContainer
                     .call(instance.fieldLabel)
-                    .call(instance.fieldInput, isCleaning);
+                    .call(instance.fieldInput, isCleaning)
+                    .call(instance.fieldDescription);
             });
         });
     }
