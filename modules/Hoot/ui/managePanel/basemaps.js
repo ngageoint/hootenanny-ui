@@ -61,20 +61,15 @@ export default class Basemaps extends Tab {
     }
 
     checkBasemapStatus(basemaps) {
-        let basemap = {
-            available: [],
-            unavailable: []
-        };
-        _forEach(basemaps, function (d) {
 
-            if (d.status === 'enabled' || d.status === 'disabled') {
-                basemap.available.push(d);
-            }
-            else {
-                basemap.unavailable.push(d);
+        let basemapList = [];
+        _forEach( basemaps, function(d) {
+            if ( d.status === 'enabled' || d.status === 'disabled' ) {
+                basemapList.push(d);
             }
         });
-        return basemap;
+        return basemapList;
+
     }
 
     populateBasemaps( basemaps ) {
