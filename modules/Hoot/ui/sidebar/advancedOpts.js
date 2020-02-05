@@ -198,12 +198,12 @@ export default class AdvancedOpts {
             .classed( 'adv-opts-group-title', true)
             .text( d => d.members.length ? `${d.label} Options` : d.label);
 
-        innerLabel.on('click', () => {
+        innerLabel.on('click', function() {
             let input = d3.select( `#${d.name}-toggle` );
 
             if (input.empty()) return;
 
-            let shouldHide = d3.select(this).classed('adv-opt-title-disabled', true );
+            let shouldHide = d3.select(this).classed('adv-opt-title-disabled');
             instance.toggleOption(d, shouldHide, true);
         });
 
