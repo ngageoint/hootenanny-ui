@@ -203,7 +203,7 @@ export default class AdvancedOpts {
 
             if (input.empty()) return;
 
-            let shouldHide = d3.select(this).classed('adv-opt-title-disabled');
+            let shouldHide = d3.select(this).classed('adv-opt-title-disabled', true );
             instance.toggleOption(d, shouldHide, true);
         });
 
