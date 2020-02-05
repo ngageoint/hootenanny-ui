@@ -13,12 +13,14 @@ import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
 import { tooltip }    from '../../../util/tooltip';
 
+
 let instance = null;
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
         this.advancedOptions = [];
         this.conflationOptions = {};
+        this.showing           = false;
     }
 
     static getInstance() {
@@ -260,6 +262,13 @@ export default class AdvancedOpts {
         }
     }
 
+    toggleDescription(fieldContainer) {
+        fieldContainer.select('.hoot-field-label-button')
+            .on('click', function() {
+                fieldContainer.select('p').classed('hidden', !fieldContainer.select('p').classed('hidden') );
+            });
+    }
+
     fieldLabel(fieldContainer) {
         let d = fieldContainer.datum(),
             fieldLabelWrap = fieldContainer
@@ -270,7 +279,8 @@ export default class AdvancedOpts {
 
         let fieldLabelWrapEnter = fieldLabelWrap.enter()
             .append( 'div' )
-            .classed('hoot-field-label-wrap', true);
+            .classed('hoot-field-label-wrap', true );
+
 
         fieldLabelWrap = fieldLabelWrap.merge(fieldLabelWrapEnter);
 
@@ -291,6 +301,18 @@ export default class AdvancedOpts {
             .text( d => d.label );
 
         fieldLabel.merge(fieldLabelEnter);
+
+        let fieldLabelButton = fieldLabelWrap.selectAll( '.hoot-field-label-button' )
+            .data( [d] );
+
+        fieldLabelButton.exit().remove();
+
+        let fieldButtonEnter = fieldLabelButton.enter()
+            .append('button')
+            .classed('hoot-field-label-button', true )
+            .call(svgIcon('#iD-icon-inspect', 'adv-opt-icon', ''));
+
+        fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
     }
 
     fieldInput(fieldContainer, isCleaning) {
@@ -303,7 +325,7 @@ export default class AdvancedOpts {
 
         let fieldInputWrapEnter = fieldInputWrap.enter()
             .append('div')
-            .classed( 'hoot-field-input-wrap', true);
+            .classed( 'hoot-field-input-wrap', true );
 
         fieldInputWrap = fieldInputWrap.merge(fieldInputWrapEnter);
 
@@ -382,6 +404,37 @@ export default class AdvancedOpts {
 
         }
 
+    }
+
+    fieldDescription(fieldContainer) {
+
+        let d = fieldContainer.datum(),
+            fieldDescriptionWrap = fieldContainer
+                .selectAll( `#${d.id}` )
+                .data([ d ]);
+
+        fieldDescriptionWrap.exit().remove();
+
+        let fieldDescriptionWrapEnter = fieldDescriptionWrap.enter()
+            .append('div');
+
+        fieldDescriptionWrap = fieldDescriptionWrap.merge(fieldDescriptionWrapEnter);
+
+        let fieldOpt = fieldContainer.selectAll(`#${d.id}`)
+            .data([d]);
+
+        fieldOpt.exit().remove();
+
+        let fieldOptDescEnter = fieldOpt.enter()
+            .append('p')
+            .classed('hidden', true )
+            .classed( 'adv-opt-reference keyline-top', true )
+            .text( d.description ? d.description : 'no description available');
+
+        fieldOpt = fieldOpt.merge(fieldOptDescEnter);
+
+        fieldContainer.classed('hoot-form-field-checkbox-clicked', d.input === 'checkbox');
+        instance.toggleDescription(fieldContainer);
     }
 
     notNumber(selection, value) {
@@ -506,14 +559,14 @@ export default class AdvancedOpts {
 
             const isCleaning = d.name === 'Cleaning';
 
-            fieldContainer.each(function(d) {
-                let fieldContainer = d3.select( this );
+            fieldContainer.each(function (d) {
+                let fieldContainer = d3.select(this);
 
                 fieldContainer
                     .call(instance.fieldLabel)
-                    .call(instance.fieldInput, isCleaning );
+                    .call(instance.fieldInput, isCleaning)
+                    .call(instance.fieldDescription);
             });
-
         });
     }
 

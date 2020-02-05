@@ -50,7 +50,7 @@
     transition: width 250ms ease-in-out, box-shadow 250ms ease-in, visibility 300ms;
 
     &.visible {
-        width: 350px;
+        width: 450px;
         visibility: visible;
         transition: width 250ms ease-in-out;
     }
@@ -145,14 +145,13 @@
 
         .adv-opts-header {
             font-weight: bold;
-            padding: 5px 15px;
-            flex: none;
+            padding: 0px 0px 0px 5px;
         }
 
         label {
             display: inline-block;
             white-space: initial;
-            padding: 0;
+            //padding: 0;
 
             span {
                 line-height: 22px;
@@ -164,6 +163,29 @@
         }
     }
 
+    .hoot-form-field-checkbox-clicked {
+        flex-wrap: wrap;
+        align-items: center;
+
+        .hoot-field-title-checkbox-wrap {
+            display: flex;
+            height: inherit;
+            width: 90%;
+            label {
+                align-self: center;
+            }
+        }
+        .hoot-field-input-checkbox-wrap {
+            width: 10%;
+            height: inherit;
+            display: flex;
+            justify-content: center;
+            input {
+                margin: initial;
+            }
+        }
+    }
+
     .hoot-form-field-checkbox {
         flex-direction: row;
         align-items: center;
@@ -171,12 +193,63 @@
         .hoot-field-title-checkbox-wrap {
             display: flex;
             height: inherit;
-            width: 85%;
+            width: 90%;
             label {
                 align-self: center;
             }
         }
         .hoot-field-input-checkbox-wrap {
+            width: 10%;
+            height: inherit;
+            display: flex;
+            justify-content: center;
+            input {
+                margin: initial;
+            }
+        }
+    }
+
+    .hoot-form-field-desc {
+        flex-direction: row;
+        align-items: center;
+
+        .hoot-field-title-desc-wrap {
+            display: flex;
+            height: inherit;
+            width: 75%;
+            background:rgba(255,255,255,0.5);
+            label {
+                align-self: center;
+            }
+        }
+        .hoot-field-input-desc-wrap {
+            width: 15%;
+            height: inherit;
+            display: flex;
+            justify-content: center;
+            input {
+                margin: initial;
+            }
+        }
+    }
+
+    .desc-background {
+        background:rgba(255,255,255,0.5);
+    }
+
+    .hoot-form-field-info {
+        flex-direction: row;
+        align-items: center;
+
+        .hoot-field-title-info-wrap {
+            display: flex;
+            height: inherit;
+            width: 85%;
+            label {
+                align-self: center;
+            }
+        }
+        .hoot-field-input-info-wrap {
             width: 15%;
             height: inherit;
             display: flex;
