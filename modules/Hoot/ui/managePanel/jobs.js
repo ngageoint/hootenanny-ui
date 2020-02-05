@@ -648,7 +648,7 @@ export default class Jobs extends Tab {
                     // If the changeset is not stale (i.e. has already been applied)
                     if (d.statusDetail.toUpperCase() !== 'STALE') {
 
-                        // Add action for upload/download of changeset
+                        // Add action for upload of changeset
                         if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
                             //Get info for the derive
                             actions.push({
@@ -661,19 +661,6 @@ export default class Jobs extends Tab {
 
                                             Hoot.events.once( 'modal-closed', () => delete this.changesetStats );
                                         } )
-                                        .catch( err => {
-                                            console.error(err);
-                                            Hoot.message.alert( err );
-                                            return false;
-                                        } );
-                                }
-                            });
-
-                            actions.push({
-                                title: 'download changeset',
-                                icon: 'archive',
-                                action: async () => {
-                                    Hoot.api.saveChangeset( d.jobId )
                                         .catch( err => {
                                             console.error(err);
                                             Hoot.message.alert( err );
@@ -745,6 +732,24 @@ export default class Jobs extends Tab {
                             }
                         }
                     }
+
+                    // Add action for download of changeset
+                    // users can do this even after the changeset has been applied
+                    if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
+                        actions.push({
+                            title: 'download changeset',
+                            icon: 'archive',
+                            action: async () => {
+                                Hoot.api.saveChangeset( d.jobId )
+                                    .catch( err => {
+                                        console.error(err);
+                                        Hoot.message.alert( err );
+                                        return false;
+                                    } );
+                            }
+                        });
+                    }
+
                 }
 
                 props.push({
