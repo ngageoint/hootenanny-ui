@@ -83,7 +83,7 @@ export default class AdvancedOpts {
             .append( 'button' )
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
-            .on( 'click', () => this.createGroups() );
+            .on( 'click', () => this.createGroups(this.advancedOptions) );
     }
 
     createContentDiv() {
