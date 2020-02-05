@@ -264,18 +264,8 @@ export default class AdvancedOpts {
 
     toggleDescription(fieldContainer) {
         fieldContainer.select('.hoot-field-label-button')
-            .on('click', function(d) {
-                let checkHidden = fieldContainer.select('p').property('hidden');
-
-                if ( checkHidden ) {
-                    fieldContainer.select('p').classed('hidden', false);
-                    fieldContainer.select('p').property('hidden', false );
-                }
-                else {
-                    fieldContainer.select('p').classed('hidden', true);
-                    fieldContainer.select('p').property('hidden', true );
-                }
-
+            .on('click', function() {
+                fieldContainer.select('p').classed('hidden', !fieldContainer.select('p').classed('hidden') );
             });
     }
 
@@ -438,20 +428,13 @@ export default class AdvancedOpts {
         let fieldOptDescEnter = fieldOpt.enter()
             .append('p')
             .classed('hidden', true )
-            .property('hidden', true)
             .classed( 'adv-opt-reference keyline-top', true )
             .text( d.description ? d.description : 'no description available');
 
         fieldOpt = fieldOpt.merge(fieldOptDescEnter);
 
-        if ( d.input === 'checkbox') {
-            fieldContainer.classed('hoot-form-field-checkbox-clicked', true);
-            instance.toggleDescription(fieldContainer);
-        }
-        else {
-            fieldContainer.classed('hoot-form-field-checkbox-clicked', false);
-            instance.toggleDescription(fieldContainer);
-        }
+        fieldContainer.classed('hoot-form-field-checkbox-clicked', d.input === 'checkbox');
+        instance.toggleDescription(fieldContainer);
     }
 
     notNumber(selection, value) {
