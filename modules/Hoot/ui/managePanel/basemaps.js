@@ -163,7 +163,7 @@ export default class Basemaps extends Tab {
                 .then( () => instance.loadBasemaps() );
         } );
 
-        _forEach( allBasemaps.unavailable, function( b ) {
+        _forEach( basemaps, function( b ) {
             if ( b.status === 'processing' ) {
                 let alert = {
                     message: `[Basemap]: ${b.name} \nis still processing`,
@@ -171,8 +171,14 @@ export default class Basemaps extends Tab {
                 };
                 Hoot.message.alert( alert );
             }
-            else {
-                Hoot.api.deleteBasemap( b.name );
+            if ( b.status === 'failed') {
+                let alert = {
+                    message: `[Basemap]: ${b.name} failed`,
+                    type: 'error'
+                };
+                Hoot.message.alert( alert );
+                Hoot.api.deleteBasemap( b.name )
+                    .then( () => instance.loadBasemaps() );
             }
         } );
     }
