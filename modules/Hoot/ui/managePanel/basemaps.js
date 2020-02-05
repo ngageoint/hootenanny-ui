@@ -79,7 +79,7 @@ export default class Basemaps extends Tab {
 
         let rows = this.basemapTable
             .selectAll( '.basemap-item' )
-            .data( allBasemaps.available, d => d.name );
+            .data( allBasemaps, d => d.name );
 
         rows.exit().remove();
 
