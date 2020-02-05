@@ -470,8 +470,6 @@ export default class AdvancedOpts {
                     .classed( 'toggle-disabled', !shouldDisable );
             }
 
-
-
             let groupBody = group.selectAll( '.group-body' )
                 .data( [ d ] );
 
@@ -484,7 +482,7 @@ export default class AdvancedOpts {
             groupBody = groupBody.merge(groupBodyEnter);
 
             groupBody
-                .classed( 'hidden', true );
+                .classed( 'hidden', groupBody.classed('hidden') );
 
             let fieldContainer = groupBody.selectAll( '.hoot-form-field' )
                 .data( d => d.members );
