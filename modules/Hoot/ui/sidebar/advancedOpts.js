@@ -8,6 +8,7 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
+import _forEach   from 'lodash-es/forEach';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
@@ -83,7 +84,14 @@ export default class AdvancedOpts {
             .append( 'button' )
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
-            .on( 'click', () => this.createGroups(this.advancedOptions) );
+            .on( 'click', () => {
+                let hiddenOpts = [];
+                let getOpts = d3.selectAll('.group-body.fill-white.hidden').data();
+                _forEach(getOpts, function(a) {
+                    hiddenOpts.push(a.name);
+                });
+                this.createGroups(this.advancedOptions, hiddenOpts);
+            });
     }
 
     createContentDiv() {
@@ -414,7 +422,7 @@ export default class AdvancedOpts {
         notNumber.dispatch( isNumber ? 'mouseleave' : 'mouseenter' );
     }
 
-    createGroups(advOpts) {
+    createGroups(advOpts, hiddenOpts ) {
         let group = this.contentDiv
                 .selectAll( '.form-group' )
                 .data( advOpts );
@@ -482,7 +490,7 @@ export default class AdvancedOpts {
             groupBody = groupBody.merge(groupBodyEnter);
 
             groupBody
-                .classed( 'hidden', groupBody.classed('hidden') );
+                .classed('hidden', hiddenOpts ? hiddenOpts.includes(d.name) : true );
 
             let fieldContainer = groupBody.selectAll( '.hoot-form-field' )
                 .data( d => d.members );
