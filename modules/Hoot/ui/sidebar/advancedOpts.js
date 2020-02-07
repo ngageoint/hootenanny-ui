@@ -8,12 +8,10 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
-import _forEach   from 'lodash-es/forEach';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
 import { tooltip }    from '../../../util/tooltip';
-import { get } from 'lodash-es';
 
 let instance = null;
 export default class AdvancedOpts {
@@ -87,7 +85,7 @@ export default class AdvancedOpts {
             .text( 'Reset' )
             .on( 'click', () => {
                 let showingOpts = [];
-                let getOpts = d3.selectAll('.group-body.fill-white')
+                d3.selectAll('.group-body.fill-white')
                     .each(function(a) {
                         if ( !this.classList.contains('hidden') ) {
                             showingOpts.push(a.name);
