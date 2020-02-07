@@ -85,7 +85,16 @@ export default class AdvancedOpts {
             .append( 'button' )
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
-            .on( 'click', () => this.createGroups() );
+            .on( 'click', () => {
+                let showingOpts = [];
+                d3.selectAll('.group-body.fill-white')
+                    .each(function(a) {
+                        if ( !this.classList.contains('hidden') ) {
+                            showingOpts.push(a.name);
+                        }
+                    } );
+                this.createGroups(this.advancedOptions, showingOpts);
+            });
     }
 
     createContentDiv() {
@@ -200,7 +209,7 @@ export default class AdvancedOpts {
             .classed( 'adv-opts-group-title', true)
             .text( d => d.members.length ? `${d.label} Options` : d.label);
 
-        innerLabel.on('click', () => {
+        innerLabel.on('click', function() {
             let input = d3.select( `#${d.name}-toggle` );
 
             if (input.empty()) return;
@@ -467,7 +476,7 @@ export default class AdvancedOpts {
         notNumber.dispatch( isNumber ? 'mouseleave' : 'mouseenter' );
     }
 
-    createGroups(advOpts) {
+    createGroups(advOpts, showingOpts = [] ) {
         let group = this.contentDiv
                 .selectAll( '.form-group' )
                 .data( advOpts );
@@ -523,8 +532,6 @@ export default class AdvancedOpts {
                     .classed( 'toggle-disabled', !shouldDisable );
             }
 
-
-
             let groupBody = group.selectAll( '.group-body' )
                 .data( [ d ] );
 
@@ -537,7 +544,7 @@ export default class AdvancedOpts {
             groupBody = groupBody.merge(groupBodyEnter);
 
             groupBody
-                .classed( 'hidden', true );
+                .classed('hidden', !showingOpts.includes(d.name));
 
             let fieldContainer = groupBody.selectAll( '.hoot-form-field' )
                 .data( d => d.members );
