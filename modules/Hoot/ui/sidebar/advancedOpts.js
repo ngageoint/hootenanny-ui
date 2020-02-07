@@ -86,10 +86,14 @@ export default class AdvancedOpts {
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
             .on( 'click', () => {
-                let hiddenOpts = [];
-                let getOpts = d3.selectAll('.group-body.fill-white').filter(function() { return !this.classList.contains('hidden'); } ).data();
-                getOpts.forEach( function(a){ hiddenOpts.push(a.name); } );
-                this.createGroups(this.advancedOptions, hiddenOpts);
+                let showingOpts = [];
+                let getOpts = d3.selectAll('.group-body.fill-white')
+                    .each(function(a) {
+                        if ( !this.classList.contains('hidden') ) {
+                            showingOpts.push(a.name);
+                        }
+                    } );
+                this.createGroups(this.advancedOptions, showingOpts);
             });
     }
 
@@ -421,7 +425,7 @@ export default class AdvancedOpts {
         notNumber.dispatch( isNumber ? 'mouseleave' : 'mouseenter' );
     }
 
-    createGroups(advOpts, hiddenOpts = [] ) {
+    createGroups(advOpts, showingOpts = [] ) {
         let group = this.contentDiv
                 .selectAll( '.form-group' )
                 .data( advOpts );
@@ -489,7 +493,7 @@ export default class AdvancedOpts {
             groupBody = groupBody.merge(groupBodyEnter);
 
             groupBody
-                .classed('hidden', !hiddenOpts.includes(d.name));
+                .classed('hidden', !showingOpts.includes(d.name));
 
             let fieldContainer = groupBody.selectAll( '.hoot-form-field' )
                 .data( d => d.members );
