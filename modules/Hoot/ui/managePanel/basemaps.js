@@ -162,25 +162,6 @@ export default class Basemaps extends Tab {
             Hoot.api.deleteBasemap( d.name )
                 .then( () => instance.loadBasemaps() );
         } );
-
-        _forEach( basemaps, function( b ) {
-            if ( b.status === 'processing' ) {
-                let alert = {
-                    message: `[Basemap]: ${b.name} \nis still processing`,
-                    type: 'warn'
-                };
-                Hoot.message.alert( alert );
-            }
-            if ( b.status === 'failed') {
-                let alert = {
-                    message: `[Basemap]: ${b.name} failed`,
-                    type: 'error'
-                };
-                Hoot.message.alert( alert );
-                Hoot.api.deleteBasemap( b.name )
-                    .then( () => instance.loadBasemaps() );
-            }
-        } );
     }
 
     renderBasemap( d ) {
