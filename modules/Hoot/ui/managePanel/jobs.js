@@ -7,6 +7,7 @@ import JobCommandInfo from '../modals/jobCommandInfo';
 import GrailDatasetPicker from '../modals/grailDatasetPicker';
 import { duration } from '../../tools/utilities';
 import { utilKeybinding }    from '../../../util/keybinding';
+import _forEach       from 'lodash-es/forEach';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
 
@@ -192,7 +193,12 @@ export default class Jobs extends Tab {
         if ( d ) {
             try {
                 let basemaps = await Hoot.api.getBasemaps();
-                basemaps.forEach( function(b) { if ( b.jobId === d.jobId ) { Hoot.api.deleteBasemap(d.name); }  } );
+                _forEach(basemaps, function(b) {
+                    if ( b.status === 'failed' ) {
+                        Hoot.api.deleteBasemap(b.name);
+                    }
+
+                } );
             } catch ( e ) {
                 window.console.error( 'Unable to retrieve basemaps' );
                 throw new Error( e );
