@@ -201,12 +201,38 @@ export default class GrailPull {
             return;
         }
 
-        let folderName = 'grail_' + bbox.replace( /,/g, '_' ),
-            pathId = _get( _find( Hoot.folders.folderPaths, folder => folder.name === folderName ), 'id' );
+        let folderName,
+            folderId,
+            pathId,
+            projectName;
 
-        let folderId;
-        if ( !pathId ) {
-            folderId = (await Hoot.folders.addFolder( '', folderName )).folderId;
+        if (Hoot.context.storage('tm:project') && Hoot.context.storage('tm:task')) {
+            /**
+             * If we are coming from tasking manager, and we dont' have project folder, add it.
+             */
+            projectName = Hoot.context.storage('tm:project');
+            if (!_get(_find(Hoot.folders.folderPaths, folder => folder.name === projectName), 'id')) {
+                await Hoot.folders.addFolder('', projectName);
+                Hoot.context.storage('tm:project', null);
+            }
+
+            /**
+             * Then make the folderName the taskname.
+             */
+            folderName = Hoot.context.storage('tm:task');
+            Hoot.context.storage('tm:task', null);
+        } else {
+            folderName = 'grail_' + bbox.replace(/,/g, '_');
+        }
+
+
+        pathId = _get(_find(Hoot.folders.folderPaths, folder => folder.name === folderName), 'id');
+
+        if (!pathId) {
+            /**
+             * If we are coming from TM with a project, make it the parent, otherwise parent is root.
+             */
+            folderId = (await Hoot.folders.addFolder( projectName || '', folderName )).folderId;
         } else {
             folderId = pathId;
         }
