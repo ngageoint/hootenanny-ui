@@ -14,11 +14,30 @@ export default class EditBookmarkNote {
         this.type     = type;
         this.data     = noteData;
 
+        this.usersList = Object.values(Hoot.config.users).map( user => {
+            return {
+                name: user.display_name,
+                id: user.id
+            };
+        } );
+
         let label = type === 'edit' ? 'Edit' : 'Add';
 
         this.formMeta = {
             title: `${label} Comment`,
             form: [
+                {
+                    id: 'tagUser',
+                    containerId: 'tagUserContainer',
+                    label: 'Tag Users (Optional)',
+                    inputType: 'multiCombobox',
+                    data: this.usersList,
+                    readonly: true,
+                    valueKey: 'name',
+                    _valueKey: 'id',
+                    placeholder: 'Select user',
+                    onChange: d => this.userTagSelect( d )
+                },
                 {
                     id: 'noteComment',
                     label: 'Comment',
@@ -39,10 +58,16 @@ export default class EditBookmarkNote {
 
         this.commentInput = this.container.select( '#noteComment' );
         this.submitButton = this.container.select( '#noteSubmitBtn' );
+        this.taggedUsers  = this.container.select( '#tagUserContainer' );
 
         if ( this.type === 'edit' ) {
             this.submitButton.property( 'disabled', false );
             this.commentInput.property( 'value', this.data.note );
+
+            // adds the tag box for each user that is tagged to this bookmark note
+            let notes = this.instance.bookmark.detail.bookmarknotes;
+            let note  = _find( notes, n => n.id === this.data.id );
+            note.taggedUsers.forEach( userId => this.populateTags( Hoot.users.getNameForId(userId), userId ) );
         }
     }
 
@@ -66,6 +91,44 @@ export default class EditBookmarkNote {
         this.updateButtonState();
     }
 
+    // creates the tag list item to show that a user has been tagged and allows removing them from tags
+    populateTags( name, id ) {
+        let listItem = this.taggedUsers.select( '.selectedUserTags' ).append( 'li' )
+            .classed( 'tagItem', true )
+            .attr( 'value' , name)
+            .attr( '_value', id);
+
+        listItem.append( 'span' )
+            .text( name );
+
+        listItem.append( 'a' )
+            .classed( 'remove', true)
+            .text( 'x' )
+            .on( 'click', function() {
+                listItem.remove();
+            });
+    }
+
+    // Handler for the tag user dropdown
+    userTagSelect( data ) {
+        let userTaggedContainer = this.taggedUsers.select( '.selectedUserTags' );
+
+        const addUserValue = this.taggedUsers.select( `#${ data.id }` ),
+              userName = this.taggedUsers.select( '#tagUser' ).node().value,
+              userId = addUserValue.attr('_value');
+
+        // See if the user has already been tagged OR selected for potential tagging
+        const isUserSelected = userTaggedContainer.selectAll( 'li' ).filter( function() {
+            return d3.select(this).attr( '_value' ) === userId;
+        } );
+
+        if ( isUserSelected.size() === 0 ) {
+            this.populateTags( userName, userId );
+        }
+
+        addUserValue.node().value = '';
+    }
+
     updateButtonState() {
         let comment = this.commentInput.property( 'value' ),
             valid   = true;
@@ -86,27 +149,48 @@ export default class EditBookmarkNote {
         this.submitButton.node().disabled = !valid;
     }
 
+    // Used to calculate list of unique user id's across all the notes for a particular bookmark
+    calcTaggedUsers() {
+        const allNotes = this.instance.bookmark.detail.bookmarknotes;
+        let allTaggedUserIds = [];
+
+        allNotes.forEach( data => {
+            allTaggedUserIds = allTaggedUserIds.concat( data.taggedUsers );
+        } );
+
+        return [ ...new Set( allTaggedUserIds ) ];
+    }
+
     async handleSubmit() {
         let comment         = this.commentInput.property( 'value' ),
             currentBookmark = this.instance.bookmark,
             note            = {},
             user            = Hoot.user().id;
 
+        const taggedUserIds = this.taggedUsers.selectAll( '.tagItem' ).nodes().map( data =>
+            Number( d3.select(data).attr( '_value' ) )
+        );
+
         if ( this.type === 'edit' ) {
             let notes = currentBookmark.detail.bookmarknotes;
             note  = _find( notes, n => n.id === this.data.id );
 
             if ( note ) {
-                note.note       = comment;
-                note.modifiedAt = new Date().getTime();
-                note.modifiedBy = user;
+                note.note        = comment;
+                note.modifiedAt  = new Date().getTime();
+                note.modifiedBy  = user;
+                note.taggedUsers = taggedUserIds;
             }
         } else {
             note.userId = user;
             note.note   = comment;
+            note.taggedUsers = taggedUserIds;
 
             currentBookmark.detail.bookmarknotes.push( note );
         }
+
+        // get array of all the tagged users for the entire bookmark, across all the comments
+        currentBookmark.detail.taggedUsers = this.calcTaggedUsers();
 
         let params = {
             bookmarkId: currentBookmark.id,

@@ -109,7 +109,8 @@ export default class PublishBookmark {
             detail: {
                 bookmarkdetail: { title, desc },
                 bookmarknotes: [ { userId: user, note } ],
-                bookmarkreviewitem: currentReviewItem
+                bookmarkreviewitem: currentReviewItem,
+                taggedUsers: []
             },
             mapId: currentReviewItem.mapId,
             relationId: currentReviewItem.relationId,

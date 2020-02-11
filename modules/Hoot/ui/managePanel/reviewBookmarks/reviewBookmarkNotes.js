@@ -120,10 +120,7 @@ export default class ReviewBookmarkNotes extends Tab {
             .append( 'div' )
             .classed( 'material-icons pointer', true )
             .text( 'refresh' )
-            .on( 'click', function() {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-            } );
+            .on( 'click', () => this.refresh() );
     }
 
     createNotes() {

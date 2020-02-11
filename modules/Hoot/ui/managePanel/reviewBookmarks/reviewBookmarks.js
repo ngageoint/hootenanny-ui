@@ -246,6 +246,7 @@ export default class ReviewBookmarks extends Tab {
     tagBookmarks( bookmarks ) {
         _forEach( bookmarks, bookmark => {
             bookmark.layerName = _get( Hoot.layers.findBy( 'id', bookmark.mapId ), 'name' );
+            bookmark.visibility = _get( Hoot.layers.findBy( 'id', bookmark.mapId ), 'public' );
         } );
 
         return bookmarks;
