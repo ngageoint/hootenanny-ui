@@ -67,7 +67,9 @@ export default class EditBookmarkNote {
             // adds the tag box for each user that is tagged to this bookmark note
             let notes = this.instance.bookmark.detail.bookmarknotes;
             let note  = _find( notes, n => n.id === this.data.id );
-            note.taggedUsers.forEach( userId => this.populateTags( Hoot.users.getNameForId(userId), userId ) );
+            if ( note && note.taggedUsers ) {
+                note.taggedUsers.forEach( userId => this.populateTags( Hoot.users.getNameForId(userId), userId ) );
+            }
         }
     }
 
