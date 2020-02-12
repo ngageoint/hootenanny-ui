@@ -8,10 +8,13 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
+import _range    from 'lodash-es/range';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
 import { tooltip }    from '../../../util/tooltip';
+import { saveAdvancedOpts } from '../../config/domMetadata';
+import FormFactory from '../../tools/formFactory';
 
 
 let instance = null;
@@ -21,6 +24,7 @@ export default class AdvancedOpts {
         this.advancedOptions = [];
         this.conflationOptions = {};
         this.showing           = false;
+        this.formFactory = new FormFactory();
     }
 
     static getInstance() {
@@ -95,6 +99,92 @@ export default class AdvancedOpts {
                     } );
                 this.createGroups(this.advancedOptions, showingOpts);
             });
+
+            header
+                .append( 'div' )
+                .append( 'button' )
+                .classed( 'advanced-opts-reset button secondary strong', true )
+                .text( 'Save Favorites' )
+                .on( 'click', async item => {
+
+                    this.saveOpts = saveAdvancedOpts.call( this );
+
+                    let getAdvOptMembers = [];
+
+                    let favoriteOpts = {
+                        checkebox: [],
+                        input: []
+                    };
+
+                    this.advancedOptions.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
+
+                    let getSelectedOpts = [];
+
+                    for ( let i = 0; i < getAdvOptMembers.length; i++ ) {
+                        getAdvOptMembers[i].map( function (a) {
+                            getSelectedOpts.push(a);
+                        } );
+                    }
+
+                    for ( let j = 0; j < getSelectedOpts.length; j++ ) {
+                        let opt;
+                        opt = getSelectedOpts[j];
+
+                        if ( opt.input === 'checkbox' ) {
+
+                            if ( opt.default !==
+                                d3.select( `#${opt.id}` ).select('input')
+                                    .property( 'checked' ).toString() ) {
+                                        favoriteOpts.checkebox.push(
+                                            {
+                                                input:  opt.id,
+                                                description: opt.description,
+                                                id: opt.id,
+                                                label: opt.label,
+                                                type: opt.type,
+                                                43: d3.select( `#${opt.id}` ).select('input')
+                                                .property( 'checked'),
+                                            }
+                                        );
+                            }
+                        }
+                        else {
+                            if ( d3.select( `#${opt.id}` ).select('input')
+                            .property( 'value') !== opt.default) {
+
+                                favoriteOpts.input.push(
+                                    {
+                                        input:  opt.id,
+                                        description: opt.description,
+                                        id: opt.id,
+                                        label: opt.label,
+                                        type: opt.type,
+                                        value: d3.select( `#${opt.id}` ).select('input')
+                                        .property( 'value'),
+                                    }
+
+                                );
+                            }
+                        }
+
+                    }
+
+                    this.saveOpts[ 0 ].data = favoriteOpts;
+
+                    let metadata = {
+                        title: 'Save Advanced Options',
+                        form: this.saveOpts,
+                        button: {
+                            text: 'Save',
+                            location: 'right',
+                            id: 'importSubmitBtn',
+                            onClick: () => this.handleSubmit()
+                        }
+                    };
+
+                    this.container = this.formFactory.generateForm( 'body', 'add-folder-form', metadata );
+                    return this;
+                });
     }
 
     createContentDiv() {

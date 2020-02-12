@@ -257,6 +257,26 @@ export function importMultiForm() {
     ];
 }
 
+export function saveAdvancedOpts() {
+    return [
+        {
+            label: 'Favorite Adv. Opts Group Name',
+            id: 'addFolderName',
+            class: 'new-folder-name',
+            inputType: 'text',
+            onChange: d => this.validateTextInput( d )
+        },
+        {
+            label: 'Public',
+            id: 'addFolderVisibility',
+            inputType: 'checkbox',
+            value: 'Public',
+            checked: false,
+            class: 'folder-checkbox'
+        },
+    ];
+}
+
 export function addFolderForm() {
     return [
         {
