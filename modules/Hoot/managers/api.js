@@ -1016,7 +1016,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Favorite opts has successfully been saved!',
+                    message: 'Favorite opts have successfully been saved!',
                     type: 'success'
                 };
             } )
