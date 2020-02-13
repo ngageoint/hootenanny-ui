@@ -110,8 +110,6 @@ export default class AdvancedOpts {
 
                     this.saveOpts = new SaveAdvancedOpts().render();
 
-                    //this.saveOpts = saveAdvancedOpts.call( this );
-
                     let getAdvOptMembers = [];
 
                     let favoriteOpts = {
@@ -174,24 +172,9 @@ export default class AdvancedOpts {
 
                     this.saveOpts.saveOpts[0].data = favoriteOpts;
 
-                    // let metadata = {
-                    //     title: 'Save Advanced Options',
-                    //     form: this.saveOpts,
-                    //     button: {
-                    //         text: 'Save',
-                    //         location: 'right',
-                    //         id: 'importSubmitBtn',
-                    //         onClick: () => this.handleSubmit()
-                    //     }
-                    // };
-                    // this.container = new FormFactory().generateForm( 'body', 'save-favorite-opts', metadata );
-
-                    //this.container = this.formFactory.generateForm( 'body', 'save-favorite-opts', metadata );
-
                     Hoot.events.once( 'modal-closed', () => delete this.saveOpts );
 
                     return this;
-
                 });
     }
 
