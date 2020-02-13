@@ -143,7 +143,7 @@ export default class AdvancedOpts {
                                                 id: opt.id,
                                                 label: opt.label,
                                                 type: opt.type,
-                                                43: d3.select( `#${opt.id}` ).select('input')
+                                                value: d3.select( `#${opt.id}` ).select('input')
                                                 .property( 'checked'),
                                             }
                                         );
