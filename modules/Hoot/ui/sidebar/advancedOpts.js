@@ -14,6 +14,7 @@ import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
 import { tooltip }    from '../../../util/tooltip';
 import { saveAdvancedOpts } from '../../config/domMetadata';
+import SaveAdvancedOpts from '../modals/saveAdvancedOpts';
 import FormFactory from '../../tools/formFactory';
 
 
@@ -107,7 +108,9 @@ export default class AdvancedOpts {
                 .text( 'Save Favorites' )
                 .on( 'click', async item => {
 
-                    this.saveOpts = saveAdvancedOpts.call( this );
+                    this.saveOpts = new SaveAdvancedOpts().render();
+
+                    //this.saveOpts = saveAdvancedOpts.call( this );
 
                     let getAdvOptMembers = [];
 
@@ -169,21 +172,26 @@ export default class AdvancedOpts {
 
                     }
 
-                    this.saveOpts[ 0 ].data = favoriteOpts;
+                    this.saveOpts.saveOpts[0].data = favoriteOpts;
 
-                    let metadata = {
-                        title: 'Save Advanced Options',
-                        form: this.saveOpts,
-                        button: {
-                            text: 'Save',
-                            location: 'right',
-                            id: 'importSubmitBtn',
-                            onClick: () => this.handleSubmit()
-                        }
-                    };
+                    // let metadata = {
+                    //     title: 'Save Advanced Options',
+                    //     form: this.saveOpts,
+                    //     button: {
+                    //         text: 'Save',
+                    //         location: 'right',
+                    //         id: 'importSubmitBtn',
+                    //         onClick: () => this.handleSubmit()
+                    //     }
+                    // };
+                    // this.container = new FormFactory().generateForm( 'body', 'save-favorite-opts', metadata );
 
-                    this.container = this.formFactory.generateForm( 'body', 'add-folder-form', metadata );
+                    //this.container = this.formFactory.generateForm( 'body', 'save-favorite-opts', metadata );
+
+                    Hoot.events.once( 'modal-closed', () => delete this.saveOpts );
+
                     return this;
+
                 });
     }
 

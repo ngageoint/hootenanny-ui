@@ -17,7 +17,6 @@ import ModifyFolder       from '../modals/modifyFolder';
 import ExportData from '../modals/exportData';
 import ExportAlphaShape from '../modals/exportAlphaShape';
 import ExportTaskGrid from '../modals/exportTaskGrid';
-import SaveAdvancedOpts from '../modals/saveAdvancedOpts';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -332,12 +331,6 @@ export default class Datasets extends Tab {
                 this.exportAlphaShapeModal = new ExportAlphaShape( d ).render();
 
                 Hoot.events.once( 'modal-closed', () => delete this.exportAlphaShapeModal );
-                break;
-            }
-            case 'saveAdvancedOpts': {
-                this.saveAdvancedOpts = new SaveAdvancedOpts(d).render();
-
-                Hoot.events.once( 'modal-closed', () => delete this.saveAdvancedOpts );
                 break;
             }
         }

@@ -1002,6 +1002,33 @@ export default class API {
         }
     }
 
+    saveFavoriteConflationOpts( opts ) {
+        const params = {
+            path: '/job/review/advancedopts/save',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify( opts.favorites )
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Favorite opts has successfully been saved!',
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error saving favorite opts!',
+                    type: 'error'
+                };
+            } );
+    }
+
     /**
      * Delete a layer from the database
      *

@@ -1,14 +1,5 @@
-import _filter  from 'lodash-es/filter';
-import _find    from 'lodash-es/find';
-import _forEach from 'lodash-es/forEach';
-import _reject  from 'lodash-es/reject';
-import _remove  from 'lodash-es/remove';
-
 import FormFactory        from '../../tools/formFactory';
-import {
-    saveAdvancedOpts,
-}           from '../../config/domMetadata';
-import _get from 'lodash-es/get';
+import { saveAdvancedOpts} from '../../config/domMetadata';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -18,14 +9,14 @@ import _get from 'lodash-es/get';
  */
 export default class SaveAdvancedOpts {
     constructor(parentId = 0) {
-        this.form     = saveAdvancedOpts.call( this );
+        this.saveOpts     = saveAdvancedOpts.call( this );
         this.parentId = parentId;
     }
 
     render() {
         let metadata = {
-            title: 'Add New Folder',
-            form: this.form,
+            title: 'Save Favorite Adv. Opts',
+            form: this.saveOpts,
             button: {
                 text: 'Add',
                 location: 'right',
@@ -34,7 +25,7 @@ export default class SaveAdvancedOpts {
             }
         };
 
-        this.container = new FormFactory().generateForm( 'body', 'add-folder-form', metadata );
+        this.container = new FormFactory().generateForm( 'body', 'save-favorite-opts', metadata );
 
         this.folderNameInput = this.container.select( '#addFolderName' );
         this.folderVisibilityInput = this.container.select( '#addFolderVisibility' );
@@ -84,13 +75,13 @@ export default class SaveAdvancedOpts {
         let name = this.folderNameInput.property( 'value' );
         let isPublic = this.folderVisibilityInput.property( 'checked' );
 
-        let params = {
-            parentId: this.parentId,
-            folderName: name,
+        let opts = {
+            favorites: this.saveOpts[0].data,
+            name: name,
             isPublic: isPublic
         };
 
-        this.processRequest = Hoot.api.addFolder( params )
+        this.processRequest = Hoot.api.saveFavoriteConflationOpts( opts )
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {

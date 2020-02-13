@@ -263,6 +263,7 @@ export function saveAdvancedOpts() {
             label: 'Favorite Adv. Opts Group Name',
             id: 'addFolderName',
             class: 'new-folder-name',
+            data: [],
             inputType: 'text',
             onChange: d => this.validateTextInput( d )
         },
