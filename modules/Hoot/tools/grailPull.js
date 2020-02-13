@@ -213,6 +213,7 @@ export default class GrailPull {
             projectName = Hoot.context.storage('tm:project');
             if (!_get(_find(Hoot.folders.folderPaths, folder => folder.name === projectName), 'id')) {
                 await Hoot.folders.addFolder('', projectName);
+                await Hoot.folders.refreshFolders();
                 Hoot.context.storage('tm:project', null);
             }
 
