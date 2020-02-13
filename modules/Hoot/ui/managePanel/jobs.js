@@ -363,6 +363,11 @@ export default class Jobs extends Tab {
 
 
     populateJobsHistory( jobs ) {
+        // if you're on a page that no longer has data, go to last page with data
+        if ( jobs.length === 0 && (this.paging.getCurrentPage() >= this.getPages()) ) {
+            this.paging.setPage( this.getPages() );
+        }
+
         let that = this;
         let table = this.jobsHistoryTable
             .selectAll('table')
