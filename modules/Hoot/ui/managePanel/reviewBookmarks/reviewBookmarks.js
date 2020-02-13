@@ -104,6 +104,18 @@ export default class ReviewBookmarks extends Tab {
             .attr( 'name', d => d.name )
             .attr( 'readonly', d => d.readonly );
 
+        let showTagged = filtersContainer.append( 'div' )
+            .classed( 'showTaggedBtn', true );
+
+        showTagged.append( 'input' )
+            .attr( 'type', 'checkbox' )
+            .attr( 'id', 'showTagged' )
+            .on( 'change', () => this.loadBookmarks() );
+
+        showTagged.append( 'label' )
+            .attr( 'for', 'showTagged' )
+            .text( 'Show tagged?' );
+
         filtersContainer
             .append( 'div' )
             .append( 'button' )
@@ -234,12 +246,15 @@ export default class ReviewBookmarks extends Tab {
         const layerName = d3.select( '#layerNameFilter' ).node().value;
         const layerId = layerName === '' ? '' : Hoot.layers.findBy( 'name', layerName ).id;
 
+        const showTagged = d3.select( '#showTagged' ).property( 'checked' );
+
         return {
             limit: this.perPageCount,
             orderBy: sortVal,
             creatorFilter: creatorId,
             layerNameFilter: layerId,
-            offset: (this.perPageCount * this.currentPageIdx)
+            offset: (this.perPageCount * this.currentPageIdx),
+            showTagged: showTagged
         };
     }
 
