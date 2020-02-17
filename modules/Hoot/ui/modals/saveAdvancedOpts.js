@@ -81,7 +81,7 @@ export default class SaveAdvancedOpts {
             isPublic: isPublic
         };
 
-        this.processRequest = Hoot.api.saveFavoriteConflationOpts( opts )
+        this.processRequest = Hoot.api.saveFavoriteOpts( opts )
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {

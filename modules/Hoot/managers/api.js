@@ -3,11 +3,6 @@
  * Project: hootenanny-ui
  * @author Matt Putipong on 3/2/18
  *******************************************************************************************************/
-
-import _assign from 'lodash-es/assign';
-import _find   from 'lodash-es/find';
-import _map    from 'lodash-es/map';
-
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
 import { saveAs }    from 'file-saver';
@@ -193,6 +188,41 @@ export default class API {
 
                 return Promise.reject( { message, type } );
             } );
+    }
+
+    getFavoriteAdvOpts() {
+        const params = {
+            path: '/osm/api/0.6/user/getFavoriteOpts',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    saveFavoriteOpts( opts ) {
+        const params = {
+            path: '/osm/api/0.6/user/saveFavoriteOpts',
+            method: 'POST',
+            data: JSON.stringify( opts.favorites )
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'User privileges saved',
+                    status: 200,
+                    type: 'success'
+                };
+        } )
+        .catch( err => {
+            return {
+                data: err.data,
+                message: 'Error saving favorite opts!',
+                type: 'error'
+            };
+        } );
     }
 
     getOAuthRedirectUrl() {

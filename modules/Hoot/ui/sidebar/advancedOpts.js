@@ -113,8 +113,7 @@ export default class AdvancedOpts {
                     let getAdvOptMembers = [];
 
                     let favoriteOpts = {
-                        checkebox: [],
-                        input: []
+                        favorites: []
                     };
 
                     this.advancedOptions.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
@@ -136,15 +135,15 @@ export default class AdvancedOpts {
                             if ( opt.default !==
                                 d3.select( `#${opt.id}` ).select('input')
                                     .property( 'checked' ).toString() ) {
-                                        favoriteOpts.checkebox.push(
+                                        favoriteOpts.favorites.push(
                                             {
-                                                input:  opt.id,
                                                 description: opt.description,
-                                                id: opt.id,
-                                                label: opt.label,
-                                                type: opt.type,
                                                 value: d3.select( `#${opt.id}` ).select('input')
-                                                .property( 'checked'),
+                                                    .property('checked'),
+                                                input: opt.input,
+                                                type: opt.type,
+                                                id: opt.id,
+                                                label: opt.label
                                             }
                                         );
                             }
@@ -153,15 +152,15 @@ export default class AdvancedOpts {
                             if ( d3.select( `#${opt.id}` ).select('input')
                             .property( 'value') !== opt.default) {
 
-                                favoriteOpts.input.push(
+                                favoriteOpts.favorites.push(
                                     {
-                                        input:  opt.id,
                                         description: opt.description,
-                                        id: opt.id,
-                                        label: opt.label,
-                                        type: opt.type,
                                         value: d3.select( `#${opt.id}` ).select('input')
-                                        .property( 'value'),
+                                            .property('value'),
+                                        input: opt.input,
+                                        type: opt.type,
+                                        id: opt.id,
+                                        label: opt.label
                                     }
 
                                 );
