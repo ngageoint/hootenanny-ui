@@ -112,9 +112,7 @@ export default class AdvancedOpts {
 
                     let getAdvOptMembers = [];
 
-                    let favoriteOpts = {
-                        favorites: []
-                    };
+                    let favoriteOpts = [];
 
                     this.advancedOptions.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
 
@@ -135,7 +133,7 @@ export default class AdvancedOpts {
                             if ( opt.default !==
                                 d3.select( `#${opt.id}` ).select('input')
                                     .property( 'checked' ).toString() ) {
-                                        favoriteOpts.favorites.push(
+                                        favoriteOpts.push(
                                             {
                                                 description: opt.description,
                                                 value: d3.select( `#${opt.id}` ).select('input')
@@ -152,7 +150,7 @@ export default class AdvancedOpts {
                             if ( d3.select( `#${opt.id}` ).select('input')
                             .property( 'value') !== opt.default) {
 
-                                favoriteOpts.favorites.push(
+                                favoriteOpts.push(
                                     {
                                         description: opt.description,
                                         value: d3.select( `#${opt.id}` ).select('input')

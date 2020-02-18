@@ -207,9 +207,8 @@ export default class API {
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: {
-                favorites: 'testing'
-            }
+            data: JSON.stringify(opts)
+
         };
 
         return this.request( params )

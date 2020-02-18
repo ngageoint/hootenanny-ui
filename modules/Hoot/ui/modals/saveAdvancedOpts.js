@@ -77,10 +77,8 @@ export default class SaveAdvancedOpts {
         let isPublic = this.folderVisibilityInput.property( 'checked' );
 
         let opts = {
-            name: name,
-            favorites: {
-                    favorteOpts: this.saveOpts[0].data
-            },
+            name: [{name}],
+            favorites: this.saveOpts[0].data,
             isPublic: isPublic
         };
 
