@@ -109,16 +109,16 @@ export default class ReviewBookmarkNotes extends Tab {
             .classed( 'notes-actions', true );
 
         if ( this.reviewItem.resultCount > 0 ) {
-            icons
-                .append( 'div' )
+            icons.append( 'div' )
                 .classed( 'material-icons pointer', true )
+                .attr('title', 'Go to review item')
                 .text( 'launch' )
                 .on( 'click', () => this.jumpToReviewItem() );
         }
 
-        icons
-            .append( 'div' )
+        icons.append( 'div' )
             .classed( 'material-icons pointer', true )
+            .attr('title', 'Refresh')
             .text( 'refresh' )
             .on( 'click', () => this.refresh() );
     }
@@ -126,8 +126,7 @@ export default class ReviewBookmarkNotes extends Tab {
     createNotes() {
         this.notesBody = this.form
             .append( 'div' )
-            .classed( 'notes-fieldset pad2', true )
-            .append( 'fieldset' );
+            .classed( 'notes-fieldset', true );
 
         this.notesBody
             .append( 'button' )

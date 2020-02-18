@@ -352,3 +352,9 @@ input[type=text], textarea {
     border-right: 4px solid transparent;
     border-left: 4px solid transparent;
 }
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

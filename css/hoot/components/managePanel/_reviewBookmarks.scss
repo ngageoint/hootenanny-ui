@@ -58,6 +58,10 @@
         }
     }
 
+    &:hover {
+        background-color: $light;
+    }
+
     .delete-bookmark button {
         height: auto;
     }
@@ -71,8 +75,18 @@
         }
     }
 
+    .bookmark-title {
+        width: 20%;
+        margin-right: 10px;
+    }
+
+    .bookmark-details {
+        width: 20%;
+        margin-right: 10px;
+    }
+
     .bookmark-description {
-        width: 40%;
+        width: 50%;
         min-width: 180px;
         margin-right: 10px;
     }
@@ -173,10 +187,38 @@
     }
 
     .note {
-        margin-bottom: 20px;
+        position: relative;
+        min-height: 40px;
+        padding: 8px 24px 4px 45px;
+        line-height: 20px;
 
-        .form-header {
-            background-color: $dark-opacity10;
+
+        &:hover {
+            background-color: $light;
+        }
+
+        .user-icon {
+            position: absolute;
+            left: 0;
+            display: block;
+            font-size: 40px;
+        }
+
+        .note-meta {
+            display: inline-block;
+
+            .note-user {
+                margin-right: 10px;
+                font-weight: 600;
+            }
+
+            .note-timestamp {
+                color: #464646
+            }
+        }
+
+        .node-edit {
+            float: right;
         }
 
         .field textarea {
