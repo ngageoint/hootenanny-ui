@@ -174,7 +174,7 @@ export default class AdvancedOpts {
                     Hoot.events.once( 'modal-closed', () => delete this.saveOpts );
 
                     return this;
-                });
+                } );
     }
 
     createContentDiv() {

@@ -1,5 +1,6 @@
 import FormFactory        from '../../tools/formFactory';
 import { saveAdvancedOpts} from '../../config/domMetadata';
+import { geoPathHasIntersections } from '../../../geo';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -76,8 +77,10 @@ export default class SaveAdvancedOpts {
         let isPublic = this.folderVisibilityInput.property( 'checked' );
 
         let opts = {
-            favorites: this.saveOpts[0].data,
             name: name,
+            favorites: {
+                    favorteOpts: this.saveOpts[0].data
+            },
             isPublic: isPublic
         };
 
@@ -85,7 +88,7 @@ export default class SaveAdvancedOpts {
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {
-                // TODO: alert - unable to add folder
+                // TODO: alert - unable to save favorite adv opts
             } )
             .finally( () => {
                 this.container.remove();

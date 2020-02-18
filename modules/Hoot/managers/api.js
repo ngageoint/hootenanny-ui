@@ -204,7 +204,12 @@ export default class API {
         const params = {
             path: '/osm/api/0.6/user/saveFavoriteOpts',
             method: 'POST',
-            data: JSON.stringify( opts.favorites )
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                favorites: 'testing'
+            }
         };
 
         return this.request( params )
