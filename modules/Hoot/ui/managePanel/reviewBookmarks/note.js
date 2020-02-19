@@ -55,8 +55,11 @@ export default class Note {
     }
 
     createTextField() {
-        let taggedUsers = this.data.taggedUsers.map( userId => `@${ Hoot.config.users[ userId ].display_name }` )
-            .join( ', ' );
+        let taggedUsers;
+        if ( this.data.taggedUsers ) {
+            taggedUsers = this.data.taggedUsers.map( userId => `@${ Hoot.config.users[ userId ].display_name }` )
+                .join( ', ' );
+        }
 
         let comment;
         if ( taggedUsers ) {

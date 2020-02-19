@@ -462,6 +462,8 @@ export default class Layers {
 
         this.hoot.context.flush();
         this.hoot.ui.sidebar.reset();
+
+        this.hoot.events.emit( 'loaded-layer-removed' );
     }
 
     hideLayer( id ) {

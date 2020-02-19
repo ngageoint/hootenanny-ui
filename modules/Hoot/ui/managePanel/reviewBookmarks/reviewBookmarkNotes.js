@@ -113,7 +113,10 @@ export default class ReviewBookmarkNotes extends Tab {
                 .classed( 'material-icons pointer', true )
                 .attr('title', 'Go to review item')
                 .text( 'launch' )
-                .on( 'click', () => this.jumpToReviewItem() );
+                .on( 'click', () =>  {
+                    Hoot.layers.removeAllLoadedLayers();
+                    this.jumpToReviewItem();
+                } );
         }
 
         icons.append( 'div' )
