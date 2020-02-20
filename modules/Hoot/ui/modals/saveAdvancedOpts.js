@@ -73,13 +73,16 @@ export default class SaveAdvancedOpts {
     }
 
     handleSubmit() {
-        let name = this.folderNameInput.property( 'value' );
+        let favoriteName = this.folderNameInput.property( 'value' );
         let isPublic = this.folderVisibilityInput.property( 'checked' );
 
         let opts = {
-            name: [{name}],
-            favorites: this.saveOpts[0].data,
-            isPublic: isPublic
+            name: favoriteName,
+            members: {
+                members: this.saveOpts[0].data,
+                name: favoriteName,
+                label: favoriteName
+            }
         };
 
         this.processRequest = Hoot.api.saveFavoriteOpts( opts )

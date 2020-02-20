@@ -21,7 +21,16 @@ class LayerConflate extends SidebarForm {
         let that = this;
         await Hoot.api
             .getConflateTypes()
-            .then(conflateTypes => that.conflateTypes = conflateTypes);
+            .then(conflateTypes => that.conflateTypes = conflateTypes );
+        await Hoot.api
+            .getFavoriteAdvOpts()
+            .then( favOpts => {
+                if ( favOpts ) {
+                    Object.keys( favOpts ).forEach(function(a) {
+                        that.conflateTypes.push( a );
+                    });
+                }
+            });
     }
 
     render( layers ) {

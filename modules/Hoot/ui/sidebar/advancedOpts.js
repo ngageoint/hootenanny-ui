@@ -8,12 +8,10 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
-import _range    from 'lodash-es/range';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
 import { tooltip }    from '../../../util/tooltip';
-import { saveAdvancedOpts } from '../../config/domMetadata';
 import SaveAdvancedOpts from '../modals/saveAdvancedOpts';
 import FormFactory from '../../tools/formFactory';
 
@@ -24,6 +22,7 @@ export default class AdvancedOpts {
         this.sidebar         = d3.select( '#hoot-sidebar' );
         this.advancedOptions = [];
         this.conflationOptions = {};
+        this.favortieOptions   = {};
         this.showing           = false;
         this.formFactory = new FormFactory();
     }
@@ -42,6 +41,19 @@ export default class AdvancedOpts {
     async init() {
         if ( _isEmpty( this.conflationOptions ) ) {
             this.conflationOptions = await Hoot.api.getAdvancedOptions('conflationOptions');
+        }
+
+        if ( _isEmpty(this.favoriteOptions) ) {
+            this.favoriteOptions = await Hoot.api.getFavoriteAdvOpts();
+            let favOpts = this.favoriteOptions;
+            let favOptsGroup = [];
+            if ( favOpts ) {
+                Object.keys( favOpts ).forEach( function(a) { if ( favOpts[a] ) {
+                    let parseTest = JSON.parse( favOpts[a] );
+                    favOptsGroup.push(parseTest);
+                } });
+            }
+            this.favoriteOptions = favOptsGroup;
         }
         if ( !this.advancedOptions.length ) {
             this.advancedOptions = await Hoot.api.getAdvancedOptions('hoot2');
@@ -136,7 +148,7 @@ export default class AdvancedOpts {
                                         favoriteOpts.push(
                                             {
                                                 description: opt.description,
-                                                value: d3.select( `#${opt.id}` ).select('input')
+                                                default: d3.select( `#${opt.id}` ).select('input')
                                                     .property('checked'),
                                                 input: opt.input,
                                                 type: opt.type,
@@ -153,7 +165,7 @@ export default class AdvancedOpts {
                                 favoriteOpts.push(
                                     {
                                         description: opt.description,
-                                        value: d3.select( `#${opt.id}` ).select('input')
+                                        default: d3.select( `#${opt.id}` ).select('input')
                                             .property('value'),
                                         input: opt.input,
                                         type: opt.type,
@@ -566,6 +578,10 @@ export default class AdvancedOpts {
             .append( 'div' )
             .classed( 'form-group', true )
             .attr( 'id', d => `${d.name}_group`);
+
+        if ( advOpts.length === 1 ) {
+            d3.select( '#General_group' ).attr('id', `${advOpts[0].name}_group` );
+        }
 
         group = group.merge(groupEnter);
 

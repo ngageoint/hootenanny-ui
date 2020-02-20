@@ -53,7 +53,9 @@ export function layerConflateForm( data ) {
                 // update the renderd default value to match those in the conflation configs...
                 let type = d3.select( '#conflateType' ).property( 'value' );
                 let advancedOpts = AdvancedOpts.getInstance();
+                let favoriteOptions = _cloneDeep( advancedOpts.favoriteOptions );
                 let advOpts = _cloneDeep( advancedOpts.advancedOptions );
+                let favOptCheck = [];
                 if ( !_isEmpty(advancedOpts.conflationOptions[type.toLowerCase()]) ) {
                     let typeDefaults = advancedOpts.conflationOptions[type.toLowerCase()];
                     advOpts = advOpts.map(function(opt) {
@@ -70,8 +72,20 @@ export function layerConflateForm( data ) {
 
                 }
 
-                if (!_isEqual(advOpts, advancedOpts.advancedOptions)) {
-                    advancedOpts.createGroups(advOpts);
+                if (favoriteOptions) {
+                    favoriteOptions.forEach(function (a) {
+                        if (a.name === type) {
+                            favOptCheck.push(a);
+                        }
+                    });
+                }
+                if (!_isEqual(advOpts, advancedOpts.advancedOptions) || favOptCheck.length ) {
+                    if (favOptCheck[0] && favOptCheck[0].name === type) {
+                        advancedOpts.createGroups(favOptCheck);
+                    }
+                    else {
+                        advancedOpts.createGroups(advOpts);
+                    }
                 } else {
                     // disable & enable the attribute conflation group.
                     [ 'Attribute', 'Differential' ].forEach((conflationGroup) => {
