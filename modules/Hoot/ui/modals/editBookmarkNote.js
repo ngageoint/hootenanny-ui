@@ -7,6 +7,8 @@
 import _find from 'lodash-es/find';
 
 import FormFactory from '../../tools/formFactory';
+import _forEach from 'lodash-es/forEach';
+import Note from '../managePanel/reviewBookmarks/note';
 
 export default class EditBookmarkNote {
     constructor( instance, type, noteData ) {
@@ -151,6 +153,19 @@ export default class EditBookmarkNote {
         this.submitButton.node().disabled = !valid;
     }
 
+    addPastComments() {
+        const commentsContainer = this.container.select( '.hoot-menu form' ).insert( 'div', 'fieldset' );
+
+        this.notesBody = commentsContainer
+            .classed( 'notes-fieldset', true );
+
+        _forEach( this.instance.bookmark.detail.bookmarknotes, item => {
+            let note = new Note( this, this.notesBody, true );
+
+            note.render( item );
+        } );
+    }
+
     // Used to calculate list of unique user id's across all the notes for a particular bookmark
     calcTaggedUsers() {
         const allNotes = this.instance.bookmark.detail.bookmarknotes;
@@ -203,7 +218,11 @@ export default class EditBookmarkNote {
         };
 
         return Hoot.api.saveReviewBookmark( params )
-            .then( () => this.instance.refresh() )
+            .then( () => {
+                if ( this.instance.refresh ) {
+                    this.instance.refresh();
+                }
+            } )
             .finally( () => this.container.remove() );
     }
 }

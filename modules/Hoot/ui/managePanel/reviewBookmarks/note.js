@@ -7,9 +7,10 @@
 import EditBookmarkNote from '../../modals/editBookmarkNote';
 
 export default class Note {
-    constructor( instance, notesBody ) {
+    constructor( instance, notesBody, readOnly ) {
         this.instance  = instance;
         this.notesBody = notesBody;
+        this.readOnly = readOnly;
     }
 
     render( noteData ) {
@@ -42,7 +43,7 @@ export default class Note {
                 return new Date( this.data.modifiedAt ).toLocaleString();
             });
 
-        if ( this.data.userId === Hoot.user().id ) {
+        if ( this.data.userId === Hoot.user().id && !this.readOnly) {
             this.note.append( 'div' )
                 .classed( 'node-edit material-icons small pointer', true )
                 .text( 'edit' )

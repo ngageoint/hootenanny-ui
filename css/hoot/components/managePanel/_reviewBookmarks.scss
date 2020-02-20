@@ -141,7 +141,8 @@
     }
 }
 
-#review-bookmark-notes {
+#review-bookmark-notes,
+#editComment {
     .notes-back-button {
         height: 40px !important;
         padding: 0 20px 0 10px;
@@ -236,6 +237,12 @@
             background-color: $light;
             transition: background-color 250ms ease-in-out;
         }
+    }
+}
+
+#editComment {
+    .notes-fieldset {
+        margin-bottom: 10px;
     }
 }
 
