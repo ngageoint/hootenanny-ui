@@ -110,13 +110,15 @@ export default class AdvancedOpts {
                             showingOpts.push(a.name);
                         }
                     } );
+                d3.select('#savFav').classed('hidden', true);
                 this.createGroups(this.advancedOptions, showingOpts);
             });
 
             header
                 .append( 'div' )
                 .append( 'button' )
-                .classed( 'advanced-opts-reset button secondary strong', true )
+                .classed( 'advanced-opts-reset button secondary strong hidden', true )
+                .attr( 'id', 'savFav')
                 .text( 'Save Favorites' )
                 .on( 'click', async item => {
 
@@ -455,6 +457,9 @@ export default class AdvancedOpts {
                 .property( 'checked', d => d.default === 'true' )
                 .on( 'click', function(d) {
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
+                    if ( d.send && d.send.toString() !== d.default ) {
+                        d3.select('#savFav').classed( 'hidden', false );
+                    }
                 });
         } else {
             fieldInput
@@ -483,9 +488,11 @@ export default class AdvancedOpts {
                     .call(d3combobox().data( comboData ))
                     .on( 'change', function(d) {
                         d.send =  d3.select( this ).property( 'value' ) !== d.default;
+                        d3.select('#savFav').classed('hidden', false);
                     })
                     .on( 'keyup', function(d) {
                         d.send =  d3.select( this ).property( 'value' ) !== d.default;
+                        d3.select('#savFav').classed('hidden', false);
                     });
 
             } else { // text input...
@@ -498,6 +505,7 @@ export default class AdvancedOpts {
                             d3.select( `#${d.id}-label-wrao` )
                                 .call(instance.notNumber, value);
                         }
+                        d3.select('#savFav').classed('hidden', false);
                     });
             }
 
@@ -578,10 +586,6 @@ export default class AdvancedOpts {
             .append( 'div' )
             .classed( 'form-group', true )
             .attr( 'id', d => `${d.name}_group`);
-
-        if ( advOpts.length === 1 ) {
-            d3.select( '#General_group' ).attr('id', `${advOpts[0].name}_group` );
-        }
 
         group = group.merge(groupEnter);
 
