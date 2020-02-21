@@ -26,9 +26,9 @@ class LayerConflate extends SidebarForm {
             .getFavoriteAdvOpts()
             .then( favOpts => {
                 if ( favOpts ) {
-                    Object.keys( favOpts ).forEach(function(a) {
-                        that.conflateTypes.push( a );
-                    });
+                    //Object.keys( favOpts ).forEach(function(a) {
+                        that.conflateTypes.push( 'Saved Favorite Adv. Opts' );
+                    //});
                 }
             });
     }

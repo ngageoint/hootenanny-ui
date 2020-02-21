@@ -74,13 +74,13 @@ export function layerConflateForm( data ) {
 
                 if (favoriteOptions) {
                     favoriteOptions.forEach(function (a) {
-                        if (a.name === type) {
+                        if (type === 'Saved Favorite Adv. Opts' ) {
                             favOptCheck.push(a);
                         }
                     });
                 }
                 if (!_isEqual(advOpts, advancedOpts.advancedOptions) || favOptCheck.length ) {
-                    if (favOptCheck[0] && favOptCheck[0].name === type) {
+                    if ( type === 'Saved Favorite Adv. Opts' ) {
                         advancedOpts.createGroups(favOptCheck);
                     }
                     else {
