@@ -1228,15 +1228,7 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data )
-            .catch( err => {
-                return {
-                    data: err.data,
-                    message: err.data || 'Error retrieving overpass stats query!',
-                    status: err.status,
-                    type: 'error'
-                };
-            } );
+            .then( resp => resp.data );
     }
 
     grailPullRailsPortToDb( data, folderId, railsLabel ) {
