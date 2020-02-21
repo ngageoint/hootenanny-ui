@@ -582,12 +582,28 @@ export default class AdvancedOpts {
         group.exit()
             .remove();
 
+        let favOptsEnter = group.enter()
+            .append('div')
+            .classed('form-group', true)
+            .attr('id', group.each(function (a) {
+                for (let i = 0; i < advOpts.length; i++) {
+                    if (a.name === advOpts[i].name) {
+                        d3.select(this).attr('id', `${advOpts[i].name}_group`);
+                }
+            }
+        }));
+
         let groupEnter = group.enter()
             .append( 'div' )
             .classed( 'form-group', true )
-            .attr( 'id', d => `${d.name}_group`);
+            .attr( 'id', d => `${d.name}_group` );
 
-        group = group.merge(groupEnter);
+        if (advOpts.length === this.favoriteOptions.length) {
+            group = group.merge(favOptsEnter);
+        }
+        else {
+            group = group.merge(groupEnter);
+        }
 
         group.each(function(d) {
             let group = d3.select( this ),
