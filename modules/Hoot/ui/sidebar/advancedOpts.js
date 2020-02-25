@@ -96,9 +96,14 @@ export default class AdvancedOpts {
             .classed( 'title', true )
             .text( 'Advanced Conflation Options' );
 
-        // reset button
-        header
+        let favoritesBar = header
             .append( 'div' )
+            .classed( 'favorites-container', true );
+
+        // reset button
+        favoritesBar
+            .append( 'div' )
+            .classed( 'fav-button-placement', true )
             .append( 'button' )
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
@@ -114,8 +119,9 @@ export default class AdvancedOpts {
                 this.createGroups(this.advancedOptions, showingOpts);
             });
 
-            header
+            favoritesBar
                 .append( 'div' )
+                .classed( 'fav-button-placement', true )
                 .append( 'button' )
                 .classed( 'advanced-opts-reset button secondary strong hidden', true )
                 .attr( 'id', 'savFav')
@@ -187,6 +193,18 @@ export default class AdvancedOpts {
 
                     return this;
                 } );
+
+            favoritesBar
+                .append( 'div' )
+                .classed( 'fav-button-placement', true )
+                .append( 'button' )
+                .classed( 'advanced-opts-reset button secondary strong', true )
+                .attr( 'id', 'deleteFav')
+                .text( 'Delete Favorites' )
+                .on( 'click', function() {
+                    console.log( 'yep' );
+                } );
+
     }
 
     createContentDiv() {
@@ -386,7 +404,6 @@ export default class AdvancedOpts {
         fieldLabelWrap = fieldLabelWrap.merge(fieldLabelWrapEnter);
 
         fieldLabelWrap
-            .attr( 'id', d => `${d.id}-label-wrap`)
             .classed( 'adv-opts-header fill-light keyline-bottom round-top', true )
             .classed( 'keyline-bottom', d => d.input !== 'checkbox' )
             .classed( 'round-left hoot-field-title-checkbox-wrap keyline-right', d => d.input === 'checkbox' );
@@ -416,7 +433,7 @@ export default class AdvancedOpts {
         fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
     }
 
-    fieldInput(fieldContainer, isCleaning) {
+    fieldInput(fieldContainer, isCleaning, isFavorites) {
         let d = fieldContainer.datum(),
             fieldInputWrap = fieldContainer
                 .selectAll( '.hoot-field-input-wrap' )
@@ -440,21 +457,20 @@ export default class AdvancedOpts {
 
         let fieldInputEnter = fieldInput.enter()
             .append( 'input' )
-            .attr( 'class', 'hoot-field-input' )
-            .attr( 'type', d => d.input === 'checkbox' ?  'checkbox' : 'text' ); // combobox & text get text input...
+            .attr( 'class', 'hoot-field-input' );
 
-        fieldInput = fieldInput.merge(fieldInputEnter);
+        fieldInput = fieldInput.merge(fieldInputEnter).attr( 'type', d => d.input === 'checkbox' ?  'checkbox' : 'text' ); // combobox & text get text input...
 
         fieldInput
             .attr( 'placeholder', d => d.placeholder )
             .attr( 'disabled', d => d.disabled )
             .attr( 'readonly', d => d.readonly )
-            .property( 'checked', isCleaning );
+            .property( 'checked', isCleaning);
 
         const type = fieldInput.datum().input;
         if ( type === 'checkbox' ) {
             fieldInput
-                .property( 'checked', d => d.default === 'true' )
+                .property( 'checked', d => JSON.parse(d.default) )
                 .on( 'click', function(d) {
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
                     if ( d.send && d.send.toString() !== d.default ) {
@@ -497,12 +513,12 @@ export default class AdvancedOpts {
 
             } else { // text input...
                 fieldInput
-                    .classed( 'text-input', true)
+                    .classed( instance.favoriteCheck(isFavorites), true)
                     .on( 'keyup', function(d) {
                         let value = d3.select( this ).property( 'value' );
                         d.send = value !== d.default;
                         if ([ 'double', 'int', 'long' ].indexOf ( d.type ) !== -1 ) {
-                            d3.select( `#${d.id}-label-wrao` )
+                            d3.select( `#${d.id}-label-wrap` )
                                 .call(instance.notNumber, value);
                         }
                         d3.select('#savFav').classed('hidden', false);
@@ -582,28 +598,11 @@ export default class AdvancedOpts {
         group.exit()
             .remove();
 
-        let favOptsEnter = group.enter()
-            .append('div')
-            .classed('form-group', true)
-            .attr('id', group.each(function (a) {
-                for (let i = 0; i < advOpts.length; i++) {
-                    if (a.name === advOpts[i].name) {
-                        d3.select(this).attr('id', `${advOpts[i].name}_group`);
-                }
-            }
-        }));
-
         let groupEnter = group.enter()
             .append( 'div' )
-            .classed( 'form-group', true )
-            .attr( 'id', d => `${d.name}_group` );
+            .classed( 'form-group', true );
 
-        if (advOpts.length === this.favoriteOptions.length) {
-            group = group.merge(favOptsEnter);
-        }
-        else {
-            group = group.merge(groupEnter);
-        }
+        group = group.merge(groupEnter).attr( 'id', d => `${d.name}_group` );
 
         group.each(function(d) {
             let group = d3.select( this ),
@@ -685,7 +684,7 @@ export default class AdvancedOpts {
 
                 fieldContainer
                     .call(instance.fieldLabel)
-                    .call(instance.fieldInput, isCleaning)
+                    .call(instance.fieldInput, isCleaning, advOpts)
                     .call(instance.fieldDescription);
             });
         });
@@ -759,5 +758,15 @@ export default class AdvancedOpts {
         });
 
         return options;
+    }
+
+    favoriteCheck(favorite) {
+        let type = d3.select( '#conflateType' ).property( 'value' ).toLowerCase();
+        if ( type === favorite[0].name ) {
+            return 'favopt';
+        }
+        else {
+            return 'text-input';
+        }
     }
 }

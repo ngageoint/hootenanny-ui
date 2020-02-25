@@ -3,6 +3,8 @@ import AdvancedOpts from '../ui/sidebar/advancedOpts';
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
+import _filter from 'lodash-es/filter';
+import _find   from 'lodash-es/find';
 
 /*******************************************************************************************************
  * File: formConfigs.js
@@ -72,9 +74,19 @@ export function layerConflateForm( data ) {
                 }
 
                 if (!_isEqual(advOpts, advancedOpts.advancedOptions) || favoriteOptions.length ) {
-                    if ( type === 'Saved Favorite Adv. Opts' ) {
-                        advancedOpts.createGroups(favoriteOptions);
+
+                    let checkFavs = _filter( favoriteOptions, function(a) {
+                        if ( a.name === type ) {
+                            return a;
+                        }
+                    });
+
+                    if ( type === checkFavs[0].name ) {
+                        advancedOpts.createGroups(checkFavs);
                     }
+                    // if ( type === 'Saved Favorite Adv. Opts' ) {
+                    //     advancedOpts.createGroups(favoriteOptions);
+                    // }
                     else {
                         advancedOpts.createGroups(advOpts);
                     }

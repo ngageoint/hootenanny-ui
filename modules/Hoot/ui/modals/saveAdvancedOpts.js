@@ -74,7 +74,6 @@ export default class SaveAdvancedOpts {
 
     handleSubmit() {
         let favoriteName = this.folderNameInput.property( 'value' );
-        let isPublic = this.folderVisibilityInput.property( 'checked' );
 
         let opts = {
             name: favoriteName,
