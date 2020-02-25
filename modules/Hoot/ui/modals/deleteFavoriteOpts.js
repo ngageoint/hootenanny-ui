@@ -1,6 +1,5 @@
 import FormFactory        from '../../tools/formFactory';
 import { deleteFavoriteOpts} from '../../config/domMetadata';
-import _filter  from 'lodash-es/filter';
 import _find    from 'lodash-es/find';
 
 /**
@@ -73,7 +72,7 @@ export default class DeleteFavroteOpts {
         this.updateButtonState();
     }
 
-        /**
+    /**
      * Update the form by enabling, disabling, or clearing certain
      * fields based on the value entered
      */
@@ -109,7 +108,7 @@ export default class DeleteFavroteOpts {
         this.submitButton.node().disabled = !this.formValid;
     }
 
-        /**
+    /**
      * Get the selected import-type's value
      *
      * @param title - title of selected import-type
@@ -123,23 +122,9 @@ export default class DeleteFavroteOpts {
     }
 
     handleSubmit() {
-        //let favoriteName = this.folderNameInput.property( 'value' );
-        let optName = this.typeInput.datum();
-        let typeVal = this.typeInput.property( 'value' );
-        let optType = _filter( optName.data, o => o.name === typeVal )[0];
+        let optName = this.typeInput.property( 'value' );
 
-
-
-        let opts = {
-            name: typeVal,
-            members: {
-                members: this.deleteOpts[0].data,
-                name: typeVal,
-                label: typeVal
-            }
-        };
-
-        this.processRequest = Hoot.api.saveFavoriteOpts( opts )
+        this.processRequest = Hoot.api.deleteFavoriteOpts( optName )
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {
