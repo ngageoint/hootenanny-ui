@@ -82,11 +82,9 @@ export function layerConflateForm( data ) {
                     });
 
                     if ( type === checkFavs[0].name ) {
+                        d3.select('#deleteFav').classed('hidden', false );
                         advancedOpts.createGroups(checkFavs);
                     }
-                    // if ( type === 'Saved Favorite Adv. Opts' ) {
-                    //     advancedOpts.createGroups(favoriteOptions);
-                    // }
                     else {
                         advancedOpts.createGroups(advOpts);
                     }
@@ -293,6 +291,21 @@ export function saveAdvancedOpts() {
             checked: false,
             class: 'folder-checkbox'
         },
+    ];
+}
+
+export function deleteFavoriteOpts() {
+    return [
+        {
+            label: 'Delete Selected Fav Opts.',
+            id: 'optToDelete',
+            class: 'new-folder-name',
+            data: [],
+            inputType: 'combobox',
+            readonly: 'readonly',
+            value: 'Select Opts to Delete',
+            onChange: () => this.handleTypeChange()
+        }
     ];
 }
 

@@ -215,7 +215,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'User privileges saved',
+                    message: 'User favorites saved',
                     status: 200,
                     type: 'success'
                 };
@@ -227,6 +227,34 @@ export default class API {
                 type: 'error'
             };
         } );
+    }
+
+    deleteFavoriteOpts( opts ) {
+        const params = {
+            path: '/osm/api/0.6/user/deleteFavoriteOpts',
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(opts)
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'User favortes deleted',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error deleting favorite opts!',
+                    type: 'error'
+                };
+            } );
     }
 
     getOAuthRedirectUrl() {

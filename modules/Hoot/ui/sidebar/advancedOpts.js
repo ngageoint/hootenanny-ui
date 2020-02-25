@@ -13,6 +13,7 @@ import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
 import { tooltip }    from '../../../util/tooltip';
 import SaveAdvancedOpts from '../modals/saveAdvancedOpts';
+import DeleteFavoriteOpts from '../modals/deleteFavoriteOpts';
 import FormFactory from '../../tools/formFactory';
 
 
@@ -198,11 +199,19 @@ export default class AdvancedOpts {
                 .append( 'div' )
                 .classed( 'fav-button-placement', true )
                 .append( 'button' )
-                .classed( 'advanced-opts-reset button secondary strong', true )
+                .classed( 'advanced-opts-reset button secondary strong hidden', true )
                 .attr( 'id', 'deleteFav')
                 .text( 'Delete Favorites' )
                 .on( 'click', function() {
-                    console.log( 'yep' );
+
+                    this.deleteOpts = new DeleteFavoriteOpts(instance.favoriteOptions).render();
+
+                    this.deleteOpts.deleteOpts[0].data = this.favoriteOptions;
+
+                    Hoot.events.once( 'modal-closed', () => delete this.deleteOpts );
+
+                    return this;
+
                 } );
 
     }
