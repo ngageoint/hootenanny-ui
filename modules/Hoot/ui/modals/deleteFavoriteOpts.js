@@ -1,6 +1,9 @@
 import FormFactory        from '../../tools/formFactory';
+import AdvancedOpts from '../../ui/sidebar/advancedOpts';
 import { deleteFavoriteOpts} from '../../config/domMetadata';
+import LayerConflate from '../../ui/sidebar/layerConflate';
 import _find    from 'lodash-es/find';
+import Sidebar from '../sidebar/sidebar';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -127,8 +130,15 @@ export default class DeleteFavroteOpts {
         let toDelete = _find( this.favorites, o => o.name === optName );
 
         this.processRequest = Hoot.api.deleteFavoriteOpts( toDelete )
-            .then( () => Hoot.folders.refreshAll() )
-            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+            .then( () => {
+                let getOpts = AdvancedOpts.getInstance();
+                let advOpts  = getOpts.advancedOptions;
+                getOpts.createGroups(advOpts);
+            } )
+            .then( () => {
+                d3.select( '#conflateType' ).property( 'value' , 'Reference' );
+                Hoot.api.conflateTypes.filter( item => item !== optName );
+            })
             .catch( err => {
                 // TODO: alert - unable to save favorite adv opts
             } )
