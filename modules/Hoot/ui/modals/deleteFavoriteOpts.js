@@ -124,7 +124,9 @@ export default class DeleteFavroteOpts {
     handleSubmit() {
         let optName = this.typeInput.property( 'value' );
 
-        this.processRequest = Hoot.api.deleteFavoriteOpts( optName )
+        let toDelete = _find( this.favorites, o => o.name === optName );
+
+        this.processRequest = Hoot.api.deleteFavoriteOpts( toDelete )
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {

@@ -1,6 +1,5 @@
 import FormFactory        from '../../tools/formFactory';
 import { saveAdvancedOpts} from '../../config/domMetadata';
-import { geoPathHasIntersections } from '../../../geo';
 
 /**
  * Form that allows user to import datasets into hoot
