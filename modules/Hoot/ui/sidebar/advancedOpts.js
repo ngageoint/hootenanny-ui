@@ -8,6 +8,7 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
+import _find      from 'lodash-es/find';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
@@ -131,68 +132,35 @@ export default class AdvancedOpts {
 
                     this.saveOpts = new SaveAdvancedOpts().render();
 
-                    let getAdvOptMembers = [];
-
-                    let favoriteOpts = [];
-
-                    this.advancedOptions.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
-
-                    let getSelectedOpts = [];
-
-                    for ( let i = 0; i < getAdvOptMembers.length; i++ ) {
-                        getAdvOptMembers[i].map( function (a) {
-                            getSelectedOpts.push(a);
-                        } );
-                    }
-
-                    for ( let j = 0; j < getSelectedOpts.length; j++ ) {
-                        let opt;
-                        opt = getSelectedOpts[j];
-
-                        if ( opt.input === 'checkbox' ) {
-
-                            if ( opt.default !==
-                                d3.select( `#${opt.id}` ).select('input')
-                                    .property( 'checked' ).toString() ) {
-                                        favoriteOpts.push(
-                                            {
-                                                description: opt.description,
-                                                default: d3.select( `#${opt.id}` ).select('input')
-                                                    .property('checked'),
-                                                input: opt.input,
-                                                type: opt.type,
-                                                id: opt.id,
-                                                label: opt.label
-                                            }
-                                        );
-                            }
-                        }
-                        else {
-                            if ( d3.select( `#${opt.id}` ).select('input')
-                            .property( 'value') !== opt.default) {
-
-                                favoriteOpts.push(
-                                    {
-                                        description: opt.description,
-                                        default: d3.select( `#${opt.id}` ).select('input')
-                                            .property('value'),
-                                        input: opt.input,
-                                        type: opt.type,
-                                        id: opt.id,
-                                        label: opt.label
-                                    }
-
-                                );
-                            }
-                        }
-
-                    }
+                    let favoriteOpts = this.savingFavoriteOpts();
 
                     this.saveOpts.saveOpts[0].data = favoriteOpts;
 
                     Hoot.events.once( 'modal-closed', () => delete this.saveOpts );
 
                     return this;
+                } );
+
+            favoritesBar
+                .append( 'div' )
+                .classed( 'fav-button-placement', true )
+                .append( 'button' )
+                .classed( 'advanced-opts-reset button secondary strong hidden', true )
+                .attr( 'id', 'updateFav')
+                .text( 'Update Favorites' )
+                .on( 'click', function() {
+
+                    let activeFavorite = d3.select( '#conflateType' ).property( 'value' );
+
+                    let updates = _find( instance.favoriteOptions, o => o.name === activeFavorite );
+
+                    let toUpdate = instance.updateFavoriteOpts( updates );
+
+                    console.log(toUpdate);
+
+                    //Hoot.api.saveFavoriteOpts(toUpdate);
+
+
                 } );
 
             favoritesBar
@@ -777,5 +745,121 @@ export default class AdvancedOpts {
         else {
             return 'text-input';
         }
+    }
+
+    updateFavoriteOpts( toUpdate ) {
+
+        let getMem = [];
+
+        let updateOpts = [];
+
+        toUpdate.members.forEach( function(m) { getMem.push( m ); } );
+
+        for ( let i = 0; i < getMem.length; i++ ) {
+
+            if ( getMem[i].input === 'checkbox' ) {
+
+                updateOpts.push(
+                    {
+                        description: getMem[i].description,
+                        default: d3.select( `#${getMem[i].id}` ).select('input')
+                            .property('checked'),
+                        input: getMem[i].input,
+                        type: getMem[i].type,
+                        id: getMem[i].id,
+                        label: getMem[i].label,
+                    }
+                 );
+
+            }
+            else {
+
+                updateOpts.push(
+                    {
+                        description: getMem[i].description,
+                        default: d3.select(`#${getMem[i].id}`).select('input')
+                            .property('value'),
+                        input: getMem[i].input,
+                        type: getMem[i].type,
+                        id: getMem[i].id,
+                        label: getMem[i].label,
+                    }
+                 );
+
+            }
+        }
+
+        return updateOpts;
+    }
+
+    savingFavoriteOpts() {
+
+        let getAdvOptMembers = [];
+
+        let favoriteOpts = [];
+
+        this.advancedOptions.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
+
+        let getSelectedOpts = [];
+
+        function flatten( arr ) {
+            return arr.reduce( function( flat, toFlatten) {
+                return flat.concat( Array.isArray(toFlatten) ?
+                flatten(toFlatten)
+                : checkType(toFlatten) );
+            }, []);
+        }
+
+        function checkType( member ) {
+            if ( member.input === 'checkbox' ) {
+                if ( member.default !== d3.select( `#${member.id}` ).select('input').property( 'checked' ).toString() ) {
+                    getSelectedOpts.push(member);
+                }
+            }
+            else {
+                if ( member.default !== d3.select( `#${member.id}` ).select('input').property( 'value' ) ) {
+                    getSelectedOpts.push(member);
+                }
+            }
+        }
+
+        flatten(getAdvOptMembers);
+
+
+        for ( let j = 0; j < getSelectedOpts.length; j++ ) {
+            let opt;
+
+            opt = getSelectedOpts[j];
+
+            if (opt.input === 'checkbox') {
+                favoriteOpts.push(
+                    {
+                        description: opt.description,
+                        default: d3.select(`#${opt.id}`).select('input')
+                            .property('checked'),
+                        input: opt.input,
+                        type: opt.type,
+                        id: opt.id,
+                        label: opt.label
+                    }
+                );
+            }
+            else {
+                favoriteOpts.push(
+                    {
+                        description: opt.description,
+                        default: d3.select(`#${opt.id}`).select('input')
+                            .property('value'),
+                        input: opt.input,
+                        type: opt.type,
+                        id: opt.id,
+                        label: opt.label
+                    }
+
+                );
+            }
+        }
+
+        return favoriteOpts;
     }
 }

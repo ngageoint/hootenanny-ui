@@ -81,7 +81,8 @@ export function layerConflateForm( data ) {
                     });
 
                     if ( type === checkFavs[0].name ) {
-                        d3.select('#deleteFav').classed('hidden', false );
+                        d3.select('#deleteFav').classed('hidden', false);
+                        d3.select('#updateFav').classed('hidden', false);
                         advancedOpts.createGroups(checkFavs);
                     }
                     else {
