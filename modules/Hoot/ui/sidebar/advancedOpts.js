@@ -131,7 +131,11 @@ export default class AdvancedOpts {
                 .text( 'Save Favorites' )
                 .on( 'click', async item => {
 
-                    this.saveOpts = new SaveAdvancedOpts().render();
+                    let currNames = [];
+
+                    this.favoriteOptions.forEach( function(o) { currNames.push(o.name); } );
+
+                    this.saveOpts = new SaveAdvancedOpts( currNames ).render();
 
                     let favoriteOpts = this.savingFavoriteOpts();
 
@@ -155,7 +159,7 @@ export default class AdvancedOpts {
 
                     let updates = _find( instance.favoriteOptions, o => o.name === activeFavorite );
 
-                    let toUpdate = instance.updateFavoriteOpts( updates );
+                    let toUpdate = instance.savingFavoriteOpts( updates );
 
                     console.log(toUpdate);
 
@@ -798,13 +802,16 @@ export default class AdvancedOpts {
         return updateOpts;
     }
 
-    savingFavoriteOpts() {
+    savingFavoriteOpts( opt ) {
 
         let getAdvOptMembers = [];
+
+        let update = [];
 
         this.advancedOptions.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
 
         let getSelectedOpts = [];
+
 
         function flatten( arr ) {
             return arr.reduce( function( flat, toFlatten) {

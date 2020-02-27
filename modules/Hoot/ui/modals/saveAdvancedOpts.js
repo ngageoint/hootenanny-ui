@@ -8,9 +8,9 @@ import { saveAdvancedOpts} from '../../config/domMetadata';
  * @constructor
  */
 export default class SaveAdvancedOpts {
-    constructor(parentId = 0) {
+    constructor( opts ) {
         this.saveOpts     = saveAdvancedOpts.call( this );
-        this.parentId = parentId;
+        this.currentFavs  = opts;
     }
 
     render() {
@@ -42,6 +42,8 @@ export default class SaveAdvancedOpts {
             reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
+
+        this.currentFavs.forEach( function(n) { reservedWords.push(n); });
 
         if ( !str.length || reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
             valid = false;
