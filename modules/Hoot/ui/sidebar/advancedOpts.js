@@ -752,43 +752,48 @@ export default class AdvancedOpts {
 
         let getMem = [];
 
-        let updateOpts = [];
-
         toUpdate.members.forEach( function(m) { getMem.push( m ); } );
 
-        for ( let i = 0; i < getMem.length; i++ ) {
+        let updateOpts = [];
 
-            if ( getMem[i].input === 'checkbox' ) {
+        function flatten( arr ) {
+            return arr.reduce( function( flat, toFlatten) {
+                return flat.concat( Array.isArray(toFlatten) ?
+                flatten(toFlatten)
+                : checkType(toFlatten) );
+            }, []);
+        }
 
-                updateOpts.push(
-                    {
-                        description: getMem[i].description,
-                        default: d3.select( `#${getMem[i].id}` ).select('input')
-                            .property('checked'),
-                        input: getMem[i].input,
-                        type: getMem[i].type,
-                        id: getMem[i].id,
-                        label: getMem[i].label,
-                    }
-                 );
+        function checkType( member ) {
+            if ( member.input === 'checkbox' ) {
+                    updateOpts.push(
+                        {
+                            input: member.input,
+                            default: d3.select(`#${member.id}`).select('input').property('checked'),
+                            id: member.id,
+                            description: member.description,
+                            label: member.label,
+                            type: member.type,
 
+                        }
+                    );
             }
             else {
+                    updateOpts.push(
+                        {
+                            input: member.input,
+                            default: d3.select(`#${member.id}`).select('input').property('value'),
+                            id: member.id,
+                            description: member.description,
+                            label: member.label,
+                            type: member.type,
 
-                updateOpts.push(
-                    {
-                        description: getMem[i].description,
-                        default: d3.select(`#${getMem[i].id}`).select('input')
-                            .property('value'),
-                        input: getMem[i].input,
-                        type: getMem[i].type,
-                        id: getMem[i].id,
-                        label: getMem[i].label,
-                    }
-                 );
-
+                        }
+                    );
             }
         }
+
+        flatten(getMem);
 
         return updateOpts;
     }
@@ -796,8 +801,6 @@ export default class AdvancedOpts {
     savingFavoriteOpts() {
 
         let getAdvOptMembers = [];
-
-        let favoriteOpts = [];
 
         this.advancedOptions.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
 
@@ -813,7 +816,8 @@ export default class AdvancedOpts {
 
         function checkType( member ) {
             if ( member.input === 'checkbox' ) {
-                if ( member.default !== d3.select( `#${member.id}` ).select('input').property( 'checked' ).toString() ) {
+                let cboxVal = d3.select( `#${member.id}` ).select('input').property( 'checked' ).toString();
+                if ( member.default !== cboxVal  ) {
                     getSelectedOpts.push(
                         {
                             input: member.input,
@@ -828,7 +832,8 @@ export default class AdvancedOpts {
                 }
             }
             else {
-                if ( member.default !== d3.select( `#${member.id}` ).select('input').property( 'value' ) ) {
+                let inputVal = d3.select( `#${member.id}` ).select('input').property( 'value' );
+                if ( member.default !== inputVal ) {
                     getSelectedOpts.push(
                         {
                             input: member.input,
@@ -845,41 +850,6 @@ export default class AdvancedOpts {
         }
 
         flatten(getAdvOptMembers);
-
-
-        // for ( let j = 0; j < getSelectedOpts.length; j++ ) {
-        //     let opt;
-
-        //     opt = getSelectedOpts[j];
-
-        //     if (opt.input === 'checkbox') {
-        //         favoriteOpts.push(
-        //             {
-        //                 description: opt.description,
-        //                 default: d3.select(`#${opt.id}`).select('input')
-        //                     .property('checked'),
-        //                 input: opt.input,
-        //                 type: opt.type,
-        //                 id: opt.id,
-        //                 label: opt.label
-        //             }
-        //         );
-        //     }
-        //     else {
-        //         favoriteOpts.push(
-        //             {
-        //                 description: opt.description,
-        //                 default: d3.select(`#${opt.id}`).select('input')
-        //                     .property('value'),
-        //                 input: opt.input,
-        //                 type: opt.type,
-        //                 id: opt.id,
-        //                 label: opt.label
-        //             }
-
-        //         );
-        //     }
-        // }
 
         return getSelectedOpts;
     }
