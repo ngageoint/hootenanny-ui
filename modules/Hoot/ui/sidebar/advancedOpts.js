@@ -117,7 +117,8 @@ export default class AdvancedOpts {
                             showingOpts.push(a.name);
                         }
                     } );
-                d3.select('#savFav').classed('hidden', true);
+                d3.select('#saveFav').classed('hidden', true);
+                d3.select('#updateFav').classed('hidden', true);
                 this.createGroups(this.advancedOptions, showingOpts);
             });
 
@@ -126,7 +127,7 @@ export default class AdvancedOpts {
                 .classed( 'fav-button-placement', true )
                 .append( 'button' )
                 .classed( 'advanced-opts-reset button secondary strong hidden', true )
-                .attr( 'id', 'savFav')
+                .attr( 'id', 'saveFav')
                 .text( 'Save Favorites' )
                 .on( 'click', async item => {
 
@@ -451,7 +452,7 @@ export default class AdvancedOpts {
                 .on( 'click', function(d) {
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
                     if ( d.send && d.send.toString() !== d.default ) {
-                        d3.select('#savFav').classed( 'hidden', false );
+                        d3.select('#saveFav').classed( 'hidden', false );
                     }
                 });
         } else {
@@ -481,11 +482,11 @@ export default class AdvancedOpts {
                     .call(d3combobox().data( comboData ))
                     .on( 'change', function(d) {
                         d.send =  d3.select( this ).property( 'value' ) !== d.default;
-                        d3.select('#savFav').classed('hidden', false);
+                        d3.select('#saveFav').classed('hidden', false);
                     })
                     .on( 'keyup', function(d) {
                         d.send =  d3.select( this ).property( 'value' ) !== d.default;
-                        d3.select('#savFav').classed('hidden', false);
+                        d3.select('#saveFav').classed('hidden', false);
                     });
 
             } else { // text input...
@@ -498,7 +499,7 @@ export default class AdvancedOpts {
                             d3.select( `#${d.id}-label-wrap` )
                                 .call(instance.notNumber, value);
                         }
-                        d3.select('#savFav').classed('hidden', false);
+                        d3.select('#saveFav').classed('hidden', false);
                     });
             }
 
@@ -813,12 +814,32 @@ export default class AdvancedOpts {
         function checkType( member ) {
             if ( member.input === 'checkbox' ) {
                 if ( member.default !== d3.select( `#${member.id}` ).select('input').property( 'checked' ).toString() ) {
-                    getSelectedOpts.push(member);
+                    getSelectedOpts.push(
+                        {
+                            input: member.input,
+                            default: d3.select(`#${member.id}`).select('input').property('checked'),
+                            id: member.id,
+                            description: member.description,
+                            label: member.label,
+                            type: member.type,
+
+                        }
+                    );
                 }
             }
             else {
                 if ( member.default !== d3.select( `#${member.id}` ).select('input').property( 'value' ) ) {
-                    getSelectedOpts.push(member);
+                    getSelectedOpts.push(
+                        {
+                            input: member.input,
+                            default: d3.select(`#${member.id}`).select('input').property('value'),
+                            id: member.id,
+                            description: member.description,
+                            label: member.label,
+                            type: member.type,
+
+                        }
+                    );
                 }
             }
         }
@@ -826,40 +847,40 @@ export default class AdvancedOpts {
         flatten(getAdvOptMembers);
 
 
-        for ( let j = 0; j < getSelectedOpts.length; j++ ) {
-            let opt;
+        // for ( let j = 0; j < getSelectedOpts.length; j++ ) {
+        //     let opt;
 
-            opt = getSelectedOpts[j];
+        //     opt = getSelectedOpts[j];
 
-            if (opt.input === 'checkbox') {
-                favoriteOpts.push(
-                    {
-                        description: opt.description,
-                        default: d3.select(`#${opt.id}`).select('input')
-                            .property('checked'),
-                        input: opt.input,
-                        type: opt.type,
-                        id: opt.id,
-                        label: opt.label
-                    }
-                );
-            }
-            else {
-                favoriteOpts.push(
-                    {
-                        description: opt.description,
-                        default: d3.select(`#${opt.id}`).select('input')
-                            .property('value'),
-                        input: opt.input,
-                        type: opt.type,
-                        id: opt.id,
-                        label: opt.label
-                    }
+        //     if (opt.input === 'checkbox') {
+        //         favoriteOpts.push(
+        //             {
+        //                 description: opt.description,
+        //                 default: d3.select(`#${opt.id}`).select('input')
+        //                     .property('checked'),
+        //                 input: opt.input,
+        //                 type: opt.type,
+        //                 id: opt.id,
+        //                 label: opt.label
+        //             }
+        //         );
+        //     }
+        //     else {
+        //         favoriteOpts.push(
+        //             {
+        //                 description: opt.description,
+        //                 default: d3.select(`#${opt.id}`).select('input')
+        //                     .property('value'),
+        //                 input: opt.input,
+        //                 type: opt.type,
+        //                 id: opt.id,
+        //                 label: opt.label
+        //             }
 
-                );
-            }
-        }
+        //         );
+        //     }
+        // }
 
-        return favoriteOpts;
+        return getSelectedOpts;
     }
 }
