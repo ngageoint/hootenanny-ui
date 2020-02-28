@@ -157,14 +157,18 @@ export default class AdvancedOpts {
 
                     let activeFavorite = d3.select( '#conflateType' ).property( 'value' );
 
-                    let updates = _find( instance.favoriteOptions, o => o.name === activeFavorite );
+                    let toUpdate = instance.savingFavoriteOpts( activeFavorite );
 
-                    let toUpdate = instance.savingFavoriteOpts( updates );
+                    let updateOpt = {
+                        name: activeFavorite,
+                        members: {
+                            members: toUpdate,
+                            name: activeFavorite,
+                            label: activeFavorite
+                        }
+                    };
 
-                    console.log(toUpdate);
-
-                    //Hoot.api.saveFavoriteOpts(toUpdate);
-
+                    Hoot.api.saveFavoriteOpts(updateOpt);
 
                 } );
 
@@ -397,10 +401,10 @@ export default class AdvancedOpts {
 
         let fieldLabelEnter = fieldLabel.enter()
             .append( 'label' )
-            .classed( 'hoot-field-label', true )
-            .text( d => d.label );
+            .classed( 'hoot-field-label', true );
 
-        fieldLabel.merge(fieldLabelEnter);
+
+        fieldLabel.merge(fieldLabelEnter).text( d => d.label );
 
         let fieldLabelButton = fieldLabelWrap.selectAll( '.hoot-field-label-button' )
             .data( [d] );
@@ -533,10 +537,10 @@ export default class AdvancedOpts {
         let fieldOptDescEnter = fieldOpt.enter()
             .append('p')
             .classed('hidden', true )
-            .classed( 'adv-opt-reference keyline-top', true )
-            .text( d.description ? d.description : 'no description available');
+            .classed( 'adv-opt-reference keyline-top', true );
 
-        fieldOpt = fieldOpt.merge(fieldOptDescEnter);
+
+        fieldOpt = fieldOpt.merge(fieldOptDescEnter).text( d.description ? d.description : 'no description available');
 
         fieldContainer.classed('hoot-form-field-checkbox-clicked', d.input === 'checkbox');
         instance.toggleDescription(fieldContainer);
@@ -608,10 +612,9 @@ export default class AdvancedOpts {
 
             let toggleWrapEnter = toggleWrap.enter()
                 .append( 'div' )
-                .attr( 'class', 'inner-wrapper strong fill-light keyline-bottom adv-opts-toggle-wrap' )
-                .attr( 'id', d => `${d.name}-wrap` );
+                .attr( 'class', 'inner-wrapper strong fill-light keyline-bottom adv-opts-toggle-wrap' );
 
-            toggleWrap = toggleWrap.merge(toggleWrapEnter);
+            toggleWrap = toggleWrap.merge(toggleWrapEnter).attr( 'id', d => `${d.name}-wrap` );
 
             toggleWrap
                 .call(instance.innerWrap, instance.toggleOption)
@@ -648,11 +651,11 @@ export default class AdvancedOpts {
 
             let fieldContainerEnter = fieldContainer.enter()
                 .append( 'div' )
-                .attr( 'id', d => d.id )
-                .attr( 'title', d => d.description )
                 .classed( 'hoot-form-field small contain keyline-all round', true );
 
-            fieldContainer = fieldContainer.merge(fieldContainerEnter);
+            fieldContainer = fieldContainer.merge(fieldContainerEnter)
+                .attr( 'id', d => d.id )
+                .attr( 'title', d => d.description );
 
             fieldContainer
                 .classed( 'hoot-form-field-wrap', true )
@@ -806,12 +809,16 @@ export default class AdvancedOpts {
 
         let getAdvOptMembers = [];
 
-        let update = [];
+        let getFavOptMembers = [];
+
+        if ( opt ) {
+            this.favoriteOptions.forEach( function(f) { getFavOptMembers.push( f.members); } );
+        }
 
         this.advancedOptions.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
 
-        let getSelectedOpts = [];
 
+        let getSelectedOpts = [];
 
         function flatten( arr ) {
             return arr.reduce( function( flat, toFlatten) {
@@ -856,7 +863,12 @@ export default class AdvancedOpts {
             }
         }
 
-        flatten(getAdvOptMembers);
+        if ( opt ) {
+            flatten(getFavOptMembers);
+        }
+        else {
+            flatten(getAdvOptMembers);
+        }
 
         return getSelectedOpts;
     }
