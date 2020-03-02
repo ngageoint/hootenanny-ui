@@ -60,10 +60,19 @@ export default class GrailPull {
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
-        const rowData = await Hoot.api.overpassStats( overpassParams );
+        const rowData = await Hoot.api.overpassStats( overpassParams )
+            .catch( () => {
+                this.submitButton.node().disabled = true;
+
+                this.form.select( '.wrapper div' )
+                .insert( 'div', '.modal-footer' )
+                .classed( 'show-newline', true )
+                .text( 'Error retrieving overpass stats query!\nPlease wait and try again later' );
+            } );
 
         this.loadingState();
 
+        if ( !rowData ) return;
 
         let statsTable = this.form
             .select( '.wrapper div' )
