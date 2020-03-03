@@ -243,7 +243,7 @@ export default class GrailPull {
             } else {
                 folderId = pathId;
             }
-        
+
         }
 
         const railsParams = {
