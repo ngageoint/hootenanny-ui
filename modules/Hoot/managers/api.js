@@ -491,9 +491,6 @@ export default class API {
         const params = {
             path: '/osm/api/0.6/map/nodescount',
             method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain'
-            },
             data
         };
 

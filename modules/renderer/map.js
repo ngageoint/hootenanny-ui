@@ -346,7 +346,7 @@ export function rendererMap(context) {
     }
 
 
-    function editOff() {
+    map.editOff = function() {
         context.features().resetStats();
         surface.selectAll('.layer-osm *').remove();
         surface.selectAll('.layer-touch *').remove();
@@ -357,7 +357,7 @@ export function rendererMap(context) {
         }
 
         dispatch.call('drawn', this, {full: true});
-    }
+    };
 
 
     function dblClick() {
@@ -608,9 +608,12 @@ export function rendererMap(context) {
 
         wrapper
             .call(drawLayers);
-
+console.trace(1);
         // OSM
         if ( map.editable() ) {
+            const tileZoom = map.zoom() <= 16 ? 2 : 16;
+            context.connection().tileZoom( tileZoom );
+
             context.loadTiles( projection, () => {
                 if ( Hoot.layers.mergedLayer && Hoot.layers.mergedLayer.reviewItem ) {
                     Hoot.events.emit( 'layer-reviews' );
@@ -619,7 +622,7 @@ export function rendererMap(context) {
 
             drawVector( difference, extent );
         } else {
-            editOff();
+            map.editOff();
         }
 
         _transformStart = projection.transform();

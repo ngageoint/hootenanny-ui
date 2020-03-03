@@ -174,7 +174,7 @@ export function coreContext() {
         });
     };
 
-    var minEditableZoom = 16;
+    var minEditableZoom = 13;
     context.minEditableZoom = function(_) {
         if (!arguments.length) return minEditableZoom;
         minEditableZoom = _;

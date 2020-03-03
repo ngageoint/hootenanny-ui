@@ -968,15 +968,7 @@ export default {
         }
     },
 
-
-    // Load data (entities) from the API in tiles
-    // GET /api/0.6/map?bbox=
-    loadTiles: async function(projection, callback) {
-        if (_off) return;
-
-        var that = this;
-        // var path = '/api/0.6/map?bbox=';
-
+    getViewTiles: function(projection) {
         // Load from visible layers only
         // HootOld loadedLayers is what controls the vector data sources that are loaded
         var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
@@ -984,18 +976,52 @@ export default {
         // determine the needed tiles to cover the view
         var tiles = _map(visLayers, function(layer) {
             return tiler
-                .zoomExtent([_tileZoom, _tileZoom])
-                .getTiles(projection)
-                .map(function(tile) {
-                    tile.mapId = layer.id;
-                    tile.layerName = layer.name;
-                    tile.id = tile.id + '_' + tile.mapId;
+            .zoomExtent([_tileZoom, _tileZoom])
+            .getTiles(projection)
+            .map(function(tile) {
+                tile.mapId = layer.id;
+                tile.layerName = layer.name;
+                tile.id = tile.id + '_' + tile.mapId;
+                tile.tile = tile.extent.toParam();
 
-                    return tile;
-                });
+                return tile;
+            });
         });
 
         tiles = _flatten(tiles);
+
+        return tiles;
+    },
+
+    getNodeCount: async function( projection ) {
+        const tiles = this.getViewTiles(projection);
+        let count = 0;
+
+        if ( tiles.length > 0 ) {
+            const { nodescount } = await Hoot.api.getTileNodesCount( tiles );
+            count = nodescount;
+        }
+
+        return count;
+    },
+
+    // Load data (entities) from the API in tiles
+    // GET /api/0.6/map?bbox=
+    loadTiles: async function(projection, callback) {
+        if (_off) return;
+
+        var that = this;
+
+        const count = await this.getNodeCount(projection);
+
+        if ( count > 5000 ) {
+            dispatch.call('loaded');     // stop the spinner
+            _forEach( Hoot.layers.loadedLayers, d => Hoot.events.emit( 'layer-loaded', d.layerName ) );
+            // Hoot.context.map().editOff();
+            return;
+        }
+
+        const tiles = this.getViewTiles(projection);
 
         // abort inflight requests that are no longer needed
         var hadRequests = !_isEmpty(_tileCache.inflight);

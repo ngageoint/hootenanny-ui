@@ -105,7 +105,7 @@ export function rendererFeatures(context) {
 
     defineFeature('points', function isPoint(entity, resolver, geometry) {
         return geometry === 'point';
-    }, 200);
+    }, 1000);
 
     defineFeature('traffic_roads', function isTrafficRoad(entity) {
         return traffic_roads[entity.tags.highway];
