@@ -78,8 +78,12 @@ export default class FolderManager {
         } else return true;
     }
 
-    filterVisible(f) {
-        return JSON.parse(Hoot.context.storage( 'publicVisibility' )) || f.userId === Hoot.user().id;
+    filterVisible(f, doPublic = true) {
+        return (JSON.parse(Hoot.context.storage( 'publicVisibility' )) && doPublic) || f.userId === Hoot.user().id;
+    }
+
+    get myFolders() {
+        return this._folders.filter(f => this.filterVisible(f, false));
     }
 
     /**
@@ -280,8 +284,12 @@ export default class FolderManager {
         return tree;
     }
 
-    addFolder( pathName, folderName ) {
-        let parentId = _get( _find( this._folders, folder => folder.name === pathName ), 'id' ) || 0;
+    addFolder( pathName, folderName, ownership = false ) {
+        let parentId = _get( _find( this._folders, (folder) => {
+            let match = folder.name === pathName;
+            if (match && !ownership) return match;
+            return match && folder.userId === Hoot.user().id;
+        }), 'id' ) || 0;
 
         let params = {
             folderName,
