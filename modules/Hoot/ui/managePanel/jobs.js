@@ -642,7 +642,30 @@ export default class Jobs extends Tab {
                             title: 'download conflicted changes',
                             icon: 'archive',
                             action: async () => {
-                                Hoot.api.saveChangeset( d.tags.parentId, 'diff-error' )
+                                var param = {
+                                    input: d.tags.parentId,
+                                    inputtype: 'changesets',
+                                    outputname: d.tags.parentId,
+                                    outputtype: 'zip'
+                                };
+                                // Hoot.api.saveChangeset( d.tags.parentId, 'diff-error' )
+                                //     .catch( err => {
+                                //         console.error(err);
+                                //         Hoot.message.alert( err );
+                                //         return false;
+                                //     } );
+                                Hoot.api.exportDataset(param)
+                                    .then( resp => {
+                                        self.jobId = resp.data.jobid;
+
+                                        return Hoot.api.statusInterval( self.jobId );
+                                    } )
+                                    .then( async resp => {
+                                        if (resp.data && resp.data.status !== 'cancelled') {
+                                            await Hoot.api.saveDataset( self.jobId, param.outputname );
+                                        }
+                                        return resp;
+                                    } )
                                     .catch( err => {
                                         console.error(err);
                                         Hoot.message.alert( err );
