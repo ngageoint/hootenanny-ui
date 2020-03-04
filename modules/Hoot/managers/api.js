@@ -1285,7 +1285,7 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
-                    message: err.data || 'Error doing pull!',
+                    message: 'Error doing pull!',
                     status: err.status,
                     type: 'error'
                 };
@@ -1351,7 +1351,7 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
-                    message: err.data || 'Error doing pull!',
+                    message: 'Error doing pull!',
                     status: err.status,
                     type: 'error'
                 };
