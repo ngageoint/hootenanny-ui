@@ -261,7 +261,7 @@ export default class FormFactory {
     }
 
 
-    populateCombobox( input, reset ) {
+    populateCombobox( input ) {
         input.select( d => {
             let combobox = d3combobox()
                 .data( _map( d.data, n => {
@@ -270,7 +270,7 @@ export default class FormFactory {
                     return { value: v, title: t };
                 } ) );
 
-            if ( d.sort || reset ) {
+            if ( d.sort ) {
                 let data = combobox.data();
 
                 data.sort( ( a, b ) => {

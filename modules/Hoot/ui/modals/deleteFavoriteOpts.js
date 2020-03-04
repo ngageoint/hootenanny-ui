@@ -139,33 +139,39 @@ export default class DeleteFavoriteOpts {
             .then( async ()  => {
                 let getOpts = AdvancedOpts.getInstance();
                 let advOpts = getOpts.advancedOptions;
+
                 getOpts.createGroups(advOpts);
 
-                let currentFavorites = [];
+                let favorites = [];
+
+                let getTypes = await Hoot.api.getConflateTypes(true);
+
                 let getFavs = Object.keys(Hoot.config.users[Hoot.user().id].members)
-                     .forEach( function(o) { currentFavorites.push(o); } );
+                     .forEach(
+                         function(o) {
+                             favorites.push(o);
+                        }
+                    );
+
+                favorites.sort();
+
+                favorites.forEach( function( favorite ) {
+                    getTypes.push( favorite );
+                });
 
                 let newCombo = new FormFactory();
 
                 let deleteModal = d3.select( '#optToDelete' );
 
-                deleteModal.datum().data = currentFavorites;
+                deleteModal.datum().data = getTypes;
 
-                newCombo.populateCombobox( deleteModal, true );
-
-                let getTypes = await Hoot.api.getConflateTypes(true);
-
-                getTypes.forEach( function(f) {
-                    currentFavorites.push( f );
-                });
+                newCombo.populateCombobox( deleteModal );
 
                 let element = d3.select( '#conflateType' );
 
-                element.datum().data = currentFavorites;
+                element.datum().data = getTypes;
 
-
-
-                newCombo.populateCombobox( element, true );
+                newCombo.populateCombobox( element );
 
                 d3.select('#conflateType').property('value', 'Reference');
             } )

@@ -88,19 +88,27 @@ export default class SaveAdvancedOpts {
         this.processRequest = Hoot.api.saveFavoriteOpts( opts )
             .then( () => Hoot.getAllUsers() )
             .then( async () => {
-                let currentFavorites = [];
-                let getFavs = Object.keys(Hoot.config.users[Hoot.user().id].members)
-                     .forEach( function(o) { currentFavorites.push(o); } );
+
+                let favorites = [];
 
                 let getTypes = await Hoot.api.getConflateTypes(true);
 
-                getTypes.forEach( function(f) {
-                    currentFavorites.push( f );
+                let getFavs = Object.keys(Hoot.config.users[Hoot.user().id].members)
+                     .forEach(
+                         function(o) {
+                             favorites.push(o);
+                        }
+                    );
+
+                favorites.sort();
+
+                favorites.forEach( function( favorite ) {
+                    getTypes.push( favorite );
                 });
 
                 let element = d3.select( '#conflateType' );
 
-                element.datum().data = currentFavorites;
+                element.datum().data = getTypes;
 
                 let newCombo = new FormFactory();
 
