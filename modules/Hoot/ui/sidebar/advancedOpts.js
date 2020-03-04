@@ -8,7 +8,6 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
-import _find      from 'lodash-es/find';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
@@ -24,7 +23,7 @@ export default class AdvancedOpts {
         this.sidebar         = d3.select( '#hoot-sidebar' );
         this.advancedOptions = [];
         this.conflationOptions = {};
-        this.favortieOptions   = {};
+        this.favoriteOptions   = {};
         this.showing           = false;
         this.formFactory = new FormFactory();
     }
@@ -137,9 +136,7 @@ export default class AdvancedOpts {
 
                     this.saveOpts = new SaveAdvancedOpts(currNames).render();
 
-                    let favoriteOpts = this.savingFavoriteOpts();
-
-                    this.saveOpts.saveOpts[0].data = favoriteOpts;
+                    this.saveOpts.saveOpts[0].data = this.savingFavoriteOpts();
 
                     Hoot.events.once('modal-closed', () => delete this.saveOpts);
 
@@ -407,7 +404,8 @@ export default class AdvancedOpts {
             .classed( 'hoot-field-label', true );
 
 
-        fieldLabel.merge(fieldLabelEnter).text( d => d.label );
+        fieldLabel.merge(fieldLabelEnter)
+            .text( d => d.label );
 
         let fieldLabelButton = fieldLabelWrap.selectAll( '.hoot-field-label-button' )
             .data( [d] );
@@ -448,7 +446,8 @@ export default class AdvancedOpts {
             .append( 'input' )
             .attr( 'class', 'hoot-field-input' );
 
-        fieldInput = fieldInput.merge(fieldInputEnter).attr( 'type', d => d.input === 'checkbox' ?  'checkbox' : 'text' ); // combobox & text get text input...
+        fieldInput = fieldInput.merge(fieldInputEnter)
+            .attr( 'type', d => d.input === 'checkbox' ?  'checkbox' : 'text' ); // combobox & text get text input...
 
         fieldInput
             .attr( 'placeholder', d => d.placeholder )
@@ -545,7 +544,8 @@ export default class AdvancedOpts {
             .classed( 'adv-opt-reference keyline-top', true );
 
 
-        fieldOpt = fieldOpt.merge(fieldOptDescEnter).text( d.description ? d.description : 'no description available');
+        fieldOpt = fieldOpt.merge(fieldOptDescEnter)
+            .text( d.description ? d.description : 'no description available');
 
         fieldContainer.classed('hoot-form-field-checkbox-clicked', d.input === 'checkbox');
         instance.toggleDescription(fieldContainer);
@@ -593,7 +593,8 @@ export default class AdvancedOpts {
             .append( 'div' )
             .classed( 'form-group', true );
 
-        group = group.merge(groupEnter).attr( 'id', d => `${d.name}_group` );
+        group = group.merge(groupEnter)
+            .attr( 'id', d => `${d.name}_group` );
 
         group.each(function(d) {
             let group = d3.select( this ),
@@ -619,7 +620,8 @@ export default class AdvancedOpts {
                 .append( 'div' )
                 .attr( 'class', 'inner-wrapper strong fill-light keyline-bottom adv-opts-toggle-wrap' );
 
-            toggleWrap = toggleWrap.merge(toggleWrapEnter).attr( 'id', d => `${d.name}-wrap` );
+            toggleWrap = toggleWrap.merge(toggleWrapEnter)
+                .attr( 'id', d => `${d.name}-wrap` );
 
             toggleWrap
                 .call(instance.innerWrap, instance.toggleOption)

@@ -39,7 +39,7 @@ export default class SaveAdvancedOpts {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
+            reservedWords    = [ 'root', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
@@ -86,14 +86,11 @@ export default class SaveAdvancedOpts {
         };
 
         this.processRequest = Hoot.api.saveFavoriteOpts( opts )
-            .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.getAllUsers() )
             .then( async () => {
                 let currentFavorites = [];
                 let getFavs = Object.keys(Hoot.config.users[Hoot.user().id].members)
                      .forEach( function(o) { currentFavorites.push(o); } );
-
-                this.favorites = currentFavorites;
 
                 let getTypes = await Hoot.api.getConflateTypes(true);
 
@@ -109,13 +106,25 @@ export default class SaveAdvancedOpts {
 
                 newCombo.populateCombobox( element, true );
             } )
-            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {
-                // TODO: alert - unable to save favorite adv opts
+                let alert = {
+                    message: err,
+                    type: 'warn'
+                };
+
+                Hoot.message.alert( alert );
+
             } )
             .finally( () => {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
+
+                let alert = {
+                    message: 'Fav. Opt Saved Successfully',
+                    type: 'success'
+                };
+
+                Hoot.message.alert({alert});
             } );
     }
 }

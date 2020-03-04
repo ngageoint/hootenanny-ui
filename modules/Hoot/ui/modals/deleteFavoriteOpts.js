@@ -11,7 +11,7 @@ import LayerConflate from '../sidebar/layerConflate';
  * @param translations - All translations from database
  * @constructor
  */
-export default class DeleteFavroteOpts {
+export default class DeleteFavoriteOpts {
     constructor( opts ) {
         this.favorites  = opts;
     }
@@ -58,7 +58,7 @@ export default class DeleteFavroteOpts {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
+            reservedWords    = [ 'root', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
@@ -84,12 +84,7 @@ export default class DeleteFavroteOpts {
             selectedType = this.getTypeName( selectedVal );
 
         // enable input
-        if ( !selectedType ) {
-            this.submitButton.node().disabled = true;
-        } else {
-            this.submitButton.node().disabled = false;
-        }
-
+        this.submitButton.node().disabled = !selectedType;
     }
 
     /**
@@ -119,7 +114,7 @@ export default class DeleteFavroteOpts {
      */
     getTypeName( title ) {
         let allOpts = this.favorites,
-            match     = _find( allOpts, o => o.name === title );
+            match   = _find( allOpts, o => o.name === title );
 
         return match.name ? match.name : false;
     }
@@ -133,13 +128,17 @@ export default class DeleteFavroteOpts {
             .then( () => Hoot.getAllUsers() )
             .then( async ()  => {
                 let getOpts = AdvancedOpts.getInstance();
-                let advOpts  = getOpts.advancedOptions;
+                let advOpts = getOpts.advancedOptions;
                 getOpts.createGroups(advOpts);
                 let currentFavorites = [];
                 let getFavs = Object.keys(Hoot.config.users[Hoot.user().id].members)
                      .forEach( function(o) { currentFavorites.push(o); } );
 
-                this.favorites = currentFavorites;
+                let deleteModal = d3.select( '#optToDelete' );
+
+                deleteModal.datum().data = currentFavorites;
+
+                newCombo.populateCombobox( deleteModal, true );
 
                 let getTypes = await Hoot.api.getConflateTypes(true);
 
@@ -158,11 +157,23 @@ export default class DeleteFavroteOpts {
                 d3.select('#conflateType').property('value', 'Reference');
             } )
             .catch( err => {
-                // TODO: alert - unable to save favorite adv opts
+                let alert = {
+                    message: err,
+                    type: 'warn'
+                };
+
+                Hoot.message.alert( alert );
             } )
             .finally( () => {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
+
+                let alert = {
+                    message: 'Fav. Opt Deleted Successfully',
+                    type: 'success'
+                };
+
+                Hoot.message.alert({alert});
             } );
     }
 

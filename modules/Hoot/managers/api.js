@@ -243,7 +243,7 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'User favortes deleted',
+                    message: 'User favorites deleted',
                     status: 200,
                     type: 'success'
                 };
@@ -1062,33 +1062,6 @@ export default class API {
                 return that.changesetOpts;
             });
         }
-    }
-
-    saveFavoriteConflationOpts( opts ) {
-        const params = {
-            path: '/job/review/advancedopts/save',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: JSON.stringify( opts.favorites )
-        };
-
-        return this.request( params )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Favorite opts have successfully been saved!',
-                    type: 'success'
-                };
-            } )
-            .catch( err => {
-                return {
-                    data: err.data,
-                    message: 'Error saving favorite opts!',
-                    type: 'error'
-                };
-            } );
     }
 
     /**

@@ -55,7 +55,7 @@ export function layerConflateForm( data ) {
                 // update the renderd default value to match those in the conflation configs...
                 let type = d3.select( '#conflateType' ).property( 'value' );
                 let advancedOpts = AdvancedOpts.getInstance();
-                let favoriteOptions = advancedOpts.favoriteOptions;
+                let favoriteOptions = _cloneDeep( advancedOpts.favoriteOptions );
                 let advOpts = _cloneDeep( advancedOpts.advancedOptions );
                 if ( !_isEmpty(advancedOpts.conflationOptions[type.toLowerCase()]) ) {
                     let typeDefaults = advancedOpts.conflationOptions[type.toLowerCase()];
@@ -75,16 +75,23 @@ export function layerConflateForm( data ) {
 
                 if (!_isEqual(advOpts, advancedOpts.advancedOptions) || favoriteOptions.length ) {
 
-                    let checkFavs = _filter( favoriteOptions, function(a) {
-                        if ( a.name === type ) {
-                            return a;
-                        }
-                    });
+                    Hoot.api.getAllUsers();
 
-                    if ( checkFavs.length && type === checkFavs[0].name ) {
+                    let currentFavorites = [];
+
+                    let filterFavorites = Hoot.config.users[Hoot.user().id].members;
+
+                    let checkFavs = Object.keys(filterFavorites)
+                        .forEach( function(favName) {
+                            if ( favName === type ) {
+                                currentFavorites.push( JSON.parse( filterFavorites[favName] ) );
+                            }
+                        } );
+
+                    if ( currentFavorites.length && type === currentFavorites[0].name ) {
                         d3.select('#deleteFav').classed('hidden', false);
                         d3.select('#updateFav').classed('hidden', false);
-                        advancedOpts.createGroups(checkFavs);
+                        advancedOpts.createGroups(currentFavorites);
                     }
                     else {
                         d3.select('#deleteFav').classed('hidden', true);
