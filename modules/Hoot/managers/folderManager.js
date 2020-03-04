@@ -78,12 +78,13 @@ export default class FolderManager {
         } else return true;
     }
 
-    filterVisible(f, doPublic = true) {
-        return (JSON.parse(Hoot.context.storage( 'publicVisibility' )) && doPublic) || f.userId === Hoot.user().id;
+    filterVisible(f) {
+        return JSON.parse(Hoot.context.storage( 'publicVisibility' )) || f.userId === Hoot.user().id;
     }
 
     get myFolders() {
-        return this._folders.filter(f => this.filterVisible(f, false));
+        let userId = Hoot.user().id;
+        return this._folders.filter(f => f.userId === userId);
     }
 
     /**
