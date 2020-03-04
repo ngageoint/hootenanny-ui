@@ -68,7 +68,7 @@ export default class Sidebar {
         this.reviewFormData   = _filter( formMeta, form => form.type === 'review' );
     }
 
-    /**SS
+    /**
      * Render all view inside sidebar
      */
     async render() {
