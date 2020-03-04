@@ -642,7 +642,7 @@ export default class Jobs extends Tab {
                             title: 'download conflicted changes',
                             icon: 'archive',
                             action: async () => {
-                                var param = {
+                                let param = {
                                     input: d.tags.parentId,
                                     inputtype: 'changesets',
                                     outputname: d.tags.parentId,
