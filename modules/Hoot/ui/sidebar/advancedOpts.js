@@ -129,22 +129,23 @@ export default class AdvancedOpts {
                 .classed( 'advanced-opts-reset button secondary strong hidden', true )
                 .attr( 'id', 'saveFav')
                 .text( 'Save Favorites' )
-                .on( 'click', async item => {
+                .on('click', async item => {
 
                     let currNames = [];
 
-                    this.favoriteOptions.forEach( function(o) { currNames.push(o.name); } );
+                    this.favoriteOptions.forEach(function (o) { currNames.push(o.name); });
 
-                    this.saveOpts = new SaveAdvancedOpts( currNames ).render();
+                    this.saveOpts = new SaveAdvancedOpts(currNames).render();
 
                     let favoriteOpts = this.savingFavoriteOpts();
 
                     this.saveOpts.saveOpts[0].data = favoriteOpts;
 
-                    Hoot.events.once( 'modal-closed', () => delete this.saveOpts );
+                    Hoot.events.once('modal-closed', () => delete this.saveOpts);
 
                     return this;
-                } );
+
+                });
 
             favoritesBar
                 .append( 'div' )
@@ -186,6 +187,8 @@ export default class AdvancedOpts {
                     this.deleteOpts.deleteOpts[0].data = this.favoriteOptions;
 
                     Hoot.events.once( 'modal-closed', () => delete this.deleteOpts );
+
+
 
                     return this;
 
@@ -459,7 +462,9 @@ export default class AdvancedOpts {
                 .property( 'checked', d => JSON.parse(d.default) )
                 .on( 'click', function(d) {
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
-                    if ( d.send && d.send.toString() !== d.default ) {
+                    let type = d3.select('#conflateType').property('value');
+                    let favCheck = instance.favoriteOptions.filter( o => o.name !== type );
+                    if ( d.send && d.send.toString() !== d.default && favCheck.length ) {
                         d3.select('#saveFav').classed( 'hidden', false );
                     }
                 });
@@ -499,7 +504,7 @@ export default class AdvancedOpts {
 
             } else { // text input...
                 fieldInput
-                    .classed( instance.favoriteCheck(isFavorites), true)
+                    .classed( instance.favoriteCheck(isFavorites, fieldInput), true)
                     .on( 'keyup', function(d) {
                         let value = d3.select( this ).property( 'value' );
                         d.send = value !== d.default;
@@ -745,9 +750,16 @@ export default class AdvancedOpts {
         return options;
     }
 
-    favoriteCheck(favorite) {
+    favoriteCheck(favorite, input) {
         let type = d3.select( '#conflateType' ).property( 'value' ).toLowerCase();
-        if ( type === favorite[0].name ) {
+
+        let checkClass = input.property('classList');
+
+        if ( checkClass.contains('favopt') ) {
+            input.property('classList').remove('favopt');
+        }
+
+        else if ( type === favorite[0].name ) {
             return 'favopt';
         }
         else {
@@ -871,5 +883,14 @@ export default class AdvancedOpts {
         }
 
         return getSelectedOpts;
+    }
+
+    async removeOpt( opt ) {
+
+        this.favoriteOptions = await Hoot.api.getFavoriteAdvOpts();
+        console.log( this.favoriteOptions );
+
+        return this.favoriteOptions;
+
     }
 }

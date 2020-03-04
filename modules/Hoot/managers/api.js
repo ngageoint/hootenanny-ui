@@ -114,9 +114,9 @@ export default class API {
         return new Promise( poll );
     }
 
-    getConflateTypes() {
+    getConflateTypes(forceRefresh) {
 
-        if ( this.conflateTypes ) {
+        if ( this.conflateTypes && !forceRefresh) {
             return Promise.resolve( this.conflateTypes );
         } else {
             const params = {

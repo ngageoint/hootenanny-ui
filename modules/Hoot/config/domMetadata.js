@@ -1,4 +1,5 @@
 import AdvancedOpts from '../ui/sidebar/advancedOpts';
+import FormFactory from '../tools/formFactory';
 
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _isEmpty from 'lodash-es/isEmpty';
@@ -80,15 +81,18 @@ export function layerConflateForm( data ) {
                         }
                     });
 
-                    if ( type === checkFavs[0].name ) {
+                    if ( checkFavs.length && type === checkFavs[0].name ) {
                         d3.select('#deleteFav').classed('hidden', false);
                         d3.select('#updateFav').classed('hidden', false);
                         advancedOpts.createGroups(checkFavs);
                     }
                     else {
+                        d3.select('#deleteFav').classed('hidden', true);
+                        d3.select('#updateFav').classed('hidden', true);
                         advancedOpts.createGroups(advOpts);
                     }
-                } else {
+                }
+                else {
                     // disable & enable the attribute conflation group.
                     [ 'Attribute', 'Differential' ].forEach((conflationGroup) => {
                         let confGroup = d3.select( `.advanced-opts-content #${conflationGroup}_group` ),
@@ -282,15 +286,7 @@ export function saveAdvancedOpts() {
             data: [],
             inputType: 'text',
             onChange: d => this.validateTextInput( d )
-        },
-        {
-            label: 'Public',
-            id: 'addFolderVisibility',
-            inputType: 'checkbox',
-            value: 'Public',
-            checked: false,
-            class: 'folder-checkbox'
-        },
+        }
     ];
 }
 

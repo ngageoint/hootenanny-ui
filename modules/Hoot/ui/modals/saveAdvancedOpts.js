@@ -87,6 +87,28 @@ export default class SaveAdvancedOpts {
 
         this.processRequest = Hoot.api.saveFavoriteOpts( opts )
             .then( () => Hoot.folders.refreshAll() )
+            .then( () => Hoot.getAllUsers() )
+            .then( async () => {
+                let currentFavorites = [];
+                let getFavs = Object.keys(Hoot.config.users[Hoot.user().id].members)
+                     .forEach( function(o) { currentFavorites.push(o); } );
+
+                this.favorites = currentFavorites;
+
+                let getTypes = await Hoot.api.getConflateTypes(true);
+
+                getTypes.forEach( function(f) {
+                    currentFavorites.push( f );
+                });
+
+                let element = d3.select( '#conflateType' );
+
+                element.datum().data = currentFavorites;
+
+                let newCombo = new FormFactory();
+
+                newCombo.populateCombobox( element, true );
+            } )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .catch( err => {
                 // TODO: alert - unable to save favorite adv opts

@@ -18,19 +18,13 @@ class LayerConflate extends SidebarForm {
     }
 
     async getData() {
-        let that = this;
-        await Hoot.api
-            .getConflateTypes()
-            .then(conflateTypes => that.conflateTypes = conflateTypes );
-        await Hoot.api
-            .getFavoriteAdvOpts()
-            .then( favOpts => {
-                if ( favOpts ) {
-                    Object.keys( favOpts ).forEach(function(a) {
-                        that.conflateTypes.push( a );
-                    });
-                }
+        this.conflateTypes = await Hoot.api.getConflateTypes();
+        const favOpts = await Hoot.api.getFavoriteAdvOpts();
+        if ( favOpts ) {
+            Object.keys( favOpts ).forEach(( favName ) => {
+                this.conflateTypes.push( favName );
             });
+        }
     }
 
     render( layers ) {

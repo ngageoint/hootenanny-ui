@@ -1,9 +1,9 @@
-import FormFactory        from '../../tools/formFactory';
-import AdvancedOpts from '../../ui/sidebar/advancedOpts';
+import FormFactory   from '../../tools/formFactory';
+import AdvancedOpts  from '../../ui/sidebar/advancedOpts';
+import Sidebar       from '../../ui/sidebar/sidebar';
 import { deleteFavoriteOpts} from '../../config/domMetadata';
-import LayerConflate from '../../ui/sidebar/layerConflate';
 import _find    from 'lodash-es/find';
-import Sidebar from '../sidebar/sidebar';
+import LayerConflate from '../sidebar/layerConflate';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -130,15 +130,33 @@ export default class DeleteFavroteOpts {
         let toDelete = _find( this.favorites, o => o.name === optName );
 
         this.processRequest = Hoot.api.deleteFavoriteOpts( toDelete )
-            .then( () => {
+            .then( () => Hoot.getAllUsers() )
+            .then( async ()  => {
                 let getOpts = AdvancedOpts.getInstance();
                 let advOpts  = getOpts.advancedOptions;
                 getOpts.createGroups(advOpts);
+                let currentFavorites = [];
+                let getFavs = Object.keys(Hoot.config.users[Hoot.user().id].members)
+                     .forEach( function(o) { currentFavorites.push(o); } );
+
+                this.favorites = currentFavorites;
+
+                let getTypes = await Hoot.api.getConflateTypes(true);
+
+                getTypes.forEach( function(f) {
+                    currentFavorites.push( f );
+                });
+
+                let element = d3.select( '#conflateType' );
+
+                element.datum().data = currentFavorites;
+
+                let newCombo = new FormFactory();
+
+                newCombo.populateCombobox( element, true );
+
+                d3.select('#conflateType').property('value', 'Reference');
             } )
-            .then( () => {
-                d3.select( '#conflateType' ).property( 'value' , 'Reference' );
-                Hoot.api.conflateTypes.filter( item => item !== optName );
-            })
             .catch( err => {
                 // TODO: alert - unable to save favorite adv opts
             } )

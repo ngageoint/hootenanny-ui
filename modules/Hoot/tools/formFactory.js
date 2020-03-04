@@ -214,15 +214,28 @@ export default class FormFactory {
      * @param field - field div
      */
     createCombobox( field ) {
-        const data = field.datum();
-        let comboData = _map(data.data, n => {
-            const t = data.itemKey ? n[ data.itemKey ] : n,
-                  v = data.valueKey ? n[ data.valueKey ] : t,
-                  _v = data._valueKey ? n[ data._valueKey ] : v;
-            return { value: v, title: t, _value: _v };
-        } );
 
-        if (data.sort) {
+        let d = field.datum(),
+        comboData = _map(d.data, n => {
+            const t = d.itemKey ? n[ d.itemKey ] : n,
+                  v = d.valueKey ? n[ d.valueKey ] : t,
+                  _v = d._valueKey ? n[ d._valueKey ] : v;
+            return { value: v, title: t, _value: _v };
+        } ),
+        fieldInputWrap = field
+            .selectAll( '.hoot-form-field' )
+            .data([ comboData ]);
+
+        fieldInputWrap.exit().remove();
+
+        let fieldInputWrapEnter = fieldInputWrap.enter()
+            .append('div')
+            .classed( 'hoot-field-input-wrap', true );
+
+        fieldInputWrap = fieldInputWrap.merge(fieldInputWrapEnter);
+
+
+        if (d.sort) {
             comboData = comboData.sort((a, b) => {
                 let textA = a.value.toLowerCase(),
                     textB = b.value.toLowerCase();
@@ -248,7 +261,7 @@ export default class FormFactory {
     }
 
 
-    populateCombobox( input ) {
+    populateCombobox( input, reset ) {
         input.select( d => {
             let combobox = d3combobox()
                 .data( _map( d.data, n => {
@@ -257,7 +270,7 @@ export default class FormFactory {
                     return { value: v, title: t };
                 } ) );
 
-            if ( d.sort ) {
+            if ( d.sort || reset ) {
                 let data = combobox.data();
 
                 data.sort( ( a, b ) => {
