@@ -8,6 +8,7 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
+import _find      from 'lodash-es/find';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
@@ -166,7 +167,7 @@ export default class AdvancedOpts {
                         }
                     };
 
-                    Hoot.api.saveFavoriteOpts(updateOpt);
+                    Hoot.api.saveFavoriteOpts( updateOpt );
 
                 } );
 
@@ -462,8 +463,8 @@ export default class AdvancedOpts {
                 .on( 'click', function(d) {
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
                     let type = d3.select('#conflateType').property('value');
-                    let favCheck = instance.favoriteOptions.filter( o => o.name !== type );
-                    if ( d.send && d.send.toString() !== d.default && favCheck.length ) {
+                    // let favCheck = instance.favoriteOptions.filter( o => o.name !== type );
+                    if ( d.send && d.send.toString() !== d.default ) {
                         d3.select('#saveFav').classed( 'hidden', false );
                     }
                 });
@@ -858,8 +859,7 @@ export default class AdvancedOpts {
                         }
                     );
                 }
-            }
-            else {
+            } else {
                 let inputVal = d3.select( `#${member.id}` ).select('input').property( 'value' );
                 if ( member.default !== inputVal ) {
                     getSelectedOpts.push(
@@ -885,14 +885,5 @@ export default class AdvancedOpts {
         }
 
         return getSelectedOpts;
-    }
-
-    async removeOpt( opt ) {
-
-        this.favoriteOptions = await Hoot.api.getFavoriteAdvOpts();
-        console.log( this.favoriteOptions );
-
-        return this.favoriteOptions;
-
     }
 }

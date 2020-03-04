@@ -1,9 +1,7 @@
 import FormFactory   from '../../tools/formFactory';
 import AdvancedOpts  from '../../ui/sidebar/advancedOpts';
-import Sidebar       from '../../ui/sidebar/sidebar';
 import { deleteFavoriteOpts} from '../../config/domMetadata';
 import _find    from 'lodash-es/find';
-import LayerConflate from '../sidebar/layerConflate';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -13,18 +11,14 @@ import LayerConflate from '../sidebar/layerConflate';
  */
 export default class DeleteFavoriteOpts {
     constructor( opts ) {
-        this.favorites  = opts;
+        this.favorites  = this.getAllFavorites();
     }
 
     render() {
 
         this.deleteOpts = deleteFavoriteOpts.call( this );
 
-        let optCheck = [];
-
-        this.favorites.forEach(function(a) {
-            optCheck.push( a.name );
-        });
+        let optCheck = this.favorites.map( a => a.name );
 
         this.deleteOpts[ 0 ].data = optCheck;
 
@@ -119,6 +113,22 @@ export default class DeleteFavoriteOpts {
         return match.name ? match.name : false;
     }
 
+    getAllFavorites() {
+
+        Hoot.api.getAllUsers();
+
+        let currentFavorites = [];
+
+        let allFavorites = Hoot.config.users[Hoot.user().id].members;
+
+        let parseFavorites =
+            Object.keys(allFavorites)
+                .forEach( function(key) {
+                    currentFavorites.push( JSON.parse( allFavorites[key] ) );
+                } );
+        return currentFavorites;
+    }
+
     handleSubmit() {
         let optName = this.typeInput.property( 'value' );
 
@@ -130,9 +140,12 @@ export default class DeleteFavoriteOpts {
                 let getOpts = AdvancedOpts.getInstance();
                 let advOpts = getOpts.advancedOptions;
                 getOpts.createGroups(advOpts);
+
                 let currentFavorites = [];
                 let getFavs = Object.keys(Hoot.config.users[Hoot.user().id].members)
                      .forEach( function(o) { currentFavorites.push(o); } );
+
+                let newCombo = new FormFactory();
 
                 let deleteModal = d3.select( '#optToDelete' );
 
@@ -150,7 +163,7 @@ export default class DeleteFavoriteOpts {
 
                 element.datum().data = currentFavorites;
 
-                let newCombo = new FormFactory();
+
 
                 newCombo.populateCombobox( element, true );
 

@@ -79,14 +79,15 @@ export function layerConflateForm( data ) {
 
                     let currentFavorites = [];
 
-                    let filterFavorites = Hoot.config.users[Hoot.user().id].members;
+                    let allFavorites = Hoot.config.users[Hoot.user().id].members;
 
-                    let checkFavs = Object.keys(filterFavorites)
-                        .forEach( function(favName) {
-                            if ( favName === type ) {
-                                currentFavorites.push( JSON.parse( filterFavorites[favName] ) );
-                            }
-                        } );
+                    let filterFavorites =
+                        Object.keys(allFavorites)
+                            .forEach( function(key) {
+                                if ( key === type ) {
+                                    currentFavorites.push( JSON.parse( allFavorites[key] ) );
+                                }
+                            } );
 
                     if ( currentFavorites.length && type === currentFavorites[0].name ) {
                         d3.select('#deleteFav').classed('hidden', false);
