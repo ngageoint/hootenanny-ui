@@ -10,7 +10,7 @@ import _find    from 'lodash-es/find';
  * @constructor
  */
 export default class DeleteFavoriteOpts {
-    constructor( opts ) {
+    constructor() {
         this.favorites  = this.getAllFavorites();
     }
 

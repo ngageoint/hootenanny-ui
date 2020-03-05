@@ -8,7 +8,6 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
-import _find      from 'lodash-es/find';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
@@ -181,7 +180,7 @@ export default class AdvancedOpts {
                 .text( 'Delete Favorites' )
                 .on( 'click', function() {
 
-                    this.deleteOpts = new DeleteFavoriteOpts(instance.favoriteOptions).render();
+                    this.deleteOpts = new DeleteFavoriteOpts().render();
 
                     this.deleteOpts.deleteOpts[0].data = this.favoriteOptions;
 

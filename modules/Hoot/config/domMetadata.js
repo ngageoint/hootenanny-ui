@@ -1,10 +1,8 @@
 import AdvancedOpts from '../ui/sidebar/advancedOpts';
-import FormFactory from '../tools/formFactory';
 
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
-import _filter from 'lodash-es/filter';
 
 /*******************************************************************************************************
  * File: formConfigs.js

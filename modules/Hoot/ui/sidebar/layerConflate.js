@@ -11,7 +11,6 @@ import SidebarForm                from './sidebarForm';
 import AdvancedOpts               from './advancedOpts';
 import FormFactory                from '../../tools/formFactory';
 import { layerConflateForm }      from '../../config/domMetadata';
-import { sort } from 'shelljs';
 
 class LayerConflate extends SidebarForm {
     constructor( container, d ) {
