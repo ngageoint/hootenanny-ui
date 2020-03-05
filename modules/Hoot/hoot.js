@@ -124,8 +124,8 @@ class Hoot {
         let queryStringMap = utilStringQs(window.location.href);
         if (queryStringMap.hasOwnProperty('gpx') && queryStringMap.gpx.includes('task_gpx_geom')) {
             let [project, task] = new URL(queryStringMap.gpx).pathname.match(/\d+/g);
-            this.context.storage('tm:project', 'memt_project_' + project);
-            this.context.storage('tm:task', 'task_' + task);
+            sessionStorage.setItem('tm:project', 'memt_project_' + project);
+            sessionStorage.setItem('tm:task', 'task_' + task);
         }
 
         Promise.all( [
