@@ -73,11 +73,9 @@ export function layerConflateForm( data ) {
 
                 if (!_isEqual(advOpts, advancedOpts.advancedOptions) || favoriteOptions.length ) {
 
-                    Hoot.api.getAllUsers();
+                    let allFavorites = Hoot.config.users[Hoot.user().id].members;
 
                     let currentFavorites = [];
-
-                    let allFavorites = Hoot.config.users[Hoot.user().id].members;
 
                     let filterFavorites =
                         Object.keys(allFavorites)

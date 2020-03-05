@@ -168,7 +168,9 @@ export default class AdvancedOpts {
                         }
                     };
 
-                    Hoot.api.saveFavoriteOpts( updateOpt );
+                    await Hoot.api.saveFavoriteOpts( updateOpt );
+
+                    await Hoot.getAllUsers();
                 } );
 
             favoritesBar
