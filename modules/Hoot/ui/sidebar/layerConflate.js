@@ -11,6 +11,7 @@ import SidebarForm                from './sidebarForm';
 import AdvancedOpts               from './advancedOpts';
 import FormFactory                from '../../tools/formFactory';
 import { layerConflateForm }      from '../../config/domMetadata';
+import { sort } from 'shelljs';
 
 class LayerConflate extends SidebarForm {
     constructor( container, d ) {
@@ -21,9 +22,15 @@ class LayerConflate extends SidebarForm {
         this.conflateTypes = await Hoot.api.getConflateTypes();
         const favOpts = await Hoot.api.getFavoriteAdvOpts();
 
+        let sortOpts = [];
+
         Object.keys( favOpts ).forEach(( favName ) => {
-            this.conflateTypes.push( favName );
+            sortOpts.push( favName );
         });
+
+        sortOpts.sort();
+
+        sortOpts.map( opt => this.conflateTypes.push( opt ) );
     }
 
     render( layers ) {

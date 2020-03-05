@@ -73,6 +73,31 @@ export default class SaveAdvancedOpts {
         this.submitButton.node().disabled = !this.formValid;
     }
 
+    sortCombobox( defaultTypes,  userFavorites  ) {
+
+        let favorites = [];
+
+        Object.keys( userFavorites ).map( fav => favorites.push( fav ) );
+
+        favorites.sort();
+
+        favorites.forEach( opt => defaultTypes.push( opt ) );
+
+        return defaultTypes;
+
+    }
+
+    populateCombobox( input ) {
+
+        let newCombo = new FormFactory();
+
+        let element = d3.select( '#conflateType' );
+
+        element.datum().data = input;
+
+        newCombo.populateCombobox( element );
+    }
+
     handleSubmit() {
         let favoriteName = this.folderNameInput.property( 'value' );
 
@@ -89,30 +114,13 @@ export default class SaveAdvancedOpts {
             .then( () => Hoot.getAllUsers() )
             .then( async () => {
 
-                let favorites = [];
-
                 let getTypes = await Hoot.api.getConflateTypes(true);
 
-                let getFavs = Object.keys(Hoot.config.users[Hoot.user().id].members)
-                     .forEach(
-                         function(o) {
-                             favorites.push(o);
-                        }
-                    );
+                let getFavorites = Hoot.config.users[Hoot.user().id].members;
 
-                favorites.sort();
+                let allConfTypes = this.sortCombobox( getTypes, getFavorites );
 
-                favorites.forEach( function( favorite ) {
-                    getTypes.push( favorite );
-                });
-
-                let element = d3.select( '#conflateType' );
-
-                element.datum().data = getTypes;
-
-                let newCombo = new FormFactory();
-
-                newCombo.populateCombobox( element, true );
+                this.populateCombobox( allConfTypes );
             } )
             .catch( err => {
                 let alert = {

@@ -152,11 +152,13 @@ export default class AdvancedOpts {
                 .classed( 'advanced-opts-reset button secondary strong hidden', true )
                 .attr( 'id', 'updateFav')
                 .text( 'Update Favorites' )
-                .on( 'click', function() {
+                .on( 'click', async function() {
 
                     let activeFavorite = d3.select( '#conflateType' ).property( 'value' );
 
-                    let toUpdate = instance.savingFavoriteOpts( activeFavorite );
+                    let optUpdate = instance.favoriteOptions.filter( opt => opt.name === activeFavorite );
+
+                    let toUpdate = instance.updateFavoriteOpts( optUpdate );
 
                     let updateOpt = {
                         name: activeFavorite,
@@ -168,7 +170,6 @@ export default class AdvancedOpts {
                     };
 
                     Hoot.api.saveFavoriteOpts( updateOpt );
-
                 } );
 
             favoritesBar
@@ -185,8 +186,6 @@ export default class AdvancedOpts {
                     this.deleteOpts.deleteOpts[0].data = this.favoriteOptions;
 
                     Hoot.events.once( 'modal-closed', () => delete this.deleteOpts );
-
-
 
                     return this;
 
@@ -457,16 +456,12 @@ export default class AdvancedOpts {
             .property( 'checked', isCleaning);
 
         const type = fieldInput.datum().input;
+
         if ( type === 'checkbox' ) {
             fieldInput
                 .property( 'checked', d => JSON.parse(d.default) )
                 .on( 'click', function(d) {
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
-                    let type = d3.select('#conflateType').property('value');
-                    // let favCheck = instance.favoriteOptions.filter( o => o.name !== type );
-                    if ( d.send && d.send.toString() !== d.default ) {
-                        d3.select('#saveFav').classed( 'hidden', false );
-                    }
                 });
         } else {
             fieldInput
@@ -504,7 +499,7 @@ export default class AdvancedOpts {
 
             } else { // text input...
                 fieldInput
-                    .classed( instance.favoriteCheck(isFavorites, fieldInput), true)
+                    .classed( instance.favoriteCheck(isFavorites), true)
                     .on( 'keyup', function(d) {
                         let value = d3.select( this ).property( 'value' );
                         d.send = value !== d.default;
@@ -512,7 +507,6 @@ export default class AdvancedOpts {
                             d3.select( `#${d.id}-label-wrap` )
                                 .call(instance.notNumber, value);
                         }
-                        d3.select('#saveFav').classed('hidden', false);
                     });
             }
 
@@ -753,16 +747,20 @@ export default class AdvancedOpts {
         return options;
     }
 
-    favoriteCheck(favorite, input) {
+    favoriteButtonCheck( type, d ) {
+        if (  d.send ) {
+            if ( type === 'checkbox' && d3.select( this ).property( 'checked' ) === d.default ) {
+                console.log(d3.select(this));
+            } else {
+                console.log('yikes');
+            }
+        }
+    }
+
+    favoriteCheck(favorite) {
         let type = d3.select( '#conflateType' ).property( 'value' ).toLowerCase();
 
-        let checkClass = input.property('classList');
-
-        if ( checkClass.contains('favopt') ) {
-            input.property('classList').remove('favopt');
-        }
-
-        else if ( type === favorite[0].name ) {
+        if ( type === favorite[0].name ) {
             return 'favopt';
         }
         else {
@@ -774,7 +772,7 @@ export default class AdvancedOpts {
 
         let getMem = [];
 
-        toUpdate.members.forEach( function(m) { getMem.push( m ); } );
+        toUpdate[0].members.forEach( function(m) { getMem.push( m ); } );
 
         let updateOpts = [];
 
@@ -824,14 +822,7 @@ export default class AdvancedOpts {
 
         let getAdvOptMembers = [];
 
-        let getFavOptMembers = [];
-
-        if ( opt ) {
-            this.favoriteOptions.forEach( function(f) { getFavOptMembers.push( f.members); } );
-        }
-
         this.advancedOptions.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
-
 
         let getSelectedOpts = [];
 
@@ -877,13 +868,34 @@ export default class AdvancedOpts {
             }
         }
 
-        if ( opt ) {
-            flatten(getFavOptMembers);
-        }
-        else {
-            flatten(getAdvOptMembers);
-        }
+        flatten(getAdvOptMembers);
 
         return getSelectedOpts;
+    }
+
+
+    sortCombobox( defaultTypes,  userFavorites  ) {
+
+        let favorites = [];
+
+        Object.keys( userFavorites ).map( fav => favorites.push( fav ) );
+
+        favorites.sort();
+
+        favorites.forEach( opt => defaultTypes.push( opt ) );
+
+        return defaultTypes;
+
+    }
+
+    populateCombobox( input ) {
+
+        let newCombo = new FormFactory();
+
+        let element = d3.select( '#conflateType' );
+
+        element.datum().data = input;
+
+        newCombo.populateCombobox( element );
     }
 }

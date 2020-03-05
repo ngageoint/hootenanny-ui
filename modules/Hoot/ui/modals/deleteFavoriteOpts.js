@@ -129,6 +129,40 @@ export default class DeleteFavoriteOpts {
         return currentFavorites;
     }
 
+    sortCombobox( defaultTypes,  userFavorites  ) {
+
+        let favorites = [];
+
+        Object.keys( userFavorites ).map( fav => favorites.push( fav ) );
+
+        favorites.sort();
+
+        favorites.forEach( opt => defaultTypes.push( opt ) );
+
+        return defaultTypes;
+
+    }
+
+    populateCombobox( type, input ) {
+
+        let newCombo = new FormFactory();
+
+        if ( type === 'delete' ) {
+            let deleteModal = d3.select( '#optToDelete' );
+
+            deleteModal.datum().data = input;
+
+            newCombo.populateCombobox( deleteModal );
+        }
+        else {
+            let element = d3.select( '#conflateType' );
+
+            element.datum().data = input;
+
+            newCombo.populateCombobox( element );
+        }
+    }
+
     handleSubmit() {
         let optName = this.typeInput.property( 'value' );
 
@@ -142,36 +176,15 @@ export default class DeleteFavoriteOpts {
 
                 getOpts.createGroups(advOpts);
 
-                let favorites = [];
-
                 let getTypes = await Hoot.api.getConflateTypes(true);
 
-                let getFavs = Object.keys(Hoot.config.users[Hoot.user().id].members)
-                     .forEach(
-                         function(o) {
-                             favorites.push(o);
-                        }
-                    );
+                let getFavorites = Hoot.config.users[Hoot.user().id].members;
 
-                favorites.sort();
+                let allConfTypes = this.sortCombobox( getTypes, getFavorites );
 
-                favorites.forEach( function( favorite ) {
-                    getTypes.push( favorite );
-                });
+                this.populateCombobox( 'delete', allConfTypes );
 
-                let newCombo = new FormFactory();
-
-                let deleteModal = d3.select( '#optToDelete' );
-
-                deleteModal.datum().data = getTypes;
-
-                newCombo.populateCombobox( deleteModal );
-
-                let element = d3.select( '#conflateType' );
-
-                element.datum().data = getTypes;
-
-                newCombo.populateCombobox( element );
+                this.populateCombobox( 'allTypes', allConfTypes );
 
                 d3.select('#conflateType').property('value', 'Reference');
             } )
