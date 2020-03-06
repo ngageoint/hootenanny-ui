@@ -182,6 +182,8 @@ export default class DeleteFavoriteOpts {
 
                 getOpts.createGroups(advOpts);
 
+                d3.select('#updateFav').classed('hidden', true );
+
                 let getTypes = await Hoot.api.getConflateTypes(true);
 
                 let getFavorites = Hoot.config.users[Hoot.user().id].members;
@@ -195,23 +197,19 @@ export default class DeleteFavoriteOpts {
                 d3.select('#conflateType').property('value', 'Reference');
             } )
             .catch( err => {
-                let alert = {
+                Hoot.message.alert( {
                     message: err,
                     type: 'warn'
-                };
-
-                Hoot.message.alert( alert );
+                } );
             } )
             .finally( () => {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
 
-                let alert = {
-                    message: 'Fav. Opt Deleted Successfully',
+                Hoot.message.alert( {
+                    message: 'Fav. Opts Deleted Successfully',
                     type: 'success'
-                };
-
-                Hoot.message.alert({alert});
+                } );
             } );
     }
 

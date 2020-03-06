@@ -135,12 +135,10 @@ export default class SaveAdvancedOpts {
                 this.container.remove();
                 Hoot.events.emit( 'modal-closed' );
 
-                let alert = {
-                    message: 'Fav. Opt Saved Successfully',
+                Hoot.message.alert( {
+                    message: 'Fav. Opts Saved Successfully',
                     type: 'success'
-                };
-
-                Hoot.message.alert({alert});
+                } );
             } );
     }
 }
