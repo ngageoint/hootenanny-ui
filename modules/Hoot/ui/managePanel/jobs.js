@@ -289,7 +289,7 @@ export default class Jobs extends Tab {
                 let user = JSON.parse( localStorage.getItem( 'user' ) );
 
 
-                if (d.userId === user.id) {
+                if (d.userId === user.id || Hoot.users.isAdmin()) {
                     //Get logging for the job
                     actions.push({
                         title: 'view log',
@@ -384,6 +384,14 @@ export default class Jobs extends Tab {
 
 
     populateJobsHistory( jobs ) {
+        // if you're on a page that no longer has data, go to last page with data
+        if ( jobs.length === 0 && (this.paging.getCurrentPage() >= this.getPages())
+            // or your current page is greater than the number of pages
+            // like when you change the page size from the last page
+            || (this.paging.getCurrentPage() > this.getPages())) {
+            this.paging.setPage( this.getPages() );
+        }
+
         let that = this;
         let table = this.jobsHistoryTable
             .selectAll('table')
@@ -644,20 +652,40 @@ export default class Jobs extends Tab {
                 }
 
                 // Only advanced user may perform these
-                if (this.privileges && this.privileges.advanced === 'true' &&
-                    d.statusDetail.toUpperCase() !== 'STALE') {
+                if (this.privileges && this.privileges.advanced === 'true') {
 
-                    if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
-                        //Get info for the derive
+                    // If the upload changeset job is marked having conflicts
+                    // add action to download conflicted changes
+                    if (d.statusDetail.toUpperCase() === 'CONFLICTS'
+                        && d.jobType.toUpperCase() === 'UPLOAD_CHANGESET') {
+
                         actions.push({
-                            title: 'upload changeset',
-                            icon: 'cloud_upload',
+                            title: 'download conflicted changes',
+                            icon: 'archive',
                             action: async () => {
-                                Hoot.api.changesetStats(d.jobId, false)
+                                let param = {
+                                    input: d.tags.parentId,
+                                    inputtype: 'changesets',
+                                    outputname: d.tags.parentId,
+                                    outputtype: 'zip'
+                                };
+                                // Hoot.api.saveChangeset( d.tags.parentId, 'diff-error' )
+                                //     .catch( err => {
+                                //         console.error(err);
+                                //         Hoot.message.alert( err );
+                                //         return false;
+                                //     } );
+                                Hoot.api.exportDataset(param)
                                     .then( resp => {
-                                        this.changesetStats = new ChangesetStats( d, resp.data ).render();
+                                        self.jobId = resp.data.jobid;
 
-                                        Hoot.events.once( 'modal-closed', () => delete this.changesetStats );
+                                        return Hoot.api.statusInterval( self.jobId );
+                                    } )
+                                    .then( async resp => {
+                                        if (resp.data && resp.data.status !== 'cancelled') {
+                                            await Hoot.api.saveDataset( self.jobId, param.outputname );
+                                        }
+                                        return resp;
                                     } )
                                     .catch( err => {
                                         console.error(err);
@@ -667,6 +695,99 @@ export default class Jobs extends Tab {
                             }
                         });
 
+                    }
+
+                    // If the changeset is not stale (i.e. has already been applied)
+                    if (d.statusDetail.toUpperCase() !== 'STALE') {
+
+                        // Add action for upload of changeset
+                        if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
+                            //Get info for the derive
+                            actions.push({
+                                title: 'upload changeset',
+                                icon: 'cloud_upload',
+                                action: async () => {
+                                    Hoot.api.changesetStats(d.jobId, false)
+                                        .then( resp => {
+                                            this.changesetStats = new ChangesetStats( d, resp.data ).render();
+
+                                            Hoot.events.once( 'modal-closed', () => delete this.changesetStats );
+                                        } )
+                                        .catch( err => {
+                                            console.error(err);
+                                            Hoot.message.alert( err );
+                                            return false;
+                                        } );
+                                }
+                            });
+                        }
+
+                        // For Conflate jobs add action to derive changeset
+                        if (d.jobType.toUpperCase() === 'CONFLATE') {
+                            let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
+
+                            if (currentLayer && currentLayer.grailMerged) {
+                                //Get info for the derive
+                                actions.push({
+                                    title: 'derive changeset',
+                                    icon: 'change_history',
+                                    action: async () => {
+                                        const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
+
+                                        const params  = {};
+                                        params.input1 = parseInt(tagsInfo.input1, 10);
+                                        params.input2 = d.mapId;
+                                        params.parentId = d.jobId;
+
+                                        if (currentLayer.bbox) params.BBOX = currentLayer.bbox;
+
+                                        Hoot.api.deriveChangeset( params )
+                                            .then( resp => Hoot.message.alert( resp ) );
+                                    }
+                                });
+                            }
+                        }
+
+                        // For conflate or import jobs add action for
+                        // creating an adds-only changeset
+                        // or a replacement changeset
+                        if (d.jobType.toUpperCase() === 'CONFLATE'
+                            || d.jobType.toUpperCase() === 'IMPORT') {
+                            let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
+
+                            if (currentLayer && !currentLayer.grailReference) {
+                                actions.push({
+                                    title: 'derive changeset [adds only]',
+                                    icon: 'add_to_photos',
+                                    action: async () => {
+                                        const params  = {};
+                                        params.input1 = d.mapId;
+                                        params.parentId = d.jobId;
+
+                                        Hoot.api.deriveChangeset( params )
+                                            .then( resp => Hoot.message.alert( resp ) );
+                                    }
+                                });
+
+                                actions.push({
+                                    title: 'derive changeset replacement',
+                                    icon: 'flip_to_front',
+                                    action: async () => {
+                                        let gpr = new GrailDatasetPicker(currentLayer, d.jobId);
+                                        gpr.render();
+
+                                        Hoot.events.once( 'modal-closed', () => {
+
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    // Add action for download of changeset
+                    // users can do this even after the changeset has been applied
+                    if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
                         actions.push({
                             title: 'download changeset',
                             icon: 'archive',
@@ -681,64 +802,6 @@ export default class Jobs extends Tab {
                         });
                     }
 
-                    if (d.jobType.toUpperCase() === 'CONFLATE') {
-                        let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
-
-                        if (currentLayer && currentLayer.grailMerged) {
-                            //Get info for the derive
-                            actions.push({
-                                title: 'derive changeset',
-                                icon: 'change_history',
-                                action: async () => {
-                                    const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
-
-                                    const params  = {};
-                                    params.input1 = parseInt(tagsInfo.input1, 10);
-                                    params.input2 = d.mapId;
-                                    params.parentId = d.jobId;
-
-                                    if (currentLayer.bbox) params.BBOX = currentLayer.bbox;
-
-                                    Hoot.api.deriveChangeset( params )
-                                        .then( resp => Hoot.message.alert( resp ) );
-                                }
-                            });
-                        }
-                    }
-
-                    if (d.jobType.toUpperCase() === 'CONFLATE'
-                        || d.jobType.toUpperCase() === 'IMPORT'
-                    ) {
-                        let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
-
-                        if (currentLayer && !currentLayer.grailReference) {
-                            actions.push({
-                                title: 'derive changeset [adds only]',
-                                icon: 'add_to_photos',
-                                action: async () => {
-                                    const params  = {};
-                                    params.input1 = d.mapId;
-                                    params.parentId = d.jobId;
-
-                                    Hoot.api.deriveChangeset( params )
-                                        .then( resp => Hoot.message.alert( resp ) );
-                                }
-                            });
-
-                            actions.push({
-                                title: 'derive changeset replacement',
-                                icon: 'flip_to_front',
-                                action: async () => {
-                                    let gpr = new GrailDatasetPicker(currentLayer, d.jobId);
-                                    gpr.render();
-
-                                    Hoot.events.once( 'modal-closed', () => {
-
-                                    });
-                                }
-                            });
-                        }
-                    }
                 }
 
                 props.push({

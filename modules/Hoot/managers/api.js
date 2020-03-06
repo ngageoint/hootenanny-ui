@@ -36,6 +36,7 @@ export default class API {
         this.queryInterval = this.config.queryInterval;
         this.conflateTypes = null;
         this.importOpts = null;
+        this.changesetOpts = null;
     }
 
     /**
@@ -436,11 +437,20 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getReviewBookmarks( bookmarkId ) {
-        const path = bookmarkId ? `get?bookmarkId=${ bookmarkId }` : 'getall';
-
+    getReviewBookmarks( paramData ) {
         const params = {
-            path: `/job/review/bookmarks/${ path }`,
+            path: '/job/review/bookmarks/getall',
+            method: 'GET',
+            params: paramData
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getBookmarkById( bookmarkId ) {
+        const params = {
+            path: `/job/review/bookmarks/get?bookmarkId=${ bookmarkId }`,
             method: 'GET'
         };
 
@@ -727,9 +737,9 @@ export default class API {
             });
     }
 
-    saveChangeset( id ) {
+    saveChangeset( id, name ) {
         const params = {
-            path: `/job/export/${id}?outputname=diff&ext=osc`,
+            path: `/job/export/${id}?outputname=${name || 'diff'}&ext=osc`,
             responseType: 'arraybuffer',
             method: 'GET'
         };
@@ -976,6 +986,22 @@ export default class API {
         }
     }
 
+    getAdvancedChangesetOptions() {
+        if ( this.changesetOpts ) {
+            return Promise.resolve( this.changesetOpts );
+        } else {
+            const params = {
+                path: '/info/getChangesetOptions',
+                method: 'GET'
+            };
+            let that = this;
+            return this.request( params ).then( resp => {
+                that.changesetOpts = resp.data.members;
+                return that.changesetOpts;
+            });
+        }
+    }
+
     /**
      * Delete a layer from the database
      *
@@ -1202,15 +1228,7 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data )
-            .catch( err => {
-                return {
-                    data: err.data,
-                    message: err.data || 'Error retrieving overpass stats query!',
-                    status: err.status,
-                    type: 'error'
-                };
-            } );
+            .then( resp => resp.data );
     }
 
     grailPullRailsPortToDb( data, folderId, railsLabel ) {

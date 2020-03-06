@@ -14,11 +14,11 @@
         margin-right: 20px;
     }
 
-    .reset-button {
+    .bookmark-action-button {
         position: relative;
-        width: 30px;
+        width: 85px;
         height: 30px;
-        border-radius: 100%;
+        margin: 0 3px;
     }
 }
 
@@ -29,7 +29,8 @@
     overflow: auto;
 
     &::-webkit-scrollbar {
-        display: none;
+        width: 13px;
+        border-left: 1px solid #DDD;
     }
 }
 

@@ -5,16 +5,10 @@
  *******************************************************************************************************/
 
 import _camelCase from 'lodash-es/camelCase';
-import _debounce  from 'lodash-es/debounce';
-import _filter    from 'lodash-es/filter';
+import _find      from 'lodash-es/find';
 import _forEach   from 'lodash-es/forEach';
 import _get       from 'lodash-es/get';
-import _isEqual   from 'lodash-es/isEqual';
 import _map       from 'lodash-es/map';
-import _reject    from 'lodash-es/reject';
-import _slice     from 'lodash-es/slice';
-import _sortBy    from 'lodash-es/sortBy';
-import _uniq      from 'lodash-es/uniq';
 
 import Tab  from '../tab';
 
@@ -54,11 +48,13 @@ export default class ReviewBookmarks extends Tab {
             },
             {
                 label: 'Filter By Creator',
-                name: 'filterByCreator'
+                name: 'creatorFilter',
+                readonly: 'readonly',
             },
             {
                 label: 'Filter By Layer Name',
-                name: 'filterByLayerName'
+                name: 'layerNameFilter',
+                readonly: 'readonly',
             }
         ];
 
@@ -66,14 +62,6 @@ export default class ReviewBookmarks extends Tab {
         this.currentPageIdx = 0;
         this.bookmarks      = [];
 
-        this.defaultSortOpt = 'createdAt';
-
-        this.defaultFilterOpts = {
-            createdBy: '',
-            layerName: ''
-        };
-
-        this.filterOpts = this.defaultFilterOpts;
     }
 
     render() {
@@ -86,12 +74,7 @@ export default class ReviewBookmarks extends Tab {
         d3.select( '#sortBy' ).property( 'value', 'Created At' );
         d3.select( '#itemsPerPage' ).property( 'value', this.perPageCount );
 
-        this.loadBookmarks()
-            .then( bookmarks => {
-                this.currentBookmarks = this.sortBookmarks( bookmarks );
-
-                this.paginateBookmarks();
-            } );
+        this.loadBookmarks();
 
         return this;
     }
@@ -121,17 +104,25 @@ export default class ReviewBookmarks extends Tab {
             .attr( 'name', d => d.name )
             .attr( 'readonly', d => d.readonly );
 
-        let resetButtonContainer = filtersContainer
+        filtersContainer
             .append( 'div' )
-            .classed( 'reset-button-container', true );
-
-        resetButtonContainer
             .append( 'button' )
-            .classed( 'reset-button primary flex justify-center', true )
-            .append( 'i' )
+            .classed( 'bookmark-action-button primary flex justify-center', true )
+            .text( 'Clear filters' )
+            .on( 'click', () => this.clearFilter() );
+
+        let refreshButtonContainer = filtersContainer
+            .append( 'div' )
+            .append( 'button' )
+            .classed( 'bookmark-action-button primary flex justify-center', true )
+            .on( 'click', () => this.loadBookmarks() );
+
+        refreshButtonContainer.append( 'i' )
             .classed( 'material-icons small', true )
-            .text( 'replay' )
-            .on( 'click', () => this.resetFilter() );
+            .text( 'replay' );
+
+        refreshButtonContainer.append( 'span' )
+            .text( 'Refresh' );
     }
 
     createBookmarkTable() {
@@ -177,7 +168,7 @@ export default class ReviewBookmarks extends Tab {
             .text( 'first_page' )
             .on( 'click', () => {
                 this.currentPageIdx = 0;
-                this.paginateBookmarks();
+                this.loadBookmarks();
             } );
 
         this.reverseButtons
@@ -186,7 +177,7 @@ export default class ReviewBookmarks extends Tab {
             .text( 'chevron_left' )
             .on( 'click', () => {
                 this.currentPageIdx--;
-                this.paginateBookmarks();
+                this.loadBookmarks();
             } );
 
         this.forwardButtons
@@ -195,7 +186,7 @@ export default class ReviewBookmarks extends Tab {
             .text( 'chevron_right' )
             .on( 'click', () => {
                 this.currentPageIdx++;
-                this.paginateBookmarks();
+                this.loadBookmarks();
             } );
 
         this.forwardButtons
@@ -204,7 +195,7 @@ export default class ReviewBookmarks extends Tab {
             .text( 'last_page' )
             .on( 'click', () => {
                 this.currentPageIdx = this.pageButtons.selectAll( '.page' ).size() - 1;
-                this.paginateBookmarks();
+                this.loadBookmarks();
             } );
     }
 
@@ -213,30 +204,47 @@ export default class ReviewBookmarks extends Tab {
             // make sure data has already been fetched before continuing
             await Hoot.folders.dataExists();
 
-            let resp = await Hoot.api.getReviewBookmarks();
+            // need to know the users because we associate the bookmark to the proper user inside tagBookmarks()
+            await Hoot.getAllUsers();
 
-            this.bookmarks = this.parseBookmarks( resp.reviewBookmarks );
+            const params = this.getFilterParams();
+            let resp = await Hoot.api.getReviewBookmarks( params );
 
-            return this.bookmarks;
-        } catch ( e ) {
-            // TODO: show alert
-            // window.console.log( 'Unable to retrieve bookmarks for review' );
-            throw new Error( e );
+            this.bookmarks = this.tagBookmarks( resp.reviewBookmarks );
+            this.bookmarksTotalCount = resp.totalCount;
+            this.creatorsList = resp.creators;
+            this.layerNames = resp.layerNames;
+
+        } catch ( err ) {
+            err.message = err.data;
+            Hoot.message.alert( err );
         } finally {
             this.populateFilterCombos();
         }
+
+        await this.paginateBookmarks();
     }
 
-    parseBookmarks( bookmarks ) {
+    getFilterParams() {
+        const sortVal = _camelCase( d3.select( '#sortBy' ).node().value );
 
+        const creatorName = d3.select( '#creatorFilter' ).node().value;
+        const creatorId = creatorName === '' ? '' : _find( Hoot.config.users, { display_name: creatorName } ).id;
+
+        const layerName = d3.select( '#layerNameFilter' ).node().value;
+        const layerId = layerName === '' ? '' : Hoot.layers.findBy( 'name', layerName ).id;
+
+        return {
+            limit: this.perPageCount,
+            orderBy: sortVal,
+            creatorFilter: creatorId,
+            layerNameFilter: layerId,
+            offset: (this.perPageCount * this.currentPageIdx)
+        };
+    }
+
+    tagBookmarks( bookmarks ) {
         _forEach( bookmarks, bookmark => {
-            let createdBy = 'anonymous';
-
-            if ( Hoot.config.users[ bookmark.createdBy ] ) {
-                createdBy = Hoot.config.users[ bookmark.createdBy ].email;
-            }
-
-            bookmark.createdBy = createdBy;
             bookmark.layerName = _get( Hoot.layers.findBy( 'id', bookmark.mapId ), 'name' );
         } );
 
@@ -244,15 +252,11 @@ export default class ReviewBookmarks extends Tab {
     }
 
     populateFilterCombos() {
-        // created by
-        this.filterControls[ 2 ].options = _uniq( _map( this.bookmarks, bookmark => {
-            return bookmark.createdBy;
-        } ) );
+        // creators dropdown
+        _find( this.filterControls, { name: 'creatorFilter' } ).options = this.creatorsList;
 
-        // layer name
-        this.filterControls[ 3 ].options = _uniq( _map( this.bookmarks, bookmark => {
-            return bookmark.layerName;
-        } ) );
+        // layer name dropdown
+        _find( this.filterControls, { name: 'layerNameFilter' } ).options = this.layerNames;
 
         _forEach( this.filterControls, d => {
             let combobox = d3combobox()
@@ -265,18 +269,13 @@ export default class ReviewBookmarks extends Tab {
                 .on( 'accept', () => {
                     if ( d.name === 'itemsPerPage' ) {
                         this.perPageCount = d3.select( '#' + d.name ).property( 'value' );
-                        this.paginateBookmarks();
-                    } else if ( d.name === 'sortBy' ) {
-                        this.currentBookmarks = this.sortBookmarks( this.currentBookmarks );
-                        this.paginateBookmarks();
-                    } else {
-                        this.setFilterOpt( d );
                     }
+
+                    this.loadBookmarks();
                 } );
 
             d3.select( '#' + d.name )
-                .call( combobox )
-                .on( 'input', _debounce( () => this.setFilterOpt( d ), 400 ) );
+                .call( combobox );
         } );
     }
 
@@ -320,7 +319,13 @@ export default class ReviewBookmarks extends Tab {
             .append( 'div' )
             .classed( 'bookmark-title', true )
             .append( 'a' )
-            .text( this.renderBookmarkTitle )
+            .text( data => {
+                let title      = data.detail.bookmarkdetail.title,
+                    layerName  = data.layerName,
+                    relationId = `r${ data.relationId }_${ data.mapId }`;
+
+                return `${ title } - [${ layerName } : ${ relationId }]`;
+            } )
             .on( 'click', d => this.openBookmarkNotes( d ) );
 
         header
@@ -356,118 +361,41 @@ export default class ReviewBookmarks extends Tab {
 
         details
             .append( 'span' )
-            .text( this.renderBookmarkCreatedBy );
+            .text( data => {
+                let createdAt = new Date( data.createdAt ).toLocaleString(),
+                    createdBy = Hoot.config.users[ data.createdBy ].display_name;
+
+                return `${ createdAt } by ${ createdBy }`;
+            } );
     }
 
-    renderBookmarkTitle( d ) {
-        let title      = d.detail.bookmarkdetail.title,
-            layerName  = d.layerName,
-            relationId = `r${ d.relationId }_${ d.mapId }`;
-
-        return `${ title } - [${ layerName } : ${ relationId }]`;
-    }
-
-    renderBookmarkCreatedBy( d ) {
-        let createdAt = new Date( d.createdAt ).toLocaleString(),
-            createdBy = d.createdBy;
-
-        return `${ createdAt } by ${ createdBy }`;
-    }
-
-    setFilterOpt( d ) {
-        let value = d3.select( '#' + d.name ).node().value;
-
-        this.filterOpts[ d.name ] = value.toLowerCase();
-
-        this.filterBookmarks();
-    }
-
-    resetFilter() {
+    clearFilter() {
         d3.select( '#sortBy' ).property( 'value', 'Created At' );
-        d3.select( '#filterByCreator' ).property( 'value', '' );
-        d3.select( '#filterByLayerName' ).property( 'value', '' );
+        d3.select( '#creatorFilter' ).property( 'value', '' );
+        d3.select( '#layerNameFilter' ).property( 'value', '' );
 
         this.currentPageIdx = 0;
-
-        this.populateBookmarks( this.sortBookmarks( this.bookmarks ), true );
-    }
-
-    filterBookmarks() {
-        let createdByVal = d3.select( '#filterByCreator' ).node().value.toLowerCase(),
-            layerNameVal = d3.select( '#filterByLayerName' ).node().value.toLowerCase();
-
-        let creatorFiltered,
-            layerNameFiltered;
-
-        if ( createdByVal.length ) {
-            creatorFiltered = _filter( this.bookmarks, bookmark => {
-                let createdBy = bookmark.createdBy.toLowerCase();
-
-                if ( createdBy.indexOf( createdByVal ) > -1 ) {
-                    return bookmark;
-                }
-            } );
-        } else {
-            creatorFiltered = this.bookmarks;
-        }
-
-        if ( layerNameVal.length ) {
-            layerNameFiltered = _filter( creatorFiltered, bookmark => {
-                let layerName = bookmark.layerName.toLowerCase();
-
-                if ( layerName.indexOf( layerNameVal ) > -1 ) {
-                    return bookmark;
-                }
-            } );
-        } else {
-            layerNameFiltered = creatorFiltered;
-        }
-
-        if ( !_isEqual( this.currentBookmarks, layerNameFiltered ) ) {
-            this.currentPageIdx   = 0;
-            this.currentBookmarks = this.sortBookmarks( layerNameFiltered );
-
-            this.paginateBookmarks();
-        }
-    }
-
-    sortBookmarks( bookmarks ) {
-        let sortOpt = _camelCase( d3.select( '#sortBy' ).node().value );
-
-        bookmarks = _sortBy( bookmarks, sortOpt );
-
-        return bookmarks;
+        this.loadBookmarks();
     }
 
     paginateBookmarks() {
-        // slice appropriate range of items from array
-        let startIdx  = this.perPageCount * this.currentPageIdx,
-            endIdx    = this.perPageCount * (this.currentPageIdx + 1),
-            bookmarks = _slice( this.currentBookmarks, startIdx, endIdx );
-
         // last bookmark on page was deleted so move back one page and re-render
-        if ( bookmarks.length === 0 && this.currentPageIdx > 0 ) {
+        if ( this.bookmarks.length === 0 && this.currentPageIdx > 0 ) {
             this.currentPageIdx--;
-            this.paginateBookmarks();
+            this.loadBookmarks();
             return;
         }
 
-        let pageCount = Math.ceil( this.currentBookmarks.length / this.perPageCount ),
+        let pageCount = Math.ceil( this.bookmarksTotalCount / this.perPageCount ),
             items     = [ ...Array( pageCount ).keys() ],
             lastIdx   = pageCount - 1;
 
-        let from  = startIdx + 1,
-            to    = endIdx,
-            total = this.currentBookmarks.length;
-
-        // if last page is showing, set the end of range to total number of bookmarks
-        if ( this.currentPageIdx === lastIdx && bookmarks.length < endIdx ) {
-            to = this.currentBookmarks.length;
-        }
+        let from  = this.perPageCount * this.currentPageIdx + 1,
+            to    = this.perPageCount * (this.currentPageIdx + 1);
 
         this.showingOnPage.select( '.from-count' ).text( from );
         this.showingOnPage.select( '.to-count' ).text( to );
-        this.showingOnPage.select( '.total-count' ).text( total );
+        this.showingOnPage.select( '.total-count' ).text( this.bookmarksTotalCount );
 
         let pages = this.pageButtons
             .selectAll( '.page' )
@@ -483,7 +411,7 @@ export default class ReviewBookmarks extends Tab {
             .text( d => d + 1 )
             .on( 'click', d => {
                 this.currentPageIdx = d;
-                this.paginateBookmarks();
+                this.loadBookmarks();
             } );
 
         this.pageButtons
@@ -501,7 +429,7 @@ export default class ReviewBookmarks extends Tab {
             .selectAll( 'button' )
             .property( 'disabled', this.currentPageIdx === lastIdx );
 
-        this.populateBookmarks( bookmarks, true );
+        this.populateBookmarks( this.bookmarks, true );
     }
 
     async deleteBookmark( d ) {
@@ -515,11 +443,7 @@ export default class ReviewBookmarks extends Tab {
 
         return Hoot.api.deleteReviewBookmark( d.id )
             .then( resp => Hoot.message.alert( resp ) )
-            .then( () => {
-                this.currentBookmarks = _reject( this.currentBookmarks, bookmark => bookmark.id === d.id );
-
-                this.paginateBookmarks();
-            } );
+            .then( () => this.loadBookmarks() );
     }
 
     openBookmarkNotes( d ) {

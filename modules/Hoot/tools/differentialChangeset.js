@@ -33,70 +33,8 @@ export default class DifferentialChangeset {
 
         this.container = this.formFactory.generateForm( 'body', formId, metadata );
 
-        this.createToggle();
+        this.formFactory.createToggle(this.container);
 
-    }
-
-    createToggle() {
-        let iconText = 'arrow_right';
-        let fldset = this.container.selectAll('fieldset');
-        fldset.classed('hidden', true);
-        let toggle = this.container
-            .select('form')
-            .insert( 'h4', 'fieldset' )
-            .attr( 'id', 'advOpts' )
-            .on('click', () => {
-                let shown = icon.text() !== iconText;
-                if (!shown) {
-                    fldset.classed('hidden', false);
-                    icon.text('arrow_drop_down');
-                }
-                fldset.transition()
-                    .duration(200)
-                    .style('height', shown ? '0px' : fldset.clientHeight)
-                    .on('end', () => {
-                        if (shown) {
-                            fldset.classed('hidden', true);
-                            icon.text(iconText);
-                        }
-                    });
-            });
-        let icon = toggle.append('i')
-            .classed( 'material-icons', true )
-            .text(iconText);
-        toggle.append('span')
-            .text( 'Advanced Options' );
-    }
-
-    /**
-     * Compares state of
-     * advanced options to defaults and
-     * adds to params if different
-     */
-    getAdvOpts() {
-        let that = this;
-        let advParams = {};
-
-        this.advOpts.forEach(function(d) {
-            let propName;
-            switch (d.input) {
-                case 'checkbox':
-                    propName = 'checked';
-                    break;
-                case 'text':
-                default:
-                    propName = 'value';
-                    break;
-            }
-            let inputValue = that.container.select('#' + d.id).property(propName).toString();
-
-            // Need .length check because empty text box should be considered equal to default
-            if ( inputValue.length && inputValue !== d.default ) {
-                advParams[d.id] = inputValue;
-            }
-        });
-
-        return advParams;
     }
 
     handleSubmit() {
@@ -114,7 +52,7 @@ export default class DifferentialChangeset {
             params.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
-        params.ADV_OPTS = this.getAdvOpts();
+        params.ADV_OPTIONS = this.formFactory.getAdvOpts(this.container, this.advOpts);
 
         Hoot.api.createDifferentialChangeset( params )
             .then( ( resp ) => Hoot.message.alert( resp ) );

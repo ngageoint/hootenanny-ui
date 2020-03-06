@@ -13,12 +13,14 @@ import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
 import { tooltip }    from '../../../util/tooltip';
 
+
 let instance = null;
 export default class AdvancedOpts {
     constructor() {
         this.sidebar         = d3.select( '#hoot-sidebar' );
         this.advancedOptions = [];
         this.conflationOptions = {};
+        this.showing           = false;
     }
 
     static getInstance() {
@@ -83,7 +85,16 @@ export default class AdvancedOpts {
             .append( 'button' )
             .classed( 'advanced-opts-reset button secondary strong', true )
             .text( 'Reset' )
-            .on( 'click', () => this.createGroups() );
+            .on( 'click', () => {
+                let showingOpts = [];
+                d3.selectAll('.group-body.fill-white')
+                    .each(function(a) {
+                        if ( !this.classList.contains('hidden') ) {
+                            showingOpts.push(a.name);
+                        }
+                    } );
+                this.createGroups(this.advancedOptions, showingOpts);
+            });
     }
 
     createContentDiv() {
@@ -198,7 +209,7 @@ export default class AdvancedOpts {
             .classed( 'adv-opts-group-title', true)
             .text( d => d.members.length ? `${d.label} Options` : d.label);
 
-        innerLabel.on('click', () => {
+        innerLabel.on('click', function() {
             let input = d3.select( `#${d.name}-toggle` );
 
             if (input.empty()) return;
@@ -260,6 +271,13 @@ export default class AdvancedOpts {
         }
     }
 
+    toggleDescription(fieldContainer) {
+        fieldContainer.select('.hoot-field-label-button')
+            .on('click', function() {
+                fieldContainer.select('p').classed('hidden', !fieldContainer.select('p').classed('hidden') );
+            });
+    }
+
     fieldLabel(fieldContainer) {
         let d = fieldContainer.datum(),
             fieldLabelWrap = fieldContainer
@@ -270,7 +288,8 @@ export default class AdvancedOpts {
 
         let fieldLabelWrapEnter = fieldLabelWrap.enter()
             .append( 'div' )
-            .classed('hoot-field-label-wrap', true);
+            .classed('hoot-field-label-wrap', true );
+
 
         fieldLabelWrap = fieldLabelWrap.merge(fieldLabelWrapEnter);
 
@@ -291,6 +310,18 @@ export default class AdvancedOpts {
             .text( d => d.label );
 
         fieldLabel.merge(fieldLabelEnter);
+
+        let fieldLabelButton = fieldLabelWrap.selectAll( '.hoot-field-label-button' )
+            .data( [d] );
+
+        fieldLabelButton.exit().remove();
+
+        let fieldButtonEnter = fieldLabelButton.enter()
+            .append('button')
+            .classed('hoot-field-label-button', true )
+            .call(svgIcon('#iD-icon-inspect', 'adv-opt-icon', ''));
+
+        fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
     }
 
     fieldInput(fieldContainer, isCleaning) {
@@ -303,7 +334,7 @@ export default class AdvancedOpts {
 
         let fieldInputWrapEnter = fieldInputWrap.enter()
             .append('div')
-            .classed( 'hoot-field-input-wrap', true);
+            .classed( 'hoot-field-input-wrap', true );
 
         fieldInputWrap = fieldInputWrap.merge(fieldInputWrapEnter);
 
@@ -384,6 +415,37 @@ export default class AdvancedOpts {
 
     }
 
+    fieldDescription(fieldContainer) {
+
+        let d = fieldContainer.datum(),
+            fieldDescriptionWrap = fieldContainer
+                .selectAll( `#${d.id}` )
+                .data([ d ]);
+
+        fieldDescriptionWrap.exit().remove();
+
+        let fieldDescriptionWrapEnter = fieldDescriptionWrap.enter()
+            .append('div');
+
+        fieldDescriptionWrap = fieldDescriptionWrap.merge(fieldDescriptionWrapEnter);
+
+        let fieldOpt = fieldContainer.selectAll(`#${d.id}`)
+            .data([d]);
+
+        fieldOpt.exit().remove();
+
+        let fieldOptDescEnter = fieldOpt.enter()
+            .append('p')
+            .classed('hidden', true )
+            .classed( 'adv-opt-reference keyline-top', true )
+            .text( d.description ? d.description : 'no description available');
+
+        fieldOpt = fieldOpt.merge(fieldOptDescEnter);
+
+        fieldContainer.classed('hoot-form-field-checkbox-clicked', d.input === 'checkbox');
+        instance.toggleDescription(fieldContainer);
+    }
+
     notNumber(selection, value) {
         let isNumber = !isNaN( value ),
             notNumber = selection
@@ -414,7 +476,7 @@ export default class AdvancedOpts {
         notNumber.dispatch( isNumber ? 'mouseleave' : 'mouseenter' );
     }
 
-    createGroups(advOpts) {
+    createGroups(advOpts, showingOpts = [] ) {
         let group = this.contentDiv
                 .selectAll( '.form-group' )
                 .data( advOpts );
@@ -470,8 +532,6 @@ export default class AdvancedOpts {
                     .classed( 'toggle-disabled', !shouldDisable );
             }
 
-
-
             let groupBody = group.selectAll( '.group-body' )
                 .data( [ d ] );
 
@@ -484,7 +544,7 @@ export default class AdvancedOpts {
             groupBody = groupBody.merge(groupBodyEnter);
 
             groupBody
-                .classed( 'hidden', true );
+                .classed('hidden', !showingOpts.includes(d.name));
 
             let fieldContainer = groupBody.selectAll( '.hoot-form-field' )
                 .data( d => d.members );
@@ -494,6 +554,7 @@ export default class AdvancedOpts {
             let fieldContainerEnter = fieldContainer.enter()
                 .append( 'div' )
                 .attr( 'id', d => d.id )
+                .attr( 'title', d => d.description )
                 .classed( 'hoot-form-field small contain keyline-all round', true );
 
             fieldContainer = fieldContainer.merge(fieldContainerEnter);
@@ -505,14 +566,14 @@ export default class AdvancedOpts {
 
             const isCleaning = d.name === 'Cleaning';
 
-            fieldContainer.each(function(d) {
-                let fieldContainer = d3.select( this );
+            fieldContainer.each(function (d) {
+                let fieldContainer = d3.select(this);
 
                 fieldContainer
                     .call(instance.fieldLabel)
-                    .call(instance.fieldInput, isCleaning );
+                    .call(instance.fieldInput, isCleaning)
+                    .call(instance.fieldDescription);
             });
-
         });
     }
 

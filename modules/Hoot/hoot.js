@@ -19,6 +19,7 @@ import UI                 from './ui/init';
 import { tagInfo }        from '../../data/index';
 import buildInfo          from './config/buildInfo.json';
 import { duration }       from './tools/utilities';
+import { utilStringQs }   from '../util';
 
 class Hoot {
     constructor() {
@@ -118,6 +119,13 @@ class Hoot {
             this.context.storage('history', JSON.stringify({
                 'bboxHistory':[]
             }));
+        }
+
+        let queryStringMap = utilStringQs(window.location.href);
+        if (queryStringMap.hasOwnProperty('gpx') && queryStringMap.gpx.includes('task_gpx_geom')) {
+            let [project, task] = new URL(queryStringMap.gpx).pathname.match(/\d+/g);
+            sessionStorage.setItem('tm:project', 'memt_project_' + project);
+            sessionStorage.setItem('tm:task', 'task_' + task);
         }
 
         Promise.all( [

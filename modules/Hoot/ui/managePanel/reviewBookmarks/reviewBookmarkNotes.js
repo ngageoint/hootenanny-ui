@@ -74,7 +74,7 @@ export default class ReviewBookmarkNotes extends Tab {
 
     async loadBookmarkNotes() {
         try {
-            let resp = await Hoot.api.getReviewBookmarks( this.bookmark.id );
+            let resp = await Hoot.api.getBookmarkById( this.bookmark.id );
 
             if ( resp && resp.reviewBookmarks && resp.reviewBookmarks.length ) {
                 _merge( this.bookmark, resp.reviewBookmarks[ 0 ] );
