@@ -460,7 +460,7 @@ export default class AdvancedOpts {
 
         if ( type === 'checkbox' ) {
             fieldInput
-                .property( 'checked', d => d.default )
+                .property( 'checked', d => JSON.parse( d.default ) )
                 .on( 'click', function(d) {
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
                     if ( d3.select(`#${d.id}`).property('checked') !== d.default && d3.select('#updateFav').classed('hidden') ) {
@@ -761,7 +761,7 @@ export default class AdvancedOpts {
         }
         else {
             if ( input.property('classList').contains('favopt') ) {
-                input.property('classList').remove('favopt');
+                input.classed('favopt', false );
              }
             return 'text-input';
         }
@@ -817,7 +817,7 @@ export default class AdvancedOpts {
         return updateOpts;
     }
 
-    savingFavoriteOpts( opt ) {
+    savingFavoriteOpts() {
 
         let getAdvOptMembers = [];
 
