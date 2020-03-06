@@ -462,7 +462,11 @@ export default class AdvancedOpts {
             fieldInput
                 .property( 'checked', d => JSON.parse(d.default) )
                 .on( 'click', function(d) {
+                    console.log(d);
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
+                    if ( d3.select(`#${d.id}`).property('checked') !== d.default && d3.select('#updateFav').classed('hidden') ) {
+                        d3.select('#saveFav').classed('hidden', false );
+                    }
                 });
         } else {
             fieldInput
@@ -491,11 +495,10 @@ export default class AdvancedOpts {
                     .call(d3combobox().data( comboData ))
                     .on( 'change', function(d) {
                         d.send =  d3.select( this ).property( 'value' ) !== d.default;
-                        d3.select('#saveFav').classed('hidden', false);
+
                     })
                     .on( 'keyup', function(d) {
                         d.send =  d3.select( this ).property( 'value' ) !== d.default;
-                        d3.select('#saveFav').classed('hidden', false);
                     });
 
             } else { // text input...
@@ -504,6 +507,9 @@ export default class AdvancedOpts {
                     .on( 'keyup', function(d) {
                         let value = d3.select( this ).property( 'value' );
                         d.send = value !== d.default;
+                        if ( d3.select(`#${d.id}`).property('value') !== d.default && d3.select('#updateFav').classed('hidden') ) {
+                            d3.select('#saveFav').classed('hidden', false );
+                        }
                         if ([ 'double', 'int', 'long' ].indexOf ( d.type ) !== -1 ) {
                             d3.select( `#${d.id}-label-wrap` )
                                 .call(instance.notNumber, value);
