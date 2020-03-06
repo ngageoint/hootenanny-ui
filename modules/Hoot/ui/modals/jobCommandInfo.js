@@ -47,8 +47,15 @@ export default class JobCommandInfo {
         const uuidRegex = '[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}';
         let verbose = false;
         let cbox = this.form.select('#cboxVerbose');
+
+        let basemapJob = jobStatus.find( o => o.command.includes('gdal2tiles.py') );
+
         if (cbox.size() > 0) {
             verbose = cbox.property('checked');
+        }
+
+        if ( basemapJob ) {
+            verbose = true;
         }
         // get all commands in 1 big string, seperate them by line, only use the ones marked at 'STATUS'
         return jobStatus.map( comm => {
