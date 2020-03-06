@@ -460,9 +460,8 @@ export default class AdvancedOpts {
 
         if ( type === 'checkbox' ) {
             fieldInput
-                .property( 'checked', d => JSON.parse(d.default) )
+                .property( 'checked', d => d.default )
                 .on( 'click', function(d) {
-                    console.log(d);
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
                     if ( d3.select(`#${d.id}`).property('checked') !== d.default && d3.select('#updateFav').classed('hidden') ) {
                         d3.select('#saveFav').classed('hidden', false );
@@ -503,7 +502,7 @@ export default class AdvancedOpts {
 
             } else { // text input...
                 fieldInput
-                    .classed( instance.favoriteCheck(isFavorites), true)
+                    .classed( instance.favoriteCheck(isFavorites, fieldInput), true)
                     .on( 'keyup', function(d) {
                         let value = d3.select( this ).property( 'value' );
                         d.send = value !== d.default;
@@ -754,23 +753,16 @@ export default class AdvancedOpts {
         return options;
     }
 
-    favoriteButtonCheck( type, d ) {
-        if (  d.send ) {
-            if ( type === 'checkbox' && d3.select( this ).property( 'checked' ) === d.default ) {
-                console.log(d3.select(this));
-            } else {
-                console.log('yikes');
-            }
-        }
-    }
-
-    favoriteCheck(favorite) {
+    favoriteCheck(favorite, input) {
         let type = d3.select( '#conflateType' ).property( 'value' ).toLowerCase();
 
         if ( type === favorite[0].name ) {
             return 'favopt';
         }
         else {
+            if ( input.property('classList').contains('favopt') ) {
+                input.property('classList').remove('favopt');
+             }
             return 'text-input';
         }
     }
