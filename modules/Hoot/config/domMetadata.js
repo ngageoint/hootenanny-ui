@@ -71,29 +71,35 @@ export function layerConflateForm( data ) {
 
                 }
 
-                if (!_isEqual(advOpts, advancedOpts.advancedOptions) || favoriteOptions.length ) {
+                let allFavorites = Hoot.config.users[Hoot.user().id].members;
 
-                    let allFavorites = Hoot.config.users[Hoot.user().id].members;
+                let currentFavorite = [];
 
-                    let currentFavorites = [];
+                let filterFavorites =
+                    Object.keys(allFavorites)
+                        .forEach(function (key) {
+                            if (key === type) {
+                                currentFavorite.push(JSON.parse(allFavorites[key]));
+                            }
+                        });
 
-                    let filterFavorites =
-                        Object.keys(allFavorites)
-                            .forEach( function(key) {
-                                if ( key === type ) {
-                                    currentFavorites.push( JSON.parse( allFavorites[key] ) );
-                                }
-                            } );
 
-                    if ( currentFavorites.length && type === currentFavorites[0].name ) {
+                let favoriteCheck = currentFavorite.map( o => o.name );
+                let favoriteType  = currentFavorite.map( o => o.conflateType );
+
+
+                if (!_isEqual(advOpts, advancedOpts.advancedOptions)) {
+
+                    d3.select('#deleteFav').classed('hidden', true);
+                    d3.select('#updateFav').classed('hidden', true);
+                    advancedOpts.createGroups(advOpts);
+                }
+                if ( favoriteCheck.includes(type) ) {
+
+                    if (currentFavorite.length && type === currentFavorite[0].name) {
                         d3.select('#deleteFav').classed('hidden', false);
                         d3.select('#updateFav').classed('hidden', false);
-                        advancedOpts.createGroups(currentFavorites);
-                    }
-                    else {
-                        d3.select('#deleteFav').classed('hidden', true);
-                        d3.select('#updateFav').classed('hidden', true);
-                        advancedOpts.createGroups(advOpts);
+                        advancedOpts.createGroups(currentFavorite);
                     }
                 }
                 else {

@@ -20,12 +20,13 @@ import FormFactory from '../../tools/formFactory';
 let instance = null;
 export default class AdvancedOpts {
     constructor() {
-        this.sidebar         = d3.select( '#hoot-sidebar' );
-        this.advancedOptions = [];
-        this.conflationOptions = {};
-        this.favoriteOptions   = {};
-        this.showing           = false;
-        this.formFactory = new FormFactory();
+        this.sidebar                = d3.select( '#hoot-sidebar' );
+        this.advancedOptions        = [];
+        this.conflationOptions      = {};
+        this.favoriteOptions        = {};
+        this.favoritesOptionsSource = [];
+        this.showing                = false;
+        this.formFactory            = new FormFactory();
     }
 
     static getInstance() {
@@ -461,7 +462,7 @@ export default class AdvancedOpts {
 
         if ( type === 'checkbox' ) {
             fieldInput
-                .property( 'checked', d => JSON.parse( d.default ) )
+                .property( 'checked', d => d.default === 'true' )
                 .on( 'click', function(d) {
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
                     if ( d3.select(`#${d.id}`).property('checked') !== d.default && d3.select('#updateFav').classed('hidden') ) {
@@ -584,6 +585,9 @@ export default class AdvancedOpts {
     }
 
     createGroups(advOpts, showingOpts = [] ) {
+
+        this.favoritesOptionsSource = advOpts;
+
         let group = this.contentDiv
                 .selectAll( '.form-group' )
                 .data( advOpts );
@@ -822,7 +826,7 @@ export default class AdvancedOpts {
 
         let getAdvOptMembers = [];
 
-        this.advancedOptions.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
+        this.favoritesOptionsSource.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
 
         let getSelectedOpts = [];
 
