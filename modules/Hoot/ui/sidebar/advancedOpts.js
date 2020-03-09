@@ -118,6 +118,7 @@ export default class AdvancedOpts {
                     } );
                 d3.select('#saveFav').classed('hidden', true);
                 d3.select('#updateFav').classed('hidden', true);
+                d3.select('#conflateType').property('value', 'Reference');
                 this.createGroups(this.advancedOptions, showingOpts);
             });
 

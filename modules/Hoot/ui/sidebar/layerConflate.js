@@ -66,6 +66,36 @@ class LayerConflate extends SidebarForm {
         this.fieldset = new FormFactory().createFieldSets( this.innerWrapper, this.formData );
     }
 
+    checkForFavorite() {
+
+        let defaultTypes = ['Reference', 'Attribute', 'Differential', 'Differential w/Tags', 'Horizontal', 'Network'];
+
+        let currentType = this.typeInput.property('value');
+
+        if ( !defaultTypes.includes( currentType ) ) {
+
+        Hoot.getAllUsers();
+
+        let allFavorites = Hoot.config.users[Hoot.user().id].members;
+
+        let currentFavorites = [];
+
+        let filterFavorites =
+            Object.keys(allFavorites)
+                .forEach( function(key) {
+                    if ( key === currentType ) {
+                        currentFavorites.push( JSON.parse( allFavorites[key] ) );
+                    }
+                } );
+
+        return currentFavorites[0].conflateType;
+
+        }
+        else {
+            return d3.select('#conflateType').property('value');
+        }
+    }
+
     createLayerRefThumbnails( layers ) {
         this.fieldset.insert( 'div', ':first-child' )
             .classed( 'conflate-ref center contain', true )
@@ -192,7 +222,7 @@ class LayerConflate extends SidebarForm {
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
         data.DISABLED_FEATURES  = this.advancedOptions.getDisabledFeatures();
-        data.CONFLATION_TYPE    = this.typeInput.property( 'value' ).replace( /(Cookie Cutter & | w\/ Tags)/, '' );
+        data.CONFLATION_TYPE    = this.checkForFavorite(); //this.typeInput.property( 'value' ).replace( /(Cookie Cutter & | w\/ Tags)/, '' );
         data.HOOT_2             = true;
 
         let { advanced, cleaning } = this.advancedOptions.getOptions();

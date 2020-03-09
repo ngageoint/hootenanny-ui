@@ -100,13 +100,16 @@ export default class SaveAdvancedOpts {
 
     handleSubmit() {
         let favoriteName = this.folderNameInput.property( 'value' );
+        let confType = d3.select('#conflateType').property('value');
 
         let opts = {
             name: favoriteName,
             members: {
                 members: this.saveOpts[0].data,
                 name: favoriteName,
-                label: favoriteName
+                label: favoriteName,
+                conflateType: confType
+
             }
         };
 
