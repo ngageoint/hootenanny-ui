@@ -43,20 +43,19 @@ export default class JobCommandInfo {
         window.clearInterval(this.poller);
     }
 
-    parseStatus( jobStatus ) {
+    parseStatus( jobStatus, emptyCheck ) {
         const uuidRegex = '[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}';
         let verbose = false;
         let cbox = this.form.select('#cboxVerbose');
-
-        let basemapJob = jobStatus.find( o => o.command.includes('gdal2tiles.py') );
 
         if (cbox.size() > 0) {
             verbose = cbox.property('checked');
         }
 
-        if ( basemapJob ) {
+        if ( emptyCheck ) {
             verbose = true;
         }
+
         // get all commands in 1 big string, seperate them by line, only use the ones marked at 'STATUS'
         return jobStatus.map( comm => {
                 return ((verbose) ? 'COMMAND   ' + comm.command + '\n' : '') + comm.stdout;
@@ -87,7 +86,14 @@ export default class JobCommandInfo {
             .then( resp => {
                 this.commands = this.parseStatus(resp.commandDetail);
                 // this.createTable();
-                this.form.select('#jobConsole').text(this.commands);
+
+                if ( this.commands !== '' ) {
+                    this.form.select('#jobConsole').text(this.commands);
+                }
+                else {
+                    this.commands = this.parseStatus(resp.commandDetail, 'basemap' );
+                    this.form.select('#jobConsole').text(this.commands);
+                }
 
                 if (resp.status === 'complete') {
                     this.deactivate();
