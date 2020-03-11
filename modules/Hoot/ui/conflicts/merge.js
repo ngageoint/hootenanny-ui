@@ -53,53 +53,45 @@ export default class Merge {
             // flip features
             features.reverse();
         }
-        if ( this.mergeArrow.preventMerge ) {
-            Hoot.message.alert( {
-                message: 'Cannot merge poly to poi',
-                type: 'error'
-            } );
+        // This tag identifies the feature that is being merged into and will be removed by the server
+        // after merging is completed. The tag is not needed by POI to Polygon conflation, however,
+        // and will be ignored since POIs are always merged into polygons.
+        features[ 0 ].tags[ 'hoot:merge:target' ] = 'yes';
+
+        featureUpdate = features[ 0 ];
+        featureDelete = features[ 1 ];
+
+        try {
+            let mergedNode = await this.getMergedNode( features );
+
+            mergedNode.tags[ 'hoot:status' ] = 3;
+
+            Hoot.context.perform(
+                actionChangeTags( featureUpdate.id, mergedNode.tags ),
+                t( 'operations.change_tags.annotation' )
+            );
+
+            mergedFeature = featureUpdate; // feature that is updated is now the new merged node
+        } catch ( e ) {
+            window.console.error( e );
+            throw new Error( 'Unable to merge features' );
         }
-        else {
-            // This tag identifies the feature that is being merged into and will be removed by the server
-            // after merging is completed. The tag is not needed by POI to Polygon conflation, however,
-            // and will be ignored since POIs are always merged into polygons.
-            features[ 0 ].tags[ 'hoot:merge:target' ] = 'yes';
 
-            featureUpdate = features[ 0 ];
-            featureDelete = features[ 1 ];
+        try {
+            let mergeItems              = this.getMergeItems( features ),
+                { reviewRefsResponses } = await Hoot.api.getReviewRefs( mergeItems );
 
-            try {
-                let mergedNode = await this.getMergedNode( features );
+            reviewRefs = _uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
+            reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
 
-                mergedNode.tags[ 'hoot:status' ] = 3;
-
-                Hoot.context.perform(
-                    actionChangeTags( featureUpdate.id, mergedNode.tags ),
-                    t( 'operations.change_tags.annotation' )
-                );
-
-                mergedFeature = featureUpdate; // feature that is updated is now the new merged node
-            } catch ( e ) {
-                window.console.error( e );
-                throw new Error( 'Unable to merge features' );
-            }
-
-            try {
-                let mergeItems              = this.getMergeItems( features ),
-                    { reviewRefsResponses } = await Hoot.api.getReviewRefs( mergeItems );
-
-                reviewRefs = _uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
-                reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
-
-                // TODO: get back to this
-                // let missingRelationIds = this.getMissingRelationIds( reviewRefs );
-            } catch ( e ) {
-                throw new Error( 'Unable to retrieve review references for merged items' );
-            }
-
-            this.processMerge( reviewRefs, mergedFeature, featureDelete );
+            // TODO: get back to this
+            // let missingRelationIds = this.getMissingRelationIds( reviewRefs );
+        } catch ( e ) {
+            throw new Error( 'Unable to retrieve review references for merged items' );
         }
-    }
+
+        this.processMerge( reviewRefs, mergedFeature, featureDelete );
+}
 
     /**
      * Process and finalize the merge by deleting the node being merged and by updating
@@ -280,10 +272,13 @@ export default class Merge {
             if ( fromType === 'node' && toType === 'way' ) {
                 that.mergeArrow.preventMerge = true;
                 d3.select('.merge').classed('disabled', true );
+
+            if ( that.mergeArrow.preventMerge && Hoot.message.showing.length === 0 ) {
                 Hoot.message.alert( {
                     message: 'Cannot merge poly to poi',
-                    type: 'error'
+                    type: 'warn'
                 } );
+            }
                 return;
             }
             else {
