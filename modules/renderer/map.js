@@ -292,7 +292,7 @@ export function rendererMap(context) {
     }
 
 
-    async function drawVector(difference, extent) {
+    function drawVector(difference, extent) {
         var mode = context.mode();
         var graph = context.graph();
         var features = context.features();
@@ -320,6 +320,20 @@ export function rendererMap(context) {
                 filter = function(d) { return set.has(d.id); };
 
             } else {
+                let hiddenLayers = [];
+                Object.keys(Hoot.layers.loadedLayers).map( key => {
+                    const layer = Hoot.layers.loadedLayers[ key ];
+                    if ( !layer.visible ) {
+                        hiddenLayers.push( `${layer.id}` );
+                    }
+                });
+
+                if (hiddenLayers.length > 0) {
+                    all = all.filter( node => {
+                        return !hiddenLayers.includes( node.mapId );
+                    } );
+                }
+
                 data = all;
                 fullRedraw = true;
                 filter = utilFunctor(true);
@@ -608,7 +622,7 @@ export function rendererMap(context) {
 
         wrapper
             .call(drawLayers);
-console.trace(1);
+
         // OSM
         if ( map.editable() ) {
             const tileZoom = map.zoom() <= 16 ? 2 : 16;

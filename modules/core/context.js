@@ -174,7 +174,7 @@ export function coreContext() {
         });
     };
 
-    var minEditableZoom = 13;
+    var minEditableZoom = 9;
     context.minEditableZoom = function(_) {
         if (!arguments.length) return minEditableZoom;
         minEditableZoom = _;
@@ -467,11 +467,6 @@ export function coreContext() {
     /* reset (aka flush) */
     context.reset = context.flush = function() {
         context.debouncedSave.cancel();
-        _each(services, function(service) {
-            if (service && typeof service.reset === 'function') {
-                service.reset(context);
-            }
-        });
         features.reset();
         history.reset();
         return context;

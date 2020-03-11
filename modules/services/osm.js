@@ -78,6 +78,8 @@ var _rateLimitError;
 var _userChangesets;
 var _userDetails;
 var _off;
+const maxNodesCount = 4000;
+let lastShowBBox = null;
 
 
 function authLoading() {
@@ -1005,29 +1007,69 @@ export default {
         return count;
     },
 
+    resetCache: function() {
+        _userChangesets = undefined;
+        _userDetails = undefined;
+        _rateLimitError = undefined;
+
+        _forEach(_tileCache.inflight, abortRequest);
+        _forEach(_noteCache.inflight, abortRequest);
+        _forEach(_noteCache.inflightPost, abortRequest);
+        if (_changeset.inflight) abortRequest(_changeset.inflight);
+
+        _tileCache = { loaded: {}, inflight: {}, seen: {} };
+        _noteCache = { loaded: {}, inflight: {}, inflightPost: {}, note: {}, rtree: rbush() };
+        _userCache = { toLoad: {}, user: {} };
+        _changeset = {};
+    },
+
+    exceedingCountInfo: function( count ) {
+        const container = d3.select( '#about-list' );
+        let countContainer = container.select( '#exceedingCountInfo' );
+
+        if ( count > maxNodesCount ) {
+            const text = `Over ${maxNodesCount} features`;
+            if ( countContainer.empty() ) {
+                countContainer = container.append( 'li' )
+                    .attr( 'id', 'exceedingCountInfo' )
+                    .append( 'a' )
+                    .text( text );
+            } else {
+                countContainer.select( 'a' )
+                    .text( text );
+            }
+
+            countContainer.attr( 'title', `${count} features in view` );
+        } else {
+            countContainer.remove();
+        }
+
+    },
+
     // Load data (entities) from the API in tiles
     // GET /api/0.6/map?bbox=
     loadTiles: async function(projection, callback) {
         if (_off) return;
-
-        var that = this;
+        const that = this;
 
         const count = await this.getNodeCount(projection);
-
-        if ( count > 5000 ) {
-            dispatch.call('loaded');     // stop the spinner
-            _forEach( Hoot.layers.loadedLayers, d => Hoot.events.emit( 'layer-loaded', d.layerName ) );
-            // Hoot.context.map().editOff();
-            return;
-        }
-
         const tiles = this.getViewTiles(projection);
 
-        // abort inflight requests that are no longer needed
-        var hadRequests = !_isEmpty(_tileCache.inflight);
-        abortUnwantedRequests(_tileCache, tiles);
-        if (hadRequests && _isEmpty(_tileCache.inflight)) {
-            dispatch.call('loaded');    // stop the spinner
+        // The logic with currShowBbox and lastShowBBox is just to figure out if the view
+        // has transitioned from too many elements to enough for us to display, and vice versa
+        const currShowBbox = count > maxNodesCount;
+        if ( currShowBbox !== lastShowBBox ) {
+            Hoot.context.flush();
+            this.resetCache();
+        }
+        lastShowBBox = currShowBbox;
+
+        this.exceedingCountInfo( count );
+
+        if ( currShowBbox ) {
+            dispatch.call('loaded');     // stop the spinner
+            _forEach( Hoot.layers.loadedLayers, d => Hoot.events.emit( 'layer-loaded', d.layerName ) );
+            return;
         }
 
         // issue new requests..
@@ -1041,8 +1083,6 @@ export default {
 
             if ( tile.mapId && tile.mapId > -1 ) {
                 path = `/api/0.6/map/${ tile.mapId }/${ tile.extent.toParam() }`;
-            } else {
-                path = `/api/0.6/map?bbox=${ tile.extent.toParam() }`;
             }
 
             var options = { skipSeen: false };

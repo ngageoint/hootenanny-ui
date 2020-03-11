@@ -486,7 +486,6 @@ export default class API {
             } );
     }
 
-    // TODO: remove this if not needed
     getTileNodesCount( data ) {
         const params = {
             path: '/osm/api/0.6/map/nodescount',
