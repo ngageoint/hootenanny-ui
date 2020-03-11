@@ -28,7 +28,8 @@ export default class Merge {
 
         this.mergeArrow = {
             from: null,
-            to: null
+            to: null,
+            preventMerge: null
         };
     }
 
@@ -52,45 +53,52 @@ export default class Merge {
             // flip features
             features.reverse();
         }
-
-        // This tag identifies the feature that is being merged into and will be removed by the server
-        // after merging is completed. The tag is not needed by POI to Polygon conflation, however,
-        // and will be ignored since POIs are always merged into polygons.
-        features[ 0 ].tags[ 'hoot:merge:target' ] = 'yes';
-
-        featureUpdate = features[ 0 ];
-        featureDelete = features[ 1 ];
-
-        try {
-            let mergedNode = await this.getMergedNode( features );
-
-            mergedNode.tags[ 'hoot:status' ] = 3;
-
-            Hoot.context.perform(
-                actionChangeTags( featureUpdate.id, mergedNode.tags ),
-                t( 'operations.change_tags.annotation' )
-            );
-
-            mergedFeature = featureUpdate; // feature that is updated is now the new merged node
-        } catch ( e ) {
-            window.console.error( e );
-            throw new Error( 'Unable to merge features' );
+        if ( this.mergeArrow.preventMerge ) {
+            Hoot.message.alert( {
+                message: 'Cannot merge poly to poi',
+                type: 'error'
+            } );
         }
+        else {
+            // This tag identifies the feature that is being merged into and will be removed by the server
+            // after merging is completed. The tag is not needed by POI to Polygon conflation, however,
+            // and will be ignored since POIs are always merged into polygons.
+            features[ 0 ].tags[ 'hoot:merge:target' ] = 'yes';
 
-        try {
-            let mergeItems              = this.getMergeItems( features ),
-                { reviewRefsResponses } = await Hoot.api.getReviewRefs( mergeItems );
+            featureUpdate = features[ 0 ];
+            featureDelete = features[ 1 ];
 
-            reviewRefs = _uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
-            reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
+            try {
+                let mergedNode = await this.getMergedNode( features );
 
-            // TODO: get back to this
-            // let missingRelationIds = this.getMissingRelationIds( reviewRefs );
-        } catch ( e ) {
-            throw new Error( 'Unable to retrieve review references for merged items' );
+                mergedNode.tags[ 'hoot:status' ] = 3;
+
+                Hoot.context.perform(
+                    actionChangeTags( featureUpdate.id, mergedNode.tags ),
+                    t( 'operations.change_tags.annotation' )
+                );
+
+                mergedFeature = featureUpdate; // feature that is updated is now the new merged node
+            } catch ( e ) {
+                window.console.error( e );
+                throw new Error( 'Unable to merge features' );
+            }
+
+            try {
+                let mergeItems              = this.getMergeItems( features ),
+                    { reviewRefsResponses } = await Hoot.api.getReviewRefs( mergeItems );
+
+                reviewRefs = _uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
+                reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
+
+                // TODO: get back to this
+                // let missingRelationIds = this.getMissingRelationIds( reviewRefs );
+            } catch ( e ) {
+                throw new Error( 'Unable to retrieve review references for merged items' );
+            }
+
+            this.processMerge( reviewRefs, mergedFeature, featureDelete );
         }
-
-        this.processMerge( reviewRefs, mergedFeature, featureDelete );
     }
 
     /**
@@ -262,6 +270,30 @@ export default class Merge {
         d3.select( '.action-buttons .merge' ).classed( 'hidden', hide );
     }
 
+   mergeCheck( fromType, toType, that ) {
+        if ( d3.event.ctrlKey || d3.event.metaKey ) {
+            d3.select('.merge').classed('disabled', false );
+            that.mergeArrow.preventMerge = false;
+            that.updateMergeArrow( 'reverse' );
+        }
+        else {
+            if ( fromType === 'node' && toType === 'way' ) {
+                that.mergeArrow.preventMerge = true;
+                d3.select('.merge').classed('disabled', true );
+                Hoot.message.alert( {
+                    message: 'Cannot merge poly to poi',
+                    type: 'error'
+                } );
+                return;
+            }
+            else {
+                d3.select('.merge').classed('disabled', false );
+                that.mergeArrow.preventMerge = null;
+                that.updateMergeArrow();
+            }
+        }
+    }
+
     /**
      * Activate merge arrow layer. Arrow appears when hovering over merge button
      *
@@ -278,20 +310,17 @@ export default class Merge {
             .on( 'mouseenter', function() {
                 this.focus();
 
-                if ( d3.event.ctrlKey || d3.event.metaKey ) {
-                    that.updateMergeArrow( 'reverse' );
-                } else {
-                    that.updateMergeArrow();
-                }
+                let fromType = that.mergeArrow.from.type;
+                let toType   = that.mergeArrow.to.type;
+
+                that.mergeCheck(fromType, toType, that );
 
                 d3.select( this )
                     .on( 'keydown', () => {
-                        if ( d3.event.ctrlKey || d3.event.metaKey ) {
-                            that.updateMergeArrow( 'reverse' );
-                        }
+                        that.mergeCheck( fromType, toType, that );
                     } )
                     .on( 'keyup', () => {
-                        that.updateMergeArrow();
+                        that.mergeCheck( fromType, toType, that );
                     } );
             } )
             .on( 'mouseleave', function() {
