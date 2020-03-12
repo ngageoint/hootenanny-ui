@@ -53,7 +53,6 @@ export function layerConflateForm( data ) {
                 // update the renderd default value to match those in the conflation configs...
                 let type = d3.select( '#conflateType' ).property( 'value' );
                 let advancedOpts = AdvancedOpts.getInstance();
-                let favoriteOptions = _cloneDeep( advancedOpts.favoriteOptions );
                 let advOpts = _cloneDeep( advancedOpts.advancedOptions );
                 if ( !_isEmpty(advancedOpts.conflationOptions[type.toLowerCase()]) ) {
                     let typeDefaults = advancedOpts.conflationOptions[type.toLowerCase()];
@@ -80,13 +79,13 @@ export function layerConflateForm( data ) {
                         .forEach(function (key) {
                             if (key === type) {
                                 currentFavorite.push(JSON.parse(allFavorites[key]));
+                                advOpts = currentFavorite;
                             }
                         });
 
-
                 let favoriteCheck = currentFavorite.map( o => o.name );
 
-                if (!_isEqual(advOpts, advancedOpts.advancedOptions) || !currentFavorite.hasOwnProperty(0) ) {
+                if (!_isEqual(advOpts, advancedOpts.advancedOptions)) {
 
                     d3.select('#deleteFav').classed('hidden', true);
                     d3.select('#updateFav').classed('hidden', true);
@@ -94,11 +93,8 @@ export function layerConflateForm( data ) {
                 }
                 if ( favoriteCheck.includes(type) ) {
 
-                    if (currentFavorite.length && type === currentFavorite[0].name) {
-                        d3.select('#deleteFav').classed('hidden', false);
-                        d3.select('#updateFav').classed('hidden', false);
-                        advancedOpts.createGroups(currentFavorite);
-                    }
+                    d3.select('#deleteFav').classed('hidden', false);
+                    d3.select('#updateFav').classed('hidden', false);
                 }
                 else {
                     // disable & enable the attribute conflation group.
@@ -115,6 +111,11 @@ export function layerConflateForm( data ) {
                         confGroup
                             .select( '.group-body', true );
                     });
+                }
+                if ( _isEqual(advOpts, advancedOpts.advancedOptions) ) {
+                    d3.select('#deleteFav').classed('hidden', true);
+                    d3.select('#updateFav').classed('hidden', true);
+                    advancedOpts.createGroups(advOpts);
                 }
             }
         },
