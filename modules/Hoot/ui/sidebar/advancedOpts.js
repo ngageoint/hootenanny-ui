@@ -462,7 +462,7 @@ export default class AdvancedOpts {
 
         if ( type === 'checkbox' ) {
             fieldInput
-                .property( 'checked', d => d.default === 'true' )
+                .property( 'checked', d => d.default.toString() === 'true' )
                 .on( 'click', function(d) {
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
                     if ( d3.select(`#${d.id}`).property('checked') !== d.default && d3.select('#updateFav').classed('hidden') ) {
@@ -875,31 +875,5 @@ export default class AdvancedOpts {
         flatten(getAdvOptMembers);
 
         return getSelectedOpts;
-    }
-
-
-    sortCombobox( defaultTypes,  userFavorites  ) {
-
-        let favorites = [];
-
-        Object.keys( userFavorites ).map( fav => favorites.push( fav ) );
-
-        favorites.sort();
-
-        favorites.forEach( opt => defaultTypes.push( opt ) );
-
-        return defaultTypes;
-
-    }
-
-    populateCombobox( input ) {
-
-        let newCombo = new FormFactory();
-
-        let element = d3.select( '#conflateType' );
-
-        element.datum().data = input;
-
-        newCombo.populateCombobox( element );
     }
 }

@@ -85,10 +85,8 @@ export function layerConflateForm( data ) {
 
 
                 let favoriteCheck = currentFavorite.map( o => o.name );
-                let favoriteType  = currentFavorite.map( o => o.conflateType );
 
-
-                if (!_isEqual(advOpts, advancedOpts.advancedOptions)) {
+                if (!_isEqual(advOpts, advancedOpts.advancedOptions) || !currentFavorite.hasOwnProperty(0) ) {
 
                     d3.select('#deleteFav').classed('hidden', true);
                     d3.select('#updateFav').classed('hidden', true);

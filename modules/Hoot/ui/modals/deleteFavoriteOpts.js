@@ -126,6 +126,7 @@ export default class DeleteFavoriteOpts {
                 .forEach( function(key) {
                     currentFavorites.push( JSON.parse( allFavorites[key] ) );
                 } );
+
         currentFavorites.sort(function(a, b){
             var x = a.name;
             var y = b.name;
