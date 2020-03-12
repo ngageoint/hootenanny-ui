@@ -40,7 +40,7 @@ export default class Merge {
      */
     async mergeFeatures() {
         let features = _clone( this.data.currentFeatures ),
-            reverse  = d3.event.ctrlKey || d3.event.metaKey,
+            reverse  = d3.event.ctrlKey || d3.event.metaKey || this.mergeArrow.preventMerge,
             featureUpdate,
             featureDelete,
             mergedFeature,
@@ -264,25 +264,13 @@ export default class Merge {
 
    mergeCheck( fromType, toType, that ) {
         if ( d3.event.ctrlKey || d3.event.metaKey ) {
-            d3.select('.merge').classed('disabled', false );
             that.mergeArrow.preventMerge = false;
             that.updateMergeArrow( 'reverse' );
-        }
-        else {
+        } else {
             if ( fromType === 'node' && toType === 'way' ) {
                 that.mergeArrow.preventMerge = true;
-                d3.select('.merge').classed('disabled', true );
-
-            if ( that.mergeArrow.preventMerge && Hoot.message.showing.length === 0 ) {
-                Hoot.message.alert( {
-                    message: 'Cannot merge poly to poi',
-                    type: 'warn'
-                } );
-            }
-                return;
-            }
-            else {
-                d3.select('.merge').classed('disabled', false );
+                that.updateMergeArrow( 'reverse' );
+            } else {
                 that.mergeArrow.preventMerge = null;
                 that.updateMergeArrow();
             }
