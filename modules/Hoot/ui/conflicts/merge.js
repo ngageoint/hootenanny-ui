@@ -29,7 +29,7 @@ export default class Merge {
         this.mergeArrow = {
             from: null,
             to: null,
-            preventMerge: null
+            reverseFeatures: null
         };
     }
 
@@ -40,7 +40,7 @@ export default class Merge {
      */
     async mergeFeatures() {
         let features = _clone( this.data.currentFeatures ),
-            reverse  = d3.event.ctrlKey || d3.event.metaKey || this.mergeArrow.preventMerge,
+            reverse  = d3.event.ctrlKey || d3.event.metaKey || this.mergeArrow.reverseFeatures,
             featureUpdate,
             featureDelete,
             mergedFeature,
@@ -51,8 +51,11 @@ export default class Merge {
 
         if ( reverse ) {
             // flip features
-            features.reverse();
+            let reverseFeatures = features.slice().reverse();
+
+            features = reverseFeatures;
         }
+
         // This tag identifies the feature that is being merged into and will be removed by the server
         // after merging is completed. The tag is not needed by POI to Polygon conflation, however,
         // and will be ignored since POIs are always merged into polygons.
@@ -264,14 +267,15 @@ export default class Merge {
 
    mergeCheck( fromType, toType, that ) {
         if ( d3.event.ctrlKey || d3.event.metaKey ) {
-            that.mergeArrow.preventMerge = false;
-            that.updateMergeArrow( 'reverse' );
+            if ( fromType === 'way' && toType !== 'node' ) {
+                that.updateMergeArrow( 'reverse' );
+            }
         } else {
             if ( fromType === 'node' && toType === 'way' ) {
-                that.mergeArrow.preventMerge = true;
+                that.mergeArrow.reverseFeatures = true;
                 that.updateMergeArrow( 'reverse' );
             } else {
-                that.mergeArrow.preventMerge = null;
+                that.mergeArrow.reverseFeatures = null;
                 that.updateMergeArrow();
             }
         }
