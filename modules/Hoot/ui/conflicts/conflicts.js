@@ -154,7 +154,11 @@ export default class Conflicts {
         _forEach( this.buttonMeta, bt => {
             keybinding.on( bt.cmd, () => {
                 d3.event.preventDefault();
-                bt.action();
+
+                if ( Hoot.context.selectedIDs().length > 0 ) {
+                    return;
+                }
+                    bt.action();
             } );
         } );
 
