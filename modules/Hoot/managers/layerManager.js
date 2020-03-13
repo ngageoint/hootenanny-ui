@@ -535,6 +535,9 @@ export default class Layers {
         sheets.insertRule( 'path.shadow.tag-hoot-' + mapId + ' { stroke:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'path.fill.tag-hoot-' + mapId + ' { fill:' + lighter + '}', sheets.cssRules.length - 1 );
         sheets.insertRule( 'g.point.tag-hoot-' + mapId + ' .stroke { fill:' + color + '}', sheets.cssRules.length - 1 );
+
+
+        sheets.insertRule( 'path.stroke.no-delete { stroke:blue}', sheets.cssRules.length - 1 );
     }
 
     setTopLayer( mapId ) {

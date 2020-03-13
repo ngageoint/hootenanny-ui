@@ -125,6 +125,10 @@ export function svgTagClasses() {
                 } else {
                     classes += ' tag-hoot-' + mapId;
                 }
+
+                if (t['hoot:change:exclude:delete']) {
+                    classes += ' no-delete';
+                }
             }
 
             classes = classes.trim();
