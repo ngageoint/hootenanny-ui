@@ -265,6 +265,13 @@ export default class Merge {
         d3.select( '.action-buttons .merge' ).classed( 'hidden', hide );
     }
 
+    /**
+     * check features being reviewed, prevent poly to poi merge
+     *
+     * @param fromType - currentFeatures[0]
+     * @param toType   - currentFeatures[1]
+     * @param that
+     */
    mergeCheck( fromType, toType, that ) {
         if ( d3.event.ctrlKey || d3.event.metaKey ) {
             if ( fromType === 'way' && toType !== 'node' ) {
