@@ -14,7 +14,7 @@ import { JXON }             from '../../../util/jxon';
 import { t }                from '../../../util/locale';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions/index';
-import { osmNode }          from '../../../osm';
+import { osmNode, osmWay }          from '../../../osm';
 
 /**
  * @class Merge
@@ -82,13 +82,16 @@ export default class Merge {
 
         try {
             let mergeItems              = this.getMergeItems( features ),
-                { reviewRefsResponses } = await Hoot.api.getReviewRefs( mergeItems );
+                { reviewRefsResponses } = await Hoot.api.getReviewRefs( mergeItems ),
+                reviewMergedRelationId = this.data.currentReviewItem.relationId;
 
             reviewRefs = _uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
-            reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
+            reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ], reviewMergedRelationId);
 
             // TODO: get back to this
-            // let missingRelationIds = this.getMissingRelationIds( reviewRefs );
+            //let missingRelationIds = this.reviewRelationIdsMissing( reviewRefs, features, queryElem1, queryElem2, reviewMergedRelationId );
+
+
         } catch ( e ) {
             throw new Error( 'Unable to retrieve review references for merged items' );
         }
@@ -142,9 +145,20 @@ export default class Merge {
                 }
 
                 if ( !exists && !refRelation.memberById( mergedFeature.id ) ) {
-                    let newNode = this.createNewRelationNodeMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
 
-                    this.data.mergedConflicts.push( newNode );
+                    if ( mergedFeature.type === 'node' ) {
+                        let newNode = this.createNewRelationNodeMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
+
+                        this.data.mergedConflicts.push( newNode );
+
+                    }
+                    else {
+                        let newWay = this.createNewRelationWayMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
+
+                        this.data.mergedConflicts.push( newWay );
+
+                    }
+
                 }
             }
         } );
@@ -156,6 +170,7 @@ export default class Merge {
         }
 
         operationDelete( [ featureToDelete.id ], Hoot.context )();
+
     }
 
     /**
@@ -234,6 +249,28 @@ export default class Merge {
 
         obj.id  = relationId;
         obj.obj = node;
+
+        return obj;
+    }
+
+        /**
+     * Generate metadata for merged node
+     *
+     * @param mergedNodeId - node ID
+     * @param relationId - relation ID
+     * @param mergedIdx - index of node in relation
+     */
+    createNewRelationWayMeta( mergedWayId, relationId, mergedIdx ) {
+        let way = new osmWay(),
+            obj  = {};
+
+        way.id    = mergedWayId;
+        way.type  = 'way';
+        way.role  = 'reviewee';
+        way.index = mergedIdx;
+
+        obj.id  = relationId;
+        obj.obj = way;
 
         return obj;
     }
