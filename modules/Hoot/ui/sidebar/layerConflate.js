@@ -29,7 +29,11 @@ class LayerConflate extends SidebarForm {
 
         sortOpts.sort();
 
-        sortOpts.map( opt => this.conflateTypes.push( opt ) );
+        sortOpts.map( opt => {
+            if ( !this.conflateTypes.includes(opt) ) {
+                this.conflateTypes.push( opt );
+            }
+        } );
     }
 
     render( layers ) {
