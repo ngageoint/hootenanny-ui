@@ -176,7 +176,9 @@ export default class Jobs extends Tab {
     async loadJobs() {
         let jobsRunning = await Hoot.api.getJobsRunning();
         let jobsHistory = await Hoot.api.getJobsHistory(this.params);
-        await Hoot.layers.refreshLayers();
+        if ( jobsHistory.total > 0 ) {
+            await Hoot.layers.refreshLayers();
+        }
         this.total = jobsHistory.total;
         this.paging.updatePages();
         this.populateJobsHistory( jobsHistory.jobs );
