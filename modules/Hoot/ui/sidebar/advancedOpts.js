@@ -8,6 +8,7 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
+import _isMatch  from 'lodash-es/isMatch';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
@@ -15,6 +16,7 @@ import { tooltip }    from '../../../util/tooltip';
 import SaveAdvancedOpts from '../modals/saveAdvancedOpts';
 import DeleteFavoriteOpts from '../modals/deleteFavoriteOpts';
 import FormFactory from '../../tools/formFactory';
+import { get } from 'lodash-es';
 
 
 let instance = null;
@@ -469,6 +471,12 @@ export default class AdvancedOpts {
                         d3.select('#saveFav').classed('hidden', false );
                     }
                 });
+                let sendFavorites = instance.checkFavOptSend();
+
+                if ( sendFavorites ) {
+                    d.send = true;
+                }
+
         } else {
             fieldInput
                 .property( 'value', d => d.default );
@@ -502,6 +510,12 @@ export default class AdvancedOpts {
                         d.send =  d3.select( this ).property( 'value' ) !== d.default;
                     });
 
+                    let sendFavorites = instance.checkFavOptSend();
+
+                    if ( sendFavorites ) {
+                        d.send = true;
+                    }
+
             } else { // text input...
                 fieldInput
                     .classed( instance.favoriteCheck(isFavorites, fieldInput), true)
@@ -516,6 +530,12 @@ export default class AdvancedOpts {
                                 .call(instance.notNumber, value);
                         }
                     });
+                    let sendFavorites = instance.checkFavOptSend();
+
+                    if ( sendFavorites ) {
+                        d.send = true;
+                    }
+
             }
 
         }
@@ -716,6 +736,12 @@ export default class AdvancedOpts {
                 return shouldSend;
             }
 
+            let favCheck = instance.checkFavOptSend();
+
+            if ( favCheck ) {
+                return shouldSend;
+            }
+
             let confOption = conflationOptions[conflateType][ d.id ];
 
             if ( confOption && (d.input === 'checkbox' ? JSON.parse(confOption) : confOption) === value ) {
@@ -736,6 +762,7 @@ export default class AdvancedOpts {
             let isCleaning = d.name === 'Cleaning';
 
             selection.selectAll( '.hoot-form-field' ).each( function(d) {
+
                 if ( !d.send ) {
                     return; // if no d.send, then input value never changed from default...
                 }
@@ -875,5 +902,11 @@ export default class AdvancedOpts {
         flatten(getAdvOptMembers);
 
         return getSelectedOpts;
+    }
+
+    checkFavOptSend() {
+        let getFavs = instance.favoriteOptions;
+        let checkType = getFavs.some(x => x.name === d3.select('#conflateType').property('value') );
+        return checkType;
     }
 }
