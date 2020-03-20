@@ -21,7 +21,7 @@ export default class Paging {
     }
 
     getCurrentPage() {
-        return this.pageElement.text();
+        return JSON.parse( this.pageElement.text() );
     }
 
     setPage(p) {
