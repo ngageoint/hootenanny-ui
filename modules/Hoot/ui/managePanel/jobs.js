@@ -174,9 +174,9 @@ export default class Jobs extends Tab {
     }
 
     jobsHistoryTotalCheck(jobsHistory) {
-        let activeTotal = Hoot.ui.managePanel.active.total;
+        let activeTotal = this.total;
 
-        if ( activeTotal < jobsHistory.total ) {
+        if ( activeTotal && activeTotal < jobsHistory.total ) {
             return true;
         }
     }
