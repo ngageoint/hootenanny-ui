@@ -177,7 +177,7 @@ export default class Jobs extends Tab {
         let jobsRunning = await Hoot.api.getJobsRunning();
         let jobsHistory = await Hoot.api.getJobsHistory(this.params);
 
-        if ( jobsHistory.total > 0 && this.total ) {
+        if ( jobsHistory.total > this.total ) {
             await Hoot.layers.refreshLayers();
         }
         this.total = jobsHistory.total;
