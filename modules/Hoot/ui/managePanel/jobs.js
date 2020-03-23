@@ -173,21 +173,11 @@ export default class Jobs extends Tab {
         }
     }
 
-    jobsHistoryTotalCheck(jobsHistory) {
-        let activeTotal = this.total;
-
-        if ( activeTotal && activeTotal < jobsHistory.total ) {
-            return true;
-        }
-    }
-
     async loadJobs() {
         let jobsRunning = await Hoot.api.getJobsRunning();
         let jobsHistory = await Hoot.api.getJobsHistory(this.params);
 
-        let checkTotal = this.jobsHistoryTotalCheck(jobsHistory);
-
-        if ( jobsHistory.total > 0 && checkTotal ) {
+        if ( jobsHistory.total > 0 && this.total ) {
             await Hoot.layers.refreshLayers();
         }
         this.total = jobsHistory.total;
@@ -480,7 +470,7 @@ export default class Jobs extends Tab {
 
         let rows = tbody
             .selectAll( 'tr.jobs-item' )
-            .data( jobs );
+            .data( jobs.jobs );
 
         rows.exit().remove();
 
