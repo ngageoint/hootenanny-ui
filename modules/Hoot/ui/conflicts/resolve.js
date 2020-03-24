@@ -82,19 +82,10 @@ export default class Resolve {
      * @param layer - review layer
      */
     performAcceptAll( layer ) {
-        let conflateController = this.sidebar.forms.conflate.controller,
-            key                = {
-                name: layer.name,
-                id: layer.id,
-                color: layer.color
-            };
+        let conflateController = this.sidebar.forms.conflate.controller;
 
         // enter controller refresh state
         conflateController.text.html( 'Refreshing &#8230;' );
-
-        // update layer
-        Hoot.layers.removeLayer( layer.id );
-        Hoot.layers.loadLayer( key, true );
 
         // exit controller refresh state
         conflateController.text.html( layer.name );
