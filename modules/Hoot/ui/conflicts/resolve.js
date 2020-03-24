@@ -3,8 +3,10 @@
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/24/18
  *******************************************************************************************************/
+import _forEach from 'lodash-es/forEach';
 
 import PublishBookmark from '../modals/publishBookmark';
+import { load } from 'js-yaml';
 
 /**
  * @class Resolve
@@ -83,6 +85,15 @@ export default class Resolve {
      */
     performAcceptAll( layer ) {
         let conflateController = this.sidebar.forms.conflate.controller;
+
+        let loadedLayers = Hoot.layers.loadedLayers;
+
+        _forEach( loadedLayers, lyr => {
+
+            if ( !lyr.isMerged ) {
+                Hoot.layers.removeLoadedLayer( lyr.id );
+            }
+        } );
 
         // enter controller refresh state
         conflateController.text.html( 'Refreshing &#8230;' );
