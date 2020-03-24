@@ -109,6 +109,7 @@ export function layerConflateForm( data ) {
                     });
                 }
                 if ( _isEqual(advOpts, advancedOpts.advancedOptions) ) {
+                    // hide update and delete buttons until default member values are changed
                     d3.select('#deleteFav').classed('hidden', true);
                     d3.select('#updateFav').classed('hidden', true);
                     advancedOpts.createGroups(advOpts);

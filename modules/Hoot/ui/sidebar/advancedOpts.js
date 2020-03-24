@@ -119,6 +119,7 @@ export default class AdvancedOpts {
                             showingOpts.push(a.name);
                         }
                     } );
+                // hide all fav opt buttons
                 d3.select('#saveFav').classed('hidden', true);
                 d3.select('#updateFav').classed('hidden', true);
                 d3.select('#deleteFav').classed('hidden', true);
@@ -469,6 +470,7 @@ export default class AdvancedOpts {
                 .on( 'click', function(d) {
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
                     if ( d3.select(`#${d.id}`).property('checked') !== d.default && d3.select('#updateFav').classed('hidden') ) {
+                        //make save favorite opt button visible
                         d3.select('#saveFav').classed('hidden', false );
                     }
                 });
@@ -524,6 +526,7 @@ export default class AdvancedOpts {
                         let value = d3.select( this ).property( 'value' );
                         d.send = value !== d.default;
                         if ( d3.select(`#${d.id}`).property('value') !== d.default && d3.select('#updateFav').classed('hidden') ) {
+                            //make save favorite opt button visible
                             d3.select('#saveFav').classed('hidden', false );
                         }
                         if ([ 'double', 'int', 'long' ].indexOf ( d.type ) !== -1 ) {
