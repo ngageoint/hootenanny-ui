@@ -424,7 +424,7 @@ export function exportDataForm( zipOutput ) {
             id: exportHootTags,
             inputType: 'checkbox',
             checked: false,
-            hidden: true
+            hidden: false
         },
         // {
         //     label: 'Tag Overrides',

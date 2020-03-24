@@ -60,10 +60,19 @@ export default class GrailPull {
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
-        const rowData = await Hoot.api.overpassStats( overpassParams );
+        const rowData = await Hoot.api.overpassStats( overpassParams )
+            .catch( () => {
+                this.submitButton.node().disabled = true;
+
+                this.form.select( '.wrapper div' )
+                .insert( 'div', '.modal-footer' )
+                .classed( 'show-newline', true )
+                .text( 'Error retrieving overpass stats query!\nPlease wait and try again later' );
+            } );
 
         this.loadingState();
 
+        if ( !rowData ) return;
 
         let statsTable = this.form
             .select( '.wrapper div' )
@@ -201,14 +210,40 @@ export default class GrailPull {
             return;
         }
 
-        let folderName = 'grail_' + bbox.replace( /,/g, '_' ),
-            pathId = _get( _find( Hoot.folders.folderPaths, folder => folder.name === folderName ), 'id' );
+        let folderName,
+            folderId,
+            pathId,
+            projectName;
 
-        let folderId;
-        if ( !pathId ) {
-            folderId = (await Hoot.folders.addFolder( '', folderName )).folderId;
+        if (sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task')) {
+            /**
+             * If we are coming from tasking manager, and we dont' have project folder, add it.
+             */
+            projectName = sessionStorage.getItem('tm:project');
+            if (!_get(_find(Hoot.folders.myFolders, folder => folder.name === projectName), 'id')) {
+                await Hoot.folders.addFolder('', projectName);
+                await Hoot.folders.refreshFolders();
+            }
+
+            /**
+             * Then make the folderName the taskname.
+             */
+            folderName = sessionStorage.getItem('tm:task');
+            pathId = _get(_find(Hoot.folders.myFolders, folder => folder.name === folderName), 'id');
+            if (!pathId) {
+                folderId = (await Hoot.folders.addFolder(projectName || '', folderName, true )).folderId;
+            } else {
+                folderId = pathId;
+            }
         } else {
-            folderId = pathId;
+            folderName = 'grail_' + bbox.replace(/,/g, '_');
+            pathId = _get(_find(Hoot.folders.folderPaths, folder => folder.name === folderName), 'id');
+            if (!pathId) {
+                folderId = (await Hoot.folders.addFolder('', folderName )).folderId;
+            } else {
+                folderId = pathId;
+            }
+
         }
 
         const railsParams = {
