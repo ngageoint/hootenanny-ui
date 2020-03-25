@@ -6,7 +6,7 @@
 import _forEach from 'lodash-es/forEach';
 
 import PublishBookmark from '../modals/publishBookmark';
-import { load } from 'js-yaml';
+import SidebarController from '../sidebar/sidebarController';
 
 /**
  * @class Resolve
@@ -85,6 +85,10 @@ export default class Resolve {
      */
     performAcceptAll( layer ) {
         let conflateController = this.sidebar.forms.conflate.controller;
+
+        let sidebarController =  new SidebarController( this.sidebar.forms.conflate.form, layer );
+
+        sidebarController.hideShowLayersButton();
 
         let loadedLayers = Hoot.layers.loadedLayers;
 
