@@ -6,6 +6,7 @@
 
 import _forEach from 'lodash-es/forEach';
 import _map     from 'lodash-es/map';
+import _find    from 'lodash-es/find';
 
 import FormFactory from './formFactory';
 
@@ -93,7 +94,17 @@ export default class ClipDataset {
 
         let tableBody = table.append( 'tbody' );
 
+        let checkMerge = _find( loadedLayers, function(layer) {
+            if (layer.isMerged) {
+                return Hoot.layers.loadedLayers[ layer.id ] = layer;
+            }
+        } );
+
         _forEach( loadedLayers, layer => {
+            if ( checkMerge && checkMerge.id !== layer.id  ) {
+                return;
+            }
+
             let mapId = layer.id;
 
             tableBody
