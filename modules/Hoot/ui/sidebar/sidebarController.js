@@ -182,10 +182,6 @@ class SidebarController {
             .text('delete_outline');
     }
 
-    hideShowLayersButton() {
-        d3.select('.showlayers').classed('hidden', true);
-    }
-
     createShowLayersButton() {
         let sources,
             isMerged = true,

@@ -94,16 +94,10 @@ export default class ClipDataset {
 
         let tableBody = table.append( 'tbody' );
 
-        let checkMerge = _find( loadedLayers, function(layer) {
-            if (layer.isMerged) {
-                return Hoot.layers.loadedLayers[ layer.id ] = layer;
-            }
-        } );
+        let loadedList = Object.values(loadedLayers);
+        let clipLayers = loadedList.some(l => l.isMerged) ? loadedList.filter(l => l.isMerged) : loadedList;
 
-        _forEach( loadedLayers, layer => {
-            if ( checkMerge && checkMerge.id !== layer.id  ) {
-                return;
-            }
+        _forEach( clipLayers, layer => {
 
             let mapId = layer.id;
 
