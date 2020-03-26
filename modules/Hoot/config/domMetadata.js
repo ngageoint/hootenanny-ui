@@ -86,15 +86,11 @@ export function layerConflateForm( data ) {
                 let favoriteCheck = currentFavorite.map( o => o.name );
 
                 if (!_isEqual(advOpts, advancedOpts.advancedOptions)) {
-                    d3.select('#deleteFav').classed('hidden', true);
-                    d3.select('#updateFav').classed('hidden', true);
-                    d3.select('#saveFav').classed('hidden', true);
+                    defaultConfSelected();
                     advancedOpts.createGroups(advOpts);
                 }
                 if ( favoriteCheck.includes(type) ) {
-                    d3.select('#deleteFav').classed('hidden', false);
-                    d3.select('#updateFav').classed('hidden', false);
-                    d3.select('#saveFav').classed('hidden', true);
+                    favOptSelected();
                 }
                 else {
                     // disable & enable the attribute conflation group.
@@ -114,10 +110,21 @@ export function layerConflateForm( data ) {
                 }
                 if ( _isEqual(advOpts, advancedOpts.advancedOptions) ) {
                     // hide update and delete buttons until default member values are changed
+                    defaultConfSelected();
+                    advancedOpts.createGroups(advOpts);
+                }
+
+                function favOptSelected() {
+                    d3.select('#deleteFav').classed('hidden', false);
+                    d3.select('#updateFav').classed('hidden', false);
+                    d3.select('#saveFav').classed('hidden', true);
+
+                }
+
+                function defaultConfSelected() {
                     d3.select('#deleteFav').classed('hidden', true);
                     d3.select('#updateFav').classed('hidden', true);
                     d3.select('#saveFav').classed('hidden', true);
-                    advancedOpts.createGroups(advOpts);
                 }
             }
         },

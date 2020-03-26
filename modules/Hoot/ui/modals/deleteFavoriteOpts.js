@@ -211,6 +211,8 @@ export default class DeleteFavoriteOpts {
                     message: 'Fav. Opts Deleted Successfully',
                     type: 'success'
                 } );
+
+                d3.select('#deleteFav').classed('hidden', true );
             } );
     }
 
