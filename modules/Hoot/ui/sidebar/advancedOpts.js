@@ -187,15 +187,7 @@ export default class AdvancedOpts {
                 .attr( 'id', 'deleteFav')
                 .text( 'Delete Favorites' )
                 .on( 'click', function() {
-
-                    this.deleteOpts = new DeleteFavoriteOpts().render();
-
-                    this.deleteOpts.deleteOpts[0].data = this.favoriteOptions;
-
-                    Hoot.events.once( 'modal-closed', () => delete this.deleteOpts );
-
-                    return this;
-
+                    this.deleteOpts = new DeleteFavoriteOpts().handleSubmit();
                 } );
 
     }
