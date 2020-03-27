@@ -36,7 +36,7 @@ export default class LayerReview extends SidebarForm {
                 .classed( 'hoot-form-field', true )
                 .append( 'span' )
                 .classed( '_icon info review-count', true )
-                .text( 'There are 0 reviews' );
+                .text( `There are ${this.layer.reviewStats.unreviewedCount} reviews` );
 
             this.acceptAll = this.fieldset.append( 'div' )
                 .classed( 'hoot-form-field', true )

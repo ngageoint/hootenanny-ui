@@ -108,7 +108,12 @@ export default class API {
                     } else if ( status === 'cancelled' ) {
                         res( { data, type: 'warn', status: 200 } );
                     } else if ( status === 'failed' ) {
-                        rej( { data, type: 'error', status: 500 } );
+                        Hoot.api.getJobError(jobId)
+                                    .then( resp => {
+                                        let message = resp.errors.join('\n');
+                                        data.message = message;
+                                        rej( { data, type: 'error', status: 500 } );
+                                    } );
                     }
                 } catch (err) {
                     let data = {};
@@ -1192,7 +1197,7 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
-                    message: err.data || 'Error doing pull!',
+                    message: err.data.message || 'Error doing pull!',
                     status: err.status,
                     type: 'error'
                 };
@@ -1224,15 +1229,7 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data )
-            .catch( err => {
-                return {
-                    data: err.data,
-                    message: err.data || 'Error retrieving overpass stats query!',
-                    status: err.status,
-                    type: 'error'
-                };
-            } );
+            .then( resp => resp.data );
     }
 
     grailPullRailsPortToDb( data, folderId, railsLabel ) {
@@ -1258,7 +1255,7 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
-                    message: err.data || 'Error doing pull!',
+                    message: err.data.message || 'Error doing pull!',
                     status: err.status,
                     type: 'error'
                 };
@@ -1284,7 +1281,7 @@ export default class API {
             } )
             .catch( err => {
                 return {
-                    message : err.data,
+                    message : err.data.message || 'Differential changeset failed',
                     status  : err.status,
                     type    : err.type
                 };
@@ -1328,13 +1325,13 @@ export default class API {
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: 'Changeset push complete.',
+                    message: 'Changeset upload complete.',
                     status: 200,
                     type: 'success'
                 };
             } )
             .catch( err => {
-                const message = err.data,
+                const message = err.data.message || 'Changeset upload failed.',
                       status  = err.status,
                       type    = err.type;
 
@@ -1365,7 +1362,7 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
-                    message: 'Error doing derive changeset!',
+                    message: err.data.message || 'Error doing derive changeset!',
                     status: err.status,
                     type: 'error'
                 };

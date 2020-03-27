@@ -176,10 +176,13 @@ export default class Jobs extends Tab {
     async loadJobs() {
         let jobsRunning = await Hoot.api.getJobsRunning();
         let jobsHistory = await Hoot.api.getJobsHistory(this.params);
-        await Hoot.layers.refreshLayers();
+
+        if ( jobsHistory.total > this.total ) {
+            await Hoot.layers.refreshLayers();
+        }
         this.total = jobsHistory.total;
         this.paging.updatePages();
-        this.populateJobsHistory( jobsHistory.jobs );
+        this.populateJobsHistory( jobsHistory );
         this.populateJobsRunning( jobsRunning );
     }
 
@@ -364,10 +367,10 @@ export default class Jobs extends Tab {
 
     populateJobsHistory( jobs ) {
         // if you're on a page that no longer has data, go to last page with data
-        if ( jobs.length === 0 && (this.paging.getCurrentPage() >= this.getPages())
+        if ( jobs.total > 0 && jobs.jobs.length === 0 && (this.paging.getCurrentPage() >= this.getPages() )
             // or your current page is greater than the number of pages
             // like when you change the page size from the last page
-            || (this.paging.getCurrentPage() > this.getPages())) {
+            || ( this.paging.getCurrentPage() > this.getPages()) ) {
             this.paging.setPage( this.getPages() );
         }
 
@@ -467,7 +470,7 @@ export default class Jobs extends Tab {
 
         let rows = tbody
             .selectAll( 'tr.jobs-item' )
-            .data( jobs );
+            .data( jobs.jobs );
 
         rows.exit().remove();
 
@@ -642,7 +645,30 @@ export default class Jobs extends Tab {
                             title: 'download conflicted changes',
                             icon: 'archive',
                             action: async () => {
-                                Hoot.api.saveChangeset( d.tags.parentId, 'diff-error' )
+                                let param = {
+                                    input: d.tags.parentId,
+                                    inputtype: 'changesets',
+                                    outputname: d.tags.parentId,
+                                    outputtype: 'zip'
+                                };
+                                // Hoot.api.saveChangeset( d.tags.parentId, 'diff-error' )
+                                //     .catch( err => {
+                                //         console.error(err);
+                                //         Hoot.message.alert( err );
+                                //         return false;
+                                //     } );
+                                Hoot.api.exportDataset(param)
+                                    .then( resp => {
+                                        self.jobId = resp.data.jobid;
+
+                                        return Hoot.api.statusInterval( self.jobId );
+                                    } )
+                                    .then( async resp => {
+                                        if (resp.data && resp.data.status !== 'cancelled') {
+                                            await Hoot.api.saveDataset( self.jobId, param.outputname );
+                                        }
+                                        return resp;
+                                    } )
                                     .catch( err => {
                                         console.error(err);
                                         Hoot.message.alert( err );
