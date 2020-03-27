@@ -1,4 +1,5 @@
-import AdvancedOpts  from '../../ui/sidebar/advancedOpts';
+import FormFactory        from '../../tools/formFactory';
+import AdvancedOpts  from '../sidebar/advancedOpts';
 import _find    from 'lodash-es/find';
 
 /**
@@ -7,7 +8,7 @@ import _find    from 'lodash-es/find';
  * @param translations - All translations from database
  * @constructor
  */
-export default class DeleteFavoriteOpts {
+export default class DeleteFavoriteOpt {
     constructor() {
         this.favorites = this.getAllFavorites();
         this.optToDelete = d3.select('#conflateType').property('value');
@@ -36,6 +37,31 @@ export default class DeleteFavoriteOpts {
         return currentFavorites;
     }
 
+    sortCombobox( defaultTypes,  userFavorites  ) {
+
+        let favorites = [];
+
+        Object.keys( userFavorites ).map( fav => favorites.push( fav ) );
+
+        favorites.sort();
+
+        favorites.forEach( opt => defaultTypes.push( opt ) );
+
+        return defaultTypes;
+
+    }
+
+    populateCombobox( input ) {
+
+        let newCombo = new FormFactory();
+
+        let element = d3.select( '#conflateType' );
+
+        element.datum().data = input;
+
+        newCombo.populateCombobox( element );
+    }
+
     handleSubmit() {
         let optName = this.optToDelete;
 
@@ -44,10 +70,19 @@ export default class DeleteFavoriteOpts {
         this.processRequest = Hoot.api.deleteFavoriteOpts( toDelete )
             .then( () => Hoot.getAllUsers() )
             .then( async ()  => {
+
                 let getOpts = AdvancedOpts.getInstance();
                 let advOpts = getOpts.advancedOptions;
 
                 getOpts.createGroups(advOpts);
+
+                let getTypes = await Hoot.api.getConflateTypes(true);
+
+                let getFavorites = Hoot.config.users[Hoot.user().id].members;
+
+                let allConfTypes = this.sortCombobox( getTypes, getFavorites );
+
+                this.populateCombobox( allConfTypes );
 
                 d3.select('#conflateType').property('value', 'Reference');
             } )

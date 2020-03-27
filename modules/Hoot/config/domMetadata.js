@@ -295,7 +295,7 @@ export function importMultiForm() {
     ];
 }
 
-export function saveAdvancedOpts() {
+export function saveFavoriteOpt() {
     return [
         {
             label: 'Favorite Adv. Opts Group Name',
@@ -304,21 +304,6 @@ export function saveAdvancedOpts() {
             data: [],
             inputType: 'text',
             onChange: d => this.validateTextInput( d )
-        }
-    ];
-}
-
-export function deleteFavoriteOpts() {
-    return [
-        {
-            label: 'Delete Selected Fav Opts.',
-            id: 'optToDelete',
-            class: 'new-folder-name',
-            data: [],
-            inputType: 'combobox',
-            readonly: 'readonly',
-            value: 'Select Opts to Delete',
-            onChange: () => this.handleTypeChange()
         }
     ];
 }

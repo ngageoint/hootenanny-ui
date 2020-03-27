@@ -8,15 +8,13 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
-import _isMatch  from 'lodash-es/isMatch';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
 import { tooltip }    from '../../../util/tooltip';
-import SaveAdvancedOpts from '../modals/saveAdvancedOpts';
-import DeleteFavoriteOpts from '../modals/deleteFavoriteOpts';
+import SaveFavoriteOpt from '../modals/saveFavoriteOpt';
+import DeleteFavoriteOpt from '../modals/deleteFavoriteOpt';
 import FormFactory from '../../tools/formFactory';
-import { get } from 'lodash-es';
 
 
 let instance = null;
@@ -133,14 +131,14 @@ export default class AdvancedOpts {
                 .append( 'button' )
                 .classed( 'advanced-opts-reset button secondary strong hidden', true )
                 .attr( 'id', 'saveFav')
-                .text( 'Save Favorites' )
+                .text( 'Save Favorite' )
                 .on('click', async item => {
 
                     let currNames = [];
 
                     this.favoriteOptions.forEach(function (o) { currNames.push(o.name); });
 
-                    this.saveOpts = new SaveAdvancedOpts(currNames).render();
+                    this.saveOpts = new SaveFavoriteOpt(currNames).render();
 
                     this.saveOpts.saveOpts[0].data = this.savingFavoriteOpts();
 
@@ -156,14 +154,14 @@ export default class AdvancedOpts {
                 .append( 'button' )
                 .classed( 'advanced-opts-reset button secondary strong hidden', true )
                 .attr( 'id', 'updateFav')
-                .text( 'Update Favorites' )
+                .text( 'Update Favorite' )
                 .on( 'click', async function() {
 
                     let activeFavorite = d3.select( '#conflateType' ).property( 'value' );
 
                     let optUpdate = instance.favoriteOptions.filter( opt => opt.name === activeFavorite );
 
-                    let toUpdate = instance.updateFavoriteOpts( optUpdate );
+                    let toUpdate = instance.updateFavoriteOpt( optUpdate );
 
                     let updateOpt = {
                         name: activeFavorite,
@@ -185,9 +183,9 @@ export default class AdvancedOpts {
                 .append( 'button' )
                 .classed( 'advanced-opts-reset button secondary strong hidden', true )
                 .attr( 'id', 'deleteFav')
-                .text( 'Delete Favorites' )
+                .text( 'Delete Favorite' )
                 .on( 'click', function() {
-                    this.deleteOpts = new DeleteFavoriteOpts().handleSubmit();
+                    this.deleteOpts = new DeleteFavoriteOpt().handleSubmit();
                 } );
 
     }
@@ -795,7 +793,7 @@ export default class AdvancedOpts {
         }
     }
 
-    updateFavoriteOpts( toUpdate ) {
+    updateFavoriteOpt( toUpdate ) {
 
         let getMem = [];
 

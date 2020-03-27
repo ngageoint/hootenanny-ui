@@ -1,5 +1,5 @@
 import FormFactory        from '../../tools/formFactory';
-import { saveAdvancedOpts} from '../../config/domMetadata';
+import { saveFavoriteOpt } from '../../config/domMetadata';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -7,9 +7,9 @@ import { saveAdvancedOpts} from '../../config/domMetadata';
  * @param translations - All translations from database
  * @constructor
  */
-export default class SaveAdvancedOpts {
+export default class SaveFavoriteOpt {
     constructor( opts ) {
-        this.saveOpts     = saveAdvancedOpts.call( this );
+        this.saveOpts     = saveFavoriteOpt.call( this );
         this.currentFavs  = opts;
     }
 
@@ -39,8 +39,11 @@ export default class SaveAdvancedOpts {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'folder' ],
-            unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
+            reservedWords    = [ 'root', 'dataset', 'folder' ];
+
+            this.currentFavs.map( name => reservedWords.push(name));
+
+            let unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
         this.currentFavs.forEach( function(n) { reservedWords.push(n); });
