@@ -134,13 +134,15 @@ export default class AdvancedOpts {
                 .text( 'Save Favorite' )
                 .on('click', async item => {
 
-                    let currNames = [];
+                    Hoot.getAllUsers();
 
-                    this.favoriteOptions.forEach(function (o) { currNames.push(o.name); });
+                    let currentFavorites = Hoot.config.users[Hoot.user().id].members;
 
-                    this.saveOpts = new SaveFavoriteOpt(currNames).render();
+                    console.log( currentFavorites );
 
-                    this.saveOpts.saveOpts[0].data = this.savingFavoriteOpts();
+                    this.saveOpts = new SaveFavoriteOpt(currentFavorites).render();
+
+                    this.saveOpts.saveOpt[0].data = this.savingFavoriteOpts();
 
                     Hoot.events.once('modal-closed', () => delete this.saveOpts);
 

@@ -9,14 +9,14 @@ import { saveFavoriteOpt } from '../../config/domMetadata';
  */
 export default class SaveFavoriteOpt {
     constructor( opts ) {
-        this.saveOpts     = saveFavoriteOpt.call( this );
-        this.currentFavs  = opts;
+        this.saveOpt           = saveFavoriteOpt.call( this );
+        this.currentFavorites  = this.sortAll( null,  opts );
     }
 
     render() {
         let metadata = {
             title: 'Save Favorite Adv. Opts',
-            form: this.saveOpts,
+            form: this.saveOpt,
             button: {
                 text: 'Add',
                 location: 'right',
@@ -41,12 +41,10 @@ export default class SaveFavoriteOpt {
 
             reservedWords    = [ 'root', 'dataset', 'folder' ];
 
-            this.currentFavs.map( name => reservedWords.push(name));
+            this.currentFavorites.map( name => reservedWords.push(name));
 
             let unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
-
-        this.currentFavs.forEach( function(n) { reservedWords.push(n); });
 
         if ( !str.length || reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
             valid = false;
@@ -76,7 +74,7 @@ export default class SaveFavoriteOpt {
         this.submitButton.node().disabled = !this.formValid;
     }
 
-    sortCombobox( defaultTypes,  userFavorites  ) {
+    sortAll( defaultTypes,  userFavorites  ) {
 
         let favorites = [];
 
@@ -84,10 +82,15 @@ export default class SaveFavoriteOpt {
 
         favorites.sort();
 
-        favorites.forEach( opt => defaultTypes.push( opt ) );
+        if ( defaultTypes ) {
+            favorites.forEach( opt => defaultTypes.push( opt ) );
 
-        return defaultTypes;
+            return defaultTypes;
+        }
 
+        else {
+            return favorites;
+        }
     }
 
     populateCombobox( input ) {
@@ -108,7 +111,7 @@ export default class SaveFavoriteOpt {
         let opts = {
             name: favoriteName,
             members: {
-                members: this.saveOpts[0].data,
+                members: this.saveOpt[0].data,
                 name: favoriteName,
                 label: favoriteName,
                 conflateType: confType
@@ -124,7 +127,7 @@ export default class SaveFavoriteOpt {
 
                 let getFavorites = Hoot.config.users[Hoot.user().id].members;
 
-                let allConfTypes = this.sortCombobox( getTypes, getFavorites );
+                let allConfTypes = this.sortAll( getTypes, getFavorites );
 
                 this.populateCombobox( allConfTypes );
             } )
