@@ -358,3 +358,7 @@ input[type=text], textarea {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.show-newline {
+    white-space: pre;
+}

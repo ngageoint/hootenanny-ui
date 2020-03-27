@@ -20,6 +20,10 @@ export default class Paging {
         that.setPage(+that.pageElement.text() - 1);
     }
 
+    getCurrentPage() {
+        return Number( this.pageElement.text() );
+    }
+
     setPage(p) {
         if (p > 0 && p <= this.container.getPages()) {
             this.pageElement.text(p);

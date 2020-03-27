@@ -93,7 +93,11 @@ export default class ClipDataset {
 
         let tableBody = table.append( 'tbody' );
 
-        _forEach( loadedLayers, layer => {
+        let loadedList = Object.values(loadedLayers);
+        let clipLayers = loadedList.some(l => l.isMerged) ? loadedList.filter(l => l.isMerged) : loadedList;
+
+        _forEach( clipLayers, layer => {
+
             let mapId = layer.id;
 
             tableBody

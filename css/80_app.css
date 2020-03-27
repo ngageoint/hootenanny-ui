@@ -2198,9 +2198,56 @@ div.combobox {
     width: 100%;
     overflow: hidden;
 }
+
+.adv-opt-reference {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    white-space: normal !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    padding: 0px 5px 0px 5px;
+}
+
+.adv-top {
+    margin-top: 10px;
+}
+
+.adv-opt-icon {
+    opacity: .5;
+}
+
+.hoot-field-label-button {
+        height: inherit;
+        width: 10%;
+        background-color: #f6f6f6 !important;
+}
+
+.hoot-field-label-button:hover {
+    background-color: #ececec !important;
+}
+
+.checkbox-opt {
+    display: flex;
+    flex-direction: column;
+}
+.adv-opts-reference .adv-opts-reference-description {
+    margin: 10px 5px 0 5px;
+    margin-top: 10px;
+
+}
+
 .tag-reference-body .tag-reference-description {
     margin: 10px 5px 0 5px;
 }
+
+.adv-opt-description {
+    margin: 10px 5px 0 5px;
+}
+
 .tag-reference-body a {
     display: block;
 }

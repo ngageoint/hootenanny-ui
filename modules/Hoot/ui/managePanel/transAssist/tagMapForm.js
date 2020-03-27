@@ -33,7 +33,8 @@ export default class TagMapForm {
         this.attributeValues = this.valuesMap[ this.layer ];
 
         this.currentIndex[ this.layer ] = this.currentIndex[ this.layer ] || 0;
-        this.jsonMapping[ this.layer ]  = this.jsonMapping[ this.layer ] || {};
+
+        this.jsonMapping[ this.layer ]  = {};
 
         if ( this.mappingForm ) {
             this.mappingForm.remove();

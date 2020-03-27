@@ -66,41 +66,15 @@ export default class Resolve {
 
         if ( hasChanges ) {
             Hoot.layers.save( false, () => {
-                this.performAcceptAll( layer );
+                Hoot.events.emit( 'review-complete' );
             } );
         } else {
             Hoot.api.resolveAllReviews(layer.id)
                 .then ( () => {
                     Hoot.ui.conflicts.deactivate();
-                    this.performAcceptAll( layer );
+                    Hoot.events.emit( 'review-complete' );
                 });
         }
-    }
-
-    /**
-     * Resolve all remaining reviewables
-     *
-     * @param layer - review layer
-     */
-    performAcceptAll( layer ) {
-        let conflateController = this.sidebar.forms.conflate.controller,
-            key                = {
-                name: layer.name,
-                id: layer.id,
-                color: layer.color
-            };
-
-        // enter controller refresh state
-        conflateController.text.html( 'Refreshing &#8230;' );
-
-        // update layer
-        Hoot.layers.removeLayer( layer.id );
-        Hoot.layers.loadLayer( key, true );
-
-        // exit controller refresh state
-        conflateController.text.html( layer.name );
-
-        Hoot.events.emit( 'review-complete' );
     }
 
     publishBookmark() {
