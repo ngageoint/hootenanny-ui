@@ -231,7 +231,7 @@ export function uiRawTagEditor(context) {
                             if (!err) callback(sort(value, data));
                         });
                     } else {
-                        var data = context.hoot.translations.filterSchemaKeys(value);
+                        var data = Hoot.translations.filterSchemaKeys(value);
                         callback(sort(value, data));
                     }
                 }));
@@ -249,7 +249,7 @@ export function uiRawTagEditor(context) {
                             if (!err) callback(sort(value, data));
                         });
                     } else {
-                        var data = context.hoot.translations.filterSchemaValues(key.property('value'));
+                        var data = Hoot.translations.filterSchemaValues(key.property('value'));
                         callback(sort(value, data));
                     }
                 }));
