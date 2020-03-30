@@ -256,6 +256,7 @@ export default class AdvancedOpts {
 
         innerWrapLeft = innerWrapLeft.merge(innerWrapLeftEnter);
 
+        //prevent adding checkbox w/in fav opt row
         let favOptCheck = instance.checkFavOptSend();
 
         if ( !['Cleaning', 'General', 'Attribute', 'Differential'].includes(d.name) && !favOptCheck ) {
