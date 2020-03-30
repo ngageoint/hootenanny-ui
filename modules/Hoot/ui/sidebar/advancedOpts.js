@@ -134,8 +134,6 @@ export default class AdvancedOpts {
                 .text( 'Save Favorite' )
                 .on('click', async item => {
 
-                    Hoot.getAllUsers();
-
                     let currentFavorites = Hoot.config.users[Hoot.user().id].members;
 
                     this.saveOpts = new SaveFavoriteOpt(currentFavorites).render();
@@ -902,8 +900,6 @@ export default class AdvancedOpts {
     getCurrentFavorites() {
 
         let currentFavorites = [];
-
-        Hoot.getAllUsers();
 
         let favoritesObject  = Hoot.config.users[Hoot.user().id].members;
 
