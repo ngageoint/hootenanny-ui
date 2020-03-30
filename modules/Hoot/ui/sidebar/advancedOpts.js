@@ -173,6 +173,12 @@ export default class AdvancedOpts {
                     await Hoot.api.saveFavoriteOpts( updateOpt );
 
                     await Hoot.getAllUsers();
+
+
+                    Hoot.message.alert( {
+                        message: 'Fav. Opts Updated Successfully',
+                        type: 'success'
+                    } );
                 } );
 
             favoritesBar
