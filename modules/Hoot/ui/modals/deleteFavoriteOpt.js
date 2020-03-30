@@ -22,15 +22,14 @@ export default class DeleteFavoriteOpt {
 
         let allFavorites = Hoot.config.users[Hoot.user().id].members;
 
-        let parseFavorites =
-            Object.keys(allFavorites)
-                .forEach( function(key) {
-                    currentFavorites.push( JSON.parse( allFavorites[key] ) );
-                } );
+        Object.keys(allFavorites)
+            .forEach( function(key) {
+                currentFavorites.push( JSON.parse( allFavorites[key] ) );
+            } );
 
         currentFavorites.sort(function(a, b){
-            var x = a.name;
-            var y = b.name;
+            const x = a.name,
+                  y = b.name;
             return ((x < y) ? -1 : ((x > y) ? 1 : 0));
         });
 

@@ -49,7 +49,7 @@ export function layerConflateForm( data ) {
             value: 'Reference',
             data: this.conflateTypes,
             readonly: 'readonly',
-            onChange: function(d) {
+            onChange: function() {
                 // update the renderd default value to match those in the conflation configs...
                 let type = d3.select( '#conflateType' ).property( 'value' );
                 let advancedOpts = AdvancedOpts.getInstance();
@@ -74,14 +74,13 @@ export function layerConflateForm( data ) {
 
                 let currentFavorite = [];
 
-                let filterFavorites =
-                    Object.keys(allFavorites)
-                        .forEach(function (key) {
-                            if (key === type) {
-                                currentFavorite.push(JSON.parse(allFavorites[key]));
-                                advOpts = currentFavorite;
-                            }
-                        });
+                Object.keys(allFavorites)
+                    .forEach(function (key) {
+                        if (key === type) {
+                            currentFavorite.push(JSON.parse(allFavorites[key]));
+                            advOpts = currentFavorite;
+                        }
+                    });
 
                 let favoriteCheck = currentFavorite.map( o => o.name );
 

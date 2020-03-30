@@ -84,13 +84,12 @@ class LayerConflate extends SidebarForm {
 
         let currentFavorites = [];
 
-        let filterFavorites =
-            Object.keys(allFavorites)
-                .forEach( function(key) {
-                    if ( key === currentType ) {
-                        currentFavorites.push( JSON.parse( allFavorites[key] ) );
-                    }
-                } );
+        Object.keys(allFavorites)
+            .forEach( function(key) {
+                if ( key === currentType ) {
+                    currentFavorites.push( JSON.parse( allFavorites[key] ) );
+                }
+            } );
 
         return currentFavorites[0].conflateType;
 
@@ -266,21 +265,12 @@ class LayerConflate extends SidebarForm {
         return data;
     }
 
-    updateAttributeReferenceLayer() {
-        if ( this.typeInput.property('value') === 'Attribute' ) {
-            this.refLayerInput.property('value' , Hoot.layers.findLoadedBy( 'refType', 'secondary' ).name);
-        } else {
-            this.refLayerInput.property('value' , Hoot.layers.findLoadedBy( 'refType', 'primary' ).name);
-        }
-    }
-
-
     postConflation( params ) {
         let layers = Hoot.layers.loadedLayers;
 
 
         _forEach( layers, d => Hoot.layers.hideLayer( d.id ) );
-//handle layer not found here
+        //handle layer not found here
         params.id     = Hoot.layers.findBy( 'name', params.name ).id;
         params.refType = 'merged';
         params.isMerged = true;

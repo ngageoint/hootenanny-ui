@@ -189,7 +189,7 @@ export default class AdvancedOpts {
                 .attr( 'id', 'deleteFav')
                 .text( 'Delete Favorite' )
                 .on( 'click', function() {
-                    this.deleteOpts = new DeleteFavoriteOpt().handleSubmit();
+                    new DeleteFavoriteOpt().handleSubmit();
                 } );
 
     }
@@ -714,7 +714,7 @@ export default class AdvancedOpts {
         let disabledFeatures = [];
         this.contentDiv
             .selectAll( '.conflate-type-toggle' )
-            .each(function(d) {
+            .each(function() {
                 let selection = d3.select( this );
 
                 if ( !selection.property( 'checked' ) ) {
@@ -816,30 +816,30 @@ export default class AdvancedOpts {
 
         function checkType( member ) {
             if ( member.input === 'checkbox' ) {
-                    updateOpts.push(
-                        {
-                            input: member.input,
-                            default: d3.select(`#${member.id}`).select('input').property('checked'),
-                            id: member.id,
-                            description: member.description,
-                            label: member.label,
-                            type: member.type,
+                updateOpts.push(
+                    {
+                        input: member.input,
+                        default: d3.select(`#${member.id}`).select('input').property('checked'),
+                        id: member.id,
+                        description: member.description,
+                        label: member.label,
+                        type: member.type,
 
-                        }
-                    );
+                    }
+                );
             }
             else {
-                    updateOpts.push(
-                        {
-                            input: member.input,
-                            default: d3.select(`#${member.id}`).select('input').property('value'),
-                            id: member.id,
-                            description: member.description,
-                            label: member.label,
-                            type: member.type,
+                updateOpts.push(
+                    {
+                        input: member.input,
+                        default: d3.select(`#${member.id}`).select('input').property('value'),
+                        id: member.id,
+                        description: member.description,
+                        label: member.label,
+                        type: member.type,
 
-                        }
-                    );
+                    }
+                );
             }
         }
 
@@ -909,7 +909,6 @@ export default class AdvancedOpts {
 
         let favoritesObject  = Hoot.config.users[Hoot.user().id].members;
 
-        let parsedFavorites =
         Object.keys(favoritesObject)
             .forEach( function(key) {
                 currentFavorites.push( JSON.parse( favoritesObject[key] ) );

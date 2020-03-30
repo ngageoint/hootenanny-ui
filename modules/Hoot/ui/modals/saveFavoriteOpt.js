@@ -44,7 +44,7 @@ export default class SaveFavoriteOpt {
             this.currentFavorites.map( name => reservedWords.push(name));
 
             let unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
-            valid            = true;
+                valid            = true;
 
         if ( !str.length || reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
             valid = false;

@@ -72,19 +72,19 @@ export default class Sidebar {
      * Render all view inside sidebar
      */
     async render() {
-            this.iDSidebar.classed( 'col4', false );
-            this.iDSidebar.select( '.sidebar-component' ).remove();
-            this.container = this.iDSidebar.append( 'div' )
-                .attr( 'id', 'hoot-sidebar' )
-                .classed( 'hoot-sidebar', true );
+        this.iDSidebar.classed( 'col4', false );
+        this.iDSidebar.select( '.sidebar-component' ).remove();
+        this.container = this.iDSidebar.append( 'div' )
+            .attr( 'id', 'hoot-sidebar' )
+            .classed( 'hoot-sidebar', true );
 
-            this.createWrapper();
-            await this.createForms();
-            this.adjustSize();
+        this.createWrapper();
+        await this.createForms();
+        this.adjustSize();
 
-            this.listen();
+        this.listen();
 
-            return this;
+        return this;
     }
 
     createWrapper() {
@@ -144,11 +144,6 @@ export default class Sidebar {
                 this.conflateCheck();
             }
         } );
-    }
-
-    renderReviews(that, layer) {
-        that.reviewLayer = new LayerReview( d3.select( this ), layer );
-        that.reviewLayer.render();
     }
 
     layerReviews() {
