@@ -2,6 +2,7 @@ import _compact from 'lodash-es/compact';
 import _map from 'lodash-es/map';
 import _throttle from 'lodash-es/throttle';
 import _values from 'lodash-es/values';
+import _debounce from 'lodash-es/debounce';
 
 import { set as d3_set } from 'd3-collection';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
@@ -610,7 +611,7 @@ export function rendererMap(context) {
             .call(drawLayers);
 
         // OSM
-        if ( map.editable() || map.belowMaxNodes() ) {
+        if ( map.editable()) {
             context.loadTiles( projection, () => {
                 if ( Hoot.layers.mergedLayer && Hoot.layers.mergedLayer.reviewItem ) {
                     Hoot.events.emit( 'layer-reviews' );
@@ -982,8 +983,8 @@ export function rendererMap(context) {
     map.editable = function() {
         var osmLayer = surface.selectAll('.data-layer.osm');
         if (!osmLayer.empty() && osmLayer.classed('disabled')) return false;
-
-        return map.zoom() >= context.minEditableZoom();
+        if (map.zoom() >= context.minEditableZoom()) return true;
+        return _debounce( map.belowMaxNodes, 300 );
     };
 
 

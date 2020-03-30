@@ -13,7 +13,6 @@ import _isEmpty        from 'lodash-es/isEmpty';
 import _map            from 'lodash-es/map';
 import _reduce         from 'lodash-es/reduce';
 import _remove from 'lodash-es/remove';
-import _debounce from 'lodash-es/debounce';
 
 import { rgb as d3_rgb } from 'd3-color';
 

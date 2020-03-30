@@ -995,6 +995,7 @@ export default {
     },
 
     getNodesCount: async function( projection, zoom ) {
+console.log("nodesCount zoom->" + zoom);
         const tiles = this.getViewTiles(projection, zoom);
         let count = 0;
 
@@ -1012,7 +1013,7 @@ export default {
         if (_off) return;
 
         var that = this;
-
+console.log("loadTiles zoom->" + zoom);
         // determine the needed tiles to cover the view
         const tiles = this.getViewTiles(projection, Math.min(zoom, _tileZoom));
 
