@@ -968,6 +968,42 @@ export default {
         }
     },
 
+    getViewTiles: function(projection, zoom) {
+        // Load from visible layers only
+        // HootOld loadedLayers is what controls the vector data sources that are loaded
+        var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
+
+        // determine the needed tiles to cover the view
+        var tiles = _map(visLayers, function(layer) {
+            return tiler
+            .zoomExtent([zoom, zoom])
+            .getTiles(projection)
+            .map(function(tile) {
+                tile.mapId = layer.id;
+                tile.layerName = layer.name;
+                tile.id = tile.id + '_' + tile.mapId;
+                tile.tile = tile.extent.toParam();
+
+                return tile;
+            });
+        });
+
+        tiles = _flatten(tiles);
+
+        return tiles;
+    },
+
+    getNodesCount: async function( projection, zoom ) {
+        const tiles = this.getViewTiles(projection, zoom);
+        let count = 0;
+
+        if ( tiles.length > 0 ) {
+            const { nodescount } = await Hoot.api.getTileNodesCount( tiles );
+            count = nodescount;
+        }
+
+        return count;
+    },
 
     // Load data (entities) from the API in tiles
     // GET /api/0.6/map?bbox=
@@ -982,20 +1018,7 @@ export default {
         var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
 
         // determine the needed tiles to cover the view
-        var tiles = _map(visLayers, function(layer) {
-            return tiler
-                .zoomExtent([_tileZoom, _tileZoom])
-                .getTiles(projection)
-                .map(function(tile) {
-                    tile.mapId = layer.id;
-                    tile.layerName = layer.name;
-                    tile.id = tile.id + '_' + tile.mapId;
-
-                    return tile;
-                });
-        });
-
-        tiles = _flatten(tiles);
+        const tiles = this.getViewTiles(projection, _tileZoom);
 
         // abort inflight requests that are no longer needed
         var hadRequests = !_isEmpty(_tileCache.inflight);

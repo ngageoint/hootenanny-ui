@@ -610,7 +610,7 @@ export function rendererMap(context) {
             .call(drawLayers);
 
         // OSM
-        if ( map.editable() ) {
+        if ( map.editable() || map.belowMaxNodes() ) {
             context.loadTiles( projection, () => {
                 if ( Hoot.layers.mergedLayer && Hoot.layers.mergedLayer.reviewItem ) {
                     Hoot.events.emit( 'layer-reviews' );
@@ -627,7 +627,10 @@ export function rendererMap(context) {
         return map;
     }
 
-
+    map.belowMaxNodes = async function() {
+        const count = await context.connection().getNodeCount(projection, map.zoom());
+        return count < 4000;
+    };
 
     var immediateRedraw = function(difference, extent) {
         if (!difference && !extent) cancelPendingRedraw();
