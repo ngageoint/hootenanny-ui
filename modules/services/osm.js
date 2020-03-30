@@ -1011,11 +1011,6 @@ export default {
         if (_off) return;
 
         var that = this;
-        // var path = '/api/0.6/map?bbox=';
-
-        // Load from visible layers only
-        // HootOld loadedLayers is what controls the vector data sources that are loaded
-        var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
 
         // determine the needed tiles to cover the view
         const tiles = this.getViewTiles(projection, _tileZoom);

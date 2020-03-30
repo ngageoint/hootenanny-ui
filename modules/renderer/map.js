@@ -628,7 +628,7 @@ export function rendererMap(context) {
     }
 
     map.belowMaxNodes = async function() {
-        const count = await context.connection().getNodeCount(projection, map.zoom());
+        const count = await context.connection().getNodesCount(projection, map.zoom());
         return count < 4000;
     };
 
