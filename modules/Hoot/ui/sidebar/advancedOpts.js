@@ -256,7 +256,9 @@ export default class AdvancedOpts {
 
         innerWrapLeft = innerWrapLeft.merge(innerWrapLeftEnter);
 
-        if ( !['Cleaning', 'General', 'Attribute', 'Differential'].includes(d.name) ) {
+        let favOptCheck = instance.checkFavOptSend();
+
+        if ( !['Cleaning', 'General', 'Attribute', 'Differential'].includes(d.name) && !favOptCheck ) {
             let innerInput = innerWrapLeft.selectAll( '.conflate-type-toggle' )
                 .data( [ d ] );
 
@@ -264,18 +266,17 @@ export default class AdvancedOpts {
 
             let innerInputEnter = innerInput.enter()
                 .append( 'input' )
-                .attr( 'type', 'checkbox' )
-                .attr( 'id', d => `${d.name}-toggle` )
                 .classed( 'conflate-type-toggle', true );
 
             innerInput.merge(innerInputEnter)
+                .attr( 'type', 'checkbox' )
+                .attr( 'id', d => `${d.name}-toggle` )
                 .property( 'checked', true )
                 .on('click', function(d) {
                     let shouldHide = d3.select(this).property('checked');
                     instance.toggleOption(d, shouldHide);
                 });
         }
-
 
         let innerLabelWrap = innerWrap.selectAll( '.adv-opt-title-wrap' )
             .data( [ d ] );
@@ -285,7 +286,6 @@ export default class AdvancedOpts {
         let innerLabelWrapEnter = innerLabelWrap.enter()
             .append( 'div' )
             .classed( 'adv-opt-title-wrap', true );
-
 
         innerLabelWrap = innerLabelWrap.merge(innerLabelWrapEnter);
 
