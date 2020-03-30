@@ -134,11 +134,8 @@ export default class AdvancedOpts {
                 .text( 'Save Favorite' )
                 .on('click', async item => {
 
-                    Hoot.getAllUsers();
+                    let currentFavorites = instance.getCurrentFavorites();
 
-                    let currentFavorites = Hoot.config.users[Hoot.user().id].members;
-
-                    console.log( currentFavorites );
 
                     this.saveOpts = new SaveFavoriteOpt(currentFavorites).render();
 
@@ -901,8 +898,25 @@ export default class AdvancedOpts {
         return getSelectedOpts;
     }
 
+    getCurrentFavorites() {
+
+        let currentFavorites = [];
+
+        Hoot.getAllUsers();
+
+        let favoritesObject  = Hoot.config.users[Hoot.user().id].members;
+
+        let parsedFavorites =
+        Object.keys(favoritesObject)
+            .forEach( function(key) {
+                currentFavorites.push( JSON.parse( favoritesObject[key] ) );
+            } );
+
+        return currentFavorites;
+    }
+
     checkFavOptSend() {
-        let getFavs = instance.favoriteOptions;
+        let getFavs = this.getCurrentFavorites();
         let checkType = getFavs.some(x => x.name === d3.select('#conflateType').property('value') );
         return checkType;
     }

@@ -71,6 +71,8 @@ export default class DeleteFavoriteOpt {
             .then( () => Hoot.getAllUsers() )
             .then( async ()  => {
 
+                d3.select('#conflateType').property('value', 'Reference');
+
                 let getOpts = AdvancedOpts.getInstance();
                 let advOpts = getOpts.advancedOptions;
 
@@ -84,7 +86,6 @@ export default class DeleteFavoriteOpt {
 
                 this.populateCombobox( allConfTypes );
 
-                d3.select('#conflateType').property('value', 'Reference');
             } )
             .catch( err => {
                 Hoot.message.alert( {
