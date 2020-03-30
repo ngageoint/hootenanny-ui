@@ -989,6 +989,7 @@ export default {
         });
 
         tiles = _flatten(tiles);
+        console.log("tiles count -> " + tiles.length);
 
         return tiles;
     },
@@ -1007,13 +1008,13 @@ export default {
 
     // Load data (entities) from the API in tiles
     // GET /api/0.6/map?bbox=
-    loadTiles: async function(projection, callback) {
+    loadTiles: function(projection, zoom, callback) {
         if (_off) return;
 
         var that = this;
 
         // determine the needed tiles to cover the view
-        const tiles = this.getViewTiles(projection, _tileZoom);
+        const tiles = this.getViewTiles(projection, Math.min(zoom, _tileZoom));
 
         // abort inflight requests that are no longer needed
         var hadRequests = !_isEmpty(_tileCache.inflight);

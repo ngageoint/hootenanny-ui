@@ -121,7 +121,7 @@ export function coreContext() {
         }
         if (connection) {
             cid = connection.getConnectionId();
-            connection.loadTiles(projection, done);
+            connection.loadTiles(projection, map.zoom(), done);
         }
     });
 
@@ -174,7 +174,7 @@ export function coreContext() {
         });
     };
 
-    var minEditableZoom = 16;
+    var minEditableZoom = 9;
     context.minEditableZoom = function(_) {
         if (!arguments.length) return minEditableZoom;
         minEditableZoom = _;
