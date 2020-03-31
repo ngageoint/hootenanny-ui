@@ -57,9 +57,11 @@
 
 
     .advanced-opts-header {
-        height: 5%;
-        padding: 15px;
+        display: flex;
         box-shadow: 0 1px 10px 0 $light2;
+        padding: 15px;
+        flex-direction: column;
+        align-items: flex-start;
 
         .title {
             font-size: 17px;
@@ -70,9 +72,17 @@
         //}
     }
 
+    .favorites-container {
+        display: flex;
+    }
+
     .advanced-opts-reset {
         height: auto;
         padding: 0 10px;
+    }
+
+    .fav-button-placement {
+        padding: 0px 1px 0px 0px;
     }
 
     .advanced-opts-content {
