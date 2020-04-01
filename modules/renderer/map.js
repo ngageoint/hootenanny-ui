@@ -983,8 +983,9 @@ export function rendererMap(context) {
     map.editable = function() {
         var osmLayer = surface.selectAll('.data-layer.osm');
         if (!osmLayer.empty() && osmLayer.classed('disabled')) return false;
-        if (map.zoom() >= context.minEditableZoom()) return true;
-        return map.debouncedBelowMaxNodes();
+        // if (map.zoom() >= context.minEditableZoom()) return true;
+        // return map.debouncedBelowMaxNodes();//move this
+    return map.zoom() >= context.minEditableZoom();
     };
 
 

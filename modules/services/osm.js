@@ -1037,8 +1037,10 @@ console.log("nodesCount zoom->" + zoom);
         let id = this.parseTileId(tileId);
         let x = id.x;
         let y = id.y;
-        // check each zoom level above the input up to 0
-        for (let zoom = id.z+1; zoom <= _tileZoom; zoom++) {
+        // check each zoom level below the input zoom
+        // up to 2 below or _tileZoom (16)
+        // more than two below the number of tiles to check >256
+        for (let zoom = id.z+1; zoom <= Math.min(id.z+2, _tileZoom); zoom++) {
             // at each zoom level above multiply the index by two
             x = x * 2;
             y = y * 2;
@@ -1069,8 +1071,15 @@ console.log("nodesCount zoom->" + zoom);
 
     // Load data (entities) from the API in tiles
     // GET /api/0.6/map?bbox=
-    loadTiles: function(projection, zoom, callback) {
+    loadTiles: async function(projection, zoom, callback) {
         if (_off) return;
+
+        const count = await this.getNodesCount(projection, zoom);
+        console.log("nodesCount ->" + count);
+        if (count > 4000) {
+            Hoot.context.flush();
+            return;
+        }
 
         var that = this;
         // determine the needed tiles to cover the view
