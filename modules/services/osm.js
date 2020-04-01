@@ -972,11 +972,11 @@ export default {
         // Load from visible layers only
         // HootOld loadedLayers is what controls the vector data sources that are loaded
         var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
-
+        var z = Math.round(zoom);
         // determine the needed tiles to cover the view
         var tiles = _map(visLayers, function(layer) {
             return tiler
-            .zoomExtent([zoom, zoom])
+            .zoomExtent([z, z])
             .getTiles(projection)
             .map(function(tile) {
                 tile.mapId = layer.id;
@@ -989,7 +989,7 @@ export default {
         });
 
         tiles = _flatten(tiles);
-        console.log("tiles count -> " + tiles.length);
+        // console.log("tiles count -> " + tiles.length);
 
         return tiles;
     },
@@ -1007,13 +1007,72 @@ console.log("nodesCount zoom->" + zoom);
         return count;
     },
 
+    parseTileId: function(tileId) {
+        // 213,390,10_95
+        let tileBits = tileId.split(',');
+        let zId = tileBits[2].split('_');
+        return {
+            x: Number(tileBits[0]),
+            y: Number(tileBits[1]),
+            z: Number(zId[0]),
+            mapId: zId[1]
+        }
+    },
+
+    checkTileCacheAbove: function(tileId) {
+        let id = parseTileId(tileId);
+        let x = id.x;
+        let y = id.y;
+        // check each zoom level above the input up to 0
+        for (let zoom = id.z-1; zoom >= 0; zoom--) {
+            // at each zoom level above divide the index in half and floor
+            x = Math.floor(x / 2);
+            y = Math.floor(y / 2);
+            let parentTileId = [x, y, zoom + '_' + id.mapId].join(',');
+            if (_tileCache.loaded[parentTileId] || _tileCache.inflight[parentTileId]) return true;
+        }
+    },
+
+    checkTileCacheBelow: function(tileId) {
+        let id = parseTileId(tileId);
+        let x = id.x;
+        let y = id.y;
+        // check each zoom level above the input up to 0
+        for (let zoom = id.z+1; zoom <= _tileZoom; zoom++) {
+            // at each zoom level above multiply the index by two
+            x = x * 2;
+            y = y * 2;
+
+            // exp is used to calculae the 2^exp number of tiles at each subsequent zoom level
+            let exp = zoom - id.z;
+            let every = false;
+            for (let childX = x; childX <= (x + 2^exp); childX++) {
+                for (let childY = y; childX <= (y + 2^exp); childY++) {
+                    let childTileId = [childX, childY, zoom + '_' + id.mapId].join(',');
+                    if (_tileCache.loaded[childTileId] || _tileCache.inflight[childTileId]) {
+                        every = true;
+                    } else {
+                        every = false;
+                        break;
+                    }
+
+                }
+            }
+
+            // if every child tile is true we stop with success
+            // otherwise loop to the next zoom level
+            if (every) return true;
+        }
+
+
+    },
+
     // Load data (entities) from the API in tiles
     // GET /api/0.6/map?bbox=
     loadTiles: function(projection, zoom, callback) {
         if (_off) return;
 
         var that = this;
-console.log("loadTiles zoom->" + zoom);
         // determine the needed tiles to cover the view
         const tiles = this.getViewTiles(projection, Math.min(zoom, _tileZoom));
 
@@ -1027,6 +1086,11 @@ console.log("loadTiles zoom->" + zoom);
         // issue new requests..
         tiles.forEach(function(tile) {
             if (_tileCache.loaded[tile.id] || _tileCache.inflight[tile.id]) return;
+            //add check for tiles above and below
+            if (this.checkTileCacheAbove(tile.id)) return;
+            if (this.checkTileCacheBelow(tile.id)) return;
+
+
             if (_isEmpty(_tileCache.inflight)) {
                 dispatch.call('loading');   // start the spinner
             }
@@ -1039,8 +1103,9 @@ console.log("loadTiles zoom->" + zoom);
                 path = `/api/0.6/map?bbox=${ tile.extent.toParam() }`;
             }
 
-            var options = { skipSeen: false };
+            var options = { skipSeen: true };
             _tileCache.inflight[tile.id] = that.loadFromAPI( path, function(err, parsed) {
+console.log("loadTiles tile.id->" + tile.id);
                 delete _tileCache.inflight[tile.id];
                 if (!err) {
                     _tileCache.loaded[tile.id] = true;
