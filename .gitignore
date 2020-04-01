@@ -2,6 +2,7 @@
 .esm-cache
 /data/img
 /data/data.js
+/dist/*.gpx
 /dist/*.js
 /dist/*.css
 /dist/*.map
