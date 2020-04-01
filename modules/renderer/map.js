@@ -628,11 +628,11 @@ export function rendererMap(context) {
         return map;
     }
 
-    map.belowMaxNodes = async function() {
+    map.debouncedBelowMaxNodes = _debounce( async function() {
         const count = await context.connection().getNodesCount(projection, map.zoom());
         console.log(count);
         return count < 4000;
-    };
+    }, 300);
 
     var immediateRedraw = function(difference, extent) {
         if (!difference && !extent) cancelPendingRedraw();
@@ -984,7 +984,7 @@ export function rendererMap(context) {
         var osmLayer = surface.selectAll('.data-layer.osm');
         if (!osmLayer.empty() && osmLayer.classed('disabled')) return false;
         if (map.zoom() >= context.minEditableZoom()) return true;
-        return _debounce( map.belowMaxNodes, 300 );
+        return map.debouncedBelowMaxNodes();
     };
 
 
