@@ -1020,7 +1020,7 @@ console.log("nodesCount zoom->" + zoom);
     },
 
     checkTileCacheAbove: function(tileId) {
-        let id = parseTileId(tileId);
+        let id = this.parseTileId(tileId);
         let x = id.x;
         let y = id.y;
         // check each zoom level above the input up to 0
@@ -1034,7 +1034,7 @@ console.log("nodesCount zoom->" + zoom);
     },
 
     checkTileCacheBelow: function(tileId) {
-        let id = parseTileId(tileId);
+        let id = this.parseTileId(tileId);
         let x = id.x;
         let y = id.y;
         // check each zoom level above the input up to 0
@@ -1087,8 +1087,8 @@ console.log("nodesCount zoom->" + zoom);
         tiles.forEach(function(tile) {
             if (_tileCache.loaded[tile.id] || _tileCache.inflight[tile.id]) return;
             //add check for tiles above and below
-            if (this.checkTileCacheAbove(tile.id)) return;
-            if (this.checkTileCacheBelow(tile.id)) return;
+            if (that.checkTileCacheAbove(tile.id)) return;
+            if (that.checkTileCacheBelow(tile.id)) return;
 
 
             if (_isEmpty(_tileCache.inflight)) {
