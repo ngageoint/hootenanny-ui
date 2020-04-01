@@ -3,11 +3,6 @@
  * Project: hootenanny-ui
  * @author Matt Putipong on 3/2/18
  *******************************************************************************************************/
-
-import _assign from 'lodash-es/assign';
-import _find   from 'lodash-es/find';
-import _map    from 'lodash-es/map';
-
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
 import { saveAs }    from 'file-saver';
@@ -124,9 +119,9 @@ export default class API {
         return new Promise( poll );
     }
 
-    getConflateTypes() {
+    getConflateTypes(forceRefresh) {
 
-        if ( this.conflateTypes ) {
+        if ( this.conflateTypes && !forceRefresh) {
             return Promise.resolve( this.conflateTypes );
         } else {
             const params = {
@@ -197,6 +192,73 @@ export default class API {
                       type = err.type;
 
                 return Promise.reject( { message, type } );
+            } );
+    }
+
+    getFavoriteAdvOpts() {
+        const params = {
+            path: '/osm/api/0.6/user/getFavoriteOpts',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    saveFavoriteOpts( opts ) {
+        const params = {
+            path: '/osm/api/0.6/user/saveFavoriteOpts',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(opts)
+
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'User favorites saved',
+                    status: 200,
+                    type: 'success'
+                };
+        } )
+        .catch( err => {
+            return {
+                data: err.data,
+                message: 'Error saving favorite opts!',
+                type: 'error'
+            };
+        } );
+    }
+
+    deleteFavoriteOpts( opts ) {
+        const params = {
+            path: '/osm/api/0.6/user/deleteFavoriteOpts',
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(opts)
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'User favorites deleted',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error deleting favorite opts!',
+                    type: 'error'
+                };
             } );
     }
 
@@ -1258,6 +1320,7 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
+
                     message: err.data.message || 'Error doing pull!',
                     status: err.status,
                     type: 'error'
