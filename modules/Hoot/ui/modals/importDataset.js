@@ -414,9 +414,10 @@ export default class ImportDataset {
             folderId
         };
 
+        this.loadingState();
+
         this.processRequest = Hoot.api.uploadDataset( data )
             .then( resp => {
-                this.loadingState();
 
                 this.jobId = resp.data[ 0 ].jobid;
 
