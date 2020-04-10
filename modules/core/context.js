@@ -480,7 +480,7 @@ export function coreContext() {
 
     /* Init */
 
-    // context.hoot = Hoot;
+    //context.hoot = Hoot;
     context.dgservices = DGServcies;
 
     context.projection = geoRawMercator();
