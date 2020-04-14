@@ -242,12 +242,13 @@ export default class ChangesetStats {
             .then( () => { //refresh the ref layer if it's grail eligible
                 let refLayer = Hoot.layers.findBy( 'id', +this.job.tags.input1 );
                 if (refLayer && refLayer.grailReference) {
-                    let refreshParams = {
+                    let data = {
                         BBOX: this.job.tags.bbox,
                         input1: refLayer.name
                     };
-                    let folderId = refLayer.folderId;
-                    Hoot.api.grailPullRailsPortToDb(refreshParams, folderId, Hoot.config.referenceLabel );
+                    const paramData = { folderId: refLayer.folderId };
+
+                    Hoot.api.grailPullRailsPortToDb(data, paramData, Hoot.config.referenceLabel );
                 }
             })
             .catch( err => {

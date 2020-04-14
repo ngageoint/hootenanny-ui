@@ -211,7 +211,7 @@ export default class GrailPull {
         }
 
         let folderName,
-            folderId,
+            paramData = {},
             pathId,
             projectName;
 
@@ -231,19 +231,20 @@ export default class GrailPull {
             folderName = sessionStorage.getItem('tm:task');
             pathId = _get(_find(Hoot.folders.myFolders, folder => folder.name === folderName), 'id');
             if (!pathId) {
-                folderId = (await Hoot.folders.addFolder(projectName || '', folderName, true )).folderId;
+                paramData.folderId = (await Hoot.folders.addFolder(projectName || '', folderName, true )).folderId;
             } else {
-                folderId = pathId;
+                paramData.folderId = pathId;
             }
+
+            paramData.taskInfo = projectName + ', ' + folderName;
         } else {
             folderName = 'grail_' + bbox.replace(/,/g, '_');
             pathId = _get(_find(Hoot.folders.folderPaths, folder => folder.name === folderName), 'id');
             if (!pathId) {
-                folderId = (await Hoot.folders.addFolder('', folderName )).folderId;
+                paramData.folderId = (await Hoot.folders.addFolder('', folderName )).folderId;
             } else {
-                folderId = pathId;
+                paramData.folderId = pathId;
             }
-
         }
 
         const railsParams = {
@@ -267,10 +268,10 @@ export default class GrailPull {
               referenceCheckbox = d3.select( '#row-0 input' ).property( 'checked' ),
               secondaryCheckbox = d3.select( '#row-1 input' ).property( 'checked' );
         if ( referenceCheckbox ) {
-            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, folderId, Hoot.config.referenceLabel ) );
+            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, paramData, Hoot.config.referenceLabel ) );
         }
         if ( secondaryCheckbox ) {
-            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, folderId, Hoot.config.secondaryLabel ) );
+            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, paramData, Hoot.config.secondaryLabel ) );
         }
 
         Promise.all( jobsList )

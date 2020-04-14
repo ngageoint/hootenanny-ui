@@ -39,6 +39,7 @@ export default class DifferentialChangeset {
 
     handleSubmit() {
         const bbox   = this.instance.bbox,
+              data = {},
               params = {};
 
         if ( !bbox ) {
@@ -46,15 +47,19 @@ export default class DifferentialChangeset {
             return;
         }
 
-        params.BBOX = formatBbox( bbox );
-
-        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
-            params.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
+        if (sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task')) {
+            params.taskInfo = sessionStorage.getItem('tm:project') + ', ' + sessionStorage.getItem('tm:task');
         }
 
-        params.ADV_OPTIONS = this.formFactory.getAdvOpts(this.container, this.advOpts);
+        data.BBOX = formatBbox( bbox );
 
-        Hoot.api.createDifferentialChangeset( params )
+        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+            data.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
+        }
+
+        data.ADV_OPTIONS = this.formFactory.getAdvOpts(this.container, this.advOpts);
+
+        Hoot.api.createDifferentialChangeset( data, params )
             .then( ( resp ) => Hoot.message.alert( resp ) );
 
         this.container.remove();

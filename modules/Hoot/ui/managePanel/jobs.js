@@ -374,6 +374,16 @@ export default class Jobs extends Tab {
             this.paging.setPage( this.getPages() );
         }
 
+        const columnInfo = [
+            { column: 'jobType', label: 'Job Type', sort: 'type', width: '45px' },
+            { label: 'Job Id', width: '70px' },
+            { label: 'Info', width: '140px' },
+            { column: 'status', label: 'Status', sort: 'status', width: '20px' },
+            { label: 'Started', sort: 'start', width: '35px' },
+            { label: 'Duration', sort: 'duration', width: '35px' },
+            { label: 'Actions', width: '35px' }
+        ];
+
         let that = this;
         let table = this.jobsHistoryTable
             .selectAll('table')
@@ -381,20 +391,19 @@ export default class Jobs extends Tab {
         let tableEnter = table.enter()
                 .append('table');
 
+        let colGroup = tableEnter.append( 'colgroup' );
+        columnInfo.forEach( col => {
+            colGroup.append( 'col' )
+                .style( 'width', col.width );
+        });
+
         let thead = tableEnter
             .append('thead');
         let th = thead.selectAll('tr')
             .data([0])
             .enter().append('tr')
             .selectAll('th')
-            .data([
-                {column: 'jobType', label: 'Job Type', sort: 'type'},
-                {label: 'Output'},
-                {column: 'status', label: 'Status', sort: 'status'},
-                {label: 'Started', sort: 'start'},
-                {label: 'Duration', sort: 'duration'},
-                {label: 'Actions'}
-            ])
+            .data(columnInfo)
             .enter().append('th')
             .classed('sort', d => d.sort)
             .classed('filter', d => this.columnFilters[d.column])
@@ -510,6 +519,7 @@ export default class Jobs extends Tab {
         rows = rows.merge(rowsEnter);
 
         let cells = rows.selectAll( 'td' )
+            .style( 'white-space', 'pre-wrap' )
             .data(d => {
                 let props = [];
 
@@ -525,18 +535,47 @@ export default class Jobs extends Tab {
                     span: [{text: d.jobType.toUpperCase()}]
                 });
 
-                //Output
-                let map = Hoot.layers.findBy( 'id', d.mapId );
+                // Job Id
+                props.push({
+                    span: [{text: d.jobId}]
+                });
 
-                if (map) {
-                    props.push({
-                        span: [{text: map.name}]
-                    });
-                } else {
-                    props.push({
-                        span: [{text: 'Map no longer exists'}]
-                    });
+                let map = Hoot.layers.findBy( 'id', d.mapId ),
+                    jobInfo = '',
+                    jobTags = d.tags;
+
+                if ( jobTags ) {
+                    let inputInfo = '',
+                        outputInfo = '';
+
+                    // Set input info
+                    if ( jobTags.taskInfo ) {
+                        inputInfo += jobTags.taskInfo;
+                    } else if ( jobTags.input1 || jobTags.input2 ) {
+                        let input1 = Hoot.layers.findBy( 'id', parseInt(jobTags.input1, 10) ),
+                            input2 = Hoot.layers.findBy( 'id', parseInt(jobTags.input2, 10) );
+
+                        inputInfo += input1 ? input1.name + ', ' : '';
+                        inputInfo += input2 ? input2.name : '';
+                    } else if ( jobTags.bbox ){
+                        inputInfo += jobTags.bbox;
+                    } else if ( jobTags.parentId ) {
+                        inputInfo += jobTags.parentId;
+                    }
+
+                    // Set output info
+                    if (map) {
+                        outputInfo += map.name;
+                    }
+
+                    jobInfo += inputInfo ? 'Input: ' + inputInfo + '\n' : '';
+                    jobInfo += outputInfo ? 'Output: ' + outputInfo : '';
                 }
+
+                // Job Info
+                props.push({
+                    span: [{text: jobInfo}]
+                });
 
                 //Status
                 let statusIcon = this.statusIcon[d.status] || 'help';

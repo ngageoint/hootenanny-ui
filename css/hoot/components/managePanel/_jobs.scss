@@ -5,6 +5,10 @@
     overflow-y: auto;
     box-shadow: 0 3px 10px $dark-opacity10;
 
+    table {
+        table-layout: fixed;
+    }
+
     thead {
         color: $light;
         background: $dark1;
