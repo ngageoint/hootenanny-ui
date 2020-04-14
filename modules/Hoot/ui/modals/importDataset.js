@@ -417,76 +417,67 @@ export default class ImportDataset {
 
         this.loadingState();
 
-        setTimeout( () => this.uploadData(data, newFolderName, folderId), 1500 );
-    }
+        this.processRequest = Hoot.api.uploadDataset( data )
+        .then( resp => {
 
-    async uploadData(data, newFolderName, folderId ) {
+            this.jobId = resp.data[ 0 ].jobid;
 
-        let message;
+            if ( this.cancelUpload ) {
+                Hoot.api.cancelJob(this.jobId);
+                Hoot.api.cancelUpload();
+            }
 
-        if ( this.cancelUpload ) {
-            message = 'Import job cancelled';
+            return Hoot.api.statusInterval( this.jobId );
+        } )
+        .then( async resp => {
+            let message;
+
+            if (resp.data && resp.data.status === 'cancelled') {
+                message = 'Import job cancelled';
+
+                // Delete the newly created folder
+                if ( newFolderName ) {
+                    await Hoot.api.deleteFolder( folderId );
+                    await Hoot.folders.removeFolder( folderId );
+                }
+
+                this.submitButton
+                    .select( 'span' )
+                    .text( 'Import' );
+            } else {
+                message = 'Import job complete';
+            }
+
             Hoot.message.alert( {
-                data: data,
+                data: resp.data,
                 message: message,
                 status: 200,
-                type: 'warn'
+                type: resp.type
             } );
+
+            return resp;
+        } )
+        .then( () => Hoot.folders.refreshAll() )
+        .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+        .catch( err => {
+            console.error(err);
+
+            let message = 'Error running import',
+                type = err.type,
+                keepOpen = true;
+
+            if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                message = err.data.commandDetail[0].stderr;
+            }
+
+            Hoot.message.alert( { message, type, keepOpen } );
+
+        } )
+        .finally( () => {
             this.container.remove();
             Hoot.events.emit( 'modal-closed' );
+        } );
 
-        } else {
-            this.processRequest = Hoot.api.uploadDataset( data )
-            .then( resp => {
-            this.jobId = resp.data[ 0 ].jobid;
-            return Hoot.api.statusInterval( this.jobId );
-            } )
-            .then( async resp => {
-                if (resp.data && resp.data.status === 'cancelled') {
-                    // Delete the newly created folder
-                    if ( newFolderName ) {
-                        await Hoot.api.deleteFolder( folderId );
-                        await Hoot.folders.removeFolder( folderId );
-                    }
-
-                    this.submitButton
-                        .select( 'span' )
-                        .text( 'Import' );
-                } else {
-                    message = 'Import job complete';
-                }
-
-                Hoot.message.alert( {
-                    data: resp.data,
-                    message: message,
-                    status: 200,
-                    type: resp.type
-                } );
-
-                return resp;
-            } )
-            .then( () => Hoot.folders.refreshAll() )
-            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
-            .catch( err => {
-                console.error(err);
-
-                let message = 'Error running import',
-                    type = err.type,
-                    keepOpen = true;
-
-                if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
-                    message = err.data.commandDetail[0].stderr;
-                }
-
-                Hoot.message.alert( { message, type, keepOpen } );
-
-            } )
-            .finally( () => {
-                this.container.remove();
-                Hoot.events.emit( 'modal-closed' );
-            } );
-
-        }
 
     }
 
@@ -519,7 +510,10 @@ export default class ImportDataset {
         // overwrite the submit click action with a cancel action
         this.submitButton.on( 'click', () => {
             this.cancelUpload = true;
-            Hoot.api.cancelJob(this.jobId);
+            this.submitButton
+                .select( 'span' )
+                .classed( 'label', true )
+                .text( 'Cancelling' );
         } );
 
         this.submitButton.insert('i', 'span')

@@ -349,6 +349,27 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    cancelUpload() {
+
+        let cancelURL = `${this.baseUrl}/ingest/ingest/upload`;
+
+        const source = axios.CancelToken.source();
+
+        axios.get( cancelURL, { cancelToken: source.token } )
+        .catch(thrown => {
+            if (axios.isCancel(thrown)) {
+            console.log(thrown.message);
+            } else {
+            let alert = {
+                message: 'Failed to cancel upload.',
+                type: 'warn'
+            };
+            Hoot.message.alert( alert );
+            }
+        });
+        source.cancel('Request canceled.');
+    }
+
     getJobsHistory( data ) {
         const params = {
             path: '/jobs/history',
