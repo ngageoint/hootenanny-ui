@@ -1,9 +1,10 @@
 import FormFactory from '../../tools/formFactory';
 
 export default class GrailDatasetPicker {
-    constructor( layer, parentId ) {
+    constructor( layer, parentId, params ) {
         this.layer = layer;
         this.parentId = parentId;
+        this.params = params;
         this.formFactory = new FormFactory();
 
     }
@@ -29,7 +30,7 @@ export default class GrailDatasetPicker {
                     sort: false,
                     itemKey: 'name',
                     _valueKey: 'id',
-                    onChange: d => this.updateSubmitButton( )
+                    onChange: () => this.updateSubmitButton( )
                 }],
                 button: {
                     text: 'Submit',
@@ -72,14 +73,15 @@ export default class GrailDatasetPicker {
             return;
         }
 
-        const params  = {};
-        params.input1 = refId;
-        params.input2 = this.layer.id;
-        params.parentId = this.parentId;
-        params.BBOX = this.layer.bbox;
-        params.ADV_OPTIONS = this.formFactory.getAdvOpts(this.form, this.advOpts);
+        const data  = {};
+        data.input1 = refId;
+        data.input2 = this.layer.id;
+        data.parentId = this.parentId;
+        data.BBOX = this.layer.bbox;
+        data.ADV_OPTIONS = this.formFactory.getAdvOpts(this.form, this.advOpts);
+        data.taskInfo = this.params.taskInfo;
 
-        Hoot.api.deriveChangeset( params, true )
+        Hoot.api.deriveChangeset( data, true )
             .then( resp => Hoot.message.alert( resp ) );
 
         this.form.remove();

@@ -519,7 +519,6 @@ export default class Jobs extends Tab {
         rows = rows.merge(rowsEnter);
 
         let cells = rows.selectAll( 'td' )
-            .style( 'white-space', 'pre-wrap' )
             .data(d => {
                 let props = [];
 
@@ -690,12 +689,7 @@ export default class Jobs extends Tab {
                                     outputname: d.tags.parentId,
                                     outputtype: 'zip'
                                 };
-                                // Hoot.api.saveChangeset( d.tags.parentId, 'diff-error' )
-                                //     .catch( err => {
-                                //         console.error(err);
-                                //         Hoot.message.alert( err );
-                                //         return false;
-                                //     } );
+
                                 Hoot.api.exportDataset(param)
                                     .then( resp => {
                                         self.jobId = resp.data.jobid;
@@ -755,14 +749,19 @@ export default class Jobs extends Tab {
                                     action: async () => {
                                         const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
 
-                                        const params  = {};
-                                        params.input1 = parseInt(tagsInfo.input1, 10);
-                                        params.input2 = d.mapId;
-                                        params.parentId = d.jobId;
+                                        const data  = {};
+                                        data.input1 = parseInt(tagsInfo.input1, 10);
+                                        data.input2 = d.mapId;
+                                        data.parentId = d.jobId;
 
-                                        if (currentLayer.bbox) params.BBOX = currentLayer.bbox;
+                                        if (currentLayer.bbox) { data.BBOX = currentLayer.bbox; }
+                                        if ( d.tags && d.tags.taskInfo ) { data.taskInfo = d.tags.taskInfo; }
 
-                                        Hoot.api.deriveChangeset( params )
+                                        const params = {
+                                            deriveType : 'Merged changeset.'
+                                        };
+
+                                        Hoot.api.deriveChangeset( data, params )
                                             .then( resp => Hoot.message.alert( resp ) );
                                     }
                                 });
@@ -781,11 +780,14 @@ export default class Jobs extends Tab {
                                     title: 'derive changeset [adds only]',
                                     icon: 'add_to_photos',
                                     action: async () => {
-                                        const params  = {};
-                                        params.input1 = d.mapId;
-                                        params.parentId = d.jobId;
+                                        const data  = {};
+                                        data.input1 = d.mapId;
+                                        data.parentId = d.jobId;
+                                        if ( d.tags && d.tags.taskInfo ) { data.taskInfo = d.tags.taskInfo; }
 
-                                        Hoot.api.deriveChangeset( params )
+                                        const params = { deriveType : 'Adds only.' };
+
+                                        Hoot.api.deriveChangeset( data, params )
                                             .then( resp => Hoot.message.alert( resp ) );
                                     }
                                 });
@@ -794,7 +796,14 @@ export default class Jobs extends Tab {
                                     title: 'derive changeset replacement',
                                     icon: 'flip_to_front',
                                     action: async () => {
-                                        let gpr = new GrailDatasetPicker(currentLayer, d.jobId);
+                                        const params = {
+                                            deriveType : 'Cut & Replace.'
+                                        };
+                                        if ( d.tags && d.tags.taskInfo ) {
+                                            params.taskInfo = d.tags.taskInfo;
+                                        }
+
+                                        let gpr = new GrailDatasetPicker(currentLayer, d.jobId, params);
                                         gpr.render();
 
                                         Hoot.events.once( 'modal-closed', () => {
@@ -858,6 +867,7 @@ export default class Jobs extends Tab {
             .data( d => (d.span) ? d.span : [] );
         span.exit().remove();
         span.enter().append('span')
+            .style( 'white-space', 'pre-wrap' )
             .merge(span)
             .text( d => d.text );
 

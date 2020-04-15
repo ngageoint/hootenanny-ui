@@ -211,9 +211,19 @@ export default class GrailPull {
         }
 
         let folderName,
-            paramData = {},
+            folderId,
             pathId,
             projectName;
+
+        const railsParams = {
+            BBOX     : formatBbox( bbox ),
+            input1   : this.form.select( '.outputName-0' ).property( 'value' )
+        };
+
+        const overpassParams = {
+            BBOX     : formatBbox( bbox ),
+            input1   : this.form.select( '.outputName-1' ).property( 'value' )
+        };
 
         if (sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task')) {
             /**
@@ -231,31 +241,21 @@ export default class GrailPull {
             folderName = sessionStorage.getItem('tm:task');
             pathId = _get(_find(Hoot.folders.myFolders, folder => folder.name === folderName), 'id');
             if (!pathId) {
-                paramData.folderId = (await Hoot.folders.addFolder(projectName || '', folderName, true )).folderId;
+                folderId = (await Hoot.folders.addFolder(projectName || '', folderName, true )).folderId;
             } else {
-                paramData.folderId = pathId;
+                folderId = pathId;
             }
 
-            paramData.taskInfo = projectName + ', ' + folderName;
+            railsParams.taskInfo = overpassParams.taskInfo = projectName + ', ' + folderName;
         } else {
             folderName = 'grail_' + bbox.replace(/,/g, '_');
             pathId = _get(_find(Hoot.folders.folderPaths, folder => folder.name === folderName), 'id');
             if (!pathId) {
-                paramData.folderId = (await Hoot.folders.addFolder('', folderName )).folderId;
+                folderId = (await Hoot.folders.addFolder('', folderName )).folderId;
             } else {
-                paramData.folderId = pathId;
+                folderId = pathId;
             }
         }
-
-        const railsParams = {
-            BBOX     : formatBbox( bbox ),
-            input1   : this.form.select( '.outputName-0' ).property( 'value' )
-        };
-
-        const overpassParams = {
-            BBOX     : formatBbox( bbox ),
-            input1   : this.form.select( '.outputName-1' ).property( 'value' )
-        };
 
         if ( this.instance.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
             const customQuery          = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
@@ -268,10 +268,10 @@ export default class GrailPull {
               referenceCheckbox = d3.select( '#row-0 input' ).property( 'checked' ),
               secondaryCheckbox = d3.select( '#row-1 input' ).property( 'checked' );
         if ( referenceCheckbox ) {
-            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, paramData, Hoot.config.referenceLabel ) );
+            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, folderId, Hoot.config.referenceLabel ) );
         }
         if ( secondaryCheckbox ) {
-            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, paramData, Hoot.config.secondaryLabel ) );
+            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, folderId, Hoot.config.secondaryLabel ) );
         }
 
         Promise.all( jobsList )

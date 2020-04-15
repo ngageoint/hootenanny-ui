@@ -1240,11 +1240,13 @@ export default class API {
             } );
     }
 
-    grailPullOverpassToDb( data, paramData, overpassLabel ) {
+    grailPullOverpassToDb( data, folderId, overpassLabel ) {
         const params = {
             path: '/grail/pulloverpasstodb',
             method: 'POST',
-            params: paramData,
+            params: {
+                folderId: folderId
+            },
             data
         };
 
@@ -1296,11 +1298,13 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    grailPullRailsPortToDb( data, paramData, railsLabel ) {
+    grailPullRailsPortToDb( data, folderId, railsLabel ) {
         const params = {
             path: '/grail/pullrailsporttodb',
             method: 'POST',
-            params: paramData,
+            params: {
+                folderId: folderId
+            },
             data
         };
 
@@ -1325,11 +1329,10 @@ export default class API {
             } );
     }
 
-    createDifferentialChangeset( data, paramData ) {
+    createDifferentialChangeset( data ) {
         const params = {
             path: '/grail/createdifferentialchangeset',
             method: 'POST',
-            params: paramData,
             data
         };
 
