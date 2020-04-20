@@ -47,7 +47,8 @@ export default class API {
             headers: params.headers,
             data: params.data,
             params: params.params,
-            responseType: params.responseType
+            responseType: params.responseType,
+            cancelToken: params.cancelToken
         } ).catch( err => {
             let { response } = err;
             let data, message, status, statusText, type;
@@ -349,13 +350,12 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    cancelUpload() {
+    cancelUpload( cancelToken ) {
 
         let cancelURL = `${this.baseUrl}/ingest/ingest/upload`;
 
-        const source = axios.CancelToken.source();
 
-        axios.get( cancelURL, { cancelToken: source.token } )
+        axios.get( cancelURL, { cancelToken: cancelToken.token } )
         .catch(thrown => {
             if (axios.isCancel(thrown)) {
             console.log(thrown.message);
@@ -367,7 +367,7 @@ export default class API {
             Hoot.message.alert( alert );
             }
         });
-        source.cancel('Request canceled.');
+        cancelToken.cancel('Request canceled.');
     }
 
     getJobsHistory( data ) {
@@ -759,7 +759,7 @@ export default class API {
      * @param data - upload data
      * @returns {Promise} - request
      */
-    uploadDataset( data ) {
+    uploadDataset( data, cancelToken ) {
         if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
             return false;
         }
@@ -772,9 +772,10 @@ export default class API {
                 INPUT_TYPE: data.INPUT_TYPE,
                 INPUT_NAME: data.INPUT_NAME,
                 NONE_TRANSLATION: data.NONE_TRANSLATION,
-                FOLDER_ID: data.folderId
+                FOLDER_ID: data.folderId,
             },
-            data: data.formData
+            data: data.formData,
+            cancelToken: cancelToken.token
         };
 
         if ( data.ADV_UPLOAD_OPTS && data.ADV_UPLOAD_OPTS.length ) {

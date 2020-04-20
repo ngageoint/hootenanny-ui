@@ -15,6 +15,8 @@ import {
     importSingleForm,
 }           from '../../config/domMetadata';
 import _get from 'lodash-es/get';
+import axios         from 'axios/dist/axios';
+
 
 /**
  * Form that allows user to import datasets into hoot
@@ -80,8 +82,6 @@ export default class ImportDataset {
             opt.hidden = true;
         });
         this.form = this.form.concat(this.advOpts.map(this.formFactory.advOpt2DomMeta));
-
-        this.cancelUpload = false;
 
         let metadata = {
             title: 'Import Dataset',
@@ -417,20 +417,28 @@ export default class ImportDataset {
 
         this.loadingState();
 
-        this.processRequest = Hoot.api.uploadDataset( data )
-        .then( resp => {
+        let source = axios.CancelToken.source();
 
+        this.processRequest =  Hoot.api.uploadDataset( data, source )
+        .then( resp => {
             this.jobId = resp.data[ 0 ].jobid;
 
-            if ( this.cancelUpload ) {
-                Hoot.api.cancelJob(this.jobId);
-                Hoot.api.cancelUpload();
+            if ( this.jobId ) {
+                this.submitButton.node().disabled = false;
+                Hoot.api.cancelUpload( source );
             }
 
             return Hoot.api.statusInterval( this.jobId );
         } )
         .then( async resp => {
             let message;
+
+            if ( resp.message === 'Request canceled'  ) {
+                Hoot.message.alert( {
+                    message: resp.message,
+                    type: 'warn'
+                } );
+            }
 
             if (resp.data && resp.data.status === 'cancelled') {
                 message = 'Import job cancelled';
@@ -466,7 +474,7 @@ export default class ImportDataset {
                 type = err.type,
                 keepOpen = true;
 
-            if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+            if ( err.data && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
                 message = err.data.commandDetail[0].stderr;
             }
 
@@ -497,6 +505,7 @@ export default class ImportDataset {
     }
 
     loadingState() {
+
         this.submitButton
             .select( 'span' )
             .classed( 'label', true )
@@ -509,11 +518,7 @@ export default class ImportDataset {
 
         // overwrite the submit click action with a cancel action
         this.submitButton.on( 'click', () => {
-            this.cancelUpload = true;
-            this.submitButton
-                .select( 'span' )
-                .classed( 'label', true )
-                .text( 'Cancelling' );
+            Hoot.api.cancelJob(this.jobId);
         } );
 
         this.submitButton.insert('i', 'span')
@@ -523,7 +528,9 @@ export default class ImportDataset {
         this.container.selectAll( 'input' )
             .each( function() {
                 d3.select( this ).node().disabled = true;
-            } );
+        } );
+
+        this.submitButton.node().disabled = true;
     }
 
     /**
