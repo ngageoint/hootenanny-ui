@@ -1406,13 +1406,11 @@ export default class API {
             } );
     }
 
-    deriveChangeset( data, replacement ) {
+    deriveChangeset( data, paramData ) {
         const params = {
             path: '/grail/derivechangeset',
             method: 'POST',
-            params: {
-                replacement
-            },
+            params: paramData,
             data
         };
 

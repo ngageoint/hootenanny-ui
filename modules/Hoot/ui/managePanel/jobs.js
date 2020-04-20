@@ -67,6 +67,21 @@ export default class Jobs extends Tab {
         this.lastClick = 0;
     }
 
+    resetParams( reload ) {
+        this.params = {
+            sort: '-start',
+            offset: null,
+            limit: 25,
+            jobType: null,
+            status: null
+        };
+
+        if ( reload ) {
+            this.loadJobs();
+            this.selectNone();
+        }
+    }
+
     selectNone() {
         this.jobsHistoryTable.selectAll('tr.jobs-item')
             .classed('selected', false);
@@ -97,6 +112,12 @@ export default class Jobs extends Tab {
 
     getPages() {
         return Math.ceil(this.total / this.params.limit) || 1; //still need page 1 for zero results
+    }
+
+    setGroupJobId(groupJobId) {
+        this.params.groupJobId = groupJobId;
+        this.loadJobs();
+        this.selectNone();
     }
 
     render() {
@@ -132,9 +153,11 @@ export default class Jobs extends Tab {
         this.panelWrapper
             .append( 'h3' )
             .text( 'Running Jobs' );
+
         this.jobsRunningTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-running keyline-all fill-white', true );
+
         let header = this.panelWrapper
             .append( 'h3' )
             .classed( 'jobs-history', true )
@@ -142,6 +165,12 @@ export default class Jobs extends Tab {
         let pager = header.append('div')
             .classed('paging fr', true);
         this.paging.render(pager);
+
+        header.append('button')
+            .classed('resetFilters button fr primary text-light', true)
+            .text( 'Reset Filters')
+            .on( 'click', () => this.resetParams( true ));
+
         this.jobsHistoryTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-history keyline-all fill-white', true );
@@ -381,7 +410,7 @@ export default class Jobs extends Tab {
             { column: 'status', label: 'Status', sort: 'status', width: '20px' },
             { label: 'Started', sort: 'start', width: '35px' },
             { label: 'Duration', sort: 'duration', width: '35px' },
-            { label: 'Actions', width: '35px' }
+            { label: 'Actions', width: '40px' }
         ];
 
         let that = this;
@@ -622,6 +651,15 @@ export default class Jobs extends Tab {
                         this.commandDetails.render();
 
                         Hoot.events.once( 'modal-closed', () => delete this.commandDetails );
+                    }
+                });
+
+                actions.push({
+                    title: 'Filter sibling jobs',
+                    icon: 'search',
+                    action: () => {
+                        this.resetParams();
+                        this.setGroupJobId( d.jobId );
                     }
                 });
 

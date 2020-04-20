@@ -81,7 +81,12 @@ export default class GrailDatasetPicker {
         data.ADV_OPTIONS = this.formFactory.getAdvOpts(this.form, this.advOpts);
         data.taskInfo = this.params.taskInfo;
 
-        Hoot.api.deriveChangeset( data, true )
+        const params = {
+            deriveType : 'Merged changeset.',
+            replacement: true
+        };
+
+        Hoot.api.deriveChangeset( data, params )
             .then( resp => Hoot.message.alert( resp ) );
 
         this.form.remove();
