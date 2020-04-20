@@ -81,6 +81,9 @@ export default class ImportDataset {
         this.advOpts.forEach(opt => {
             opt.hidden = true;
         });
+
+        this.source = axios.CancelToken.source();
+
         this.form = this.form.concat(this.advOpts.map(this.formFactory.advOpt2DomMeta));
 
         let metadata = {
@@ -417,17 +420,9 @@ export default class ImportDataset {
 
         this.loadingState();
 
-        let source = axios.CancelToken.source();
-
-        this.processRequest =  Hoot.api.uploadDataset( data, source )
+        this.processRequest =  Hoot.api.uploadDataset( data, this.source )
         .then( resp => {
             this.jobId = resp.data[ 0 ].jobid;
-
-            if ( this.jobId ) {
-                this.submitButton.node().disabled = false;
-                Hoot.api.cancelUpload( source );
-            }
-
             return Hoot.api.statusInterval( this.jobId );
         } )
         .then( async resp => {
@@ -518,7 +513,10 @@ export default class ImportDataset {
 
         // overwrite the submit click action with a cancel action
         this.submitButton.on( 'click', () => {
-            Hoot.api.cancelJob(this.jobId);
+            if ( this.jobId ) {
+                Hoot.api.cancelJob(this.jobId);
+            }
+            Hoot.api.cancelUpload( this.source );
         } );
 
         this.submitButton.insert('i', 'span')
@@ -529,8 +527,6 @@ export default class ImportDataset {
             .each( function() {
                 d3.select( this ).node().disabled = true;
         } );
-
-        this.submitButton.node().disabled = true;
     }
 
     /**
