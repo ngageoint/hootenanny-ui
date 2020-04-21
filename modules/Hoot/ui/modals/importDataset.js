@@ -465,16 +465,24 @@ export default class ImportDataset {
         .catch( err => {
             console.error(err);
 
-            let message = 'Error running import',
+            if ( err.message === 'Request cancelled.' ) {
+                Hoot.message.alert( {
+                    message: 'Upload request cancelled',
+                    type: 'warn'
+                } );
+
+            } else {
+
+                let message = 'Error running import',
                 type = err.type,
                 keepOpen = true;
 
-            if ( err.data && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
-                message = err.data.commandDetail[0].stderr;
+                if ( err.data && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                    message = err.data.commandDetail[0].stderr;
+                }
+
+                Hoot.message.alert( { message, type, keepOpen } );
             }
-
-            Hoot.message.alert( { message, type, keepOpen } );
-
         } )
         .finally( () => {
             this.container.remove();

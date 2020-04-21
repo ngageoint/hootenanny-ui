@@ -59,6 +59,7 @@ export default class API {
                 status     = response.status;
                 statusText = response.statusText;
                 type       = 'error';
+
             } else {
                 message = err.message;
                 status  = 500;
@@ -354,7 +355,6 @@ export default class API {
 
         let cancelURL = `${this.baseUrl}/ingest/ingest/upload`;
 
-
         axios.get( cancelURL, { cancelToken: cancelToken.token } )
         .catch(thrown => {
             if (axios.isCancel(thrown)) {
@@ -367,7 +367,7 @@ export default class API {
             Hoot.message.alert( alert );
             }
         });
-        cancelToken.cancel('Request canceled.');
+        cancelToken.cancel('Request cancelled.');
     }
 
     getJobsHistory( data ) {
