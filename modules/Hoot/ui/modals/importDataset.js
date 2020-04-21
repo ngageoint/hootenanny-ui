@@ -32,6 +32,7 @@ export default class ImportDataset {
         this.formFactory    = new FormFactory();
         this.processRequest = null;
         this.path           = path;
+        this.cancelToken         = axios.CancelToken.source();
 
         // Add "NONE" option to beginning of array
         this.translations.unshift( {
@@ -81,8 +82,6 @@ export default class ImportDataset {
         this.advOpts.forEach(opt => {
             opt.hidden = true;
         });
-
-        this.source = axios.CancelToken.source();
 
         this.form = this.form.concat(this.advOpts.map(this.formFactory.advOpt2DomMeta));
 
@@ -420,20 +419,13 @@ export default class ImportDataset {
 
         this.loadingState();
 
-        this.processRequest =  Hoot.api.uploadDataset( data, this.source )
+        this.processRequest =  Hoot.api.uploadDataset( data, this.cancelToken.token )
         .then( resp => {
             this.jobId = resp.data[ 0 ].jobid;
             return Hoot.api.statusInterval( this.jobId );
         } )
         .then( async resp => {
             let message;
-
-            if ( resp.message === 'Request canceled'  ) {
-                Hoot.message.alert( {
-                    message: resp.message,
-                    type: 'warn'
-                } );
-            }
 
             if (resp.data && resp.data.status === 'cancelled') {
                 message = 'Import job cancelled';
@@ -467,7 +459,7 @@ export default class ImportDataset {
 
             if ( err.message === 'Request cancelled.' ) {
                 Hoot.message.alert( {
-                    message: 'Upload request cancelled',
+                    message: err.message,
                     type: 'warn'
                 } );
 
@@ -508,7 +500,6 @@ export default class ImportDataset {
     }
 
     loadingState() {
-
         this.submitButton
             .select( 'span' )
             .classed( 'label', true )
@@ -524,7 +515,9 @@ export default class ImportDataset {
             if ( this.jobId ) {
                 Hoot.api.cancelJob(this.jobId);
             }
-            Hoot.api.cancelUpload( this.source );
+            else {
+                this.cancelToken.cancel('Request cancelled.');
+            }
         } );
 
         this.submitButton.insert('i', 'span')

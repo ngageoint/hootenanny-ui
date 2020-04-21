@@ -59,7 +59,6 @@ export default class API {
                 status     = response.status;
                 statusText = response.statusText;
                 type       = 'error';
-
             } else {
                 message = err.message;
                 status  = 500;
@@ -349,25 +348,6 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data );
-    }
-
-    cancelUpload( cancelToken ) {
-
-        let cancelURL = `${this.baseUrl}/ingest/ingest/upload`;
-
-        axios.get( cancelURL, { cancelToken: cancelToken.token } )
-        .catch(thrown => {
-            if (axios.isCancel(thrown)) {
-            console.log(thrown.message);
-            } else {
-            let alert = {
-                message: 'Failed to cancel upload.',
-                type: 'warn'
-            };
-            Hoot.message.alert( alert );
-            }
-        });
-        cancelToken.cancel('Request cancelled.');
     }
 
     getJobsHistory( data ) {
@@ -772,10 +752,10 @@ export default class API {
                 INPUT_TYPE: data.INPUT_TYPE,
                 INPUT_NAME: data.INPUT_NAME,
                 NONE_TRANSLATION: data.NONE_TRANSLATION,
-                FOLDER_ID: data.folderId,
+                FOLDER_ID: data.folderId
             },
             data: data.formData,
-            cancelToken: cancelToken.token
+            cancelToken: cancelToken
         };
 
         if ( data.ADV_UPLOAD_OPTS && data.ADV_UPLOAD_OPTS.length ) {
