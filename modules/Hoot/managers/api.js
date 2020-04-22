@@ -755,7 +755,7 @@ export default class API {
                 FOLDER_ID: data.folderId
             },
             data: data.formData,
-            cancelToken: cancelToken
+            cancelToken: cancelToken.token
         };
 
         if ( data.ADV_UPLOAD_OPTS && data.ADV_UPLOAD_OPTS.length ) {

@@ -32,7 +32,7 @@ export default class ImportDataset {
         this.formFactory    = new FormFactory();
         this.processRequest = null;
         this.path           = path;
-        this.cancelToken         = axios.CancelToken.source();
+        this.cancelToken    = axios.CancelToken.source();
 
         // Add "NONE" option to beginning of array
         this.translations.unshift( {
@@ -419,7 +419,7 @@ export default class ImportDataset {
 
         this.loadingState();
 
-        this.processRequest =  Hoot.api.uploadDataset( data, this.cancelToken.token )
+        this.processRequest =  Hoot.api.uploadDataset( data, this.cancelToken )
         .then( resp => {
             this.jobId = resp.data[ 0 ].jobid;
             return Hoot.api.statusInterval( this.jobId );
