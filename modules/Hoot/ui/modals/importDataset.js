@@ -419,7 +419,7 @@ export default class ImportDataset {
 
         this.loadingState();
 
-        this.processRequest =  Hoot.api.uploadDataset( data, this.cancelToken )
+        this.processRequest =  Hoot.api.uploadDataset( data, this.cancelToken.token )
         .then( resp => {
             this.jobId = resp.data[ 0 ].jobid;
             return Hoot.api.statusInterval( this.jobId );
