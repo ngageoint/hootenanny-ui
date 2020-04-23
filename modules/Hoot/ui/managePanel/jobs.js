@@ -832,11 +832,13 @@ export default class Jobs extends Tab {
                             }
                         }
 
-                        // For conflate or import jobs add action for
+                        // For conflate or import or clip jobs add action for
                         // creating an adds-only changeset
                         // or a replacement changeset
                         if (d.jobType.toUpperCase() === 'CONFLATE'
-                            || d.jobType.toUpperCase() === 'IMPORT') {
+                            || d.jobType.toUpperCase() === 'IMPORT'
+                            || d.jobType.toUpperCase() === 'CLIP'
+                            ) {
                             let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
 
                             if (currentLayer && !currentLayer.grailReference) {

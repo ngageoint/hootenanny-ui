@@ -47,7 +47,8 @@ export default class API {
             headers: params.headers,
             data: params.data,
             params: params.params,
-            responseType: params.responseType
+            responseType: params.responseType,
+            cancelToken: params.cancelToken
         } ).catch( err => {
             let { response } = err;
             let data, message, status, statusText, type;
@@ -738,7 +739,7 @@ export default class API {
      * @param data - upload data
      * @returns {Promise} - request
      */
-    uploadDataset( data ) {
+    uploadDataset( data, cancelToken ) {
         if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
             return false;
         }
@@ -753,7 +754,8 @@ export default class API {
                 NONE_TRANSLATION: data.NONE_TRANSLATION,
                 FOLDER_ID: data.folderId
             },
-            data: data.formData
+            data: data.formData,
+            cancelToken: cancelToken
         };
 
         if ( data.ADV_UPLOAD_OPTS && data.ADV_UPLOAD_OPTS.length ) {
