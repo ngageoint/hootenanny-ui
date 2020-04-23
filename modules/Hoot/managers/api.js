@@ -1329,10 +1329,11 @@ export default class API {
             } );
     }
 
-    createDifferentialChangeset( data ) {
+    createDifferentialChangeset( data, paramData ) {
         const params = {
             path: '/grail/createdifferentialchangeset',
             method: 'POST',
+            params: paramData,
             data
         };
 
