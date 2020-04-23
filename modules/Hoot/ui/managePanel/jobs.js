@@ -609,7 +609,9 @@ export default class Jobs extends Tab {
                         inputInfo += jobTags.parentId;
                     }
 
-                    jobInfo.push( inputInfo );
+                    if ( inputInfo !== '' ) {
+                        jobInfo.push( inputInfo );
+                    }
 
                     // used for showing conflation type if exists
                     if ( jobTags.conflationType ) {
@@ -623,7 +625,9 @@ export default class Jobs extends Tab {
                         outputInfo += jobTags.deriveType;
                     }
 
-                    jobInfo.push( outputInfo );
+                    if ( outputInfo !== '' ) {
+                        jobInfo.push( outputInfo );
+                    }
                 }
 
                 const jobInfoText = jobInfo.join( ' ==> ' );
