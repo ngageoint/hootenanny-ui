@@ -21,6 +21,7 @@ import {
     utilNoAuto,
     utilRebind
 } from '../util';
+import { tagInfo } from '../../data/index.js';
 
 
 export function uiRawTagEditor(context) {
@@ -53,6 +54,8 @@ export function uiRawTagEditor(context) {
         }
 
         selection.call(disclosure);
+
+        urlTagCheck(_tags, taginfo);
 
         function toggled(expanded) {
             _expanded = expanded;
@@ -385,6 +388,30 @@ export function uiRawTagEditor(context) {
             }, {});
 
             context.copyTags(seltags);
+        }
+    }
+
+    function urlTagCheck(_tags, taginfo) {
+        let tagVals = Object.values(_tags);
+
+        console.log(taginfo);
+
+        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+        '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+
+
+        for ( let value of tagVals ) {
+            if ( pattern.test(value) ) {
+                console.log(value);
+                taginfo.keys( { query: value } );
+            }
+            else {
+                console.log('no url');
+            }
         }
     }
 
