@@ -157,16 +157,18 @@ export default class AdvancedOpts {
 
                     let activeFavorite = d3.select( '#conflateType' ).property( 'value' );
 
-                    let optUpdate = instance.favoriteOptions.filter( opt => opt.name === activeFavorite );
+                    let optUpdate = instance.favoritesOptionsSource.filter( opt => opt.name === activeFavorite );
 
-                    let toUpdate = instance.updateFavoriteOpt( optUpdate );
+                    let toUpdate =  instance.updateFavoriteOpt( optUpdate );
 
                     let updateOpt = {
+                        conflateType: optUpdate.conflateType,
                         name: activeFavorite,
                         members: {
                             members: toUpdate,
                             name: activeFavorite,
-                            label: activeFavorite
+                            label: activeFavorite,
+
                         }
                     };
 
@@ -607,6 +609,12 @@ export default class AdvancedOpts {
 
         this.favoritesOptionsSource = advOpts;
 
+        let optCheck = advOpts[0];
+
+        if ( optCheck.conflateType || advOpts.length === 1 ) {
+            advOpts = this.getSaveGroups(optCheck);
+        }
+
         let group = this.contentDiv
                 .selectAll( '.form-group' )
                 .data( advOpts );
@@ -802,7 +810,9 @@ export default class AdvancedOpts {
 
         let getMem = [];
 
-        toUpdate[0].members.forEach( function(m) { getMem.push( m ); } );
+        toUpdate[0].members.forEach( function(m) {
+            getMem.push( m );
+        } );
 
         let updateOpts = [];
 
@@ -824,6 +834,7 @@ export default class AdvancedOpts {
                         description: member.description,
                         label: member.label,
                         type: member.type,
+                        option: member.option
 
                     }
                 );
@@ -837,6 +848,7 @@ export default class AdvancedOpts {
                         description: member.description,
                         label: member.label,
                         type: member.type,
+                        option: member.option
 
                     }
                 );
@@ -852,19 +864,23 @@ export default class AdvancedOpts {
 
         let getAdvOptMembers = [];
 
-        this.favoritesOptionsSource.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
+        this.favoritesOptionsSource.forEach( function(m) {
+            m.members.option = m.name;
+            getAdvOptMembers.push( m.members );
+        } );
 
         let getSelectedOpts = [];
 
         function flatten( arr ) {
+            let memOption = arr.option;
             return arr.reduce( function( flat, toFlatten) {
                 return flat.concat( Array.isArray(toFlatten) ?
                 flatten(toFlatten)
-                : checkType(toFlatten) );
+                : checkType(toFlatten, memOption ) );
             }, []);
         }
 
-        function checkType( member ) {
+        function checkType( member, option ) {
             if ( member.input === 'checkbox' ) {
                 let cboxVal = d3.select( `#${member.id}` ).select('input').property( 'checked' ).toString();
                 if ( member.default !== cboxVal  ) {
@@ -876,7 +892,7 @@ export default class AdvancedOpts {
                             description: member.description,
                             label: member.label,
                             type: member.type,
-
+                            option: option
                         }
                     );
                 }
@@ -891,6 +907,7 @@ export default class AdvancedOpts {
                             description: member.description,
                             label: member.label,
                             type: member.type,
+                            option: option
 
                         }
                     );
@@ -921,5 +938,32 @@ export default class AdvancedOpts {
         let getFavs = this.getCurrentFavorites();
         let checkType = getFavs.some(x => x.name === d3.select('#conflateType').property('value') );
         return checkType;
+    }
+
+    getSaveGroups( advOpts ) {
+        let saveGroup   = [];
+        let optionCheck = [];
+
+        for ( let i = 0; i < advOpts.members.length; i++ ) {
+
+            if ( !optionCheck.includes( advOpts.members[i].option ) ) {
+                optionCheck.push( advOpts.members[i].option);
+
+                saveGroup.push(
+                    {
+                        label: advOpts.members[i].option,
+                        members: [],
+                        name: advOpts.members[i].option
+                    }
+                );
+            }
+
+            for ( let j = 0; j < saveGroup.length; j++ ) {
+                if ( saveGroup[j].name === advOpts.members[i].option ) {
+                    saveGroup[j].members.push(advOpts.members[i]);
+                }
+            }
+        }
+        return saveGroup;
     }
 }
