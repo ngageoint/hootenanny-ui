@@ -8,6 +8,7 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
+import _forEach   from 'lodash-es/forEach';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
@@ -944,26 +945,28 @@ export default class AdvancedOpts {
         let saveGroup   = [];
         let optionCheck = [];
 
-        for ( let i = 0; i < advOpts.members.length; i++ ) {
-
-            if ( !optionCheck.includes( advOpts.members[i].option ) ) {
-                optionCheck.push( advOpts.members[i].option);
+        // pull advanced option name from saved fav opt
+        _forEach( advOpts.members, function(member) {
+            if ( !optionCheck.includes( member.option ) ) {
+                optionCheck.push( member.option );
 
                 saveGroup.push(
                     {
-                        label: advOpts.members[i].option,
+                        label: member.option,
                         members: [],
-                        name: advOpts.members[i].option
+                        name: member.option
                     }
                 );
             }
 
-            for ( let j = 0; j < saveGroup.length; j++ ) {
-                if ( saveGroup[j].name === advOpts.members[i].option ) {
-                    saveGroup[j].members.push(advOpts.members[i]);
+            // place custom fav opt member values within adv opt group
+            _forEach( saveGroup, function( group ) {
+                if ( group.name === member.option ) {
+                    group.members.push( member );
                 }
-            }
-        }
+             } );
+        } );
+
         return saveGroup;
     }
 }
