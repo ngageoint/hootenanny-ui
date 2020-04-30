@@ -169,7 +169,6 @@ export default class AdvancedOpts {
                             members: toUpdate,
                             name: activeFavorite,
                             label: activeFavorite,
-
                         }
                     };
 
