@@ -172,6 +172,10 @@ export const duration = (start, end, ago) => {
         lastUnit = unit;
     }
 
+    if ( !duration ) {
+        duration = 'Over a year';
+    }
+
     if (ago) {
         duration += ' ago';
     }
