@@ -155,7 +155,6 @@ export default class AdvancedOpts {
                 .attr( 'id', 'updateFav')
                 .text( 'Update Favorite' )
                 .on( 'click', async function() {
-
                     let activeFavorite = d3.select( '#conflateType' ).property( 'value' );
 
                     let optUpdate = instance.favoritesOptionsSource.filter( opt => opt.name === activeFavorite );
