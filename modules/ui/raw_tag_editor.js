@@ -16,13 +16,12 @@ import { services } from '../services';
 import { svgIcon } from '../svg';
 import { uiDisclosure } from './disclosure';
 import { uiTagSelectCopy } from './tag_select_copy';
+import { uiTagLinkUrl } from './tag_link_url';
 import {
     utilGetSetValue,
     utilNoAuto,
     utilRebind
 } from '../util';
-import { tagInfo } from '../../data/index.js';
-
 
 export function uiRawTagEditor(context) {
     var taginfo = services.taginfo;
@@ -54,8 +53,6 @@ export function uiRawTagEditor(context) {
         }
 
         selection.call(disclosure);
-
-        urlTagCheck(_tags, taginfo);
 
         function toggled(expanded) {
             _expanded = expanded;
@@ -169,13 +166,19 @@ export function uiRawTagEditor(context) {
             });
 
         items
-            .each(function() {
+            .each(function(d) {
                 var row = d3_select(this);
                 var key = row.select('input.key');      // propagate bound data to child
                 var value = row.select('input.value');  // propagate bound data to child
 
                 if (_entityID && taginfo) {
                     bindTypeahead(key, value);
+                }
+
+                var reference;
+
+                if (isNaN( d.value ) && typeof d.value === 'string' && d.value.indexOf('http') === 0) {
+                reference = uiTagLinkUrl({ url: d.value });
                 }
 
                 // Hoot: Override tag reference with tag copy
@@ -342,6 +345,14 @@ export function uiRawTagEditor(context) {
                 _newRow = undefined;
             }
 
+            //Enable tag link url
+            if (this.value.indexOf('http') === 0) {
+                var reference = uiTagLinkUrl({ url: this.value });
+                var row = d3_select(this.parentNode.parentNode.parentNode);
+                row.select('.inner-wrap').call(reference.button);
+                row.call(reference.body);
+            }
+
             dispatch.call('change', this, tag);
         }
 
@@ -390,31 +401,6 @@ export function uiRawTagEditor(context) {
             context.copyTags(seltags);
         }
     }
-
-    function urlTagCheck(_tags, taginfo) {
-        let tagVals = Object.values(_tags);
-
-        console.log(taginfo);
-
-        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-        '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-
-
-        for ( let value of tagVals ) {
-            if ( pattern.test(value) ) {
-                console.log(value);
-                taginfo.keys( { query: value } );
-            }
-            else {
-                console.log('no url');
-            }
-        }
-    }
-
 
     rawTagEditor.state = function(_) {
         if (!arguments.length) return _state;
