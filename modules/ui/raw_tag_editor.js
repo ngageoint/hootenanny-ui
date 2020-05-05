@@ -155,9 +155,7 @@ export function uiRawTagEditor(context) {
             .attr('class', 'form-field-button remove')
             .call(svgIcon('#iD-operation-delete'));
 
-
         // Update
-
         items = items
             .merge(enter)
             .sort(function(a, b) {
