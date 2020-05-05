@@ -142,6 +142,7 @@ export function uiRawTagEditor(context) {
             .append('input')
             .property('type', 'text')
             .attr('class', 'value')
+            .attr('xlink:href', function(d) { return '#' + d.value; })
             .attr('maxlength', 255)
             .call(utilNoAuto)
             .on('blur', valueChange)
@@ -177,14 +178,22 @@ export function uiRawTagEditor(context) {
 
                 var reference;
 
-                if (isNaN( d.value ) && typeof d.value === 'string' && d.value.indexOf('http') === 0) {
-                reference = uiTagLinkUrl({ url: d.value });
-                }
-
                 // Hoot: Override tag reference with tag copy
                 var select = uiTagSelectCopy(context);
 
-                row.call( select );
+                if (isNaN(d.value) && typeof d.value === 'string' && d.value.indexOf('http') === 0) {
+                    reference = uiTagLinkUrl({ url: d.value });
+
+                row.select('.inner-wrap')      // propagate bound data
+                .call(reference.button);
+
+                row.call(reference.body);
+
+                row.select('button.remove');   // propagate bound data
+
+                } else {
+                    row.call( select );
+                }
             });
 
         items.selectAll('input.key')

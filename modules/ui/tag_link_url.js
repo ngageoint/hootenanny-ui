@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import {
     event as d3_event,
     select as d3_select
@@ -6,13 +7,12 @@ import { svgIcon } from '../svg';
 import { t } from '../util/locale';
 
 export function uiTagLinkUrl(tag) {
-    let tagLinkUrl = {};
-    let _button = d3_select(null);
-    let _showing;
-    let _body = d3_select(null);
+    var tagLinkUrl = {};
+    var _button = d3_select(null);
+    var _showing;
+    var _body = d3.select(null);
 
     function hide() {
-
         _body
             .transition()
             .duration(200)
