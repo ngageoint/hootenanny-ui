@@ -32,6 +32,10 @@ describe('utilities', function() {
             date2 = new Date('June 27, 1996 03:30:00');
             duration = Hoot.duration(date1, date2);
             expect(duration).to.eql('6 months');
+
+            date2 = new Date('December 17, 1997 03:30:00');
+            duration = Hoot.duration(date1, date2);
+            expect(duration).to.eql('2 years');
         });
         it ('dubs any single unit of time as \'a\' or \'an\'', function() {
             date2 = new Date('December 17, 1995 03:24:00.111');
@@ -58,6 +62,9 @@ describe('utilities', function() {
             duration = Hoot.duration(date1,date2);
             expect(duration).to.eql('a month');
 
+            date2 = new Date('December 17, 1996 03:30:00');
+            duration = Hoot.duration(date1, date2);
+            expect(duration).to.eql('a year');
         });
         it('dubs units of time less than five as \'a few\'', function() {
             date2 = new Date('December 17, 1995 03:24:04');
