@@ -33,9 +33,9 @@ describe('utilities', function() {
             duration = Hoot.duration(date1, date2);
             expect(duration).to.eql('6 months');
 
-            date2 = new Date('December 17, 1997 03:30:00');
+            date2 = new Date('December 17, 2001 03:30:00');
             duration = Hoot.duration(date1, date2);
-            expect(duration).to.eql('2 years');
+            expect(duration).to.eql('6 years');
         });
         it ('dubs any single unit of time as \'a\' or \'an\'', function() {
             date2 = new Date('December 17, 1995 03:24:00.111');
@@ -86,6 +86,10 @@ describe('utilities', function() {
             date2 = new Date('February 20, 1996 00:00:00');
             duration = Hoot.duration(date1,date2);
             expect(duration).to.eql('a few months');
+
+            date2 = new Date('December 17, 1997 03:30:00');
+            duration = Hoot.duration(date1, date2);
+            expect(duration).to.eql('a few years');
         });
         it('dubs starting times as units ago', function() {
             date2 = new Date('December 17, 1995 03:24:04');
@@ -107,6 +111,10 @@ describe('utilities', function() {
             date2 = new Date('March 20, 1996 00:00:00');
             duration = Hoot.duration(date1,date2,true);
             expect(duration).to.eql('3 months ago');
+
+            date2 = new Date('December 17, 1997 03:30:00');
+            duration = Hoot.duration(date1, date2, true);
+            expect(duration).to.eql('2 years ago');
         });
     });
 });
