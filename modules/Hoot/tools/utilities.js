@@ -157,7 +157,8 @@ export const duration = (start, end, ago) => {
         {unit: 'hour', value: 60}, //minutes per hour
         {unit: 'day', value: 24}, //hours per day
         {unit: 'month', value: 30}, //days per month
-        {unit: 'year', value: 12}  //months per year
+        {unit: 'year', value: 12},  //months per year
+        {unit: 'millennium', value: 1000} // years per millennium
     ];
     let lastUnit = units[0].unit;
 
