@@ -215,6 +215,16 @@ export default class GrailPull {
             pathId,
             projectName;
 
+        const railsParams = {
+            BBOX     : formatBbox( bbox ),
+            input1   : this.form.select( '.outputName-0' ).property( 'value' )
+        };
+
+        const overpassParams = {
+            BBOX     : formatBbox( bbox ),
+            input1   : this.form.select( '.outputName-1' ).property( 'value' )
+        };
+
         if (sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task')) {
             /**
              * If we are coming from tasking manager, and we dont' have project folder, add it.
@@ -235,6 +245,8 @@ export default class GrailPull {
             } else {
                 folderId = pathId;
             }
+
+            railsParams.taskInfo = overpassParams.taskInfo = projectName + ', ' + folderName;
         } else {
             folderName = 'grail_' + bbox.replace(/,/g, '_');
             pathId = _get(_find(Hoot.folders.folderPaths, folder => folder.name === folderName), 'id');
@@ -243,18 +255,7 @@ export default class GrailPull {
             } else {
                 folderId = pathId;
             }
-
         }
-
-        const railsParams = {
-            BBOX     : formatBbox( bbox ),
-            input1   : this.form.select( '.outputName-0' ).property( 'value' )
-        };
-
-        const overpassParams = {
-            BBOX     : formatBbox( bbox ),
-            input1   : this.form.select( '.outputName-1' ).property( 'value' )
-        };
 
         if ( this.instance.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
             const customQuery          = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );

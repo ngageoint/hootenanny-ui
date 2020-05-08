@@ -284,7 +284,7 @@ class LayerConflate extends SidebarForm {
         d3.event.preventDefault();
 
         let data   = this.preConflation(),
-            params = {
+            layerParams = {
                 name: data.OUTPUT_NAME,
                 color: 'green',
                 isConflating: true,
@@ -295,12 +295,21 @@ class LayerConflate extends SidebarForm {
             this.advancedOptions.toggle();
         }
 
+        let refLayer = Hoot.layers.findLoadedBy( 'refType', 'primary' );
+        let secLayer = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
+
+        // Check if either layer has task manager tag data
+        if ( refLayer.tags && refLayer.tags.taskInfo ) {
+            data.taskInfo = refLayer.tags.taskInfo;
+        } else if ( secLayer.tags && secLayer.tags.taskInfo ) {
+            data.taskInfo = secLayer.tags.taskInfo;
+        }
 
         return Hoot.api.conflate( data )
             .then( resp => {
-                params.jobId = resp.data.jobid;
+                layerParams.jobId = resp.data.jobid;
 
-                this.loadingState( params );
+                this.loadingState( layerParams );
 
                 // hide input layer controllers
                 this.controller.hideInputs();
@@ -336,7 +345,7 @@ class LayerConflate extends SidebarForm {
                     // remove input layer controllers
                     d3.selectAll( '.add-controller' ).remove();
 
-                    this.postConflation( params );
+                    this.postConflation( layerParams );
                 }
             } )
             .catch( err => {
