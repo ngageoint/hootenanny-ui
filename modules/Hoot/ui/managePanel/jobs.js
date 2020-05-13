@@ -630,7 +630,7 @@ export default class Jobs extends Tab {
                     }
                 }
 
-                const jobInfoText = jobInfo.join( ' → ' );
+                const jobInfoText = jobInfo.join( ' ➜ ' );
                 // Job Info
                 props.push({
                     span: [{ text: jobInfoText }]
