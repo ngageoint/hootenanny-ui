@@ -170,7 +170,7 @@ export default class Basemaps extends Tab {
             id: d.name,
             type: 'tms',
             projection: 'mercator',
-            template: `${ Hoot.api.config.host }:${ Hoot.api.config.port }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
+            template: `${ Hoot.api.config.host }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
             default: true,
             nocache: true,
             extent: new GeoExtent( [ d.extent.minx, d.extent.miny ], [ d.extent.maxx, d.extent.maxy ] )
