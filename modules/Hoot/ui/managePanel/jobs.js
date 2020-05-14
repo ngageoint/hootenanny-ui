@@ -602,7 +602,7 @@ export default class Jobs extends Tab {
                             input2 = Hoot.layers.findBy( 'id', parseInt(jobTags.input2, 10) );
 
                         inputInfo += input1 ? input1.name : '';
-                        inputInfo += input2 ? ' ⦁ ' + input2.name : '';
+                        inputInfo += input2 ? ' • ' + input2.name : '';
                     } else if ( jobTags.bbox ){
                         inputInfo += jobTags.bbox;
                     } else if ( jobTags.parentId ) {
@@ -630,7 +630,7 @@ export default class Jobs extends Tab {
                     }
                 }
 
-                const jobInfoText = jobInfo.join( ' 🠚 ' );
+                const jobInfoText = jobInfo.join( ' ➜ ' );
                 // Job Info
                 props.push({
                     span: [{ text: jobInfoText }]
