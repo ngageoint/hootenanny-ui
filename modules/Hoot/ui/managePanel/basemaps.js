@@ -7,7 +7,7 @@
 import AddBasemap                 from '../modals/addBasemap';
 import Tab                        from './tab';
 import { geoExtent as GeoExtent } from '../../../geo/index';
-import _forEach                   from 'lodash-es/forEach';
+import _filter                   from 'lodash-es/filter';
 
 /**
  * Creates the basemaps tab in the settings panel
@@ -60,22 +60,10 @@ export default class Basemaps extends Tab {
         }
     }
 
-    checkBasemapStatus(basemaps) {
-
-        let basemapList = [];
-        _forEach( basemaps, function(d) {
-            if ( d.status === 'enabled' || d.status === 'disabled' ) {
-                basemapList.push(d);
-            }
-        });
-        return basemapList;
-
-    }
-
     populateBasemaps( basemaps ) {
         let instance = this;
 
-        let allBasemaps = this.checkBasemapStatus( basemaps );
+        let allBasemaps = _filter(basemaps, function(b) { return b.status === 'enabled' || b.status === 'disabled'; } );
 
         let rows = this.basemapTable
             .selectAll( '.basemap-item' )
