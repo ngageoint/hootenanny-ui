@@ -231,25 +231,16 @@ export default class ChangesetStats {
         params.comment = Hoot.context.storage('comment') || '';
         params.hashtags = Hoot.context.storage('hashtags') || '';
         params.source = Hoot.context.storage('source') || '';
-
-
         params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
+
+        if ( this.job.tags && this.job.tags.taskInfo ) {
+            params.taskInfo = this.job.tags.taskInfo;
+        }
 
         Hoot.api.changesetPush( params )
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( resp => Hoot.message.alert( resp ) )
-            .then( () => { //refresh the ref layer if it's grail eligible
-                let refLayer = Hoot.layers.findBy( 'id', +this.job.tags.input1 );
-                if (refLayer && refLayer.grailReference) {
-                    let refreshParams = {
-                        BBOX: this.job.tags.bbox,
-                        input1: refLayer.name
-                    };
-                    let folderId = refLayer.folderId;
-                    Hoot.api.grailPullRailsPortToDb(refreshParams, folderId, Hoot.config.referenceLabel );
-                }
-            })
             .catch( err => {
                 Hoot.message.alert( err );
                 return false;

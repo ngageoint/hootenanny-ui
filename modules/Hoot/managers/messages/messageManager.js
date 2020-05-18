@@ -91,20 +91,21 @@ export default class MessageManager {
                 .classed( 'secondary', true )
                 .text( 'Cancel' )
                 .on( 'click', () => {
-                    this.currentConfirm = null;
                     overlay.remove();
                     res( false );
                 } );
 
-            buttonContainer
+            const okButton = buttonContainer
                 .append( 'button' )
                 .classed( 'primary', true )
                 .text( 'OK' )
                 .on( 'click', () => {
-                    this.currentConfirm = null;
                     overlay.remove();
                     res( true );
                 } );
+
+            // focuses the 'ok' button so user can press enter without having to click the ok button
+            okButton.node().focus();
         } );
     }
 }
