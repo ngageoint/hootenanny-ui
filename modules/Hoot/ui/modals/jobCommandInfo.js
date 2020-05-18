@@ -50,6 +50,7 @@ export default class JobCommandInfo {
         if (cbox.size() > 0) {
             verbose = cbox.property('checked');
         }
+
         // get all commands in 1 big string, seperate them by line, only use the ones marked at 'STATUS'
         return jobStatus.map( comm => {
                 return ((verbose) ? 'COMMAND   ' + comm.command + '\n' : '') + comm.stdout;

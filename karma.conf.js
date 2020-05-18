@@ -117,7 +117,8 @@ module.exports = function( config ) {
             '/base/css/img/': '/base/img/',
             '/base/css/hoot/img/': '/base/img/',
             '/base/css/hoot/modules/img/': '/base/img/',
-            '/hoot-services': 'http://localhost:8787/hoot-services'
+            '/hoot-services': 'http://localhost:8787/hoot-services',
+            '/static' : 'http://localhost:8787/static'
         },
 
 
