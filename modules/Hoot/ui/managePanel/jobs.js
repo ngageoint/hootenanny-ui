@@ -104,7 +104,6 @@ export default class Jobs extends Tab {
         super.render();
         this.createJobsTable();
         this.loadJobs();
-        this.basemapJobs();
         return this;
     }
 
@@ -187,23 +186,6 @@ export default class Jobs extends Tab {
 
     [getJobTypeIcon](type) {
         return this.jobTypeIcon[type] || 'help';
-    }
-
-    async basemapJobs(d) {
-        if ( d ) {
-            try {
-                let basemaps = await Hoot.api.getBasemaps();
-                _forEach(basemaps, function(b) {
-                    if ( b.status === 'failed' ) {
-                        Hoot.api.deleteBasemap(b.name);
-                    }
-
-                } );
-            } catch ( e ) {
-                window.console.error( 'Unable to retrieve basemaps' );
-                throw new Error( e );
-            }
-        }
     }
 
     populateJobsRunning( jobs ) {
@@ -317,8 +299,6 @@ export default class Jobs extends Tab {
                                 d3.select('#util-jobs').classed('wait', true);
                                 Hoot.api.cancelJob(d.jobId)
                                     .then( resp => this.loadJobs() )
-                                    .then( resp => { if (d.jobType === 'basemap') { this.basemapJobs(d); } }
-                                    )
                                     .finally( () => d3.select('#util-jobs').classed('wait', false));
                             }
                         }
