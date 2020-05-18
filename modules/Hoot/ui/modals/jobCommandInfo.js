@@ -43,17 +43,12 @@ export default class JobCommandInfo {
         window.clearInterval(this.poller);
     }
 
-    parseStatus( jobStatus, emptyCheck ) {
+    parseStatus( jobStatus ) {
         const uuidRegex = '[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}';
         let verbose = false;
         let cbox = this.form.select('#cboxVerbose');
-
         if (cbox.size() > 0) {
             verbose = cbox.property('checked');
-        }
-
-        if ( emptyCheck ) {
-            verbose = true;
         }
 
         // get all commands in 1 big string, seperate them by line, only use the ones marked at 'STATUS'
@@ -86,14 +81,7 @@ export default class JobCommandInfo {
             .then( resp => {
                 this.commands = this.parseStatus(resp.commandDetail);
                 // this.createTable();
-
-                if ( this.commands !== '' ) {
-                    this.form.select('#jobConsole').text(this.commands);
-                }
-                else {
-                    this.commands = this.parseStatus(resp.commandDetail, 'basemap' );
-                    this.form.select('#jobConsole').text(this.commands);
-                }
+                this.form.select('#jobConsole').text(this.commands);
 
                 if (resp.status === 'complete') {
                     this.deactivate();

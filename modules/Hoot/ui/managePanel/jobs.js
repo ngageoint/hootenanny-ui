@@ -7,7 +7,6 @@ import JobCommandInfo from '../modals/jobCommandInfo';
 import GrailDatasetPicker from '../modals/grailDatasetPicker';
 import { duration } from '../../tools/utilities';
 import { utilKeybinding }    from '../../../util/keybinding';
-import _forEach       from 'lodash-es/forEach';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
 
