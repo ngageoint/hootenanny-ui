@@ -1,0 +1,54 @@
+@import '../../modules/variables';
+
+.taskingManager-table {
+    min-height: 210px;
+    max-height: calc(100% - 130px);
+    box-shadow: 0 3px 10px $dark-opacity10;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+        width: 13px;
+        border-left: 1px solid #DDD;
+    }
+}
+
+.taskingManager-item {
+    padding: 5px 10px 5px 15px;
+
+    &:first-child {
+        border-top: none;
+    }
+
+    &:last-child {
+        border-bottom: none;
+
+        &:nth-child(1), &:nth-child(2) {
+            border-bottom: 1px solid $dark-opacity20
+        }
+    }
+
+    .taskingManager-header {
+        margin-bottom: 5px;
+    }
+
+    .taskingManager-body {
+        display: flex;
+        justify-content: flex-start;
+
+        label {
+            font-weight: 500;
+        }
+    }
+
+    .taskingManager-description {
+        width: 40%;
+        min-width: 180px;
+        margin-right: 10px;
+    }
+
+    .taskingManager-details {
+        label {
+            display: inline;
+        }
+    }
+}

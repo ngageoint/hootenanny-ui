@@ -1540,4 +1540,31 @@ export default class API {
 
         return this.request( params );
     }
+
+    getTMProjects() {
+        const params = {
+            path: '/taskingmanager/getprojects',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getTMTasks( projectId ) {
+        const params = {
+            path: `/taskingmanager/gettasks/${ projectId }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .catch( () => {
+                let alert = {
+                    message: 'Failed to retrieve tasks.',
+                    type: 'error'
+                };
+
+                Hoot.message.alert( alert );
+            } );
+    }
 }
