@@ -17,6 +17,7 @@ import { svgIcon } from '../svg';
 import { uiDisclosure } from './disclosure';
 import { uiTagSelectCopy } from './tag_select_copy';
 import { uiTagLinkUrl } from './tag_link_url';
+import { uiTagReference } from './tag_reference';
 import {
     utilGetSetValue,
     utilNoAuto,
@@ -174,13 +175,27 @@ export function uiRawTagEditor(context) {
                     bindTypeahead(key, value);
                 }
 
+                var isRelation = (_entityID && context.entity(_entityID).type === 'relation');
                 var reference;
 
                 // Hoot: Override tag reference with tag copy
                 var select = uiTagSelectCopy(context);
 
-                if (isNaN(d.value) && typeof d.value === 'string' && d.value.indexOf('http') === 0) {
+                row.call( select );
+
+                if (isRelation && d.key === 'type') {
+                    reference = uiTagReference({ rtype: d.value }, context);
+                } else if (isNaN(d.value) && typeof (d.value) === 'string' && d.value.indexOf('http') === 0) {
                     reference = uiTagLinkUrl({ url: d.value });
+                } else {
+                    var tag;
+                    if (Hoot.translations.activeTranslation !== 'OSM') {
+                        tag = { key: d.key === Hoot.fcode() ? d.value : d.key };
+                    } else {
+                        tag = { key: d.key, value: d.value };
+                    }
+                    reference = uiTagReference(tag, context);
+                }
 
                 row.select('.inner-wrap')      // propagate bound data
                 .call(reference.button);
@@ -188,10 +203,6 @@ export function uiRawTagEditor(context) {
                 row.call(reference.body);
 
                 row.select('button.remove');   // propagate bound data
-
-                } else {
-                    row.call( select );
-                }
             });
 
         items.selectAll('input.key')
@@ -352,13 +363,13 @@ export function uiRawTagEditor(context) {
                 _newRow = undefined;
             }
 
-            //Enable tag link url
-            if (this.value.indexOf('http') === 0) {
-                var reference = uiTagLinkUrl({ url: this.value });
-                var row = d3_select(this.parentNode.parentNode.parentNode);
-                row.select('.inner-wrap').call(reference.button);
-                row.call(reference.body);
-            }
+            // //Enable tag link url
+            // if (this.value.indexOf('http') === 0) {
+            //     var reference = uiTagLinkUrl({ url: this.value });
+            //     var row = d3_select(this.parentNode.parentNode.parentNode);
+            //     row.select('.inner-wrap').call(reference.button);
+            //     row.call(reference.body);
+            // }
 
             dispatch.call('change', this, tag);
         }
