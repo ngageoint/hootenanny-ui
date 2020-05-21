@@ -178,11 +178,6 @@ export function uiRawTagEditor(context) {
                 var isRelation = (_entityID && context.entity(_entityID).type === 'relation');
                 var reference;
 
-                // Hoot: Override tag reference with tag copy
-                var select = uiTagSelectCopy(context);
-
-                row.call( select );
-
                 if (isRelation && d.key === 'type') {
                     reference = uiTagReference({ rtype: d.value }, context);
                 } else if (isNaN(d.value) && typeof (d.value) === 'string' && d.value.indexOf('http') === 0) {
@@ -203,6 +198,11 @@ export function uiRawTagEditor(context) {
                 row.call(reference.body);
 
                 row.select('button.remove');   // propagate bound data
+
+                // Hoot: Override tag reference with tag copy
+                var select = uiTagSelectCopy(context);
+                row.call( select );
+
             });
 
         items.selectAll('input.key')
@@ -362,14 +362,6 @@ export function uiRawTagEditor(context) {
             if (_newRow === d.key && d.key !== '' && this.value !== '') {   // not a new row anymore
                 _newRow = undefined;
             }
-
-            // //Enable tag link url
-            // if (this.value.indexOf('http') === 0) {
-            //     var reference = uiTagLinkUrl({ url: this.value });
-            //     var row = d3_select(this.parentNode.parentNode.parentNode);
-            //     row.select('.inner-wrap').call(reference.button);
-            //     row.call(reference.body);
-            // }
 
             dispatch.call('change', this, tag);
         }
