@@ -2,6 +2,7 @@ en:
   icons:
     download: download
     information: info
+    open_link: open link
     remove: remove
     undo: undo
     zoom_to: zoom to
