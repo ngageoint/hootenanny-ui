@@ -1,8 +1,16 @@
 @import '../../modules/variables';
 
+#taskingManagerPanel {
+    .panel-wrapper {
+        overflow: hidden;
+    }
+}
+
 .taskingManager-table {
-    min-height: 210px;
-    max-height: calc(100% - 130px);
+    display: inline-block;
+
+    width: 100%;
+    height: calc(100% - 100px);
     box-shadow: 0 3px 10px $dark-opacity10;
     overflow: auto;
 
@@ -10,6 +18,20 @@
         width: 13px;
         border-left: 1px solid #DDD;
     }
+
+    .task-title {
+        display: inline-block;
+    }
+}
+
+.taskingManager-projects,
+.taskingManager-tasks{
+    position: relative;
+    width: 50%;
+    height: 100%;
+    padding: 30px;
+    display: inline-block;
+
 }
 
 .taskingManager-item {
@@ -32,8 +54,6 @@
     }
 
     .taskingManager-body {
-        display: flex;
-        justify-content: flex-start;
 
         label {
             font-weight: 500;
@@ -41,14 +61,114 @@
     }
 
     .taskingManager-description {
-        width: 40%;
-        min-width: 180px;
         margin-right: 10px;
+
+        label {
+            display: inline;
+        }
     }
 
     .taskingManager-details {
         label {
             display: inline;
+        }
+    }
+}
+
+
+.taskingManager-tasks {
+    position: relative;
+    height: 100%;
+    padding: 30px;
+    display: inline-block;
+
+    .taskHeader {
+        .taskHeader-title {
+            display: inline-block;
+            font-size: 16px;
+            line-height: 1.25;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .runAllBtn {
+            float: right;
+            margin-right: 25px;
+            margin-bottom: 5px;
+            height: 35px;
+            width: 85px;
+        }
+
+        .changeset-control {
+            float: right;
+            margin-right: 15px;
+
+            input {
+                height: 35px;
+            }
+        }
+    }
+
+    .taskingManager-item {
+        position: relative;
+        padding: 5px 10px 5px 15px;
+        height: 50px;
+        font-size: 15px;
+
+        &[status="Done"] {
+            background-color: #ffdca3;
+        }
+
+        &[status="Validated"] {
+            background-color: #a3cfa3;
+        }
+
+        &[status="Invalidated"] {
+            background-color: #ffa3a3;
+        }
+
+        &[status="Locked"],
+        &[status="Running"] {
+            border: 4px solid #ffdca3;
+
+            .taskingManager-action-buttons {
+                margin-right: 10px;
+            }
+        }
+
+        &[status=""] {
+            background-color: #cdcdcd;
+        }
+
+    }
+
+    .task-title {
+        margin-top: 8px;
+        width: 120px;
+    }
+
+    .task-status {
+        display: inline-block;
+        margin-left: 50px;
+    }
+
+    .taskingManager-action-buttons {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        margin: 0 13px 0 0;
+        transform: translateY(-50%);
+
+        button {
+            padding-left: 5px;
+            padding-right: 5px;
+            margin-left: 10px;
+
+            min-width: 50px;
+        }
+
+        .disabled {
+            pointer-events: none;
         }
     }
 }

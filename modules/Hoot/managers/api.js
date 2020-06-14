@@ -41,7 +41,7 @@ export default class API {
      * @returns {Promise} - request
      */
     request( params ) {
-        return axios( {
+        const request = {
             url: params.url || `${ this.baseUrl }${ params.path }`,
             method: params.method || 'GET',
             headers: params.headers,
@@ -49,7 +49,9 @@ export default class API {
             params: params.params,
             responseType: params.responseType,
             cancelToken: params.cancelToken
-        } ).catch( err => {
+        };
+
+        return axios( request ).catch( err => {
             let { response } = err;
             let data, message, status, statusText, type;
 
@@ -65,7 +67,8 @@ export default class API {
                 type    = 'error';
             }
 
-            if ( status === 401 && statusText === 'Unauthorized' ) {
+            // only redirect to login page for unauthorized hoot services requests
+            if ( status === 401 && statusText === 'Unauthorized' && request.url.includes('/hoot-services') ) {
                 window.location.replace( 'login.html' );
             }
 
@@ -1342,16 +1345,26 @@ export default class API {
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )
             .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Differential for selected region created.',
-                    status: 200,
-                    type: 'success'
-                };
+                const responseData = resp.data;
+                if ( responseData && responseData.status === 'cancelled' ) {
+                    return {
+                        data: responseData,
+                        message: `${ paramData.deriveType } job cancelled.`,
+                        status: 400,
+                        type: 'warn'
+                    };
+                } else {
+                    return {
+                        data: responseData,
+                        message: `${ paramData.deriveType } for selected region created.`,
+                        status: 200,
+                        type: 'success'
+                    };
+                }
             } )
             .catch( err => {
                 return {
-                    message : err.data.message || 'Differential changeset failed',
+                    message : err.data.message || `${ paramData.deriveType } changeset failed`,
                     status  : err.status,
                     type    : err.type
                 };
@@ -1543,21 +1556,33 @@ export default class API {
 
     getTMProjects() {
         const params = {
-            path: '/taskingmanager/getprojects',
-            method: 'GET'
+            url: '/tasks/projects.json',
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         };
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp => resp.data )
+            .catch( () => {
+                let alert = {
+                    message: 'Failed to retrieve projects list from tasking manager.',
+                    type: 'error'
+                };
+
+                Hoot.message.alert( alert );
+            } );
     }
 
     getTMTasks( projectId ) {
         const params = {
-            path: `/taskingmanager/gettasks/${ projectId }`,
+            url: `/tasks/project/${ projectId }/tasks.json`,
             method: 'GET'
         };
 
         return this.request( params )
+            .then( resp => resp.data )
             .catch( () => {
                 let alert = {
                     message: 'Failed to retrieve tasks.',
@@ -1566,5 +1591,74 @@ export default class API {
 
                 Hoot.message.alert( alert );
             } );
+    }
+
+    setTaskLock( projectId, taskId, lock ) {
+        let lockParam = lock ? 'lock' : 'unlock';
+
+        const params = {
+            url: `/tasks/project/${ projectId }/task/${ taskId }/${ lockParam }`,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json, text/javascript, */*',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: `Task ${ taskId } ${ lockParam }ed`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                let alert = {
+                    message: `Failed to ${ lockParam } task ${ taskId } for project ${ projectId }.\n` +
+                        'Make sure you are logged into tasking manager in a different tab and that you' +
+                        'have not locked any other tasks for this project',
+                    type: 'error',
+                    status: err.status
+                };
+
+                if ( err.data && err.data.error_msg ) {
+                    alert.message = err.data.error_msg;
+                    alert.status = err.status;
+                }
+
+                return alert;
+            } );
+    }
+
+    markTaskDone( projectId, taskId ) {
+        const params = {
+            url: `/tasks/project/${ projectId }/task/${ taskId }/done`,
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    validateTask( projectId, taskId, formData ) {
+        const params = {
+            url: `/tasks/project/${ projectId }/task/${ taskId }/validate`,
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            data: formData
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
     }
 }

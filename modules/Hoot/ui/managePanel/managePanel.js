@@ -63,8 +63,11 @@ export default class ManagePanel {
     }
 
     renderTabs() {
-        if ( Hoot.users.isAdmin() ) {
+        if ( Hoot.users.isAdvanced() ) {
             this.manageTabs.push( TaskingManagerPanel );
+        }
+
+        if ( Hoot.users.isAdmin() ) {
             this.manageTabs.push( AdminPanel );
         }
         // Render all tabs
