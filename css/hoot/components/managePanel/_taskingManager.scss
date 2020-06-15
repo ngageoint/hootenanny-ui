@@ -36,17 +36,10 @@
 
 .taskingManager-item {
     padding: 5px 10px 5px 15px;
+    border-bottom: 1px solid $dark-opacity20;
 
     &:first-child {
         border-top: none;
-    }
-
-    &:last-child {
-        border-bottom: none;
-
-        &:nth-child(1), &:nth-child(2) {
-            border-bottom: 1px solid $dark-opacity20
-        }
     }
 
     .taskingManager-header {

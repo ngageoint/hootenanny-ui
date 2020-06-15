@@ -43,9 +43,12 @@ export default class TaskingManagerPanel extends Tab {
     async activate() {
         // await for the list
         this.projectList = await this.projectList;
-        this.projectList.features = this.projectList.features.filter( task => task.properties.hoot_map_id );
 
-        this.loadProjectsTable( this.projectList.features );
+        if ( this.projectList ) {
+            this.projectList.features = this.projectList.features.filter( task => task.properties.hoot_map_id );
+
+            this.loadProjectsTable( this.projectList.features );
+        }
     }
 
     createTables() {
@@ -345,7 +348,7 @@ export default class TaskingManagerPanel extends Tab {
                 let containsLocked = this.tasksTable.select( '[status="Locked"]' ).empty();
                 const unRunTasks = items.filter( function() {
                     const container = d3.select( this );
-                    return container.attr( 'status' ) === '' || container.attr( 'status' ) === 'Invalidated';
+                    return container.attr( 'status' ) !== 'Done' && container.attr( 'status' ) !== 'Validated';
                 } );
 
                 if ( containsLocked ) {
