@@ -77,7 +77,7 @@ export default class API {
     }
 
     internalError( { response } ) {
-        if ( response.status > 500 ) {
+        if ( response && response.status > 500 ) {
             return 'Hoot API is not responding.';
         } else {
             return false;
@@ -1419,34 +1419,6 @@ export default class API {
                       type    = err.type;
 
                 return Promise.reject( { message, status, type } );
-            } );
-    }
-
-    deriveChangeset( data, paramData ) {
-        const params = {
-            path: '/grail/derivechangeset',
-            method: 'POST',
-            params: paramData,
-            data
-        };
-
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Derive changeset has succeeded.',
-                    status: 200,
-                    type: 'success'
-                };
-            } )
-            .catch( err => {
-                return {
-                    data: err.data,
-                    message: err.data.message || 'Error doing derive changeset!',
-                    status: err.status,
-                    type: 'error'
-                };
             } );
     }
 

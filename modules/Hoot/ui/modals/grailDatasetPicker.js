@@ -83,7 +83,7 @@ export default class GrailDatasetPicker {
 
         this.params.replacement = true;
 
-        Hoot.api.deriveChangeset( data, this.params )
+        Hoot.api.createDifferentialChangeset( data, this.params )
             .then( resp => Hoot.message.alert( resp ) );
 
         this.form.remove();
