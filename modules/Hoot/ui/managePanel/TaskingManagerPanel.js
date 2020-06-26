@@ -196,7 +196,7 @@ export default class TaskingManagerPanel extends Tab {
 
         this.setTaskStatus( task.id, 'Running' );
 
-        return Hoot.api.createDifferentialChangeset( data, params )
+        return Hoot.api.deriveChangeset( data, params )
             .then( async resp => {
                 Hoot.message.alert( resp );
                 let status;

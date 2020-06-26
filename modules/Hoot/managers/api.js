@@ -1334,9 +1334,9 @@ export default class API {
             } );
     }
 
-    createDifferentialChangeset( data, paramData ) {
+    deriveChangeset( data, paramData ) {
         const params = {
-            path: '/grail/createdifferentialchangeset',
+            path: '/grail/createchangeset',
             method: 'POST',
             params: paramData,
             data

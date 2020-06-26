@@ -832,7 +832,7 @@ export default class Jobs extends Tab {
                                             deriveType : 'Merged changeset'
                                         };
 
-                                        Hoot.api.createDifferentialChangeset( data, params )
+                                        Hoot.api.deriveChangeset( data, params )
                                             .then( resp => Hoot.message.alert( resp ) );
                                     }
                                 });
@@ -862,7 +862,7 @@ export default class Jobs extends Tab {
                                             deriveType : 'Adds only'
                                         };
 
-                                        Hoot.api.createDifferentialChangeset( data, params )
+                                        Hoot.api.deriveChangeset( data, params )
                                             .then( resp => Hoot.message.alert( resp ) );
                                     }
                                 });
