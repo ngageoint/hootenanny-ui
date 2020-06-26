@@ -37,6 +37,8 @@ export default class API {
     /**
      * Submit a request
      *
+     * If params.path is set then the request is sent to hoot services. Otherwise params.url is used as path
+     *
      * @param params - request data
      * @returns {Promise} - request
      */
@@ -68,6 +70,8 @@ export default class API {
             }
 
             // only redirect to login page for unauthorized hoot services requests
+            // the axios request may be to non hoot services endpoints (tasking manager for example) and if those
+            // return a 401 there is no reason to logout of hootenanny
             if ( status === 401 && statusText === 'Unauthorized' && request.url.includes('/hoot-services') ) {
                 window.location.replace( 'login.html' );
             }
@@ -1526,6 +1530,9 @@ export default class API {
         return this.request( params );
     }
 
+    /**
+     * Retrieves all the projects from tasking manager
+     */
     getTMProjects() {
         const params = {
             url: '/tasks/projects.json',
@@ -1547,6 +1554,9 @@ export default class API {
             } );
     }
 
+    /**
+     * Retrieves all the tasks from tasking manager for the specified project
+     */
     getTMTasks( projectId ) {
         const params = {
             url: `/tasks/project/${ projectId }/tasks.json`,
@@ -1565,6 +1575,9 @@ export default class API {
             } );
     }
 
+    /**
+     * Sets the lock state for the specified task under the specified project
+     */
     setTaskLock( projectId, taskId, lock ) {
         let lockParam = lock ? 'lock' : 'unlock';
 
@@ -1605,6 +1618,9 @@ export default class API {
             } );
     }
 
+    /**
+     * Marks the specified task under the specified project as done
+     */
     markTaskDone( projectId, taskId ) {
         const params = {
             url: `/tasks/project/${ projectId }/task/${ taskId }/done`,
@@ -1619,6 +1635,9 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    /**
+     * Marks the specified task under the specified project as validated
+     */
     validateTask( projectId, taskId, formData ) {
         const params = {
             url: `/tasks/project/${ projectId }/task/${ taskId }/validate`,
