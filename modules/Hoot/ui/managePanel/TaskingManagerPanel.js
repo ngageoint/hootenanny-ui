@@ -19,7 +19,11 @@ export default class TaskingManagerPanel extends Tab {
         this.deriveTypeOpts = {
             name: 'deriveType',
             readonly: 'readonly',
-            options: [ 'Adds only', 'Cut & Replace', 'Differential changeset' ]
+            options: [
+                { deriveType: 'Adds only', description: `Add all data from ${Hoot.config.secondaryLabel} in the specified area into ${Hoot.config.referenceLabel}` },
+                { deriveType: 'Cut & Replace', description: `Replace the ${Hoot.config.referenceLabel} data in this region with ${Hoot.config.secondaryLabel} data` },
+                { deriveType: 'Differential', description: `Add the features from ${Hoot.config.secondaryLabel} that don't exist in ${Hoot.config.referenceLabel}` }
+            ]
         };
 
         // what tasking manager state number stands for
@@ -89,7 +93,7 @@ export default class TaskingManagerPanel extends Tab {
         header.append( 'div' )
             .classed( 'taskingManager-title', true )
             .append( 'a' )
-            .text( project => project.properties.name )
+            .text( project => `#${project.id} ${project.properties.name}` )
             .on( 'click', project => {
                 this.loadTaskTable( project );
             } );
@@ -99,22 +103,17 @@ export default class TaskingManagerPanel extends Tab {
 
         let description = body.append( 'div' )
             .classed( 'taskingManager-description', true );
-        description.append( 'label' )
-            .text( 'Description: ' );
         description.append( 'span' )
             .text( project => project.properties.short_description );
 
         let details = body.append( 'div' )
             .classed( 'taskingManager-details', true );
-        details.append( 'label' )
-            .text( 'Created At: ' );
-        details.append( 'span' )
-            .text( project => {
-                let { created, author } = project.properties;
-                created = new Date( created ).toLocaleString();
+        details.append( 'span' ).text( project => {
+            let { created, author } = project.properties;
+            created = new Date( created ).toLocaleString();
 
-                return `${ created } by ${ author }`;
-            } );
+            return `Created by ${author} - Created on ${created}`;
+        } );
     }
 
     createDeriveDropdown() {
@@ -132,8 +131,11 @@ export default class TaskingManagerPanel extends Tab {
             .attr( 'id', d => d.name )
             .attr( 'name', d => d.name )
             .attr( 'readonly', d => d.readonly )
-            .call( d3combobox().data( this.deriveTypeOpts.options.map( n => {
-                    return { value: n, title: n };
+            .call( d3combobox().data( this.deriveTypeOpts.options.map( data => {
+                    return {
+                        value: data.deriveType,
+                        title: data.description
+                    };
                 } )
             ) );
     }

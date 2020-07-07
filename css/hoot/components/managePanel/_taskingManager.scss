@@ -44,6 +44,7 @@
 
     .taskingManager-header {
         margin-bottom: 5px;
+        font-size: 15px;
     }
 
     .taskingManager-body {
@@ -130,7 +131,7 @@
         }
 
         &[status=""] {
-            background-color: #cdcdcd;
+            background-color: #f1f1f1;
         }
 
     }
