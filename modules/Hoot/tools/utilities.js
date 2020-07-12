@@ -98,6 +98,18 @@ export const isNaN = x => {
     return Number.isNaN( parseFloat( x ) );
 };
 
+export const isJson = item => {
+    item = typeof item !== 'string' ? JSON.stringify(item) : item;
+
+    try {
+        item = JSON.parse(item);
+    } catch (e) {
+        return false;
+    }
+
+    return typeof item === 'object' && item !== null;
+};
+
 export const titleCase = text => {
     return text[ 0 ].toUpperCase() + text.slice( 1 );
 };
