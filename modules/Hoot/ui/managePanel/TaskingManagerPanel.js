@@ -110,7 +110,7 @@ export default class TaskingManagerPanel extends Tab {
             .classed( 'taskingManager-details', true );
         details.append( 'span' ).text( project => {
             let { created, author } = project.properties;
-            created = new Date( created ).toLocaleString();
+            created = new Date( created ).toLocaleDateString();
 
             return `Created by ${author} - Created on ${created}`;
         } );
@@ -300,7 +300,7 @@ export default class TaskingManagerPanel extends Tab {
         this.currentProject = project;
 
         this.tasksContainer.select( '.taskHeader-title' )
-            .text( `Tasks for: ${ this.currentProject.properties.name }`);
+            .text( `#${ this.currentProject.id } ${ this.currentProject.properties.name }`);
 
         const tasksList = await Hoot.api.getTMTasks( this.currentProject.id );
         tasksList.features.sort( (a, b) => (a.id > b.id) ? 1 : -1 );
