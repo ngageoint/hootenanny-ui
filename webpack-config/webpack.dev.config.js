@@ -30,6 +30,10 @@ module.exports = Merge( CommonConfig, {
             '/p2p': {
                 target: 'http://localhost:8096',
                 pathRewrite: { '^/p2p': '' }
+            },
+            '/tasks': {
+                target: 'http://localhost:6543',
+                pathRewrite: { '^/tasks': '' }
             }
         }
     },

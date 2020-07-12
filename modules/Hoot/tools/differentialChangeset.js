@@ -64,7 +64,7 @@ export default class DifferentialChangeset {
             deriveType : 'Differential changeset'
         };
 
-        Hoot.api.createDifferentialChangeset( data, params )
+        Hoot.api.deriveChangeset( data, params )
             .then( ( resp ) => Hoot.message.alert( resp ) );
 
         this.container.remove();

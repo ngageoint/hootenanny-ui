@@ -49,6 +49,9 @@ export default class Jobs extends Tab {
             delete: 'delete',
             derive_changeset: 'change_history',
             upload_changeset: 'cloud_upload',
+            bulk_add: 'add_to_photos',
+            bulk_replace: 'flip_to_front',
+            bulk_differential: 'change_history',
             unknown: 'help'
         };
 
