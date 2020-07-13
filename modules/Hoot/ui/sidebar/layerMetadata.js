@@ -4,9 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/16/18
  *******************************************************************************************************/
 
-import { isJson } from '../../tools/utilities';
-
-
 export default class LayerMetadata {
     constructor( context, form, layer ) {
         this.context  = context;
@@ -187,17 +184,9 @@ export default class LayerMetadata {
         //null check
         if (!this.tags.params) return;
 
-        let parsedParams = this.tags.params.replace( /\\"/g, '"' );
-        // If there is a value that has a string that is actually json need to remove quote before or after curly bracket
-        if ( !isJson(parsedParams) ) {
-            parsedParams = parsedParams.replace( /\\\\/g, '' ).replace( /"{/g, '{' ).replace( /}"/g, '}' );
-        }
-
-        let tags = JSON.parse( parsedParams );
-
         let RefLayerName = this.tags.input1Name || 'Reference Layer Missing',
             SecLayerName = this.tags.input2Name || 'Secondary Layer Missing',
-            ConflationType = tags.CONFLATION_TYPE,
+            ConflationType = this.tags.params.CONFLATION_TYPE,
             ConflatedLayer = this.layer.name,
             params = {
                 'Reference Layer': RefLayerName,
@@ -218,7 +207,7 @@ export default class LayerMetadata {
             this.createExpandList( paramData, 'Parameters' );
         }
 
-        let optData = d3.entries( tags.ADV_OPTIONS ).sort( ( a, b ) => {
+        let optData = d3.entries( this.tags.params.ADV_OPTIONS ).sort( ( a, b ) => {
             if ( a.key < b.key ) {
                 return -1;
             }
