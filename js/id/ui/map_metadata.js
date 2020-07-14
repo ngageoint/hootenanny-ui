@@ -107,16 +107,14 @@ iD.ui.MapMetadata = function(data, context) {
         }
 
         var download = '';
-        var params;
         // params
         if (d.tags && d.tags.params) {
             var RefLayerName = d.tags.input1Name || 'Reference Layer Missing';
             var SecLayerName = d.tags.input2Name || 'Secondary Layer Missing';
-            params = JSON.parse(d.tags.params.replace(/\\"/g, '"'));
             var pdata = d3.entries({
                 'Reference Layer': RefLayerName,
                 'Secondary Layer': SecLayerName,
-                'Conflation Type': params.CONFLATION_TYPE,
+                'Conflation Type': d.tags.params.CONFLATION_TYPE,
                 'Conflated Layer': d.name
             });
             addExpandList(pdata, 'Parameters');
@@ -128,7 +126,7 @@ iD.ui.MapMetadata = function(data, context) {
             });
 
             // options
-            var optdata = d3.entries(params.ADV_OPTIONS).sort(function(a, b) {
+            var optdata = d3.entries(d.tags.params.ADV_OPTIONS).sort(function(a, b) {
                 if (a.key < b.key) {
                   return -1;
                 }
@@ -158,7 +156,7 @@ iD.ui.MapMetadata = function(data, context) {
             }, {});
 
             var diffstats;
-            if (params.CONFLATION_TYPE.includes('Differential')) {
+            if (d.tags.params.CONFLATION_TYPE.includes('Differential')) {
               diffstats = {Differential: {1: 'original', 2: 'new', 3: 'total'}};
 
               var poiOrig  = parseInt(stats['POIs'][0]);
@@ -287,7 +285,7 @@ iD.ui.MapMetadata = function(data, context) {
             }
 
             // Table stats
-            if (params.CONFLATION_TYPE.includes('Differential')) {
+            if (d.tags.params.CONFLATION_TYPE.includes('Differential')) {
               addExpandTables({
                 diffstats: diffstats,
                 layercounts: layercounts,
@@ -310,7 +308,7 @@ iD.ui.MapMetadata = function(data, context) {
             //Build the download text
             download += '\nStatistics:\n';
 
-            if (params.CONFLATION_TYPE.includes('Differential')){
+            if (d.tags.params.CONFLATION_TYPE.includes('Differential')){
               download += '\nDiff Stats:\n';
               d3.select('table.diffstats').selectAll('tr').each(function() {
                   download += d3.select(this).selectAll('td').data().join('\t');
