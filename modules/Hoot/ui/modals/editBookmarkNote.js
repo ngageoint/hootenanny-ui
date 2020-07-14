@@ -16,29 +16,29 @@ export default class EditBookmarkNote {
         this.type     = type;
         this.data     = noteData;
 
-        this.usersList = Object.values(Hoot.config.users).map( user => {
-            return {
-                name: user.display_name,
-                id: user.id
-            };
-        } );
+        this.usersList = Hoot.getUserIdObjectsList();
 
-        let label = type === 'edit' ? 'Edit' : 'Add';
+        let label = type === 'edit' ? 'Edit Comment' : 'Add Comment';
+
+        const { bookmark } = this.instance;
+        if ( bookmark && bookmark.detail ) {
+            label = bookmark.detail.bookmarkdetail.title;
+        }
 
         this.formMeta = {
-            title: `${label} Comment`,
+            title: `${label}`,
             form: [
                 {
                     id: 'tagUser',
                     containerId: 'tagUserContainer',
-                    label: 'Tag Users (Optional)',
+                    label: 'Tag Users',
                     inputType: 'multiCombobox',
                     data: this.usersList,
                     readonly: true,
                     valueKey: 'name',
                     _valueKey: 'id',
                     placeholder: 'Select user',
-                    onChange: d => this.userTagSelect( d )
+                    onChange: d => EditBookmarkNote.userTagSelect( this.taggedUsers, d )
                 },
                 {
                     id: 'noteComment',
@@ -70,7 +70,13 @@ export default class EditBookmarkNote {
             let notes = this.instance.bookmark.detail.bookmarknotes;
             let note  = _find( notes, n => n.id === this.data.id );
             if ( note && note.taggedUsers ) {
-                note.taggedUsers.forEach( userId => this.populateTags( Hoot.users.getNameForId(userId), userId ) );
+                note.taggedUsers.forEach( userId => EditBookmarkNote.populateTags( this.taggedUsers, Hoot.users.getNameForId(userId), userId ) );
+            }
+        } else {
+            const { bookmark } = this.instance;
+            if ( bookmark && bookmark.detail ) {
+                this.container.select( '.modal-header' ).append( 'h6' )
+                    .text( bookmark.detail.bookmarkdetail.desc );
             }
         }
     }
@@ -96,8 +102,8 @@ export default class EditBookmarkNote {
     }
 
     // creates the tag list item to show that a user has been tagged and allows removing them from tags
-    populateTags( name, id ) {
-        let listItem = this.taggedUsers.select( '.selectedUserTags' ).append( 'li' )
+    static populateTags( container, name, id ) {
+        let listItem = container.select( '.selectedUserTags' ).append( 'li' )
             .classed( 'tagItem', true )
             .attr( 'value' , name)
             .attr( '_value', id);
@@ -114,11 +120,11 @@ export default class EditBookmarkNote {
     }
 
     // Handler for the tag user dropdown
-    userTagSelect( data ) {
-        let userTaggedContainer = this.taggedUsers.select( '.selectedUserTags' );
+    static userTagSelect( container, data ) {
+        let userTaggedContainer = container.select( '.selectedUserTags' );
 
-        const addUserValue = this.taggedUsers.select( `#${ data.id }` ),
-              userName = this.taggedUsers.select( '#tagUser' ).node().value,
+        const addUserValue = container.select( `#${ data.id }` ),
+              userName = container.select( '#tagUser' ).node().value,
               userId = addUserValue.attr('_value');
 
         // See if the user has already been tagged OR selected for potential tagging
@@ -127,7 +133,7 @@ export default class EditBookmarkNote {
         } );
 
         if ( isUserSelected.size() === 0 ) {
-            this.populateTags( userName, userId );
+            this.populateTags( container, userName, userId );
         }
 
         addUserValue.node().value = '';

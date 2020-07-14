@@ -5,9 +5,11 @@
  *******************************************************************************************************/
 
 import FormFactory from '../../tools/formFactory';
+import EditBookmarkNote from './editBookmarkNote';
 
 export default class PublishBookmark {
     constructor() {
+        this.usersList = Hoot.getUserIdObjectsList();
 
         this.formMeta = {
             title: 'Bookmark Review',
@@ -27,7 +29,19 @@ export default class PublishBookmark {
                     onChange: d => this.validateTextInput( d )
                 },
                 {
-                    label: 'Note (Optional)',
+                    id: 'tagUser',
+                    containerId: 'tagUserContainer',
+                    label: 'Tag Users',
+                    inputType: 'multiCombobox',
+                    data: this.usersList,
+                    readonly: true,
+                    valueKey: 'name',
+                    _valueKey: 'id',
+                    placeholder: 'Select user',
+                    onChange: d => EditBookmarkNote.userTagSelect( this.taggedUsers, d )
+                },
+                {
+                    label: 'Comment',
                     id: 'bookmarkNote',
                     placeholder: '',
                     inputType: 'textarea'
@@ -46,6 +60,7 @@ export default class PublishBookmark {
 
         this.titleInput       = this.container.select( '#bookmarkTitle' );
         this.descriptionInput = this.container.select( '#bookmarkDescription' );
+        this.taggedUsers      = this.container.select( '#tagUserContainer' );
         this.noteInput        = this.container.select( '#bookmarkNote' );
         this.submitButton     = this.container.select( '#bookmarkSubmitButton' );
     }
@@ -104,13 +119,16 @@ export default class PublishBookmark {
 
         let currentReviewItem = Hoot.ui.conflicts.data.currentReviewItem;
         let user = Hoot.user().id;
+        const taggedUserIds = this.taggedUsers.selectAll( '.tagItem' ).nodes().map( data =>
+            Number( d3.select(data).attr( '_value' ) )
+        );
 
         let params = {
             detail: {
                 bookmarkdetail: { title, desc },
-                bookmarknotes: [ { userId: user, note } ],
+                bookmarknotes: [ { userId: user, note, taggedUsers: taggedUserIds } ],
                 bookmarkreviewitem: currentReviewItem,
-                taggedUsers: []
+                taggedUsers: taggedUserIds
             },
             mapId: currentReviewItem.mapId,
             relationId: currentReviewItem.relationId,
