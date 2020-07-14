@@ -333,7 +333,8 @@ export default class Layers {
             let mapId = mergedLayer.id;
             let sequence = -999;
             let direction = 'forward';
-            let reviewItem = await Hoot.api.getNextReview( {mapId, sequence, direction} );
+            let reviewItem = (Hoot.ui.conflicts.data.forcedReviewItem) ? Hoot.ui.conflicts.data.forcedReviewItem
+                                : await Hoot.api.getNextReview( {mapId, sequence, direction} );
             let reviewBounds = reviewItem.bounds.split(',').map(parseFloat);
             let min = [ reviewBounds[0], reviewBounds[1] ],
                 max = [ reviewBounds[2], reviewBounds[3] ];
