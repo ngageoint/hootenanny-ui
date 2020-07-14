@@ -8,6 +8,7 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _map       from 'lodash-es/map';
 import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
+import _forEach   from 'lodash-es/forEach';
 
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
 import { svgIcon }    from '../../../svg';
@@ -154,19 +155,19 @@ export default class AdvancedOpts {
                 .attr( 'id', 'updateFav')
                 .text( 'Update Favorite' )
                 .on( 'click', async function() {
-
                     let activeFavorite = d3.select( '#conflateType' ).property( 'value' );
 
-                    let optUpdate = instance.favoriteOptions.filter( opt => opt.name === activeFavorite );
+                    let optUpdate = instance.favoritesOptionsSource.filter( opt => opt.name === activeFavorite );
 
-                    let toUpdate = instance.updateFavoriteOpt( optUpdate );
+                    let toUpdate =  instance.updateFavoriteOpt( optUpdate );
 
                     let updateOpt = {
+                        conflateType: optUpdate.conflateType,
                         name: activeFavorite,
                         members: {
                             members: toUpdate,
                             name: activeFavorite,
-                            label: activeFavorite
+                            label: activeFavorite,
                         }
                     };
 
@@ -607,6 +608,12 @@ export default class AdvancedOpts {
 
         this.favoritesOptionsSource = advOpts;
 
+        let optCheck = advOpts[0];
+
+        if ( optCheck.conflateType || advOpts.length === 1 ) {
+            advOpts = this.getSaveGroups(optCheck);
+        }
+
         let group = this.contentDiv
                 .selectAll( '.form-group' )
                 .data( advOpts );
@@ -755,30 +762,54 @@ export default class AdvancedOpts {
         }
 
         let options = { advanced: {}, cleaning: [] };
+        let jsonFieldIds = new Set();
         let conflateType = d3.select( '#conflateType' ).property( 'value' ).toLowerCase();
-        this.contentDiv.selectAll( '.form-group' ).each( function(d) {
+        this.contentDiv.selectAll( '.form-group' ).each( function( formGroup ) {
             let selection = d3.select( this );
-            let isCleaning = d.name === 'Cleaning';
+            let isCleaning = formGroup.name === 'Cleaning';
 
-            selection.selectAll( '.hoot-form-field' ).each( function(d) {
+            selection.selectAll( '.hoot-form-field' ).each( function( formField ) {
 
-                if ( !d.send ) {
+                if ( !formField.send ) {
                     return; // if no d.send, then input value never changed from default...
                 }
 
                 const value = d3.select( this ).select( 'input' )
-                    .property( d.input === 'checkbox' ? 'checked' : 'value' );
+                    .property( formField.input === 'checkbox' ? 'checked' : 'value' );
 
-                if ( empty( value ) || !shouldSend( d, conflateType, value ) ) {
+                if ( empty( value ) || !shouldSend( formField, conflateType, value ) ) {
                     return; // if no value or value is equal to default in conflateOption config...
                 }
 
                 if ( !isCleaning ) {
-                    options.advanced[ d.id ] = value;
+                    if ( formField.type === 'json' ) {
+                        jsonFieldIds.add( formField.id );
+                        if ( !options.advanced[ formField.id ] ) options.advanced[ formField.id ] = {};
+                        if ( !options.advanced[ formField.id ][ formField.parentKey ] ) options.advanced[ formField.id ][ formField.parentKey ] = [];
+
+                        let obj = {};
+
+                        formField.keysList.forEach( key => {
+                            if ( key === 'distance' ) {
+                                obj[ key ] = value;
+                            } else {
+                                obj[ key ] = formField[ key ];
+                            }
+                        } );
+
+                        options.advanced[ formField.id ][ formField.parentKey ].push( obj );
+                    } else {
+                        options.advanced[ formField.id ] = value;
+                    }
                 } else {
-                    options.cleaning.push( d.id );
+                    options.cleaning.push( formField.id );
                 }
             });
+
+            for ( let id of jsonFieldIds ) {
+                options.advanced[ id ] = JSON.stringify( options.advanced[ id ] );
+                jsonFieldIds.delete( id );
+            }
         });
 
         return options;
@@ -802,7 +833,9 @@ export default class AdvancedOpts {
 
         let getMem = [];
 
-        toUpdate[0].members.forEach( function(m) { getMem.push( m ); } );
+        toUpdate[0].members.forEach( function(m) {
+            getMem.push( m );
+        } );
 
         let updateOpts = [];
 
@@ -824,6 +857,7 @@ export default class AdvancedOpts {
                         description: member.description,
                         label: member.label,
                         type: member.type,
+                        option: member.option
 
                     }
                 );
@@ -837,6 +871,7 @@ export default class AdvancedOpts {
                         description: member.description,
                         label: member.label,
                         type: member.type,
+                        option: member.option
 
                     }
                 );
@@ -852,19 +887,23 @@ export default class AdvancedOpts {
 
         let getAdvOptMembers = [];
 
-        this.favoritesOptionsSource.forEach( function(m) { getAdvOptMembers.push( m.members ); } );
+        this.favoritesOptionsSource.forEach( function(m) {
+            m.members.option = m.name;
+            getAdvOptMembers.push( m.members );
+        } );
 
         let getSelectedOpts = [];
 
         function flatten( arr ) {
+            let memOption = arr.option;
             return arr.reduce( function( flat, toFlatten) {
                 return flat.concat( Array.isArray(toFlatten) ?
                 flatten(toFlatten)
-                : checkType(toFlatten) );
+                : checkType(toFlatten, memOption ) );
             }, []);
         }
 
-        function checkType( member ) {
+        function checkType( member, option ) {
             if ( member.input === 'checkbox' ) {
                 let cboxVal = d3.select( `#${member.id}` ).select('input').property( 'checked' ).toString();
                 if ( member.default !== cboxVal  ) {
@@ -876,7 +915,7 @@ export default class AdvancedOpts {
                             description: member.description,
                             label: member.label,
                             type: member.type,
-
+                            option: option
                         }
                     );
                 }
@@ -891,6 +930,7 @@ export default class AdvancedOpts {
                             description: member.description,
                             label: member.label,
                             type: member.type,
+                            option: option
 
                         }
                     );
@@ -921,5 +961,34 @@ export default class AdvancedOpts {
         let getFavs = this.getCurrentFavorites();
         let checkType = getFavs.some(x => x.name === d3.select('#conflateType').property('value') );
         return checkType;
+    }
+
+    getSaveGroups( advOpts ) {
+        let saveGroup   = [];
+        let optionCheck = [];
+
+        // pull advanced option name from saved fav opt
+        _forEach( advOpts.members, function(member) {
+            if ( !optionCheck.includes( member.option ) ) {
+                optionCheck.push( member.option );
+
+                saveGroup.push(
+                    {
+                        label: member.option,
+                        members: [],
+                        name: member.option
+                    }
+                );
+            }
+
+            // place custom fav opt member values within adv opt group
+            _forEach( saveGroup, function( group ) {
+                if ( group.name === member.option ) {
+                    group.members.push( member );
+                }
+             } );
+        } );
+
+        return saveGroup;
     }
 }

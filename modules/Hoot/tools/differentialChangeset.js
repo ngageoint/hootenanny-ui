@@ -39,22 +39,32 @@ export default class DifferentialChangeset {
 
     handleSubmit() {
         const bbox   = this.instance.bbox,
-              params = {};
+              data = {};
 
         if ( !bbox ) {
             Hoot.message.alert( 'Need a bounding box!' );
             return;
         }
 
-        params.BBOX = formatBbox( bbox );
+        data.BBOX = formatBbox( bbox );
 
         if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
-            params.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
+            data.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
-        params.ADV_OPTIONS = this.formFactory.getAdvOpts(this.container, this.advOpts);
+        data.ADV_OPTIONS = this.formFactory.getAdvOpts(this.container, this.advOpts);
 
-        Hoot.api.createDifferentialChangeset( params )
+        let projectName = sessionStorage.getItem('tm:project'),
+            folderName = sessionStorage.getItem('tm:task');
+        if ( projectName && folderName ) {
+            data.taskInfo = projectName + ', ' + folderName;
+        }
+
+        const params = {
+            deriveType : 'Differential changeset'
+        };
+
+        Hoot.api.deriveChangeset( data, params )
             .then( ( resp ) => Hoot.message.alert( resp ) );
 
         this.container.remove();
