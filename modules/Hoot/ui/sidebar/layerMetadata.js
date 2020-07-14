@@ -184,11 +184,9 @@ export default class LayerMetadata {
         //null check
         if (!this.tags.params) return;
 
-        let tags = JSON.parse( this.tags.params.replace( /\\"/g, '"' ) );
-
         let RefLayerName = this.tags.input1Name || 'Reference Layer Missing',
             SecLayerName = this.tags.input2Name || 'Secondary Layer Missing',
-            ConflationType = tags.CONFLATION_TYPE,
+            ConflationType = this.tags.params.CONFLATION_TYPE,
             ConflatedLayer = this.layer.name,
             params = {
                 'Reference Layer': RefLayerName,
@@ -209,7 +207,7 @@ export default class LayerMetadata {
             this.createExpandList( paramData, 'Parameters' );
         }
 
-        let optData = d3.entries( tags.ADV_OPTIONS ).sort( ( a, b ) => {
+        let optData = d3.entries( this.tags.params.ADV_OPTIONS ).sort( ( a, b ) => {
             if ( a.key < b.key ) {
                 return -1;
             }

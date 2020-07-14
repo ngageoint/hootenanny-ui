@@ -762,30 +762,54 @@ export default class AdvancedOpts {
         }
 
         let options = { advanced: {}, cleaning: [] };
+        let jsonFieldIds = new Set();
         let conflateType = d3.select( '#conflateType' ).property( 'value' ).toLowerCase();
-        this.contentDiv.selectAll( '.form-group' ).each( function(d) {
+        this.contentDiv.selectAll( '.form-group' ).each( function( formGroup ) {
             let selection = d3.select( this );
-            let isCleaning = d.name === 'Cleaning';
+            let isCleaning = formGroup.name === 'Cleaning';
 
-            selection.selectAll( '.hoot-form-field' ).each( function(d) {
+            selection.selectAll( '.hoot-form-field' ).each( function( formField ) {
 
-                if ( !d.send ) {
+                if ( !formField.send ) {
                     return; // if no d.send, then input value never changed from default...
                 }
 
                 const value = d3.select( this ).select( 'input' )
-                    .property( d.input === 'checkbox' ? 'checked' : 'value' );
+                    .property( formField.input === 'checkbox' ? 'checked' : 'value' );
 
-                if ( empty( value ) || !shouldSend( d, conflateType, value ) ) {
+                if ( empty( value ) || !shouldSend( formField, conflateType, value ) ) {
                     return; // if no value or value is equal to default in conflateOption config...
                 }
 
                 if ( !isCleaning ) {
-                    options.advanced[ d.id ] = value;
+                    if ( formField.type === 'json' ) {
+                        jsonFieldIds.add( formField.id );
+                        if ( !options.advanced[ formField.id ] ) options.advanced[ formField.id ] = {};
+                        if ( !options.advanced[ formField.id ][ formField.parentKey ] ) options.advanced[ formField.id ][ formField.parentKey ] = [];
+
+                        let obj = {};
+
+                        formField.keysList.forEach( key => {
+                            if ( key === 'distance' ) {
+                                obj[ key ] = value;
+                            } else {
+                                obj[ key ] = formField[ key ];
+                            }
+                        } );
+
+                        options.advanced[ formField.id ][ formField.parentKey ].push( obj );
+                    } else {
+                        options.advanced[ formField.id ] = value;
+                    }
                 } else {
-                    options.cleaning.push( d.id );
+                    options.cleaning.push( formField.id );
                 }
             });
+
+            for ( let id of jsonFieldIds ) {
+                options.advanced[ id ] = JSON.stringify( options.advanced[ id ] );
+                jsonFieldIds.delete( id );
+            }
         });
 
         return options;
