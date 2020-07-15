@@ -116,10 +116,7 @@ export default class ReviewBookmarkNotes extends Tab {
                 .classed( 'material-icons pointer', true )
                 .attr('title', 'Go to review item')
                 .text( 'launch' )
-                .on( 'click', () =>  {
-                    Hoot.layers.removeAllLoadedLayers();
-                    this.jumpToReviewItem();
-                } );
+                .on( 'click', () => this.jumpToReviewItem() );
         }
 
         icons.append( 'div' )
@@ -155,8 +152,8 @@ export default class ReviewBookmarkNotes extends Tab {
      *   and the value in _forcedReviewableItem gets used to display review item.
      **/
     async jumpToReviewItem() {
-        Hoot.ui.navbar.toggleManagePanel();
         Hoot.layers.removeAllLoadedLayers();
+        Hoot.ui.navbar.toggleManagePanel();
 
         Hoot.ui.conflicts.data.forcedReviewItem = this.currentReviewable;
 
