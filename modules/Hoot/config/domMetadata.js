@@ -526,7 +526,22 @@ export function conflictActions() {
             text: 'Bookmark Review',
             class: '_icon plus fill-grey button round pad0y pad1x small strong',
             cmd: this.cmd( 'Ctrl+b' ),
-            action: () => this.resolve.publishBookmark()
+            action: async () => {
+                let currentReviewItem = Hoot.ui.conflicts.data.currentReviewItem;
+                const queryParams = {
+                    mapId: currentReviewItem.mapId,
+                    relationId: currentReviewItem.relationId
+                };
+                let { reviewBookmarks } = await Hoot.api.getBookmarkById( queryParams );
+
+                // If review bookmark doesnt exist publish new one, else show comments of current one
+                if ( reviewBookmarks.length === 0 ) {
+                    this.resolve.publishBookmark();
+                } else {
+                    this.resolve.displayBookmarkComments( reviewBookmarks[0] );
+                }
+
+            }
         },
         {
             id: 'toggle_table',

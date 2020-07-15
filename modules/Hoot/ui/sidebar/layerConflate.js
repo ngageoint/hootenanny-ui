@@ -364,6 +364,10 @@ class LayerConflate extends SidebarForm {
                     message = 'Error running conflation';
                 }
 
+                if ( !type ) {
+                    type = 'error';
+                }
+
                 // restore input layer controllers
                 this.controller.restoreInputs();
 

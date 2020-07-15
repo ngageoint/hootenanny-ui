@@ -523,10 +523,11 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getBookmarkById( bookmarkId ) {
+    getBookmarkById( queryParams ) {
         const params = {
-            path: `/job/review/bookmarks/get?bookmarkId=${ bookmarkId }`,
-            method: 'GET'
+            path: '/job/review/bookmarks/get',
+            method: 'GET',
+            params: queryParams
         };
 
         return this.request( params )

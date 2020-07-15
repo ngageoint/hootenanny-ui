@@ -353,6 +353,12 @@ input[type=text], textarea {
     border-left: 4px solid transparent;
 }
 
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .show-newline {
     white-space: pre;
 }

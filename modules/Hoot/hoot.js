@@ -79,6 +79,15 @@ class Hoot {
         }
     }
 
+    getUserIdObjectsList() {
+        return Object.values( this.config.users ).map( user => {
+            return {
+                name: user.display_name,
+                id: user.id
+            };
+        } );
+    }
+
     async getMapSizeThresholds() {
         try {
             let thresholds = await this.api.getMapSizeThresholds();

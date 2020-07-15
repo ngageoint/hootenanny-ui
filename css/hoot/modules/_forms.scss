@@ -298,3 +298,10 @@
 .badData {
     color: red;
 }
+
+#noteComment {
+    height: 100px;
+    resize: both;
+    overflow: auto;
+    padding: 0px 4px;
+}
