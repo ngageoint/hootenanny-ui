@@ -169,7 +169,5 @@ export default class ReviewBookmarkNotes extends Tab {
         this.load( this.bookmark );
     }
 
-    listen() {
-        // hoot.events.on( 'submit-note', note => )
-    }
+    listen() {}
 }
