@@ -1,61 +1,37 @@
-/** ****************************************************************************************************
- * File: EventManager.js
- * Project: hootenanny-ui
- * @author Matt Putipong on 2/27/18
- *******************************************************************************************************/
-
-//class EventManager {
-//    constructor() {
-//        this._listeners = {};
-//    }
-//
-//    _keyExists( k ) {
-//        return this._listeners[ k ] !== undefined;
-//    }
-//
-//    send( k, ...v ) {
-//        if ( this._keyExists( k ) ) {
-//            this._listeners[ k ].forEach( d => {
-//                if ( !d.ctx ) {
-//                    d.fn( v );
-//                } else {
-//                    d.fn.apply( d.ctx, v );
-//                }
-//            } );
-//        }
-//    }
-//
-//    listen( k, fn, ctx, src ) {
-//        const parts = k.split( ' ' );
-//
-//        parts.forEach( d => {
-//            const x = { fn, ctx, src };
-//
-//            if ( this._keyExists( d ) ) {
-//                this._listeners[ d ].push( x );
-//            } else {
-//                this._listeners[ d ] = [ x ];
-//            }
-//        } );
-//    }
-//
-//    remove( k, fn, ctx ) {
-//        const parts = k.split( ' ' );
-//
-//        parts.forEach( d => {
-//            if ( this._keyExists( d ) ) {
-//                delete this._listeners[ k ];
-//            }
-//        } );
-//    }
-//}
-//
-//export default new EventManager();
-
 import EventEmitter from 'events';
 
 export default class Events extends EventEmitter {
     constructor() {
         super();
+        this.functionsObj = {};
     }
+
+    getFunction( className, eventName ) {
+        if ( this.functionsObj[eventName] && this.functionsObj[eventName].srcClass === className ) {
+            return this.functionsObj[eventName].func;
+        }
+        return null;
+    }
+
+    // Need the class name as a primary key and eventName is the name of the event
+    // There can be a case where the same event eventName is used in more than 1 class
+    listen( className, eventName, fn ) {
+        let func = this.getFunction( className, eventName );
+        if ( func ) {
+            super.removeListener( eventName, func );
+        }
+
+        this.functionsObj[ eventName ] = {
+            srcClass: className,
+            func: fn
+        };
+
+        super.on(eventName, fn);
+    }
+
+    on(string, fn) {
+        console.warn('function should likely be run through events.listen');
+        super.on(string, fn);
+    }
+
 }

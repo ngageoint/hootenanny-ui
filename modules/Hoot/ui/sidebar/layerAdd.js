@@ -215,14 +215,15 @@ export default class LayerAdd extends SidebarForm {
      * Listen for events
      */
     listen() {
-        Hoot.events.on( 'render-dataset-table', () => {
+        const className = this.constructor.name;
+
+        Hoot.events.listen( className, 'render-dataset-table', () => {
             this.renderFolderTree();
             Hoot.layers.syncRecentlyUsedLayers();
             this.updateRecentlyUsed();
         } );
 
-        Hoot.events.setMaxListeners(15);
-        Hoot.events.on( 'recent-layers-retrieved', () => this.updateRecentlyUsed() );
-        Hoot.events.on( 'load-layer', () => this.updateRecentlyUsed() );
+        Hoot.events.listen( className, 'recent-layers-retrieved', () => this.updateRecentlyUsed() );
+        Hoot.events.listen( className, 'load-layer', () => this.updateRecentlyUsed() );
     }
 }

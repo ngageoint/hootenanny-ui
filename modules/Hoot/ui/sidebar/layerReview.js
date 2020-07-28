@@ -108,8 +108,10 @@ export default class LayerReview extends SidebarForm {
      * Listen for events
      */
     listen() {
-        Hoot.events.on( 'meta-updated', text => this.updateReviewCount( text ) );
-        Hoot.events.on( 'review-complete', () => this.reviewComplete() );
-        Hoot.events.on( 'loaded-layer-removed', () => this.removeReviewUI() );
+        const className = this.constructor.name;
+
+        Hoot.events.listen( className, 'meta-updated', text => this.updateReviewCount( text ) );
+        Hoot.events.listen( className, 'review-complete', () => this.reviewComplete() );
+        Hoot.events.listen( className, 'loaded-layer-removed', () => this.removeReviewUI() );
     }
 }

@@ -45,8 +45,6 @@ export default class ReviewBookmarkNotes extends Tab {
             .append( 'span' )
             .text( 'Back' );
 
-        this.listen();
-
         return this;
     }
 
@@ -169,7 +167,4 @@ export default class ReviewBookmarkNotes extends Tab {
         this.load( this.bookmark );
     }
 
-    listen() {
-        // hoot.events.on( 'submit-note', note => )
-    }
 }

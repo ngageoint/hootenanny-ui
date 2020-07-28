@@ -224,8 +224,10 @@ export default class Sidebar {
     }
 
     listen() {
-        Hoot.events.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
-        Hoot.events.on( 'layer-reviews', () => this.layerReviews() );
+        const className = this.constructor.name;
+
+        Hoot.events.listen( className, 'layer-loaded', layerName => this.layerLoaded( layerName ) );
+        Hoot.events.listen( className, 'layer-reviews', () => this.layerReviews() );
         window.onresize = () => this.adjustSize();
     }
 }
