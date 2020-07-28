@@ -51,9 +51,7 @@ export default class Merge {
 
         if ( reverse ) {
             // flip features
-            let reverseFeatures = features.slice().reverse();
-
-            features = reverseFeatures;
+            features = features.slice().reverse();
         }
 
         // This tag identifies the feature that is being merged into and will be removed by the server
@@ -83,7 +81,7 @@ export default class Merge {
         try {
             let mergeItems              = this.getMergeItems( features ),
                 { reviewRefsResponses } = await Hoot.api.getReviewRefs( mergeItems ),
-                reviewMergedRelationId = this.data.currentReviewItem.relationId;
+                reviewMergedRelationId  = this.data.currentReviewItem.relationId;
 
             reviewRefs = _uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
             reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ], reviewMergedRelationId);
@@ -97,7 +95,7 @@ export default class Merge {
         }
 
         this.processMerge( reviewRefs, mergedFeature, featureDelete );
-}
+    }
 
     /**
      * Process and finalize the merge by deleting the node being merged and by updating
@@ -148,17 +146,12 @@ export default class Merge {
 
                     if ( mergedFeature.type === 'node' ) {
                         let newNode = this.createNewRelationNodeMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
-
                         this.data.mergedConflicts.push( newNode );
-
                     }
                     else {
                         let newWay = this.createNewRelationWayMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
-
                         this.data.mergedConflicts.push( newWay );
-
                     }
-
                 }
             }
         } );
@@ -253,10 +246,10 @@ export default class Merge {
         return obj;
     }
 
-        /**
+    /**
      * Generate metadata for merged node
      *
-     * @param mergedNodeId - node ID
+     * @param mergedWayId - node ID
      * @param relationId - relation ID
      * @param mergedIdx - index of node in relation
      */
