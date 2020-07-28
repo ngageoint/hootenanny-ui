@@ -880,10 +880,6 @@ export default class Jobs extends Tab {
 
                                         let gpr = new GrailDatasetPicker(currentLayer, d.jobId, params);
                                         gpr.render();
-
-                                        Hoot.events.once( 'modal-closed', () => {
-
-                                        });
                                     }
                                 });
                             }
