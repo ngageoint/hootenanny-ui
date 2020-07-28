@@ -1,6 +1,7 @@
 import Tab from './tab';
 import { geoExtent as GeoExtent } from '../../../geo';
 import { d3combobox } from '../../../lib/hoot/d3.combobox';
+import FormFactory from '../../tools/formFactory';
 
 /**
  * Creates the tasking manager tab in the settings panel
@@ -15,6 +16,7 @@ export default class TaskingManagerPanel extends Tab {
         this.name = 'Tasking Manager';
         this.id   = 'taskingManagerPanel';
         this.currentProject = null;
+        this.formFactory = new FormFactory();
 
         this.deriveTypeOpts = {
             name: 'deriveType',
@@ -32,6 +34,9 @@ export default class TaskingManagerPanel extends Tab {
             2: 'Done',
             3: 'Validated'
         };
+
+        // trigger for run all tasks loop to stop
+        this.cancelRunning = false;
     }
 
     render() {
@@ -41,7 +46,31 @@ export default class TaskingManagerPanel extends Tab {
         this.projectList = Hoot.api.getTMProjects();
         this.createTables();
 
+        this.initCutReplaceForm();
+
         return this;
+    }
+
+    async initCutReplaceForm() {
+        // form for cut and replace options
+        this.cutReplaceOptions = {
+            title: 'Options',
+            form: [],
+            button: {
+                text: 'Done',
+                id: 'DoneBtn',
+                disabled: null,
+                onClick: () => {
+                    this.ADV_OPTIONS = this.formFactory.getAdvOpts(this.form, advOpts);
+                    if ( this.form ) this.form.remove();
+                }
+            }
+        };
+
+        //Add advanced options to form
+        const advOpts = await Hoot.api.getAdvancedChangesetOptions();
+        this.cutReplaceOptions.form = this.cutReplaceOptions.form.concat(advOpts.map(this.formFactory.advOpt2DomMeta));
+
     }
 
     async activate() {
@@ -137,7 +166,17 @@ export default class TaskingManagerPanel extends Tab {
                         title: data.description
                     };
                 } )
-            ) );
+            ) )
+            .on('change', () => {
+                if ( this.deriveDropdown.property( 'value' ) === 'Cut & Replace' ) {
+                    let formId = 'cutReplaceForm';
+                    this.form  = this.formFactory.generateForm( 'body', formId, this.cutReplaceOptions );
+                } else {
+                    // currently only cut & replace will have advanced options so clear it when other option is selected
+                    this.ADV_OPTIONS = null;
+                }
+
+            });
     }
 
     isDeriveSelected() {
@@ -193,7 +232,8 @@ export default class TaskingManagerPanel extends Tab {
 
         const data = {
             BBOX: extLayer.toParam(),
-            taskInfo: `taskingManager:${ this.currentProject.id }_${ task.id }`
+            taskInfo: `taskingManager:${ this.currentProject.id }_${ task.id }`,
+            ADV_OPTIONS: this.ADV_OPTIONS
         };
 
         this.setTaskStatus( task.id, 'Running' );
@@ -274,24 +314,78 @@ export default class TaskingManagerPanel extends Tab {
             } );
     }
 
+    async sleep( milliseconds ) {
+        return new Promise(resolve => setTimeout(resolve, milliseconds));
+    }
+
     async runTasks( taskList ) {
         const deriveType = this.isDeriveSelected();
         if ( !deriveType ) { return; }
 
-        const runAllBtn = this.tasksContainer.select( '.runAllBtn' );
-        runAllBtn.property( 'disabled', true );
+        this.tasksContainer.select( '.runAllBtn' );
+        this.setupCancelBtn();
 
-        // TODO: remove when ready to commit
-        const myList = taskList.nodes().slice( 0, 3 );
+        const myList = taskList.nodes();
+        let onfirstJob = true;
 
         for ( const container of myList ) {
+            if ( this.cancelRunning ) {
+                break;
+            }
+
+            // Needed to allow newly pushed data to sync before working on next task
+            // Adds only doesnt rely on recently pushed data so dont need to wait for that
+            if ( !onfirstJob && deriveType !== 'Adds only' ) {
+                await this.sleep( Hoot.api.runTasksInterval );
+            }
+
             const task = d3.select( container ).select( '.taskingManager-action-buttons' ).datum();
 
             await this.setLockState( task, true );
             await this.executeTask( task );
+
+            onfirstJob = false;
         }
 
-        runAllBtn.property( 'disabled', false );
+        this.setupRunAllBtn();
+    }
+
+    setupRunAllBtn() {
+        this.cancelRunning = false;
+
+        this.tasksContainer.select( '.runAllBtn' )
+            .property( 'disabled', false )
+            .text( 'Run all' )
+            .on( 'click', () => {
+                let containsLocked = this.tasksTable.select( '[status="Locked"]' ).empty();
+                const unRunTasks = this.tasksTable.selectAll( '.taskingManager-item' ).filter( function() {
+                    const container = d3.select( this );
+                    return container.attr( 'status' ) !== 'Done' && container.attr( 'status' ) !== 'Validated';
+                } );
+
+                if ( containsLocked ) {
+                    this.runTasks( unRunTasks );
+                } else {
+                    let alert = {
+                        message: 'All tasks need to be unlocked.',
+                        type: 'error'
+                    };
+
+                    Hoot.message.alert( alert );
+                }
+            } );
+    }
+
+    setupCancelBtn() {
+        const tmPanel = this;
+
+        this.tasksContainer.select( '.runAllBtn' )
+            .text( 'Cancel' )
+            .on( 'click', function() {
+                tmPanel.cancelRunning = true;
+
+                d3.select( this ).property( 'disabled', true );
+            } );
     }
 
     async loadTaskTable( project ) {
@@ -345,25 +439,8 @@ export default class TaskingManagerPanel extends Tab {
             .append( 'button' )
             .classed( 'runAllBtn alert text-light', true )
             .text( 'Run all' )
-            .property( 'disabled', !this.tasksTable.select( '[status="Running"]' ).empty() )
-            .on( 'click', () => {
-                let containsLocked = this.tasksTable.select( '[status="Locked"]' ).empty();
-                const unRunTasks = items.filter( function() {
-                    const container = d3.select( this );
-                    return container.attr( 'status' ) !== 'Done' && container.attr( 'status' ) !== 'Validated';
-                } );
-
-                if ( containsLocked ) {
-                    this.runTasks( unRunTasks );
-                } else {
-                    let alert = {
-                        message: 'All tasks need to be unlocked.',
-                        type: 'error'
-                    };
-
-                    Hoot.message.alert( alert );
-                }
-            } );
+            .property( 'disabled', !this.tasksTable.select( '[status="Running"]' ).empty() );
+        this.setupRunAllBtn();
 
         runAllTasks.merge(enter);
 

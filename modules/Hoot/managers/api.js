@@ -29,6 +29,7 @@ export default class API {
         this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
 
         this.queryInterval = this.config.queryInterval;
+        this.runTasksInterval = this.config.runTasksInterval;
         this.conflateTypes = null;
         this.importOpts = null;
         this.changesetOpts = null;

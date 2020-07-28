@@ -22,7 +22,8 @@ export const apiConfig = {
     path: relativePath(),
     translationServerPort: '8094',
     mergeServerPort: '8096',
-    queryInterval: 2000
+    queryInterval: 2000,
+    runTasksInterval: 90000
 };
 
 export default apiConfig;
