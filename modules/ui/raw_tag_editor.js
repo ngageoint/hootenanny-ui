@@ -16,12 +16,13 @@ import { services } from '../services';
 import { svgIcon } from '../svg';
 import { uiDisclosure } from './disclosure';
 import { uiTagSelectCopy } from './tag_select_copy';
+import { uiTagLinkUrl } from './tag_link_url';
+import { uiTagReference } from './tag_reference';
 import {
     utilGetSetValue,
     utilNoAuto,
     utilRebind
 } from '../util';
-
 
 export function uiRawTagEditor(context) {
     var taginfo = services.taginfo;
@@ -142,6 +143,7 @@ export function uiRawTagEditor(context) {
             .append('input')
             .property('type', 'text')
             .attr('class', 'value')
+            .attr('xlink:href', function(d) { return '#' + d.value; })
             .attr('maxlength', 255)
             .call(utilNoAuto)
             .on('blur', valueChange)
@@ -154,9 +156,7 @@ export function uiRawTagEditor(context) {
             .attr('class', 'form-field-button remove')
             .call(svgIcon('#iD-operation-delete'));
 
-
         // Update
-
         items = items
             .merge(enter)
             .sort(function(a, b) {
@@ -166,7 +166,7 @@ export function uiRawTagEditor(context) {
             });
 
         items
-            .each(function() {
+            .each(function(d) {
                 var row = d3_select(this);
                 var key = row.select('input.key');      // propagate bound data to child
                 var value = row.select('input.value');  // propagate bound data to child
@@ -175,10 +175,34 @@ export function uiRawTagEditor(context) {
                     bindTypeahead(key, value);
                 }
 
+                var isRelation = (_entityID && context.entity(_entityID).type === 'relation');
+                var reference;
+
+                if (isRelation && d.key === 'type') {
+                    reference = uiTagReference({ rtype: d.value }, context);
+                } else if (isNaN(d.value) && typeof (d.value) === 'string' && d.value.indexOf('http') === 0) {
+                    reference = uiTagLinkUrl({ url: d.value });
+                } else {
+                    var tag;
+                    if (Hoot.translations.activeTranslation !== 'OSM') {
+                        tag = { key: d.key === Hoot.fcode() ? d.value : d.key };
+                    } else {
+                        tag = { key: d.key, value: d.value };
+                    }
+                    reference = uiTagReference(tag, context);
+                }
+
+                row.select('.inner-wrap')      // propagate bound data
+                .call(reference.button);
+
+                row.call(reference.body);
+
+                row.select('button.remove');   // propagate bound data
+
                 // Hoot: Override tag reference with tag copy
                 var select = uiTagSelectCopy(context);
-
                 row.call( select );
+
             });
 
         items.selectAll('input.key')
@@ -387,7 +411,6 @@ export function uiRawTagEditor(context) {
             context.copyTags(seltags);
         }
     }
-
 
     rawTagEditor.state = function(_) {
         if (!arguments.length) return _state;

@@ -174,6 +174,10 @@ export default class FormFactory {
                     }
                     break;
                 }
+                case 'multiCombobox': {
+                    self.createMultiCombobox( field );
+                    break;
+                }
                 case 'checkbox': {
                     self.createCheckbox( field );
                     break;
@@ -214,15 +218,28 @@ export default class FormFactory {
      * @param field - field div
      */
     createCombobox( field ) {
-        const data = field.datum();
-        let comboData = _map(data.data, n => {
-            const t = data.itemKey ? n[ data.itemKey ] : n,
-                  v = data.valueKey ? n[ data.valueKey ] : t,
-                  _v = data._valueKey ? n[ data._valueKey ] : v;
-            return { value: v, title: t, _value: _v };
-        } );
 
-        if (data.sort) {
+        let d = field.datum(),
+        comboData = _map(d.data, n => {
+            const t = d.itemKey ? n[ d.itemKey ] : n,
+                  v = d.valueKey ? n[ d.valueKey ] : t,
+                  _v = d._valueKey ? n[ d._valueKey ] : v;
+            return { value: v, title: t, _value: _v };
+        } ),
+        fieldInputWrap = field
+            .selectAll( '.hoot-form-field' )
+            .data([ comboData ]);
+
+        fieldInputWrap.exit().remove();
+
+        let fieldInputWrapEnter = fieldInputWrap.enter()
+            .append('div')
+            .classed( 'hoot-field-input-wrap', true );
+
+        fieldInputWrap = fieldInputWrap.merge(fieldInputWrapEnter);
+
+
+        if (d.sort) {
             comboData = comboData.sort((a, b) => {
                 let textA = a.value.toLowerCase(),
                     textB = b.value.toLowerCase();
@@ -247,6 +264,50 @@ export default class FormFactory {
             .on( 'keyup', d => d.onChange && d.onChange(d) );
     }
 
+    /**
+     * Create a custom dropdown menu
+     *
+     * @param field - field div
+     */
+    createMultiCombobox( field ) {
+        const data = field.datum();
+
+        let comboData = _map(data.data, n => {
+            const t = data.itemKey ? n[ data.itemKey ] : n,
+                v = data.valueKey ? n[ data.valueKey ] : t,
+                _v = data._valueKey ? n[ data._valueKey ] : v;
+            return { value: v, title: t, _value: _v };
+        } );
+
+        if (data.sort) {
+            comboData = comboData.sort((a, b) => {
+                let textA = a.value.toLowerCase(),
+                    textB = b.value.toLowerCase();
+
+                return textA < textB ? -1 : textA > textB ? 1 : 0;
+            } );
+        }
+
+        let tagUserContainer = field.append( 'div' )
+            .attr( 'id', d => d.containerId );
+
+        let selectedList = tagUserContainer.append( 'ul' )
+            .classed( 'selectedUserTags', true );
+
+        selectedList.append( 'input' )
+            .attr( 'type', 'text' )
+            .attr( 'id', d => d.id )
+            .attr( 'class', d => d.class )
+            .attr( 'autocomplete', 'off' )
+            .attr( 'placeholder', d => d.placeholder )
+            .attr( 'value', d => d.value )
+            .attr( '_value', d => d._value )
+            .attr( 'disabled', d => d.disabled )
+            .attr( 'readonly', d => d.readonly )
+            .call(d3combobox().data(comboData))
+            .on( 'change', d => d.onChange && d.onChange(d) )
+            .on( 'keyup', d => d.onChange && d.onChange(d) );
+    }
 
     populateCombobox( input ) {
         input.select( d => {

@@ -61,7 +61,22 @@ export default class Layers {
             //load hash layers if set
             if (!_isEmpty(this.hashLayers)) {
                 Object.keys(this.hashLayers).forEach(k => {
-                    this.addHashLayer(k, this.hashLayers[k]);
+                    //check that hash layer exists
+                    let mapId = this.hashLayers[k];
+                    if (this.findBy( 'id', mapId)) {
+                        this.addHashLayer(k, mapId);
+                    } else {
+
+                        Hoot.message.alert({
+                            message: `Could not find layer to load with map ID ${mapId}`,
+                            type: 'warn'
+                        });
+                        delete this.hashLayers[k];
+                        //update url hash
+                        var q = utilStringQs(window.location.hash.substring(1));
+                        delete q[(k === 'reference') ? 'primary' : k];
+                        window.location.replace('#' + utilQsString(q, true));
+                    }
                 });
 
                 this.hashLayers = {};
@@ -318,7 +333,8 @@ export default class Layers {
             let mapId = mergedLayer.id;
             let sequence = -999;
             let direction = 'forward';
-            let reviewItem = await Hoot.api.getNextReview( {mapId, sequence, direction} );
+            let reviewItem = (Hoot.ui.conflicts.data.forcedReviewItem) ? Hoot.ui.conflicts.data.forcedReviewItem
+                                : await Hoot.api.getNextReview( {mapId, sequence, direction} );
             let reviewBounds = reviewItem.bounds.split(',').map(parseFloat);
             let min = [ reviewBounds[0], reviewBounds[1] ],
                 max = [ reviewBounds[2], reviewBounds[3] ];
@@ -462,6 +478,8 @@ export default class Layers {
 
         this.hoot.context.flush();
         this.hoot.ui.sidebar.reset();
+
+        this.hoot.events.emit( 'loaded-layer-removed' );
     }
 
     hideLayer( id ) {

@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import PublishBookmark from '../modals/publishBookmark';
+import EditBookmarkNote from '../modals/editBookmarkNote';
 
 /**
  * @class Resolve
@@ -78,5 +79,12 @@ export default class Resolve {
 
     publishBookmark() {
         new PublishBookmark().render();
+    }
+
+    displayBookmarkComments( bookmark ) {
+        this.bookmark = bookmark;
+        let newNote = new EditBookmarkNote( this, 'add' );
+        newNote.render();
+        newNote.addPastComments();
     }
 }

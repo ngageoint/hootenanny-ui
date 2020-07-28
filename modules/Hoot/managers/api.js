@@ -3,11 +3,6 @@
  * Project: hootenanny-ui
  * @author Matt Putipong on 3/2/18
  *******************************************************************************************************/
-
-import _assign from 'lodash-es/assign';
-import _find   from 'lodash-es/find';
-import _map    from 'lodash-es/map';
-
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
 import { saveAs }    from 'file-saver';
@@ -34,6 +29,7 @@ export default class API {
         this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
 
         this.queryInterval = this.config.queryInterval;
+        this.runTasksInterval = this.config.runTasksInterval;
         this.conflateTypes = null;
         this.importOpts = null;
         this.changesetOpts = null;
@@ -42,18 +38,23 @@ export default class API {
     /**
      * Submit a request
      *
+     * If params.path is set then the request is sent to hoot services. Otherwise params.url is used as path
+     *
      * @param params - request data
      * @returns {Promise} - request
      */
     request( params ) {
-        return axios( {
+        const request = {
             url: params.url || `${ this.baseUrl }${ params.path }`,
             method: params.method || 'GET',
             headers: params.headers,
             data: params.data,
             params: params.params,
-            responseType: params.responseType
-        } ).catch( err => {
+            responseType: params.responseType,
+            cancelToken: params.cancelToken
+        };
+
+        return axios( request ).catch( err => {
             let { response } = err;
             let data, message, status, statusText, type;
 
@@ -69,7 +70,10 @@ export default class API {
                 type    = 'error';
             }
 
-            if ( status === 401 && statusText === 'Unauthorized' ) {
+            // only redirect to login page for unauthorized hoot services requests
+            // the axios request may be to non hoot services endpoints (tasking manager for example) and if those
+            // return a 401 there is no reason to logout of hootenanny
+            if ( status === 401 && statusText === 'Unauthorized' && request.url.includes('/hoot-services') ) {
                 window.location.replace( 'login.html' );
             }
 
@@ -78,7 +82,7 @@ export default class API {
     }
 
     internalError( { response } ) {
-        if ( response.status > 500 ) {
+        if ( response && response.status > 500 ) {
             return 'Hoot API is not responding.';
         } else {
             return false;
@@ -124,9 +128,9 @@ export default class API {
         return new Promise( poll );
     }
 
-    getConflateTypes() {
+    getConflateTypes(forceRefresh) {
 
-        if ( this.conflateTypes ) {
+        if ( this.conflateTypes && !forceRefresh) {
             return Promise.resolve( this.conflateTypes );
         } else {
             const params = {
@@ -197,6 +201,73 @@ export default class API {
                       type = err.type;
 
                 return Promise.reject( { message, type } );
+            } );
+    }
+
+    getFavoriteAdvOpts() {
+        const params = {
+            path: '/osm/api/0.6/user/getFavoriteOpts',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    saveFavoriteOpts( opts ) {
+        const params = {
+            path: '/osm/api/0.6/user/saveFavoriteOpts',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(opts)
+
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'User favorites saved',
+                    status: 200,
+                    type: 'success'
+                };
+        } )
+        .catch( err => {
+            return {
+                data: err.data,
+                message: 'Error saving favorite opts!',
+                type: 'error'
+            };
+        } );
+    }
+
+    deleteFavoriteOpts( opts ) {
+        const params = {
+            path: '/osm/api/0.6/user/deleteFavoriteOpts',
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(opts)
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'User favorites deleted',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error deleting favorite opts!',
+                    type: 'error'
+                };
             } );
     }
 
@@ -453,10 +524,11 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getBookmarkById( bookmarkId ) {
+    getBookmarkById( queryParams ) {
         const params = {
-            path: `/job/review/bookmarks/get?bookmarkId=${ bookmarkId }`,
-            method: 'GET'
+            path: '/job/review/bookmarks/get',
+            method: 'GET',
+            params: queryParams
         };
 
         return this.request( params )
@@ -676,7 +748,7 @@ export default class API {
      * @param data - upload data
      * @returns {Promise} - request
      */
-    uploadDataset( data ) {
+    uploadDataset( data, cancelToken ) {
         if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
             return false;
         }
@@ -691,7 +763,8 @@ export default class API {
                 NONE_TRANSLATION: data.NONE_TRANSLATION,
                 FOLDER_ID: data.folderId
             },
-            data: data.formData
+            data: data.formData,
+            cancelToken: cancelToken
         };
 
         if ( data.ADV_UPLOAD_OPTS && data.ADV_UPLOAD_OPTS.length ) {
@@ -1259,6 +1332,7 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
+
                     message: err.data.message || 'Error doing pull!',
                     status: err.status,
                     type: 'error'
@@ -1266,26 +1340,37 @@ export default class API {
             } );
     }
 
-    createDifferentialChangeset( data ) {
+    deriveChangeset( data, paramData ) {
         const params = {
-            path: '/grail/createdifferentialchangeset',
+            path: '/grail/createchangeset',
             method: 'POST',
+            params: paramData,
             data
         };
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )
             .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Differential for selected region created.',
-                    status: 200,
-                    type: 'success'
-                };
+                const responseData = resp.data;
+                if ( responseData && responseData.status === 'cancelled' ) {
+                    return {
+                        data: responseData,
+                        message: `${ paramData.deriveType } job cancelled.`,
+                        status: 400,
+                        type: 'warn'
+                    };
+                } else {
+                    return {
+                        data: responseData,
+                        message: `${ paramData.deriveType } for selected region created.`,
+                        status: 200,
+                        type: 'success'
+                    };
+                }
             } )
             .catch( err => {
                 return {
-                    message : err.data.message || 'Differential changeset failed',
+                    message : err.data.message || `${ paramData.deriveType } changeset failed`,
                     status  : err.status,
                     type    : err.type
                 };
@@ -1340,36 +1425,6 @@ export default class API {
                       type    = err.type;
 
                 return Promise.reject( { message, status, type } );
-            } );
-    }
-
-    deriveChangeset( data, replacement ) {
-        const params = {
-            path: '/grail/derivechangeset',
-            method: 'POST',
-            params: {
-                replacement
-            },
-            data
-        };
-
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Derive changeset has succeeded.',
-                    status: 200,
-                    type: 'success'
-                };
-            } )
-            .catch( err => {
-                return {
-                    data: err.data,
-                    message: err.data.message || 'Error doing derive changeset!',
-                    status: err.status,
-                    type: 'error'
-                };
             } );
     }
 
@@ -1475,5 +1530,128 @@ export default class API {
         };
 
         return this.request( params );
+    }
+
+    /**
+     * Retrieves all the projects from tasking manager
+     */
+    getTMProjects() {
+        const params = {
+            url: '/tasks/projects.json',
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( () => {
+                let alert = {
+                    message: 'Failed to retrieve projects list from tasking manager.',
+                    type: 'error'
+                };
+
+                Hoot.message.alert( alert );
+            } );
+    }
+
+    /**
+     * Retrieves all the tasks from tasking manager for the specified project
+     */
+    getTMTasks( projectId ) {
+        const params = {
+            url: `/tasks/project/${ projectId }/tasks.json`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( () => {
+                let alert = {
+                    message: 'Failed to retrieve tasks.',
+                    type: 'error'
+                };
+
+                Hoot.message.alert( alert );
+            } );
+    }
+
+    /**
+     * Sets the lock state for the specified task under the specified project
+     */
+    setTaskLock( projectId, taskId, lock ) {
+        let lockParam = lock ? 'lock' : 'unlock';
+
+        const params = {
+            url: `/tasks/project/${ projectId }/task/${ taskId }/${ lockParam }`,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json, text/javascript, */*',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: `Task ${ taskId } ${ lockParam }ed`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                let alert = {
+                    message: `Failed to ${ lockParam } task ${ taskId } for project ${ projectId }.\n` +
+                        'Make sure you are logged into tasking manager in a different tab and that you' +
+                        'have not locked any other tasks for this project',
+                    type: 'error',
+                    status: err.status
+                };
+
+                if ( err.data && err.data.error_msg ) {
+                    alert.message = err.data.error_msg;
+                    alert.status = err.status;
+                }
+
+                return alert;
+            } );
+    }
+
+    /**
+     * Marks the specified task under the specified project as done
+     */
+    markTaskDone( projectId, taskId ) {
+        const params = {
+            url: `/tasks/project/${ projectId }/task/${ taskId }/done`,
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    /**
+     * Marks the specified task under the specified project as validated
+     */
+    validateTask( projectId, taskId, formData ) {
+        const params = {
+            url: `/tasks/project/${ projectId }/task/${ taskId }/validate`,
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            data: formData
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
     }
 }

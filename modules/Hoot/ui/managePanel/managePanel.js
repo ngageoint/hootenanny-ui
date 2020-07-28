@@ -14,6 +14,7 @@ import Basemaps            from './basemaps';
 import ReviewBookmarks     from './reviewBookmarks/reviewBookmarks';
 import ReviewBookmarkNotes from './reviewBookmarks/reviewBookmarkNotes';
 import AdminPanel          from './adminPanel';
+import TaskingManagerPanel from './TaskingManagerPanel';
 
 /**
  * Creates the settings panel
@@ -62,6 +63,10 @@ export default class ManagePanel {
     }
 
     renderTabs() {
+        if ( Hoot.users.isAdvanced() ) {
+            this.manageTabs.push( TaskingManagerPanel );
+        }
+
         if ( Hoot.users.isAdmin() ) {
             this.manageTabs.push( AdminPanel );
         }
