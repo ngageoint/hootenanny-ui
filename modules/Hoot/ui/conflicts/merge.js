@@ -14,7 +14,6 @@ import { JXON }             from '../../../util/jxon';
 import { t }                from '../../../util/locale';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions/index';
-import { osmNode, osmWay }          from '../../../osm';
 
 /**
  * @class Merge
@@ -34,7 +33,7 @@ export default class Merge {
     }
 
     /**
-     * Merge together 2 POI nodes
+     * Merge together 2 POI nodes or POI and polygon
      *
      * @returns {Promise<void>}
      */
@@ -63,16 +62,16 @@ export default class Merge {
         featureDelete = features[ 1 ];
 
         try {
-            let mergedNode = await this.getMergedNode( features );
+            let mergedElement = await this.getMergedFeature( features );
 
-            mergedNode.tags[ 'hoot:status' ] = 3;
+            mergedElement.tags[ 'hoot:status' ] = 3;
 
             Hoot.context.perform(
-                actionChangeTags( featureUpdate.id, mergedNode.tags ),
+                actionChangeTags( featureUpdate.id, mergedElement.tags ),
                 t( 'operations.change_tags.annotation' )
             );
 
-            mergedFeature = featureUpdate; // feature that is updated is now the new merged node
+            mergedFeature = featureUpdate; // feature that is updated is now the new merged feature
         } catch ( e ) {
             window.console.error( e );
             throw new Error( 'Unable to merge features' );
@@ -98,12 +97,12 @@ export default class Merge {
     }
 
     /**
-     * Process and finalize the merge by deleting the node being merged and by updating
-     * the tags of both nodes and their parent relations to indicate the relations have been resolved.
+     * Process and finalize the merge by deleting the feature being merged and by updating
+     * the tags of both review features and their parent relations to indicate the relations have been resolved.
      *
-     * @param reviewRefs - reference of nodes being merged
-     * @param mergedFeature - data of merged node
-     * @param featureToDelete - data of node to delete
+     * @param reviewRefs - reference of features being merged
+     * @param mergedFeature - data of merged element
+     * @param featureToDelete - data of feature to delete
      */
     processMerge( reviewRefs, mergedFeature, featureToDelete ) {
         let reviewRelationId = this.data.currentReviewItem.relationId;
@@ -143,15 +142,8 @@ export default class Merge {
                 }
 
                 if ( !exists && !refRelation.memberById( mergedFeature.id ) ) {
-
-                    if ( mergedFeature.type === 'node' ) {
-                        let newNode = this.createNewRelationNodeMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
-                        this.data.mergedConflicts.push( newNode );
-                    }
-                    else {
-                        let newWay = this.createNewRelationWayMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
-                        this.data.mergedConflicts.push( newWay );
-                    }
+                    let newRelMember = this.createNewRelationMember( mergedFeature, refRelation.id, refRelationMember.index );
+                    this.data.mergedConflicts.push( newRelMember );
                 }
             }
         } );
@@ -169,10 +161,10 @@ export default class Merge {
     /**
      * Generate and parse the new merged feature
      *
-     * @param features - list of nodes to merge
-     * @returns {object} - merged node
+     * @param features - list of features to merge
+     * @returns {object} - merged feature
      */
-    async getMergedNode( features ) {
+    async getMergedFeature( features ) {
         let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ].join( '' ),
             osmXml     = `<osm version="0.6" upload="true" generator="hootenanny">${ jxonFeatures }</osm>`,
             mergedXml  = await Hoot.api.poiMerge( osmXml );
@@ -186,9 +178,9 @@ export default class Merge {
     }
 
     /**
-     * Generate parameters for nodes being merged together
+     * Generate parameters for features being merged together
      *
-     * @param features - list of nodes to merge
+     * @param features - list of features to merge
      * @returns {array} - data of merged items
      */
     getMergeItems( features ) {
@@ -208,7 +200,7 @@ export default class Merge {
     /**
      * Remove any irrelevant reviews that don't reference either of the 2 items being merged together
      *
-     * @param reviewRefs - reference of nodes being merged
+     * @param reviewRefs - reference of features being merged
      * @param mergeIds - ids of items being merged
      * @returns {array} - new list of relevant review items
      */
@@ -225,45 +217,24 @@ export default class Merge {
     }
 
     /**
-     * Generate metadata for merged node
+     * Generate metadata for merged feature
      *
-     * @param mergedNodeId - node ID
+     * @param mergedId - merged feature ID
      * @param relationId - relation ID
-     * @param mergedIdx - index of node in relation
+     * @param mergedIdx - index of merged feature in relation
      */
-    createNewRelationNodeMeta( mergedNodeId, relationId, mergedIdx ) {
-        let node = new osmNode(),
+    createNewRelationMember( merged, relationId, mergedIdx ) {
+        let meta = {},
             obj  = {};
 
-        node.id    = mergedNodeId;
-        node.type  = 'node';
-        node.role  = 'reviewee';
-        node.index = mergedIdx;
+        meta.id    = merged.id;
+        meta.type  = merged.type;
+        console.log(meta);
+        meta.role  = 'reviewee';
+        meta.index = mergedIdx;
 
         obj.id  = relationId;
-        obj.obj = node;
-
-        return obj;
-    }
-
-    /**
-     * Generate metadata for merged node
-     *
-     * @param mergedWayId - node ID
-     * @param relationId - relation ID
-     * @param mergedIdx - index of node in relation
-     */
-    createNewRelationWayMeta( mergedWayId, relationId, mergedIdx ) {
-        let way = new osmWay(),
-            obj  = {};
-
-        way.id    = mergedWayId;
-        way.type  = 'way';
-        way.role  = 'reviewee';
-        way.index = mergedIdx;
-
-        obj.id  = relationId;
-        obj.obj = way;
+        obj.obj = meta;
 
         return obj;
     }
@@ -271,7 +242,7 @@ export default class Merge {
     /**
      * Get IDs of missing relations
      *
-     * @param reviewRefs - reference of nodes being merged
+     * @param reviewRefs - reference of features being merged
      * @returns {array} - list of missing relation IDs
      */
     getMissingRelationIds( reviewRefs ) {
