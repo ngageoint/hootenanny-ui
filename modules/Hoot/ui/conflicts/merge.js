@@ -14,7 +14,6 @@ import { JXON }             from '../../../util/jxon';
 import { t }                from '../../../util/locale';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions/index';
-import { osmNode }          from '../../../osm';
 
 /**
  * @class Merge
@@ -28,18 +27,19 @@ export default class Merge {
 
         this.mergeArrow = {
             from: null,
-            to: null
+            to: null,
+            reverseFeatures: null
         };
     }
 
     /**
-     * Merge together 2 POI nodes
+     * Merge together 2 POI nodes or POI and polygon
      *
      * @returns {Promise<void>}
      */
     async mergeFeatures() {
         let features = _clone( this.data.currentFeatures ),
-            reverse  = d3.event.ctrlKey || d3.event.metaKey,
+            reverse  = d3.event.ctrlKey || d3.event.metaKey || this.mergeArrow.reverseFeatures,
             featureUpdate,
             featureDelete,
             mergedFeature,
@@ -50,7 +50,7 @@ export default class Merge {
 
         if ( reverse ) {
             // flip features
-            features.reverse();
+            features = features.slice().reverse();
         }
 
         // This tag identifies the feature that is being merged into and will be removed by the server
@@ -62,16 +62,16 @@ export default class Merge {
         featureDelete = features[ 1 ];
 
         try {
-            let mergedNode = await this.getMergedNode( features );
+            let mergedElement = await this.getMergedElement( features );
 
-            mergedNode.tags[ 'hoot:status' ] = 3;
+            mergedElement.tags[ 'hoot:status' ] = 3;
 
             Hoot.context.perform(
-                actionChangeTags( featureUpdate.id, mergedNode.tags ),
+                actionChangeTags( featureUpdate.id, mergedElement.tags ),
                 t( 'operations.change_tags.annotation' )
             );
 
-            mergedFeature = featureUpdate; // feature that is updated is now the new merged node
+            mergedFeature = featureUpdate; // feature that is updated is now the new merged feature
         } catch ( e ) {
             window.console.error( e );
             throw new Error( 'Unable to merge features' );
@@ -94,12 +94,12 @@ export default class Merge {
     }
 
     /**
-     * Process and finalize the merge by deleting the node being merged and by updating
-     * the tags of both nodes and their parent relations to indicate the relations have been resolved.
+     * Process and finalize the merge by deleting the feature being merged and by updating
+     * the tags of both review features and their parent relations to indicate the relations have been resolved.
      *
-     * @param reviewRefs - reference of nodes being merged
-     * @param mergedFeature - data of merged node
-     * @param featureToDelete - data of node to delete
+     * @param reviewRefs - reference of features being merged
+     * @param mergedFeature - data of merged element
+     * @param featureToDelete - data of feature to delete
      */
     processMerge( reviewRefs, mergedFeature, featureToDelete ) {
         let reviewRelationId = this.data.currentReviewItem.relationId;
@@ -139,9 +139,8 @@ export default class Merge {
                 }
 
                 if ( !exists && !refRelation.memberById( mergedFeature.id ) ) {
-                    let newNode = this.createNewRelationNodeMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
-
-                    this.data.mergedConflicts.push( newNode );
+                    let newRelMember = this.createNewRelationMember( mergedFeature, refRelation.id, refRelationMember.index );
+                    this.data.mergedConflicts.push( newRelMember );
                 }
             }
         } );
@@ -158,10 +157,10 @@ export default class Merge {
     /**
      * Generate and parse the new merged feature
      *
-     * @param features - list of nodes to merge
-     * @returns {object} - merged node
+     * @param features - list of features to merge
+     * @returns {object} - merged feature
      */
-    async getMergedNode( features ) {
+    async getMergedElement( features ) {
         let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ].join( '' ),
             osmXml     = `<osm version="0.6" upload="true" generator="hootenanny">${ jxonFeatures }</osm>`,
             mergedXml  = await Hoot.api.poiMerge( osmXml );
@@ -175,9 +174,9 @@ export default class Merge {
     }
 
     /**
-     * Generate parameters for nodes being merged together
+     * Generate parameters for features being merged together
      *
-     * @param features - list of nodes to merge
+     * @param features - list of features to merge
      * @returns {array} - data of merged items
      */
     getMergeItems( features ) {
@@ -197,7 +196,7 @@ export default class Merge {
     /**
      * Remove any irrelevant reviews that don't reference either of the 2 items being merged together
      *
-     * @param reviewRefs - reference of nodes being merged
+     * @param reviewRefs - reference of features being merged
      * @param mergeIds - ids of items being merged
      * @returns {array} - new list of relevant review items
      */
@@ -214,23 +213,23 @@ export default class Merge {
     }
 
     /**
-     * Generate metadata for merged node
+     * Generate metadata for merged feature
      *
-     * @param mergedNodeId - node ID
+     * @param merged - merged feature
      * @param relationId - relation ID
-     * @param mergedIdx - index of node in relation
+     * @param mergedIdx - index of merged feature in relation
      */
-    createNewRelationNodeMeta( mergedNodeId, relationId, mergedIdx ) {
-        let node = new osmNode(),
+    createNewRelationMember( merged, relationId, mergedIdx ) {
+        let member = {},
             obj  = {};
 
-        node.id    = mergedNodeId;
-        node.type  = 'node';
-        node.role  = 'reviewee';
-        node.index = mergedIdx;
+        member.id    = merged.id;
+        member.type  = merged.type;
+        member.role  = 'reviewee';
+        member.index = mergedIdx;
 
         obj.id  = relationId;
-        obj.obj = node;
+        obj.obj = member;
 
         return obj;
     }
@@ -238,7 +237,7 @@ export default class Merge {
     /**
      * Get IDs of missing relations
      *
-     * @param reviewRefs - reference of nodes being merged
+     * @param reviewRefs - reference of features being merged
      * @returns {array} - list of missing relation IDs
      */
     getMissingRelationIds( reviewRefs ) {
@@ -263,6 +262,29 @@ export default class Merge {
     }
 
     /**
+     * check features being reviewed, prevent poly to poi merge
+     *
+     * @param fromType - currentFeatures[0]
+     * @param toType   - currentFeatures[1]
+     * @param that
+     */
+   mergeCheck( fromType, toType, that ) {
+        if ( d3.event.ctrlKey || d3.event.metaKey ) {
+            if ( fromType === 'way' && toType !== 'node' ) {
+                that.updateMergeArrow( 'reverse' );
+            }
+        } else {
+            if ( fromType === 'node' && toType === 'way' ) {
+                that.mergeArrow.reverseFeatures = true;
+                that.updateMergeArrow( 'reverse' );
+            } else {
+                that.mergeArrow.reverseFeatures = null;
+                that.updateMergeArrow();
+            }
+        }
+    }
+
+    /**
      * Activate merge arrow layer. Arrow appears when hovering over merge button
      *
      * @param feature
@@ -278,20 +300,17 @@ export default class Merge {
             .on( 'mouseenter', function() {
                 this.focus();
 
-                if ( d3.event.ctrlKey || d3.event.metaKey ) {
-                    that.updateMergeArrow( 'reverse' );
-                } else {
-                    that.updateMergeArrow();
-                }
+                let fromType = that.mergeArrow.from.type;
+                let toType   = that.mergeArrow.to.type;
+
+                that.mergeCheck(fromType, toType, that );
 
                 d3.select( this )
                     .on( 'keydown', () => {
-                        if ( d3.event.ctrlKey || d3.event.metaKey ) {
-                            that.updateMergeArrow( 'reverse' );
-                        }
+                        that.mergeCheck( fromType, toType, that );
                     } )
                     .on( 'keyup', () => {
-                        that.updateMergeArrow();
+                        that.mergeCheck( fromType, toType, that );
                     } );
             } )
             .on( 'mouseleave', function() {
