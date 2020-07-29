@@ -79,14 +79,13 @@ export default class Merge {
 
         try {
             let mergeItems              = this.getMergeItems( features ),
-                { reviewRefsResponses } = await Hoot.api.getReviewRefs( mergeItems ),
-                reviewMergedRelationId  = this.data.currentReviewItem.relationId;
+                { reviewRefsResponses } = await Hoot.api.getReviewRefs( mergeItems );
 
             reviewRefs = _uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
-            reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ]);
+            reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
 
             // TODO: get back to this
-            //let missingRelationIds = this.reviewRelationIdsMissing( reviewRefs, features, queryElem1, queryElem2, reviewMergedRelationId );
+            //let missingRelationIds = this.reviewRelationIdsMissing( reviewRefs );
 
 
         } catch ( e ) {
