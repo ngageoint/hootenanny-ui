@@ -152,7 +152,6 @@ export default class Merge {
         }
 
         operationDelete( [ featureToDelete.id ], Hoot.context )();
-
     }
 
     /**
