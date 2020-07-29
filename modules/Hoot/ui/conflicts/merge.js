@@ -23,6 +23,7 @@ export default class Merge {
      * @param instance - conflicts class
      */
     constructor( instance ) {
+        this.instance = instance;
         this.data = instance.data;
 
         this.mergeArrow = {
@@ -30,6 +31,16 @@ export default class Merge {
             to: null,
             reverseFeatures: null
         };
+
+        let that = this;
+        Hoot.context.history()
+            .on('undone.review_merge', function() {
+                that.checkMergeButton.call(that);
+            });
+        Hoot.context.history()
+            .on('redone.review_merge', function() {
+                that.checkMergeButton.call(that);
+            });
     }
 
     /**
@@ -342,4 +353,22 @@ export default class Merge {
 
         Hoot.context.background().updateArrowLayer( gj );
     }
+
+    checkMergeButton() {
+        let features = _clone( this.data.currentFeatures ),
+            feature = Hoot.context.hasEntity( features[0].id ),
+            againstFeature = Hoot.context.hasEntity( features[1].id ),
+            relation = this.instance.graphSync.getCurrentRelation();
+
+        if ( feature && againstFeature
+            && (relation.tags[ 'hoot:review:type' ] === 'POI to Polygon' ||
+            (feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n'))
+        ) {
+            this.toggleMergeButton( false );
+            this.activateMergeArrow( feature, againstFeature );
+        } else {
+            this.toggleMergeButton( true );
+        }
+    }
+
 }
