@@ -207,8 +207,8 @@ export function coreHistory(context) {
                 _index--;
                 if (_stack[_index].annotation) break;
             }
-            dispatch.call('undone', this, _stack[_index]);
 
+            dispatch.call('undone', this, _stack[_index]);
             return change(previous);
         },
 
