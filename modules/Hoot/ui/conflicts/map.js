@@ -58,7 +58,7 @@ export default class Map {
             this.setHighlight();
         }
 
-        this.instance.merge.checkMergeButton(feature, againstFeature, relation);
+        this.instance.merge.checkMergeButton();
 
         if ( relation && relation.members && relation.members.length > 2 ) {
             let idx1 = relation.members.findIndex( d => d.id === item1.id ),
