@@ -62,7 +62,7 @@ export default class Merge {
         featureDelete = features[ 1 ];
 
         try {
-            let mergedElement = await this.getMergedFeature( features );
+            let mergedElement = await this.getMergedElement( features );
 
             mergedElement.tags[ 'hoot:status' ] = 3;
 
@@ -164,7 +164,7 @@ export default class Merge {
      * @param features - list of features to merge
      * @returns {object} - merged feature
      */
-    async getMergedFeature( features ) {
+    async getMergedElement( features ) {
         let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ].join( '' ),
             osmXml     = `<osm version="0.6" upload="true" generator="hootenanny">${ jxonFeatures }</osm>`,
             mergedXml  = await Hoot.api.poiMerge( osmXml );
@@ -219,22 +219,21 @@ export default class Merge {
     /**
      * Generate metadata for merged feature
      *
-     * @param mergedId - merged feature ID
+     * @param merged - merged feature
      * @param relationId - relation ID
      * @param mergedIdx - index of merged feature in relation
      */
     createNewRelationMember( merged, relationId, mergedIdx ) {
-        let meta = {},
+        let member = {},
             obj  = {};
 
-        meta.id    = merged.id;
-        meta.type  = merged.type;
-        console.log(meta);
-        meta.role  = 'reviewee';
-        meta.index = mergedIdx;
+        member.id    = merged.id;
+        member.type  = merged.type;
+        member.role  = 'reviewee';
+        member.index = mergedIdx;
 
         obj.id  = relationId;
-        obj.obj = meta;
+        obj.obj = member;
 
         return obj;
     }
