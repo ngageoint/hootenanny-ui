@@ -85,7 +85,7 @@ export default class Merge {
             reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ] );
 
             // TODO: get back to this
-            // let missingRelationIds = this.reviewRelationIdsMissing( reviewRefs );
+            // let missingRelationIds = this.getMissingRelationIds( reviewRefs );
         } catch ( e ) {
             throw new Error( 'Unable to retrieve review references for merged items' );
         }
