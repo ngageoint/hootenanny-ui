@@ -82,6 +82,11 @@ export default class FolderManager {
         return JSON.parse(Hoot.context.storage( 'publicVisibility' )) || f.userId === Hoot.user().id;
     }
 
+    get myFolders() {
+        let userId = Hoot.user().id;
+        return this._folders.filter(f => f.userId === userId);
+    }
+
     /**
      * Get all available folders
      * filtered by public visibility setting
@@ -124,14 +129,7 @@ export default class FolderManager {
      * @returns {Array} - updated folder array
      */
     listFolders( folders ) {
-        return [
-            {
-                path : '/',
-                id : 0,
-                name: 'root',
-                userId: Hoot.user().id //hack to make root always visible to user
-            }
-        ].concat(_map( folders, folder => {
+        return _map( folders, folder => {
             if ( folder.parentId === 0 ) {
                 folder.folderPath = '/ ' + folder.name;
             } else {
@@ -153,9 +151,10 @@ export default class FolderManager {
                 id : folder.id,
                 parentId : folder.parentId,
                 public : folder.public,
-                userId: folder.userId
+                userId : folder.userId,
+                date : folder.createdAt
             };
-        } ) );
+        } );
     }
 
     ///**
@@ -189,7 +188,7 @@ export default class FolderManager {
             this._openFolders.push( id );
         } else {
             let index = this._openFolders.indexOf( id );
-            if ( index > 1 ) {
+            if ( index > -1 ) {
                 this._openFolders.splice( index, 1 );
             }
         }
@@ -286,8 +285,12 @@ export default class FolderManager {
         return tree;
     }
 
-    addFolder( pathName, folderName ) {
-        let parentId = _get( _find( this._folders, folder => folder.name === pathName ), 'id' ) || 0;
+    addFolder( pathName, folderName, ownership = false ) {
+        let parentId = _get( _find( this._folders, (folder) => {
+            let match = folder.name === pathName;
+            if (match && !ownership) return match;
+            return match && folder.userId === Hoot.user().id;
+        }), 'id' ) || 0;
 
         let params = {
             folderName,

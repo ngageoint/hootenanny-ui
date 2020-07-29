@@ -7,6 +7,7 @@
 import AddBasemap                 from '../modals/addBasemap';
 import Tab                        from './tab';
 import { geoExtent as GeoExtent } from '../../../geo/index';
+import _filter                   from 'lodash-es/filter';
 
 /**
  * Creates the basemaps tab in the settings panel
@@ -52,8 +53,9 @@ export default class Basemaps extends Tab {
             let basemaps = await Hoot.api.getBasemaps();
 
             this.populateBasemaps( basemaps );
+
         } catch ( e ) {
-            window.console.log( 'Unable to retrieve basemaps' );
+            window.console.error( 'Unable to retrieve basemaps' );
             throw new Error( e );
         }
     }
@@ -61,9 +63,11 @@ export default class Basemaps extends Tab {
     populateBasemaps( basemaps ) {
         let instance = this;
 
+        let allBasemaps = _filter(basemaps, function(b) { return b.status === 'enabled' || b.status === 'disabled'; } );
+
         let rows = this.basemapTable
             .selectAll( '.basemap-item' )
-            .data( basemaps, d => d.name );
+            .data( allBasemaps, d => d.name );
 
         rows.exit().remove();
 
@@ -117,10 +121,11 @@ export default class Basemaps extends Tab {
                 let button = d3.select( this );
 
                 if ( d.status === 'processing' ) {
-                    //TODO: get back to this
-                    window.console.log( 'processing' );
+                    button.classed( 'closedeye' , true );
+                    button.classed( 'disabled', true );
                 } else if ( d.status === 'failed' ) {
-                    window.console.log( 'failed' );
+                    button.classed( 'closedeye' , true );
+                    button.classed( 'disabled', true );
                 } else if ( d.status === 'disabled' ) {
                     button.classed( 'closedeye', true );
                     button.classed( 'openeye', false );
@@ -133,26 +138,27 @@ export default class Basemaps extends Tab {
             } );
 
         buttonContainer
-            .append( 'button' )
-            .classed( 'keyline-left _icon trash', true )
-            .on( 'click', function( d ) {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
+        .append( 'button' )
+        .classed( 'keyline-left _icon trash', true )
+        .on( 'click', function( d ) {
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
 
-                let r = confirm( `Are you sure you want to delete: ${ d.name }?` );
-                if ( !r ) return;
+            let r = confirm( `Are you sure you want to delete: ${ d.name }?` );
+            if ( !r ) return;
 
-                Hoot.api.deleteBasemap( d.name )
-                    .then( () => instance.loadBasemaps() );
-            } );
+            Hoot.api.deleteBasemap( d.name )
+                .then( () => instance.loadBasemaps() );
+        } );
     }
 
     renderBasemap( d ) {
         let newSource = {
             name: d.name,
+            id: d.name,
             type: 'tms',
             projection: 'mercator',
-            template: `${ Hoot.api.config.host }:${ Hoot.api.config.port }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
+            template: `${ Hoot.api.config.host }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
             default: true,
             nocache: true,
             extent: new GeoExtent( [ d.extent.minx, d.extent.miny ], [ d.extent.maxx, d.extent.maxy ] )

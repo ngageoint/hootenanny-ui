@@ -45,8 +45,6 @@ export default class ReviewBookmarkNotes extends Tab {
             .append( 'span' )
             .text( 'Back' );
 
-        this.listen();
-
         return this;
     }
 
@@ -74,7 +72,10 @@ export default class ReviewBookmarkNotes extends Tab {
 
     async loadBookmarkNotes() {
         try {
-            let resp = await Hoot.api.getReviewBookmarks( this.bookmark.id );
+            const queryParam = {
+                bookmarkId: this.bookmark.id
+            };
+            let resp = await Hoot.api.getBookmarkById( queryParam );
 
             if ( resp && resp.reviewBookmarks && resp.reviewBookmarks.length ) {
                 _merge( this.bookmark, resp.reviewBookmarks[ 0 ] );
@@ -109,28 +110,24 @@ export default class ReviewBookmarkNotes extends Tab {
             .classed( 'notes-actions', true );
 
         if ( this.reviewItem.resultCount > 0 ) {
-            icons
-                .append( 'div' )
+            icons.append( 'div' )
                 .classed( 'material-icons pointer', true )
+                .attr('title', 'Go to review item')
                 .text( 'launch' )
                 .on( 'click', () => this.jumpToReviewItem() );
         }
 
-        icons
-            .append( 'div' )
+        icons.append( 'div' )
             .classed( 'material-icons pointer', true )
+            .attr('title', 'Refresh')
             .text( 'refresh' )
-            .on( 'click', function() {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-            } );
+            .on( 'click', () => this.refresh() );
     }
 
     createNotes() {
         this.notesBody = this.form
             .append( 'div' )
-            .classed( 'notes-fieldset pad2', true )
-            .append( 'fieldset' );
+            .classed( 'notes-fieldset', true );
 
         this.notesBody
             .append( 'button' )
@@ -153,8 +150,8 @@ export default class ReviewBookmarkNotes extends Tab {
      *   and the value in _forcedReviewableItem gets used to display review item.
      **/
     async jumpToReviewItem() {
-        Hoot.ui.navbar.toggleManagePanel();
         Hoot.layers.removeAllLoadedLayers();
+        Hoot.ui.navbar.toggleManagePanel();
 
         Hoot.ui.conflicts.data.forcedReviewItem = this.currentReviewable;
 
@@ -170,7 +167,4 @@ export default class ReviewBookmarkNotes extends Tab {
         this.load( this.bookmark );
     }
 
-    listen() {
-        // hoot.events.on( 'submit-note', note => )
-    }
 }

@@ -23,9 +23,9 @@ describe( 'Review Bookmark component rendered', () => {
             done();
         });
     } );
-    it( 'Contains refresh button', done => {
+    it( 'Contains clear filters button', done => {
         setTimeout(() => {
-            expect(d3.select('button.reset-button').size() ).to.be.equal( 1 );
+            expect(d3.selectAll('button.bookmark-action-button').size() ).to.be.equal( 2 );
             done();
         });
     });

@@ -10,9 +10,8 @@ import {
 } from '../modes';
 
 import { svgIcon } from '../svg';
-
-import selectBbox       from '../Hoot/tools/selectBbox';
-import { tooltip }      from '../util/tooltip';
+import selectBbox  from '../Hoot/tools/selectBbox';
+import { tooltip } from '../util/tooltip';
 
 export function uiTools( context ) {
     let menuItemMeta = [
@@ -53,31 +52,6 @@ export function uiTools( context ) {
                     action: 'clipData'
                 }
             ]
-        },
-        {
-            title: 'Grail Tools',
-            icon: 'line',
-            group: 'grail',
-            items: [
-                {
-                    title: 'Pull Remote Data',
-                    tooltip: 'Pull data for a bounding box from public Overpass and a private Rails Port into Hootenanny datasets',
-                    placement: 'right',
-                    group: 'grail',
-                    type: 'area',
-                    icon: 'iD-icon-load',
-                    action: 'grailPull'
-                },
-                {
-                    title: 'Derive Differential Changeset',
-                    tooltip: 'Derives a differential conflation changeset for a bounding box between public Overpass and a private Rails Port',
-                    placement: 'right',
-                    group: 'grail',
-                    type: 'area',
-                    icon: 'iD-icon-layers',
-                    action: 'createDifferentialChangeset'
-                }
-            ]
         }
     ];
 
@@ -104,7 +78,42 @@ export function uiTools( context ) {
 
     }
 
+    function addGrailItems() {
+        const reference = Hoot.config.referenceLabel,
+            secondary = Hoot.config.secondaryLabel;
+        const grailItems = {
+            title: 'Grail Tools',
+            icon: 'line',
+            group: 'grail',
+            items: [
+                {
+                    title: 'Pull Remote Data',
+                    tooltip: `Pull data for a bounding box from ${reference} and ${secondary} into Hootenanny datasets`,
+                    placement: 'right',
+                    group: 'grail',
+                    type: 'area',
+                    icon: 'iD-icon-load',
+                    action: 'grailPull'
+                },
+                {
+                    title: 'Derive Differential Changeset',
+                    tooltip: `Derives a differential conflation changeset for a bounding box between ${reference} and ${secondary}`,
+                    placement: 'right',
+                    group: 'grail',
+                    type: 'area',
+                    icon: 'iD-icon-layers',
+                    action: 'createDifferentialChangeset'
+                }
+            ]
+        };
+
+        menuItemMeta.push(grailItems);
+    }
+
     function renderMenu( ) {
+        if ( Hoot.users.isAdvanced() ) {
+            addGrailItems();
+        }
 
         toolsMenu = d3.select( '.hoot-tools' )
             .append( 'ul' )

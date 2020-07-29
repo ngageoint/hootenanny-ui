@@ -19,6 +19,7 @@ import UI                 from './ui/init';
 import { tagInfo }        from '../../data/index';
 import buildInfo          from './config/buildInfo.json';
 import { duration }       from './tools/utilities';
+import { utilStringQs }   from '../util';
 
 class Hoot {
     constructor() {
@@ -38,7 +39,11 @@ class Hoot {
             exportSizeThreshold: null,
             ingestSizeThreshold: null,
             conflateSizeThreshold: null,
-            presetMaxDisplayNum: 12
+            presetMaxDisplayNum: 12,
+            privilegeIcons: {
+                admin: 'how_to_reg',
+                advanced: 'star'
+            }
         };
     }
 
@@ -74,6 +79,15 @@ class Hoot {
         }
     }
 
+    getUserIdObjectsList() {
+        return Object.values( this.config.users ).map( user => {
+            return {
+                name: user.display_name,
+                id: user.id
+            };
+        } );
+    }
+
     async getMapSizeThresholds() {
         try {
             let thresholds = await this.api.getMapSizeThresholds();
@@ -84,6 +98,17 @@ class Hoot {
         } catch ( err ) {
             // this.message.alert( err );
             return Promise.reject( err );
+        }
+    }
+
+    async getGrailMetadata() {
+        const privileges = this.user().privileges;
+
+        if ( privileges && privileges.advanced && privileges.advanced === 'true' ) {
+            const { data } = await this.api.grailMetadataQuery();
+            this.config.referenceLabel = data.railsLabel;
+            this.config.secondaryLabel = data.overpassLabel;
+            this.config.maxFeatureCount = Number(data.maxFeatureCount);
         }
     }
 
@@ -105,10 +130,18 @@ class Hoot {
             }));
         }
 
+        let queryStringMap = utilStringQs(window.location.href);
+        if (queryStringMap.hasOwnProperty('gpx') && queryStringMap.gpx.includes('task_gpx_geom')) {
+            let [project, task] = new URL(queryStringMap.gpx).pathname.match(/\d+/g);
+            sessionStorage.setItem('tm:project', 'memt_project_' + project);
+            sessionStorage.setItem('tm:task', 'task_' + task);
+        }
+
         Promise.all( [
             this.getAboutData(),
             this.getAllUsers(),
             this.getMapSizeThresholds(),
+            this.getGrailMetadata(),
             this.translations.getTranslations(),
             this.users.init()
         ] );

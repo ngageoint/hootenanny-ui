@@ -93,7 +93,11 @@ export default class ClipDataset {
 
         let tableBody = table.append( 'tbody' );
 
-        _forEach( loadedLayers, layer => {
+        let loadedList = Object.values(loadedLayers);
+        let clipLayers = loadedList.some(l => l.isMerged) ? loadedList.filter(l => l.isMerged) : loadedList;
+
+        _forEach( clipLayers, layer => {
+
             let mapId = layer.id;
 
             tableBody
@@ -128,12 +132,12 @@ export default class ClipDataset {
                     } else if ( d.name === 'outputName' ) {
                         that.createLayerNameField( d3.select( this ), layer );
                     } else {
-                        var folderId = Hoot.layers.findBy( 'id', Number(layer.id) ).folderId;
+                        var folderId = Hoot.layers.findBy( 'id', layer.id ).folderId;
                         d.combobox = [ d.combobox.find( function( l ) { return l.id === folderId; } ) ]
                             .concat( d.combobox.filter( function( l ) { return l.id !== folderId; } ).sort() );
                         that.createFolderListCombo( d3.select( this ), d );
                         d3.select( this ).property( 'value', Hoot.folders.findBy( 'id', folderId).name );
-                        d3.select( this ).property( '_value', Hoot.folders.findBy( 'id', folderId ).id );
+                        d3.select( this ).attr( '_value', Hoot.folders.findBy( 'id', folderId ).id );
                     }
                 } );
         } );
@@ -193,7 +197,7 @@ export default class ClipDataset {
             let row         = d3.select( `#row-${ mapId }` ),
                 datasetName = row.select( '.datasetName' ),
                 outputName  = row.select( '.outputName' ),
-                folderId    = row.select( '.outputPath').property( '_value' );
+                folderId    = row.select( '.outputPath').attr('_value');
 
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = Hoot.layers.checkLayerName(outputName.property( 'value' ) || outputName.attr( 'placeholder' ));
@@ -229,22 +233,13 @@ export default class ClipDataset {
 
                     return resp;
                 } )
-                .then( resp => {
+                .then( async resp => {
                     if (resp.data && resp.data.status !== 'cancelled') {
-                        Hoot.folders.refreshDatasets();
+                        await Hoot.folders.refreshAll();
+                        Hoot.events.emit( 'render-dataset-table' );
                     }
 
                     return resp;
-                } )
-                .then( resp => {
-                    if (resp.data && resp.data.status !== 'cancelled') {
-                        Hoot.folders.refreshLinks();
-                    }
-
-                    return resp;
-                } )
-                .then( () => {
-                    Hoot.events.emit( 'render-dataset-table' );
                 } )
                 .catch( err => {
                     console.error(err);

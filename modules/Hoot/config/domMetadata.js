@@ -49,7 +49,7 @@ export function layerConflateForm( data ) {
             value: 'Reference',
             data: this.conflateTypes,
             readonly: 'readonly',
-            onChange: function(d) {
+            onChange: function() {
                 // update the renderd default value to match those in the conflation configs...
                 let type = d3.select( '#conflateType' ).property( 'value' );
                 let advancedOpts = AdvancedOpts.getInstance();
@@ -70,9 +70,28 @@ export function layerConflateForm( data ) {
 
                 }
 
+                let allFavorites = Hoot.config.users[Hoot.user().id].members;
+
+                let currentFavorite = [];
+
+                Object.keys(allFavorites)
+                    .forEach(function (key) {
+                        if (key === type) {
+                            currentFavorite.push(JSON.parse(allFavorites[key]));
+                            advOpts = currentFavorite;
+                        }
+                    });
+
+                let favoriteCheck = currentFavorite.map( o => o.name );
+
                 if (!_isEqual(advOpts, advancedOpts.advancedOptions)) {
+                    defaultConfSelected();
                     advancedOpts.createGroups(advOpts);
-                } else {
+                }
+                if ( favoriteCheck.includes(type) ) {
+                    favOptSelected();
+                }
+                else {
                     // disable & enable the attribute conflation group.
                     [ 'Attribute', 'Differential' ].forEach((conflationGroup) => {
                         let confGroup = d3.select( `.advanced-opts-content #${conflationGroup}_group` ),
@@ -87,6 +106,24 @@ export function layerConflateForm( data ) {
                         confGroup
                             .select( '.group-body', true );
                     });
+                }
+                if ( _isEqual(advOpts, advancedOpts.advancedOptions) ) {
+                    // hide update and delete buttons until default member values are changed
+                    defaultConfSelected();
+                    advancedOpts.createGroups(advOpts);
+                }
+
+                function favOptSelected() {
+                    d3.select('#deleteFav').classed('hidden', false);
+                    d3.select('#updateFav').classed('hidden', false);
+                    d3.select('#saveFav').classed('hidden', true);
+
+                }
+
+                function defaultConfSelected() {
+                    d3.select('#deleteFav').classed('hidden', true);
+                    d3.select('#updateFav').classed('hidden', true);
+                    d3.select('#saveFav').classed('hidden', true);
                 }
             }
         },
@@ -257,6 +294,19 @@ export function importMultiForm() {
     ];
 }
 
+export function saveFavoriteOpt() {
+    return [
+        {
+            label: 'Favorite Adv. Opts Group Name',
+            id: 'addFolderName',
+            class: 'new-folder-name',
+            data: [],
+            inputType: 'text',
+            onChange: d => this.validateTextInput( d )
+        }
+    ];
+}
+
 export function addFolderForm() {
     return [
         {
@@ -371,7 +421,7 @@ export function exportDataForm( zipOutput ) {
             id: exportHootTags,
             inputType: 'checkbox',
             checked: false,
-            hidden: true
+            hidden: false
         },
         // {
         //     label: 'Tag Overrides',
@@ -476,7 +526,22 @@ export function conflictActions() {
             text: 'Bookmark Review',
             class: '_icon plus fill-grey button round pad0y pad1x small strong',
             cmd: this.cmd( 'Ctrl+b' ),
-            action: () => this.resolve.publishBookmark()
+            action: async () => {
+                let currentReviewItem = Hoot.ui.conflicts.data.currentReviewItem;
+                const queryParams = {
+                    mapId: currentReviewItem.mapId,
+                    relationId: currentReviewItem.relationId
+                };
+                let { reviewBookmarks } = await Hoot.api.getBookmarkById( queryParams );
+
+                // If review bookmark doesnt exist publish new one, else show comments of current one
+                if ( reviewBookmarks.length === 0 ) {
+                    this.resolve.publishBookmark();
+                } else {
+                    this.resolve.displayBookmarkComments( reviewBookmarks[0] );
+                }
+
+            }
         },
         {
             id: 'toggle_table',

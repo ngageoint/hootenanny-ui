@@ -75,7 +75,7 @@ export default class Datasets extends Tab {
                 width: '6%'
             },
             {
-                title: 'Import Date',
+                title: 'Created Date',
                 width: '6%'
             },
             {
@@ -340,7 +340,8 @@ export default class Datasets extends Tab {
      * Listen for re-render
      */
     listen() {
-        Hoot.events.on( 'render-dataset-table', () => this.renderFolderTree() );
-        Hoot.events.on( 'context-menu', ( ...params ) => this.handleContextMenuClick( params ) );
+        const className = this.constructor.name;
+        Hoot.events.listen( className, 'render-dataset-table', () => this.renderFolderTree() );
+        Hoot.events.listen( className, 'context-menu', ( ...params ) => this.handleContextMenuClick( params ) );
     }
 }

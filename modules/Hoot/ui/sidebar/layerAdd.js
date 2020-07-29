@@ -64,7 +64,7 @@ export default class LayerAdd extends SidebarForm {
                     input.node().blur();
 
                     this.selectedLayer.name = gNode.attr( 'data-name' );
-                    this.selectedLayer.id   = gNode.attr( 'data-id' );
+                    this.selectedLayer.id   = Number(gNode.attr( 'data-id' ));
                 } else {
                     this.selectedLayer.name = null;
                     this.selectedLayer.id   = null;
@@ -215,14 +215,15 @@ export default class LayerAdd extends SidebarForm {
      * Listen for events
      */
     listen() {
-        Hoot.events.on( 'render-dataset-table', () => {
+        const className = this.constructor.name;
+
+        Hoot.events.listen( className, 'render-dataset-table', () => {
             this.renderFolderTree();
             Hoot.layers.syncRecentlyUsedLayers();
             this.updateRecentlyUsed();
         } );
 
-        Hoot.events.setMaxListeners(15);
-        Hoot.events.on( 'recent-layers-retrieved', () => this.updateRecentlyUsed() );
-        Hoot.events.on( 'load-layer', () => this.updateRecentlyUsed() );
+        Hoot.events.listen( className, 'recent-layers-retrieved', () => this.updateRecentlyUsed() );
+        Hoot.events.listen( className, 'load-layer', () => this.updateRecentlyUsed() );
     }
 }

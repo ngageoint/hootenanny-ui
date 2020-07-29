@@ -9,6 +9,21 @@ export default class JobCommandInfo {
     render() {
         let metadata = {
             title: 'Job Log',
+            form: [
+                {
+                    label: 'Console',
+                    id: 'jobConsole',
+                    placeholder: '',
+                    readOnly: true,
+                    inputType: 'textarea'
+                },
+                {
+                    label: 'Verbose',
+                    inputType: 'checkbox',
+                    id: 'cboxVerbose',
+                    onChange: () => this.loadCommands()
+                }
+            ]
         };
 
         let formId = 'jobCommandForm';
@@ -29,18 +44,34 @@ export default class JobCommandInfo {
     }
 
     parseStatus( jobStatus ) {
-        const uuidRegex = '[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}';
+        const uuidRegex = '[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}';
+        let verbose = false;
+        let cbox = this.form.select('#cboxVerbose');
+        if (cbox.size() > 0) {
+            verbose = cbox.property('checked');
+        }
 
         // get all commands in 1 big string, seperate them by line, only use the ones marked at 'STATUS'
-        return jobStatus.map( comm => comm.stdout)
+        return jobStatus.map( comm => {
+                return ((verbose) ? 'COMMAND   ' + comm.command + '\n' : '') + comm.stdout;
+            })
             .join('')
             .split('\n')
             .filter( command => {
-                return /^STATUS/.test(command);
+                return verbose || /^STATUS/.test(command);
             })
             .map( command => {
-                const replace = new RegExp(`^STATUS\\s+${uuidRegex}\\s+-\\s+`,'g');
-                return command.replace( replace, '' );
+                const replace = new RegExp(`^\\w+\\s+((${uuidRegex})?\\s?-?\\s?)`,'g');
+                let line;
+                if (verbose) {
+                    line = command.replace('STATUS ', 'STATUS   ')
+                                  .replace('   ', '\t');
+                    let match = replace.exec(command);
+                    if (match) line = line.replace(match[1], '');
+                } else {
+                    line = command.replace( replace, '' );
+                }
+                return line;
             })
             .join('\n');
     }
@@ -49,7 +80,8 @@ export default class JobCommandInfo {
         Hoot.api.getJobStatus( this.jobId )
             .then( resp => {
                 this.commands = this.parseStatus(resp.commandDetail);
-                this.createTable();
+                // this.createTable();
+                this.form.select('#jobConsole').text(this.commands);
 
                 if (resp.status === 'complete') {
                     this.deactivate();

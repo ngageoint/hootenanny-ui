@@ -1,9 +1,12 @@
 import Tab            from './tab';
+import Filtering      from './jobs/filtering';
+import Paging         from './jobs/paging';
 import ProgressBar    from 'progressbar.js';
-import DifferentialStats from '../modals/differentialStats';
+import ChangesetStats from '../modals/changesetStats';
 import JobCommandInfo from '../modals/jobCommandInfo';
-import GrailDatasetPicker from '../modals/GrailDatasetPicker';
+import GrailDatasetPicker from '../modals/grailDatasetPicker';
 import { duration } from '../../tools/utilities';
+import { utilKeybinding }    from '../../../util/keybinding';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
 
@@ -17,91 +20,230 @@ export default class Jobs extends Tab {
     constructor( instance ) {
         super( instance );
 
+        this.keybinding = utilKeybinding('jobs');
+
         this.name = 'Jobs';
         this.id   = 'util-jobs';
 
         this.privileges = Hoot.user().privileges;
+
+        this.params = {
+            sort: '-start',
+            offset: null,
+            limit: 25,
+            jobType: null,
+            status: null,
+            groupJobId: null
+        };
+
+        this.filtering = new Filtering(this);
+        this.paging = new Paging(this);
+
+        this.jobTypeIcon = {
+            import: 'publish',
+            export: 'get_app',
+            conflate: 'layers',
+            clip: 'crop',
+            attributes: 'list_alt',
+            basemap: 'map',
+            delete: 'delete',
+            derive_changeset: 'change_history',
+            upload_changeset: 'cloud_upload',
+            bulk_add: 'add_to_photos',
+            bulk_replace: 'flip_to_front',
+            bulk_differential: 'change_history',
+            unknown: 'help'
+        };
+
+        this.statusIcon = {
+            // running: 'autorenew',
+            complete: 'check_circle_outline',
+            failed: 'warning',
+            cancelled: 'cancel',
+            unknown: 'help'
+        };
+
+        this.columnFilters = {
+            jobType: this.jobTypeIcon,
+            status: this.statusIcon
+        };
+
+        this.lastClick = 0;
+    }
+
+    resetParams( reload ) {
+        this.params = {
+            sort: '-start',
+            offset: null,
+            limit: 25,
+            jobType: null,
+            status: null,
+            groupJobId: null
+        };
+
+        if ( reload ) {
+            this.updateResetFilterBtn();
+            this.loadJobs();
+            this.selectNone();
+        }
+    }
+
+    updateResetFilterBtn() {
+        let hasFilter = false;
+
+        Object.keys( this.columnFilters ).forEach( filterOpt => {
+            const param = this.params[filterOpt];
+            if ( param !== null && param !== '' ) {
+                hasFilter = true;
+            }
+        });
+
+        hasFilter = hasFilter || !!this.params.groupJobId;
+
+        this.panelWrapper.select( '#resetFiltersBtn' ).property( 'disabled', !hasFilter );
+    }
+
+    selectNone() {
+        this.jobsHistoryTable.selectAll('tr.jobs-item')
+            .classed('selected', false);
+    }
+
+    setLimit(limit) {
+        this.params.limit = limit;
+        this.loadJobs();
+    }
+
+    setSort(sort) {
+        this.params.sort = sort;
+        this.loadJobs();
+        this.selectNone();
+    }
+
+    setFilter(column, values) {
+        this.params[column] = values;
+
+        this.updateResetFilterBtn();
+        this.loadJobs();
+        this.selectNone();
+    }
+
+    setPage(page) {
+        this.params.offset = (page - 1) * this.params.limit;
+        this.loadJobs();
+        this.selectNone();
+    }
+
+    getPages() {
+        return Math.ceil(this.total / this.params.limit) || 1; //still need page 1 for zero results
+    }
+
+    setGroupJobId(groupJobId) {
+        this.params.groupJobId = groupJobId;
+
+        this.updateResetFilterBtn();
+        this.loadJobs();
+        this.selectNone();
     }
 
     render() {
         super.render();
-
         this.createJobsTable();
-
         this.loadJobs();
-
         return this;
     }
 
     activate() {
         this.loadJobs();
         this.poller = window.setInterval( this.loadJobs.bind(this), 5000 );
+
+        let that = this;
+        this.keybinding
+            .on('⌫', () => this.deleteJobs(that))
+            .on('⌦', () => this.deleteJobs(that));
+        d3.select(document)
+            .call(this.keybinding);
     }
 
     deactivate() {
         window.clearInterval(this.poller);
+
+        this.keybinding
+            .off('⌫')
+            .off('⌦');
+        d3.select(document)
+            .call(this.keybinding);
     }
 
     createJobsTable() {
         this.panelWrapper
             .append( 'h3' )
             .text( 'Running Jobs' );
+
         this.jobsRunningTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-running keyline-all fill-white', true );
-        this.panelWrapper
+
+        let header = this.panelWrapper
             .append( 'h3' )
             .classed( 'jobs-history', true )
             .text( 'Jobs History' );
+        let pager = header.append('div')
+            .classed('paging fr', true);
+        this.paging.render(pager);
+
+        header.append('button')
+            .attr( 'id', 'resetFiltersBtn' )
+            .property( 'disabled', true )
+            .classed('resetFilters button fr primary text-light', true)
+            .text( 'Reset Filters')
+            .on( 'click', () => this.resetParams( true ));
+
         this.jobsHistoryTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-history keyline-all fill-white', true );
     }
 
+    async deleteJobs(self) {
+        function deleteJobs() {
+            d3.select('#util-jobs').classed('wait', true);
+            Promise.all( delIds.map( id => Hoot.api.deleteJobStatus(id)) )
+                .then( resp => self.loadJobs() )
+                .finally( () => {
+                    self.selectNone();
+                    d3.select('#util-jobs').classed('wait', false);
+                });
+        }
+
+        let delIds = self.jobsHistoryTable.selectAll('tr.jobs-item.selected')
+            .data().map(d => d.jobId);
+
+        if (d3.event.shiftKey) { //omit confirm prompt
+            deleteJobs();
+        } else {
+            let message = `Are you sure you want to clear the ${delIds.length} selected job records?`,
+                confirm = await Hoot.message.confirm( message );
+
+            if ( confirm ) {
+                deleteJobs();
+            }
+        }
+    }
+
     async loadJobs() {
         let jobsRunning = await Hoot.api.getJobsRunning();
-        let jobsHistory = await Hoot.api.getJobsHistory();
-        await Hoot.layers.refreshLayers();
+        let jobsHistory = await Hoot.api.getJobsHistory(this.params);
+
+        if ( jobsHistory.total > this.total ) {
+            await Hoot.layers.refreshLayers();
+        }
+        this.total = jobsHistory.total;
+        this.paging.updatePages();
         this.populateJobsHistory( jobsHistory );
         this.populateJobsRunning( jobsRunning );
     }
 
     [getJobTypeIcon](type) {
-        let typeIcon;
-        switch (type) {
-            case 'import':
-                typeIcon = 'publish';
-                break;
-            case 'export':
-                typeIcon = 'get_app';
-                break;
-            case 'conflate':
-                typeIcon = 'layers';
-                break;
-            case 'clip':
-                typeIcon = 'crop';
-                break;
-            case 'attributes':
-                typeIcon = 'list_alt';
-                break;
-            case 'basemap':
-                typeIcon = 'map';
-                break;
-            case 'delete':
-                typeIcon = 'delete';
-                break;
-            case 'derive_changeset':
-                typeIcon = 'change_history';
-                break;
-            case 'upload_changeset':
-                typeIcon = 'cloud_upload';
-                break;
-            case 'unknown':
-            default:
-                typeIcon = 'help';
-                break;
-        }
-        return typeIcon;
+        return this.jobTypeIcon[type] || 'help';
     }
 
     populateJobsRunning( jobs ) {
@@ -123,7 +265,7 @@ export default class Jobs extends Tab {
                 'Started',
                 'Progress',
                 'Actions'
-                ])
+            ])
             .enter().append('th')
             .text(d => d);
 
@@ -187,7 +329,7 @@ export default class Jobs extends Tab {
                 let user = JSON.parse( localStorage.getItem( 'user' ) );
 
 
-                if (d.userId === user.id) {
+                if (d.userId === user.id || Hoot.users.isAdmin()) {
                     //Get logging for the job
                     actions.push({
                         title: 'view log',
@@ -280,28 +422,106 @@ export default class Jobs extends Tab {
 
 
     populateJobsHistory( jobs ) {
+        // if you're on a page that no longer has data, go to last page with data
+        if ( jobs.total > 0 && jobs.jobs.length === 0 && (this.paging.getCurrentPage() >= this.getPages() )
+            // or your current page is greater than the number of pages
+            // like when you change the page size from the last page
+            || ( this.paging.getCurrentPage() > this.getPages()) ) {
+            this.paging.setPage( this.getPages() );
+        }
+
+        const columnInfo = [
+            { column: 'jobType', label: 'Job Type', sort: 'type' },
+            { label: 'Information' },
+            { column: 'status', label: 'Status', sort: 'status' },
+            { label: 'Started', sort: 'start' },
+            { label: 'Duration', sort: 'duration' },
+            { label: 'Actions' }
+        ];
+
+        let that = this;
         let table = this.jobsHistoryTable
             .selectAll('table')
             .data([0]);
         let tableEnter = table.enter()
                 .append('table');
 
+        let colGroup = tableEnter.append( 'colgroup' );
+        columnInfo.forEach( col => {
+            colGroup.append( 'col' )
+                .style( 'width', col.width );
+        });
+
         let thead = tableEnter
             .append('thead');
-        thead.selectAll('tr')
+        let th = thead.selectAll('tr')
             .data([0])
             .enter().append('tr')
             .selectAll('th')
-            .data([
-                'Job Type',
-                'Output',
-                'Status',
-                'Started',
-                'Duration',
-                'Actions'
-                ])
+            .data(columnInfo)
             .enter().append('th')
-            .text(d => d);
+            .classed('sort', d => d.sort)
+            .classed('filter', d => this.columnFilters[d.column])
+            .on('click', d => {
+                if (d.sort) {
+                    let dir = (this.params.sort || '').slice(0,1),
+                        col = (this.params.sort || '').slice(1),
+                        newSort;
+
+                    if (col === d.sort) {
+                        newSort = ((dir === '+') ? '-' : '+') + col;
+                    } else {
+                        newSort = '-' + d.sort;
+                    }
+
+                    this.setSort(newSort);
+                }
+            })
+            .on('contextmenu', openFilter);
+
+        function openFilter(d) {
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+
+            if (that.columnFilters[d.column]) {
+                let filterData = {
+                    label: d.column[0].toUpperCase() + d.column.slice(1).split(/(?=[A-Z])/).join(' '),
+                    column: d.column,
+                    selected: that.params[d.column],
+                    values: d3.entries(that.columnFilters[d.column])
+                };
+
+                that.filtering.render(filterData);
+            }
+        }
+
+        th.append('span')
+            .text(d => d.label);
+
+        th.each(function(d) {
+            if (that.columnFilters[d.column]) {
+                d3.select(this).append('i')
+                    .classed( 'filter material-icons', true )
+                    .text('menu_open')
+                    .attr('title', 'filter')
+                    .on('click', openFilter);
+            }
+        });
+
+        th.append('i')
+            .classed( 'sort material-icons', true );
+
+        table.selectAll('i.sort')
+            .text(d => {
+                let dir = (this.params.sort || '').slice(0,1),
+                    col = (this.params.sort || '').slice(1);
+
+                if (col === d.sort) {
+                    return ((dir === '+') ? 'arrow_drop_up' : 'arrow_drop_down');
+                }
+                return '';
+            })
+            .attr('title', 'sort');
 
         table = table.merge(tableEnter);
 
@@ -314,14 +534,42 @@ export default class Jobs extends Tab {
 
         let rows = tbody
             .selectAll( 'tr.jobs-item' )
-            .data( jobs, d => d.jobId );
+            .data( jobs.jobs );
 
         rows.exit().remove();
 
         let rowsEnter = rows
             .enter()
             .append( 'tr' )
-            .classed( 'jobs-item keyline-bottom', true );
+            .classed( 'jobs-item keyline-bottom', true )
+            .on('click', function(d, i) {
+                let r = d3.select(this);
+                if (d3.event.ctrlKey || d3.event.metaKey) {
+                    //Toggle current row
+                    r.classed('selected', !r.classed('selected'));
+                    that.lastClick = i;
+                } else if (d3.event.shiftKey) {
+                    //Unselect everything
+                    tbody.selectAll('tr').classed('selected', false);
+
+                    //Select all rows between this and last click selected
+                    let min = Math.min(that.lastClick, i);
+                    let max = Math.max(that.lastClick, i);
+                    tbody.selectAll('tr')
+                        .each(function(r, k) {
+                            if (min <= k && k <= max) {
+                                d3.select(this).classed('selected', true);
+                            }
+                        });
+                } else {
+                    //Unselect everything
+                    tbody.selectAll('tr').classed('selected', false);
+
+                    //Select current row
+                    r.classed('selected', true);
+                    that.lastClick = i;
+                }
+            });
 
         rows = rows.merge(rowsEnter);
 
@@ -337,43 +585,62 @@ export default class Jobs extends Tab {
 
                 //Job Type
                 props.push({
-                    i: [{icon: this[getJobTypeIcon](d.jobType), action: () => {} }],
+                    i: [{icon: this[getJobTypeIcon](d.jobType)}],
                     span: [{text: d.jobType.toUpperCase()}]
                 });
 
-                //Output
-                let map = Hoot.layers.findBy( 'id', d.mapId );
+                let map = Hoot.layers.findBy( 'id', d.mapId ),
+                    jobInfo = [],
+                    jobTags = d.tags;
 
-                if (map) {
-                    props.push({
-                        span: [{text: map.name}]
-                    });
-                } else {
-                    props.push({
-                        span: [{text: 'Map no longer exists'}]
-                    });
+                if ( jobTags ) {
+                    let inputInfo = '',
+                        outputInfo = '';
+
+                    // Set input info
+                    if ( jobTags.taskInfo ) {
+                        inputInfo += jobTags.taskInfo;
+                    } else if ( jobTags.input1 || jobTags.input2 ) {
+                        let input1 = Hoot.layers.findBy( 'id', parseInt(jobTags.input1, 10) ),
+                            input2 = Hoot.layers.findBy( 'id', parseInt(jobTags.input2, 10) );
+
+                        inputInfo += input1 ? input1.name : '';
+                        inputInfo += input2 ? ' • ' + input2.name : '';
+                    } else if ( jobTags.bbox ){
+                        inputInfo += jobTags.bbox;
+                    } else if ( jobTags.parentId ) {
+                        inputInfo += jobTags.parentId;
+                    }
+
+                    if ( inputInfo !== '' ) {
+                        jobInfo.push( inputInfo );
+                    }
+
+                    // used for showing conflation type if exists
+                    if ( jobTags.conflationType ) {
+                        jobInfo.push( jobTags.conflationType + ' conflation' );
+                    }
+
+                    // Set output info
+                    if ( map ) {
+                        outputInfo += map.name;
+                    } else if ( jobTags && jobTags.deriveType ) {
+                        outputInfo += jobTags.deriveType;
+                    }
+
+                    if ( outputInfo !== '' ) {
+                        jobInfo.push( outputInfo );
+                    }
                 }
+
+                const jobInfoText = jobInfo.join( ' ➜ ' );
+                // Job Info
+                props.push({
+                    span: [{ text: jobInfoText }]
+                });
 
                 //Status
-                let statusIcon;
-                switch (d.status) {
-                    case 'running':
-                        statusIcon = 'autorenew';
-                        break;
-                    case 'complete':
-                        statusIcon = 'check_circle_outline';
-                        break;
-                    case 'failed':
-                        statusIcon = 'warning';
-                        break;
-                    case 'cancelled':
-                        statusIcon = 'cancel';
-                        break;
-                    case 'unknown':
-                    default:
-                        statusIcon = 'help';
-                        break;
-                }
+                let statusIcon = this.statusIcon[d.status] || 'help';
 
                 if (d.status === 'failed') {
                     props.push({
@@ -409,32 +676,6 @@ export default class Jobs extends Tab {
                 //Actions
                 let actions = [];
 
-                //Clear job
-                actions.push({
-                    title: 'clear job',
-                    icon: 'clear',
-                    action: async () => {
-                        let self = this;
-                        function deleteJob(id) {
-                            d3.select('#util-jobs').classed('wait', true);
-                            Hoot.api.deleteJobStatus(id)
-                                .then( resp => self.loadJobs() )
-                                .finally( () => d3.select('#util-jobs').classed('wait', false));
-                        }
-                        if (d3.event.shiftKey) { //omit confirm prompt
-                            deleteJob(d.jobId);
-                        } else {
-                            let message = 'Are you sure you want to clear this job record?',
-                                confirm = await Hoot.message.confirm( message );
-
-                            if ( confirm ) {
-                                deleteJob(d.jobId);
-                            }
-                        }
-
-                    }
-                });
-
                 //Get logging for the job
                 actions.push({
                     title: 'view log',
@@ -444,6 +685,14 @@ export default class Jobs extends Tab {
                         this.commandDetails.render();
 
                         Hoot.events.once( 'modal-closed', () => delete this.commandDetails );
+                    }
+                });
+
+                actions.push({
+                    title: 'show related',
+                    icon: 'linear_scale',
+                    action: () => {
+                        this.setGroupJobId( d.jobId );
                     }
                 });
 
@@ -494,83 +743,166 @@ export default class Jobs extends Tab {
                 }
 
                 // Only advanced user may perform these
-                if (this.privileges && this.privileges.advanced === 'true' &&
-                    d.statusDetail.toUpperCase() !== 'STALE') {
+                if (this.privileges && this.privileges.advanced === 'true') {
 
-                    if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
-                        //Get info for the derive
+                    // If the upload changeset job is marked having conflicts
+                    // add action to download conflicted changes
+                    if (d.statusDetail.toUpperCase() === 'CONFLICTS'
+                        && d.jobType.toUpperCase() === 'UPLOAD_CHANGESET') {
+
                         actions.push({
-                            title: 'upload changeset',
-                            icon: 'cloud_upload',
+                            title: 'download conflicted changes',
+                            icon: 'archive',
                             action: async () => {
-                                Hoot.api.differentialStats(d.jobId, false)
-                                    .then( resp => {
-                                        this.diffStats = new DifferentialStats( d.jobId, resp.data ).render();
+                                let param = {
+                                    input: d.tags.parentId,
+                                    inputtype: 'changesets',
+                                    outputname: d.tags.parentId,
+                                    outputtype: 'zip'
+                                };
 
-                                        Hoot.events.once( 'modal-closed', () => delete this.diffStats );
+                                Hoot.api.exportDataset(param)
+                                    .then( resp => {
+                                        self.jobId = resp.data.jobid;
+
+                                        return Hoot.api.statusInterval( self.jobId );
+                                    } )
+                                    .then( async resp => {
+                                        if (resp.data && resp.data.status !== 'cancelled') {
+                                            await Hoot.api.saveDataset( self.jobId, param.outputname );
+                                        }
+                                        return resp;
                                     } )
                                     .catch( err => {
+                                        console.error(err);
                                         Hoot.message.alert( err );
                                         return false;
                                     } );
                             }
                         });
 
+                    }
+
+                    // If the changeset is not stale (i.e. has already been applied)
+                    if (d.statusDetail.toUpperCase() !== 'STALE') {
+
+                        // Add action for upload of changeset
+                        if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
+                            //Get info for the derive
+                            actions.push({
+                                title: 'upload changeset',
+                                icon: 'cloud_upload',
+                                action: async () => {
+                                    Hoot.api.changesetStats(d.jobId, false)
+                                        .then( resp => {
+                                            this.changesetStats = new ChangesetStats( d, resp.data ).render();
+
+                                            Hoot.events.once( 'modal-closed', () => delete this.changesetStats );
+                                        } )
+                                        .catch( err => {
+                                            console.error(err);
+                                            Hoot.message.alert( err );
+                                            return false;
+                                        } );
+                                }
+                            });
+                        }
+
+                        // For Conflate jobs add action to derive changeset
+                        if (d.jobType.toUpperCase() === 'CONFLATE') {
+                            let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
+
+                            if (currentLayer && currentLayer.grailMerged) {
+                                //Get info for the derive
+                                actions.push({
+                                    title: 'derive changeset',
+                                    icon: 'change_history',
+                                    action: async () => {
+                                        const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
+
+                                        const data  = {};
+                                        data.input1 = parseInt(tagsInfo.input1, 10);
+                                        data.input2 = d.mapId;
+                                        data.parentId = d.jobId;
+
+                                        if (currentLayer.bbox) { data.BBOX = currentLayer.bbox; }
+                                        if ( d.tags && d.tags.taskInfo ) { data.taskInfo = d.tags.taskInfo; }
+
+                                        const params = {
+                                            deriveType : 'Merged changeset'
+                                        };
+
+                                        Hoot.api.deriveChangeset( data, params )
+                                            .then( resp => Hoot.message.alert( resp ) );
+                                    }
+                                });
+                            }
+                        }
+
+                        // For conflate or import or clip jobs add action for
+                        // creating an adds-only changeset
+                        // or a replacement changeset
+                        if (d.jobType.toUpperCase() === 'CONFLATE'
+                            || d.jobType.toUpperCase() === 'IMPORT'
+                            || d.jobType.toUpperCase() === 'CLIP'
+                            ) {
+                            let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
+
+                            if (currentLayer && !currentLayer.grailReference) {
+                                actions.push({
+                                    title: 'derive changeset [adds only]',
+                                    icon: 'add_to_photos',
+                                    action: async () => {
+                                        const data  = {};
+                                        data.input1 = d.mapId;
+                                        data.parentId = d.jobId;
+                                        if ( d.tags && d.tags.taskInfo ) { data.taskInfo = d.tags.taskInfo; }
+
+                                        const params = {
+                                            deriveType : 'Adds only'
+                                        };
+
+                                        Hoot.api.deriveChangeset( data, params )
+                                            .then( resp => Hoot.message.alert( resp ) );
+                                    }
+                                });
+
+                                actions.push({
+                                    title: 'derive changeset replacement',
+                                    icon: 'flip_to_front',
+                                    action: async () => {
+                                        const params = {
+                                            deriveType : 'Cut & Replace'
+                                        };
+                                        if ( d.tags && d.tags.taskInfo ) {
+                                            params.taskInfo = d.tags.taskInfo;
+                                        }
+
+                                        let gpr = new GrailDatasetPicker(currentLayer, d.jobId, params);
+                                        gpr.render();
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    // Add action for download of changeset
+                    // users can do this even after the changeset has been applied
+                    if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
                         actions.push({
                             title: 'download changeset',
-                            icon: 'save_alt',
+                            icon: 'archive',
                             action: async () => {
-                                Hoot.api.saveChangeset( d.jobId );
+                                Hoot.api.saveChangeset( d.jobId )
+                                    .catch( err => {
+                                        console.error(err);
+                                        Hoot.message.alert( err );
+                                        return false;
+                                    } );
                             }
                         });
                     }
 
-                    if (d.jobType.toUpperCase() === 'CONFLATE') {
-                        let currentLayer = this.findLayer( d.mapId );
-
-                        if (currentLayer && currentLayer.grailMerged) {
-                            //Get info for the derive
-                            actions.push({
-                                title: 'derive changeset',
-                                icon: 'change_history',
-                                action: async () => {
-                                    const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
-
-                                    const params  = {};
-                                    params.input1 = parseInt(tagsInfo.input1, 10);
-                                    params.input2 = d.mapId;
-                                    params.parentId = d.jobId;
-
-                                    if (currentLayer.bbox) params.BBOX = currentLayer.bbox;
-
-                                    Hoot.api.deriveChangeset( params )
-                                        .then( resp => Hoot.message.alert( resp ) );
-                                }
-                            });
-                        }
-                    }
-
-                    if (d.jobType.toUpperCase() === 'CONFLATE'
-                        || d.jobType.toUpperCase() === 'IMPORT'
-                    ) {
-                        let currentLayer = this.findLayer( d.mapId );
-
-                        if (currentLayer && !currentLayer.grailReference) {
-                            //Get info for the derive
-                            actions.push({
-                                title: 'derive changeset replacement',
-                                icon: 'flip_to_front',
-                                action: async () => {
-                                    let gpr = new GrailDatasetPicker(currentLayer, d.jobId);
-                                    gpr.render();
-
-                                    Hoot.events.once( 'modal-closed', () => {
-
-                                    });
-                                }
-                            });
-                        }
-                    }
                 }
 
                 props.push({
@@ -592,6 +924,7 @@ export default class Jobs extends Tab {
         i.exit().remove();
         i.enter().insert('i', 'span')
             .classed( 'material-icons', true )
+            .classed( 'action', d => d.action)
             .merge(i)
             .text( d => d.icon )
             .attr('title', d => d.title )
@@ -608,12 +941,6 @@ export default class Jobs extends Tab {
             .merge(span)
             .text( d => d.text );
 
-    }
-
-    findLayer( layerId ) {
-        return Hoot.layers.allLayers.find( layer => {
-            return layer.id === layerId;
-        });
     }
 
 }

@@ -7,6 +7,8 @@
 import _find from 'lodash-es/find';
 
 import FormFactory from '../../tools/formFactory';
+import _forEach from 'lodash-es/forEach';
+import Note from '../managePanel/reviewBookmarks/note';
 
 export default class EditBookmarkNote {
     constructor( instance, type, noteData ) {
@@ -14,16 +16,29 @@ export default class EditBookmarkNote {
         this.type     = type;
         this.data     = noteData;
 
-        let label = type === 'edit' ? 'Edit' : 'Add';
+        this.usersList = Hoot.getUserIdObjectsList();
+
+        let label = type === 'edit' ? 'Edit Comment' : 'Add Comment';
+
+        const { bookmark } = this.instance;
+        if ( bookmark && bookmark.detail ) {
+            label = bookmark.detail.bookmarkdetail.title;
+        }
 
         this.formMeta = {
-            title: `${label} Comment`,
+            title: `${label}`,
             form: [
                 {
-                    id: 'noteUserEmail',
-                    label: this.type === 'edit' ? 'Edit As' : 'Creator Email',
-                    inputType: 'text',
-                    onChange: d => this.validateTextInput( d )
+                    id: 'tagUser',
+                    containerId: 'tagUserContainer',
+                    label: 'Tag Users',
+                    inputType: 'multiCombobox',
+                    data: this.usersList,
+                    readonly: true,
+                    valueKey: 'name',
+                    _valueKey: 'id',
+                    placeholder: 'Select user',
+                    onChange: d => EditBookmarkNote.userTagSelect( this.taggedUsers, d )
                 },
                 {
                     id: 'noteComment',
@@ -43,34 +58,26 @@ export default class EditBookmarkNote {
     render() {
         this.container = new FormFactory().generateForm( 'body', 'editComment', this.formMeta );
 
-        this.emailInput   = this.container.select( '#noteUserEmail' );
         this.commentInput = this.container.select( '#noteComment' );
         this.submitButton = this.container.select( '#noteSubmitBtn' );
+        this.taggedUsers  = this.container.select( '#tagUserContainer' );
 
         if ( this.type === 'edit' ) {
             this.submitButton.property( 'disabled', false );
-
-            this.emailInput.property( 'value', () => {
-                let editAs = 'anonymous',
-                    uid    = this.data.modifiedBy ? this.data.modifiedBy : this.data.userId;
-
-                if ( uid && uid > -1 ) {
-                    editAs = Hoot.config.users[ uid ].email;
-                }
-
-                return editAs;
-            } );
-
             this.commentInput.property( 'value', this.data.note );
-        } else {
-            let currentUser = Hoot.context.storage( 'currentUser' ),
-                createAs;
 
-            if ( Hoot.config.users[ currentUser ] ) {
-                createAs = Hoot.config.users[ currentUser ].email;
+            // adds the tag box for each user that is tagged to this bookmark note
+            let notes = this.instance.bookmark.detail.bookmarknotes;
+            let note  = _find( notes, n => n.id === this.data.id );
+            if ( note && note.taggedUsers ) {
+                note.taggedUsers.forEach( userId => EditBookmarkNote.populateTags( this.taggedUsers, Hoot.users.getNameForId(userId), userId ) );
             }
-
-            this.emailInput.property( 'value', createAs );
+        } else {
+            const { bookmark } = this.instance;
+            if ( bookmark && bookmark.detail ) {
+                this.container.select( '.modal-header' ).append( 'h6' )
+                    .text( bookmark.detail.bookmarkdetail.desc );
+            }
         }
     }
 
@@ -79,13 +86,8 @@ export default class EditBookmarkNote {
             node          = target.node(),
             str           = node.value,
 
-            reservedWords = [ 'root', 'dataset', 'dataset', 'folder' ],
-            emailRe       = new RegExp( /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ ),
+            reservedWords = [ 'root', 'dataset', 'folder' ],
             valid         = true;
-
-        if ( d.id === 'noteUserEmail' && !emailRe.test( str ) ) {
-            valid = false;
-        }
 
         if ( reservedWords.indexOf( str.toLowerCase() ) > -1 ) {
             valid = false;
@@ -97,6 +99,44 @@ export default class EditBookmarkNote {
 
         target.classed( 'invalid', !valid );
         this.updateButtonState();
+    }
+
+    // creates the tag list item to show that a user has been tagged and allows removing them from tags
+    static populateTags( container, name, id ) {
+        let listItem = container.select( '.selectedUserTags' ).append( 'li' )
+            .classed( 'tagItem', true )
+            .attr( 'value' , name)
+            .attr( '_value', id);
+
+        listItem.append( 'span' )
+            .text( name );
+
+        listItem.append( 'a' )
+            .classed( 'remove', true)
+            .text( 'x' )
+            .on( 'click', function() {
+                listItem.remove();
+            });
+    }
+
+    // Handler for the tag user dropdown
+    static userTagSelect( container, data ) {
+        let userTaggedContainer = container.select( '.selectedUserTags' );
+
+        const addUserValue = container.select( `#${ data.id }` ),
+              userName = container.select( '#tagUser' ).node().value,
+              userId = addUserValue.attr('_value');
+
+        // See if the user has already been tagged OR selected for potential tagging
+        const isUserSelected = userTaggedContainer.selectAll( 'li' ).filter( function() {
+            return d3.select(this).attr( '_value' ) === userId;
+        } );
+
+        if ( isUserSelected.size() === 0 ) {
+            this.populateTags( container, userName, userId );
+        }
+
+        addUserValue.node().value = '';
     }
 
     updateButtonState() {
@@ -119,52 +159,76 @@ export default class EditBookmarkNote {
         this.submitButton.node().disabled = !valid;
     }
 
+    addPastComments() {
+        const commentsContainer = this.container.select( '.hoot-menu form' ).insert( 'div', 'fieldset' );
+
+        this.notesBody = commentsContainer
+            .classed( 'notes-fieldset', true );
+
+        _forEach( this.instance.bookmark.detail.bookmarknotes, item => {
+            let note = new Note( this, this.notesBody, true );
+
+            note.render( item );
+        } );
+    }
+
+    // Used to calculate list of unique user id's across all the notes for a particular bookmark
+    calcTaggedUsers() {
+        const allNotes = this.instance.bookmark.detail.bookmarknotes;
+        let allTaggedUserIds = [];
+
+        allNotes.forEach( data => {
+            allTaggedUserIds = allTaggedUserIds.concat( data.taggedUsers );
+        } );
+
+        return [ ...new Set( allTaggedUserIds ) ];
+    }
+
     async handleSubmit() {
-        let email           = this.emailInput.property( 'value' ),
-            comment         = this.commentInput.property( 'value' ),
+        let comment         = this.commentInput.property( 'value' ),
             currentBookmark = this.instance.bookmark,
             note            = {},
-            userInfo;
+            user            = Hoot.user().id;
 
-        if ( email === 'anonymous' ) {
-            let message = 'If you continue this bookmark will be published by as anonymous user. Do you want to continue?',
-                confirm = await Hoot.message.confirm( message );
-
-            if ( !confirm ) return;
-
-            userInfo = { id: '-1' };
-        } else {
-            let resp = await Hoot.api.getSaveUser( email );
-
-            userInfo = resp.user;
-        }
+        const taggedUserIds = this.taggedUsers.selectAll( '.tagItem' ).nodes().map( data =>
+            Number( d3.select(data).attr( '_value' ) )
+        );
 
         if ( this.type === 'edit' ) {
-            let notes = currentBookmark.detail.bookmarknotes,
-                note  = _find( notes, n => n.id === this.data.id );
+            let notes = currentBookmark.detail.bookmarknotes;
+            note  = _find( notes, n => n.id === this.data.id );
 
             if ( note ) {
-                note.note       = comment;
-                note.modifiedAt = new Date().getTime();
-                note.modifiedBy = userInfo.id;
+                note.note        = comment;
+                note.modifiedAt  = new Date().getTime();
+                note.modifiedBy  = user;
+                note.taggedUsers = taggedUserIds;
             }
         } else {
-            note.userId = userInfo.id;
+            note.userId = user;
             note.note   = comment;
+            note.taggedUsers = taggedUserIds;
 
             currentBookmark.detail.bookmarknotes.push( note );
         }
+
+        // get array of all the tagged users for the entire bookmark, across all the comments
+        currentBookmark.detail.taggedUsers = this.calcTaggedUsers();
 
         let params = {
             bookmarkId: currentBookmark.id,
             mapId: currentBookmark.mapId,
             relationId: currentBookmark.relationId,
-            userId: userInfo.userId,
+            userId: user,
             detail: currentBookmark.detail
         };
 
         return Hoot.api.saveReviewBookmark( params )
-            .then( () => this.instance.refresh() )
+            .then( () => {
+                if ( this.instance.refresh ) {
+                    this.instance.refresh();
+                }
+            } )
             .finally( () => this.container.remove() );
     }
 }

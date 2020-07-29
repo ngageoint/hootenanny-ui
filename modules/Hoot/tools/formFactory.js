@@ -125,6 +125,7 @@ export default class FormFactory {
             .data( formMeta ).enter()
             .append( 'div' )
             .attr( 'class', d => d.class )
+            .attr( 'title', d => d.title )
             .classed( 'hoot-form-field fill-white small keyline-all round', true )
             .classed( 'hoot-field-checkbox', d => d.inputType === 'checkbox' )
             .classed('hidden', d => d.hidden );
@@ -173,6 +174,10 @@ export default class FormFactory {
                     }
                     break;
                 }
+                case 'multiCombobox': {
+                    self.createMultiCombobox( field );
+                    break;
+                }
                 case 'checkbox': {
                     self.createCheckbox( field );
                     break;
@@ -213,15 +218,28 @@ export default class FormFactory {
      * @param field - field div
      */
     createCombobox( field ) {
-        const data = field.datum();
-        let comboData = _map(data.data, n => {
-            const t = data.itemKey ? n[ data.itemKey ] : n,
-                  v = data.valueKey ? n[ data.valueKey ] : t,
-                  _v = data._valueKey ? n[ data._valueKey ] : v;
-            return { value: v, title: t, _value: _v };
-        } );
 
-        if (data.sort) {
+        let d = field.datum(),
+        comboData = _map(d.data, n => {
+            const t = d.itemKey ? n[ d.itemKey ] : n,
+                  v = d.valueKey ? n[ d.valueKey ] : t,
+                  _v = d._valueKey ? n[ d._valueKey ] : v;
+            return { value: v, title: t, _value: _v };
+        } ),
+        fieldInputWrap = field
+            .selectAll( '.hoot-form-field' )
+            .data([ comboData ]);
+
+        fieldInputWrap.exit().remove();
+
+        let fieldInputWrapEnter = fieldInputWrap.enter()
+            .append('div')
+            .classed( 'hoot-field-input-wrap', true );
+
+        fieldInputWrap = fieldInputWrap.merge(fieldInputWrapEnter);
+
+
+        if (d.sort) {
             comboData = comboData.sort((a, b) => {
                 let textA = a.value.toLowerCase(),
                     textB = b.value.toLowerCase();
@@ -246,6 +264,50 @@ export default class FormFactory {
             .on( 'keyup', d => d.onChange && d.onChange(d) );
     }
 
+    /**
+     * Create a custom dropdown menu
+     *
+     * @param field - field div
+     */
+    createMultiCombobox( field ) {
+        const data = field.datum();
+
+        let comboData = _map(data.data, n => {
+            const t = data.itemKey ? n[ data.itemKey ] : n,
+                v = data.valueKey ? n[ data.valueKey ] : t,
+                _v = data._valueKey ? n[ data._valueKey ] : v;
+            return { value: v, title: t, _value: _v };
+        } );
+
+        if (data.sort) {
+            comboData = comboData.sort((a, b) => {
+                let textA = a.value.toLowerCase(),
+                    textB = b.value.toLowerCase();
+
+                return textA < textB ? -1 : textA > textB ? 1 : 0;
+            } );
+        }
+
+        let tagUserContainer = field.append( 'div' )
+            .attr( 'id', d => d.containerId );
+
+        let selectedList = tagUserContainer.append( 'ul' )
+            .classed( 'selectedUserTags', true );
+
+        selectedList.append( 'input' )
+            .attr( 'type', 'text' )
+            .attr( 'id', d => d.id )
+            .attr( 'class', d => d.class )
+            .attr( 'autocomplete', 'off' )
+            .attr( 'placeholder', d => d.placeholder )
+            .attr( 'value', d => d.value )
+            .attr( '_value', d => d._value )
+            .attr( 'disabled', d => d.disabled )
+            .attr( 'readonly', d => d.readonly )
+            .call(d3combobox().data(comboData))
+            .on( 'change', d => d.onChange && d.onChange(d) )
+            .on( 'keyup', d => d.onChange && d.onChange(d) );
+    }
 
     populateCombobox( input ) {
         input.select( d => {
@@ -396,7 +458,7 @@ export default class FormFactory {
 
         let button = buttonContainer
             .append( 'button' )
-            .attr( 'disabled', true )
+            .attr( 'disabled', (buttonMeta.disabled !== undefined) ? buttonMeta.disabled : true )
             .attr( 'id', buttonMeta.id )
             .classed( 'round strong primary', true )
             .on( 'click', buttonMeta.onClick );
@@ -438,7 +500,8 @@ export default class FormFactory {
             label: opt.label,
             id: opt.id,
             inputType: opt.input,
-            hidden: true,
+            title: opt.description,
+            hidden: opt.hidden || false,
             class: 'advOpt'
         };
 
@@ -450,5 +513,70 @@ export default class FormFactory {
         }
 
         return domMeta;
+    }
+
+    /*
+    * Creates an advanced options section toggle
+    * to control visibility of advanced option controls
+    */
+    createToggle( container ) {
+        let iconText = 'arrow_right';
+        let fldset = container.selectAll('fieldset');
+        fldset.classed('hidden', true);
+        let toggle = container
+            .select('form')
+            .insert( 'h4', 'fieldset' )
+            .attr( 'id', 'advOpts' )
+            .on('click', () => {
+                let shown = icon.text() !== iconText;
+                if (!shown) {
+                    fldset.classed('hidden', false);
+                    icon.text('arrow_drop_down');
+                }
+                fldset.transition()
+                    .duration(200)
+                    .style('height', shown ? '0px' : fldset.clientHeight)
+                    .on('end', () => {
+                        if (shown) {
+                            fldset.classed('hidden', true);
+                            icon.text(iconText);
+                        }
+                    });
+            });
+        let icon = toggle.append('i')
+            .classed( 'material-icons', true )
+            .text(iconText);
+        toggle.append('span')
+            .text( 'Advanced Options' );
+    }
+
+    /**
+     * Compares state of
+     * advanced options to defaults and
+     * adds to params if different
+     */
+    getAdvOpts(container, advOpts) {
+        let advParams = {};
+
+        advOpts.forEach(function(d) {
+            let propName;
+            switch (d.input) {
+                case 'checkbox':
+                    propName = 'checked';
+                    break;
+                case 'text':
+                default:
+                    propName = 'value';
+                    break;
+            }
+            let inputValue = container.select('#' + d.id).property(propName).toString();
+
+            // Need .length check because empty text box should be considered equal to default
+            if ( inputValue.length && inputValue !== d.default ) {
+                advParams[d.id] = inputValue;
+            }
+        });
+
+        return advParams;
     }
 }

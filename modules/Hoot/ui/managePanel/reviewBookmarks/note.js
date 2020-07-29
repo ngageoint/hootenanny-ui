@@ -7,9 +7,10 @@
 import EditBookmarkNote from '../../modals/editBookmarkNote';
 
 export default class Note {
-    constructor( instance, notesBody ) {
+    constructor( instance, notesBody, readOnly ) {
         this.instance  = instance;
         this.notesBody = notesBody;
+        this.readOnly = readOnly;
     }
 
     render( noteData ) {
@@ -17,56 +18,65 @@ export default class Note {
 
         this.note = this.notesBody
             .insert( 'div', '.add-note-button' )
-            .classed( 'note hoot-form-field fill-white small keyline-all round', true );
+            .classed( 'note fill-white small round', true );
 
         this.createHeader();
         this.createTextField();
     }
 
     createHeader() {
-        let header = this.note
-            .append( 'div' )
-            .classed( 'form-header keyline-bottom', true );
+        this.note.append( 'div' )
+            .classed( 'material-icons user-icon', true )
+            .text( 'person' );
 
-        header
+        const headerData = this.note
             .append( 'div' )
-            .classed( 'spacer', true );
+            .classed( 'note-meta', true );
 
-        header
-            .append( 'div' )
-            .append( 'h4' )
-            .classed( 'note-title', true )
-            .text( () => this.renderTitle() );
+        headerData.append( 'span' )
+            .classed( 'note-user', true )
+            .text( () =>  Hoot.config.users[ this.data.userId ].display_name );
 
-        header
-            .append( 'div' )
-            .classed( 'material-icons small pointer', true )
-            .text( 'edit' )
-            .on( 'click', () => {
-                let editNote = new EditBookmarkNote( this.instance, 'edit', this.data );
+        headerData.append( 'span' )
+            .classed( 'note-timestamp', true )
+            .text( () => {
+                return new Date( this.data.modifiedAt ).toLocaleString();
+            });
 
-                editNote.render();
-            } );
+        if ( this.data.userId === Hoot.user().id && !this.readOnly) {
+            this.note.append( 'div' )
+                .classed( 'node-edit material-icons small pointer', true )
+                .text( 'edit' )
+                .on( 'click', () => {
+                    let editNote = new EditBookmarkNote( this.instance, 'edit', this.data );
+
+                    editNote.render();
+                } );
+        }
     }
 
     createTextField() {
-        this.note
-            .append( 'div' )
+        let taggedUsers;
+        if ( this.data.taggedUsers ) {
+            taggedUsers = this.data.taggedUsers.map( userId => `@${ Hoot.config.users[ userId ].display_name }` )
+                .join( ', ' );
+        }
+
+        let comment;
+        if ( taggedUsers ) {
+            comment = taggedUsers + '\n' + this.data.note;
+        } else {
+            comment = this.data.note;
+        }
+
+        this.note.append( 'div' )
             .classed( 'field contain', true )
-            .append( 'textarea' )
-            .attr( 'readonly', 'readonly' )
-            .text( this.data.note );
+            .text( comment );
     }
 
     renderTitle() {
-        let date          = new Date( this.data.modifiedAt ).toLocaleString(),
-            createByEmail = 'anonymous',
-            uid           = this.data.modifiedBy ? this.data.modifiedBy : this.data.userId;
+        let date = new Date( this.data.modifiedAt ).toLocaleString();
 
-        if ( uid && uid > -1 ) {
-            createByEmail = Hoot.config.users[ uid ].email;
-        }
-
-        return `User ${ createByEmail } commented at ${ date }`;
+        return `User ${ Hoot.config.users[ this.data.userId ].display_name } commented at ${ date }`;
     }
 }

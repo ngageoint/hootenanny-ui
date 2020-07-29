@@ -15,41 +15,104 @@
         font-size: 110%;
         font-weight: bold;
     }
+
     th:first-child {
         padding-left: 10px;
     }
 
+    th.sort {
+        cursor: pointer;
+    }
+
+    th.filter {
+        cursor: context-menu;
+    }
+
+
+    tr.jobs-item {
+        justify-content: space-between;
+        height: 20px;
+
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+
+        &:hover {
+            background-color: $light;
+        }
+
+        td:first-child {
+            padding-left: 10px;
+        }
+
+        td.progress {
+            display: flex;
+            align-items: baseline;
+        }
+
+        &.selected {
+            background-color: rgb(255, 255, 153);
+        }
+    }
+
+
+    i.action, i.sort, i.filter {
+        cursor: pointer;
+    }
+    i.filter {
+        font-size: 14px;
+        padding: 5px 0 5px 5px;
+    }
 }
 
 h3.jobs-history {
     padding-top: 50px;
+
+    .paging {
+        cursor: context-menu;
+    }
+
+    i.material-icons {
+         vertical-align: bottom;
+    }
+    i.page {
+        cursor: pointer;
+    }
 }
 
-.jobs-item {
-    justify-content: space-between;
-    height: 20px;
 
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+.limit-value,
+.filter-column {
+    padding: 10px;
+    z-index: 15;
+    display: block;
+    position: absolute;
+    background-color: white;
+    border-radius: 4px;
 
-
-    &:hover {
-        background-color: $light;
-    }
-
-    td:first-child {
-        padding-left: 10px;
-    }
-
-    td.progress {
+    .filter-value {
         display: flex;
-        align-items: baseline;
     }
 
     i {
         vertical-align: bottom;
-        cursor: pointer;
     }
+
+    &:hover {
+        background-color: #f6f6f6
+    }
+}
+
+i.material-icons {
+     vertical-align: bottom;
+}
+
+.resetFilters {
+    display: inline-block;
+    height: 30px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-right: 10px;
 }

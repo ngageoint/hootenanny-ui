@@ -14,11 +14,20 @@
         margin-right: 20px;
     }
 
-    .reset-button {
+    .bookmark-action-button {
         position: relative;
-        width: 30px;
+        width: 85px;
         height: 30px;
-        border-radius: 100%;
+        margin: 0 3px;
+    }
+
+    .showTaggedBtn {
+        padding-bottom: 5px;
+        margin-right: 30px;
+
+        label {
+            cursor: pointer;
+        }
     }
 }
 
@@ -29,7 +38,8 @@
     overflow: auto;
 
     &::-webkit-scrollbar {
-        display: none;
+        width: 13px;
+        border-left: 1px solid #DDD;
     }
 }
 
@@ -48,6 +58,10 @@
         }
     }
 
+    &:hover {
+        background-color: $light;
+    }
+
     .delete-bookmark button {
         height: auto;
     }
@@ -61,8 +75,18 @@
         }
     }
 
+    .bookmark-title {
+        width: 20%;
+        margin-right: 10px;
+    }
+
+    .bookmark-details {
+        width: 20%;
+        margin-right: 10px;
+    }
+
     .bookmark-description {
-        width: 40%;
+        width: 50%;
         min-width: 180px;
         margin-right: 10px;
     }
@@ -117,7 +141,8 @@
     }
 }
 
-#review-bookmark-notes {
+#review-bookmark-notes,
+#editComment {
     .notes-back-button {
         height: 40px !important;
         padding: 0 20px 0 10px;
@@ -163,10 +188,38 @@
     }
 
     .note {
-        margin-bottom: 20px;
+        position: relative;
+        min-height: 40px;
+        padding: 8px 24px 4px 45px;
+        line-height: 20px;
 
-        .form-header {
-            background-color: $dark-opacity10;
+
+        &:hover {
+            background-color: $light;
+        }
+
+        .user-icon {
+            position: absolute;
+            left: 0;
+            display: block;
+            font-size: 40px;
+        }
+
+        .note-meta {
+            display: inline-block;
+
+            .note-user {
+                margin-right: 10px;
+                font-weight: 600;
+            }
+
+            .note-timestamp {
+                color: #464646
+            }
+        }
+
+        .node-edit {
+            float: right;
         }
 
         .field textarea {
@@ -184,5 +237,48 @@
             background-color: $light;
             transition: background-color 250ms ease-in-out;
         }
+    }
+}
+
+#editComment {
+    .notes-fieldset {
+        margin-bottom: 10px;
+    }
+}
+
+#tagUserContainer {
+    .tagItem {
+        display: inline-flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        background-color: #eff2f7;
+        border: 1px solid #ccd5e3;
+        border-radius: 4px;
+        line-height: 25px;
+        padding: 2px 5px;
+        margin: 3px;
+
+        a {
+            font-family: Arial, Helvetica, sans-serif !important;
+            font-size: 15px;
+            height: 25px;
+            line-height: 24px;
+            float: right;
+            margin-left: 5px;
+            padding: 0;
+            cursor: pointer;
+            color: #a6b4ce;
+        }
+    }
+
+    input {
+        margin: 5px;
+        height: 31px;
+        width: 100px;
+
+        border-color: #ababab;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 5px !important;
     }
 }

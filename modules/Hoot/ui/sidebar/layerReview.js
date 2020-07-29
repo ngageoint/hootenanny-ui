@@ -36,7 +36,7 @@ export default class LayerReview extends SidebarForm {
                 .classed( 'hoot-form-field', true )
                 .append( 'span' )
                 .classed( '_icon info review-count', true )
-                .text( 'There are 0 reviews' );
+                .text( `There are ${this.layer.reviewStats.unreviewedCount} reviews` );
 
             this.acceptAll = this.fieldset.append( 'div' )
                 .classed( 'hoot-form-field', true )
@@ -108,8 +108,10 @@ export default class LayerReview extends SidebarForm {
      * Listen for events
      */
     listen() {
-        Hoot.events.on( 'meta-updated', text => this.updateReviewCount( text ) );
-        Hoot.events.on( 'review-complete', () => this.reviewComplete() );
-        Hoot.events.on( 'loaded-layer-removed', () => this.removeReviewUI() );
+        const className = this.constructor.name;
+
+        Hoot.events.listen( className, 'meta-updated', text => this.updateReviewCount( text ) );
+        Hoot.events.listen( className, 'review-complete', () => this.reviewComplete() );
+        Hoot.events.listen( className, 'loaded-layer-removed', () => this.removeReviewUI() );
     }
 }

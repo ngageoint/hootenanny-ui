@@ -8,7 +8,6 @@ import _filter  from 'lodash-es/filter';
 import _find    from 'lodash-es/find';
 import _forEach from 'lodash-es/forEach';
 import _reject  from 'lodash-es/reject';
-import _remove  from 'lodash-es/remove';
 
 import FormFactory        from '../../tools/formFactory';
 import { getBrowserInfo } from '../../tools/utilities';
@@ -16,6 +15,8 @@ import {
     importSingleForm,
 }           from '../../config/domMetadata';
 import _get from 'lodash-es/get';
+import axios         from 'axios/dist/axios';
+
 
 /**
  * Form that allows user to import datasets into hoot
@@ -31,6 +32,7 @@ export default class ImportDataset {
         this.formFactory    = new FormFactory();
         this.processRequest = null;
         this.path           = path;
+        this.cancelToken    = axios.CancelToken.source();
 
         // Add "NONE" option to beginning of array
         this.translations.unshift( {
@@ -72,15 +74,15 @@ export default class ImportDataset {
      * Set form parameters and create the form using the form factory
      */
     async render() {
-        if ( this.browserInfo.name.substring( 0, 6 ) !== 'Chrome' ) {
-            _remove( this.importTypes, o => o.value === 'DIR' );
-        }
-
         this.form           = importSingleForm.call( this );
         this.form[ 0 ].data = this.importTypes;
 
         //Add advanced options to form
         this.advOpts = await Hoot.api.getAdvancedImportOptions();
+        this.advOpts.forEach(opt => {
+            opt.hidden = true;
+        });
+
         this.form = this.form.concat(this.advOpts.map(this.formFactory.advOpt2DomMeta));
 
         let metadata = {
@@ -204,16 +206,18 @@ export default class ImportDataset {
             return;
         }
 
+        let saveName;
         if ( selectedType === 'DIR' ) {
-            //TODO: get back to this
+            // Get the first file just to get the directory name since it should be same as rest of the files
+            const relativePath = files[0].webkitRelativePath;
+            saveName = relativePath.split('/')[0];
         } else {
-            let firstFile = fileNames[ 0 ],
-                saveName  = firstFile.indexOf( '.' ) ? firstFile.substring( 0, firstFile.indexOf( '.' ) ) : firstFile;
-
-            this.fileInput.property( 'value', fileNames.join( '; ' ) );
-
-            this.layerNameInput.property( 'value', Hoot.layers.checkLayerName(saveName) );
+            saveName = fileNames[ 0 ];
         }
+
+        saveName = saveName.indexOf( '.' ) ? saveName.substring( 0, saveName.indexOf( '.' ) ) : saveName;
+        this.fileInput.property( 'value', fileNames.join( '; ' ) );
+        this.layerNameInput.property( 'value', Hoot.layers.checkLayerName(saveName) );
 
         this.formValid = true;
         this.updateButtonState();
@@ -413,61 +417,71 @@ export default class ImportDataset {
             folderId
         };
 
-        this.processRequest = Hoot.api.uploadDataset( data )
-            .then( resp => {
-                this.loadingState();
+        this.loadingState();
 
-                this.jobId = resp.data[ 0 ].jobid;
+        this.processRequest =  Hoot.api.uploadDataset( data, this.cancelToken.token )
+        .then( resp => {
+            this.jobId = resp.data[ 0 ].jobid;
+            return Hoot.api.statusInterval( this.jobId );
+        } )
+        .then( async resp => {
+            let message;
 
-                return Hoot.api.statusInterval( this.jobId );
-            } )
-            .then( async resp => {
-                let message;
-                if (resp.data && resp.data.status === 'cancelled') {
-                    message = 'Import job cancelled';
+            if (resp.data && resp.data.status === 'cancelled') {
+                message = 'Import job cancelled';
 
-                    // Delete the newly created folder
-                    if ( newFolderName ) {
-                        await Hoot.api.deleteFolder( folderId );
-                        await Hoot.folders.removeFolder( folderId );
-                    }
-
-                    this.submitButton
-                        .select( 'span' )
-                        .text( 'Import' );
-                } else {
-                    message = 'Import job complete';
+                // Delete the newly created folder
+                if ( newFolderName ) {
+                    await Hoot.api.deleteFolder( folderId );
+                    await Hoot.folders.removeFolder( folderId );
                 }
 
+                this.submitButton
+                    .select( 'span' )
+                    .text( 'Import' );
+            } else {
+                message = 'Import job complete';
+            }
+
+            Hoot.message.alert( {
+                data: resp.data,
+                message: message,
+                status: 200,
+                type: resp.type
+            } );
+
+            return resp;
+        } )
+        .then( () => Hoot.folders.refreshAll() )
+        .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+        .catch( err => {
+            console.error(err);
+
+            if ( err.message === 'Request cancelled.' ) {
                 Hoot.message.alert( {
-                    data: resp.data,
-                    message: message,
-                    status: 200,
-                    type: resp.type
+                    message: err.message,
+                    type: 'warn'
                 } );
 
-                return resp;
-            } )
-            .then( () => Hoot.folders.refreshAll() )
-            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
-            .catch( err => {
-                console.error(err);
+            } else {
 
                 let message = 'Error running import',
-                    type = err.type,
-                    keepOpen = true;
+                type = err.type,
+                keepOpen = true;
 
-                if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                if ( err.data && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
                     message = err.data.commandDetail[0].stderr;
                 }
 
                 Hoot.message.alert( { message, type, keepOpen } );
+            }
+        } )
+        .finally( () => {
+            this.container.remove();
+            Hoot.events.emit( 'modal-closed' );
+        } );
 
-            } )
-            .finally( () => {
-                this.container.remove();
-                Hoot.events.emit( 'modal-closed' );
-            } );
+
     }
 
     /**
@@ -498,7 +512,12 @@ export default class ImportDataset {
 
         // overwrite the submit click action with a cancel action
         this.submitButton.on( 'click', () => {
-            Hoot.api.cancelJob(this.jobId);
+            if ( this.jobId ) {
+                Hoot.api.cancelJob(this.jobId);
+            }
+            else {
+                this.cancelToken.cancel('Request cancelled.');
+            }
         } );
 
         this.submitButton.insert('i', 'span')
@@ -508,7 +527,7 @@ export default class ImportDataset {
         this.container.selectAll( 'input' )
             .each( function() {
                 d3.select( this ).node().disabled = true;
-            } );
+        } );
     }
 
     /**
@@ -558,17 +577,11 @@ export default class ImportDataset {
             .attr( 'directory', null );
 
         if ( typeVal === 'DIR' ) {
-            if ( this.browserInfo.name.substring( 0, 6 ) === 'Chrome' ) {
-                uploader
-                    .property( 'multiple', false )
-                    .attr( 'accept', null )
-                    .attr( 'webkitdirectory', '' )
-                    .attr( 'directory', '' );
-            } else {
-                uploader
-                    .property( 'multiple', false )
-                    .attr( 'accept', '.zip' );
-            }
+            uploader
+                .property( 'multiple', false )
+                .attr( 'accept', null )
+                .attr( 'webkitdirectory', '' )
+                .attr( 'directory', '' );
         } else if ( typeVal === 'GEONAMES' ) {
             uploader
                 .property( 'multiple', false )

@@ -18,22 +18,33 @@ class LayerConflate extends SidebarForm {
     }
 
     async getData() {
-        let that = this;
-        await Hoot.api
-            .getConflateTypes()
-            .then(conflateTypes => that.conflateTypes = conflateTypes);
+        this.conflateTypes = await Hoot.api.getConflateTypes();
+        const favOpts = await Hoot.api.getFavoriteAdvOpts();
+
+        let sortOpts = [];
+
+        Object.keys( favOpts ).forEach(( favName ) => {
+            sortOpts.push( favName );
+        });
+
+        sortOpts.sort();
+
+        sortOpts.map( opt => {
+            if ( !this.conflateTypes.includes(opt) ) {
+                this.conflateTypes.push( opt );
+            }
+        } );
     }
 
     render( layers ) {
         this.folderList = Hoot.folders.folderPaths;
-
         this.selectedLayers = {
             primary: _find( layers, layer => layer.refType === 'primary' ),
             secondary: _find( layers, layer => layer.refType === 'secondary' )
         };
 
-        this.defaultFolderId = Hoot.layers.findBy('id', parseInt(this.selectedLayers.primary.id, 10)).folderId
-                    || Hoot.layers.findBy('id', parseInt(this.selectedLayers.secondary.id, 10)).folderId;
+        this.defaultFolderId = Hoot.layers.findBy('id', this.selectedLayers.primary.id).folderId
+                    || Hoot.layers.findBy('id', this.selectedLayers.secondary.id).folderId;
 
         this.defaultFolder = _find( this.folderList, folder => folder.id === this.defaultFolderId);
 
@@ -57,6 +68,35 @@ class LayerConflate extends SidebarForm {
 
     createFieldset() {
         this.fieldset = new FormFactory().createFieldSets( this.innerWrapper, this.formData );
+    }
+
+    checkForFavorite() {
+
+        let defaultTypes = ['Reference', 'Attribute', 'Differential', 'Differential w/Tags', 'Horizontal', 'Network'];
+
+        let currentType = this.typeInput.property('value');
+
+        if ( !defaultTypes.includes( currentType ) ) {
+
+        Hoot.getAllUsers();
+
+        let allFavorites = Hoot.config.users[Hoot.user().id].members;
+
+        let currentFavorites = [];
+
+        Object.keys(allFavorites)
+            .forEach( function(key) {
+                if ( key === currentType ) {
+                    currentFavorites.push( JSON.parse( allFavorites[key] ) );
+                }
+            } );
+
+        return currentFavorites[0].conflateType;
+
+        }
+        else {
+            return d3.select('#conflateType').property('value');
+        }
     }
 
     createLayerRefThumbnails( layers ) {
@@ -185,7 +225,7 @@ class LayerConflate extends SidebarForm {
         data.REFERENCE_LAYER    = (Hoot.layers.findLoadedBy( 'name', this.refLayerInput.node().value).refType === 'primary') ? '1' : '2';
         data.COLLECT_STATS      = this.collectStatsInput.property( 'value' );
         data.DISABLED_FEATURES  = this.advancedOptions.getDisabledFeatures();
-        data.CONFLATION_TYPE    = this.typeInput.property( 'value' ).replace( /(Cookie Cutter & | w\/ Tags)/, '' );
+        data.CONFLATION_TYPE    = this.checkForFavorite(); //this.typeInput.property( 'value' ).replace( /(Cookie Cutter & | w\/ Tags)/, '' );
         data.HOOT_2             = true;
 
         let { advanced, cleaning } = this.advancedOptions.getOptions();
@@ -225,21 +265,12 @@ class LayerConflate extends SidebarForm {
         return data;
     }
 
-    updateAttributeReferenceLayer() {
-        if ( this.typeInput.property('value') === 'Attribute' ) {
-            this.refLayerInput.property('value' , Hoot.layers.findLoadedBy( 'refType', 'secondary' ).name);
-        } else {
-            this.refLayerInput.property('value' , Hoot.layers.findLoadedBy( 'refType', 'primary' ).name);
-        }
-    }
-
-
     postConflation( params ) {
         let layers = Hoot.layers.loadedLayers;
 
 
         _forEach( layers, d => Hoot.layers.hideLayer( d.id ) );
-//handle layer not found here
+        //handle layer not found here
         params.id     = Hoot.layers.findBy( 'name', params.name ).id;
         params.refType = 'merged';
         params.isMerged = true;
@@ -253,7 +284,7 @@ class LayerConflate extends SidebarForm {
         d3.event.preventDefault();
 
         let data   = this.preConflation(),
-            params = {
+            layerParams = {
                 name: data.OUTPUT_NAME,
                 color: 'green',
                 isConflating: true,
@@ -264,12 +295,21 @@ class LayerConflate extends SidebarForm {
             this.advancedOptions.toggle();
         }
 
+        let refLayer = Hoot.layers.findLoadedBy( 'refType', 'primary' );
+        let secLayer = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
+
+        // Check if either layer has task manager tag data
+        if ( refLayer.tags && refLayer.tags.taskInfo ) {
+            data.taskInfo = refLayer.tags.taskInfo;
+        } else if ( secLayer.tags && secLayer.tags.taskInfo ) {
+            data.taskInfo = secLayer.tags.taskInfo;
+        }
 
         return Hoot.api.conflate( data )
             .then( resp => {
-                params.jobId = resp.data.jobid;
+                layerParams.jobId = resp.data.jobid;
 
-                this.loadingState( params );
+                this.loadingState( layerParams );
 
                 // hide input layer controllers
                 this.controller.hideInputs();
@@ -305,7 +345,7 @@ class LayerConflate extends SidebarForm {
                     // remove input layer controllers
                     d3.selectAll( '.add-controller' ).remove();
 
-                    this.postConflation( params );
+                    this.postConflation( layerParams );
                 }
             } )
             .catch( err => {
@@ -322,6 +362,10 @@ class LayerConflate extends SidebarForm {
                     message = err.data.commandDetail[0].stderr;
                 } else {
                     message = 'Error running conflation';
+                }
+
+                if ( !type ) {
+                    type = 'error';
                 }
 
                 // restore input layer controllers

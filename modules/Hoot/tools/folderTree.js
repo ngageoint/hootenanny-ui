@@ -14,7 +14,7 @@ import _forEach    from 'lodash-es/forEach';
 import _remove     from 'lodash-es/remove';
 import _slice      from 'lodash-es/slice';
 import _uniq       from 'lodash-es/uniq';
-import _without from 'lodash-es/without';
+import _without    from 'lodash-es/without';
 
 import { duration, formatSize } from './utilities';
 
@@ -151,13 +151,13 @@ export default class FolderTree extends EventEmitter {
             folders = _without( folders, _find( folders, { id: -1 } ) );
         }
 
-        folders = {
+        const foldersTree = {
             name: 'Datasets',
             id: 'Datasets',
             children: folders // prevent collision of data
         };
 
-        this.root    = d3.hierarchy( folders );
+        this.root    = d3.hierarchy( foldersTree );
         this.root.x0 = 0;
         this.root.y0 = 0;
 
@@ -185,7 +185,7 @@ export default class FolderTree extends EventEmitter {
             .style( 'height', `${ height }px` );
 
         // Render text values and lines for nodes
-        this.renderText( nodeElement.filter( d => d.data.type === 'dataset' ) );
+        this.renderText( nodeElement );
         this.renderLines( nodeElement.filter( d => d.depth > 1 ) );
 
         this.root.each( d => {
@@ -223,11 +223,57 @@ export default class FolderTree extends EventEmitter {
                 n.data = n;
             }
 
+            if ( n.data.type === 'folder' ) {
+                const folderData = this.calculateFolderData( n );
+                n.data.size = folderData.totalSize;
+                n.data.lastAccessed = folderData.lastAccessed;
+            }
+
             nodesSort.push( n );
             i++;
         } );
 
         return nodesSort;
+    }
+
+    /**
+     * Recurses through the folder down and calculates the size, in bytes, of all the datasets under the root file
+     * @param root
+     * @returns {totalSize: number, importDate: string, lastAccessed: string}
+     */
+    calculateFolderData ( root ) {
+        let stack = [ root ];
+        let data = {
+            totalSize : 0,
+            lastAccessed : ''
+        };
+
+        while ( stack.length > 0 ) {
+            const folder = stack.pop();
+            // children are stored in different locations in the object based on whether the folder is open or not
+            // return an empty array if null or undefined
+            const children = folder.children || folder._children || (folder.data ? folder.data._children : []) || [];
+
+            // skip if no children
+            if (children.length === 0) continue;
+
+            data.totalSize += children.filter( child => {
+                return ( child.type && child.type === 'dataset' ) || ( child.data && child.data.type && child.data.type === 'dataset' );
+            } ).reduce( ( acc, dataset ) => {
+                const lastAccessed = dataset.lastAccessed || dataset.data.lastAccessed;
+                if ( !data.lastAccessed || ( new Date(data.lastAccessed) < new Date(lastAccessed) ) ) {
+                    data.lastAccessed = lastAccessed;
+                }
+
+                return acc + (dataset.size || dataset.data.size);
+            }, 0 );
+
+            const folders = children.filter( child => (child.type === 'folder') || (child.data && child.data.type && child.data.type === 'folder') );
+
+            stack = stack.concat(folders);
+        }
+
+        return data;
     }
 
     /**
@@ -239,7 +285,6 @@ export default class FolderTree extends EventEmitter {
      */
     createNodeElement( nodes, source ) {
         const self = this;
-        let user = JSON.parse( localStorage.getItem( 'user' ) );
 
         let nodeElement = nodes.enter().append( 'g' )
             .attr( 'data-name', d => d.data.name )
@@ -356,6 +401,10 @@ export default class FolderTree extends EventEmitter {
             .style( 'stroke', '#444444' );
     }
 
+    getNavigatorLanguage() {
+        return (navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
+    }
+
     /**
      * Render text values for each node
      *
@@ -368,7 +417,7 @@ export default class FolderTree extends EventEmitter {
             .classed( 'dsizeTxt', true )
             .style( 'fill', this.fontColor )
             .attr( 'dy', 3.5 )
-            .attr( 'dx', '98%' )
+            .attr( 'dx', '97%' )
             .attr( 'text-anchor', 'end' )
             .text( d => {
                 return formatSize( d.data.size );
@@ -380,7 +429,13 @@ export default class FolderTree extends EventEmitter {
                 .attr( 'dy', 3.5 )
                 .attr( 'dx', '85%' )
                 .attr( 'text-anchor', 'end' )
-                .text( d => d.data.date );
+                .text( d => {
+                    let createDate = new Date(d.data.date);
+
+                    return createDate.toLocaleString(this.getNavigatorLanguage(), {timeZone:
+                        Intl.DateTimeFormat().resolvedOptions().timeZone
+                    });
+                });
 
             nodes.append( 'text' )
                 .style( 'fill', this.fontColor )
@@ -388,14 +443,18 @@ export default class FolderTree extends EventEmitter {
                 .attr( 'dx', '65%' )
                 .attr( 'text-anchor', 'end' )
                 .text( function( d ) {
-                    let lastAccessed = new Date(d.data.lastAccessed),
-                        now = Date.now();
+                    if ( d.data.lastAccessed ) {
+                        let lastAccessed = new Date(d.data.lastAccessed),
+                            now = Date.now();
 
-                    if ( now - lastAccessed > 5184000000 ) { //60 days
-                        that.updateLastAccessed( this );
+                        if ( now - lastAccessed > 5184000000 ) { //60 days
+                            that.updateLastAccessed( this );
+                        }
+
+                        return duration(lastAccessed, now, true);
+                    } else {
+                        return '';
                     }
-
-                    return duration(lastAccessed, now, true);
                 } );
         }
     }
@@ -736,7 +795,6 @@ export default class FolderTree extends EventEmitter {
                         .classed( 'open-folder', true );
 
                     d.children     = data._children || null;
-                    data._children = null;
                 }
 
                 if ( this.isDatasetTable && !d3.event.ctrlKey ) {

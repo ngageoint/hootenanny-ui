@@ -257,21 +257,21 @@ export function uiCommit(context) {
 
 
         // Raw Tag Editor
-        var tagSection = body.selectAll('.tag-section.raw-tag-editor')
-            .data([0]);
+        // var tagSection = body.selectAll('.tag-section.raw-tag-editor')
+        //     .data([0]);
 
-        tagSection = tagSection.enter()
-            .append('div')
-            .attr('class', 'modal-section tag-section raw-tag-editor')
-            .merge(tagSection);
+        // tagSection = tagSection.enter()
+        //     .append('div')
+        //     .attr('class', 'modal-section tag-section raw-tag-editor')
+        //     .merge(tagSection);
 
-        var expanded = !tagSection.selectAll('a.hide-toggle.expanded').empty();
-        tagSection
-            .call(rawTagEditor
-                .expanded(expanded)
-                .readOnlyTags(readOnlyTags)
-                .tags(_clone(_changeset.tags))
-            );
+        // var expanded = !tagSection.selectAll('a.hide-toggle.expanded').empty();
+        // tagSection
+        //     .call(rawTagEditor
+        //         .expanded(expanded)
+        //         .readOnlyTags(readOnlyTags)
+        //         .tags(_clone(_changeset.tags))
+        //     );
 
 
         // Change summary

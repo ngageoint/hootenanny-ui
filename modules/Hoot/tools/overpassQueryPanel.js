@@ -1,7 +1,7 @@
 import FormFactory          from './formFactory';
 import GrailPull            from './grailPull';
 import selectBbox           from './selectBbox';
-import DifferentialUpload   from './differentialUpload';
+import DifferentialChangeset   from './differentialChangeset';
 
 
 export default class OverpassQueryPanel {
@@ -78,11 +78,13 @@ export default class OverpassQueryPanel {
             .append( 'label' )
             .text( 'Custom Overpass query' )
                 .append( 'input' )
+                .attr( 'id', 'customQueryToggle' )
                 .attr( 'type', 'checkbox' )
                 .property( 'checked', checkboxStatus )
                 .on('click', () => {
                     const isChecked = checkboxLabel.property( 'checked' );
                     customQueryInput.classed( 'hidden', !isChecked );
+                    this.queryOptions.classed( 'hidden', !isChecked );
 
                     if ( isChecked ) {
                         this.submitButton.select( 'span' ).text( 'Next' );
@@ -122,9 +124,57 @@ export default class OverpassQueryPanel {
                 }
             });
 
+        this.buildQueryOptions();
+
         const errorInfoContainer = this.form.select( '.hoot-menu' )
             .insert( 'div', '.modal-footer' )
             .classed( 'badData', true );
+    }
+
+    buildQueryOptions() {
+        const options = [
+            { label: 'Buildings', searchTerm: 'building' },
+            { label: 'Highways', searchTerm: 'highway' }
+        ];
+
+        this.queryOptions = this.overpassQueryContainer.append( 'div' )
+            .classed( 'queryBuilder hidden', true )
+            .text( 'Build query options' );
+
+        this.queryOptions.selectAll( 'label' )
+            .data( options )
+            .enter()
+            .append( 'label' )
+            .text( data => data.label )
+                .append( 'input' )
+                .attr( 'type', 'checkbox' )
+                .on( 'click', () => {
+                    this.queryBuilder();
+            } );
+    }
+
+    queryBuilder() {
+        const checkedInput = this.queryOptions.selectAll( 'input[type=checkbox]:checked' );
+
+        let queryString = '';
+
+        if ( checkedInput.size() !== 0 ) {
+            queryString = '[out:json][bbox:{{bbox}}];\n' +
+            '(\n';
+
+            checkedInput.each( option => {
+                queryString += `node["${ option.searchTerm }"]({{bbox}});\n`+
+                    `way["${ option.searchTerm }"]({{bbox}});\n` +
+                    `relation["${ option.searchTerm }"]({{bbox}});\n`;
+            } );
+
+            // Close out and recurse down
+            queryString += ');\n'+
+                '(._;>;);\n' +
+                'out meta;';
+        }
+
+        this.overpassQueryContainer.select( 'textarea' ).property( 'value', queryString );
     }
 
     handleSubmit() {
@@ -135,7 +185,7 @@ export default class OverpassQueryPanel {
         if ( this.formData.operationName === 'grailPull' ) {
             new GrailPull( this.formData ).render();
         } else if ( this.formData.operationName === 'createDifferentialChangeset' ) {
-            new DifferentialUpload( this.formData ).render();
+            new DifferentialChangeset( this.formData ).render();
         }
     }
 

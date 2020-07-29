@@ -10,6 +10,7 @@ import _forEach from 'lodash-es/forEach';
 import LayerAdd      from './layerAdd';
 import LayerConflate from './layerConflate';
 import LayerReview   from './layerReview';
+import FormFactory   from '../../tools/formFactory';
 
 import {
     utilQsString,
@@ -97,24 +98,25 @@ export default class Sidebar {
     createForms() {
         let that = this;
 
-        this.wrapper.selectAll( '.layer-add' )
-            .data( this.addFormData ).enter()
-            .select( function( d ) {
-                that.forms[ d.id ] = new LayerAdd( d3.select( this ), d );
-                that.forms[ d.id ].render();
-            } );
+        this.wrapper.selectAll('.layer-add')
+            .data(this.addFormData).enter()
+            .select(function (d) {
+                that.forms[d.id] = new LayerAdd(d3.select(this), d);
+                that.forms[d.id].render();
+            });
 
-        this.wrapper.selectAll( '.layer-conflate' )
-            .data( this.conflateFormData ).enter()
-            .select( async function( d ) {
+        this.wrapper.selectAll('.layer-conflate')
+            .data(this.conflateFormData).enter()
+            .select(async function (d) {
                 try {
-                    const layerConflate = new LayerConflate( d3.select(this), d );
+                    const layerConflate = new LayerConflate(d3.select(this), d);
                     await layerConflate.getData();
-                    that.forms[ d.id ] = layerConflate;
+                    that.forms[d.id] = layerConflate;
                 } catch (e) {
                     throw e;
                 }
-            } );
+            });
+
     }
 
     layerLoaded() {
@@ -142,11 +144,6 @@ export default class Sidebar {
                 this.conflateCheck();
             }
         } );
-    }
-
-    renderReviews(that, layer) {
-        that.reviewLayer = new LayerReview( d3.select( this ), layer );
-        that.reviewLayer.render();
     }
 
     layerReviews() {
@@ -227,9 +224,10 @@ export default class Sidebar {
     }
 
     listen() {
-        Hoot.events.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
-        Hoot.events.on( 'layer-reviews', () => this.layerReviews() );
+        const className = this.constructor.name;
 
+        Hoot.events.listen( className, 'layer-loaded', layerName => this.layerLoaded( layerName ) );
+        Hoot.events.listen( className, 'layer-reviews', () => this.layerReviews() );
         window.onresize = () => this.adjustSize();
     }
 }

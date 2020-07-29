@@ -30,12 +30,20 @@ export default class Map {
      * @param panTo - true | false
      */
     highlightLayer( item1, item2, panTo ) {
-        let feature        = item1 ? Hoot.context.hasEntity( item1.id ) : null,
-            againstFeature = item2 ? Hoot.context.hasEntity( item2.id ) : null,
-            relation       = this.instance.graphSync.getCurrentRelation();
-
         // reference of current feature data in review process
-        this.data.currentFeatures = [ feature, againstFeature ];
+        this.data.currentFeatures = [];
+        let feature         = null,
+            againstFeature  = null,
+            relation        = this.instance.graphSync.getCurrentRelation();
+
+        if ( item1 ) {
+            feature = Hoot.context.hasEntity( item1.id );
+            this.data.currentFeatures.push( feature );
+        }
+        if ( item2 ) {
+            againstFeature = Hoot.context.hasEntity( item2.id );
+            this.data.currentFeatures.push( againstFeature );
+        }
 
         this.instance.info.buildTagTable();
 

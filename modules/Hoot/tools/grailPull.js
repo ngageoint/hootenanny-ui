@@ -8,8 +8,7 @@ import _get                                          from 'lodash-es/get';
 export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
-        this.maxFeatureCount = null;
-        this.grailMetadata = null;
+        this.maxFeatureCount = Hoot.config.maxFeatureCount;
     }
 
     render() {
@@ -56,66 +55,42 @@ export default class GrailPull {
     }
 
     async createTable() {
-        const { data } = await Hoot.api.grailMetadataQuery();
-        this.grailMetadata = data;
-        this.maxFeatureCount = +this.grailMetadata.maxFeatureCount;
-
         const overpassParams = { BBOX: this.instance.bbox };
-        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+        if ( this.instance.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
-        const { publicStats, privateStats } = await Hoot.api.overpassStats( overpassParams );
+        const rowData = await Hoot.api.overpassStats( overpassParams )
+            .catch( () => {
+                this.submitButton.node().disabled = true;
+
+                this.form.select( '.wrapper div' )
+                .insert( 'div', '.modal-footer' )
+                .classed( 'show-newline', true )
+                .text( 'Error retrieving overpass stats query!\nPlease wait and try again later' );
+            } );
 
         this.loadingState();
 
-        const allPublicStats = publicStats.split('\n');
-
-        const rowData = [
-            { valueColumn: 1, label: 'node' },
-            { valueColumn: 2, label: 'way' },
-            { valueColumn: 3, label: 'relation' },
-            { valueColumn: 0, label: 'total' }
-        ];
-        for (let i = 1; i < allPublicStats.length; i++) {
-            let publicValues = allPublicStats[ i ].split( '\t' );
-            rowData.forEach( row => {
-                row.publicCount  = +publicValues[ row.valueColumn ] + (row.publicCount || 0);
-            } );
-        }
-
-        // if there are private overpass stats then add them to our rowData object
-        if ( privateStats ) {
-            const allPrivateStats = privateStats.split('\n');
-            for (let i = 1; i < allPrivateStats.length; i++) {
-                let privateValues = allPrivateStats[ i ].split( '\t' );
-                rowData.forEach( row => {
-                    row.privateCount  = +privateValues[ row.valueColumn ] + (row.privateCount || 0);
-                } );
-            }
-        }
+        if ( !rowData ) return;
 
         let statsTable = this.form
             .select( '.wrapper div' )
             .insert( 'table', '.modal-footer' )
             .classed( 'pullStatsInfo', true );
 
-        const columns = [ '', this.grailMetadata.overpassLabel];
-        if ( privateStats ) {
-            columns.splice( 1, 0, this.grailMetadata.railsLabel ); // add to index 1
-        }
 
         let thead = statsTable.append('thead');
         thead.append('tr')
             .selectAll('th')
-            .data(columns)
+            .data([''].concat(rowData.columns.slice().reverse()))
             .enter()
             .append('th')
             .text(function (d) { return d; });
 
         let tbody = statsTable.append('tbody');
         let rows = tbody.selectAll('tr')
-            .data(rowData)
+            .data(rowData.data)
             .enter()
             .append('tr');
 
@@ -123,24 +98,20 @@ export default class GrailPull {
             .text( data => data.label );
 
         // add private overpass data first if exists
-        if ( privateStats ) {
+        if ( rowData.columns.length === 2 ) {
             rows.append('td')
-                .classed( 'strong', data => data.privateCount > 0 )
-                .classed( 'badData', data => data.label === 'total' && data.privateCount > this.maxFeatureCount )
-                .text( data => data.privateCount );
+                .classed( 'strong', data => data[rowData.columns[1]] > 0 )
+                .classed( 'badData', data => data.label === 'total' && data[rowData.columns[1]] > this.maxFeatureCount )
+                .text( data => data[rowData.columns[1]] );
         }
 
         // column for public overpass counts
         rows.append('td')
-            .classed( 'strong', data => data.publicCount > 0 )
-            .classed( 'badData', data => data.label === 'total' && data.publicCount > this.maxFeatureCount )
-            .text( data => data.publicCount );
+            .classed( 'strong', data => data[rowData.columns[0]] > 0 )
+            .classed( 'badData', data => data.label === 'total' && data[rowData.columns[0]] > this.maxFeatureCount )
+            .text( data => data[rowData.columns[0]] );
 
-        const { publicCount, privateCount } = _find( rowData, row => row.label === 'total' );
-
-        if ( ( publicCount && publicCount > this.maxFeatureCount )
-            || ( privateCount && privateCount > this.maxFeatureCount )
-        ) {
+        if ( rows.selectAll('td.badData').size() ) {
             this.form.select( '.hoot-menu' )
                 .insert( 'div', '.modal-footer' )
                 .classed( 'badData', true )
@@ -151,10 +122,10 @@ export default class GrailPull {
             this.submitButton.node().disabled = false;
         }
 
-        this.layerNameTable( data );
+        this.layerNameTable();
     }
 
-    layerNameTable( data ) {
+    layerNameTable() {
         const self = this;
         const uuid = uuidv4().slice(0,6);
 
@@ -188,7 +159,7 @@ export default class GrailPull {
             .text( d => d.label );
 
         let tableBody = layerOutputTable.append( 'tbody' ),
-            ingestLayers = [data.railsLabel, data.overpassLabel];
+            ingestLayers = [Hoot.config.referenceLabel, Hoot.config.secondaryLabel];
 
         ingestLayers.forEach( (layer, i) => {
             let tRow = tableBody
@@ -239,15 +210,10 @@ export default class GrailPull {
             return;
         }
 
-        let folderName = 'grail_' + bbox.replace( /,/g, '_' ),
-            pathId = _get( _find( Hoot.folders.folderPaths, folder => folder.name === folderName ), 'id' );
-
-        let folderId;
-        if ( !pathId ) {
-            folderId = (await Hoot.folders.addFolder( '', folderName )).folderId;
-        } else {
-            folderId = pathId;
-        }
+        let folderName,
+            folderId,
+            pathId,
+            projectName;
 
         const railsParams = {
             BBOX     : formatBbox( bbox ),
@@ -259,7 +225,39 @@ export default class GrailPull {
             input1   : this.form.select( '.outputName-1' ).property( 'value' )
         };
 
-        if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
+        if (sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task')) {
+            /**
+             * If we are coming from tasking manager, and we dont' have project folder, add it.
+             */
+            projectName = sessionStorage.getItem('tm:project');
+            if (!_get(_find(Hoot.folders.myFolders, folder => folder.name === projectName), 'id')) {
+                await Hoot.folders.addFolder('', projectName);
+                await Hoot.folders.refreshFolders();
+            }
+
+            /**
+             * Then make the folderName the taskname.
+             */
+            folderName = sessionStorage.getItem('tm:task');
+            pathId = _get(_find(Hoot.folders.myFolders, folder => folder.name === folderName), 'id');
+            if (!pathId) {
+                folderId = (await Hoot.folders.addFolder(projectName || '', folderName, true )).folderId;
+            } else {
+                folderId = pathId;
+            }
+
+            railsParams.taskInfo = overpassParams.taskInfo = projectName + ', ' + folderName;
+        } else {
+            folderName = 'grail_' + bbox.replace(/,/g, '_');
+            pathId = _get(_find(Hoot.folders.folderPaths, folder => folder.name === folderName), 'id');
+            if (!pathId) {
+                folderId = (await Hoot.folders.addFolder('', folderName )).folderId;
+            } else {
+                folderId = pathId;
+            }
+        }
+
+        if ( this.instance.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
             const customQuery          = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
             railsParams.customQuery    = customQuery;
             overpassParams.customQuery = customQuery;
@@ -270,10 +268,10 @@ export default class GrailPull {
               referenceCheckbox = d3.select( '#row-0 input' ).property( 'checked' ),
               secondaryCheckbox = d3.select( '#row-1 input' ).property( 'checked' );
         if ( referenceCheckbox ) {
-            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, folderId, this.grailMetadata.railsLabel ) );
+            jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, folderId, Hoot.config.referenceLabel ) );
         }
         if ( secondaryCheckbox ) {
-            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, folderId, this.grailMetadata.overpassLabel ) );
+            jobsList.push( Hoot.api.grailPullOverpassToDb( overpassParams, folderId, Hoot.config.secondaryLabel ) );
         }
 
         Promise.all( jobsList )
@@ -292,10 +290,11 @@ export default class GrailPull {
                     let submitPromises = [];
 
                     // Finding layer id by name is fine here because we check for duplicate name in the grail pull
-                    if ( referenceCheckbox ) {
+                    let refLayer = Hoot.layers.findBy( 'name', railsParams.input1 );
+                    if ( referenceCheckbox && refLayer ) {
                         let refParams = {
                             name: railsParams.input1,
-                            id: Hoot.layers.findBy( 'name', railsParams.input1 ).id,
+                            id: refLayer.id,
                             color: 'violet',
                             refType: 'primary'
                         };
@@ -303,10 +302,11 @@ export default class GrailPull {
                         submitPromises.push( Hoot.ui.sidebar.forms.reference.submitLayer( refParams ) );
                     }
 
-                    if ( secondaryCheckbox ) {
+                    let secLayer = Hoot.layers.findBy( 'name', overpassParams.input1 );
+                    if ( secondaryCheckbox && secLayer ) {
                         let secParams = {
                             name: overpassParams.input1,
-                            id: Hoot.layers.findBy( 'name', overpassParams.input1 ).id,
+                            id: secLayer.id,
                             color: 'orange',
                             refType: 'secondary'
                         };
