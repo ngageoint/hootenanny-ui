@@ -84,7 +84,7 @@ export default class Merge {
                 reviewMergedRelationId  = this.data.currentReviewItem.relationId;
 
             reviewRefs = _uniq( reviewRefsResponses[ 0 ].reviewRefs.concat( reviewRefsResponses[ 1 ].reviewRefs ) );
-            reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ], reviewMergedRelationId);
+            reviewRefs = this.removeNonRefs( reviewRefs, [ mergeItems[ 0 ].id, mergeItems[ 1 ].id ]);
 
             // TODO: get back to this
             //let missingRelationIds = this.reviewRelationIdsMissing( reviewRefs, features, queryElem1, queryElem2, reviewMergedRelationId );
