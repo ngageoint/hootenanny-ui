@@ -36,6 +36,8 @@ export default class Map {
             againstFeature  = null,
             relation        = this.instance.graphSync.getCurrentRelation();
 
+        //TODO: check hoot:status, input1 should be against feature by default
+        //i.e. we merge into the reference feature by default
         if ( item1 ) {
             feature = Hoot.context.hasEntity( item1.id );
             this.data.currentFeatures.push( feature );
@@ -57,10 +59,11 @@ export default class Map {
         }
 
 
-
+        //TODO: don't merge against conflated feature it should only be merged into once
         if ( relation.tags[ 'hoot:review:type' ] === 'POI to Polygon' ||
             ((feature && againstFeature) && feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n')
         ) {
+            //TODO: check for poly and make that against feature if other is node
             this.instance.merge.toggleMergeButton( false );
             this.instance.merge.activateMergeArrow( feature, againstFeature );
         } else {
