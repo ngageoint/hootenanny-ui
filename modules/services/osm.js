@@ -689,15 +689,13 @@ export default {
 
         let changesArr = this.filterChanges( changes );
 
-        //let mapId = Object.keys(changesArr)[0];
-
         if (_changeset.inflight || !changesArr) {
             return callback({ message: 'Changeset already inflight', status: -2 }, changeset);
 
         } else if (_changeset.open) {   // reuse existing open changeset..
-            return createdChangeset.call(this, null, _changeset.open); //mapId
+            return createdChangeset.call(this, null, _changeset.open);
 
-        } else {   // Open a new changeset..putChange
+        } else {   // Open a new changeset..
             _forEach( changesArr, ( changes, mapId ) => {
                 let path = '/api/0.6/changeset/create';
                 path += mapId ? `?mapId=${ mapId }` : '';
