@@ -80,7 +80,11 @@ export default class Merge {
             mergedFeature = featureUpdate; // feature that is updated is now the new merged feature
         } catch ( e ) {
             window.console.error( e );
-            throw new Error( 'Unable to merge features' );
+            let message = 'Unable to merge features',
+                type    = 'error';
+            Hoot.message.alert( { message, type } );
+            this.checkMergeButton();
+            return;
         }
 
         try {
@@ -93,7 +97,10 @@ export default class Merge {
             // TODO: get back to this
             // let missingRelationIds = this.getMissingRelationIds( reviewRefs );
         } catch ( e ) {
-            throw new Error( 'Unable to retrieve review references for merged items' );
+            let message = 'Unable to retrieve review references for merged items',
+                type    = 'error';
+            Hoot.message.alert( { message, type } );
+            return;
         }
 
         this.processMerge( reviewRefs, mergedFeature, featureDelete );
