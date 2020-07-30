@@ -66,7 +66,6 @@ export default class Merge {
         // after merging is completed. The tag is not needed by POI to Polygon conflation, however,
         // and will be ignored since POIs are always merged into polygons.
         featureUpdate.tags[ 'hoot:merge:target' ] = 'yes';
-        featureDelete.tags[ 'hoot:merge:target' ] = 'yes';
 
         try {
             let mergedElement = await this.getMergedElement( features );
