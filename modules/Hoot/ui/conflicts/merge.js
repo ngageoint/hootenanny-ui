@@ -347,19 +347,23 @@ export default class Merge {
             fromFeature = Hoot.context.hasEntity( features[1].id ),
             relation = this.instance.graphSync.getCurrentRelation();
 
-        this.isPoiPoly = (toFeature.type === 'node' && fromFeature.type === 'way')
-            || (toFeature.type === 'way' && fromFeature.type === 'node');
+        if ( toFeature && fromFeature) {
+            this.isPoiPoly = (toFeature.type === 'node' && fromFeature.type === 'way')
+                || (toFeature.type === 'way' && fromFeature.type === 'node');
 
-        let isPoiPoi = (toFeature.type === 'node' && fromFeature.type === 'node');
+            let isPoiPoi = (toFeature.type === 'node' && fromFeature.type === 'node');
 
-        if ( toFeature && fromFeature && (this.isPoiPoly || isPoiPoi) ) {
-            this.toggleMergeButton( false );
-            if (this.isPoiPoly) {
-                let poi = (toFeature.type === 'node') ? toFeature : fromFeature;
-                let poly = (toFeature.type === 'way') ? toFeature : fromFeature;
-                this.activateMergeArrow( poi, poly ); //always merge poi->poly
+            if (this.isPoiPoly || isPoiPoi) {
+                this.toggleMergeButton( false );
+                if (this.isPoiPoly) {
+                    let poi = (toFeature.type === 'node') ? toFeature : fromFeature;
+                    let poly = (toFeature.type === 'way') ? toFeature : fromFeature;
+                    this.activateMergeArrow( poi, poly ); //always merge poi->poly
+                } else {
+                    this.activateMergeArrow( fromFeature, toFeature );
+                }
             } else {
-                this.activateMergeArrow( fromFeature, toFeature );
+                this.toggleMergeButton( true );
             }
         } else {
             this.toggleMergeButton( true );
