@@ -58,17 +58,7 @@ export default class Map {
             this.setHighlight();
         }
 
-
-        //TODO: don't merge against conflated feature it should only be merged into once
-        if ( relation.tags[ 'hoot:review:type' ] === 'POI to Polygon' ||
-            ((feature && againstFeature) && feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n')
-        ) {
-            //TODO: check for poly and make that against feature if other is node
-            this.instance.merge.toggleMergeButton( false );
-            this.instance.merge.activateMergeArrow( feature, againstFeature );
-        } else {
-            this.instance.merge.toggleMergeButton( true );
-        }
+        this.instance.merge.checkMergeButton();
 
         if ( relation && relation.members && relation.members.length > 2 ) {
             let idx1 = relation.members.findIndex( d => d.id === item1.id ),

@@ -4,6 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 5/8/18
  *******************************************************************************************************/
 
+import _debounce  from  'lodash-es/debounce';
 import _every     from 'lodash-es/every';
 import _filter    from 'lodash-es/filter';
 import _flatten   from 'lodash-es/flatten';
@@ -26,18 +27,34 @@ export default class ConflictMetadata {
             /source:ingest:datetime/,
             /uuid/
         ];
+
+        Hoot.context.history().on('change.reviewtagtable',
+            _debounce( () => this.buildTagTable.bind(this)(), 300)
+        );
     }
 
     /**
      * Create tag table for revieawble items
      */
     buildTagTable() {
-        let colData    = this.data.currentFeatures,
-            tags1      = this.filterTags( colData[ 0 ] ? colData[ 0 ].tags : {} ),
+        let currentRelation;
+        try {
+            currentRelation = this.instance.graphSync.getCurrentRelation();
+        } catch (e) {
+            //current relation not found which is ok
+        }
+        //if triggered by history change and not in review mode return
+        if (!currentRelation) return;
+
+        let features = this.data.currentFeatures,
+            feature = Hoot.context.hasEntity( features[0].id ),
+            againstFeature = Hoot.context.hasEntity( features[1].id );
+
+        let colData = [feature, againstFeature];
+
+        let tags1      = this.filterTags( colData[ 0 ] ? colData[ 0 ].tags : {} ),
             tags2      = this.filterTags( colData[ 1 ] ? colData[ 1 ].tags : {} ),
             tagsMerged = this.mergeTags( [ tags1, tags2 ] );
-
-        let currentRelation = this.instance.graphSync.getCurrentRelation();
 
         if ( this.poiTable ) {
             this.tableContainer.remove();

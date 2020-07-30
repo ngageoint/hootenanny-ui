@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import _clone   from 'lodash-es/clone';
+import _cloneDeep   from 'lodash-es/cloneDeep';
 import _find    from 'lodash-es/find';
 import _forEach from 'lodash-es/forEach';
 import _reduce  from 'lodash-es/reduce';
@@ -14,6 +15,7 @@ import { JXON }             from '../../../util/jxon';
 import { t }                from '../../../util/locale';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions/index';
+import { uiFlash } from '../../../ui';
 
 /**
  * @class Merge
@@ -23,13 +25,25 @@ export default class Merge {
      * @param instance - conflicts class
      */
     constructor( instance ) {
+        this.instance = instance;
         this.data = instance.data;
 
         this.mergeArrow = {
             from: null,
-            to: null,
-            reverseFeatures: null
+            to: null
         };
+
+        this.isPoiPoly = false;
+
+        let that = this;
+        Hoot.context.history()
+            .on('undone.review_merge', function() {
+                that.checkMergeButton.call(that);
+            });
+        Hoot.context.history()
+            .on('redone.review_merge', function() {
+                that.checkMergeButton.call(that);
+            });
     }
 
     /**
@@ -38,28 +52,20 @@ export default class Merge {
      * @returns {Promise<void>}
      */
     async mergeFeatures() {
-        let features = _clone( this.data.currentFeatures ),
-            reverse  = d3.event.ctrlKey || d3.event.metaKey || this.mergeArrow.reverseFeatures,
-            featureUpdate,
-            featureDelete,
+        let reverse  = (d3.event.ctrlKey || d3.event.metaKey) && !this.isPoiPoly,
+            featureUpdate = _cloneDeep((reverse) ? this.mergeArrow.from : this.mergeArrow.to),
+            featureDelete = _cloneDeep((reverse) ? this.mergeArrow.to : this.mergeArrow.from),
+            features = [featureUpdate, featureDelete],
             mergedFeature,
             reviewRefs;
 
         // show merge button
         this.toggleMergeButton( true );
 
-        if ( reverse ) {
-            // flip features
-            features = features.slice().reverse();
-        }
-
         // This tag identifies the feature that is being merged into and will be removed by the server
         // after merging is completed. The tag is not needed by POI to Polygon conflation, however,
         // and will be ignored since POIs are always merged into polygons.
-        features[ 0 ].tags[ 'hoot:merge:target' ] = 'yes';
-
-        featureUpdate = features[ 0 ];
-        featureDelete = features[ 1 ];
+        featureUpdate.tags[ 'hoot:merge:target' ] = 'yes';
 
         try {
             let mergedElement = await this.getMergedElement( features );
@@ -74,7 +80,11 @@ export default class Merge {
             mergedFeature = featureUpdate; // feature that is updated is now the new merged feature
         } catch ( e ) {
             window.console.error( e );
-            throw new Error( 'Unable to merge features' );
+            let message = 'Unable to merge features' + ((e.data.error) ? (': ' + e.data.error.message) : ''),
+                type    = 'error';
+            Hoot.message.alert( { message, type } );
+            this.checkMergeButton();
+            return;
         }
 
         try {
@@ -87,7 +97,10 @@ export default class Merge {
             // TODO: get back to this
             // let missingRelationIds = this.getMissingRelationIds( reviewRefs );
         } catch ( e ) {
-            throw new Error( 'Unable to retrieve review references for merged items' );
+            let message = 'Unable to retrieve review references for merged items',
+                type    = 'error';
+            Hoot.message.alert( { message, type } );
+            return;
         }
 
         this.processMerge( reviewRefs, mergedFeature, featureDelete );
@@ -262,29 +275,6 @@ export default class Merge {
     }
 
     /**
-     * check features being reviewed, prevent poly to poi merge
-     *
-     * @param fromType - currentFeatures[0]
-     * @param toType   - currentFeatures[1]
-     * @param that
-     */
-   mergeCheck( fromType, toType, that ) {
-        if ( d3.event.ctrlKey || d3.event.metaKey ) {
-            if ( fromType === 'way' && toType !== 'node' ) {
-                that.updateMergeArrow( 'reverse' );
-            }
-        } else {
-            if ( fromType === 'node' && toType === 'way' ) {
-                that.mergeArrow.reverseFeatures = true;
-                that.updateMergeArrow( 'reverse' );
-            } else {
-                that.mergeArrow.reverseFeatures = null;
-                that.updateMergeArrow();
-            }
-        }
-    }
-
-    /**
      * Activate merge arrow layer. Arrow appears when hovering over merge button
      *
      * @param feature
@@ -300,17 +290,20 @@ export default class Merge {
             .on( 'mouseenter', function() {
                 this.focus();
 
-                let fromType = that.mergeArrow.from.type;
-                let toType   = that.mergeArrow.to.type;
-
-                that.mergeCheck(fromType, toType, that );
+                if ( d3.event.ctrlKey || d3.event.metaKey ) {
+                    that.updateMergeArrow( 'reverse' );
+                } else {
+                    that.updateMergeArrow();
+                }
 
                 d3.select( this )
                     .on( 'keydown', () => {
-                        that.mergeCheck( fromType, toType, that );
+                        if ( d3.event.ctrlKey || d3.event.metaKey ) {
+                            that.updateMergeArrow( 'reverse' );
+                        }
                     } )
                     .on( 'keyup', () => {
-                        that.mergeCheck( fromType, toType, that );
+                        that.updateMergeArrow();
                     } );
             } )
             .on( 'mouseleave', function() {
@@ -328,11 +321,23 @@ export default class Merge {
             return;
         }
 
-        let pt1   = d3.geoCentroid( this.mergeArrow.to.asGeoJSON( Hoot.context.graph() ) ),
-            pt2   = d3.geoCentroid( this.mergeArrow.from.asGeoJSON( Hoot.context.graph() ) ),
+        let pt1   = d3.geoCentroid( this.mergeArrow.from.asGeoJSON( Hoot.context.graph() ) ),
+            pt2   = d3.geoCentroid( this.mergeArrow.to.asGeoJSON( Hoot.context.graph() ) ),
             coord = [ pt1, pt2 ];
 
-        if ( mode === 'reverse' ) coord = coord.reverse();
+
+        //Don't allow reverse for poi->poly merge
+        if ( mode === 'reverse' && !this.isPoiPoly) coord = coord.reverse();
+
+        //Warn that reverse is not allowed for poi->poly merge
+        if (mode === 'reverse' && this.isPoiPoly) {
+            let flash = uiFlash()
+                .duration(4000)
+                .iconClass('operation disabled')
+                .text('Can\'t reverse POI->Poly merge');
+
+            flash();
+        }
 
         let gj = mode === 'delete' ? {} : {
             type: 'LineString',
@@ -342,4 +347,34 @@ export default class Merge {
 
         Hoot.context.background().updateArrowLayer( gj );
     }
+
+    checkMergeButton() {
+        let features = _clone( this.data.currentFeatures ),
+            toFeature = Hoot.context.hasEntity( features[0].id ),
+            fromFeature = Hoot.context.hasEntity( features[1].id ),
+            relation = this.instance.graphSync.getCurrentRelation();
+
+        if ( toFeature && fromFeature) {
+            this.isPoiPoly = (toFeature.type === 'node' && fromFeature.type === 'way')
+                || (toFeature.type === 'way' && fromFeature.type === 'node');
+
+            let isPoiPoi = (toFeature.type === 'node' && fromFeature.type === 'node');
+
+            if (this.isPoiPoly || isPoiPoi) {
+                this.toggleMergeButton( false );
+                if (this.isPoiPoly) {
+                    let poi = (toFeature.type === 'node') ? toFeature : fromFeature;
+                    let poly = (toFeature.type === 'way') ? toFeature : fromFeature;
+                    this.activateMergeArrow( poi, poly ); //always merge poi->poly
+                } else {
+                    this.activateMergeArrow( fromFeature, toFeature );
+                }
+            } else {
+                this.toggleMergeButton( true );
+            }
+        } else {
+            this.toggleMergeButton( true );
+        }
+    }
+
 }
