@@ -356,7 +356,7 @@ export default class Merge {
             this.toggleMergeButton( false );
             if (this.isPoiPoly) {
                 let poi = (toFeature.type === 'node') ? toFeature : fromFeature;
-                let poly = (toFeature.type === 'way') ? toFeature : fromFeature
+                let poly = (toFeature.type === 'way') ? toFeature : fromFeature;
                 this.activateMergeArrow( poi, poly ); //always merge poi->poly
             } else {
                 this.activateMergeArrow( fromFeature, toFeature );
