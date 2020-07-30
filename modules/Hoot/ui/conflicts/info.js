@@ -40,8 +40,8 @@ export default class ConflictMetadata {
         let currentRelation;
         try {
             currentRelation = this.instance.graphSync.getCurrentRelation();
-        } catch(e) {
-            //current relation not found
+        } catch (e) {
+            //current relation not found which is ok
         }
         //if triggered by history change and not in review mode return
         if (!currentRelation) return;
