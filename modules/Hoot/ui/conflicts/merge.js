@@ -52,7 +52,7 @@ export default class Merge {
      * @returns {Promise<void>}
      */
     async mergeFeatures() {
-        let reverse  = d3.event.ctrlKey || d3.event.metaKey && !this.isPoiPoly,
+        let reverse  = (d3.event.ctrlKey || d3.event.metaKey) && !this.isPoiPoly,
             featureUpdate = _cloneDeep((reverse) ? this.mergeArrow.from : this.mergeArrow.to),
             featureDelete = _cloneDeep((reverse) ? this.mergeArrow.to : this.mergeArrow.from),
             features = [featureUpdate, featureDelete],
