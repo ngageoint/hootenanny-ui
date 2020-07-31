@@ -419,13 +419,20 @@ export default class ImportMultiDatasets {
                             type = err.type,
                             keepOpen = true;
 
-                        if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
-                            message += err.data.commandDetail[0].stderr;
+                        if (typeof err.data === 'string') {
+                            message = err.data;
+                        }
+
+                        if (err.data instanceof Object && err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                            message = err.data.commandDetail[0].stderr;
                         }
 
                         Hoot.message.alert( { message, type, keepOpen } );
+                    })
+                    .finally( () => {
+                        this.container.remove();
+                        Hoot.events.emit( 'modal-closed' );
                     });
-
             });
         });
 
