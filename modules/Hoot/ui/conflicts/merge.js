@@ -360,7 +360,10 @@ export default class Merge {
 
             let isPoiPoi = (toFeature.type === 'node' && fromFeature.type === 'node');
 
-            if (this.isPoiPoly || isPoiPoi) {
+            let isPolyPoly = (toFeature.type === 'way' && toFeature.isClosed()
+                && fromFeature.type === 'way' && fromFeature.isClosed());
+
+            if (this.isPoiPoly || isPoiPoi || isPolyPoly) {
                 this.toggleMergeButton( false );
                 if (this.isPoiPoly) {
                     let poi = (toFeature.type === 'node') ? toFeature : fromFeature;
