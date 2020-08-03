@@ -245,7 +245,8 @@ export function importMultiForm() {
             inputType: 'text',
             disabled: true,
             required: true,
-            onChange: d => this.validateTextInput( d )
+            onChange: d => this.validateTextInput( d ),
+            onBlur: d => this.deduplicateName( d )
         },
         {
             label: 'Import Files List',

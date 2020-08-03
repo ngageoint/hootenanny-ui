@@ -354,6 +354,11 @@ export default class FormFactory {
                 if ( d.onChange ) {
                     d.onChange( d, this );
                 }
+            } )
+            .on( 'blur', function( d ) {
+                if ( d.onBlur ) {
+                    d.onBlur( d, this );
+                }
             } );
     }
 
