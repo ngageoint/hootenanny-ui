@@ -184,7 +184,7 @@ export default class ImportMultiDatasets {
                     .append( 'option' )
                     .classed( 'file-import-option', true )
                     .attr( 'value', file.name )
-                    .text( file.name );
+                    .text( Hoot.layers.checkLayerName( file.name ) );
             } );
         }
 
@@ -301,6 +301,18 @@ export default class ImportMultiDatasets {
     }
 
     /**
+     * De-duplicate input layer name
+     * append a (#) if not unique
+     *
+     * @param d - node data
+     */
+    deduplicateName( d ) {
+        console.log(d);
+        let target = d3.select( `#${ d.id }` );
+        target.property('value', Hoot.layers.checkLayerName( target.property('value') ));
+    }
+
+    /**
      * Submit form data
      */
     async handleSubmit() {
@@ -361,7 +373,7 @@ export default class ImportMultiDatasets {
 
         //if import as single layer, use new layer name
         if (asSingle) {
-            fileNames.push(asSingleName);
+            fileNames.push(Hoot.layers.checkLayerName( asSingleName ));
         } else {
             this.fileListInput
                 .selectAll( 'option' )
@@ -390,6 +402,8 @@ export default class ImportMultiDatasets {
                     if ( customSuffix ) {
                         name = name + '_' + customSuffix;
                     }
+
+                    name =  Hoot.layers.checkLayerName( name );
                 }
 
                 let params = {
