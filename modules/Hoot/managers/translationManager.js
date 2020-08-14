@@ -220,4 +220,9 @@ export default class TranslationManager {
         }
         return values;
     }
+
+    fcode() {
+        return this.activeTranslation === 'MGCP' ? 'FCODE' : 'F_CODE';
+    }
+
 }
