@@ -185,7 +185,7 @@ export function uiRawTagEditor(context) {
                 } else {
                     var tag;
                     if (Hoot.translations.activeTranslation !== 'OSM') {
-                        tag = { key: d.key === Hoot.fcode() ? d.value : d.key };
+                        tag = { key: d.key === Hoot.translations.fcode() ? d.value : d.key };
                     } else {
                         tag = { key: d.key, value: d.value };
                     }
