@@ -94,12 +94,6 @@
     }
 }
 
-//#content {
-//    position: absolute;
-//    width: calc(100% - 400px);
-//    left: 400px;
-//}
-
 path.area {
     &.highlight.stroke {
         stroke-width: 7;
@@ -193,7 +187,8 @@ path.line {
     }
 }
 
-.node.point {
+.node.point,
+.node.vertex {
     &.vertex.shared {
         .stroke {
             fill: $light5;
@@ -217,14 +212,14 @@ path.line {
             stroke-width: 16;
             stroke-opacity: .9;
         }
+    }
 
-        @at-root .review-feature1#{&} {
-            stroke: #F00;
-        }
+    &.highlight.review-feature1 .shadow {
+        stroke: #F00;
+    }
 
-        @at-root .review-feature2#{&} {
-            stroke: #00F;
-        }
+    &.highlight.review-feature2 .shadow {
+        stroke: #00F;
     }
 }
 
@@ -248,17 +243,3 @@ path.line {
         cursor: pointer;
     }
 }
-
-//@media only screen and (max-width: 1160px) {
-//    #content {
-//        width: calc(100% - 300px);
-//        left: 300px;
-//    }
-//}
-//
-//@media only screen and (max-width: 900px) {
-//    #content {
-//        width: calc(100% - 250px);
-//        left: 250px;
-//    }
-//}
