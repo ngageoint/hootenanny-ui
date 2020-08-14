@@ -292,7 +292,7 @@ export function rendererMap(context) {
     }
 
 
-    async function drawVector(difference, extent) {
+    function drawVector(difference, extent) {
         var mode = context.mode();
         var graph = context.graph();
         var features = context.features();
@@ -320,6 +320,20 @@ export function rendererMap(context) {
                 filter = function(d) { return set.has(d.id); };
 
             } else {
+                let hiddenLayers = [];
+                Object.keys(Hoot.layers.loadedLayers).map( key => {
+                    const layer = Hoot.layers.loadedLayers[ key ];
+                    if ( !layer.visible ) {
+                        hiddenLayers.push( `${layer.id}` );
+                    }
+                });
+
+                if (hiddenLayers.length > 0) {
+                    all = all.filter( node => {
+                        return !hiddenLayers.includes( node.mapId );
+                    } );
+                }
+
                 data = all;
                 fullRedraw = true;
                 filter = utilFunctor(true);
@@ -346,7 +360,7 @@ export function rendererMap(context) {
     }
 
 
-    function editOff() {
+    map.editOff = function() {
         context.features().resetStats();
         surface.selectAll('.layer-osm *').remove();
         surface.selectAll('.layer-touch *').remove();
@@ -357,7 +371,7 @@ export function rendererMap(context) {
         }
 
         dispatch.call('drawn', this, {full: true});
-    }
+    };
 
 
     function dblClick() {
@@ -611,6 +625,9 @@ export function rendererMap(context) {
 
         // OSM
         if ( map.editable() ) {
+            const tileZoom = map.zoom() <= 16 ? 2 : 16;
+            context.connection().tileZoom( tileZoom );
+
             context.loadTiles( projection, () => {
                 if ( Hoot.layers.mergedLayer && Hoot.layers.mergedLayer.reviewItem ) {
                     Hoot.events.emit( 'layer-reviews' );
@@ -619,7 +636,7 @@ export function rendererMap(context) {
 
             drawVector( difference, extent );
         } else {
-            editOff();
+            map.editOff();
         }
 
         _transformStart = projection.transform();

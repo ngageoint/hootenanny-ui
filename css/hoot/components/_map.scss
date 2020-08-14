@@ -249,6 +249,13 @@ path.line {
     }
 }
 
+#exceedingCountInfo a {
+    background: #1e90ff;
+    padding: 2px 4px 4px 4px;
+    border-radius: 2px;
+    color: #eee;
+}
+
 //@media only screen and (max-width: 1160px) {
 //    #content {
 //        width: calc(100% - 300px);
