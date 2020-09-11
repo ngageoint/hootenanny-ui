@@ -219,16 +219,21 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     executeTask( task ) {
-        const deriveType = this.isDeriveSelected();
-        if ( !deriveType ) { return; }
+        const isResume = this.timeoutTasks.includes( task.id );
 
         let coordinates = task.geometry.coordinates[0][0];
         let extLayer = new GeoExtent([ coordinates[0][0], coordinates[0][1] ], [ coordinates[2][0], coordinates[2][1] ]);
 
-        const params = {
-            deriveType: deriveType,
+        let params = {
             uploadResult: true
         };
+
+        if ( !isResume ) {
+            const deriveType = this.isDeriveSelected();
+            if ( !deriveType ) { return; }
+
+            params.deriveType = deriveType;
+        }
 
         const data = {
             BBOX: extLayer.toParam(),
@@ -238,7 +243,19 @@ export default class TaskingManagerPanel extends Tab {
 
         this.setTaskStatus( task.id, 'Running' );
 
-        return Hoot.api.deriveChangeset( data, params )
+        let executeCommand;
+        if ( this.timeoutTasks.includes( task.id ) ) {
+            executeCommand = Hoot.api.overpassSyncCheck( `${ this.currentProject.id }_${ task.id }` )
+                .then( async resp => {
+                    await this.refreshTimeoutTaskList();
+
+                    return resp;
+                } );
+        } else {
+            executeCommand = Hoot.api.deriveChangeset( data, params );
+        }
+
+        return executeCommand
             .then( async resp => {
                 Hoot.message.alert( resp );
                 let status;
@@ -247,6 +264,8 @@ export default class TaskingManagerPanel extends Tab {
                     status = 'Done';
 
                     await Hoot.api.markTaskDone( this.currentProject.id, task.id );
+                } else if ( resp.status === 500 ) {
+                    return resp;
                 } else {
                     status = 'Invalidated';
 
@@ -267,6 +286,8 @@ export default class TaskingManagerPanel extends Tab {
 
                 this.setTaskStatus( task.id, status );
                 this.unlockedTaskButtons( task.id );
+
+                return resp;
             } );
     }
 
@@ -281,8 +302,8 @@ export default class TaskingManagerPanel extends Tab {
 
         container.append( 'button' )
             .classed( 'primary text-light', true )
-            .text( 'Run' )
-            .on( 'click', task => {
+            .text( this.timeoutTasks.includes(taskId) ? 'Resume' : 'Run' )
+            .on( 'click', async task => {
                 this.executeTask( task );
             });
     }
@@ -322,7 +343,6 @@ export default class TaskingManagerPanel extends Tab {
         const deriveType = this.isDeriveSelected();
         if ( !deriveType ) { return; }
 
-        this.tasksContainer.select( '.runAllBtn' );
         this.setupCancelBtn();
 
         const myList = taskList.nodes();
@@ -333,16 +353,16 @@ export default class TaskingManagerPanel extends Tab {
                 break;
             }
 
-            // Needed to allow newly pushed data to sync before working on next task
-            // Adds only doesnt rely on recently pushed data so dont need to wait for that
-            if ( !onfirstJob && deriveType !== 'Adds only' ) {
-                await this.sleep( Hoot.api.runTasksInterval );
-            }
-
             const task = d3.select( container ).select( '.taskingManager-action-buttons' ).datum();
 
             await this.setLockState( task, true );
-            await this.executeTask( task );
+            const response = await this.executeTask( task );
+
+            // When timeout occurs
+            if ( response.status === 500 ) {
+                await this.refreshTimeoutTaskList();
+                break;
+            }
 
             onfirstJob = false;
         }
@@ -355,7 +375,7 @@ export default class TaskingManagerPanel extends Tab {
 
         this.tasksContainer.select( '.runAllBtn' )
             .property( 'disabled', false )
-            .text( 'Run all' )
+            .text( this.timeoutTasks.length > 0 ? 'Resume' : 'Run all' )
             .on( 'click', () => {
                 let containsLocked = this.tasksTable.select( '[status="Locked"]' ).empty();
                 const unRunTasks = this.tasksTable.selectAll( '.taskingManager-item' ).filter( function() {
@@ -388,6 +408,11 @@ export default class TaskingManagerPanel extends Tab {
             } );
     }
 
+    async refreshTimeoutTaskList() {
+        const tasksRequest = await Hoot.api.getTimeoutTasks( this.currentProject.id );
+        this.timeoutTasks = tasksRequest.data;
+    }
+
     async loadTaskTable( project ) {
         const tmPanel = this;
         this.tasksTable.selectAll( '.taskingManager-item' ).remove();
@@ -398,6 +423,8 @@ export default class TaskingManagerPanel extends Tab {
 
         const tasksList = await Hoot.api.getTMTasks( this.currentProject.id );
         tasksList.features.sort( (a, b) => (a.id > b.id) ? 1 : -1 );
+
+        await this.refreshTimeoutTaskList();
 
         let items = this.tasksTable.selectAll( '.taskingManager-item' )
             .data( tasksList.features );
@@ -416,7 +443,8 @@ export default class TaskingManagerPanel extends Tab {
         items.append( 'div' )
             .classed( 'task-status', true )
             .text( task => {
-                const status = task.properties.locked ? 'Locked' : null;
+                const status = task.properties.locked ? 'Locked' :
+                    this.timeoutTasks.includes(task.id) ? 'Timed out' : null;
                 return this.setTaskStatus( task.id, status );
             } );
 
