@@ -1428,6 +1428,30 @@ export default class API {
             } );
     }
 
+    getTimeoutTasks( projectId ) {
+        const params = {
+            path: `/grail/gettimeouttasks?projectId=${ projectId }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Changeset upload complete.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                const message = err.data.message || 'Changeset upload failed.',
+                    status  = err.status,
+                    type    = err.type;
+
+                return Promise.reject( { message, status, type } );
+            } );
+    }
+
     /****************** TRANSLATIONS *******************/
 
     getTranslationSchemas() {
@@ -1512,6 +1536,31 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data );
+    }
+
+    overpassSyncCheck( projectTaskInfo ) {
+        const params = {
+            path: `/grail/overpasssynccheck?projectTaskInfo=${ projectTaskInfo }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Overpass sync complete.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    message: err.data,
+                    status: err.status,
+                    type: err.type
+                };
+            } );
     }
 
     /**
