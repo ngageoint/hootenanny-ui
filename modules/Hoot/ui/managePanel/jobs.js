@@ -747,8 +747,8 @@ export default class Jobs extends Tab {
 
                     // If the upload changeset job is marked having conflicts
                     // add action to download conflicted changes
-                    if (d.statusDetail.toUpperCase() === 'CONFLICTS' &&
-                        (d.jobType.toUpperCase() === 'UPLOAD_CHANGESET' || d.jobType.toUpperCase().includes('BULK'))) {
+                    if (d.statusDetail.toUpperCase() === 'CONFLICTS'
+                        && d.jobType.toUpperCase() === 'UPLOAD_CHANGESET') {
 
                         actions.push({
                             title: 'download conflicted changes',

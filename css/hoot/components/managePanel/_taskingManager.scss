@@ -117,8 +117,7 @@
             background-color: #a3cfa3;
         }
 
-        &[status="Invalidated"],
-        &[status="Timed out"] {
+        &[status="Invalidated"] {
             background-color: #ffa3a3;
         }
 
