@@ -257,14 +257,15 @@ export default class TaskingManagerPanel extends Tab {
 
         return executeCommand
             .then( async resp => {
-                Hoot.message.alert( resp );
                 let status;
 
                 if ( resp.status === 200 ) {
                     status = 'Done';
 
                     await Hoot.api.markTaskDone( this.currentProject.id, task.id );
-                } else if ( resp.status === 500 ) {
+                } else if ( resp.message.includes('time exceeded') ) {
+                    Hoot.message.alert( resp );
+                    this.setTaskStatus( task.id, 'Timed out' );
                     return resp;
                 } else {
                     status = 'Invalidated';
@@ -282,8 +283,11 @@ export default class TaskingManagerPanel extends Tab {
 
                             Hoot.message.alert( alert );
                         } );
+
+                    resp.message += ' Check the jobs panel if you want to download the diff-error file.';
                 }
 
+                Hoot.message.alert( resp );
                 this.setTaskStatus( task.id, status );
                 this.unlockedTaskButtons( task.id );
 

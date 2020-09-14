@@ -1420,7 +1420,7 @@ export default class API {
                 };
             } )
             .catch( err => {
-                const message = err.data.message || 'Changeset upload failed.',
+                const message = err.data.message || 'Changeset upload failed. Diff-error file is available for download in job panel.',
                       status  = err.status,
                       type    = err.type;
 
@@ -1434,22 +1434,7 @@ export default class API {
             method: 'GET'
         };
 
-        return this.request( params )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Changeset upload complete.',
-                    status: 200,
-                    type: 'success'
-                };
-            } )
-            .catch( err => {
-                const message = err.data.message || 'Changeset upload failed.',
-                    status  = err.status,
-                    type    = err.type;
-
-                return Promise.reject( { message, status, type } );
-            } );
+        return this.request( params );
     }
 
     /****************** TRANSLATIONS *******************/
