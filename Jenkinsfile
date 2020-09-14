@@ -5,6 +5,15 @@ pipeline {
     parameters {
         booleanParam(name: 'UI', defaultValue: true)
         string(name: 'Box', defaultValue: 'default', description: 'Vagrant Box')
+        string(name: 'HOOT_UI_AWS_ENV_TAG', defaultValue: 'testing')
+        string(name: 'HOOT_UI_AWS_USE_TAG', defaultValue: 'jenkins')
+        string(name: 'HOOT_UI_AWS_GROUP_TAG', defaultValue: 'devops')
+    }
+
+    environment {
+        HOOT_UI_AWS_ENV_TAG="${params.HOOT_UI_AWS_ENV_TAG}"
+        HOOT_UI_AWS_USE_TAG="${params.HOOT_UI_AWS_USE_TAG}"
+        HOOT_UI_AWS_GROUP_TAG="${params.HOOT_UI_AWS_GROUP_TAG}"
     }
 
     stages {
