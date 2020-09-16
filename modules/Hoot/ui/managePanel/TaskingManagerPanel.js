@@ -350,7 +350,6 @@ export default class TaskingManagerPanel extends Tab {
         this.setupCancelBtn();
 
         const myList = taskList.nodes();
-        let onfirstJob = true;
 
         for ( const container of myList ) {
             if ( this.cancelRunning ) {
@@ -367,8 +366,6 @@ export default class TaskingManagerPanel extends Tab {
                 await this.refreshTimeoutTaskList();
                 break;
             }
-
-            onfirstJob = false;
         }
 
         this.setupRunAllBtn();
@@ -418,8 +415,11 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     async loadTaskTable( project ) {
+        this.loadingState();
+
         const tmPanel = this;
         this.tasksTable.selectAll( '.taskingManager-item' ).remove();
+        this.tasksContainer.select( '.changeset-control' ).remove();
         this.currentProject = project;
 
         this.tasksContainer.select( '.taskHeader-title' )
@@ -478,7 +478,20 @@ export default class TaskingManagerPanel extends Tab {
 
         this.createDeriveDropdown();
 
+        this.loadingState();
         this.tasksContainer.classed( 'hidden', false );
+    }
+
+    loadingState() {
+        const overlay = this.tasksContainer.select( '.grail-loading' );
+
+        if ( !overlay.empty() ){
+            overlay.remove();
+        } else {
+            // Add overlay with spinner
+            this.tasksContainer.insert( 'div', '.modal-footer' )
+                .classed('grail-loading', true);
+        }
     }
 }
 
