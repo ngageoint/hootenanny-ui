@@ -415,6 +415,7 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     async loadTaskTable( project ) {
+        this.tasksContainer.classed( 'hidden', false );
         this.loadingState();
 
         const tmPanel = this;
@@ -479,7 +480,6 @@ export default class TaskingManagerPanel extends Tab {
         this.createDeriveDropdown();
 
         this.loadingState();
-        this.tasksContainer.classed( 'hidden', false );
     }
 
     loadingState() {
