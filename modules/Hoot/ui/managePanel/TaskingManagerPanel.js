@@ -106,6 +106,8 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     loadProjectsTable( projects ) {
+        this.loadingState( this.projectsTable );
+
         let items = this.projectsTable.selectAll( '.taskingManager-item' )
             .data( projects );
 
@@ -143,6 +145,8 @@ export default class TaskingManagerPanel extends Tab {
 
             return `Created by ${author} - Created on ${created}`;
         } );
+
+        this.loadingState( this.projectsTable );
     }
 
     createDeriveDropdown() {
@@ -203,7 +207,7 @@ export default class TaskingManagerPanel extends Tab {
 
         if ( !status ) {
             let taskState = this.taskingManagerStatus[ taskData.properties.state ];
-            status = taskState ? taskState : '';
+            status = taskState ? taskState : this.timeoutTasks.includes( taskId ) ? 'Timed out' : '';
         } else {
             // If state is an option in tasking manager, set the task to this new state
             const value = Object.values( this.taskingManagerStatus ).indexOf( status );
@@ -245,27 +249,25 @@ export default class TaskingManagerPanel extends Tab {
 
         let executeCommand;
         if ( this.timeoutTasks.includes( task.id ) ) {
-            executeCommand = Hoot.api.overpassSyncCheck( `${ this.currentProject.id }_${ task.id }` )
-                .then( async resp => {
-                    await this.refreshTimeoutTaskList();
-
-                    return resp;
-                } );
+            executeCommand = Hoot.api.overpassSyncCheck( `${ this.currentProject.id }_${ task.id }` );
         } else {
             executeCommand = Hoot.api.deriveChangeset( data, params );
         }
 
         return executeCommand
             .then( async resp => {
+                await this.refreshTimeoutTaskList();
+
                 let status;
 
                 if ( resp.status === 200 ) {
                     status = 'Done';
 
                     await Hoot.api.markTaskDone( this.currentProject.id, task.id );
-                } else if ( resp.message.includes('time exceeded') ) {
+                } else if ( resp.message && resp.message.includes( 'time exceeded' ) ) {
                     Hoot.message.alert( resp );
                     this.setTaskStatus( task.id, 'Timed out' );
+                    this.lockedTaskButtons( task.id );
                     return resp;
                 } else {
                     status = 'Invalidated';
@@ -415,8 +417,8 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     async loadTaskTable( project ) {
+        this.loadingState( this.tasksContainer );
         this.tasksContainer.classed( 'hidden', false );
-        this.loadingState();
 
         const tmPanel = this;
         this.tasksTable.selectAll( '.taskingManager-item' ).remove();
@@ -479,17 +481,17 @@ export default class TaskingManagerPanel extends Tab {
 
         this.createDeriveDropdown();
 
-        this.loadingState();
+        this.loadingState( this.tasksContainer );
     }
 
-    loadingState() {
-        const overlay = this.tasksContainer.select( '.grail-loading' );
+    loadingState( container ) {
+        const overlay = container.select( '.grail-loading' );
 
         if ( !overlay.empty() ){
             overlay.remove();
         } else {
             // Add overlay with spinner
-            this.tasksContainer.insert( 'div', '.modal-footer' )
+            container.insert( 'div', '.modal-footer' )
                 .classed('grail-loading', true);
         }
     }
