@@ -222,9 +222,7 @@ export default class TaskingManagerPanel extends Tab {
         return status;
     }
 
-    executeTask( task ) {
-        const isResume = this.timeoutTasks.includes( task.id );
-
+    executeTask( task, syncCheck ) {
         let coordinates = task.geometry.coordinates[0][0];
         let extLayer = new GeoExtent([ coordinates[0][0], coordinates[0][1] ], [ coordinates[2][0], coordinates[2][1] ]);
 
@@ -232,7 +230,7 @@ export default class TaskingManagerPanel extends Tab {
             uploadResult: true
         };
 
-        if ( !isResume ) {
+        if ( !syncCheck ) {
             const deriveType = this.isDeriveSelected();
             if ( !deriveType ) { return; }
 
@@ -248,7 +246,7 @@ export default class TaskingManagerPanel extends Tab {
         this.setTaskStatus( task.id, 'Running' );
 
         let executeCommand;
-        if ( this.timeoutTasks.includes( task.id ) ) {
+        if ( syncCheck ) {
             executeCommand = Hoot.api.overpassSyncCheck( `${ this.currentProject.id }_${ task.id }` );
         } else {
             executeCommand = Hoot.api.deriveChangeset( data, params );
@@ -264,7 +262,7 @@ export default class TaskingManagerPanel extends Tab {
                     status = 'Done';
 
                     await Hoot.api.markTaskDone( this.currentProject.id, task.id );
-                } else if ( resp.message && resp.message.includes( 'time exceeded' ) ) {
+                } else if ( this.timeoutTasks.includes( task.id ) ) {
                     Hoot.message.alert( resp );
                     this.setTaskStatus( task.id, 'Timed out' );
                     this.lockedTaskButtons( task.id );
@@ -308,10 +306,19 @@ export default class TaskingManagerPanel extends Tab {
 
         container.append( 'button' )
             .classed( 'primary text-light', true )
-            .text( this.timeoutTasks.includes(taskId) ? 'Resume' : 'Run' )
+            .text( 'Run' )
             .on( 'click', async task => {
                 this.executeTask( task );
             });
+
+        if ( this.timeoutTasks.includes(taskId) ) {
+            container.append( 'button' )
+                .classed( 'primary text-light', true )
+                .text( 'Resume' )
+                .on( 'click', async task => {
+                    this.executeTask( task, true );
+                });
+        }
     }
 
     unlockedTaskButtons( taskId ) {
@@ -361,7 +368,7 @@ export default class TaskingManagerPanel extends Tab {
             const task = d3.select( container ).select( '.taskingManager-action-buttons' ).datum();
 
             await this.setLockState( task, true );
-            const response = await this.executeTask( task );
+            const response = await this.executeTask( task, this.timeoutTasks.includes( task.id ) );
 
             // When timeout occurs
             if ( response.status === 500 ) {
