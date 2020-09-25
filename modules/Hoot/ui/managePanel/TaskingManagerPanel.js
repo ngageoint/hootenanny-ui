@@ -74,6 +74,8 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     async activate() {
+        this.loadingState( this.projectsTable, true );
+
         // await for the list
         this.projectList = await this.projectList;
 
@@ -106,8 +108,6 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     loadProjectsTable( projects ) {
-        this.loadingState( this.projectsTable );
-
         let items = this.projectsTable.selectAll( '.taskingManager-item' )
             .data( projects );
 
@@ -424,7 +424,7 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     async loadTaskTable( project ) {
-        this.loadingState( this.tasksContainer );
+        this.loadingState( this.tasksContainer, true );
         this.tasksContainer.classed( 'hidden', false );
 
         const tmPanel = this;
@@ -491,12 +491,11 @@ export default class TaskingManagerPanel extends Tab {
         this.loadingState( this.tasksContainer );
     }
 
-    loadingState( container ) {
+    loadingState( container, showLoading ) {
         const overlay = container.select( '.grail-loading' );
+        overlay.remove();
 
-        if ( !overlay.empty() ){
-            overlay.remove();
-        } else {
+        if ( showLoading ) {
             // Add overlay with spinner
             container.insert( 'div', '.modal-footer' )
                 .classed('grail-loading', true);
