@@ -79,7 +79,9 @@ export default class TaskingManagerPanel extends Tab {
         // await for the list
         this.projectList = await this.projectList;
 
-        if ( this.projectList ) {
+        if ( this.projectList.status === 400 ) {
+            Hoot.message.alert( this.projectList );
+        } else if ( this.projectList ) {
             this.projectList.features = this.projectList.features.filter( task => task.properties.hoot_map_id );
 
             this.loadProjectsTable( this.projectList.features );
