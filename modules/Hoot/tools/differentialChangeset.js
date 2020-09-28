@@ -1,5 +1,6 @@
 import FormFactory from './formFactory';
 
+import selectBbox     from './selectBbox';
 import { formatBbox } from './utilities';
 
 export default class DifferentialChangeset {
@@ -54,10 +55,8 @@ export default class DifferentialChangeset {
 
         data.ADV_OPTIONS = this.formFactory.getAdvOpts(this.container, this.advOpts);
 
-        let projectName = sessionStorage.getItem('tm:project'),
-            folderName = sessionStorage.getItem('tm:task');
-        if ( projectName && folderName ) {
-            data.taskInfo = projectName + ', ' + folderName;
+        if ( this.instance.bboxSelectType === 'customDataExtent' && selectBbox.customDataExtentEnabled() ) {
+            data.taskInfo = sessionStorage.getItem('tm:project') + ', ' + sessionStorage.getItem('tm:task');
         }
 
         const params = {

@@ -1,5 +1,6 @@
 import FormFactory from './formFactory';
 
+import selectBbox                                    from './selectBbox';
 import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
 import _find                                         from 'lodash-es/find';
 import OverpassQueryPanel                            from './overpassQueryPanel';
@@ -200,6 +201,16 @@ export default class GrailPull {
         } );
     }
 
+    // Checks if there is tm project and task info set. Also check that the custom
+    static customDataExtentEnabled() {
+        if ( sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task') &&
+            Hoot.context.layers().layer('data').enabled() && Hoot.context.layers().layer('data').hasData() ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     async handleSubmit() {
         this.loadingState();
 
@@ -225,7 +236,7 @@ export default class GrailPull {
             input1   : this.form.select( '.outputName-1' ).property( 'value' )
         };
 
-        if (sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task')) {
+        if ( this.instance.bboxSelectType === 'customDataExtent' && selectBbox.customDataExtentEnabled() ) {
             /**
              * If we are coming from tasking manager, and we dont' have project folder, add it.
              */
