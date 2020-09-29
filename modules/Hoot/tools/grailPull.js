@@ -201,16 +201,6 @@ export default class GrailPull {
         } );
     }
 
-    // Checks if there is tm project and task info set. Also check that the custom
-    static customDataExtentEnabled() {
-        if ( sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task') &&
-            Hoot.context.layers().layer('data').enabled() && Hoot.context.layers().layer('data').hasData() ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     async handleSubmit() {
         this.loadingState();
 
@@ -236,7 +226,8 @@ export default class GrailPull {
             input1   : this.form.select( '.outputName-1' ).property( 'value' )
         };
 
-        if ( this.instance.bboxSelectType === 'customDataExtent' && selectBbox.customDataExtentEnabled() ) {
+        if ( this.instance.bboxSelectType === 'customDataExtent' &&
+            sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task') ) {
             /**
              * If we are coming from tasking manager, and we dont' have project folder, add it.
              */

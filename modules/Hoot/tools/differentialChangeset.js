@@ -55,7 +55,8 @@ export default class DifferentialChangeset {
 
         data.ADV_OPTIONS = this.formFactory.getAdvOpts(this.container, this.advOpts);
 
-        if ( this.instance.bboxSelectType === 'customDataExtent' && selectBbox.customDataExtentEnabled() ) {
+        if ( this.instance.bboxSelectType === 'customDataExtent' &&
+            sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task') ) {
             data.taskInfo = sessionStorage.getItem('tm:project') + ', ' + sessionStorage.getItem('tm:task');
         }
 
