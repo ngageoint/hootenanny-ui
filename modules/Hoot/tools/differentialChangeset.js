@@ -1,6 +1,4 @@
 import FormFactory from './formFactory';
-
-import selectBbox     from './selectBbox';
 import { formatBbox } from './utilities';
 
 export default class DifferentialChangeset {
