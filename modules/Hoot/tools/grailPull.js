@@ -1,5 +1,6 @@
 import FormFactory from './formFactory';
 
+import selectBbox                                    from './selectBbox';
 import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
 import _find                                         from 'lodash-es/find';
 import OverpassQueryPanel                            from './overpassQueryPanel';
@@ -225,7 +226,8 @@ export default class GrailPull {
             input1   : this.form.select( '.outputName-1' ).property( 'value' )
         };
 
-        if (sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task')) {
+        if ( this.instance.bboxSelectType === 'customDataExtent' &&
+            sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task') ) {
             /**
              * If we are coming from tasking manager, and we dont' have project folder, add it.
              */
