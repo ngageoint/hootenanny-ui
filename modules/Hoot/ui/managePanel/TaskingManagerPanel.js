@@ -74,10 +74,14 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     async activate() {
+        this.loadingState( this.projectsTable, true );
+
         // await for the list
         this.projectList = await this.projectList;
 
-        if ( this.projectList ) {
+        if ( this.projectList.status === 400 ) {
+            Hoot.message.alert( this.projectList );
+        } else if ( this.projectList ) {
             this.projectList.features = this.projectList.features.filter( task => task.properties.hoot_map_id );
 
             this.loadProjectsTable( this.projectList.features );
@@ -143,6 +147,8 @@ export default class TaskingManagerPanel extends Tab {
 
             return `Created by ${author} - Created on ${created}`;
         } );
+
+        this.loadingState( this.projectsTable );
     }
 
     createDeriveDropdown() {
@@ -203,7 +209,7 @@ export default class TaskingManagerPanel extends Tab {
 
         if ( !status ) {
             let taskState = this.taskingManagerStatus[ taskData.properties.state ];
-            status = taskState ? taskState : '';
+            status = taskState ? taskState : this.timeoutTasks.includes( taskId ) ? 'Timed out' : '';
         } else {
             // If state is an option in tasking manager, set the task to this new state
             const value = Object.values( this.taskingManagerStatus ).indexOf( status );
@@ -218,9 +224,7 @@ export default class TaskingManagerPanel extends Tab {
         return status;
     }
 
-    executeTask( task ) {
-        const isResume = this.timeoutTasks.includes( task.id );
-
+    executeTask( task, syncCheck ) {
         let coordinates = task.geometry.coordinates[0][0];
         let extLayer = new GeoExtent([ coordinates[0][0], coordinates[0][1] ], [ coordinates[2][0], coordinates[2][1] ]);
 
@@ -228,7 +232,7 @@ export default class TaskingManagerPanel extends Tab {
             uploadResult: true
         };
 
-        if ( !isResume ) {
+        if ( !syncCheck ) {
             const deriveType = this.isDeriveSelected();
             if ( !deriveType ) { return; }
 
@@ -244,28 +248,26 @@ export default class TaskingManagerPanel extends Tab {
         this.setTaskStatus( task.id, 'Running' );
 
         let executeCommand;
-        if ( this.timeoutTasks.includes( task.id ) ) {
-            executeCommand = Hoot.api.overpassSyncCheck( `${ this.currentProject.id }_${ task.id }` )
-                .then( async resp => {
-                    await this.refreshTimeoutTaskList();
-
-                    return resp;
-                } );
+        if ( syncCheck ) {
+            executeCommand = Hoot.api.overpassSyncCheck( `${ this.currentProject.id }_${ task.id }` );
         } else {
             executeCommand = Hoot.api.deriveChangeset( data, params );
         }
 
         return executeCommand
             .then( async resp => {
+                await this.refreshTimeoutTaskList();
+
                 let status;
 
                 if ( resp.status === 200 ) {
                     status = 'Done';
 
                     await Hoot.api.markTaskDone( this.currentProject.id, task.id );
-                } else if ( resp.message.includes('time exceeded') ) {
+                } else if ( this.timeoutTasks.includes( task.id ) ) {
                     Hoot.message.alert( resp );
                     this.setTaskStatus( task.id, 'Timed out' );
+                    this.lockedTaskButtons( task.id );
                     return resp;
                 } else {
                     status = 'Invalidated';
@@ -306,10 +308,19 @@ export default class TaskingManagerPanel extends Tab {
 
         container.append( 'button' )
             .classed( 'primary text-light', true )
-            .text( this.timeoutTasks.includes(taskId) ? 'Resume' : 'Run' )
+            .text( 'Run' )
             .on( 'click', async task => {
                 this.executeTask( task );
             });
+
+        if ( this.timeoutTasks.includes(taskId) ) {
+            container.append( 'button' )
+                .classed( 'primary text-light', true )
+                .text( 'Resume' )
+                .on( 'click', async task => {
+                    this.executeTask( task, true );
+                });
+        }
     }
 
     unlockedTaskButtons( taskId ) {
@@ -359,7 +370,7 @@ export default class TaskingManagerPanel extends Tab {
             const task = d3.select( container ).select( '.taskingManager-action-buttons' ).datum();
 
             await this.setLockState( task, true );
-            const response = await this.executeTask( task );
+            const response = await this.executeTask( task, this.timeoutTasks.includes( task.id ) );
 
             // When timeout occurs
             if ( response.status === 500 ) {
@@ -415,7 +426,8 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     async loadTaskTable( project ) {
-        this.loadingState();
+        this.loadingState( this.tasksContainer, true );
+        this.tasksContainer.classed( 'hidden', false );
 
         const tmPanel = this;
         this.tasksTable.selectAll( '.taskingManager-item' ).remove();
@@ -478,18 +490,16 @@ export default class TaskingManagerPanel extends Tab {
 
         this.createDeriveDropdown();
 
-        this.loadingState();
-        this.tasksContainer.classed( 'hidden', false );
+        this.loadingState( this.tasksContainer );
     }
 
-    loadingState() {
-        const overlay = this.tasksContainer.select( '.grail-loading' );
+    loadingState( container, showLoading ) {
+        const overlay = container.select( '.grail-loading' );
+        overlay.remove();
 
-        if ( !overlay.empty() ){
-            overlay.remove();
-        } else {
+        if ( showLoading ) {
             // Add overlay with spinner
-            this.tasksContainer.insert( 'div', '.modal-footer' )
+            container.insert( 'div', '.modal-footer' )
                 .classed('grail-loading', true);
         }
     }

@@ -1583,10 +1583,11 @@ export default class API {
             .catch( () => {
                 let alert = {
                     message: 'Failed to retrieve projects list from tasking manager.',
-                    type: 'error'
+                    type: 'error',
+                    status: 400
                 };
 
-                Hoot.message.alert( alert );
+                return alert;
             } );
     }
 
