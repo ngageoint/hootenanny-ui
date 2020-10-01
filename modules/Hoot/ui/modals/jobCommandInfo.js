@@ -51,25 +51,25 @@ export default class JobCommandInfo {
             verbose = cbox.property('checked');
         }
 
-        // get all commands in 1 big string, seperate them by line, only use the ones marked at 'STATUS'
+        // get all commands in 1 big string, seperate them by line, only use the ones marked as 'STATUS'
         return jobStatus.map( comm => {
                 return ((verbose) ? 'COMMAND   ' + comm.command + '\n' : '') + comm.stdout;
             })
             .join('')
             .split('\n')
             .filter( command => {
-                return verbose || /^STATUS/.test(command);
+                return verbose || /^.*STATUS/.test(command);
             })
             .map( command => {
-                const replace = new RegExp(`^\\w+\\s+((${uuidRegex})?\\s?-?\\s?)`,'g');
+                const replace = new RegExp(`^(\\d\\d:\\d\\d:\\d\\d\.\\d\\d\\d)*\\s*\\w+\\s+((${uuidRegex})?\\s?-?\\s?)`,'g');
+                let match = replace.exec(command);
                 let line;
                 if (verbose) {
                     line = command.replace('STATUS ', 'STATUS   ')
                                   .replace('   ', '\t');
-                    let match = replace.exec(command);
-                    if (match) line = line.replace(match[1], '');
+                    if (match) line = line.replace(match[2], '');
                 } else {
-                    line = command.replace( replace, '' );
+                    line = command.replace( replace, (match && match[1]) ? match[1] + '\t' : '' );
                 }
                 return line;
             })
