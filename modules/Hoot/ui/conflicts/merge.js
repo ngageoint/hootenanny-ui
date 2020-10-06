@@ -350,9 +350,8 @@ export default class Merge {
 
     checkMergeButton() {
         let features = _clone( this.data.currentFeatures ),
-            toFeature = Hoot.context.hasEntity( features[0].id ),
-            fromFeature = Hoot.context.hasEntity( features[1].id ),
-            relation = this.instance.graphSync.getCurrentRelation();
+            toFeature = features[0] ? Hoot.context.hasEntity( features[0].id ) : null,
+            fromFeature = features[1] ? Hoot.context.hasEntity( features[1].id ) : null;
 
         if ( toFeature && fromFeature) {
             this.isPoiPoly = (toFeature.type === 'node' && fromFeature.type === 'way')

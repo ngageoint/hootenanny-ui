@@ -47,8 +47,8 @@ export default class ConflictMetadata {
         if (!currentRelation) return;
 
         let features = this.data.currentFeatures,
-            feature = Hoot.context.hasEntity( features[0].id ),
-            againstFeature = Hoot.context.hasEntity( features[1].id );
+            feature = features[0] ? Hoot.context.hasEntity( features[0].id ) : null,
+            againstFeature = features[1] ? Hoot.context.hasEntity( features[1].id ) : null;
 
         let colData = [feature, againstFeature];
 

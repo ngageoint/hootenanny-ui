@@ -207,7 +207,7 @@ export default class LayerMetadata {
             this.createExpandList( paramData, 'Parameters' );
         }
 
-        let optData = d3.entries( this.tags.params.ADV_OPTIONS ).sort( ( a, b ) => {
+        let optData = d3.entries( this.tags.params.HOOT2_ADV_OPTIONS ).sort( ( a, b ) => {
             if ( a.key < b.key ) {
                 return -1;
             }
