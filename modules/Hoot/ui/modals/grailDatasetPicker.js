@@ -41,15 +41,14 @@ export default class GrailDatasetPicker {
 
             //Add advanced options to form
             this.advOpts = await Hoot.api.getAdvancedChangesetOptions();
-            metadata.form = metadata.form.concat(this.advOpts.map(this.formFactory.advOpt2DomMeta));
+            if ( this.advOpts ) {
+                metadata.form = metadata.form.concat(this.advOpts.map(this.formFactory.advOpt2DomMeta));
+            }
 
         } else {
             metadata = {
                 title: 'No Suitable Grail Reference Datasets'
             };
-
-
-
         }
         let formId = 'grailDatasetForm';
         this.form  = this.formFactory.generateForm( 'body', formId, metadata );

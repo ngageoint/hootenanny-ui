@@ -563,24 +563,26 @@ export default class FormFactory {
     getAdvOpts(container, advOpts) {
         let advParams = {};
 
-        advOpts.forEach(function(d) {
-            let propName;
-            switch (d.input) {
-                case 'checkbox':
-                    propName = 'checked';
-                    break;
-                case 'text':
-                default:
-                    propName = 'value';
-                    break;
-            }
-            let inputValue = container.select('#' + d.id).property(propName).toString();
+        if ( advOpts ) {
+            advOpts.forEach(function(d) {
+                let propName;
+                switch (d.input) {
+                    case 'checkbox':
+                        propName = 'checked';
+                        break;
+                    case 'text':
+                    default:
+                        propName = 'value';
+                        break;
+                }
+                let inputValue = container.select('#' + d.id).property(propName).toString();
 
-            // Need .length check because empty text box should be considered equal to default
-            if ( inputValue.length && inputValue !== d.default ) {
-                advParams[d.id] = inputValue;
-            }
-        });
+                // Need .length check because empty text box should be considered equal to default
+                if ( inputValue.length && inputValue !== d.default ) {
+                    advParams[d.id] = inputValue;
+                }
+            });
+        }
 
         return advParams;
     }
