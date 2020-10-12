@@ -69,8 +69,9 @@ export default class TaskingManagerPanel extends Tab {
 
         //Add advanced options to form
         const advOpts = await Hoot.api.getAdvancedChangesetOptions();
-        this.cutReplaceOptions.form = this.cutReplaceOptions.form.concat(advOpts.map(this.formFactory.advOpt2DomMeta));
-
+        if ( advOpts ) {
+            this.cutReplaceOptions.form = this.cutReplaceOptions.form.concat(advOpts.map(this.formFactory.advOpt2DomMeta));
+        }
     }
 
     async activate() {
@@ -174,7 +175,8 @@ export default class TaskingManagerPanel extends Tab {
                 } )
             ) )
             .on('change', () => {
-                if ( this.deriveDropdown.property( 'value' ) === 'Cut & Replace' ) {
+                if ( this.deriveDropdown.property( 'value' ) === 'Cut & Replace'
+                    && this.cutReplaceOptions.form.length > 0 ) {
                     let formId = 'cutReplaceForm';
                     this.form  = this.formFactory.generateForm( 'body', formId, this.cutReplaceOptions );
                 } else {
