@@ -247,7 +247,9 @@ class LayerConflate extends SidebarForm {
             }
         }
 
-        if ( data.HOOT2_ADV_OPTIONS.hasOwnProperty( 'RoadEngines' ) && data.HOOT2_ADV_OPTIONS.RoadEngines === 'Network' ) {
+        if ( data.HOOT2_ADV_OPTIONS.hasOwnProperty( 'RoadEngines' ) &&
+                data.HOOT2_ADV_OPTIONS.RoadEngines === 'Network' &&
+                !data.DISABLED_FEATURES.includes( 'Roads' ) ) {
             data.CONFLATION_ALGORITHM = 'Network';
             delete data.HOOT2_ADV_OPTIONS.RoadEngines;
         }
