@@ -108,7 +108,6 @@ class Hoot {
             const { data } = await this.api.grailMetadataQuery();
             this.config.referenceLabel = data.railsLabel;
             this.config.secondaryLabel = data.overpassLabel;
-            this.config.maxFeatureCount = Number(data.maxFeatureCount);
         }
     }
 
