@@ -9,7 +9,6 @@ import _get                                          from 'lodash-es/get';
 export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
-        this.maxFeatureCount = Hoot.config.maxFeatureCount;
     }
 
     render() {
@@ -102,26 +101,15 @@ export default class GrailPull {
         if ( rowData.columns.length === 2 ) {
             rows.append('td')
                 .classed( 'strong', data => data[rowData.columns[1]] > 0 )
-                .classed( 'badData', data => data.label === 'total' && data[rowData.columns[1]] > this.maxFeatureCount )
                 .text( data => data[rowData.columns[1]] );
         }
 
         // column for public overpass counts
         rows.append('td')
             .classed( 'strong', data => data[rowData.columns[0]] > 0 )
-            .classed( 'badData', data => data.label === 'total' && data[rowData.columns[0]] > this.maxFeatureCount )
             .text( data => data[rowData.columns[0]] );
 
-        if ( rows.selectAll('td.badData').size() ) {
-            this.form.select( '.hoot-menu' )
-                .insert( 'div', '.modal-footer' )
-                .classed( 'badData', true )
-                .text( `Max feature count of ${this.maxFeatureCount} exceeded` );
-
-            this.submitButton.node().disabled = true;
-        } else {
-            this.submitButton.node().disabled = false;
-        }
+        this.submitButton.node().disabled = false;
 
         this.layerNameTable();
     }
