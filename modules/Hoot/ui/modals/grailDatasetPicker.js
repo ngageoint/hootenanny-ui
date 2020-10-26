@@ -15,23 +15,26 @@ export default class GrailDatasetPicker {
         //use the layer mbr extent
         if (!this.layer.bbox) this.layer.bbox = (await Hoot.layers.layerExtent( this.layer.id )).toParam();
 
-        let data = Hoot.layers.grailReferenceLayers(this.layer);
+        this.refDatasets = Hoot.layers.grailReferenceLayers(this.layer);
         let metadata;
-        if (data.length) {
+        if (this.refDatasets.length) {
+            const referenceComboboxMeta = {
+                label: 'Select Reference Dataset',
+                id: 'refDataset',
+                inputType: 'combobox',
+                placeholder: 'Select a dataset',
+                data: this.refDatasets,
+                readonly: 'readonly',
+                sort: false,
+                itemKey: 'name',
+                _valueKey: 'id',
+                onChange: () => this.updateSubmitButton( )
+            };
+            this.checkForReference( referenceComboboxMeta );
+
             metadata = {
                 title: 'Grail Datasets',
-                form: [{
-                    label: 'Select Reference Dataset',
-                    id: 'refDataset',
-                    inputType: 'combobox',
-                    placeholder: 'Select a dataset',
-                    data: data,
-                    readonly: 'readonly',
-                    sort: false,
-                    itemKey: 'name',
-                    _valueKey: 'id',
-                    onChange: () => this.updateSubmitButton( )
-                }],
+                form: [ referenceComboboxMeta ],
                 button: {
                     text: 'Submit',
                     id: 'SubmitBtn',
@@ -57,8 +60,26 @@ export default class GrailDatasetPicker {
         this.updateSubmitButton();
     }
 
+    checkForReference( metadataObj ) {
+        let secondaryDataset = '';
+        const layerHash = this.layer.name.split('_');
+        const matchHash = layerHash.length > 0 ? layerHash[ layerHash.length - 1 ] : '';
+
+        if ( matchHash ) {
+            this.refDatasets.forEach( refData => {
+                if ( refData.name.endsWith( matchHash ) ) {
+                    metadataObj.value = refData.name;
+                    metadataObj._value = refData.id;
+                }
+            } );
+        }
+
+        return secondaryDataset;
+    }
+
     updateSubmitButton() {
         this.submitButton.attr( 'disabled', function() {
+            console.log(d3.select('#refDataset'));
                 var n = d3.select('#refDataset').property('value');
                 return (n && n.length) ? null : true;
             });
