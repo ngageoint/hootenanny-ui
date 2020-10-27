@@ -79,7 +79,6 @@ export default class GrailDatasetPicker {
 
     updateSubmitButton() {
         this.submitButton.attr( 'disabled', function() {
-            console.log(d3.select('#refDataset'));
                 var n = d3.select('#refDataset').property('value');
                 return (n && n.length) ? null : true;
             });
