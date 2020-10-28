@@ -6,8 +6,25 @@
     box-shadow: 0 3px 10px $dark-opacity10;
 
     thead {
+        display: block;
         color: $light;
         background: $dark1;
+    }
+
+    tbody {
+        display: block;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    tr {
+        display: flex;
+    }
+
+    td, th {
+        flex-basis:100%;
+        flex-grow:2;
+        display: block;
     }
 
     th {
@@ -18,13 +35,12 @@
     th:first-child {
         padding-left: 10px;
     }
+    th.filter {
+        cursor: context-menu;
+    }
 
     i.material-icons {
         vertical-align: bottom;
-    }
-
-    th.filter {
-        cursor: context-menu;
     }
 
     i.action, i.sort, i.filter {

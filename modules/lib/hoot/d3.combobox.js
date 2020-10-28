@@ -25,6 +25,7 @@ export function d3combobox() {
     var _suggestions   = [];
     var _minItems      = 1;
     var _caseSensitive = false;
+    let customClass;
 
     var _fetcher = function( val, cb ) {
         cb(_data.filter(function(d) {
@@ -98,7 +99,15 @@ export function d3combobox() {
                 wrapper = _container
                     .insert( 'div', ':first-child' )
                     .datum( input.node() )
-                    .attr( 'class', 'combobox' )
+                    .attr( 'class', () => {
+                        let classes = 'combobox';
+
+                        if ( customClass ) {
+                            classes += ' ' + customClass;
+                        }
+
+                        return classes;
+                    } )
                     .style( 'position', 'absolute' )
                     .style( 'display', 'block' )
                     .style( 'left', '0px' )
@@ -339,6 +348,11 @@ export function d3combobox() {
     combobox.container = function( _ ) {
         if ( !arguments.length ) return _container;
         _container = _;
+        return combobox;
+    };
+
+    combobox.setCustomClass = function( classString ) {
+        customClass = classString;
         return combobox;
     };
 
