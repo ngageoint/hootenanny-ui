@@ -89,7 +89,7 @@ export default class AdminPanel extends Tab {
             .classed('lastAccessed', true)
             .attr( 'type', 'text' )
             .attr( 'readonly', true )
-            .call(d3combobox().data(monthOptions.reverse()).setCustomClass( 'small-dropdown' ))
+            .call(d3combobox().data(monthOptions.reverse()))
             .on('change', async () => {
                 buttons.classed('disabled', false);
             });

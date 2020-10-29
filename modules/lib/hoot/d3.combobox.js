@@ -25,7 +25,6 @@ export function d3combobox() {
     var _suggestions   = [];
     var _minItems      = 1;
     var _caseSensitive = false;
-    let customClass;
 
     var _fetcher = function( val, cb ) {
         cb(_data.filter(function(d) {
@@ -99,15 +98,7 @@ export function d3combobox() {
                 wrapper = _container
                     .insert( 'div', ':first-child' )
                     .datum( input.node() )
-                    .attr( 'class', () => {
-                        let classes = 'combobox';
-
-                        if ( customClass ) {
-                            classes += ' ' + customClass;
-                        }
-
-                        return classes;
-                    } )
+                    .attr( 'class', 'combobox' )
                     .style( 'position', 'absolute' )
                     .style( 'display', 'block' )
                     .style( 'left', '0px' )
@@ -295,10 +286,19 @@ export function d3combobox() {
             var node = attachTo ? attachTo.node() : input.node();
             var rect = node.getBoundingClientRect();
 
-            wrapper
-                .style( 'left', (rect.left + 5) + 'px' )
-                .style( 'width', (rect.width - 10) + 'px' )
-                .style( 'top', rect.height + rect.top + 'px' );
+            //If the height of the menu is going to go off the screen, have it go towards the top of the screen instead
+            var dropDownHeight = d3.select('.combobox').node().getBoundingClientRect().height + rect.height;
+            if ((window.innerHeight-rect.top) < dropDownHeight){
+                wrapper
+                    .style( 'left', (rect.left + 5) + 'px' )
+                    .style( 'width', (rect.width - 10) + 'px' )
+                    .style( 'bottom', window.innerHeight - rect.top + 'px' );
+            } else {
+                wrapper
+                    .style('left', (rect.left + 5) + 'px')
+                    .style('width', (rect.width - 10) + 'px')
+                    .style('top', rect.height + rect.top + 'px');
+            }
         }
 
         function select( d, i ) {
@@ -348,11 +348,6 @@ export function d3combobox() {
     combobox.container = function( _ ) {
         if ( !arguments.length ) return _container;
         _container = _;
-        return combobox;
-    };
-
-    combobox.setCustomClass = function( classString ) {
-        customClass = classString;
         return combobox;
     };
 
