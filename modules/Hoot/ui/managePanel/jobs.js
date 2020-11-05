@@ -747,17 +747,18 @@ export default class Jobs extends Tab {
 
                     // If the upload changeset job is marked having conflicts
                     // add action to download conflicted changes
-                    if (d.statusDetail.toUpperCase() === 'CONFLICTS' &&
+                    if (//d.statusDetail.toUpperCase() === 'CONFLICTS' &&
                         (d.jobType.toUpperCase() === 'UPLOAD_CHANGESET' || d.jobType.toUpperCase().includes('BULK'))) {
 
                         actions.push({
                             title: 'download conflicted changes',
                             icon: 'archive',
                             action: async () => {
+                                const name = d.jobType.toUpperCase().includes('BULK') ? d.jobId : d.tags.parentId;
                                 let param = {
-                                    input: d.tags.parentId,
+                                    input: name,
                                     inputtype: 'changesets',
-                                    outputname: d.tags.parentId,
+                                    outputname: name,
                                     outputtype: 'zip'
                                 };
 
