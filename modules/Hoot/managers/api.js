@@ -1402,10 +1402,11 @@ export default class API {
             } );
     }
 
-    changesetPush( data ) {
+    changesetPush( data, paramData ) {
         const params = {
             path: '/grail/changesetpush',
             method: 'POST',
+            params: paramData,
             data
         };
 

@@ -221,23 +221,27 @@ export default class ChangesetStats {
     }
 
     handleSubmit() {
-
-        const params  = {},
+        const data  = {},
               tagsCheck = this.form.select('.applyTags');
 
-        params.parentId   = this.job.jobId;
+        data.parentId   = this.job.jobId;
 
         //Changeset tags
-        params.comment = Hoot.context.storage('comment') || '';
-        params.hashtags = Hoot.context.storage('hashtags') || '';
-        params.source = Hoot.context.storage('source') || '';
-        params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
+        data.comment = Hoot.context.storage('comment') || '';
+        data.hashtags = Hoot.context.storage('hashtags') || '';
+        data.source = Hoot.context.storage('source') || '';
+        data.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
+        data.BBOX = this.job.tags.bbox;
 
         if ( this.job.tags && this.job.tags.taskInfo ) {
-            params.taskInfo = this.job.tags.taskInfo;
+            data.taskInfo = this.job.tags.taskInfo;
         }
 
-        Hoot.api.changesetPush( params )
+        const params = {
+            deriveType: this.job.tags.deriveType
+        };
+
+        Hoot.api.changesetPush( data, params )
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( resp => Hoot.message.alert( resp ) )
