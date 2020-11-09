@@ -1,8 +1,9 @@
+import _cloneDeep from 'lodash-es/cloneDeep';
 import _flatten from 'lodash-es/flatten';
 import _isEmpty from 'lodash-es/isEmpty';
 import _reduce from 'lodash-es/reduce';
-import _union from 'lodash-es/union';
 import _throttle from 'lodash-es/throttle';
+import _union from 'lodash-es/union';
 
 import {
     geoBounds as d3_geoBounds,
@@ -121,6 +122,11 @@ export function svgData(projection, context, dispatch) {
         if (!gj) return null;
 
         if (gj.type === 'FeatureCollection') {
+            // Split geometry collection into seperate features
+            if (containsGeometryCollection(gj)) {
+                geometryCollectionToFeatures(gj);
+            }
+
             for (var i = 0; i < gj.features.length; i++) {
                 ensureFeatureID(gj.features[i]);
             }
@@ -158,6 +164,17 @@ export function svgData(projection, context, dispatch) {
 
     function isPolygon(d) {
         return d.geometry.type === 'Polygon' || d.geometry.type === 'MultiPolygon';
+    }
+
+
+    function containsGeometryCollection(gj) {
+        var features = getFeatures(gj);
+
+        var geomCollections = features.filter(function(feature) {
+            return feature.geometry.type === 'GeometryCollection';
+        });
+
+        return geomCollections.length > 0;
     }
 
 
@@ -427,6 +444,33 @@ export function svgData(projection, context, dispatch) {
         return this;
     };
 
+    function geometryCollectionToFeatures(gj) {
+        var currentFeatures = getFeatures(gj);
+
+        gj.features = _reduce(currentFeatures, function(featuresAggregate, featureItem) {
+            var features = [];
+
+            if (featureItem.geometry.type === 'GeometryCollection') {
+                var geometries = featureItem.geometry.geometries;
+
+                geometries.forEach( function(geom, index) {
+                    var newFeature = _cloneDeep(featureItem);
+                    newFeature.roles = newFeature.roles.split(';')[index];
+                    newFeature.geometry = {
+                        'type': geom.type,
+                        'coordinates': geom.coordinates
+                    };
+
+                    features.push(newFeature);
+                });
+            } else {
+                features.push(featureItem);
+            }
+
+            return _union(featuresAggregate, features);
+        }, []);
+
+    }
 
     drawData.geojson = function(gj, src) {
         if (!arguments.length) return _geojson;
