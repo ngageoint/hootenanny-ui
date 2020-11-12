@@ -150,17 +150,24 @@ export default class ReviewBookmarkNotes extends Tab {
      *   and the value in _forcedReviewableItem gets used to display review item.
      **/
     async jumpToReviewItem() {
-        Hoot.layers.removeAllLoadedLayers();
-        Hoot.ui.navbar.toggleManagePanel();
-
-        Hoot.ui.conflicts.data.forcedReviewItem = this.currentReviewable;
-
         let params = {
             name: this.bookmark.layerName,
             id: this.bookmark.mapId
         };
 
-        Hoot.ui.sidebar.forms.reference.submitLayer( params );
+        if ( Hoot.layers.loadedLayers[ params.id ] ) {
+            Hoot.ui.navbar.toggleManagePanel();
+            Hoot.ui.conflicts.data.forcedReviewItem = this.currentReviewable;
+
+            Hoot.ui.conflicts.graphSync.getRelationMembers( this.currentReviewable.relationId )
+                .then( members => Hoot.ui.conflicts.map.highlightLayer( members[ 0 ], members[ 1 ], true ) );
+        } else {
+            Hoot.layers.removeAllLoadedLayers();
+            Hoot.ui.navbar.toggleManagePanel();
+            Hoot.ui.conflicts.data.forcedReviewItem = this.currentReviewable;
+
+            Hoot.ui.sidebar.forms.reference.submitLayer( params );
+        }
     }
 
     refresh() {
