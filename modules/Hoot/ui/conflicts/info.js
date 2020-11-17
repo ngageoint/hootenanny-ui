@@ -29,7 +29,7 @@ export default class ConflictMetadata {
         ];
 
         Hoot.context.history().on('change.reviewtagtable',
-            _debounce( () => this.buildTagTable.bind(this)(), 300)
+            _debounce( () => this.buildTagTable.bind(this), 300)
         );
     }
 
