@@ -121,12 +121,12 @@ export function svgData(projection, context, dispatch) {
     function ensureIDs(gj) {
         if (!gj) return null;
 
-        if (gj.type === 'FeatureCollection') {
-            // Split geometry collection into seperate features
-            if (containsGeometryCollection(gj)) {
-                geometryCollectionToFeatures(gj);
-            }
+        // Split geometry collection into seperate features
+        if (containsGeometryCollection(gj)) {
+            gj = geometryCollectionToFeatures(gj);
+        }
 
+        if (gj.type === 'FeatureCollection') {
             for (var i = 0; i < gj.features.length; i++) {
                 ensureFeatureID(gj.features[i]);
             }
@@ -447,7 +447,7 @@ export function svgData(projection, context, dispatch) {
     function geometryCollectionToFeatures(gj) {
         var currentFeatures = getFeatures(gj);
 
-        gj.features = _reduce(currentFeatures, function(featuresAggregate, featureItem) {
+        var newFeaturesList = _reduce(currentFeatures, function(featuresAggregate, featureItem) {
             var features = [];
 
             if (featureItem.geometry.type === 'GeometryCollection') {
@@ -470,6 +470,18 @@ export function svgData(projection, context, dispatch) {
             return _union(featuresAggregate, features);
         }, []);
 
+        if (gj.type !== 'FeatureCollection') {
+            const newFeatureColection = {
+                type: 'FeatureCollection',
+                features: newFeaturesList
+            };
+
+            gj = newFeatureColection;
+        } else {
+            gj.features = newFeaturesList;
+        }
+
+        return gj;
     }
 
     drawData.geojson = function(gj, src) {
