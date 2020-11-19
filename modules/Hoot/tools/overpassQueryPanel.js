@@ -65,7 +65,7 @@ export default class OverpassQueryPanel {
             .insert( 'div', '.modal-footer' )
             .classed( 'button-wrap user-input', true );
 
-        const defaultValue = await(Hoot.api.getDefaultOverpassQuery());
+        const defaultValue = await Hoot.api.getDefaultOverpassQuery();
 
         let overpassQueryValue = defaultValue,
             checkboxStatus = false;
