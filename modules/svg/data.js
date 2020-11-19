@@ -1,4 +1,3 @@
-import _cloneDeep from 'lodash-es/cloneDeep';
 import _flatten from 'lodash-es/flatten';
 import _isEmpty from 'lodash-es/isEmpty';
 import _reduce from 'lodash-es/reduce';
@@ -121,11 +120,6 @@ export function svgData(projection, context, dispatch) {
     function ensureIDs(gj) {
         if (!gj) return null;
 
-        // Split geometry collection into seperate features
-        if (containsGeometryCollection(gj)) {
-            gj = geometryCollectionToFeatures(gj);
-        }
-
         if (gj.type === 'FeatureCollection') {
             for (var i = 0; i < gj.features.length; i++) {
                 ensureFeatureID(gj.features[i]);
@@ -163,18 +157,7 @@ export function svgData(projection, context, dispatch) {
 
 
     function isPolygon(d) {
-        return d.geometry.type === 'Polygon' || d.geometry.type === 'MultiPolygon';
-    }
-
-
-    function containsGeometryCollection(gj) {
-        var features = getFeatures(gj);
-
-        var geomCollections = features.filter(function(feature) {
-            return feature.geometry.type === 'GeometryCollection';
-        });
-
-        return geomCollections.length > 0;
+        return d.geometry.type === 'Polygon' || d.geometry.type === 'MultiPolygon' || d.geometry.type === 'GeometryCollection';
     }
 
 
@@ -229,22 +212,22 @@ export function svgData(projection, context, dispatch) {
 
         // Draw clip paths for polygons
         var clipPaths = surface.selectAll('defs').selectAll('.clipPath-data')
-           .data(polygonData, featureKey);
+            .data(polygonData, featureKey);
 
         clipPaths.exit()
-           .remove();
+            .remove();
 
         var clipPathsEnter = clipPaths.enter()
-           .append('clipPath')
-           .attr('class', 'clipPath-data')
-           .attr('id', clipPathID);
+            .append('clipPath')
+            .attr('class', 'clipPath-data')
+            .attr('id', clipPathID);
 
         clipPathsEnter
-           .append('path');
+            .append('path');
 
         clipPaths.merge(clipPathsEnter)
-           .selectAll('path')
-           .attr('d', getAreaPath);
+            .selectAll('path')
+            .attr('d', getAreaPath);
 
 
         // Draw fill, shadow, stroke layers
@@ -444,45 +427,6 @@ export function svgData(projection, context, dispatch) {
         return this;
     };
 
-    function geometryCollectionToFeatures(gj) {
-        var currentFeatures = getFeatures(gj);
-
-        var newFeaturesList = _reduce(currentFeatures, function(featuresAggregate, featureItem) {
-            var features = [];
-
-            if (featureItem.geometry.type === 'GeometryCollection') {
-                var geometries = featureItem.geometry.geometries;
-
-                geometries.forEach( function(geom, index) {
-                    var newFeature = _cloneDeep(featureItem);
-                    newFeature.roles = newFeature.roles.split(';')[index];
-                    newFeature.geometry = {
-                        'type': geom.type,
-                        'coordinates': geom.coordinates
-                    };
-
-                    features.push(newFeature);
-                });
-            } else {
-                features.push(featureItem);
-            }
-
-            return _union(featuresAggregate, features);
-        }, []);
-
-        if (gj.type !== 'FeatureCollection') {
-            const newFeatureColection = {
-                type: 'FeatureCollection',
-                features: newFeaturesList
-            };
-
-            gj = newFeatureColection;
-        } else {
-            gj.features = newFeaturesList;
-        }
-
-        return gj;
-    }
 
     drawData.geojson = function(gj, src) {
         if (!arguments.length) return _geojson;
@@ -561,7 +505,14 @@ export function svgData(projection, context, dispatch) {
         if (!features.length) return;
 
         var coords = _reduce(features, function(coords, feature) {
-            var c = feature.geometry.coordinates;
+            var c = [];
+            if (feature.geometry.geometries) {
+                feature.geometry.geometries.forEach( function(geom) {
+                    c = c.concat(geom.coordinates);
+                });
+            } else {
+                c = feature.geometry.coordinates;
+            }
 
             /* eslint-disable no-fallthrough */
             switch (feature.geometry.type) {
@@ -571,6 +522,7 @@ export function svgData(projection, context, dispatch) {
                 case 'LineString':
                     break;
 
+                case 'GeometryCollection':
                 case 'MultiPolygon':
                     c = _flatten(c);
                 case 'Polygon':
