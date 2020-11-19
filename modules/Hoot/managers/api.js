@@ -33,6 +33,7 @@ export default class API {
         this.conflateTypes = null;
         this.importOpts = null;
         this.changesetOpts = null;
+        this.defaultOverpassQuery = '';
     }
 
     /**
@@ -144,6 +145,22 @@ export default class API {
             });
         }
 
+    }
+
+    getDefaultOverpassQuery() {
+        if ( this.defaultOverpassQuery) {
+            return Promise.resolve( this.defaultOverpassQuery );
+        } else {
+            const params = {
+                path: '/grail/getDefaultOverpassQuery',
+                method: 'GET'
+            };
+            let that = this;
+            return this.request( params ).then( resp => {
+                that.defaultOverpassQuery = resp.data;
+                return that.defaultOverpassQuery;
+            });
+        }
     }
 
     getSaveUser( userEmail ) {
