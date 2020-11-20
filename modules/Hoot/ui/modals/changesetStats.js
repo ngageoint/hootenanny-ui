@@ -63,11 +63,13 @@ export default class ChangesetStats {
             title: titleText
         };
 
-        if (!this.viewOnly) metadata.button = {
-            text: 'Upload Changeset',
-            id: 'SubmitBtn',
-            onClick: () => this.handleSubmit()
-        };
+        if (!this.viewOnly) {
+            metadata.button = {
+                text: 'Upload Changeset',
+                id: 'SubmitBtn',
+                onClick: () => this.handleSubmit()
+            };
+        }
 
         let formId = 'changesetPushTable';
 
