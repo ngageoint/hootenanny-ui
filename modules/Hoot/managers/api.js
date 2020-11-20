@@ -33,6 +33,7 @@ export default class API {
         this.conflateTypes = null;
         this.importOpts = null;
         this.changesetOpts = null;
+        this.defaultOverpassQuery = '';
     }
 
     /**
@@ -138,12 +139,30 @@ export default class API {
                 method: 'GET'
             };
             let that = this;
-            return this.request( params ).then( resp => {
-                that.conflateTypes = resp.data;
-                return that.conflateTypes;
-            });
+            return this.request( params )
+                .then( resp => {
+                    that.conflateTypes = resp.data;
+                    return that.conflateTypes;
+                });
         }
 
+    }
+
+    getDefaultOverpassQuery() {
+        if ( this.defaultOverpassQuery) {
+            return Promise.resolve( this.defaultOverpassQuery );
+        } else {
+            const params = {
+                path: '/grail/getDefaultOverpassQuery',
+                method: 'GET'
+            };
+            let that = this;
+            return this.request( params )
+                .then( resp => {
+                    that.defaultOverpassQuery = resp.data;
+                    return that.defaultOverpassQuery;
+                });
+        }
     }
 
     getSaveUser( userEmail ) {
@@ -233,14 +252,14 @@ export default class API {
                     status: 200,
                     type: 'success'
                 };
-        } )
-        .catch( err => {
-            return {
-                data: err.data,
-                message: 'Error saving favorite opts!',
-                type: 'error'
-            };
-        } );
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error saving favorite opts!',
+                    type: 'error'
+                };
+            } );
     }
 
     deleteFavoriteOpts( opts ) {
@@ -1057,10 +1076,11 @@ export default class API {
                 method: 'GET'
             };
             let that = this;
-            return this.request( params ).then( resp => {
-                that.importOpts = resp.data.hoot2[0].members; //might need to refactor this response
-                return that.importOpts;
-            });
+            return this.request( params )
+                .then( resp => {
+                    that.importOpts = resp.data.hoot2[0].members; //might need to refactor this response
+                    return that.importOpts;
+                });
         }
     }
 
@@ -1073,10 +1093,11 @@ export default class API {
                 method: 'GET'
             };
             let that = this;
-            return this.request( params ).then( resp => {
-                that.changesetOpts = resp.data.members;
-                return that.changesetOpts;
-            });
+            return this.request( params )
+                .then( resp => {
+                    that.changesetOpts = resp.data.members;
+                    return that.changesetOpts;
+                });
         }
     }
 

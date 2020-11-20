@@ -58,14 +58,16 @@ export default class OverpassQueryPanel {
             .text( 'Back' );
     }
 
-    overpassQueryPanel() {
+    async overpassQueryPanel() {
         // construct input section for user custom overpass queries
         this.overpassQueryContainer = this.form
             .select( '.wrapper div' )
             .insert( 'div', '.modal-footer' )
             .classed( 'button-wrap user-input', true );
 
-        let overpassQueryValue = '',
+        const defaultValue = await Hoot.api.getDefaultOverpassQuery();
+
+        let overpassQueryValue = defaultValue,
             checkboxStatus = false;
         const containerExists = this.formData.overpassQueryContainer;
         if ( containerExists ) {
@@ -92,15 +94,9 @@ export default class OverpassQueryPanel {
                     }
                 });
 
-        const placeholder = '[out:json][bbox:{{bbox}}];\n' +
-            '(\n' +
-            '   node;<;>;\n' +
-            ');\n' +
-            'out meta;';
-
         const customQueryInput = this.overpassQueryContainer.append( 'textarea' )
             .classed( 'hidden', !checkboxStatus )
-            .attr( 'placeholder', placeholder )
+            .attr( 'placeholder', defaultValue )
             .property( 'value', overpassQueryValue )
             .on( 'input', () => {
                 const value = customQueryInput.node().value;
