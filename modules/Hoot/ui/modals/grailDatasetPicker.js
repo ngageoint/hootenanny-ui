@@ -56,8 +56,10 @@ export default class GrailDatasetPicker {
         let formId = 'grailDatasetForm';
         this.form  = this.formFactory.generateForm( 'body', formId, metadata );
 
-        this.submitButton = d3.select( `#${ metadata.button.id }` );
-        this.updateSubmitButton();
+        if (this.refDatasets.length) {
+            this.submitButton = d3.select( `#${ metadata.button.id }` );
+            this.updateSubmitButton();
+        }
     }
 
     checkForReference( metadataObj ) {
