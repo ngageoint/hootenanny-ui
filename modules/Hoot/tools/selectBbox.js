@@ -130,6 +130,7 @@ export default class SelectBbox extends EventEmitter {
         let customDataLayer = this.context.layers().layer('data');
         if (customDataLayer.hasData() && customDataLayer.enabled()) {
             boundOptionsList.push( 'Custom Data Extent' );
+            this.selectedBoundOption = 'Custom Data Extent';
         }
 
         if ( this.operationName === 'grailPull' || this.operationName === 'createDifferentialChangeset' ) {
