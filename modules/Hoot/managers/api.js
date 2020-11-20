@@ -141,9 +141,9 @@ export default class API {
             let that = this;
             return this.request( params )
                 .then( resp => {
-                that.conflateTypes = resp.data;
-                return that.conflateTypes;
-            });
+                    that.conflateTypes = resp.data;
+                    return that.conflateTypes;
+                });
         }
 
     }
@@ -159,9 +159,9 @@ export default class API {
             let that = this;
             return this.request( params )
                 .then( resp => {
-                that.defaultOverpassQuery = resp.data;
-                return that.defaultOverpassQuery;
-            });
+                    that.defaultOverpassQuery = resp.data;
+                    return that.defaultOverpassQuery;
+                });
         }
     }
 
@@ -252,14 +252,14 @@ export default class API {
                     status: 200,
                     type: 'success'
                 };
-        } )
-        .catch( err => {
-            return {
-                data: err.data,
-                message: 'Error saving favorite opts!',
-                type: 'error'
-            };
-        } );
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error saving favorite opts!',
+                    type: 'error'
+                };
+            } );
     }
 
     deleteFavoriteOpts( opts ) {
@@ -1078,9 +1078,9 @@ export default class API {
             let that = this;
             return this.request( params )
                 .then( resp => {
-                that.importOpts = resp.data.hoot2[0].members; //might need to refactor this response
-                return that.importOpts;
-            });
+                    that.importOpts = resp.data.hoot2[0].members; //might need to refactor this response
+                    return that.importOpts;
+                });
         }
     }
 
@@ -1095,9 +1095,9 @@ export default class API {
             let that = this;
             return this.request( params )
                 .then( resp => {
-                that.changesetOpts = resp.data.members;
-                return that.changesetOpts;
-            });
+                    that.changesetOpts = resp.data.members;
+                    return that.changesetOpts;
+                });
         }
     }
 
