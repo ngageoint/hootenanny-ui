@@ -890,6 +890,27 @@ export default class Jobs extends Tab {
                     // Add action for download of changeset
                     // users can do this even after the changeset has been applied
                     if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
+
+                        if (d.statusDetail.toUpperCase() === 'STALE') {
+                            actions.push({
+                                title: 'view changeset stats',
+                                icon: 'library_books',
+                                action: async () => {
+                                    Hoot.api.changesetStats(d.jobId, false)
+                                        .then( resp => {
+                                            this.changesetStats = new ChangesetStats( d, resp.data, true ).render();
+
+                                            Hoot.events.once( 'modal-closed', () => delete this.changesetStats );
+                                        } )
+                                        .catch( err => {
+                                            console.error(err);
+                                            Hoot.message.alert( err );
+                                            return false;
+                                        } );
+                                }
+                            });
+                        }
+
                         actions.push({
                             title: 'download changeset',
                             icon: 'archive',

@@ -2,9 +2,10 @@ import FormFactory from '../../tools/formFactory';
 import { uiChangesetEditor } from '../../../ui/changeset_editor';
 
 export default class ChangesetStats {
-    constructor( job, data ) {
+    constructor( job, data, viewOnly ) {
         this.job = job;
         this.changesetInfo = data;
+        this.viewOnly = viewOnly;
         this.includeTags = false;
         this.changesetEditor = uiChangesetEditor(Hoot.context)
             .on('change', changeTags);
@@ -56,27 +57,28 @@ export default class ChangesetStats {
     }
 
     render() {
-        let titleText = 'Upload Changeset';
+        let titleText = (this.viewOnly) ? 'Changeset Metadata' : 'Upload Changeset';
 
         let metadata = {
-            title: titleText,
-            button: {
-                text: 'Upload Changeset',
-                id: 'SubmitBtn',
-                onClick: () => this.handleSubmit()
-            }
+            title: titleText
+        };
+
+        if (!this.viewOnly) metadata.button = {
+            text: 'Upload Changeset',
+            id: 'SubmitBtn',
+            onClick: () => this.handleSubmit()
         };
 
         let formId = 'changesetPushTable';
 
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
-        this.submitButton = d3.select( `#${ metadata.button.id }` );
-
-        this.createComment();
-
+        if (!this.viewOnly) {
+            this.submitButton = d3.select( `#${ metadata.button.id }` );
+            this.createComment();
+            this.updateSubmitButton();
+        }
         this.createTable();
 
-        this.updateSubmitButton();
     }
 
     updateSubmitButton() {
