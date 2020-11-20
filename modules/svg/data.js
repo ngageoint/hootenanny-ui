@@ -500,6 +500,28 @@ export function svgData(projection, context, dispatch) {
         return _src || '';
     };
 
+    function flattenGeoms(c, type) {
+        /* eslint-disable no-fallthrough */
+        switch (type) {
+            case 'Point':
+                c = [c];
+            case 'MultiPoint':
+            case 'LineString':
+                break;
+
+            case 'GeometryCollection':
+            case 'MultiPolygon':
+                c = _flatten(c);
+            case 'Polygon':
+            case 'MultiLineString':
+                c = _flatten(c);
+                break;
+        }
+        /* eslint-enable no-fallthrough */
+
+        return c;
+    }
+
     function flattenCoords() {
         var features = getFeatures(_geojson);
         if (!features.length) return;
@@ -508,29 +530,11 @@ export function svgData(projection, context, dispatch) {
             var c = [];
             if (feature.geometry.geometries) {
                 feature.geometry.geometries.forEach( function(geom) {
-                    c = c.concat(geom.coordinates);
+                    c = c.concat(flattenGeoms(geom.coordinates, geom.type));
                 });
             } else {
-                c = feature.geometry.coordinates;
+                c = flattenGeoms(feature.geometry.coordinates, feature.geometry.type);
             }
-
-            /* eslint-disable no-fallthrough */
-            switch (feature.geometry.type) {
-                case 'Point':
-                    c = [c];
-                case 'MultiPoint':
-                case 'LineString':
-                    break;
-
-                case 'GeometryCollection':
-                case 'MultiPolygon':
-                    c = _flatten(c);
-                case 'Polygon':
-                case 'MultiLineString':
-                    c = _flatten(c);
-                    break;
-            }
-            /* eslint-enable no-fallthrough */
 
             return _union(coords, c);
         }, []);
