@@ -157,7 +157,10 @@ export function svgData(projection, context, dispatch) {
 
 
     function isPolygon(d) {
-        return d.geometry.type === 'Polygon' || d.geometry.type === 'MultiPolygon' || d.geometry.type === 'GeometryCollection';
+        return d.geometry.type === 'Polygon' || d.geometry.type === 'MultiPolygon' ||
+            (d.geometry.type === 'GeometryCollection' && d.geometry.geometries.every(function(geom) {
+                return geom.type === 'Polygon' || geom.type === 'MultiPolygon';
+            }));
     }
 
 
@@ -509,7 +512,6 @@ export function svgData(projection, context, dispatch) {
             case 'LineString':
                 break;
 
-            case 'GeometryCollection':
             case 'MultiPolygon':
                 c = _flatten(c);
             case 'Polygon':
