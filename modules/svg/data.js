@@ -1,8 +1,8 @@
 import _flatten from 'lodash-es/flatten';
 import _isEmpty from 'lodash-es/isEmpty';
 import _reduce from 'lodash-es/reduce';
-import _union from 'lodash-es/union';
 import _throttle from 'lodash-es/throttle';
+import _union from 'lodash-es/union';
 
 import {
     geoBounds as d3_geoBounds,
@@ -157,7 +157,10 @@ export function svgData(projection, context, dispatch) {
 
 
     function isPolygon(d) {
-        return d.geometry.type === 'Polygon' || d.geometry.type === 'MultiPolygon';
+        return d.geometry.type === 'Polygon' || d.geometry.type === 'MultiPolygon' ||
+            (d.geometry.type === 'GeometryCollection' && d.geometry.geometries.every(function(geom) {
+                return geom.type === 'Polygon' || geom.type === 'MultiPolygon';
+            }));
     }
 
 
@@ -212,22 +215,22 @@ export function svgData(projection, context, dispatch) {
 
         // Draw clip paths for polygons
         var clipPaths = surface.selectAll('defs').selectAll('.clipPath-data')
-           .data(polygonData, featureKey);
+            .data(polygonData, featureKey);
 
         clipPaths.exit()
-           .remove();
+            .remove();
 
         var clipPathsEnter = clipPaths.enter()
-           .append('clipPath')
-           .attr('class', 'clipPath-data')
-           .attr('id', clipPathID);
+            .append('clipPath')
+            .attr('class', 'clipPath-data')
+            .attr('id', clipPathID);
 
         clipPathsEnter
-           .append('path');
+            .append('path');
 
         clipPaths.merge(clipPathsEnter)
-           .selectAll('path')
-           .attr('d', getAreaPath);
+            .selectAll('path')
+            .attr('d', getAreaPath);
 
 
         // Draw fill, shadow, stroke layers
@@ -500,29 +503,40 @@ export function svgData(projection, context, dispatch) {
         return _src || '';
     };
 
+    function flattenGeoms(c, type) {
+        /* eslint-disable no-fallthrough */
+        switch (type) {
+            case 'Point':
+                c = [c];
+            case 'MultiPoint':
+            case 'LineString':
+                break;
+
+            case 'MultiPolygon':
+                c = _flatten(c);
+            case 'Polygon':
+            case 'MultiLineString':
+                c = _flatten(c);
+                break;
+        }
+        /* eslint-enable no-fallthrough */
+
+        return c;
+    }
+
     function flattenCoords() {
         var features = getFeatures(_geojson);
         if (!features.length) return;
 
         var coords = _reduce(features, function(coords, feature) {
-            var c = feature.geometry.coordinates;
-
-            /* eslint-disable no-fallthrough */
-            switch (feature.geometry.type) {
-                case 'Point':
-                    c = [c];
-                case 'MultiPoint':
-                case 'LineString':
-                    break;
-
-                case 'MultiPolygon':
-                    c = _flatten(c);
-                case 'Polygon':
-                case 'MultiLineString':
-                    c = _flatten(c);
-                    break;
+            var c = [];
+            if (feature.geometry.geometries) {
+                feature.geometry.geometries.forEach( function(geom) {
+                    c = c.concat(flattenGeoms(geom.coordinates, geom.type));
+                });
+            } else {
+                c = flattenGeoms(feature.geometry.coordinates, feature.geometry.type);
             }
-            /* eslint-enable no-fallthrough */
 
             return _union(coords, c);
         }, []);
