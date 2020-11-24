@@ -1,6 +1,5 @@
 import FormFactory from './formFactory';
 
-import selectBbox                                    from './selectBbox';
 import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
 import _find                                         from 'lodash-es/find';
 import OverpassQueryPanel                            from './overpassQueryPanel';
@@ -9,14 +8,17 @@ import _get                                          from 'lodash-es/get';
 export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
+        this.extentType = this.instance.bboxSelectType;
     }
 
     render() {
-        let titleText = this.instance.bboxSelectType === 'visualExtent'
-            ? 'Pull Remote Data for Visual Extent'
-            : this.instance.bboxSelectType === 'boundingBox'
-                ? 'Pull Remote Data for Bounding Box'
-                : 'Pull Remote Data';
+        let titleText = 'Pull Remote Data';
+
+        if ( this.extentType !== 'boundsHistory' ) {
+            // capitalizes the first character and splits the string at each capital letter such that
+            // 'customDataExtent' becomes 'Custom Data Extent'
+            titleText += ' for ' + this.extentType[0].toUpperCase() + this.extentType.slice(1).split(/(?=[A-Z])/).join(' ');
+        }
 
         let metadata = {
             title: titleText,
@@ -214,7 +216,7 @@ export default class GrailPull {
             input1   : this.form.select( '.outputName-1' ).property( 'value' )
         };
 
-        if ( this.instance.bboxSelectType === 'customDataExtent' &&
+        if ( this.extentType === 'customDataExtent' &&
             sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task') ) {
             /**
              * If we are coming from tasking manager, and we dont' have project folder, add it.
@@ -305,7 +307,7 @@ export default class GrailPull {
                     }
 
                     return Promise.all( submitPromises );
-                } else if (this.instance.bboxSelectType === 'secondaryLayerExtent') {
+                } else if (this.extentType === 'secondaryLayerExtent') {
                     // Remove reference layer if there is one
                     if ( loadedPrimary ) {
                         Hoot.layers.removeActiveLayer( loadedPrimary.id, 'reference', 'primary' );
