@@ -15,6 +15,8 @@ export default class GrailPull {
         let titleText = 'Pull Remote Data';
 
         if ( this.extentType !== 'boundsHistory' ) {
+            // capitalizes the first character and splits the string at each capital letter such that
+            // 'customDataExtent' becomes 'Custom Data Extent'
             titleText += ' for ' + this.extentType[0].toUpperCase() + this.extentType.slice(1).split(/(?=[A-Z])/).join(' ');
         }
 
