@@ -1,5 +1,4 @@
 import FormFactory from './formFactory';
-import { formatBbox } from './utilities';
 
 export default class DifferentialChangeset {
     constructor( instance ) {
@@ -8,9 +7,9 @@ export default class DifferentialChangeset {
    }
 
     async render() {
-        let titleText = this.instance.bboxSelectType === 'visualExtent'
+        let titleText = this.instance.boundsSelectType === 'visualExtent'
             ? 'Create Differential from Visual Extent'
-            : this.instance.bboxSelectType === 'boundingBox'
+            : this.instance.boundsSelectType === 'boundingBox'
                 ? 'Create Differential from Bounding Box'
                 : 'Create Differential';
 
@@ -37,7 +36,7 @@ export default class DifferentialChangeset {
     }
 
     handleSubmit() {
-        const bounds   = this.instance.bbox,
+        const bounds   = this.instance.bounds,
               data = {};
 
         if ( !bounds ) {
@@ -45,7 +44,7 @@ export default class DifferentialChangeset {
             return;
         }
 
-        data.BBOX = bounds;
+        data.bounds = bounds;
 
         if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
             data.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
@@ -53,7 +52,7 @@ export default class DifferentialChangeset {
 
         data.ADV_OPTIONS = this.formFactory.getAdvOpts(this.container, this.advOpts);
 
-        if ( this.instance.bboxSelectType === 'customDataExtent' &&
+        if ( this.instance.boundsSelectType === 'customDataExtent' &&
             sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task') ) {
             data.taskInfo = sessionStorage.getItem('tm:project') + ', ' + sessionStorage.getItem('tm:task');
         }

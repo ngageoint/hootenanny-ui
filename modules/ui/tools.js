@@ -9,9 +9,9 @@ import {
     modeAddMeasureLine
 } from '../modes';
 
-import { svgIcon } from '../svg';
-import selectBbox  from '../Hoot/tools/selectBbox';
-import { tooltip } from '../util/tooltip';
+import { svgIcon }  from '../svg';
+import selectBounds from '../Hoot/tools/selectBounds';
+import { tooltip }  from '../util/tooltip';
 
 export function uiTools( context ) {
     let menuItemMeta = [
@@ -181,9 +181,9 @@ export function uiTools( context ) {
                     context.enter( d.mode );
                 } else if ( d.action === 'clipData' ) {
                     if ( Object.keys( Hoot.layers.loadedLayers ).length ) {
-                        let clipSelectBbox = new selectBbox( context );
+                        let clipSelectBounds = new selectBounds( context );
 
-                        clipSelectBbox.render( 'clipData' );
+                        clipSelectBounds.render( 'clipData' );
                     } else {
                         let message = 'Add a layer before clipping',
                             type    = 'warn';
@@ -191,9 +191,9 @@ export function uiTools( context ) {
                         Hoot.message.alert( { message, type } );
                     }
                 } else if ( d.action === 'grailPull' || d.action === 'createDifferentialChangeset' ) {
-                    let grailSelectBbox = new selectBbox( context );
+                    let grailSelectBounds = new selectBounds( context );
 
-                    grailSelectBbox.render( d.action );
+                    grailSelectBounds.render( d.action );
                 }
             } );
 

@@ -1,6 +1,6 @@
 import FormFactory from './formFactory';
 
-import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
+import { checkForUnallowedChar, uuidv4 } from './utilities';
 import _find                                         from 'lodash-es/find';
 import OverpassQueryPanel                            from './overpassQueryPanel';
 import _get                                          from 'lodash-es/get';
@@ -8,7 +8,7 @@ import _get                                          from 'lodash-es/get';
 export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
-        this.extentType = this.instance.bboxSelectType;
+        this.extentType = this.instance.boundsSelectType;
         this.privateOverpassActive = false;
     }
 
@@ -58,7 +58,7 @@ export default class GrailPull {
     }
 
     async createTable() {
-        const overpassParams = { BBOX: this.instance.bbox };
+        const overpassParams = { bounds: this.instance.bounds };
         if ( this.instance.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
@@ -197,7 +197,7 @@ export default class GrailPull {
     async handleSubmit() {
         this.loadingState();
 
-        const bounds = this.instance.bbox;
+        const bounds = this.instance.bounds;
 
         if ( !bounds ) {
             Hoot.message.alert( 'Need a bounding box!' );
@@ -210,12 +210,12 @@ export default class GrailPull {
             projectName;
 
         const railsParams = {
-            BBOX     : bounds,
+            bounds   : bounds,
             input1   : this.form.select( '.outputName-0' ).property( 'value' )
         };
 
         const overpassParams = {
-            BBOX     : bounds,
+            bounds   : bounds,
             input1   : this.form.select( '.outputName-1' ).property( 'value' )
         };
 
@@ -335,11 +335,11 @@ export default class GrailPull {
 
 
         let history = JSON.parse( Hoot.context.storage('history') );
-        if ( history.bboxHistory.length >= 5 ) {
+        if ( history.boundsHistory.length >= 5 ) {
             // Removes oldest (last in list) bounds
-            history.bboxHistory = history.bboxHistory.slice( 0, 4 );
+            history.boundsHistory = history.boundsHistory.slice( 0, 4 );
         }
-        history.bboxHistory.unshift( bounds );
+        history.boundsHistory.unshift( bounds );
         Hoot.context.storage( 'history', JSON.stringify( history ) );
 
     }

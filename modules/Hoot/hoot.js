@@ -125,7 +125,7 @@ class Hoot {
 
         if (!this.context.storage('history')) {
             this.context.storage('history', JSON.stringify({
-                'bboxHistory':[]
+                'boundsHistory':[]
             }));
         }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************************************
- * File: selectBbox.js
+ * File: selectBounds.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/25/18
  *******************************************************************************************************/
@@ -12,19 +12,18 @@ import ClipDataset                         from './clipDataset';
 import OverpassQueryPanel                  from './overpassQueryPanel';
 import { d3combobox }                      from '../../lib/hoot/d3.combobox';
 import { geoExtent as GeoExtent }          from '../../geo';
-import {formatBbox} from './utilities';
 
-export default class SelectBbox extends EventEmitter {
+export default class SelectBounds extends EventEmitter {
     constructor( context, predefinedData ) {
         super();
 
-        this.context        = predefinedData && predefinedData.context ? predefinedData.context : context;
-        this.minlon         = predefinedData && predefinedData.minlon ? parseFloat(predefinedData.minlon) : null;
-        this.minlat         = predefinedData && predefinedData.minlat ? parseFloat(predefinedData.minlat) : null;
-        this.maxlon         = predefinedData && predefinedData.maxlon ? parseFloat(predefinedData.maxlon) : null;
-        this.maxlat         = predefinedData && predefinedData.maxlat ? parseFloat(predefinedData.maxlat) : null;
-        this.bboxSelectType = predefinedData && predefinedData.bboxSelectType ? predefinedData.bboxSelectType : 'visualExtent';
-        this.operationName  = '';
+        this.context          = predefinedData && predefinedData.context ? predefinedData.context : context;
+        this.minlon           = predefinedData && predefinedData.minlon ? parseFloat(predefinedData.minlon) : null;
+        this.minlat           = predefinedData && predefinedData.minlat ? parseFloat(predefinedData.minlat) : null;
+        this.maxlon           = predefinedData && predefinedData.maxlon ? parseFloat(predefinedData.maxlon) : null;
+        this.maxlat           = predefinedData && predefinedData.maxlat ? parseFloat(predefinedData.maxlat) : null;
+        this.boundsSelectType = predefinedData && predefinedData.boundsSelectType ? predefinedData.boundsSelectType : 'visualExtent';
+        this.operationName    = '';
         this.selectedBoundOption = predefinedData && predefinedData.selectedBoundOption ? predefinedData.selectedBoundOption : 'Visual Extent';
     }
 
@@ -132,7 +131,7 @@ export default class SelectBbox extends EventEmitter {
         if (customDataLayer.hasData() && customDataLayer.enabled()) {
             boundOptionsList.push( 'Custom Data Extent' );
             this.selectedBoundOption = 'Custom Data Extent';
-            this.bboxSelectType = 'customDataExtent';
+            this.boundsSelectType = 'customDataExtent';
             this.handleBbox( customDataLayer.extent() );
         }
 
@@ -153,9 +152,9 @@ export default class SelectBbox extends EventEmitter {
             .append( 'input' )
             .attr('placeholder', 'Select a bounds from...');
 
-        let { bboxHistory } = JSON.parse( Hoot.context.storage('history') );
+        let { boundsHistory } = JSON.parse( Hoot.context.storage('history') );
 
-        const dropdownOptions = boundOptionsList.concat( bboxHistory );
+        const dropdownOptions = boundOptionsList.concat( boundsHistory );
         const historyOptions = dropdownOptions.map( option => { return { value: option }; } );
 
         let combobox = d3combobox()
@@ -169,22 +168,22 @@ export default class SelectBbox extends EventEmitter {
 
                 if ( selectedValue === 'Draw Bounding Box' ) {
                     self.form.classed( 'hidden', true );
-                    self.bboxSelectType = 'boundingBox';
+                    self.boundsSelectType = 'boundingBox';
                     self.context.enter( modeDrawBoundingBox( self, self.context ) );
                 } else if ( selectedValue === 'Visual Extent' ) {
-                    self.bboxSelectType = 'visualExtent';
+                    self.boundsSelectType = 'visualExtent';
                     self.handleBbox( self.context.map().extent() );
                 } else if ( selectedValue === 'Custom Data Extent' ) {
-                    self.bboxSelectType = 'customDataExtent';
+                    self.boundsSelectType = 'customDataExtent';
                     self.handleBbox( customDataLayer.extent() );
                 } else if ( selectedValue === 'Reference Layer Extent' ) {
-                    self.bboxSelectType = 'primaryLayerExtent';
+                    self.boundsSelectType = 'primaryLayerExtent';
                     self.handleBbox( primaryLayer.extent );
                 } else if ( selectedValue === 'Secondary Layer Extent' ) {
-                    self.bboxSelectType = 'secondaryLayerExtent';
+                    self.boundsSelectType = 'secondaryLayerExtent';
                     self.handleBbox( secondaryLayer.extent );
                 } else {
-                    self.bboxSelectType = 'boundsHistory';
+                    self.boundsSelectType = 'boundsHistory';
                     const coords = selectedValue.split(',').map( data => +data );
                     self.handleBbox( new GeoExtent( [ coords[0], coords[1] ], [ coords[2], coords[3] ] ) );
                 }
@@ -216,11 +215,11 @@ export default class SelectBbox extends EventEmitter {
     }
 
     handleNext() {
-        if (this.bboxSelectType === 'customDataExtent') {
+        if (this.boundsSelectType === 'customDataExtent') {
             let customDataLayer = this.context.layers().layer('data');
-            this.bbox = customDataLayer.getCoordsString();
+            this.bounds = customDataLayer.getCoordsString();
         } else {
-            this.bbox = this.minLonInput.property( 'value' ) + ',' +
+            this.bounds = this.minLonInput.property( 'value' ) + ',' +
                 this.minLatInput.property( 'value' ) + ',' +
                 this.maxLonInput.property( 'value' ) + ',' +
                 this.maxLatInput.property( 'value' );
