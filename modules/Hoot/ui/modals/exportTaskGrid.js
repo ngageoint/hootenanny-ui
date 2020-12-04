@@ -143,7 +143,7 @@ export default class ExportTaskGrid {
             inputtype: 'db',
             outputname: self.data.name,
             outputtype: 'tiles.geojson'
-            // TASK_BBOX: '', //This would be needed to setting an osm pull bounds,
+            // bounds: '', //This would be needed to setting an osm pull bounds,
             // so stray features don't make the task extent too big
         };
 

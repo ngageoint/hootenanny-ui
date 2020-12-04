@@ -259,9 +259,9 @@ class LayerConflate extends SidebarForm {
         let customDataLayer = Hoot.context.layers().layer('data');
         let refBbox = Hoot.layers.findBy( 'id', data.INPUT1 ).bbox;
         if ( customDataLayer.hasData() && customDataLayer.enabled() ) {
-            data.TASK_BBOX = customDataLayer.getCoordsString();
+            data.bounds = customDataLayer.getCoordsString();
         } else if (refBbox) { //the reference layer has a bbox property indicating data is constrained via API pull
-            data.TASK_BBOX = refBbox;
+            data.bounds = refBbox;
         }
 
         return data;
