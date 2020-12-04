@@ -37,15 +37,15 @@ export default class DifferentialChangeset {
     }
 
     handleSubmit() {
-        const bbox   = this.instance.bbox,
+        const bounds   = this.instance.bbox,
               data = {};
 
-        if ( !bbox ) {
+        if ( !bounds ) {
             Hoot.message.alert( 'Need a bounding box!' );
             return;
         }
 
-        data.BBOX = formatBbox( bbox );
+        data.BBOX = bounds;
 
         if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
             data.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );

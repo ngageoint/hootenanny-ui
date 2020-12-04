@@ -12,10 +12,10 @@ import _forEach        from 'lodash-es/forEach';
 import _isEmpty        from 'lodash-es/isEmpty';
 import _map            from 'lodash-es/map';
 import _reduce         from 'lodash-es/reduce';
-import _remove from 'lodash-es/remove';
-import _debounce from 'lodash-es/debounce';
+import _remove         from 'lodash-es/remove';
 
 import { rgb as d3_rgb } from 'd3-color';
+import { geoBounds as d3_geoBounds } from 'd3-geo';
 
 import { geoExtent as GeoExtent } from '../../geo/index';
 import { utilDetect }             from '../../util/detect';
@@ -32,6 +32,10 @@ import {
     utilQsString,
     utilStringQs
 } from '../../util';
+
+import {
+    polyStringToCoords
+} from '../tools/utilities';
 
 export default class Layers {
     constructor( hoot ) {
@@ -140,15 +144,30 @@ export default class Layers {
     //and are not same as the secondary input layer
     //and have a bbox that fully contains the bbox (or mbr extent) of the secondary input layer
     grailReferenceLayers( lyr ) {
+        let extBbox;
         //the geo extent of the layer secondary layer
-        const bboxCoords = lyr.bbox.split(',').map( data => +data );
-        let extBbox = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
+        if ( lyr.bbox.includes(';') ) {
+            const polyCoords = polyStringToCoords( lyr.bbox );
+            extBbox = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
+        } else {
+            const bboxCoords = lyr.bbox.split(',').map( data => +data );
+            extBbox = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
+        }
+
         return this.allLayers.filter( d => d.grailReference && d.bbox && d.id !== lyr.id )
             .filter( d => {
                 //the geo extent of the candidate reference layer
                 //i.e. the one to be replaced in derive changeset replacement
-                const coords = d.bbox.split(',').map( data => +data );
-                let extLayer = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+                const bbox = d.bbox;
+                let extLayer;
+                if ( bbox.includes(';') ) {
+                    const polyCoords = polyStringToCoords( lyr.bbox );
+                    extLayer = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
+                } else {
+                    const coords = bbox.split(',').map( data => +data );
+                    extLayer = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+                }
+
                 return extLayer.contains(extBbox);
             });
     }
@@ -222,8 +241,13 @@ export default class Layers {
 
             let lyr = this.findBy( 'id', mapId);
             if (lyr.bbox) {
-                const coords = lyr.bbox.split(',').map( d => +d );
-                layerExtent = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+                if ( lyr.bbox.includes(';') ) {
+                    let coords = polyStringToCoords(lyr.bbox);
+                    layerExtent = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: coords }));
+                } else {
+                    const coords = lyr.bbox.split(',').map( d => +d );
+                    layerExtent = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+                }
             } else {
                 layerExtent = await this.layerExtent( mapId );
             }

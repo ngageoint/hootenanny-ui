@@ -12,6 +12,7 @@ import ClipDataset                         from './clipDataset';
 import OverpassQueryPanel                  from './overpassQueryPanel';
 import { d3combobox }                      from '../../lib/hoot/d3.combobox';
 import { geoExtent as GeoExtent }          from '../../geo';
+import {formatBbox} from './utilities';
 
 export default class SelectBbox extends EventEmitter {
     constructor( context, predefinedData ) {
@@ -215,10 +216,15 @@ export default class SelectBbox extends EventEmitter {
     }
 
     handleNext() {
-        this.bbox = this.minLonInput.property( 'value' ) + ',' +
-            this.minLatInput.property( 'value' ) + ',' +
-            this.maxLonInput.property( 'value' ) + ',' +
-            this.maxLatInput.property( 'value' );
+        if (this.bboxSelectType === 'customDataExtent') {
+            let customDataLayer = this.context.layers().layer('data');
+            this.bbox = customDataLayer.getCoordsString();
+        } else {
+            this.bbox = this.minLonInput.property( 'value' ) + ',' +
+                this.minLatInput.property( 'value' ) + ',' +
+                this.maxLonInput.property( 'value' ) + ',' +
+                this.maxLatInput.property( 'value' );
+        }
 
         this.form.remove();
         this.nextButton = null;

@@ -9,6 +9,7 @@ export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
         this.extentType = this.instance.bboxSelectType;
+        this.privateOverpassActive = false;
     }
 
     render() {
@@ -101,6 +102,8 @@ export default class GrailPull {
 
         // add private overpass data first if exists
         if ( rowData.columns.length === 2 ) {
+            this.privateOverpassActive = true;
+
             rows.append('td')
                 .classed( 'strong', data => data[rowData.columns[1]] > 0 )
                 .text( data => data[rowData.columns[1]] );
@@ -194,9 +197,9 @@ export default class GrailPull {
     async handleSubmit() {
         this.loadingState();
 
-        const bbox = this.instance.bbox;
+        const bounds = this.instance.bbox;
 
-        if ( !bbox ) {
+        if ( !bounds ) {
             Hoot.message.alert( 'Need a bounding box!' );
             return;
         }
@@ -207,12 +210,12 @@ export default class GrailPull {
             projectName;
 
         const railsParams = {
-            BBOX     : formatBbox( bbox ),
+            BBOX     : bounds,
             input1   : this.form.select( '.outputName-0' ).property( 'value' )
         };
 
         const overpassParams = {
-            BBOX     : formatBbox( bbox ),
+            BBOX     : bounds,
             input1   : this.form.select( '.outputName-1' ).property( 'value' )
         };
 
@@ -240,7 +243,12 @@ export default class GrailPull {
 
             railsParams.taskInfo = overpassParams.taskInfo = projectName + ', ' + folderName;
         } else {
-            folderName = 'grail_' + bbox.replace(/,/g, '_');
+            if ( this.extentType === 'customDataExtent' ) {
+                folderName = 'grail_' + Hoot.context.layers().layer('data').getCustomName();
+            } else {
+                folderName = 'grail_' + bounds.replace(/,/g, '_');
+            }
+
             pathId = _get(_find(Hoot.folders.folderPaths, folder => folder.name === folderName), 'id');
             if (!pathId) {
                 folderId = (await Hoot.folders.addFolder('', folderName )).folderId;
@@ -328,10 +336,10 @@ export default class GrailPull {
 
         let history = JSON.parse( Hoot.context.storage('history') );
         if ( history.bboxHistory.length >= 5 ) {
-            // Removes oldest (last in list) bbox
+            // Removes oldest (last in list) bounds
             history.bboxHistory = history.bboxHistory.slice( 0, 4 );
         }
-        history.bboxHistory.unshift( bbox );
+        history.bboxHistory.unshift( bounds );
         Hoot.context.storage( 'history', JSON.stringify( history ) );
 
     }
