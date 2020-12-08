@@ -334,13 +334,13 @@ export default class GrailPull {
             .then( () => this.form.remove() );
 
 
-        let history = JSON.parse( Hoot.context.storage('history') );
-        if ( history.boundsHistory.length >= 5 ) {
+        let boundsHistory = JSON.parse( Hoot.context.storage('bounds_history') );
+        if ( boundsHistory.boundsHistory.length >= 5 ) {
             // Removes oldest (last in list) bounds
-            history.boundsHistory = history.boundsHistory.slice( 0, 4 );
+            boundsHistory.boundsHistory = boundsHistory.boundsHistory.slice( 0, 4 );
         }
-        history.boundsHistory.unshift( bounds );
-        Hoot.context.storage( 'history', JSON.stringify( history ) );
+        boundsHistory.boundsHistory.unshift( bounds );
+        Hoot.context.storage( 'bounds_history', JSON.stringify( boundsHistory ) );
 
     }
 

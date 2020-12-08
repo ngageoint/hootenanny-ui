@@ -28,7 +28,7 @@ export default class SelectBounds extends EventEmitter {
     }
 
     render( operationName ) {
-        // if user does something like starts drawing and then midway selects a bbox operation the context will
+        // if user does something like starts drawing and then midway selects a bounds operation the context will
         // remain as the old one so good to double check
         this.context.enter( modeBrowse( this.context ) );
 
@@ -38,12 +38,12 @@ export default class SelectBounds extends EventEmitter {
             title: 'Enter Coordinates for Bounding Box',
             button: {
                 text: 'Next',
-                id: 'bboxNextBtn',
+                id: 'boundsNextBtn',
                 onClick: () => this.handleNext()
             }
         };
 
-        const formId = 'drawBboxForm';
+        const formId = 'drawBoundsForm';
 
         this.form       = new FormFactory().generateForm( 'body', formId, metadata );
         this.nextButton = d3.select( `#${metadata.button.id}` );
@@ -60,7 +60,7 @@ export default class SelectBounds extends EventEmitter {
 
         this.updateCoords( mapExtent );
         this.createCoordsField();
-        this.createBboxOptions();
+        this.createBoundsOptions();
     }
 
     updateCoords( extent ) {
@@ -121,7 +121,7 @@ export default class SelectBounds extends EventEmitter {
             .property( 'value', this.minlat );
     }
 
-    createBboxOptions() {
+    createBoundsOptions() {
         const self = this;
         const primaryLayer = Hoot.layers.findLoadedBy( 'refType', 'primary' ),
               secondaryLayer = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
@@ -132,7 +132,7 @@ export default class SelectBounds extends EventEmitter {
             boundOptionsList.push( 'Custom Data Extent' );
             this.selectedBoundOption = 'Custom Data Extent';
             this.boundsSelectType = 'customDataExtent';
-            this.handleBbox( customDataLayer.extent() );
+            this.handleBounds( customDataLayer.extent() );
         }
 
         if ( this.operationName === 'grailPull' || this.operationName === 'createDifferentialChangeset' ) {
@@ -152,7 +152,7 @@ export default class SelectBounds extends EventEmitter {
             .append( 'input' )
             .attr('placeholder', 'Select a bounds from...');
 
-        let { boundsHistory } = JSON.parse( Hoot.context.storage('history') );
+        let { boundsHistory } = JSON.parse( Hoot.context.storage('boundsHistory') );
 
         const dropdownOptions = boundOptionsList.concat( boundsHistory );
         const historyOptions = dropdownOptions.map( option => { return { value: option }; } );
@@ -172,20 +172,20 @@ export default class SelectBounds extends EventEmitter {
                     self.context.enter( modeDrawBoundingBox( self, self.context ) );
                 } else if ( selectedValue === 'Visual Extent' ) {
                     self.boundsSelectType = 'visualExtent';
-                    self.handleBbox( self.context.map().extent() );
+                    self.handleBounds( self.context.map().extent() );
                 } else if ( selectedValue === 'Custom Data Extent' ) {
                     self.boundsSelectType = 'customDataExtent';
-                    self.handleBbox( customDataLayer.extent() );
+                    self.handleBounds( customDataLayer.extent() );
                 } else if ( selectedValue === 'Reference Layer Extent' ) {
                     self.boundsSelectType = 'primaryLayerExtent';
-                    self.handleBbox( primaryLayer.extent );
+                    self.handleBounds( primaryLayer.extent );
                 } else if ( selectedValue === 'Secondary Layer Extent' ) {
                     self.boundsSelectType = 'secondaryLayerExtent';
-                    self.handleBbox( secondaryLayer.extent );
+                    self.handleBounds( secondaryLayer.extent );
                 } else {
                     self.boundsSelectType = 'boundsHistory';
                     const coords = selectedValue.split(',').map( data => +data );
-                    self.handleBbox( new GeoExtent( [ coords[0], coords[1] ], [ coords[2], coords[3] ] ) );
+                    self.handleBounds( new GeoExtent( [ coords[0], coords[1] ], [ coords[2], coords[3] ] ) );
                 }
 
                 self.selectedBoundOption = selectedValue;
@@ -194,7 +194,7 @@ export default class SelectBounds extends EventEmitter {
 
     }
 
-    handleBbox( extent ) {
+    handleBounds( extent ) {
         this.updateCoords( extent );
         this.form.classed( 'hidden', false );
 

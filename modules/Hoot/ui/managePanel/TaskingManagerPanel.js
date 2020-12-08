@@ -242,7 +242,7 @@ export default class TaskingManagerPanel extends Tab {
         }
 
         const data = {
-            BBOX: extLayer.toParam(),
+            bounds: extLayer.toParam(),
             taskInfo: `taskingManager:${ this.currentProject.id }_${ task.id }`,
             ADV_OPTIONS: this.ADV_OPTIONS
         };

@@ -606,8 +606,8 @@ export default class Jobs extends Tab {
 
                         inputInfo += input1 ? input1.name : '';
                         inputInfo += input2 ? ' • ' + input2.name : '';
-                    } else if ( jobTags.bbox ){
-                        inputInfo += jobTags.bbox;
+                    } else if ( jobTags.bounds ){
+                        inputInfo += jobTags.bounds;
                     } else if ( jobTags.parentId ) {
                         inputInfo += jobTags.parentId;
                     }
@@ -826,7 +826,7 @@ export default class Jobs extends Tab {
                                         data.input2 = d.mapId;
                                         data.parentId = d.jobId;
 
-                                        if (currentLayer.bbox) { data.BBOX = currentLayer.bbox; }
+                                        if (currentLayer.bounds) { data.bounds = currentLayer.bounds; }
                                         if ( d.tags && d.tags.taskInfo ) { data.taskInfo = d.tags.taskInfo; }
 
                                         const params = {

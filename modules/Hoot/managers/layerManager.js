@@ -140,35 +140,35 @@ export default class Layers {
         return _find( this.loadedLayers, layer => layer[ key ] === val );
     }
 
-    //returns grail reference layers that have a bbox (i.e. were pulled from an api by bbox)
+    //returns grail reference layers that have a bounds (i.e. were pulled from an api by bounds)
     //and are not same as the secondary input layer
-    //and have a bbox that fully contains the bbox (or mbr extent) of the secondary input layer
+    //and have a bounds that fully contains the bounds (or mbr extent) of the secondary input layer
     grailReferenceLayers( lyr ) {
-        let extBbox;
-        //the geo extent of the layer secondary layer
-        if ( lyr.bbox.includes(';') ) {
-            const polyCoords = polyStringToCoords( lyr.bbox );
-            extBbox = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
+        let extBounds;
+        // if contains ';' then bounds is polygon, else bbox
+        if ( lyr.bounds.includes(';') ) {
+            const polyCoords = polyStringToCoords( lyr.bounds );
+            extBounds = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
         } else {
-            const bboxCoords = lyr.bbox.split(',').map( data => +data );
-            extBbox = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
+            const bboxCoords = lyr.bounds.split(',').map( data => +data );
+            extBounds = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
         }
 
-        return this.allLayers.filter( d => d.grailReference && d.bbox && d.id !== lyr.id )
+        return this.allLayers.filter( d => d.grailReference && d.bounds && d.id !== lyr.id )
             .filter( d => {
                 //the geo extent of the candidate reference layer
                 //i.e. the one to be replaced in derive changeset replacement
-                const bbox = d.bbox;
+                const bounds = d.bounds;
                 let extLayer;
-                if ( bbox.includes(';') ) {
-                    const polyCoords = polyStringToCoords( lyr.bbox );
+                if ( bounds.includes(';') ) {
+                    const polyCoords = polyStringToCoords( lyr.bounds );
                     extLayer = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
                 } else {
-                    const coords = bbox.split(',').map( data => +data );
+                    const coords = bounds.split(',').map( data => +data );
                     extLayer = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
                 }
 
-                return extLayer.contains(extBbox);
+                return extLayer.contains(extBounds);
             });
     }
 
@@ -240,12 +240,12 @@ export default class Layers {
                 layerExtent;
 
             let lyr = this.findBy( 'id', mapId);
-            if (lyr.bbox) {
-                if ( lyr.bbox.includes(';') ) {
-                    let coords = polyStringToCoords(lyr.bbox);
+            if (lyr.bounds) {
+                if ( lyr.bounds.includes(';') ) {
+                    let coords = polyStringToCoords(lyr.bounds);
                     layerExtent = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: coords }));
                 } else {
-                    const coords = lyr.bbox.split(',').map( d => +d );
+                    const coords = lyr.bounds.split(',').map( d => +d );
                     layerExtent = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
                 }
             } else {
