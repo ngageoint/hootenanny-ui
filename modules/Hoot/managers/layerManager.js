@@ -144,13 +144,14 @@ export default class Layers {
     //and are not same as the secondary input layer
     //and have a bounds that fully contains the bounds (or mbr extent) of the secondary input layer
     grailReferenceLayers( lyr ) {
+        let bnds = lyr.bounds || lyr.bbox;
         let extBounds;
         // if contains ';' then bounds is polygon, else bbox
-        if ( lyr.bounds.includes(';') ) {
-            const polyCoords = polyStringToCoords( lyr.bounds );
+        if ( bnds.includes(';') ) {
+            const polyCoords = polyStringToCoords( bnds );
             extBounds = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
         } else {
-            const bboxCoords = lyr.bounds.split(',').map( data => +data );
+            const bboxCoords = bnds.split(',').map( data => +data );
             extBounds = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
         }
 
@@ -161,7 +162,7 @@ export default class Layers {
                 const bounds = d.bounds;
                 let extLayer;
                 if ( bounds.includes(';') ) {
-                    const polyCoords = polyStringToCoords( lyr.bounds );
+                    const polyCoords = polyStringToCoords( bnds );
                     extLayer = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
                 } else {
                     const coords = bounds.split(',').map( data => +data );
@@ -237,16 +238,19 @@ export default class Layers {
         try {
             let mapId       = params.id,
                 tags        = await this.hoot.api.getMapTags( mapId ),
-                layerExtent;
+                layerExtent, polyCoords;
 
             let lyr = this.findBy( 'id', mapId);
-            if (lyr.bounds) {
-                if ( lyr.bounds.includes(';') ) {
-                    let coords = polyStringToCoords(lyr.bounds);
-                    layerExtent = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: coords }));
+            if (lyr.bounds || lyr.bbox) {
+                let bnds = lyr.bounds || lyr.bbox;
+                console.log(bnds);
+                if ( bnds.includes(';') ) {
+                    polyCoords = polyStringToCoords(bnds);
+                    layerExtent = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
                 } else {
-                    const coords = lyr.bounds.split(',').map( d => +d );
+                    const coords = bnds.split(',').map( d => +d );
                     layerExtent = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+                    polyCoords = layerExtent.polygon();
                 }
             } else {
                 layerExtent = await this.layerExtent( mapId );
@@ -260,7 +264,7 @@ export default class Layers {
                 isMerged: params.isMerged || false,
                 layers: params.layers || [],
                 extent: layerExtent,
-                polygon: layerExtent.polygon(),
+                polygon: polyCoords,
                 tags: tags,
                 visible: true, // Denotes whether the layer is toggled on/off
                 active: params.active || true // Whether the layer is loaded and can be toggled on/off
@@ -310,7 +314,7 @@ export default class Layers {
                     type: 'Feature',
                     geometry: {
                         type: 'LineString',
-                        coordinates: layerExtent.polygon()
+                        coordinates: polyCoords
                     }
                 } ],
                 properties: {
