@@ -152,7 +152,7 @@ export default class SelectBounds extends EventEmitter {
             .append( 'input' )
             .attr('placeholder', 'Select a bounds from...');
 
-        let { boundsHistory } = JSON.parse( Hoot.context.storage('boundsHistory') );
+        let { boundsHistory } = JSON.parse( Hoot.context.storage('bounds_history') );
 
         const dropdownOptions = boundOptionsList.concat( boundsHistory );
         const historyOptions = dropdownOptions.map( option => { return { value: option }; } );
