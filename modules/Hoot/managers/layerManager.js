@@ -243,7 +243,6 @@ export default class Layers {
             let lyr = this.findBy( 'id', mapId);
             if (lyr.bounds || lyr.bbox) {
                 let bnds = lyr.bounds || lyr.bbox;
-                console.log(bnds);
                 if ( bnds.includes(';') ) {
                     polyCoords = polyStringToCoords(bnds);
                     layerExtent = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
