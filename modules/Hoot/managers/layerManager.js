@@ -144,7 +144,7 @@ export default class Layers {
     //and are not same as the secondary input layer
     //and have a bounds that fully contains the bounds (or mbr extent) of the secondary input layer
     grailReferenceLayers( lyr ) {
-        let bnds = lyr.bounds || lyr.bbox;
+        let bnds = lyr.bounds;
         let extBounds;
         // if contains ';' then bounds is polygon, else bbox
         if ( bnds.includes(';') ) {
@@ -241,8 +241,8 @@ export default class Layers {
                 layerExtent, polyCoords;
 
             let lyr = this.findBy( 'id', mapId);
-            if (lyr.bounds || lyr.bbox) {
-                let bnds = lyr.bounds || lyr.bbox;
+            if (lyr.bounds) {
+                let bnds = lyr.bounds;
                 if ( bnds.includes(';') ) {
                     polyCoords = polyStringToCoords(bnds);
                     layerExtent = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
@@ -253,6 +253,7 @@ export default class Layers {
                 }
             } else {
                 layerExtent = await this.layerExtent( mapId );
+                polyCoords = layerExtent.polygon();
             }
 
             let layer = {
