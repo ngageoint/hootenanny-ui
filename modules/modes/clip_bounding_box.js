@@ -21,7 +21,7 @@ export function modeDrawBoundingBox( instance, context ) {
         d3.event.stopPropagation();
         context.enter( modeBrowse( context ) );
 
-        instance.handleBbox( extent );
+        instance.handleBounds( extent );
     }
 
     clipBbox.enter = function() {
