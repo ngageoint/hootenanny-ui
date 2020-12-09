@@ -144,14 +144,13 @@ export default class Layers {
     //and are not same as the secondary input layer
     //and have a bounds that fully contains the bounds (or mbr extent) of the secondary input layer
     grailReferenceLayers( lyr ) {
-        let bnds = lyr.bounds;
         let extBounds;
         // if contains ';' then bounds is polygon, else bbox
-        if ( bnds.includes(';') ) {
-            const polyCoords = polyStringToCoords( bnds );
+        if ( lyr.bounds.includes(';') ) {
+            const polyCoords = polyStringToCoords( lyr.bounds );
             extBounds = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
         } else {
-            const bboxCoords = bnds.split(',').map( data => +data );
+            const bboxCoords = lyr.bounds.split(',').map( data => +data );
             extBounds = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
         }
 
@@ -162,7 +161,7 @@ export default class Layers {
                 const bounds = d.bounds;
                 let extLayer;
                 if ( bounds.includes(';') ) {
-                    const polyCoords = polyStringToCoords( bnds );
+                    const polyCoords = polyStringToCoords( lyr.bounds );
                     extLayer = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
                 } else {
                     const coords = bounds.split(',').map( data => +data );
@@ -242,12 +241,11 @@ export default class Layers {
 
             let lyr = this.findBy( 'id', mapId);
             if (lyr.bounds) {
-                let bnds = lyr.bounds;
-                if ( bnds.includes(';') ) {
-                    polyCoords = polyStringToCoords(bnds);
+                if ( lyr.bounds.includes(';') ) {
+                    polyCoords = polyStringToCoords(lyr.bounds);
                     layerExtent = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
                 } else {
-                    const coords = bnds.split(',').map( d => +d );
+                    const coords = lyr.bounds.split(',').map( d => +d );
                     layerExtent = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
                     polyCoords = layerExtent.polygon();
                 }
