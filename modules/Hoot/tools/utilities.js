@@ -132,6 +132,10 @@ export const formatBbox = str => {
     return `${minx},${miny},${maxx},${maxy}`;
 };
 
+export const polyStringFromGeom = geom => {
+    return Hoot.context.layers().layer('data').getCoordsString( geom );
+};
+
 export const polyStringToCoords = str => {
     return str.split(';').map( coordString => {
         const coords = coordString.split(',');
