@@ -532,8 +532,8 @@ export function svgData(projection, context, dispatch) {
         return c;
     }
 
-    function flattenCoords() {
-        var features = getFeatures(_geojson);
+    function flattenCoords( feature ) {
+        var features = feature ? getFeatures(feature) : getFeatures(_geojson);
         if (!features.length) return;
 
         var coords = _reduce(features, function(coords, feature) {
@@ -552,8 +552,8 @@ export function svgData(projection, context, dispatch) {
         return coords;
     }
 
-    drawData.getCoordsString = function() {
-        return flattenCoords().map( coordinate => {
+    drawData.getCoordsString = function( feature ) {
+        return flattenCoords( feature ).map( coordinate => {
             const [ lon, lat ] = coordinate;
             return lon.toFixed( 6 ) + ',' + lat.toFixed( 6 );
         } ).join(';');
