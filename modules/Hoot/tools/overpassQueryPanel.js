@@ -181,6 +181,8 @@ export default class OverpassQueryPanel {
             new GrailPull( this.formData ).render();
         } else if ( this.formData.operationName === 'createDifferentialChangeset' ) {
             new DifferentialChangeset( this.formData ).render();
+        } else if ( this.formData.operationName === 'taskingManager' ) {
+            this.formData.callback();
         }
     }
 
