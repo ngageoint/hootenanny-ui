@@ -1,7 +1,8 @@
 import Tab from './tab';
-import { geoExtent as GeoExtent } from '../../../geo';
-import { d3combobox } from '../../../lib/hoot/d3.combobox';
+import {geoExtent as GeoExtent} from '../../../geo';
+import {d3combobox} from '../../../lib/hoot/d3.combobox';
 import FormFactory from '../../tools/formFactory';
+import OverpassQueryPanel from '../../tools/overpassQueryPanel';
 import { polyStringFromGeom } from '../../tools/utilities';
 
 /**
@@ -16,6 +17,7 @@ export default class TaskingManagerPanel extends Tab {
 
         this.name = 'Tasking Manager';
         this.id   = 'taskingManagerPanel';
+        this.operationName = 'taskingManager';
         this.currentProject = null;
         this.formFactory = new FormFactory();
 
@@ -176,14 +178,24 @@ export default class TaskingManagerPanel extends Tab {
                 } )
             ) )
             .on('change', () => {
-                if ( this.deriveDropdown.property( 'value' ) === 'Cut & Replace'
-                    && this.cutReplaceOptions.form.length > 0 ) {
-                    let formId = 'cutReplaceForm';
-                    this.form  = this.formFactory.generateForm( 'body', formId, this.cutReplaceOptions );
-                } else {
-                    // currently only cut & replace will have advanced options so clear it when other option is selected
-                    this.ADV_OPTIONS = null;
-                }
+                this.callback = () => {
+                    if ( this.overpassQueryContainer && this.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
+                        this.customQuery = this.overpassQueryContainer.select( 'textarea' ).property( 'value' );
+                    } else {
+                        this.customQuery = null;
+                    }
+
+                    if (this.deriveDropdown.property('value') === 'Cut & Replace'
+                        && this.cutReplaceOptions.form.length > 0) {
+                        let formId = 'cutReplaceForm';
+                        this.form = this.formFactory.generateForm('body', formId, this.cutReplaceOptions);
+                    } else {
+                        // currently only cut & replace will have advanced options so clear it when other option is selected
+                        this.ADV_OPTIONS = null;
+                    }
+                };
+
+                new OverpassQueryPanel( this ).render();
 
             });
     }
@@ -243,6 +255,7 @@ export default class TaskingManagerPanel extends Tab {
         const data = {
             bounds: coordinates,
             taskInfo: `taskingManager:${ this.currentProject.id }_${ task.id }`,
+            customQuery : this.customQuery,
             ADV_OPTIONS: this.ADV_OPTIONS
         };
 

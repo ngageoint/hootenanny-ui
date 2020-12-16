@@ -230,9 +230,7 @@ export default class SelectBounds extends EventEmitter {
 
         if ( this.operationName === 'clipData' ) {
             new ClipDataset( this ).render();
-        } else if ( this.operationName === 'grailPull' ) {
-            new OverpassQueryPanel( this ).render();
-        } else if ( this.operationName === 'createDifferentialChangeset' ) {
+        } else if ( this.operationName === 'grailPull' || this.operationName === 'createDifferentialChangeset' ) {
             new OverpassQueryPanel( this ).render();
         }
 
