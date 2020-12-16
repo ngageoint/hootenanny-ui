@@ -1,6 +1,6 @@
 import FormFactory from './formFactory';
 
-import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
+import { checkForUnallowedChar, uuidv4 } from './utilities';
 import _find                                         from 'lodash-es/find';
 import OverpassQueryPanel                            from './overpassQueryPanel';
 import _get                                          from 'lodash-es/get';
@@ -8,7 +8,8 @@ import _get                                          from 'lodash-es/get';
 export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
-        this.extentType = this.instance.bboxSelectType;
+        this.extentType = this.instance.boundsSelectType;
+        this.privateOverpassActive = false;
     }
 
     render() {
@@ -57,7 +58,7 @@ export default class GrailPull {
     }
 
     async createTable() {
-        const overpassParams = { BBOX: this.instance.bbox };
+        const overpassParams = { bounds: this.instance.bounds };
         if ( this.instance.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
@@ -101,6 +102,8 @@ export default class GrailPull {
 
         // add private overpass data first if exists
         if ( rowData.columns.length === 2 ) {
+            this.privateOverpassActive = true;
+
             rows.append('td')
                 .classed( 'strong', data => data[rowData.columns[1]] > 0 )
                 .text( data => data[rowData.columns[1]] );
@@ -194,9 +197,9 @@ export default class GrailPull {
     async handleSubmit() {
         this.loadingState();
 
-        const bbox = this.instance.bbox;
+        const bounds = this.instance.bounds;
 
-        if ( !bbox ) {
+        if ( !bounds ) {
             Hoot.message.alert( 'Need a bounding box!' );
             return;
         }
@@ -207,12 +210,12 @@ export default class GrailPull {
             projectName;
 
         const railsParams = {
-            BBOX     : formatBbox( bbox ),
+            bounds   : bounds,
             input1   : this.form.select( '.outputName-0' ).property( 'value' )
         };
 
         const overpassParams = {
-            BBOX     : formatBbox( bbox ),
+            bounds   : bounds,
             input1   : this.form.select( '.outputName-1' ).property( 'value' )
         };
 
@@ -240,7 +243,12 @@ export default class GrailPull {
 
             railsParams.taskInfo = overpassParams.taskInfo = projectName + ', ' + folderName;
         } else {
-            folderName = 'grail_' + bbox.replace(/,/g, '_');
+            if ( this.extentType === 'customDataExtent' ) {
+                folderName = 'grail_' + Hoot.context.layers().layer('data').getCustomName();
+            } else {
+                folderName = 'grail_' + bounds.replace(/,/g, '_');
+            }
+
             pathId = _get(_find(Hoot.folders.folderPaths, folder => folder.name === folderName), 'id');
             if (!pathId) {
                 folderId = (await Hoot.folders.addFolder('', folderName )).folderId;
@@ -326,13 +334,13 @@ export default class GrailPull {
             .then( () => this.form.remove() );
 
 
-        let history = JSON.parse( Hoot.context.storage('history') );
-        if ( history.bboxHistory.length >= 5 ) {
-            // Removes oldest (last in list) bbox
-            history.bboxHistory = history.bboxHistory.slice( 0, 4 );
+        let boundsHistory = JSON.parse( Hoot.context.storage('bounds_history') );
+        if ( boundsHistory.boundsHistory.length >= 5 ) {
+            // Removes oldest (last in list) bounds
+            boundsHistory.boundsHistory = boundsHistory.boundsHistory.slice( 0, 4 );
         }
-        history.bboxHistory.unshift( bbox );
-        Hoot.context.storage( 'history', JSON.stringify( history ) );
+        boundsHistory.boundsHistory.unshift( bounds );
+        Hoot.context.storage( 'bounds_history', JSON.stringify( boundsHistory ) );
 
     }
 

@@ -40,6 +40,7 @@ export function svgData(projection, context, dispatch) {
     var _fileList;
     var _template;
     var _src;
+    var _customName;
 
 
     function init() {
@@ -459,6 +460,7 @@ export function svgData(projection, context, dispatch) {
 
         if (!fileList || !fileList.length) return this;
         var f = fileList[0];
+        _customName = f.name;
         var extension = getExtension(f.name);
         var reader = new FileReader();
         reader.onload = (function() {
@@ -481,6 +483,7 @@ export function svgData(projection, context, dispatch) {
 
         // strip off any querystring/hash from the url before checking extension
         var testUrl = url.split(/[?#]/)[0];
+        _customName = testUrl;
         var extension = getExtension(testUrl) || defaultExtension;
         if (extension) {
             _template = null;
@@ -496,6 +499,11 @@ export function svgData(projection, context, dispatch) {
         }
 
         return this;
+    };
+
+
+    drawData.getCustomName = function() {
+        return _customName;
     };
 
 
@@ -524,8 +532,8 @@ export function svgData(projection, context, dispatch) {
         return c;
     }
 
-    function flattenCoords() {
-        var features = getFeatures(_geojson);
+    function flattenCoords( feature ) {
+        var features = feature ? getFeatures(feature) : getFeatures(_geojson);
         if (!features.length) return;
 
         var coords = _reduce(features, function(coords, feature) {
@@ -543,6 +551,13 @@ export function svgData(projection, context, dispatch) {
 
         return coords;
     }
+
+    drawData.getCoordsString = function( feature ) {
+        return flattenCoords( feature ).map( coordinate => {
+            const [ lon, lat ] = coordinate;
+            return lon.toFixed( 6 ) + ',' + lat.toFixed( 6 );
+        } ).join(';');
+    };
 
     drawData.extent = function() {
         return geoExtent(d3_geoBounds({ type: 'LineString', coordinates: flattenCoords() }));

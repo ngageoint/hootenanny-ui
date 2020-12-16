@@ -124,6 +124,7 @@ export default class Navbar {
                     Hoot.api.logout()
                         .then( () => {
                             localStorage.removeItem( 'user' );
+                            localStorage.removeItem( 'bounds_history' );
                             window.location.replace( 'login.html' );
                         } );
                 } )

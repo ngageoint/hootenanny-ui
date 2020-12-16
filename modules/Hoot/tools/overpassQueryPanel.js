@@ -1,6 +1,6 @@
 import FormFactory          from './formFactory';
 import GrailPull            from './grailPull';
-import selectBbox           from './selectBbox';
+import selectBounds           from './selectBounds';
 import DifferentialChangeset   from './differentialChangeset';
 
 
@@ -50,8 +50,8 @@ export default class OverpassQueryPanel {
             .on( 'click', () => {
                 this.form.remove();
 
-                const grailSelectBbox = new selectBbox( this.formData.context, this.formData );
-                grailSelectBbox.render( this.formData.operationName );
+                const grailSelectBounds = new selectBounds( this.formData.context, this.formData );
+                grailSelectBounds.render( this.formData.operationName );
             } );
 
         backButton.append( 'span' )

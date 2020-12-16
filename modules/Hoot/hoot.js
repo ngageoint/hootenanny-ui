@@ -123,9 +123,9 @@ class Hoot {
             return user;
         };
 
-        if (!this.context.storage('history')) {
-            this.context.storage('history', JSON.stringify({
-                'bboxHistory':[]
+        if (!this.context.storage('bounds_history')) {
+            this.context.storage('bounds_history', JSON.stringify({
+                'boundsHistory':[]
             }));
         }
 

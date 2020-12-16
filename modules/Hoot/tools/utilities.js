@@ -132,6 +132,17 @@ export const formatBbox = str => {
     return `${minx},${miny},${maxx},${maxy}`;
 };
 
+export const polyStringFromGeom = geom => {
+    return Hoot.context.layers().layer('data').getCoordsString( geom );
+};
+
+export const polyStringToCoords = str => {
+    return str.split(';').map( coordString => {
+        const coords = coordString.split(',');
+        return [ +coords[0], +coords[1] ];
+    } );
+};
+
 export const duration = (start, end, ago) => {
     let duration,
         diff = (end - start) / 1000;

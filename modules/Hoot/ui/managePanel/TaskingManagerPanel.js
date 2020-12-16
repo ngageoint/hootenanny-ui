@@ -3,6 +3,7 @@ import {geoExtent as GeoExtent} from '../../../geo';
 import {d3combobox} from '../../../lib/hoot/d3.combobox';
 import FormFactory from '../../tools/formFactory';
 import OverpassQueryPanel from '../../tools/overpassQueryPanel';
+import { polyStringFromGeom } from '../../tools/utilities';
 
 /**
  * Creates the tasking manager tab in the settings panel
@@ -239,9 +240,7 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     executeTask( task, syncCheck ) {
-        let coordinates = task.geometry.coordinates[0][0];
-        let extLayer = new GeoExtent([ coordinates[0][0], coordinates[0][1] ], [ coordinates[2][0], coordinates[2][1] ]);
-
+        let coordinates = polyStringFromGeom( task );
         let params = {
             uploadResult: true
         };
@@ -254,7 +253,7 @@ export default class TaskingManagerPanel extends Tab {
         }
 
         const data = {
-            BBOX: extLayer.toParam(),
+            bounds: coordinates,
             taskInfo: `taskingManager:${ this.currentProject.id }_${ task.id }`,
             customQuery : this.customQuery,
             ADV_OPTIONS: this.ADV_OPTIONS

@@ -11,9 +11,9 @@ export default class GrailDatasetPicker {
 
     async render() {
 
-        //if layer has no bbox (reflecting filter when pulling data)
+        //if layer has no bounds (reflecting filter when pulling data)
         //use the layer mbr extent
-        if (!this.layer.bbox) this.layer.bbox = (await Hoot.layers.layerExtent( this.layer.id )).toParam();
+        if (!this.layer.bounds) this.layer.bounds = (await Hoot.layers.layerExtent( this.layer.id )).toParam();
 
         this.refDatasets = Hoot.layers.grailReferenceLayers(this.layer);
         let metadata;
@@ -98,7 +98,7 @@ export default class GrailDatasetPicker {
         data.input1 = refId;
         data.input2 = this.layer.id;
         data.parentId = this.parentId;
-        data.BBOX = this.layer.bbox;
+        data.bounds = this.layer.bounds;
         data.ADV_OPTIONS = this.formFactory.getAdvOpts(this.form, this.advOpts);
         data.taskInfo = this.params.taskInfo;
 
