@@ -308,7 +308,18 @@ export default class TaskingManagerPanel extends Tab {
                 this.unlockedTaskButtons( task.id );
 
                 return resp;
-            } );
+            } )
+            .catch( err => {
+                console.error( err );
+
+                const errMessage =  {
+                    message : err.data.message || `${ params.deriveType } changeset failed`,
+                    status  : err.status,
+                    type    : err.type
+                };
+
+                Hoot.message.alert( errMessage );
+            });
     }
 
     lockedTaskButtons( taskId ) {
