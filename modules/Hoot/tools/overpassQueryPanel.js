@@ -154,7 +154,7 @@ export default class OverpassQueryPanel {
         let queryString = '';
 
         if ( checkedInput.size() !== 0 ) {
-            queryString = '[out:json][bbox:{{bbox}}];\n' +
+            queryString = '[out:json];\n' +
             '(\n';
 
             checkedInput.each( option => {
