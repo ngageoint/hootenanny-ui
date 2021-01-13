@@ -158,9 +158,7 @@ export default class OverpassQueryPanel {
             '(\n';
 
             checkedInput.each( option => {
-                queryString += `node["${ option.searchTerm }"]({{bbox}});\n`+
-                    `way["${ option.searchTerm }"]({{bbox}});\n` +
-                    `relation["${ option.searchTerm }"]({{bbox}});\n`;
+                queryString += `nwr["${ option.searchTerm }"]({{bbox}});\n`;
             } );
 
             // Close out and recurse down
