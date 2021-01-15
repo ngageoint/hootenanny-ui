@@ -6,8 +6,8 @@ export default class Events extends EventEmitter {
         this.functionsObj = {};
     }
 
-    getFunction( className, eventName ) {
-        if ( this.functionsObj[eventName] && this.functionsObj[eventName].srcClass === className ) {
+    getFunction( identifier, eventName ) {
+        if ( this.functionsObj[eventName] && this.functionsObj[eventName].srcIdentifier === identifier ) {
             return this.functionsObj[eventName].func;
         }
         return null;
@@ -15,14 +15,14 @@ export default class Events extends EventEmitter {
 
     // Need the class name as a primary key and eventName is the name of the event
     // There can be a case where the same event eventName is used in more than 1 class
-    listen( className, eventName, fn ) {
-        let func = this.getFunction( className, eventName );
+    listen( identifier, eventName, fn ) {
+        let func = this.getFunction( identifier, eventName );
         if ( func ) {
             super.removeListener( eventName, func );
         }
 
         this.functionsObj[ eventName ] = {
-            srcClass: className,
+            srcIdentifier: identifier,
             func: fn
         };
 

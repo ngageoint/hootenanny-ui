@@ -215,7 +215,8 @@ export default class LayerAdd extends SidebarForm {
      * Listen for events
      */
     listen() {
-        const className = this.constructor.name;
+        // Need refType to differentiate between panel for add reference dataset and add secondary dataset
+        const className = `${ this.constructor.name }_${ this.formMeta.refType }`;
 
         Hoot.events.listen( className, 'render-dataset-table', () => {
             this.renderFolderTree();
