@@ -153,12 +153,16 @@ export default class Basemaps extends Tab {
     }
 
     renderBasemap( d ) {
+        let path = window.location.pathname;
+        let pathWithoutFile = path.substr(0, path.lastIndexOf('/'));
+        let pathRelative = (pathWithoutFile === '') ? '' : '..';
+
         let newSource = {
             name: d.name,
             id: d.name,
             type: 'tms',
             projection: 'mercator',
-            template: `${ Hoot.api.config.path }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
+            template: `${ pathRelative }/static/BASEMAP/${ d.name }/{zoom}/{x}/{-y}.png`,
             default: true,
             nocache: true,
             extent: new GeoExtent( [ d.extent.minx, d.extent.miny ], [ d.extent.maxx, d.extent.maxy ] )
