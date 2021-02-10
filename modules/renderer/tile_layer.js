@@ -197,7 +197,10 @@ export function rendererTileLayer(context) {
         image.enter()
           .append('img')
             .attr('class', 'tile')
-            .attr('src', function(d) { return d[3]; })
+            .attr('src', function(d) {
+                console.log( d[3] );
+                return d[3];
+            })
             .on('error', error)
             .on('load', load)
           .merge(image)
