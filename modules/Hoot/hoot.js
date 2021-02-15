@@ -130,10 +130,19 @@ class Hoot {
         }
 
         let queryStringMap = utilStringQs(window.location.href);
-        if (queryStringMap.hasOwnProperty('gpx') && queryStringMap.gpx.includes('task_gpx_geom')) {
-            let [project, task] = new URL(queryStringMap.gpx).pathname.match(/\d+/g);
-            sessionStorage.setItem('tm:project', 'memt_project_' + project);
-            sessionStorage.setItem('tm:task', 'task_' + task);
+        if (queryStringMap.hasOwnProperty('gpx')) {
+            const tm2Regex = new RegExp('project\\/([0-9]+)\\/task_gpx_geom\\/([0-9]+)\\.gpx');
+            const tm4Regex = new RegExp('projects\\/([0-9]+)\\/tasks\\/queries\\/gpx\\/.+tasks=([0-9]+)');
+
+            if ( tm2Regex.test(queryStringMap.gpx) ) {
+                let matchGroup = tm2Regex.exec(queryStringMap.gpx);
+                sessionStorage.setItem('tm:project', 'memt_project_' + matchGroup[1]);
+                sessionStorage.setItem('tm:task', 'task_' + matchGroup[2]);
+            } else if ( tm4Regex.test(queryStringMap.gpx) ) {
+                let matchGroup = tm4Regex.exec(queryStringMap.gpx);
+                sessionStorage.setItem('tm:project', 'memt_project_' + matchGroup[1]);
+                sessionStorage.setItem('tm:task', 'task_' + matchGroup[2]);
+            }
         }
 
         Promise.all( [
