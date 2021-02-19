@@ -285,50 +285,44 @@ export default class GrailPull {
                 const loadedPrimary   = Hoot.layers.findLoadedBy( 'refType', 'primary' ),
                       loadedSecondary = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
 
-                // add grail pulled layers if nothing is on map
-                if ( !loadedPrimary && !loadedSecondary ) {
-                    let submitPromises = [];
+                // Finding layer id by name is fine here because we check for duplicate name in the grail pull
+                let refLayer = Hoot.layers.findBy( 'name', railsParams.input1 ),
+                    secLayer = Hoot.layers.findBy( 'name', overpassParams.input1 ),
+                    submitPromises = [];
 
-                    // Finding layer id by name is fine here because we check for duplicate name in the grail pull
-                    let refLayer = Hoot.layers.findBy( 'name', railsParams.input1 );
-                    if ( referenceCheckbox && refLayer ) {
-                        let refParams = {
-                            name: railsParams.input1,
-                            id: refLayer.id,
-                            color: 'violet',
-                            refType: 'primary'
-                        };
-
-                        submitPromises.push( Hoot.ui.sidebar.forms.reference.submitLayer( refParams ) );
-                    }
-
-                    let secLayer = Hoot.layers.findBy( 'name', overpassParams.input1 );
-                    if ( secondaryCheckbox && secLayer ) {
-                        let secParams = {
-                            name: overpassParams.input1,
-                            id: secLayer.id,
-                            color: 'orange',
-                            refType: 'secondary'
-                        };
-
-                        submitPromises.push( Hoot.ui.sidebar.forms.secondary.submitLayer( secParams ) );
-                    }
-
-                    return Promise.all( submitPromises );
-                } else if (this.extentType === 'secondaryLayerExtent') {
+                if ( referenceCheckbox && refLayer ) {
                     // Remove reference layer if there is one
                     if ( loadedPrimary ) {
                         Hoot.layers.removeActiveLayer( loadedPrimary.id, 'reference', 'primary' );
                     }
 
-                    // load newly pulled layer
-                    let layerInfo = {
+                    let refParams = {
                         name: railsParams.input1,
-                        id: Hoot.layers.findBy( 'name', railsParams.input1 ).id
+                        id: refLayer.id,
+                        color: 'violet',
+                        refType: 'primary'
                     };
 
-                    return Hoot.ui.sidebar.forms.reference.submitLayer( layerInfo );
+                    submitPromises.push( Hoot.ui.sidebar.forms.reference.submitLayer( refParams ) );
                 }
+
+                if ( secondaryCheckbox && secLayer ) {
+                    // Remove secondary layer if there is one
+                    if ( loadedSecondary ) {
+                        Hoot.layers.removeActiveLayer( loadedSecondary.id, 'secondary', 'secondary' );
+                    }
+
+                    let secParams = {
+                        name: overpassParams.input1,
+                        id: secLayer.id,
+                        color: 'orange',
+                        refType: 'secondary'
+                    };
+
+                    submitPromises.push( Hoot.ui.sidebar.forms.secondary.submitLayer( secParams ) );
+                }
+
+                return Promise.all( submitPromises );
             } )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( () => this.form.remove() );
