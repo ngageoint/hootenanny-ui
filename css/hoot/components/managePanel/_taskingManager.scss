@@ -131,6 +131,10 @@
             }
         }
 
+        &[status="Mapped"] {
+            background-color: #ade6ef;
+        }
+
         &[status=""] {
             background-color: #f1f1f1;
         }
