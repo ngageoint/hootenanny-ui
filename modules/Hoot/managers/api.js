@@ -1587,6 +1587,10 @@ export default class API {
     }
 
     /**
+     * TM2 API CALLS
+     */
+
+    /**
      * Retrieves all the projects from tasking manager
      */
     getTMProjects() {
@@ -1709,4 +1713,160 @@ export default class API {
         return this.request( params )
             .then( resp => resp.data );
     }
+
+
+    /**
+     * TM4 API CALLS
+     */
+
+    /**
+     * Retrieves all the projects from tasking manager 4
+     */
+    getTM4Projects() {
+        const params = {
+            url: '/tasks/api/v2/projects/',
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            params: {
+                hootenanny: true
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( () => {
+                let alert = {
+                    message: 'Failed to retrieve projects list from tasking manager.',
+                    type: 'error',
+                    status: 400
+                };
+
+                return alert;
+            } );
+    }
+
+    /**
+     * Retrieves all the tasks from tasking manager for the specified project
+     */
+    getTM4Tasks( projectId ) {
+        const params = {
+            url: `/tasks/api/v2/projects/${ projectId }/`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( () => {
+                let alert = {
+                    message: 'Failed to retrieve tasks.',
+                    type: 'error'
+                };
+
+                Hoot.message.alert( alert );
+            } );
+    }
+
+    /**
+     * Sets the lock state for the specified task under the specified project
+     */
+    setTM4TaskLock( projectId, taskId, lock ) {
+        let lockParam = lock ? 'lock-for-mapping' : 'stop-mapping';
+        const match = document.cookie.match(new RegExp('(^| )authToken=([^;]+)'));
+        let authToken;
+        if (match) {
+            authToken = match[2];
+        }
+
+        const params = {
+            url: `/tasks/api/v2/projects/${ projectId }/tasks/actions/${ lockParam }/${ taskId }/`,
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json',
+                'Authorization': authToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: `Task ${ taskId } ${ lockParam }ed`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                let alert = {
+                    message: `Failed to ${ lockParam } task ${ taskId } for project ${ projectId }.\n` +
+                        'Make sure you are logged into tasking manager in a different tab and that you' +
+                        'have not locked any other tasks for this project',
+                    type: 'error',
+                    status: err.status
+                };
+
+                if ( err.data && err.data.error_msg ) {
+                    alert.message = err.data.error_msg;
+                    alert.status = err.status;
+                }
+
+                return alert;
+            } );
+    }
+
+    /**
+     * Marks the specified task under the specified project as done
+     */
+    markTM4TaskDone( projectId, taskId ) {
+        const match = document.cookie.match(new RegExp('(^| )authToken=([^;]+)'));
+        let authToken;
+        if (match) {
+            authToken = match[2];
+        }
+
+        const params = {
+            url: `/tasks/api/v2/projects/${ projectId }/tasks/actions/unlock-after-mapping/${ taskId }/`,
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'Authorization': authToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            data: {
+                status: 'MAPPED'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    /**
+     * Marks the specified task under the specified project as validated
+     */
+    validateTM4Task( projectId, taskId, formData ) {
+        const match = document.cookie.match(new RegExp('(^| )authToken=([^;]+)'));
+        let authToken;
+        if (match) {
+            authToken = match[2];
+        }
+
+        const params = {
+            url: `/tasks/api/v2/projects/${ projectId }/tasks/actions/unlock-after-validation/`,
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'Authorization': authToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            data: formData
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
 }

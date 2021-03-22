@@ -1,5 +1,4 @@
 import Tab from './tab';
-import {geoExtent as GeoExtent} from '../../../geo';
 import {d3combobox} from '../../../lib/hoot/d3.combobox';
 import FormFactory from '../../tools/formFactory';
 import OverpassQueryPanel from '../../tools/overpassQueryPanel';
@@ -40,13 +39,15 @@ export default class TaskingManagerPanel extends Tab {
 
         // trigger for run all tasks loop to stop
         this.cancelRunning = false;
+
+        this.tmVersion = 4;
     }
 
     render() {
         super.render();
-
         // fire off the request but don't wait for it so we don't hold up the UI from being rendered
-        this.projectList = Hoot.api.getTMProjects();
+        this.tm4ProjectList = Hoot.api.getTM4Projects();
+
         this.createTables();
 
         this.initCutReplaceForm();
@@ -80,14 +81,19 @@ export default class TaskingManagerPanel extends Tab {
     async activate() {
         this.loadingState( this.projectsTable, true );
 
-        // await for the list
-        this.projectList = await this.projectList;
+        // await for the tm4 project list
+        this.projectList = await this.tm4ProjectList;
+
+        // if no result from tm4 then try tm2 project list
+        if ( this.projectList.status === 400 ) {
+            this.projectList = await Hoot.api.getTMProjects();
+            this.tmVersion = 2;
+        }
 
         if ( this.projectList.status === 400 ) {
             Hoot.message.alert( this.projectList );
         } else if ( this.projectList ) {
-            this.projectList.features = this.projectList.features.filter( task => task.properties.hoot_map_id );
-
+            this.projectList.features = this.projectList.features.filter( task => task.properties.hoot_map_id || task.properties.hootMapId );
             this.loadProjectsTable( this.projectList.features );
         }
     }
@@ -121,7 +127,7 @@ export default class TaskingManagerPanel extends Tab {
 
         items = items.enter()
             .append( 'div' )
-            .attr( 'id', d => d.id )
+            .attr( 'id', d =>  d.id || d.properties.projectId )
             .classed( 'taskingManager-item fill-white keyline-bottom', true );
 
         let header = items
@@ -146,7 +152,8 @@ export default class TaskingManagerPanel extends Tab {
         let details = body.append( 'div' )
             .classed( 'taskingManager-details', true );
         details.append( 'span' ).text( project => {
-            let { created, author } = project.properties;
+            let author = project.properties.author,
+                created = project.properties.created || project.properties.lastUpdated;
             created = new Date( created ).toLocaleDateString();
 
             return `Created by ${author} - Created on ${created}`;
@@ -223,7 +230,14 @@ export default class TaskingManagerPanel extends Tab {
         buttonsContainer.selectAll( 'button' ).property( 'disabled', status === 'Running' );
 
         if ( !status ) {
-            let taskState = this.taskingManagerStatus[ taskData.properties.state ];
+            let taskState;
+            if ( this.tmVersion === 4 ) {
+                let state = taskData.properties.state || taskData.properties.taskStatus;
+                taskState = state.charAt(0).toUpperCase() + state.substr(1).toLowerCase();
+            } else {
+                taskState = this.taskingManagerStatus[ taskData.properties.state ];
+            }
+
             status = taskState ? taskState : this.timeoutTasks.includes( taskId ) ? 'Timed out' : '';
         } else {
             // If state is an option in tasking manager, set the task to this new state
@@ -241,6 +255,7 @@ export default class TaskingManagerPanel extends Tab {
 
     executeTask( task, syncCheck ) {
         let coordinates = polyStringFromGeom( task );
+        const taskId = task.id || task.properties.taskId;
         let params = {
             uploadResult: true
         };
@@ -254,16 +269,16 @@ export default class TaskingManagerPanel extends Tab {
 
         const data = {
             bounds: coordinates,
-            taskInfo: `taskingManager:${ this.currentProject.id }_${ task.id }`,
+            taskInfo: `taskingManager:${ this.currentProject.id }_${ taskId }`,
             customQuery : this.customQuery,
             ADV_OPTIONS: this.ADV_OPTIONS
         };
 
-        this.setTaskStatus( task.id, 'Running' );
+        this.setTaskStatus( taskId, 'Running' );
 
         let executeCommand;
         if ( syncCheck ) {
-            executeCommand = Hoot.api.overpassSyncCheck( `${ this.currentProject.id }_${ task.id }` );
+            executeCommand = Hoot.api.overpassSyncCheck( `${ this.currentProject.id }_${ taskId }` );
         } else {
             executeCommand = Hoot.api.deriveChangeset( data, params );
         }
@@ -275,23 +290,39 @@ export default class TaskingManagerPanel extends Tab {
                 let status;
 
                 if ( resp.status === 200 ) {
-                    status = 'Done';
-
-                    await Hoot.api.markTaskDone( this.currentProject.id, task.id );
-                } else if ( this.timeoutTasks.includes( task.id ) ) {
+                    if ( this.tmVersion === 4 ) {
+                        status = 'Mapped';
+                        await Hoot.api.markTM4TaskDone( this.currentProject.id, taskId );
+                    } else {
+                        status = 'Done';
+                        await Hoot.api.markTaskDone( this.currentProject.id, taskId );
+                    }
+                } else if ( this.timeoutTasks.includes( taskId ) ) {
                     Hoot.message.alert( resp );
-                    this.setTaskStatus( task.id, 'Timed out' );
-                    this.lockedTaskButtons( task.id );
+                    this.setTaskStatus( taskId, 'Timed out' );
+                    this.lockedTaskButtons( taskId );
                     return resp;
                 } else {
                     status = 'Invalidated';
 
-                    const formData = new FormData();
-                    formData.set( 'comment', 'Hootenanny failure' );
-                    formData.set( 'invalidate', 'true' );
+                    let validateRequest;
+                    if ( this.tmVersion === 4 ) {
+                        const formData = {
+                            validatedTasks : [{
+                                comment: 'Hootenanny failure',
+                                status: 'INVALIDATED',
+                                taskId: taskId
+                            }]
+                        };
+                        validateRequest = await Hoot.api.validateTM4Task( this.currentProject.id, taskId, formData );
+                    } else {
+                        const formData = new FormData();
+                        formData.set( 'comment', 'Hootenanny failure' );
+                        formData.set( 'invalidate', 'true' );
+                        validateRequest = await Hoot.api.validateTask( this.currentProject.id, taskId, formData );
+                    }
 
-                    await Hoot.api.validateTask( this.currentProject.id, task.id, formData )
-                        .then( resp => {
+                    validateRequest.then( resp => {
                             const alert = {
                                 message: resp.msg,
                                 type: resp.success ? 'success' : 'error'
@@ -304,8 +335,8 @@ export default class TaskingManagerPanel extends Tab {
                 }
 
                 Hoot.message.alert( resp );
-                this.setTaskStatus( task.id, status );
-                this.unlockedTaskButtons( task.id );
+                this.setTaskStatus( taskId, status );
+                this.unlockedTaskButtons( taskId );
 
                 return resp;
             } )
@@ -359,17 +390,26 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     setLockState( task, lockStatus ) {
-        return Hoot.api.setTaskLock( this.currentProject.id, task.id, lockStatus )
-            .then( resp => {
+        let taskLock, taskId;
+
+        if ( this.tmVersion === 4 ) {
+            taskId = task.properties.taskId;
+            taskLock = Hoot.api.setTM4TaskLock( this.currentProject.id, taskId, lockStatus );
+        } else {
+            taskId = task.id;
+            taskLock = Hoot.api.setTaskLock( this.currentProject.id, taskId, lockStatus );
+        }
+
+        return taskLock.then( resp => {
                 Hoot.message.alert(resp);
 
                 if ( resp.type === 'success' ) {
                     if ( lockStatus ) {
-                        this.lockedTaskButtons( task.id );
-                        this.setTaskStatus( task.id, 'Locked' );
+                        this.lockedTaskButtons( taskId );
+                        this.setTaskStatus( taskId, 'Locked' );
                     } else {
-                        this.unlockedTaskButtons( task.id );
-                        this.setTaskStatus( task.id, '' );
+                        this.unlockedTaskButtons( taskId );
+                        this.setTaskStatus( taskId, '' );
                     }
                 }
             } );
@@ -417,7 +457,9 @@ export default class TaskingManagerPanel extends Tab {
                 let containsLocked = this.tasksTable.select( '[status="Locked"]' ).empty();
                 const unRunTasks = this.tasksTable.selectAll( '.taskingManager-item' ).filter( function() {
                     const container = d3.select( this );
-                    return container.attr( 'status' ) !== 'Done' && container.attr( 'status' ) !== 'Validated';
+                    return container.attr( 'status' ) !== 'Done'
+                        && container.attr( 'status' ) !== 'Validated'
+                        && container.attr( 'status' ) !== 'Mapped';
                 } );
 
                 if ( containsLocked ) {
@@ -462,8 +504,15 @@ export default class TaskingManagerPanel extends Tab {
         this.tasksContainer.select( '.taskHeader-title' )
             .text( `#${ this.currentProject.id } ${ this.currentProject.properties.name }`);
 
-        const tasksList = await Hoot.api.getTMTasks( this.currentProject.id );
-        tasksList.features.sort( (a, b) => (a.id > b.id) ? 1 : -1 );
+        let tasksList;
+        if ( this.tmVersion === 4 ) {
+            tasksList = await Hoot.api.getTM4Tasks( this.currentProject.id );
+            tasksList = tasksList.tasks;
+            tasksList.features.sort( (a, b) => (a.properties.taskId > b.properties.taskId) ? 1 : -1 );
+        } else {
+            tasksList = await Hoot.api.getTMTasks( this.currentProject.id );
+            tasksList.features.sort( (a, b) => (a.id > b.id) ? 1 : -1 );
+        }
 
         await this.refreshTimeoutTaskList();
 
@@ -474,29 +523,38 @@ export default class TaskingManagerPanel extends Tab {
 
         items = items.enter()
             .append( 'div' )
-            .attr( 'id', d => 'task_' + d.id )
+            .attr( 'id', d => {
+                const taskId = d.id || d.properties.taskId;
+                return 'task_' + taskId;
+            } )
             .classed( 'taskingManager-item fill-white keyline-bottom', true );
 
         items.append( 'div' )
             .classed( 'task-title', true )
-            .text( task => `Task #${ task.id }` );
+            .text( task => {
+                const taskId = task.id || task.properties.taskId;
+                return `Task #${ taskId }`;
+            } );
 
         items.append( 'div' )
             .classed( 'task-status', true )
             .text( task => {
-                const status = task.properties.locked ? 'Locked' :
-                    this.timeoutTasks.includes(task.id) ? 'Timed out' : null;
-                return this.setTaskStatus( task.id, status );
+                const taskId = task.id || task.properties.taskId;
+                const status = ( task.properties.locked || task.properties.lockedBy ) ? 'Locked' :
+                    this.timeoutTasks.includes(taskId) ? 'Timed out' : null;
+
+                return this.setTaskStatus( taskId, status );
             } );
 
         items.append( 'div' )
             .classed( 'taskingManager-action-buttons', true );
 
         items.each( function( task ) {
-            if ( task.properties.locked ) {
-                tmPanel.lockedTaskButtons( task.id );
+            const taskId = task.id || task.properties.taskId;
+            if ( task.properties.locked || task.properties.lockedBy ) {
+                tmPanel.lockedTaskButtons( taskId );
             } else {
-                tmPanel.unlockedTaskButtons( task.id );
+                tmPanel.unlockedTaskButtons( taskId );
             }
         } );
 
