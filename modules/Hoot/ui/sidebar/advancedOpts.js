@@ -848,34 +848,30 @@ export default class AdvancedOpts {
         }
 
         function checkType( member ) {
+            let defaultVal;
             if ( member.input === 'checkbox' ) {
-                updateOpts.push(
-                    {
-                        input: member.input,
-                        default: d3.select(`#${member.id}`).select('input').property('checked'),
-                        id: member.id,
-                        description: member.description,
-                        label: member.label,
-                        type: member.type,
-                        option: member.option
-
-                    }
-                );
+                defaultVal = d3.select(`#${member.id}`).select('input').property('checked');
             }
             else {
-                updateOpts.push(
-                    {
-                        input: member.input,
-                        default: d3.select(`#${member.id}`).select('input').property('value'),
-                        id: member.id,
-                        description: member.description,
-                        label: member.label,
-                        type: member.type,
-                        option: member.option
-
-                    }
-                );
+                defaultVal = d3.select(`#${member.id}`).select('input').property('value');
             }
+
+            let selectedOpt = {
+                input: member.input,
+                default: defaultVal,
+                id: member.id,
+                description: member.description,
+                label: member.label,
+                type: member.type,
+                option: member.option,
+                parentKey: member.parentKey
+            };
+            if ( member.keysList ) {
+                selectedOpt.keysList = member.keysList;
+                member.keysList.forEach( key => selectedOpt[key] = member[key] );
+            }
+
+            updateOpts.push( selectedOpt );
         }
 
         flatten(getMem);
@@ -904,37 +900,32 @@ export default class AdvancedOpts {
         }
 
         function checkType( member, option ) {
+            let checkVal, defaultValue;
             if ( member.input === 'checkbox' ) {
-                let cboxVal = d3.select( `#${member.id}` ).select('input').property( 'checked' ).toString();
-                if ( member.default !== cboxVal  ) {
-                    getSelectedOpts.push(
-                        {
-                            input: member.input,
-                            default: d3.select(`#${member.id}`).select('input').property('checked'),
-                            id: member.id,
-                            description: member.description,
-                            label: member.label,
-                            type: member.type,
-                            option: option
-                        }
-                    );
-                }
+                defaultValue = d3.select( `#${member.id}` ).select('input').property( 'checked' );
+                checkVal = defaultValue.toString();
             } else {
-                let inputVal = d3.select( `#${member.id}` ).select('input').property( 'value' );
-                if ( member.default !== inputVal ) {
-                    getSelectedOpts.push(
-                        {
-                            input: member.input,
-                            default: d3.select(`#${member.id}`).select('input').property('value'),
-                            id: member.id,
-                            description: member.description,
-                            label: member.label,
-                            type: member.type,
-                            option: option
+                defaultValue = d3.select( `#${member.id}` ).select('input').property( 'value' );
+                checkVal = defaultValue;
+            }
 
-                        }
-                    );
+            if ( member.default !== checkVal  ) {
+                let selectedOpt = {
+                    input: member.input,
+                    default: defaultValue,
+                    id: member.id,
+                    description: member.description,
+                    label: member.label,
+                    type: member.type,
+                    option: option,
+                    parentKey: member.parentKey
+                };
+                if ( member.keysList ) {
+                    selectedOpt.keysList = member.keysList;
+                    member.keysList.forEach( key => selectedOpt[key] = member[key] );
                 }
+
+                getSelectedOpts.push( selectedOpt );
             }
         }
 
