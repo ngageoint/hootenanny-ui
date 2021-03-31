@@ -848,17 +848,9 @@ export default class AdvancedOpts {
         }
 
         function checkType( member ) {
-            let defaultVal;
-            if ( member.input === 'checkbox' ) {
-                defaultVal = d3.select(`#${member.id}`).select('input').property('checked');
-            }
-            else {
-                defaultVal = d3.select(`#${member.id}`).select('input').property('value');
-            }
-
             let selectedOpt = {
                 input: member.input,
-                default: defaultVal,
+                default: d3.select(`#${member.id}`).select('input').property(member.input === 'checkbox' ? 'checked' : 'value'),
                 id: member.id,
                 description: member.description,
                 label: member.label,
