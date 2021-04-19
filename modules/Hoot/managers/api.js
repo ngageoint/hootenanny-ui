@@ -496,8 +496,10 @@ export default class API {
                     if ( a.DEFAULT !== b.DEFAULT ) {
                         return ( a.DEFAULT ) ? -1 : 1;
                     } else {
+                        let aName = a.NAME || a.name;
+                        let bName = b.NAME || b.name;
                         // We only get here if the DEFAULT prop is equal
-                        return d3.ascending( a.NAME.toLowerCase(), b.NAME.toLowerCase() );
+                        return d3.ascending( aName.toLowerCase(), bName.toLowerCase() );
                     }
                 } ) );
     }
@@ -515,6 +517,68 @@ export default class API {
     getDefaultTranslation( path ) {
         const params = {
             path: `/ingest/customscript/getdefaultscript?SCRIPT_PATH=${ path }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    postTranslation( data, paramData ) {
+        let payload = data;
+
+        const params = {
+            path: '/ingest/customscript/save',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            params: paramData,
+            data: payload
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    deleteTranslation( identifier ) {
+        const params = {
+            path: `/ingest/customscript/deletescript?SCRIPT_INFO=${ identifier }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    createTranslationFolder( paramData ) {
+        if ( !paramData.isPublic ) {
+            paramData.isPublic = false;
+        }
+
+        const params = {
+            path: '/ingest/customscript/createfolder',
+            method: 'POST',
+            params: paramData
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getTranslationFolders() {
+        const params = {
+            path: '/ingest/customscript/getFolders',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data.folders );
+    }
+
+    getTranslationMappings() {
+        const params = {
+            path: '/ingest/customscript/getMappings',
             method: 'GET'
         };
 
@@ -969,22 +1033,6 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    postTranslation( data ) {
-        let payload = data.data;
-
-        const params = {
-            path: `/ingest/customscript/save?SCRIPT_NAME=${ data.NAME }&SCRIPT_DESCRIPTION=${ data.DESCRIPTION }`,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain'
-            },
-            data: payload
-        };
-
-        return this.request( params )
-            .then( resp => resp.data );
-    }
-
     /**
      * Add a new folder to the database
      *
@@ -1177,16 +1225,6 @@ export default class API {
         };
 
         return this.request( params );
-    }
-
-    deleteTranslation( name ) {
-        const params = {
-            path: `/ingest/customscript/deletescript?SCRIPT_NAME=${ name }`,
-            method: 'GET'
-        };
-
-        return this.request( params )
-            .then( resp => resp.data );
     }
 
     deleteBasemap( name ) {

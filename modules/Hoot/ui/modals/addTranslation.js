@@ -6,12 +6,14 @@
 
 import FormFactory            from '../../tools/formFactory';
 import { translationAddForm } from '../../config/domMetadata';
+import _get from 'lodash-es/get';
+import _find from 'lodash-es/find';
 
 export default class AddTranslation {
     constructor( instance, templateText ) {
         this.instance = instance;
         this.templateText = templateText;
-
+        this.folderList = Hoot.folders.translationFolderPaths;
         this.form = translationAddForm.call( this );
     }
 
@@ -30,6 +32,7 @@ export default class AddTranslation {
 
         this.nameInput        = d3.select( '#translationSaveName' );
         this.descriptionInput = d3.select( '#translationSaveDescription' );
+        this.pathNameInput    = d3.select( '#importPathName' );
         this.templateInput    = d3.select( '#translationTemplate' );
         this.submitButton     = d3.select( '#addTranslationBtn' );
         this.mappingForm      = d3.select( '.ta-attribute-mapping' );
@@ -57,13 +60,17 @@ export default class AddTranslation {
     }
 
     handleSubmit() {
-        let data = {
-            NAME: this.nameInput.property( 'value' ),
-            DESCRIPTION: this.descriptionInput.property( 'value' ),
-            data: this.templateInput.property( 'value' )
+        let pathName = this.pathNameInput.property( 'value' );
+
+        const data = this.templateInput.property( 'value' );
+        const paramData = {
+            SCRIPT_NAME: this.nameInput.property( 'value' ),
+            SCRIPT_DESCRIPTION: this.descriptionInput.property( 'value' ),
+            folderId : _get( _find( Hoot.folders.translationFolderPaths, folder => folder.path === pathName ), 'id' ) || 0,
         };
 
-        Hoot.api.postTranslation( data )
+        Hoot.api.postTranslation( data, paramData )
+            .then( () => Hoot.folders.refreshTranslationInfo() )
             .then( () => this.instance.loadTranslations() )
             .finally( () => {
                 this.container.remove();

@@ -25,6 +25,10 @@ export default class FolderManager {
         this._openFolders = [];
         this._datasets    = [];
         this._links       = [];
+
+        this._translations              = [];
+        this._translationFolders        = [];
+        this._translationOpenFolders    = [];
     }
 
     /**
@@ -157,25 +161,6 @@ export default class FolderManager {
         } );
     }
 
-    ///**
-    // * Updates each dataset object to have a reference to their parent folder ID
-    // *
-    // * Note: this method mutates objects in the array
-    // *
-    // * @param datasets - base dataset array
-    // * @returns {Array} - updated dataset array
-    // */
-    //listDatasets( datasets ) {
-    //    return _map( datasets, dataset => {
-    //        let match = _find( this._links, link => link.mapId === dataset.id );
-    //
-    //        dataset.type     = 'dataset';
-    //        dataset.folderId = !match ? 0 : match.folderId;
-    //
-    //        return dataset;
-    //    } );
-    //}
-
     /**
      * Update list of currently open folders
      *
@@ -194,16 +179,6 @@ export default class FolderManager {
         }
 
         return this._openFolders;
-    }
-
-    getFolderChildren( folderId ) {
-        let datasetList = this.datasetList;
-        let allChildren = {};
-
-        allChildren.folders  = _filter( this._folders, folder => folder.parentId === folderId );
-        allChildren.datasets = _filter( datasetList, dataset => dataset.folderId === folderId );
-
-        return allChildren;
     }
 
     /**
@@ -318,4 +293,69 @@ export default class FolderManager {
     removeFolder( id ) {
         _remove( this._folders, folder => folder.id === id );
     }
+
+    get translationFolderPaths() {
+        return this._translationFolders;
+    }
+
+    /**
+     * Retrieve translations from database
+     */
+    async refreshTranslationInfo() {
+        const translationFolders = await Hoot.api.getTranslationFolders();
+        this._translationFolders = this.listFolders( translationFolders );
+
+        this._translations = await Hoot.api.getTranslations();
+    }
+
+    async TranslationDataExists() {
+        if ( !this._translationFolders.length || !this._translations.length ) {
+            if ( this.loadingTranslations === undefined ) {
+                this.loadingTranslations = this.refreshTranslationInfo();
+            }
+
+            // make sure refresh all is only called once
+            await this.loadingTranslations;
+        } else return true;
+    }
+
+    async getTranslationFolderData() {
+        await this.TranslationDataExists();
+
+        let translationList = _map( this._translations, translations => {
+            translations.type     = 'translation';
+            translations.folderId = translations.folderId || 0;
+
+            return translations;
+        } );
+
+        let folderList = _map( _cloneDeep( this._translationFolders ), folder => {
+            let children = _filter( translationList, translationList => translationList.folderId === folder.id );
+
+            if ( this._translationOpenFolders.indexOf( folder.id ) > -1 ) {
+                folder.children = children;
+                folder.state    = 'open';
+            } else {
+                folder._children = children.length && children || null;
+
+                folder.state = 'closed';
+            }
+
+            folder.type = 'folder';
+
+            return folder;
+        } );
+
+        let rootLayers = _filter( translationList, dataset => {
+            if ( dataset.folderId === 0 ) {
+                dataset.parentId = 0;
+                return true;
+            }
+        } );
+
+        folderList = _union( folderList, rootLayers );
+
+        return this.unflattenFolders( folderList );
+    }
+
 }

@@ -6,6 +6,8 @@
 
 import { translationViewForm } from '../../config/domMetadata';
 import FormFactory             from '../../tools/formFactory';
+import _get from 'lodash-es/get';
+import _find from 'lodash-es/find';
 
 export default class ViewTranslation {
     constructor( instance, translation, templateText ) {
@@ -13,13 +15,13 @@ export default class ViewTranslation {
 
         this.translation  = translation;
         this.templateText = templateText;
-
+        this.folderList = Hoot.folders.translationFolderPaths;
         this.form = translationViewForm.call( this );
     }
 
     render() {
         let metadata = {
-            title: this.translation.NAME,
+            title: this.translation.NAME || this.translation.name,
             form: this.form
         };
 
@@ -34,10 +36,14 @@ export default class ViewTranslation {
         this.container = new FormFactory().generateForm( 'body', 'translations-add-form', metadata );
 
         this.descriptionInput = d3.select( '#translationSaveDescription' );
+        this.pathNameInput    = d3.select( '#importPathName' );
         this.templateInput    = d3.select( '#translationTemplate' );
         this.submitButton     = d3.select( '#editTranslationBtn' );
 
         this.descriptionInput.property( 'value', this.translation.DESCRIPTION );
+        const path = _get( _find( this.folderList, folder => folder.id === this.translation.folderId ), 'path' );
+        this.pathNameInput.property( 'value', path );
+
 
         if ( this.translation.DEFAULT ) {
             this.descriptionInput.attr( 'readonly', 'readonly' );
@@ -66,13 +72,14 @@ export default class ViewTranslation {
     }
 
     handleSubmit() {
-        let data = {
-            NAME: this.translation.NAME,
-            DESCRIPTION: this.descriptionInput.property( 'value' ),
-            data: this.templateInput.property( 'value' )
+        const data = this.templateInput.property( 'value' );
+        const paramData = {
+            SCRIPT_NAME: this.translation.NAME || this.translation.name,
+            SCRIPT_DESCRIPTION: this.descriptionInput.property( 'value' ),
+            folderId : this.translation.folderId
         };
 
-        Hoot.api.postTranslation( data )
+        Hoot.api.postTranslation( data, paramData )
             .then( () => this.container.remove() )
             .finally( () => this.instance.loadTranslations() );
     }

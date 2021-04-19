@@ -175,6 +175,10 @@
         background-position: -260px 15px;
     }
 
+    &.file:before {
+        background-position: -560px 0px;
+    }
+
     &._loading {
         &:before {
             background: url(./img/loading-spin-dark.svg) no-repeat 0 0;

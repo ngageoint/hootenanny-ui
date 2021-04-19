@@ -4,11 +4,12 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Tab             from './tab';
-import AddTranslation  from '../modals/addTranslation';
-import ViewTranslation from '../modals/viewTranslation';
-import { tooltip }     from '../../../util/tooltip';
-import { saveAs }      from 'file-saver';
+import Tab                  from './tab';
+import AddTranslation       from '../modals/addTranslation';
+import AddTranslationFolder from '../modals/addTranslationFolder';
+import ViewTranslation      from '../modals/viewTranslation';
+import { saveAs }           from 'file-saver';
+import FolderTree from '../../tools/folderTree';
 
 /**
  * Creates the translations tab in the settings panel
@@ -22,15 +23,29 @@ export default class Translations extends Tab {
 
         this.name = 'Translations';
         this.id   = 'util-translations';
+
+        this.translationTableHeaders = [
+            {
+                title: 'Translations',
+                width: '9%'
+            },
+            {
+                title: 'Owner',
+                width: '9%'
+            }
+        ];
     }
 
     render() {
         super.render();
 
         this.createNewTranslationButton();
+        this.addTranslationFolder();
         this.createTranslationTable();
 
         this.loadTranslations();
+
+        this.listen();
 
         return this;
     }
@@ -43,109 +58,46 @@ export default class Translations extends Tab {
             .on( 'click', () => new AddTranslation( this ).render() );
     }
 
+    addTranslationFolder() {
+        this.panelWrapper
+            .append( 'button' )
+            .classed( 'add-translation-folder button primary _icon big light plus', true )
+            .text( 'Create Folder' )
+            .on( 'click', () => new AddTranslationFolder().render() );
+    }
+
     createTranslationTable() {
-        this.translationTable = this.panelWrapper
-            .append( 'div' )
+        let table = this.panelWrapper.append( 'div' )
+            .attr( 'id', 'translation-table' )
             .classed( 'translation-table keyline-all fill-white', true );
+
+        table.insert( 'div' )
+            .attr( 'id', 'translation-table-header' )
+            .selectAll( 'th' )
+            .data( this.translationTableHeaders )
+            .enter().append( 'th' )
+            .attr( 'style', d => `width: ${ d.width }` )
+            .text( d => d.title );
+
+        this.translationTable = table;
+    }
+
+    renderFolderTree() {
+        if ( !this.folderTree ) {
+            this.folderTree = new FolderTree( this.translationTable );
+        }
+
+        this.folderTree.render();
     }
 
     async loadTranslations() {
         try {
-            let translations = await Hoot.api.getTranslations();
-            this.populateTranslations( translations );
+            this.renderFolderTree();
         } catch ( e ) {
             // TODO: show alert
             // window.console.log( 'Unable to retrieve translations' );
             throw new Error( e );
         }
-    }
-
-    populateTranslations( translations ) {
-        let instance = this;
-
-        let rows = this.translationTable
-            .selectAll( '.translation-item' )
-            .data( translations, d => d );
-
-        rows.exit().remove();
-
-        let translationItem = rows
-            .enter()
-            .append( 'div' )
-            .classed( 'translation-item keyline-bottom', true );
-
-        rows.merge( translationItem );
-
-        let translationName = translationItem
-            .append( 'span' )
-            .append( 'a' )
-            .classed( 'translation-name', true )
-            .text( d => {
-                if ( d.DEFAULT ) {
-                    return d.NAME + '*';
-                }
-
-                return d.NAME;
-            } )
-            .on( 'click', d => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-
-                this.translationPopup( d );
-            } );
-
-        let translationTooltip = tooltip()
-            .placement( 'right' )
-            .html( 'true' )
-            .title( d => {
-                if ( d.DEFAULT ) {
-                    return d.DESCRIPTION + ' (Hootenanny Default Translations)';
-                }
-
-                return d.DESCRIPTION;
-            } );
-
-        translationName.call( translationTooltip );
-
-        let buttonContainer = translationItem
-            .append( 'div' )
-            .classed( 'button-container fr', true );
-
-        buttonContainer
-            .append( 'button' )
-            .classed( 'keyline-left _icon export', true )
-            .on( 'click', d => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-
-                this.exportTranslation( d );
-            } );
-
-        buttonContainer
-            .append( 'button' )
-            .on( 'click', function( d ) {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-
-                let r = Hoot.message.confirm( 'Are you sure you want to delete selected translations?' );
-                if ( !r ) return;
-
-                Hoot.api.deleteTranslation( d.NAME )
-                    .then( () => instance.loadTranslations() );
-            } )
-            .select( function( d ) {
-                if ( d.DEFAULT ) {
-                    d3.select( this ).classed( 'keyline-left _icon close', true )
-                        .on( 'click', () => {
-                            d3.event.stopPropagation();
-                            d3.event.preventDefault();
-
-                            Hoot.message.alert( 'Can not delete default translations.' );
-                        } );
-                } else {
-                    d3.select( this ).classed( 'keyline-left _icon trash', true );
-                }
-            } );
     }
 
     async translationPopup( d ) {
@@ -154,7 +106,7 @@ export default class Translations extends Tab {
         if ( d.DEFAULT ) {
             translationText = await Hoot.api.getDefaultTranslation( d.PATH );
         } else {
-            translationText = await Hoot.api.getTranslation( d.NAME );
+            translationText = await Hoot.api.getTranslation( d.NAME || d.id );
         }
 
         new ViewTranslation( this, d, translationText ).render();
@@ -167,16 +119,45 @@ export default class Translations extends Tab {
             if ( d.DEFAULT ) {
                 translationText = await Hoot.api.getDefaultTranslation( d.PATH );
             } else {
-                translationText = await Hoot.api.getTranslation( d.NAME );
+                translationText = await Hoot.api.getTranslation( d.NAME || d.id );
             }
 
             let transBlob = new Blob( [ translationText ], { type: 'text/javascript' } );
-            saveAs( transBlob, d.NAME + '.js' );
+            let name = d.NAME || d.name;
+            saveAs( transBlob, name + '.js' );
 
         } catch ( e ) {
             //TODO: show warning
             // window.console.log( 'Unable to get translations text' );
             throw new Error( e );
         }
+    }
+
+    async handleContextMenuClick( [tree, d, item] ) {
+        switch ( item.click ) {
+            case 'deleteTranslation': {
+                let r = await Hoot.message.confirm('Are you sure you want to delete selected translations?');
+                if (!r) return;
+
+                Hoot.api.deleteTranslation( d.data.id || d.data.NAME )
+                    .then( () => Hoot.folders.refreshTranslationInfo() )
+                    .then( () => Hoot.events.emit( 'render-translations-table' ) );
+                break;
+            }
+            case 'exportTranslation': {
+                this.exportTranslation( d.data );
+                break;
+            }
+            case 'viewTranslation': {
+                this.translationPopup( d.data );
+                break;
+            }
+        }
+    }
+
+    listen() {
+        const className = this.constructor.name;
+        Hoot.events.listen( className, 'render-translations-table', () => this.renderFolderTree() );
+        Hoot.events.listen( className, 'translation-context-menu', ( ...params ) => this.handleContextMenuClick( params ) );
     }
 }

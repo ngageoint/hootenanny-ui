@@ -458,12 +458,54 @@ export function translationAddForm() {
             onChange: d => this.validateFields( d )
         },
         {
+            label: 'Path',
+            id: 'importPathName',
+            class: 'path-name',
+            inputType: 'combobox',
+            placeholder: 'Select a path',
+            data: this.folderList,
+            sort: true,
+            itemKey: 'path',
+            onChange: () => {}
+        },
+        {
             label: 'Paste New Translations in Box (or drag .js file into text area)',
             id: 'translationTemplate',
             inputType: 'textarea',
             data: this.templateText || null,
             onChange: d => this.validateFields( d ),
             onDrop: () => this.handleFileDrop()
+        }
+    ];
+}
+
+export function addTranslationFolderForm() {
+    return [
+        {
+            label: 'Name',
+            id: 'addTranslationFolderName',
+            class: 'new-translation-folder-name',
+            inputType: 'text',
+            onChange: () => this.validateTextInput()
+        },
+        {
+            label: 'Path',
+            id: 'importPathName',
+            class: 'path-name',
+            inputType: 'combobox',
+            placeholder: 'Select a path',
+            data: this.folderList,
+            sort: true,
+            itemKey: 'path',
+            onChange: () => this.validateTextInput()
+        },
+        {
+            label: 'Public',
+            id: 'addTranslationFolderVisibility',
+            inputType: 'checkbox',
+            value: 'Public',
+            checked: false,
+            class: 'folder-checkbox'
         }
     ];
 }
@@ -475,6 +517,18 @@ export function translationViewForm() {
             id: 'translationSaveDescription',
             inputType: 'text',
             onChange: d => this.validateFields( d )
+        },
+        {
+            label: 'Path',
+            id: 'importPathName',
+            class: 'path-name',
+            inputType: 'combobox',
+            placeholder: 'Select a path',
+            data: this.folderList,
+            sort: true,
+            disabled: true,
+            itemKey: 'path',
+            onChange: () => this.validateTextInput()
         },
         {
             label: 'Paste New Translations in Box (or drag .js file into text area)',
