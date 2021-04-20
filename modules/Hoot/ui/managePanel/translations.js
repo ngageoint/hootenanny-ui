@@ -130,7 +130,7 @@ export default class Translations extends Tab {
 
     async loadTranslations() {
         try {
-            await Hoot.folders.refreshTranslationInfo()
+            await Hoot.folders.refreshTranslationInfo();
 
             if ( !this.folderTree ) {
                 this.folderTree = new FolderTree( this.translationTable );
