@@ -10,6 +10,9 @@ import AddTranslationFolder from '../modals/addTranslationFolder';
 import ViewTranslation      from '../modals/viewTranslation';
 import { saveAs }           from 'file-saver';
 import FolderTree from '../../tools/folderTree';
+import ImportDataset from '../modals/importDataset';
+import ImportMultiDataset from '../modals/ImportMultiDatasets';
+import AddFolder from '../modals/addFolder';
 
 /**
  * Creates the translations tab in the settings panel
@@ -34,13 +37,30 @@ export default class Translations extends Tab {
                 width: '9%'
             }
         ];
+
+        this.translationButtons = [
+            {
+                title: 'Add New Translations',
+                icon: 'play_for_work',
+                onClick: 'import-translation'
+            },
+            {
+                title: 'Create Folder',
+                icon: 'create_new_folder',
+                onClick: 'add-translation-folder'
+            },
+            {
+                title: 'Refresh Translations',
+                icon: 'refresh',
+                onClick: 'refresh-translations'
+            }
+        ];
     }
 
     render() {
         super.render();
 
-        this.createNewTranslationButton();
-        this.addTranslationFolder();
+        this.setupButtons();
         this.createTranslationTable();
 
         this.loadTranslations();
@@ -50,20 +70,46 @@ export default class Translations extends Tab {
         return this;
     }
 
-    createNewTranslationButton() {
-        this.panelWrapper
-            .append( 'button' )
-            .classed( 'add-translation-button button primary _icon big light plus', true )
-            .text( 'Add New Translations' )
-            .on( 'click', () => new AddTranslation( this ).render() );
-    }
+    setupButtons() {
+        this.buttonContainer = this.panelWrapper.append( 'div' );
 
-    addTranslationFolder() {
-        this.panelWrapper
+        let buttonContainer = this.panelWrapper
+            .append( 'div' )
+            .classed( 'translation-buttons flex', true )
+            .selectAll( 'button.translation-action-button' )
+            .data( this.translationButtons );
+
+        let buttons = buttonContainer.enter()
             .append( 'button' )
-            .classed( 'add-translation-folder button primary _icon big light plus', true )
-            .text( 'Create Folder' )
-            .on( 'click', () => new AddTranslationFolder().render() );
+            .classed( 'translation-action-button primary text-light flex align-center', true )
+            .on( 'click', async item => {
+                d3.event.preventDefault();
+
+                switch ( item.onClick ) {
+                    case 'import-translation': {
+                        new AddTranslation( this ).render();
+                        break;
+                    }
+                    case 'add-translation-folder': {
+                        new AddTranslationFolder( this ).render();
+                        break;
+                    }
+                    case 'refresh-translations': {
+                        this.loadTranslations();
+                        break;
+                    }
+                }
+            } );
+
+        buttons.append( 'i' )
+            .attr( 'class', d => d.iconClass )
+            .classed( 'material-icons', true )
+            .text( d => d.icon );
+
+        buttons.append( 'span' )
+            .classed( 'label', true )
+            .text( d => d.title );
+
     }
 
     createTranslationTable() {
@@ -82,17 +128,15 @@ export default class Translations extends Tab {
         this.translationTable = table;
     }
 
-    renderFolderTree() {
-        if ( !this.folderTree ) {
-            this.folderTree = new FolderTree( this.translationTable );
-        }
-
-        this.folderTree.render();
-    }
-
     async loadTranslations() {
         try {
-            this.renderFolderTree();
+            await Hoot.folders.refreshTranslationInfo()
+
+            if ( !this.folderTree ) {
+                this.folderTree = new FolderTree( this.translationTable );
+            }
+
+            this.folderTree.render();
         } catch ( e ) {
             // TODO: show alert
             // window.console.log( 'Unable to retrieve translations' );
@@ -157,7 +201,7 @@ export default class Translations extends Tab {
 
     listen() {
         const className = this.constructor.name;
-        Hoot.events.listen( className, 'render-translations-table', () => this.renderFolderTree() );
+        Hoot.events.listen( className, 'render-translations-table', () => this.loadTranslations() );
         Hoot.events.listen( className, 'translation-context-menu', ( ...params ) => this.handleContextMenuClick( params ) );
     }
 }

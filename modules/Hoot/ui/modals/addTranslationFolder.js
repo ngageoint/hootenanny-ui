@@ -3,8 +3,9 @@ import { addTranslationFolderForm } from '../../config/domMetadata';
 import _get from 'lodash-es/get';
 import _find from 'lodash-es/find';
 
-export default class AddFolder {
-    constructor() {
+export default class AddTranslationFolder {
+    constructor( instance ) {
+        this.instance = instance;
         this.folderList = Hoot.folders.translationFolderPaths;
         this.form = addTranslationFolderForm.call( this );
     }
@@ -78,12 +79,13 @@ export default class AddFolder {
         };
 
         this.processRequest = Hoot.api.createTranslationFolder( paramData )
+            .then( () => this.instance.loadTranslations() )
             .catch( err => {
-                console.log( 'unable to create folder' );
+                err.message = err.data;
+                Hoot.message.alert( err );
             } )
             .finally( () => {
                 this.container.remove();
-                Hoot.events.emit( 'modal-closed' );
             } );
     }
 }

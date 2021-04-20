@@ -393,7 +393,7 @@ export default class FolderTree extends EventEmitter {
             .append( 'tspan' ).text( d => d.data.name || d.data.NAME );
 
         // Render node owner
-        if ( this.isDatasetTable ) {
+        if ( this.isDatasetTable || this.isTranslationTable ) {
             nodeElement
                 .append( 'text' )
                 .style( 'fill', this.fontColor )
@@ -402,8 +402,9 @@ export default class FolderTree extends EventEmitter {
                 .attr( 'dx', '30%' )
                 .attr( 'text-anchor', 'start' )
                 .append( 'tspan' ).text( d => {
-
-                    return Hoot.users.getNameForId( d.data.userId );
+                    if ( d.data.userId ) {
+                        return Hoot.users.getNameForId( d.data.userId );
+                    }
                 } );
         }
 

@@ -70,7 +70,6 @@ export default class AddTranslation {
         };
 
         Hoot.api.postTranslation( data, paramData )
-            .then( () => Hoot.folders.refreshTranslationInfo() )
             .then( () => this.instance.loadTranslations() )
             .finally( () => {
                 this.container.remove();
