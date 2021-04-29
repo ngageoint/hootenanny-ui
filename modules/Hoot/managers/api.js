@@ -551,6 +551,19 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    deleteTranslationFolder( folderId ) {
+        const params = {
+            path: '/ingest/customscript/deleteFolder',
+            method: 'DELETE',
+            params: {
+                folderId
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
     createTranslationFolder( paramData ) {
         if ( !paramData.isPublic ) {
             paramData.isPublic = false;
@@ -573,13 +586,45 @@ export default class API {
         };
 
         return this.request( params )
-            .then( resp => resp.data.folders );
+            .then( resp => resp.data );
     }
 
-    getTranslationMappings() {
+    moveTranslation( paramData ) {
         const params = {
-            path: '/ingest/customscript/getMappings',
-            method: 'GET'
+            path: '/ingest/customscript/moveTranslation',
+            method: 'PUT',
+            params: paramData
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    moveTranslationFolder( paramData ) {
+        const params = {
+            path: '/ingest/customscript/moveFolder',
+            method: 'PUT',
+            params: paramData
+        };
+
+        return this.request( params )
+            .then( resp => {
+                if ( resp.data.success === false ) {
+                    const message = 'error moving translation folder',
+                          type = 'error';
+
+                    return Promise.reject( { message, type } );
+                }
+
+                return resp.data;
+            } );
+    }
+
+    changeTranslationVisibility( paramData ) {
+        const params = {
+            path: '/ingest/customscript/changeVisibility',
+            method: 'PUT',
+            params: paramData
         };
 
         return this.request( params )

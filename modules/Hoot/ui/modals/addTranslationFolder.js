@@ -6,7 +6,7 @@ import _find from 'lodash-es/find';
 export default class AddTranslationFolder {
     constructor( instance ) {
         this.instance = instance;
-        this.folderList = Hoot.folders.translationFolderPaths;
+        this.folderList = Hoot.folders.translationFolders;
         this.form = addTranslationFolderForm.call( this );
     }
 
@@ -71,6 +71,14 @@ export default class AddTranslationFolder {
             isPublic = this.folderVisibilityInput.property( 'checked' ),
             folderPath = this.pathNameInput.property( 'value' ),
             pathId = _get( _find( this.folderList, folder => folder.path === folderPath ), 'id' ) || 0;
+
+        if ( _find( Hoot.folders.translationFolders, folder =>  folder.parentId === pathId && folder.name === name ) ) {
+            let message = 'A folder already exists with this name in the destination path. Please remove the old folder or select a new name for this folder.',
+                type    = 'warn';
+
+            Hoot.message.alert( { message, type } );
+            return false;
+        }
 
         let paramData = {
             parentId: pathId,

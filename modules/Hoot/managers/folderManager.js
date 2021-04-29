@@ -294,18 +294,53 @@ export default class FolderManager {
         _remove( this._folders, folder => folder.id === id );
     }
 
-    get translationFolderPaths() {
+    get translationFolders() {
         return this._translationFolders;
+    }
+
+    get translations() {
+        return this._translations;
+    }
+
+    /**
+     * Update list of currently open translation folders
+     *
+     * @param id - id of selected folder
+     * @param add - boolean to determine whether to add or remove the folder from the list
+     * @returns {Array} - open folders
+     */
+    setOpenTranslationFolders( id, add ) {
+        if ( add ) {
+            this._translationOpenFolders.push( id );
+        } else {
+            let index = this._translationOpenFolders.indexOf( id );
+            if ( index > -1 ) {
+                this._translationOpenFolders.splice( index, 1 );
+            }
+        }
+
+        return this._translationOpenFolders;
     }
 
     /**
      * Retrieve translations from database
      */
     async refreshTranslationInfo() {
+        return Promise.all( [
+            this.refreshTranslations(),
+            this.refreshTranslationFolders()
+        ] );
+    }
+
+    async refreshTranslations() {
+        this._translations = await Hoot.api.getTranslations();
+        return this._translations;
+    }
+
+    async refreshTranslationFolders() {
         const translationFolders = await Hoot.api.getTranslationFolders();
         this._translationFolders = this.listFolders( translationFolders );
-
-        this._translations = await Hoot.api.getTranslations();
+        return this._translationFolders;
     }
 
     async TranslationDataExists() {

@@ -4,15 +4,15 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
-import Tab                  from './tab';
-import AddTranslation       from '../modals/addTranslation';
-import AddTranslationFolder from '../modals/addTranslationFolder';
-import ViewTranslation      from '../modals/viewTranslation';
-import { saveAs }           from 'file-saver';
-import FolderTree from '../../tools/folderTree';
-import ImportDataset from '../modals/importDataset';
-import ImportMultiDataset from '../modals/ImportMultiDatasets';
-import AddFolder from '../modals/addFolder';
+import { saveAs }               from 'file-saver';
+import Tab                      from './tab';
+import AddTranslation           from '../modals/addTranslation';
+import AddTranslationFolder     from '../modals/addTranslationFolder';
+import ModifyTranslation        from '../modals/modifyTranslation';
+import ModifyTranslationFolder  from '../modals/modifyTranslationFolder';
+import ViewTranslation          from '../modals/viewTranslation';
+import FolderTree               from '../../tools/folderTree';
+import _map                     from 'lodash-es/map';
 
 /**
  * Creates the translations tab in the settings panel
@@ -138,8 +138,6 @@ export default class Translations extends Tab {
 
             this.folderTree.render();
         } catch ( e ) {
-            // TODO: show alert
-            // window.console.log( 'Unable to retrieve translations' );
             throw new Error( e );
         }
     }
@@ -171,10 +169,43 @@ export default class Translations extends Tab {
             saveAs( transBlob, name + '.js' );
 
         } catch ( e ) {
-            //TODO: show warning
-            // window.console.log( 'Unable to get translations text' );
             throw new Error( e );
         }
+    }
+
+    deleteItems( toDelete ) {
+        return Promise.all( _map( toDelete, item => {
+            let data = item.data || item;
+
+            if ( data.type === 'translation' ) {
+                return Hoot.api.deleteTranslation( data.id )
+                    .catch( ( err ) => {
+                        err.message = err.data;
+                        delete err.data;
+                        Hoot.message.alert( err );
+                    });
+            } else {
+                // children are placed in root of object when folder is open
+                let children = item.children || data._children;
+
+                if ( children && children.length ) {
+                    return this.deleteItems( children )
+                        .then( () => Hoot.api.deleteTranslationFolder( data.id ) )
+                        .catch( ( err ) => {
+                            err.message = err.data;
+                            delete err.data;
+                            Hoot.message.alert( err );
+                        });
+                } else {
+                    return Hoot.api.deleteTranslationFolder( data.id )
+                        .catch( ( err ) => {
+                            err.message = err.data;
+                            delete err.data;
+                            Hoot.message.alert( err );
+                        });
+                }
+            }
+        } ) );
     }
 
     async handleContextMenuClick( [tree, d, item] ) {
@@ -185,7 +216,7 @@ export default class Translations extends Tab {
 
                 Hoot.api.deleteTranslation( d.data.id || d.data.NAME )
                     .then( () => Hoot.folders.refreshTranslationInfo() )
-                    .then( () => Hoot.events.emit( 'render-translations-table' ) );
+                    .then( () => this.loadTranslations() );
                 break;
             }
             case 'exportTranslation': {
@@ -194,6 +225,27 @@ export default class Translations extends Tab {
             }
             case 'viewTranslation': {
                 this.translationPopup( d.data );
+                break;
+            }
+            case 'modifyTranslation': {
+                this.modifyLayerModal = new ModifyTranslation( d.data ).render();
+
+                Hoot.events.once( 'modal-closed', () => delete this.modifyLayerModal );
+                break;
+            }
+            case 'modifyFolder': {
+                this.modifyFolderModal = new ModifyTranslationFolder( d.data ).render();
+
+                Hoot.events.once( 'modal-closed', () => delete this.modifyFolderModal );
+                break;
+            }
+            case 'deleteTranslationFolder': {
+                let r = await Hoot.message.confirm('Are you sure you want to delete the selected folder?');
+                if (!r) return;
+
+                this.deleteItems( [ d ] )
+                    .then( () => Hoot.folders.refreshTranslationInfo() )
+                    .then( () => this.loadTranslations() );
                 break;
             }
         }

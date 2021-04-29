@@ -13,7 +13,7 @@ export default class AddTranslation {
     constructor( instance, templateText ) {
         this.instance = instance;
         this.templateText = templateText;
-        this.folderList = Hoot.folders.translationFolderPaths;
+        this.folderList = Hoot.folders.translationFolders;
         this.form = translationAddForm.call( this );
     }
 
@@ -60,13 +60,23 @@ export default class AddTranslation {
     }
 
     handleSubmit() {
-        let pathName = this.pathNameInput.property( 'value' );
+        let translationName = this.nameInput.property( 'value' ),
+            pathName        = this.pathNameInput.property( 'value' ),
+            targetFolder    = _get( _find( Hoot.folders.translationFolders, folder => folder.path === pathName ), 'id' ) || 0,
+            data            = this.templateInput.property( 'value' );
 
-        const data = this.templateInput.property( 'value' );
+        if ( _find( Hoot.folders.translations, translation => translation.folderId === targetFolder && translation.name === translationName ) ) {
+            let message = 'A translation already exists with this name in the destination folder. Please remove the old translation and try again.',
+                type    = 'warn';
+
+            Hoot.message.alert( { message, type } );
+            return false;
+        }
+
         const paramData = {
-            SCRIPT_NAME: this.nameInput.property( 'value' ),
+            SCRIPT_NAME: translationName,
             SCRIPT_DESCRIPTION: this.descriptionInput.property( 'value' ),
-            folderId : _get( _find( Hoot.folders.translationFolderPaths, folder => folder.path === pathName ), 'id' ) || 0,
+            folderId : targetFolder,
         };
 
         Hoot.api.postTranslation( data, paramData )

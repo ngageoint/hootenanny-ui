@@ -15,7 +15,7 @@ export default class ViewTranslation {
 
         this.translation  = translation;
         this.templateText = templateText;
-        this.folderList = Hoot.folders.translationFolderPaths;
+        this.folderList = Hoot.folders.translationFolders;
         this.form = translationViewForm.call( this );
     }
 

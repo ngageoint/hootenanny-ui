@@ -119,11 +119,14 @@ export default class FolderTree extends EventEmitter {
                 title: 'Export Translation',
                 _icon: 'export',
                 click: 'exportTranslation'
-            },
+            }
+        ];
+
+        this.translationFolderContextMenu = [
             {
                 title: 'Delete',
                 _icon: 'trash',
-                click: 'deleteTranslation'
+                click: 'deleteTranslationFolder'
             }
         ];
 
@@ -618,9 +621,29 @@ export default class FolderTree extends EventEmitter {
 
         if ( this.isTranslationTable ) {
             if (data.type === 'translation') {
-                opts = this.translationContextMenu;
+                opts = [...this.translationContextMenu.slice()];
+
+                // Don't allow move and delete for default translations
+                if ( !d.data.DEFAULT ) {
+                    opts.splice(1, 0, {
+                        title: `Move/Rename ${data.name}`,
+                        _icon: 'info',
+                        click: 'modifyTranslation'
+                    });
+                    opts.push({
+                        title: 'Delete',
+                        _icon: 'trash',
+                        click: 'deleteTranslation'
+                    });
+                }
             } else if (data.type === 'folder') {
-                opts = [];
+                opts = [...this.translationFolderContextMenu.slice()];
+
+                opts.splice(1, 0, {
+                    title: 'Modify/Move Folder',
+                    _icon: 'info',
+                    click: 'modifyFolder'
+                });
             }
         } else {
 
@@ -857,6 +880,8 @@ export default class FolderTree extends EventEmitter {
 
                 if ( this.isDatasetTable && !d3.event.ctrlKey ) {
                     Hoot.folders.setOpenFolders( data.id, !isOpen );
+                } else if ( this.isTranslationTable ) {
+                    Hoot.folders.setOpenTranslationFolders( data.id, !isOpen );
                 }
             }
         }
