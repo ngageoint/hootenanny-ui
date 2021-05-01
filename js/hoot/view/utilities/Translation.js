@@ -54,7 +54,7 @@ Hoot.view.utilities.translation = function(context) {
                                 return d.NAME + '*';
                             }
                         }
-                        return d.NAME;
+                        return d.NAME || d.name;
                     })
                     .on('click',function(d){
                         d3.event.stopPropagation();
