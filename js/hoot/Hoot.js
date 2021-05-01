@@ -420,8 +420,8 @@ Hoot.hoot = function (context) {
         if (a.DEFAULT !== b.DEFAULT) {
             return (a.DEFAULT) ? -1 : 1;
         } else {
-            let aName = a.NAME || a.name;
-            let bName = b.NAME || b.name;
+            var aName = a.NAME || a.name;
+            var bName = b.NAME || b.name;
             // We only get here if the DEFAULT prop is equal
             return d3.ascending(aName.toLowerCase(), bName.toLowerCase());
         }
