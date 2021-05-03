@@ -88,18 +88,19 @@ Hoot.view.utilities.translation = function(context) {
 
 
                     var transTrashBtn = this;
-                    var btnIdName = n.NAME.replace(/[&\/\\#,+()$~%.'':*?<>{}]/g,'_');
+                    var name = n.NAME || n.name;
+                    var btnIdName = name.replace(/[&\/\\#,+()$~%.'':*?<>{}]/g,'_');
                     btnIdName = btnIdName.replace(/ /g, '_');
                     transTrashBtn.id = 'a' + btnIdName;
-
-                    Hoot.model.REST('deleteTranslation', n.NAME, function (res) {
+                    Hoot.model.REST('deleteTranslation', name, function (res) {
                         if(res.error){
                             window.console.error(res.error);
                             hoot_view_utilities_translation.populateTranslations();
                             return;
                         }
                         var resp = JSON.parse(res);
-                        var idName = resp[0].NAME.replace(/[&\/\\#,+()$~%.'':*?<>{}]/g,'_');
+                        var respName = resp[0].NAME || resp[0].name;
+                        var idName = respName.replace(/[&\/\\#,+()$~%.'':*?<>{}]/g,'_');
                         idName = idName.replace(/ /g, '_');
                         var curBtn = d3.select('#a' + idName)[0];
                         d3.select(curBtn[0].parentNode.parentNode)

@@ -573,7 +573,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.deleteTranslation = function(name,callback) {
-        d3.text('../hoot-services/ingest/customscript/deletescript?SCRIPT_NAME='+name, function (error, resp) {
+        d3.text('../hoot-services/ingest/customscript/deletescript?SCRIPT_INFO='+name, function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get Translation failed!'));
             }
