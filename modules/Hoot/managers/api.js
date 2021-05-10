@@ -1773,11 +1773,7 @@ export default class API {
      */
     setTM4TaskLock( projectId, taskId, lock ) {
         let lockParam = lock ? 'lock-for-mapping' : 'stop-mapping';
-        const match = document.cookie.match(new RegExp('(^| )authToken=([^;]+)'));
-        let authToken;
-        if (match) {
-            authToken = match[2];
-        }
+        let authToken = this.getTM4AuthToken();
 
         const params = {
             url: `/tasks/api/v2/projects/${ projectId }/tasks/actions/${ lockParam }/${ taskId }/`,
@@ -1821,11 +1817,7 @@ export default class API {
      * Marks the specified task under the specified project as done
      */
     markTM4TaskDone( projectId, taskId ) {
-        const match = document.cookie.match(new RegExp('(^| )authToken=([^;]+)'));
-        let authToken;
-        if (match) {
-            authToken = match[2];
-        }
+        let authToken = this.getTM4AuthToken();
 
         const params = {
             url: `/tasks/api/v2/projects/${ projectId }/tasks/actions/unlock-after-mapping/${ taskId }/`,
@@ -1848,11 +1840,7 @@ export default class API {
      * Marks the specified task under the specified project as validated
      */
     validateTM4Task( projectId, taskId, formData ) {
-        const match = document.cookie.match(new RegExp('(^| )authToken=([^;]+)'));
-        let authToken;
-        if (match) {
-            authToken = match[2];
-        }
+        let authToken = this.getTM4AuthToken();
 
         const params = {
             url: `/tasks/api/v2/projects/${ projectId }/tasks/actions/unlock-after-validation/`,
@@ -1867,6 +1855,16 @@ export default class API {
 
         return this.request( params )
             .then( resp => resp.data );
+    }
+
+    getTM4AuthToken() {
+        const match = document.cookie.match(new RegExp('(^| )authToken=([^;]+)'));
+        let authToken;
+        if (match) {
+            authToken = decodeURI(match[2]);
+        }
+
+        return authToken;
     }
 
 }
