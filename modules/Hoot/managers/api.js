@@ -1593,9 +1593,11 @@ export default class API {
     /**
      * Retrieves all the projects from tasking manager
      */
-    getTMProjects() {
+    getTMProjects( pageNumber ) {
+        const page = pageNumber || 1;
+
         const params = {
-            url: '/tasks/projects.json',
+            url: `/tasks/hootprojects.json?hootProjects=true&page=${page}`,
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
@@ -1722,7 +1724,8 @@ export default class API {
     /**
      * Retrieves all the projects from tasking manager 4
      */
-    getTM4Projects() {
+    getTM4Projects( pageNumber ) {
+        const page = pageNumber || 1;
         const params = {
             url: '/tasks/api/v2/projects/',
             method: 'GET',
@@ -1730,7 +1733,8 @@ export default class API {
                 'X-Requested-With': 'XMLHttpRequest'
             },
             params: {
-                hootenanny: true
+                hootenanny: true,
+                page: page
             }
         };
 
