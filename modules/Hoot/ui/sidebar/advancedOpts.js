@@ -774,8 +774,12 @@ export default class AdvancedOpts {
                     return; // if no d.send, then input value never changed from default...
                 }
 
-                const value = d3.select( this ).select( 'input' )
+                let value = d3.select( this ).select( 'input' )
                     .property( formField.input === 'checkbox' ? 'checked' : 'value' );
+
+                if ( formField.displayToHootMap && formField.displayToHootMap[ value ] ) {
+                    value = formField.displayToHootMap[ value ];
+                }
 
                 if ( empty( value ) || !shouldSend( formField, conflateType, value ) ) {
                     return; // if no value or value is equal to default in conflateOption config...

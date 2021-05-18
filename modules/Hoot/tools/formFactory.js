@@ -517,6 +517,14 @@ export default class FormFactory {
             domMeta.placeholder = opt.default;
         }
 
+        if ( opt.data ) {
+            domMeta.data = opt.data;
+
+            if ( opt.displayToHootMap ) {
+                domMeta.displayToHootMap = opt.displayToHootMap;
+            }
+        }
+
         return domMeta;
     }
 
@@ -579,7 +587,7 @@ export default class FormFactory {
 
                 // Need .length check because empty text box should be considered equal to default
                 if ( inputValue.length && inputValue !== d.default ) {
-                    advParams[d.id] = inputValue;
+                    advParams[d.id] = d.displayToHootMap ? d.displayToHootMap[inputValue] : inputValue;
                 }
             });
         }
