@@ -53,6 +53,12 @@ export default class Translations extends Tab {
                 title: 'Refresh Translations',
                 icon: 'refresh',
                 onClick: 'refresh-translations'
+            },
+            {
+                title: 'Public Data',
+                icon: JSON.parse(Hoot.context.storage( 'publicVisibilityTranslations' )) ? 'visibility' : 'visibility_off',
+                iconClass: 'public-visibility',
+                onClick: 'toggle-public-visibility'
             }
         ];
     }
@@ -71,11 +77,10 @@ export default class Translations extends Tab {
     }
 
     setupButtons() {
-        this.buttonContainer = this.panelWrapper.append( 'div' );
+        this.buttonContainer = this.panelWrapper.append( 'div' )
+            .classed( 'translation-buttons flex', true );
 
-        let buttonContainer = this.panelWrapper
-            .append( 'div' )
-            .classed( 'translation-buttons flex', true )
+        let buttonContainer = this.buttonContainer
             .selectAll( 'button.translation-action-button' )
             .data( this.translationButtons );
 
@@ -95,6 +100,13 @@ export default class Translations extends Tab {
                         break;
                     }
                     case 'refresh-translations': {
+                        this.loadTranslations();
+                        break;
+                    }
+                    case 'toggle-public-visibility': {
+                        let publicVisibilityPref = JSON.parse(Hoot.context.storage( 'publicVisibilityTranslations' ));
+                        Hoot.context.storage( 'publicVisibilityTranslations', !publicVisibilityPref);
+                        this.buttonContainer.select('i.public-visibility').text(!publicVisibilityPref ? 'visibility' : 'visibility_off');
                         this.loadTranslations();
                         break;
                     }

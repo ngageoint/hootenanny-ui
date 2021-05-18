@@ -83,7 +83,7 @@ export default class FolderManager {
     }
 
     filterVisible(f) {
-        return JSON.parse(Hoot.context.storage( 'publicVisibility' )) || f.userId === Hoot.user().id;
+        return JSON.parse(Hoot.context.storage( 'publicVisibilityDatasets' )) || f.userId === Hoot.user().id;
     }
 
     get myFolders() {
@@ -295,11 +295,15 @@ export default class FolderManager {
     }
 
     get translationFolders() {
-        return this._translationFolders;
+        return this._translationFolders.filter(this.filterTranslationVisible);
     }
 
     get translations() {
         return this._translations;
+    }
+
+    filterTranslationVisible(f) {
+        return JSON.parse(Hoot.context.storage( 'publicVisibilityTranslations' )) || f.userId === Hoot.user().id;
     }
 
     /**
@@ -390,7 +394,7 @@ export default class FolderManager {
 
         folderList = _union( folderList, rootLayers );
 
-        return this.unflattenFolders( folderList );
+        return this.unflattenFolders( folderList ).filter(this.filterTranslationVisible);
     }
 
 }
