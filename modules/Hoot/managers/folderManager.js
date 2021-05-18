@@ -303,7 +303,7 @@ export default class FolderManager {
     }
 
     filterTranslationVisible(f) {
-        return JSON.parse(Hoot.context.storage( 'publicVisibilityTranslations' )) || f.userId === Hoot.user().id;
+        return JSON.parse(Hoot.context.storage( 'publicVisibilityTranslations' )) || f.DEFAULT || f.userId === Hoot.user().id;
     }
 
     /**
