@@ -45,7 +45,7 @@ export default class Translations extends Tab {
                 onClick: 'import-translation'
             },
             {
-                title: 'Create Folder',
+                title: 'Add Folder',
                 icon: 'create_new_folder',
                 onClick: 'add-translation-folder'
             },
