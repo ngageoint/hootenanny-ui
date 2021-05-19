@@ -190,12 +190,7 @@ export default class Translations extends Tab {
             let data = item.data || item;
 
             if ( data.type === 'translation' ) {
-                return Hoot.api.deleteTranslation( data.id )
-                    .catch( ( err ) => {
-                        err.message = err.data;
-                        delete err.data;
-                        Hoot.message.alert( err );
-                    });
+                return Hoot.api.deleteTranslation( data.id );
             } else {
                 // children are placed in root of object when folder is open
                 let children = item.children || data._children;
