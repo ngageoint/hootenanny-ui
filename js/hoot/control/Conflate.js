@@ -774,7 +774,7 @@ Hoot.control.conflate = function (context,sidebar) {
             })
             .append('input')
             .attr('type', 'text')
-            .attr('value', function (a) {
+            .attr('placeholder', function (a) {
                 return a.placeholder;
             })
             .attr('class', function (field) {
