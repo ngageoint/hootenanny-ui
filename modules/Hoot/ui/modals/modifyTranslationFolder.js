@@ -144,6 +144,7 @@ export default class ModifyTranslationFolder {
                 Hoot.message.alert( { message, type } );
             } )
             .catch( (err) => {
+                err.message = err.data;
                 Hoot.message.alert( err );
             })
             .finally( () => {
