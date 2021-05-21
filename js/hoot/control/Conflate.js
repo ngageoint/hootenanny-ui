@@ -591,6 +591,7 @@ Hoot.control.conflate = function (context,sidebar) {
             {
                 label: 'Type',
                 type: 'ConfType',
+                value: '',
                 placeholder: 'Reference',
                 combobox: {'data':['Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/Tags', 'Attribute'],
                             'command': _populateReferenceCombo},
@@ -776,6 +777,9 @@ Hoot.control.conflate = function (context,sidebar) {
             .attr('type', 'text')
             .attr('placeholder', function (a) {
                 return a.placeholder;
+            })
+            .attr('value', function (a) {
+                return 'value' in a ? a.vlaue : a.placeholder;
             })
             .attr('class', function (field) {
                 return 'reset ' + field.type;

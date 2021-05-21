@@ -54,7 +54,12 @@ d3.combobox = function() {
             });
 
         function focus() {
-            fetch(value(), render);
+            fetchAll( render );
+        }
+
+        function fetchAll( cb ) {
+            suggestions = data;
+            cb();
         }
 
         function blur() {
