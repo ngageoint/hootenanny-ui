@@ -619,6 +619,7 @@ Hoot.control.conflate = function (context,sidebar) {
             {
                 label: 'Collect Statistics?',
                 type: 'isCollectStats',
+                value: '',
                 placeholder: 'false',
                 combobox: ['true','false'],
                 onchange: function(){
