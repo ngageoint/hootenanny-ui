@@ -342,3 +342,9 @@
         border-radius: 5px !important;
     }
 }
+
+.combobox {
+    .disabled {
+        display: none;
+    }
+}

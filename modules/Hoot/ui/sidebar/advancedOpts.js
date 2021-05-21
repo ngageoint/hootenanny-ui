@@ -515,6 +515,33 @@ export default class AdvancedOpts {
                         d.send = true;
                     }
 
+            } else if ( type === 'multiCombobox' ) {
+                const container = d3.select( fieldInput.node().parentNode );
+                container.selectAll('*').remove();
+                const combobox = FormFactory.createMultiCombobox( container, true, () => {
+                    d.send = container.selectAll( '.tagItem' ).size() > 0;
+                } );
+
+
+                combobox.onOpen( () => {
+                    const data = container.datum();
+
+                    if ( data.matcherMap && data.displayToHootMap ) {
+                        const disabledOpts = AdvancedOpts.getInstance().getDisabledFeatures();
+
+                        let optsList = disabledOpts.reduce((results, opt) => {
+                            if ( data.matcherMap[ opt ] ) {
+                                results.push( Object.keys( data.displayToHootMap ).find( key => data.displayToHootMap[key] === data.matcherMap[ opt ] ) );
+                            }
+                            return results;
+                        }, []);
+
+                        combobox.setDisabled( optsList );
+                    }
+                } );
+
+
+                container.classed('hoot-field-input-multicombo', true);
             } else { // text input...
                 fieldInput
                     .classed( instance.favoriteCheck(isFavorites, fieldInput), true)
@@ -774,11 +801,24 @@ export default class AdvancedOpts {
                     return; // if no d.send, then input value never changed from default...
                 }
 
-                let value = d3.select( this ).select( 'input' )
-                    .property( formField.input === 'checkbox' ? 'checked' : 'value' );
+                let value;
+                let currentElement = d3.select( this );
+                if ( formField.input === 'multiCombobox' ) {
+                    value = currentElement.selectAll( '.tagItem' ).nodes().map( data =>
+                        d3.select(data).attr('_value')
+                    );
+                } else {
+                    value = currentElement.select( 'input' )
+                        .property( formField.input === 'checkbox' ? 'checked' : 'value' );
+                }
 
-                if ( formField.displayToHootMap && formField.displayToHootMap[ value ] ) {
-                    value = formField.displayToHootMap[ value ];
+                if ( formField.displayToHootMap ) {
+                    if ( Array.isArray(value) ) {
+                        value = value.map( item => formField.displayToHootMap ? formField.displayToHootMap[item] : item)
+                            .join( ';' );
+                    } else {
+                        value = formField.displayToHootMap[ value ];
+                    }
                 }
 
                 if ( empty( value ) || !shouldSend( formField, conflateType, value ) ) {

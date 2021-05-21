@@ -173,6 +173,10 @@
         }
     }
 
+    .hoot-field-input-multicombo {
+        overflow: scroll;
+    }
+
     .hoot-form-field-checkbox-clicked {
         flex-wrap: wrap;
         align-items: center;

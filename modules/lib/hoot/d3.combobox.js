@@ -19,12 +19,14 @@ import {
 } from '../../../modules/util';
 
 export function d3combobox() {
-    var dispatch       = d3_dispatch( 'accept' );
-    var _container     = d3_select( document.body );
-    var _data          = [];
-    var _suggestions   = [];
-    var _minItems      = 1;
-    var _caseSensitive = false;
+    var dispatch         = d3_dispatch( 'accept' );
+    var _container       = d3_select( document.body );
+    var _data            = [];
+    var _suggestions     = [];
+    var _minItems        = 1;
+    var _caseSensitive   = false;
+    var _disabledOptions = [];
+    var _onOpen          = null;
 
     var _fetcher = function( val, cb ) {
         cb(_data.filter(function(d) {
@@ -95,6 +97,10 @@ export function d3combobox() {
 
         function show() {
             if ( !shown ) {
+                if ( _onOpen ) {
+                    _onOpen();
+                }
+
                 wrapper = _container
                     .insert( 'div', ':first-child' )
                     .datum( input.node() )
@@ -268,7 +274,13 @@ export function d3combobox() {
 
             options.enter()
                 .append( 'a' )
-                .attr( 'class', 'combobox-option' )
+                .attr( 'class', d => {
+                    let classOpts = 'combobox-option';
+                    if ( _disabledOptions.includes( d.value ) ) {
+                        classOpts += ' disabled';
+                    }
+                    return classOpts;
+                } )
                 .text( function( d ) {
                     return d.value;
                 } )
@@ -348,6 +360,18 @@ export function d3combobox() {
     combobox.container = function( _ ) {
         if ( !arguments.length ) return _container;
         _container = _;
+        return combobox;
+    };
+
+    combobox.onOpen = function( _ ) {
+        if (!arguments.length ) return _onOpen;
+        _onOpen = _;
+        return combobox;
+    };
+
+    combobox.setDisabled = function( _ ) {
+        if (!arguments.length ) return _disabledOptions;
+        _disabledOptions = _;
         return combobox;
     };
 
