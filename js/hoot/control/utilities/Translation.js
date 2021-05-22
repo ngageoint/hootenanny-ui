@@ -191,7 +191,7 @@ Hoot.control.utilities.translation = function(context) {
                 .classed('round strong big pad1y loud dark center pad2x', true)
                 .on('click', function () {
                     var data = {};
-                    data.NAME = e.NAME;
+                    data.NAME = e.NAME || e.name;
                     data.DESCRIPTION = descVal.value();
                     data.data = textArea.value();
                     postTranslation(data);

@@ -223,7 +223,7 @@ d3.combobox = function() {
                 .remove();
 
             var rect = input.node().getBoundingClientRect();
-            
+
             //If the height of the menu is going to go off the screen, have it go towards the top of the screen instead
             var dropDownHeight = (d3.select('.combobox-option').node().getBoundingClientRect().height * suggestions.length) + rect.height;
             if((window.innerHeight-rect.top)<dropDownHeight){
@@ -231,13 +231,13 @@ d3.combobox = function() {
                     'left': rect.left + 'px',
                     'width': rect.width + 'px',
                     'bottom': window.innerHeight-rect.top + 'px'
-                });            	
+                });
             } else {
                 container.style({
                     'left': rect.left + 'px',
                     'width': rect.width + 'px',
                     'top': rect.height + rect.top + 'px'
-                });            	
+                });
             }
         }
 

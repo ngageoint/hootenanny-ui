@@ -591,6 +591,7 @@ Hoot.control.conflate = function (context,sidebar) {
             {
                 label: 'Type',
                 type: 'ConfType',
+                value: '',
                 placeholder: 'Reference',
                 combobox: {'data':['Reference', 'Cookie Cutter & Horizontal', 'Differential', 'Differential w/Tags', 'Attribute'],
                             'command': _populateReferenceCombo},
@@ -618,6 +619,7 @@ Hoot.control.conflate = function (context,sidebar) {
             {
                 label: 'Collect Statistics?',
                 type: 'isCollectStats',
+                value: '',
                 placeholder: 'false',
                 combobox: ['true','false'],
                 onchange: function(){
@@ -774,8 +776,11 @@ Hoot.control.conflate = function (context,sidebar) {
             })
             .append('input')
             .attr('type', 'text')
-            .attr('value', function (a) {
+            .attr('placeholder', function (a) {
                 return a.placeholder;
+            })
+            .attr('value', function (a) {
+                return 'value' in a ? a.vlaue : a.placeholder;
             })
             .attr('class', function (field) {
                 return 'reset ' + field.type;

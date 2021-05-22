@@ -186,9 +186,9 @@ Hoot.tools = function (context) {
 
         data.OUTPUT_NAME = a.select('.saveAs').value();
         data.OUTPUT_FOLDER = 0;
-        data.CONFLATION_TYPE = a.select('.ConfType').value();
+        data.CONFLATION_TYPE = a.select('.ConfType').value() || a.select('.ConfType').property('placeholder');
         //Disable till swap approval
-        data.COLLECT_STATS = a.select('.isCollectStats').value();
+        data.COLLECT_STATS = a.select('.isCollectStats').value() || a.select('.isCollectStats').property('placeholder');
 
         data.CONFLATION_COMMAND = conflationCommand;
 
