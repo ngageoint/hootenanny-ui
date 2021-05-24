@@ -84,6 +84,7 @@ export default class ModifyTranslation {
                 Hoot.message.alert( { message, type } );
             } )
             .catch( (err) => {
+                err.message = err.data;
                 Hoot.message.alert( err );
             } )
             .finally( () => {
