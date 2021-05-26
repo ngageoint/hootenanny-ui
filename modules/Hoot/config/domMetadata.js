@@ -4,12 +4,6 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
 
-/*******************************************************************************************************
- * File: formConfigs.js
- * Project: hootenanny-ui
- * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/15/18
- *******************************************************************************************************/
-
 export function layerConflateForm( data ) {
     return [
         {
@@ -513,10 +507,16 @@ export function addTranslationFolderForm() {
 export function translationViewForm() {
     return [
         {
+            label: 'Name',
+            id: 'translationName',
+            inputType: 'text',
+            onChange: () => this.validateFields()
+        },
+        {
             label: 'Description',
             id: 'translationSaveDescription',
             inputType: 'text',
-            onChange: d => this.validateFields( d )
+            onChange: () => this.validateFields()
         },
         {
             label: 'Path',
@@ -526,16 +526,15 @@ export function translationViewForm() {
             placeholder: 'Select a path',
             data: this.folderList,
             sort: true,
-            disabled: true,
             itemKey: 'path',
-            onChange: () => this.validateTextInput()
+            onChange: () => this.validateFields()
         },
         {
             label: 'Paste New Translations in Box (or drag .js file into text area)',
             id: 'translationTemplate',
             inputType: 'textarea',
             data: this.templateText || null,
-            onChange: d => this.validateFields( d )
+            onChange: () => this.validateFields()
         }
     ];
 }

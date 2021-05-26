@@ -1,16 +1,9 @@
-/** ****************************************************************************************************
- * File: translations.js
- * Project: hootenanny-ui
- * @author Matt Putipong on 2/27/18
- *******************************************************************************************************/
-
 import { saveAs }               from 'file-saver';
 import Tab                      from './tab';
 import AddTranslation           from '../modals/addTranslation';
 import AddTranslationFolder     from '../modals/addTranslationFolder';
-import ModifyTranslation        from '../modals/modifyTranslation';
 import ModifyTranslationFolder  from '../modals/modifyTranslationFolder';
-import ViewTranslation          from '../modals/viewTranslation';
+import ModifyTranslation        from '../modals/modifyTranslation';
 import FolderTree               from '../../tools/folderTree';
 import _map                     from 'lodash-es/map';
 
@@ -163,7 +156,7 @@ export default class Translations extends Tab {
             translationText = await Hoot.api.getTranslation( d.NAME || d.id );
         }
 
-        new ViewTranslation( this, d, translationText ).render();
+        new ModifyTranslation( this, d, translationText ).render();
     }
 
     async exportTranslation( d ) {
@@ -230,14 +223,8 @@ export default class Translations extends Tab {
                 this.exportTranslation( d.data );
                 break;
             }
-            case 'viewTranslation': {
-                this.translationPopup( d.data );
-                break;
-            }
             case 'modifyTranslation': {
-                this.modifyLayerModal = new ModifyTranslation( d.data ).render();
-
-                Hoot.events.once( 'modal-closed', () => delete this.modifyLayerModal );
+                this.translationPopup( d.data );
                 break;
             }
             case 'modifyFolder': {

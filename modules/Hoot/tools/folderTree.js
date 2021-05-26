@@ -1,9 +1,3 @@
-/** ****************************************************************************************************
- * File: folderTree.js
- * Project: hootenanny-ui
- * @author Matt Putipong on 3/5/18
- *******************************************************************************************************/
-
 import _cloneDeep  from 'lodash-es/cloneDeep';
 import _difference from 'lodash-es/difference';
 import _drop       from 'lodash-es/drop';
@@ -111,9 +105,9 @@ export default class FolderTree extends EventEmitter {
 
         this.translationContextMenu = [
             {
-                title: 'View Translation',
+                title: 'Modify/Move Translation',
                 _icon: 'info',
-                click: 'viewTranslation'
+                click: 'modifyTranslation'
             },
             {
                 title: 'Export Translation',
@@ -625,11 +619,6 @@ export default class FolderTree extends EventEmitter {
 
                 // Don't allow move and delete for default translations
                 if ( !d.data.DEFAULT ) {
-                    opts.splice(1, 0, {
-                        title: `Move/Rename ${data.name}`,
-                        _icon: 'info',
-                        click: 'modifyTranslation'
-                    });
                     opts.push({
                         title: 'Delete',
                         _icon: 'trash',
@@ -726,7 +715,7 @@ export default class FolderTree extends EventEmitter {
         if (opts.length === 0) return;
 
         let body = d3.select( 'body' )
-            .on( 'click', () => d3.select( '.context-menu' ).style( 'display', 'none' ) );
+            .on( 'click', () => d3.selectAll( '.context-menu' ).style( 'display', 'none' ) );
 
         this.contextMenu = body
             .append( 'div' )

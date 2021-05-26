@@ -1,67 +1,100 @@
-import _find    from 'lodash-es/find';
-import _get     from 'lodash-es/get';
-
-import FormFactory           from '../../tools/formFactory';
+import { translationViewForm } from '../../config/domMetadata';
+import FormFactory             from '../../tools/formFactory';
+import _get from 'lodash-es/get';
+import _find from 'lodash-es/find';
 
 export default class ModifyTranslation {
-    constructor( translation ) {
-        this.translation = translation;
-        this.folderList  = Hoot.folders.translationFolders;
+    constructor( instance, translation, templateText ) {
+        this.instance = instance;
 
-        this.form = [
-            {
-                label: 'Move to Existing Folder',
-                id: 'modifyPathName',
-                class: 'path-name',
-                inputType: 'combobox',
-                placeholder: 'Select a path',
-                data: this.folderList,
-                readonly: 'readonly',
-                sort: true,
-                itemKey: 'path'
-            }
-        ];
+        this.translation  = translation;
+        this.templateText = templateText;
+        this.folderList = Hoot.folders.translationFolders;
+        this.form = translationViewForm.call( this );
     }
 
     render() {
-        this.pathName = _get( _find( this.folderList, folder => folder.id === this.translation.folderId ), 'path' );
-
         let metadata = {
-            title: 'Modify Translation',
-            form: this.form,
-            button: {
-                text: 'Modify',
-                location: 'right',
-                id: 'modifySubmitBtn',
-                onClick: () => this.handleSubmit()
-            }
+            title: this.translation.NAME || this.translation.name,
+            form: this.form
         };
 
-        this.container = new FormFactory().generateForm( 'body', 'modify-translation-form', metadata );
+        if ( !this.translation.DEFAULT ) {
+            metadata.button = {
+                text: 'Save Edits',
+                    id: 'editTranslationBtn',
+                    onClick: () => this.handleSubmit()
+            };
+        }
 
-        this.pathNameInput      = this.container.select( '#modifyPathName' );
-        this.submitButton       = this.container.select( '#modifySubmitBtn' );
+        this.container = new FormFactory().generateForm( 'body', 'translations-add-form', metadata );
 
-        this.pathNameInput.property( 'value', this.pathName );
-        this.submitButton.node().disabled = false;
+        this.translationName  = d3.select( '#translationName' );
+        this.descriptionInput = d3.select( '#translationSaveDescription' );
+        this.pathNameInput    = d3.select( '#importPathName' );
+        this.templateInput    = d3.select( '#translationTemplate' );
+        this.submitButton     = d3.select( '#editTranslationBtn' );
 
-        return this;
+        this.translationName.property( 'value', this.translation.NAME || this.translation.name );
+        this.descriptionInput.property( 'value', this.translation.DESCRIPTION );
+        const path = _get( _find( this.folderList, folder => folder.id === this.translation.folderId ), 'path' );
+        this.pathNameInput.property( 'value', path );
+
+
+        if ( this.translation.DEFAULT ) {
+            this.translationName.attr( 'readonly', 'readonly' );
+            this.descriptionInput.attr( 'readonly', 'readonly' );
+            this.templateInput.attr( 'readonly', 'readonly' );
+        } else {
+            this.submitButton.node().disabled = false;
+        }
     }
 
-    async handleSubmit() {
-        let pathName        = this.pathNameInput.property( 'value' ),
-            targetFolder    = _get( _find( this.folderList, folder => folder.path === pathName ), 'id' ) || 0,
-            translationName = this.translation.name;
+    handleFileDrop() {
 
-        // make sure another layer with the same name doesn't exist at specified path
-        if ( targetFolder === this.translation.folderId ) {
-            let message = 'Please select a new folder.',
-                type    = 'warn';
+    }
 
-            Hoot.message.alert( { message, type } );
-            return false;
+    validateFields() {
+        let name        = this.translationName.property( 'value' ),
+            description = this.descriptionInput.property( 'value' ),
+            pathName    = this.pathNameInput.property( 'value' ),
+            template    = this.templateInput.property( 'value' );
+
+        if ( !this.translationName.property( 'value' ).length ) {
+            this.translationName.classed( 'invalid', true );
+        } else {
+            this.translationName.classed( 'invalid', false );
         }
-        else if ( _find( Hoot.folders.translations, translation => translation.folderId === targetFolder && translation.name === translationName ) ) {
+
+        if ( !this.descriptionInput.property( 'value' ).length ) {
+            this.descriptionInput.classed( 'invalid', true );
+        } else {
+            this.descriptionInput.classed( 'invalid', false );
+        }
+
+        if ( !this.pathNameInput.property( 'value' ).length ) {
+            this.pathNameInput.classed( 'invalid', true );
+        } else {
+            this.pathNameInput.classed( 'invalid', false );
+        }
+
+        if ( !this.templateInput.property( 'value' ).length ) {
+            this.templateInput.classed( 'invalid', true );
+        } else {
+            this.templateInput.classed( 'invalid', false );
+        }
+
+        let formValid = name.length && description.length && pathName.length && template.length;
+
+        this.submitButton.node().disabled = !formValid;
+    }
+
+    handleSubmit() {
+        let name            = this.translationName.property( 'value' ),
+            pathName        = this.pathNameInput.property( 'value' ),
+            targetFolder    = _get( _find( this.folderList, folder => folder.path === pathName ), 'id' ) || 0;
+
+        if ( _find( Hoot.folders.translations, translation =>  translation.folderId === targetFolder && translation.name === name ) ) {
             let message = 'A translation already exists with this name in the destination folder. Please remove the old translation and try again.',
                 type    = 'warn';
 
@@ -69,27 +102,17 @@ export default class ModifyTranslation {
             return false;
         }
 
-        let params = {
-            translationId: this.translation.id,
-            folderId: targetFolder
+        const data = this.templateInput.property( 'value' );
+        const paramData = {
+            SCRIPT_NAME: this.translationName.property( 'value' ),
+            SCRIPT_DESCRIPTION: this.descriptionInput.property( 'value' ),
+            folderId : targetFolder
         };
 
-        this.processRequest = Hoot.api.moveTranslation( params )
-            .then( () => Hoot.folders.refreshTranslationInfo() )
-            .then( () => Hoot.events.emit( 'render-translations-table' ) )
-            .then( () => {
-                let type = 'success',
-                    message= 'Successfully moved translation';
-
-                Hoot.message.alert( { message, type } );
-            } )
-            .catch( (err) => {
-                err.message = err.data;
-                Hoot.message.alert( err );
-            } )
-            .finally( () => {
-                this.container.remove();
-                Hoot.events.emit( 'modal-closed' );
-            } );
+        Hoot.api.postTranslation( data, paramData )
+            .then( () => Hoot.api.deleteTranslation( this.translation.id ) )
+            .then( () => this.container.remove() )
+            .finally( () => this.instance.loadTranslations() );
     }
+
 }
