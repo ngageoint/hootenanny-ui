@@ -307,6 +307,9 @@
 }
 
 .multiCombobox {
+    display: flex;
+    flex-wrap: wrap;
+
     .tagItem {
         display: inline-flex;
         flex-flow: row nowrap;
@@ -334,7 +337,7 @@
     input {
         margin: 5px;
         height: 31px;
-        width: 160px;
+        width: 90%;
 
         border-color: #ababab;
         border-style: solid;
