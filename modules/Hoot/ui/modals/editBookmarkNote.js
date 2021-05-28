@@ -5,9 +5,9 @@
  *******************************************************************************************************/
 
 import _find from 'lodash-es/find';
+import _forEach from 'lodash-es/forEach';
 
 import FormFactory from '../../tools/formFactory';
-import _forEach from 'lodash-es/forEach';
 import Note from '../managePanel/reviewBookmarks/note';
 
 export default class EditBookmarkNote {
@@ -70,7 +70,7 @@ export default class EditBookmarkNote {
             let notes = this.instance.bookmark.detail.bookmarknotes;
             let note  = _find( notes, n => n.id === this.data.id );
             if ( note && note.taggedUsers ) {
-                note.taggedUsers.forEach( userId => EditBookmarkNote.populateTags( this.taggedUsers, Hoot.users.getNameForId(userId), userId ) );
+                note.taggedUsers.forEach( userId => FormFactory.populateTags( this.taggedUsers, Hoot.users.getNameForId(userId), userId ) );
             }
         } else {
             const { bookmark } = this.instance;
@@ -99,44 +99,6 @@ export default class EditBookmarkNote {
 
         target.classed( 'invalid', !valid );
         this.updateButtonState();
-    }
-
-    // creates the tag list item to show that a user has been tagged and allows removing them from tags
-    static populateTags( container, name, id ) {
-        let listItem = container.select( '.selectedUserTags' ).append( 'li' )
-            .classed( 'tagItem', true )
-            .attr( 'value' , name)
-            .attr( '_value', id);
-
-        listItem.append( 'span' )
-            .text( name );
-
-        listItem.append( 'a' )
-            .classed( 'remove', true)
-            .text( 'x' )
-            .on( 'click', function() {
-                listItem.remove();
-            });
-    }
-
-    // Handler for the tag user dropdown
-    static userTagSelect( container, data ) {
-        let userTaggedContainer = container.select( '.selectedUserTags' );
-
-        const addUserValue = container.select( `#${ data.id }` ),
-              userName = container.select( '#tagUser' ).node().value,
-              userId = addUserValue.attr('_value');
-
-        // See if the user has already been tagged OR selected for potential tagging
-        const isUserSelected = userTaggedContainer.selectAll( 'li' ).filter( function() {
-            return d3.select(this).attr( '_value' ) === userId;
-        } );
-
-        if ( isUserSelected.size() === 0 ) {
-            this.populateTags( container, userName, userId );
-        }
-
-        addUserValue.node().value = '';
     }
 
     updateButtonState() {
