@@ -40,13 +40,11 @@ export default class TaskingManagerPanel extends Tab {
         // trigger for run all tasks loop to stop
         this.cancelRunning = false;
 
-        this.tmVersion = 4;
+        this.tmVersion = null;
     }
 
     render() {
         super.render();
-        // fire off the request but don't wait for it so we don't hold up the UI from being rendered
-        this.tm4ProjectList = Hoot.api.getTM4Projects();
 
         this.createTables();
 
@@ -78,16 +76,24 @@ export default class TaskingManagerPanel extends Tab {
         }
     }
 
-    async activate() {
+    async activate( pageNumber ) {
         this.loadingState( this.projectsTable, true );
 
-        // await for the tm4 project list
-        this.projectList = await this.tm4ProjectList;
+        // If version is set then we know which call to make
+        if ( this.tmVersion === 4 ) {
+            this.projectList = await Hoot.api.getTM4Projects( pageNumber );
+        } else if ( this.tmVersion === 2 ) {
+            this.projectList = await Hoot.api.getTMProjects( pageNumber );
+        } else {
+            // await for the tm4 project list
+            this.projectList = await Hoot.api.getTM4Projects( pageNumber );
+            this.tmVersion = 4;
 
-        // if no result from tm4 then try tm2 project list
-        if ( this.projectList.status === 400 ) {
-            this.projectList = await Hoot.api.getTMProjects();
-            this.tmVersion = 2;
+            // if no result from tm4 then try tm2 project list
+            if ( this.projectList.status === 400 ) {
+                this.projectList = await Hoot.api.getTMProjects( pageNumber );
+                this.tmVersion = 2;
+            }
         }
 
         if ( this.projectList.status === 400 ) {
@@ -96,15 +102,23 @@ export default class TaskingManagerPanel extends Tab {
             this.projectList.features = this.projectList.features.filter( task => task.properties.hoot_map_id || task.properties.hootMapId );
             this.loadProjectsTable( this.projectList.features );
         }
+
+        if ( this.projectList.pagination ) {
+            this.createPagination();
+        }
     }
 
     createTables() {
-        const projectsDiv = this.panelWrapper.append( 'div' )
+        this.projectsContainer = this.panelWrapper.append( 'div' )
             .classed( 'taskingManager-projects', true );
-        projectsDiv.append( 'h3' )
+
+        this.paginationContainer = this.projectsContainer.append( 'div' )
+            .classed( 'taskingManager-table-paginate', true );
+
+        this.projectsContainer.append( 'h3' )
             .text( 'Tasking Manager Projects' );
 
-        this.projectsTable = projectsDiv.append( 'div' )
+        this.projectsTable = this.projectsContainer.append( 'div' )
             .classed( 'taskingManager-table keyline-all', true );
 
         // Initially hidden
@@ -119,7 +133,83 @@ export default class TaskingManagerPanel extends Tab {
             .classed( 'taskingManager-table tasks-table keyline-all', true );
     }
 
+    createPagination() {
+        this.paginationContainer.selectAll( 'a' ).remove();
+        this.paginationContainer.selectAll( 'span' ).remove();
+
+        const paginationInfo = this.projectList.pagination,
+            self = this;
+        let currentPage = paginationInfo.page,
+            totalPages = paginationInfo.pages;
+
+        function addButton( pageNum ) {
+            let btn;
+            if ( pageNum ) {
+                btn = self.paginationContainer.append( 'a' )
+                    .text( pageNum )
+                    .attr( 'data-id', pageNum )
+                    .classed( 'current-page', pageNum === currentPage )
+                    .on( 'click', () => {
+                        self.activate( pageNum );
+                    });
+            } else {
+                btn = self.paginationContainer.append( 'span' )
+                    .classed( 'disabled', true )
+                    .text( '...' );
+            }
+
+            btn.classed( 'button', true );
+        }
+
+        this.paginationContainer.append('span')
+            .classed( 'pagination-title', true )
+            .text('Page: ');
+
+        if ( totalPages <= 6 ) {
+            for ( let pageNum = 1; pageNum <= totalPages; pageNum++ ) {
+                addButton( pageNum );
+            }
+        }
+        else {
+            // always print first page
+            addButton( 1 );
+
+            // add '...' is page > 3
+            if ( currentPage > 3 ) {
+                addButton();
+            }
+            // special case where last page is selected
+            if (currentPage === totalPages) {
+                addButton(currentPage - 2);
+            }
+            // print previous number button if currentPage > 2
+            if (currentPage > 2) {
+                addButton(currentPage - 1);
+            }
+            // print current page number button as long as it not the first or last page
+            if (currentPage !== 1 && currentPage !== totalPages) {
+                addButton(currentPage);
+            }
+            // print next number button if currentPage < lastPage - 1
+            if (currentPage < totalPages - 1) {
+                addButton(currentPage + 1);
+            }
+            // special case where first page is selected...
+            if (currentPage === 1) {
+                addButton(currentPage + 2);
+            }
+            // print '...' if currentPage is < lastPage -2
+            if (currentPage < totalPages - 2) {
+                addButton();
+            }
+            // always print last page button if there is more than 1 page
+            addButton( totalPages );
+        }
+    }
+
     loadProjectsTable( projects ) {
+        this.projectsTable.selectAll( '.taskingManager-item' ).remove();
+
         let items = this.projectsTable.selectAll( '.taskingManager-item' )
             .data( projects );
 

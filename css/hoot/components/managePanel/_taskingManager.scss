@@ -24,8 +24,37 @@
     }
 }
 
+.taskingManager-table-paginate {
+    float: right;
+
+    .pagination-title {
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    a {
+        color: #333333;
+        background-color: white;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+
+        font-size: 15px;
+        padding: 4px 8px;
+        margin: 0 3px 0 3px;
+    }
+
+    span {
+        margin: 0 4px 0 1px;
+    }
+
+    .current-page {
+        background-color: #7092ff;
+        color: white;
+    }
+}
+
 .taskingManager-projects,
-.taskingManager-tasks{
+.taskingManager-tasks {
     position: relative;
     width: 50%;
     height: 100%;

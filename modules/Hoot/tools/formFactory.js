@@ -175,7 +175,7 @@ export default class FormFactory {
                     break;
                 }
                 case 'multiCombobox': {
-                    self.createMultiCombobox( field );
+                    FormFactory.createMultiCombobox( field );
                     break;
                 }
                 case 'checkbox': {
@@ -269,7 +269,7 @@ export default class FormFactory {
      *
      * @param field - field div
      */
-    createMultiCombobox( field ) {
+    static createMultiCombobox( field, skipContainer, afterChangeCallback ) {
         const data = field.datum();
 
         let comboData = _map(data.data, n => {
@@ -288,13 +288,20 @@ export default class FormFactory {
             } );
         }
 
-        let tagUserContainer = field.append( 'div' )
-            .attr( 'id', d => d.containerId );
+        let container;
+        if ( skipContainer ) {
+            container = field;
+        } else {
+            container = field.append( 'div' )
+                .attr( 'id', d => d.containerId );
+        }
 
-        let selectedList = tagUserContainer.append( 'ul' )
-            .classed( 'selectedUserTags', true );
+        let selectedList = container.append( 'ul' )
+            .classed( 'selectedTags multiCombobox', true );
 
-        selectedList.append( 'input' )
+        const combobox = d3combobox().data(comboData);
+
+        const listInput = selectedList.append( 'input' )
             .attr( 'type', 'text' )
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
@@ -304,9 +311,52 @@ export default class FormFactory {
             .attr( '_value', d => d._value )
             .attr( 'disabled', d => d.disabled )
             .attr( 'readonly', d => d.readonly )
-            .call(d3combobox().data(comboData))
-            .on( 'change', d => d.onChange && d.onChange(d) )
+            .call( combobox )
+            .on( 'change', d => {
+                let tagsContainer = container.select( '.selectedTags' );
+
+                const tagItem = container.select( `#${ d.id }` ),
+                    value = tagItem.node().value,
+                    _value = tagItem.attr( '_value' );
+
+                // See if the item has already been tagged OR selected for potential tagging
+                const isSelected = tagsContainer.selectAll( 'li' ).filter( function() {
+                    return d3.select(this).attr( '_value' ) === _value;
+                } );
+
+                if ( isSelected.size() === 0 ) {
+                    FormFactory.populateTags( container, value, _value, afterChangeCallback );
+                }
+
+                listInput.node().value = '';
+
+                if ( afterChangeCallback ) afterChangeCallback();
+            } )
             .on( 'keyup', d => d.onChange && d.onChange(d) );
+
+        return combobox;
+    }
+
+    // creates the tag list item to show that a list item has been selected and allows removing it from tags
+    static populateTags( container, name, id, onDelete ) {
+        let listItem = container.select( '.selectedTags' ).append( 'li' )
+            .classed( 'tagItem', true )
+            .attr( 'value' , name)
+            .attr( '_value', id);
+
+        listItem.append( 'span' )
+            .text( name );
+
+        listItem.append( 'a' )
+            .classed( 'remove', true)
+            .text( 'x' )
+            .on( 'click', function(d) {
+                listItem.remove();
+
+                if ( onDelete ) {
+                    onDelete();
+                }
+            });
     }
 
     populateCombobox( input ) {
@@ -517,6 +567,14 @@ export default class FormFactory {
             domMeta.placeholder = opt.default;
         }
 
+        if ( opt.data ) {
+            domMeta.data = opt.data;
+
+            if ( opt.displayToHootMap ) {
+                domMeta.displayToHootMap = opt.displayToHootMap;
+            }
+        }
+
         return domMeta;
     }
 
@@ -565,21 +623,33 @@ export default class FormFactory {
 
         if ( advOpts ) {
             advOpts.forEach(function(d) {
-                let propName;
+                let inputValue;
+
                 switch (d.input) {
+                    case 'multiCombobox': {
+                        const parent = container.select('#' + d.id).node().parentNode;
+                        inputValue = d3.select( parent ).selectAll( '.tagItem' ).nodes().map( data =>
+                            d3.select(data).attr('_value')
+                        );
+                        break;
+                    }
                     case 'checkbox':
-                        propName = 'checked';
+                        inputValue = container.select('#' + d.id).property('checked').toString();
                         break;
                     case 'text':
                     default:
-                        propName = 'value';
+                        inputValue = container.select('#' + d.id).property('value').toString();
                         break;
                 }
-                let inputValue = container.select('#' + d.id).property(propName).toString();
 
                 // Need .length check because empty text box should be considered equal to default
                 if ( inputValue.length && inputValue !== d.default ) {
-                    advParams[d.id] = inputValue;
+                    if ( Array.isArray(inputValue) ) {
+                        advParams[d.id] = inputValue.map( item => d.displayToHootMap ? d.displayToHootMap[item] : item)
+                            .join( ';' );
+                    } else {
+                        advParams[d.id] = d.displayToHootMap ? d.displayToHootMap[inputValue] : inputValue;
+                    }
                 }
             });
         }

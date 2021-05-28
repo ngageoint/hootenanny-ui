@@ -305,3 +305,53 @@
     overflow: auto;
     padding: 0px 4px;
 }
+
+.multiCombobox {
+    display: flex;
+    flex-wrap: wrap;
+
+    .tagItem {
+        display: inline-flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        background-color: #eff2f7;
+        border: 1px solid #ccd5e3;
+        border-radius: 4px;
+        line-height: 25px;
+        padding: 2px 5px;
+        margin: 3px;
+
+        a {
+            font-family: Arial, Helvetica, sans-serif !important;
+            font-size: 15px;
+            height: 25px;
+            line-height: 24px;
+            float: right;
+            margin-left: 5px;
+            padding: 0;
+            cursor: pointer;
+            color: #a6b4ce;
+        }
+    }
+
+    input {
+        margin: 5px;
+        height: 31px;
+        width: 90%;
+
+        border-color: #ababab;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 5px !important;
+    }
+
+    div.combobox-caret {
+        margin-top: 5px;
+    }
+}
+
+.combobox {
+    .disabled {
+        display: none;
+    }
+}
