@@ -42,9 +42,10 @@ export default class ModifyTranslation {
 
 
         if ( this.translation.DEFAULT ) {
-            this.translationName.attr( 'readonly', 'readonly' );
-            this.descriptionInput.attr( 'readonly', 'readonly' );
-            this.templateInput.attr( 'readonly', 'readonly' );
+            this.translationName.attr( 'disabled', 'true' );
+            this.descriptionInput.attr( 'disabled', 'true' );
+            this.pathNameInput.attr( 'disabled', 'true' );
+            this.templateInput.attr( 'disabled', 'true' );
         } else {
             this.submitButton.node().disabled = false;
         }
