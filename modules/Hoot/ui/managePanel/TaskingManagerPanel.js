@@ -404,12 +404,12 @@ export default class TaskingManagerPanel extends Tab {
                                 taskId: taskId
                             }]
                         };
-                        validateRequest = await Hoot.api.validateTM4Task( this.currentProject.id, taskId, formData );
+                        validateRequest = Hoot.api.validateTM4Task( this.currentProject.id, taskId, formData );
                     } else {
                         const formData = new FormData();
                         formData.set( 'comment', 'Hootenanny failure' );
                         formData.set( 'invalidate', 'true' );
-                        validateRequest = await Hoot.api.validateTask( this.currentProject.id, taskId, formData );
+                        validateRequest = Hoot.api.validateTask( this.currentProject.id, taskId, formData );
                     }
 
                     validateRequest.then( resp => {
