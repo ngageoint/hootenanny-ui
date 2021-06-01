@@ -94,7 +94,11 @@ export default class ModifyTranslation {
             pathName        = this.pathNameInput.property( 'value' ),
             targetFolder    = _get( _find( this.folderList, folder => folder.path === pathName ), 'id' ) || 0;
 
-        if ( _find( Hoot.folders.translations, translation =>  translation.folderId === targetFolder && translation.name === name ) ) {
+        const translationExists = _find( Hoot.folders.translations, translation =>  translation.folderId === targetFolder && translation.name === name ),
+            description     = this.descriptionInput.property( 'value' ),
+            templateInput   = this.templateInput.property( 'value' );
+
+        if ( translationExists && this.translation.DESCRIPTION === description && this.templateText === templateInput ) {
             let message = 'A translation already exists with this name in the destination folder. Please remove the old translation and try again.',
                 type    = 'warn';
 
@@ -102,15 +106,18 @@ export default class ModifyTranslation {
             return false;
         }
 
-        const data = this.templateInput.property( 'value' );
         const paramData = {
             SCRIPT_NAME: this.translationName.property( 'value' ),
             SCRIPT_DESCRIPTION: this.descriptionInput.property( 'value' ),
             folderId : targetFolder
         };
 
-        Hoot.api.postTranslation( data, paramData )
-            .then( () => Hoot.api.deleteTranslation( this.translation.id ) )
+        Hoot.api.postTranslation( templateInput, paramData )
+            .then( () => {
+                if ( name !== this.translation.name ) {
+                    Hoot.api.deleteTranslation( this.translation.id );
+                }
+            } )
             .then( () => this.container.remove() )
             .finally( () => this.instance.loadTranslations() );
     }
