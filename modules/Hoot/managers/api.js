@@ -593,11 +593,12 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    moveTranslation( paramData ) {
+    modifyTranslation( data, paramData ) {
         const params = {
-            path: '/ingest/customscript/moveTranslation',
+            path: '/ingest/customscript/modifyTranslation',
             method: 'PUT',
-            params: paramData
+            params: paramData,
+            data
         };
 
         return this.request( params )

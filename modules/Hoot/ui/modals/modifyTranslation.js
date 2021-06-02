@@ -97,9 +97,18 @@ export default class ModifyTranslation {
 
         const translationExists = _find( Hoot.folders.translations, translation =>  translation.folderId === targetFolder && translation.name === name ),
             description     = this.descriptionInput.property( 'value' ),
-            templateInput   = this.templateInput.property( 'value' );
+            templateInput   = this.templateInput.property( 'value' ),
+            currentTranslationName = this.translation.NAME || this.translation.name,
+            currentTranslationPath =_get( _find( this.folderList, folder => folder.id === this.translation.folderId ), 'path' );
 
-        if ( translationExists && this.translation.DESCRIPTION === description && this.templateText === templateInput ) {
+        if ( currentTranslationName === name && this.translation.DESCRIPTION === description &&
+            currentTranslationPath === pathName && this.templateText === templateInput ) {
+            let message = 'No modifications made to the translation.',
+                type    = 'warn';
+
+            Hoot.message.alert( { message, type } );
+            return false;
+        } else if ( translationExists && this.translation.DESCRIPTION === description && this.templateText === templateInput ) {
             let message = 'A translation already exists with this name in the destination folder. Please remove the old translation and try again.',
                 type    = 'warn';
 
@@ -108,19 +117,17 @@ export default class ModifyTranslation {
         }
 
         const paramData = {
-            SCRIPT_NAME: this.translationName.property( 'value' ),
-            SCRIPT_DESCRIPTION: this.descriptionInput.property( 'value' ),
+            name: this.translationName.property( 'value' ),
+            description: this.descriptionInput.property( 'value' ),
+            translationId: this.translation.id,
             folderId : targetFolder
         };
 
-        Hoot.api.postTranslation( templateInput, paramData )
-            .then( () => {
-                if ( name !== this.translation.name ) {
-                    Hoot.api.deleteTranslation( this.translation.id );
-                }
-            } )
-            .then( () => this.container.remove() )
-            .finally( () => this.instance.loadTranslations() );
+        Hoot.api.modifyTranslation( templateInput, paramData )
+            .then( () => this.instance.loadTranslations() )
+            .finally( () => {
+                this.container.remove();
+            } );
     }
 
 }
