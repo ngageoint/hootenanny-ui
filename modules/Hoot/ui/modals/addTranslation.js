@@ -36,6 +36,8 @@ export default class AddTranslation {
         this.templateInput    = d3.select( '#translationTemplate' );
         this.submitButton     = d3.select( '#addTranslationBtn' );
         this.mappingForm      = d3.select( '.ta-attribute-mapping' );
+
+        this.pathNameInput.attr( 'readonly', 'true' );
     }
 
     handleFileDrop() {

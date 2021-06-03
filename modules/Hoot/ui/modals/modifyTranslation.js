@@ -47,6 +47,7 @@ export default class ModifyTranslation {
             this.pathNameInput.attr( 'disabled', 'true' );
             this.templateInput.attr( 'disabled', 'true' );
         } else {
+            this.pathNameInput.attr( 'readonly', 'true' );
             this.submitButton.node().disabled = false;
         }
     }
