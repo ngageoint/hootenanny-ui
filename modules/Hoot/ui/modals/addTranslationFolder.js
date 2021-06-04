@@ -42,6 +42,14 @@ export default class AddTranslationFolder {
             valid = false;
         }
 
+        const folderPath = this.pathNameInput.property( 'value' ),
+            isPublic = _get( _find( this.folderList, folder => folder.path === folderPath ), 'public' );
+
+        if ( !isPublic ) {
+            this.folderVisibilityInput.property( 'checked', false );
+        }
+        this.folderVisibilityInput.property( 'disabled', !isPublic );
+
         this.folderNameInput.classed( 'invalid', !valid );
         this.formValid = valid;
         this.updateButtonState();
