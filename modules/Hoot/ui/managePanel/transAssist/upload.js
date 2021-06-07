@@ -34,7 +34,7 @@ export default class Upload {
                 icon: 'play_for_work',
                 uploadType: 'FILE',
                 multiple: true,
-                accept: '.shp, .shx, .dbf, .zip, .geojson'
+                accept: '.shp, .shx, .dbf, .zip, .geojson, .gpkg'
             },
             {
                 title: 'Upload Folder',
