@@ -6,7 +6,17 @@ import _find from 'lodash-es/find';
 export default class AddTranslationFolder {
     constructor( instance ) {
         this.instance = instance;
-        this.folderList = Hoot.folders.translationFolders;
+        this.folderList = Hoot.folders.translationFolders.concat([
+            {
+                path : '/',
+                id : 0,
+                name: 'root',
+                userId: Hoot.user().id,
+                public: true
+            }
+        ]);
+        this.defaultFolder = _find( this.folderList, folder => folder.path === '/' );
+
         this.form = addTranslationFolderForm.call( this );
     }
 

@@ -488,7 +488,9 @@ export function addTranslationFolderForm() {
             class: 'path-name',
             inputType: 'combobox',
             placeholder: 'Select a path',
+            readonly: 'readonly',
             data: this.folderList,
+            value: this.defaultFolder.path,
             sort: true,
             itemKey: 'path',
             onChange: () => this.validateTextInput()
