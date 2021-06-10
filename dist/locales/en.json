@@ -3,6 +3,7 @@
         "icons": {
             "download": "download",
             "information": "info",
+            "open_link": "open link",
             "remove": "remove",
             "undo": "undo",
             "zoom_to": "zoom to",
@@ -7967,7 +7968,7 @@
             },
             "MAPNIK": {
                 "attribution": {
-                    "text": "© OpenStreetMap contributors, CC-BY-SA"
+                    "text": "© OpenStreetMap contributors, CC-BY-SA 2.0"
                 },
                 "description": "The default OpenStreetMap layer.",
                 "name": "OpenStreetMap (Standard)"
@@ -7978,20 +7979,6 @@
                 },
                 "description": "Satellite and aerial imagery.",
                 "name": "Mapbox Satellite"
-            },
-            "Maxar-Premium": {
-                "attribution": {
-                    "text": "Terms & Feedback"
-                },
-                "description": "Maxar Premium is a mosaic composed of Maxar basemap with select regions filled with +Vivid or custom area of interest imagery, 50cm resolution or better, and refreshed more frequently with ongoing updates.",
-                "name": "Maxar Premium Imagery (Beta)"
-            },
-            "Maxar-Standard": {
-                "attribution": {
-                    "text": "Terms & Feedback"
-                },
-                "description": "Maxar Standard is a curated set of imagery covering 86% of the earth’s landmass, with 30-60cm resolution where available, backfilled by Landsat. Average age is 2.31 years, with some areas updated 2x per year.",
-                "name": "Maxar Standard Imagery (Beta)"
             },
             "OSM_Inspector-Addresses": {
                 "attribution": {
@@ -8152,20 +8139,6 @@
                 "description": "Annotation overlay provided by basemap.at.",
                 "name": "basemap.at Overlay"
             },
-            "basemap.at-surface": {
-                "attribution": {
-                    "text": "basemap.at"
-                },
-                "description": "Surface layer provided by basemap.at.",
-                "name": "basemap.at Surface"
-            },
-            "basemap.at-terrain": {
-                "attribution": {
-                    "text": "basemap.at"
-                },
-                "description": "Terrain layer provided by basemap.at.",
-                "name": "basemap.at Terrain"
-            },
             "eufar-balaton": {
                 "attribution": {
                     "text": "EUFAR Balaton ortofotó 2010"
@@ -8180,12 +8153,19 @@
                 "description": "GSI Kiban 2500 via finds.jp. Good for tracing, but a bit older.",
                 "name": "Japan GSI KIBAN 2500"
             },
-            "gsi.go.jp": {
+            "gothenburg-citymap": {
                 "attribution": {
-                    "text": "GSI Japan"
+                    "text": "© Gothenburg municipality, CC0"
                 },
-                "description": "Japan GSI ortho Imagery. Usually better than bing, but a bit older.",
-                "name": "Japan GSI ortho Imagery"
+                "description": "The city map is an overview map that describes Gothenburg. It contains general information about land, communications, hydrography, buildings, address numbers and street names, administrative division and other orientation text.",
+                "name": "Gothenburg City map"
+            },
+            "gothenburg-ortho": {
+                "attribution": {
+                    "text": "© Gothenburg municipality, CC0"
+                },
+                "description": "Orthophoto for Gothenburg municipality",
+                "name": "Gothenburg Orthophoto"
             },
             "gsi.go.jp_airphoto": {
                 "attribution": {
@@ -8354,6 +8334,12 @@
                 },
                 "name": "Thunderforest Landscape"
             },
+            "tf-outdoors": {
+                "attribution": {
+                    "text": "Maps © Thunderforest, Data © OpenStreetMap contributors"
+                },
+                "name": "Thunderforest Outdoors"
+            },
             "trafikverket-baninfo": {
                 "attribution": {
                     "text": "© Trafikverket, CC0"
@@ -8395,6 +8381,12 @@
                 },
                 "description": "Swedish NVDB road network with several options for map layers",
                 "name": "Trafikverket Road Network options"
+            },
+            "wroclaw-orto2018": {
+                "attribution": {
+                    "text": "Urząd Miasta Wrocław"
+                },
+                "name": "Wrocław: Orthophotomap 2018 (aerial image)"
             }
         },
         "community": {
