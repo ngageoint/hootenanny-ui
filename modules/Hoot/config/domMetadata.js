@@ -4,12 +4,6 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
 
-/*******************************************************************************************************
- * File: formConfigs.js
- * Project: hootenanny-ui
- * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/15/18
- *******************************************************************************************************/
-
 export function layerConflateForm( data ) {
     return [
         {
@@ -458,6 +452,17 @@ export function translationAddForm() {
             onChange: d => this.validateFields( d )
         },
         {
+            label: 'Path',
+            id: 'importPathName',
+            class: 'path-name',
+            inputType: 'combobox',
+            placeholder: 'Select a path',
+            data: this.folderList,
+            sort: true,
+            itemKey: 'path',
+            onChange: () => {}
+        },
+        {
             label: 'Paste New Translations in Box (or drag .js file into text area)',
             id: 'translationTemplate',
             inputType: 'textarea',
@@ -468,20 +473,70 @@ export function translationAddForm() {
     ];
 }
 
+export function addTranslationFolderForm() {
+    return [
+        {
+            label: 'Name',
+            id: 'addTranslationFolderName',
+            class: 'new-translation-folder-name',
+            inputType: 'text',
+            onChange: () => this.validateTextInput()
+        },
+        {
+            label: 'Path',
+            id: 'importPathName',
+            class: 'path-name',
+            inputType: 'combobox',
+            placeholder: 'Select a path',
+            readonly: 'readonly',
+            data: this.folderList,
+            value: this.defaultFolder.path,
+            sort: true,
+            itemKey: 'path',
+            onChange: () => this.validateTextInput()
+        },
+        {
+            label: 'Public',
+            id: 'addTranslationFolderVisibility',
+            inputType: 'checkbox',
+            value: 'Public',
+            checked: false,
+            class: 'folder-checkbox'
+        }
+    ];
+}
+
 export function translationViewForm() {
     return [
+        {
+            label: 'Name',
+            id: 'translationName',
+            inputType: 'text',
+            onChange: () => this.validateFields()
+        },
         {
             label: 'Description',
             id: 'translationSaveDescription',
             inputType: 'text',
-            onChange: d => this.validateFields( d )
+            onChange: () => this.validateFields()
+        },
+        {
+            label: 'Path',
+            id: 'importPathName',
+            class: 'path-name',
+            inputType: 'combobox',
+            placeholder: 'Select a path',
+            data: this.folderList,
+            sort: true,
+            itemKey: 'path',
+            onChange: () => this.validateFields()
         },
         {
             label: 'Paste New Translations in Box (or drag .js file into text area)',
             id: 'translationTemplate',
             inputType: 'textarea',
             data: this.templateText || null,
-            onChange: d => this.validateFields( d )
+            onChange: () => this.validateFields()
         }
     ];
 }

@@ -1,14 +1,11 @@
-/** ****************************************************************************************************
- * File: translations.js
- * Project: hootenanny-ui
- * @author Matt Putipong on 2/27/18
- *******************************************************************************************************/
-
-import Tab             from './tab';
-import AddTranslation  from '../modals/addTranslation';
-import ViewTranslation from '../modals/viewTranslation';
-import { tooltip }     from '../../../util/tooltip';
-import { saveAs }      from 'file-saver';
+import { saveAs }               from 'file-saver';
+import Tab                      from './tab';
+import AddTranslation           from '../modals/addTranslation';
+import AddTranslationFolder     from '../modals/addTranslationFolder';
+import ModifyTranslationFolder  from '../modals/modifyTranslationFolder';
+import ModifyTranslation        from '../modals/modifyTranslation';
+import FolderTree               from '../../tools/folderTree';
+import _map                     from 'lodash-es/map';
 
 /**
  * Creates the translations tab in the settings panel
@@ -22,130 +19,132 @@ export default class Translations extends Tab {
 
         this.name = 'Translations';
         this.id   = 'util-translations';
+
+        this.translationTableHeaders = [
+            {
+                title: 'Translations',
+                width: '9%'
+            },
+            {
+                title: 'Owner',
+                width: '9%'
+            }
+        ];
+
+        this.translationButtons = [
+            {
+                title: 'Add New Translations',
+                icon: 'play_for_work',
+                onClick: 'import-translation'
+            },
+            {
+                title: 'Add Folder',
+                icon: 'create_new_folder',
+                onClick: 'add-translation-folder'
+            },
+            {
+                title: 'Refresh Translations',
+                icon: 'refresh',
+                onClick: 'refresh-translations'
+            },
+            {
+                title: 'Public Data',
+                icon: JSON.parse(Hoot.context.storage( 'publicVisibilityTranslations' )) ? 'visibility' : 'visibility_off',
+                iconClass: 'public-visibility',
+                onClick: 'toggle-public-visibility'
+            }
+        ];
     }
 
     render() {
         super.render();
 
-        this.createNewTranslationButton();
+        this.setupButtons();
         this.createTranslationTable();
 
         this.loadTranslations();
 
+        this.listen();
+
         return this;
     }
 
-    createNewTranslationButton() {
-        this.panelWrapper
+    setupButtons() {
+        this.buttonContainer = this.panelWrapper.append( 'div' )
+            .classed( 'translation-buttons flex', true );
+
+        let buttonContainer = this.buttonContainer
+            .selectAll( 'button.translation-action-button' )
+            .data( this.translationButtons );
+
+        let buttons = buttonContainer.enter()
             .append( 'button' )
-            .classed( 'add-translation-button button primary _icon big light plus', true )
-            .text( 'Add New Translations' )
-            .on( 'click', () => new AddTranslation( this ).render() );
+            .classed( 'translation-action-button primary text-light flex align-center', true )
+            .on( 'click', async item => {
+                d3.event.preventDefault();
+
+                switch ( item.onClick ) {
+                    case 'import-translation': {
+                        new AddTranslation( this ).render();
+                        break;
+                    }
+                    case 'add-translation-folder': {
+                        new AddTranslationFolder( this ).render();
+                        break;
+                    }
+                    case 'refresh-translations': {
+                        this.loadTranslations();
+                        break;
+                    }
+                    case 'toggle-public-visibility': {
+                        let publicVisibilityPref = JSON.parse(Hoot.context.storage( 'publicVisibilityTranslations' ));
+                        Hoot.context.storage( 'publicVisibilityTranslations', !publicVisibilityPref);
+                        this.buttonContainer.select('i.public-visibility').text(!publicVisibilityPref ? 'visibility' : 'visibility_off');
+                        this.loadTranslations();
+                        break;
+                    }
+                }
+            } );
+
+        buttons.append( 'i' )
+            .attr( 'class', d => d.iconClass )
+            .classed( 'material-icons', true )
+            .text( d => d.icon );
+
+        buttons.append( 'span' )
+            .classed( 'label', true )
+            .text( d => d.title );
+
     }
 
     createTranslationTable() {
-        this.translationTable = this.panelWrapper
-            .append( 'div' )
+        let table = this.panelWrapper.append( 'div' )
+            .attr( 'id', 'translation-table' )
             .classed( 'translation-table keyline-all fill-white', true );
+
+        table.insert( 'div' )
+            .attr( 'id', 'translation-table-header' )
+            .selectAll( 'th' )
+            .data( this.translationTableHeaders )
+            .enter().append( 'th' )
+            .attr( 'style', d => `width: ${ d.width }` )
+            .text( d => d.title );
+
+        this.translationTable = table;
     }
 
     async loadTranslations() {
         try {
-            let translations = await Hoot.api.getTranslations();
-            this.populateTranslations( translations );
+            await Hoot.folders.refreshTranslationInfo();
+
+            if ( !this.folderTree ) {
+                this.folderTree = new FolderTree( this.translationTable );
+            }
+
+            this.folderTree.render();
         } catch ( e ) {
-            // TODO: show alert
-            // window.console.log( 'Unable to retrieve translations' );
             throw new Error( e );
         }
-    }
-
-    populateTranslations( translations ) {
-        let instance = this;
-
-        let rows = this.translationTable
-            .selectAll( '.translation-item' )
-            .data( translations, d => d );
-
-        rows.exit().remove();
-
-        let translationItem = rows
-            .enter()
-            .append( 'div' )
-            .classed( 'translation-item keyline-bottom', true );
-
-        rows.merge( translationItem );
-
-        let translationName = translationItem
-            .append( 'span' )
-            .append( 'a' )
-            .classed( 'translation-name', true )
-            .text( d => {
-                if ( d.DEFAULT ) {
-                    return d.NAME + '*';
-                }
-
-                return d.NAME;
-            } )
-            .on( 'click', d => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-
-                this.translationPopup( d );
-            } );
-
-        let translationTooltip = tooltip()
-            .placement( 'right' )
-            .html( 'true' )
-            .title( d => {
-                if ( d.DEFAULT ) {
-                    return d.DESCRIPTION + ' (Hootenanny Default Translations)';
-                }
-
-                return d.DESCRIPTION;
-            } );
-
-        translationName.call( translationTooltip );
-
-        let buttonContainer = translationItem
-            .append( 'div' )
-            .classed( 'button-container fr', true );
-
-        buttonContainer
-            .append( 'button' )
-            .classed( 'keyline-left _icon export', true )
-            .on( 'click', d => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-
-                this.exportTranslation( d );
-            } );
-
-        buttonContainer
-            .append( 'button' )
-            .on( 'click', function( d ) {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-
-                let r = Hoot.message.confirm( 'Are you sure you want to delete selected translations?' );
-                if ( !r ) return;
-
-                Hoot.api.deleteTranslation( d.NAME )
-                    .then( () => instance.loadTranslations() );
-            } )
-            .select( function( d ) {
-                if ( d.DEFAULT ) {
-                    d3.select( this ).classed( 'keyline-left _icon close', true )
-                        .on( 'click', () => {
-                            d3.event.stopPropagation();
-                            d3.event.preventDefault();
-
-                            Hoot.message.alert( 'Can not delete default translations.' );
-                        } );
-                } else {
-                    d3.select( this ).classed( 'keyline-left _icon trash', true );
-                }
-            } );
     }
 
     async translationPopup( d ) {
@@ -154,10 +153,10 @@ export default class Translations extends Tab {
         if ( d.DEFAULT ) {
             translationText = await Hoot.api.getDefaultTranslation( d.PATH );
         } else {
-            translationText = await Hoot.api.getTranslation( d.NAME );
+            translationText = await Hoot.api.getTranslation( d.NAME || d.id );
         }
 
-        new ViewTranslation( this, d, translationText ).render();
+        new ModifyTranslation( this, d, translationText ).render();
     }
 
     async exportTranslation( d ) {
@@ -167,16 +166,88 @@ export default class Translations extends Tab {
             if ( d.DEFAULT ) {
                 translationText = await Hoot.api.getDefaultTranslation( d.PATH );
             } else {
-                translationText = await Hoot.api.getTranslation( d.NAME );
+                translationText = await Hoot.api.getTranslation( d.NAME || d.id );
             }
 
             let transBlob = new Blob( [ translationText ], { type: 'text/javascript' } );
-            saveAs( transBlob, d.NAME + '.js' );
+            let name = d.NAME || d.name;
+            saveAs( transBlob, name + '.js' );
 
         } catch ( e ) {
-            //TODO: show warning
-            // window.console.log( 'Unable to get translations text' );
             throw new Error( e );
         }
+    }
+
+    deleteItems( toDelete ) {
+        return Promise.all( _map( toDelete, item => {
+            let data = item.data || item;
+
+            if ( data.type === 'translation' ) {
+                return Hoot.api.deleteTranslation( data.id );
+            } else {
+                // children are placed in root of object when folder is open
+                let children = item.children || data._children;
+
+                if ( children && children.length ) {
+                    return this.deleteItems( children )
+                        .then( () => Hoot.api.deleteTranslationFolder( data.id ) )
+                        .catch( ( err ) => {
+                            err.message = err.data;
+                            delete err.data;
+                            Hoot.message.alert( err );
+                        });
+                } else {
+                    return Hoot.api.deleteTranslationFolder( data.id )
+                        .catch( ( err ) => {
+                            err.message = err.data;
+                            delete err.data;
+                            Hoot.message.alert( err );
+                        });
+                }
+            }
+        } ) );
+    }
+
+    async handleContextMenuClick( [tree, d, item] ) {
+        switch ( item.click ) {
+            case 'deleteTranslation': {
+                let r = await Hoot.message.confirm('Are you sure you want to delete selected translations?');
+                if (!r) return;
+
+                Hoot.api.deleteTranslation( d.data.id || d.data.NAME )
+                    .then( () => Hoot.folders.refreshTranslationInfo() )
+                    .then( () => this.loadTranslations() );
+                break;
+            }
+            case 'exportTranslation': {
+                this.exportTranslation( d.data );
+                break;
+            }
+            case 'modifyTranslation': {
+                this.translationPopup( d.data );
+                break;
+            }
+            case 'modifyFolder': {
+                this.modifyFolderModal = new ModifyTranslationFolder( d.data ).render();
+
+                Hoot.events.once( 'modal-closed', () => delete this.modifyFolderModal );
+                break;
+            }
+            case 'deleteTranslationFolder': {
+                let r = await Hoot.message.confirm('Are you sure you want to delete the selected folder?');
+                if (!r) return;
+
+                this.deleteItems( [ d ] )
+                    .then( () => Hoot.folders.refreshTranslationInfo() )
+                    .then( () => this.loadTranslations() );
+                break;
+            }
+        }
+    }
+
+    listen() {
+        const className = this.constructor.name;
+        Hoot.events.listen( className, 'render-translations-table', () => this.loadTranslations() );
+        Hoot.events.listen( className, 'translation-context-menu', ( ...params ) => this.handleContextMenuClick( params ) );
     }
 }

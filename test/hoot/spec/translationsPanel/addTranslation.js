@@ -18,7 +18,7 @@
 
      } );
     it( 'Create new translation window opens', done => {
-        d3.select('.add-translation-button').dispatch('click');
+        d3.select('.translation-action-button:first-child').dispatch('click');
         setTimeout(() => {
             var translationForm = d3.select('#translations-add-form  div  div');
             expect(translationForm.size() ).to.equal( 1 );
