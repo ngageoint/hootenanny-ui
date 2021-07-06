@@ -34,6 +34,10 @@ module.exports = Merge( CommonConfig, {
             '/tasks': {
                 target: 'http://localhost:6543',
                 pathRewrite: { '^/tasks': '' }
+            },
+            '/tm4api': {
+                target: 'http://localhost:5000',
+                pathRewrite: { '^/tm4api': '/api' }
             }
         }
     },
