@@ -537,6 +537,51 @@ export default class TaskingManagerPanel extends Tab {
         this.setupRunAllBtn();
     }
 
+    runAllOptionsModal() {
+        const options = [ 'Ready', 'Mapped', 'Validated', 'Invalidated', 'Done' ];
+
+        let metadata = {
+            title: 'Task Filter',
+            button: {
+                text: 'Submit',
+                id: 'SubmitBtn',
+                disabled: null,
+                onClick: () => {
+                    const selectedOptions = options.filter( option => {
+                        return container.select( `#${ option }` ).property( 'checked' );
+                    } );
+
+                    const unRunTasks = this.tasksTable.selectAll( '.taskingManager-item' ).filter( function() {
+                        const container = d3.select( this );
+                        return selectedOptions.includes( container.attr( 'status' ) );
+                    } );
+
+                    this.runTasks( unRunTasks );
+                    optionsForm.remove();
+                }
+            }
+        };
+
+        const optionsForm = new FormFactory().generateForm( 'body', 'runAllTasksFilter', metadata );
+        this.submitButton = d3.select( `#${ metadata.button.id }` );
+
+        const container = optionsForm
+            .select( '.wrapper div' )
+            .insert( 'div', '.modal-footer' )
+            .classed( 'button-wrap user-input', true );
+
+        options.forEach( option => {
+            container.append( 'label' )
+                .classed( 'pad0y', true )
+                .text( option )
+                    .append( 'input' )
+                    .attr( 'id', option )
+                    .attr( 'type', 'checkbox' )
+                    .property( 'checked', true );
+
+        } );
+    }
+
     setupRunAllBtn() {
         this.cancelRunning = false;
 
@@ -545,15 +590,8 @@ export default class TaskingManagerPanel extends Tab {
             .text( this.timeoutTasks.length > 0 ? 'Resume' : 'Run all' )
             .on( 'click', () => {
                 let containsLocked = this.tasksTable.select( '[status="Locked"]' ).empty();
-                const unRunTasks = this.tasksTable.selectAll( '.taskingManager-item' ).filter( function() {
-                    const container = d3.select( this );
-                    return container.attr( 'status' ) !== 'Done'
-                        && container.attr( 'status' ) !== 'Validated'
-                        && container.attr( 'status' ) !== 'Mapped';
-                } );
-
                 if ( containsLocked ) {
-                    this.runTasks( unRunTasks );
+                    this.runAllOptionsModal();
                 } else {
                     let alert = {
                         message: 'All tasks need to be unlocked.',

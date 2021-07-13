@@ -6,7 +6,7 @@ import DifferentialChangeset   from './differentialChangeset';
 
 export default class OverpassQueryPanel {
     constructor( instance ) {
-        this.formData        = instance;
+        this.formData = instance;
     }
 
     render() {

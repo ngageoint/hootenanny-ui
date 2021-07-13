@@ -1886,18 +1886,19 @@ export default class API {
             }
         };
 
+        let lockStatus = lock ? 'lock' : 'unlock';
         return this.request( params )
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: `Task ${ taskId } ${ lockParam }ed`,
+                    message: `Task ${ taskId } ${ lockStatus }ed`,
                     status: 200,
                     type: 'success'
                 };
             } )
             .catch( err => {
                 let alert = {
-                    message: `Failed to ${ lockParam } task ${ taskId } for project ${ projectId }.\n` +
+                    message: `Failed to ${ lockStatus } task ${ taskId } for project ${ projectId }.\n` +
                         'Make sure you are logged into tasking manager in a different tab and that you' +
                         'have not locked any other tasks for this project',
                     type: 'error',
