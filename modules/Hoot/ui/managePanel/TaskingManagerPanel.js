@@ -538,7 +538,7 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     runAllOptionsModal() {
-        const options = [ 'Ready', 'Mapped', 'Validated', 'Invalidated', 'Done' ];
+        const options = [ 'Ready', 'Invalidated' ];
 
         let metadata = {
             title: 'Task Filter',

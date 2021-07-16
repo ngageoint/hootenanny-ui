@@ -1762,7 +1762,7 @@ export default class API {
             .catch( err => {
                 let alert = {
                     message: `Failed to ${ lockParam } task ${ taskId } for project ${ projectId }.\n` +
-                        'Make sure you are logged into tasking manager in a different tab and that you' +
+                        'Make sure you are logged into tasking manager in a different tab and that you ' +
                         'have not locked any other tasks for this project',
                     type: 'error',
                     status: err.status
@@ -1899,7 +1899,7 @@ export default class API {
             .catch( err => {
                 let alert = {
                     message: `Failed to ${ lockStatus } task ${ taskId } for project ${ projectId }.\n` +
-                        'Make sure you are logged into tasking manager in a different tab and that you' +
+                        'Make sure you are logged into tasking manager in a different tab and that you ' +
                         'have not locked any other tasks for this project',
                     type: 'error',
                     status: err.status
