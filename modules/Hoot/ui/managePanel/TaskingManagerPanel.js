@@ -48,12 +48,12 @@ export default class TaskingManagerPanel extends Tab {
 
         this.createTables();
 
-        this.initCutReplaceForm();
+        this.initDiffForms();
 
         return this;
     }
 
-    async initCutReplaceForm() {
+    async initDiffForms() {
         // form for cut and replace options
         this.cutReplaceOptions = {
             title: 'Options',
@@ -63,16 +63,37 @@ export default class TaskingManagerPanel extends Tab {
                 id: 'DoneBtn',
                 disabled: null,
                 onClick: () => {
-                    this.ADV_OPTIONS = this.formFactory.getAdvOpts(this.form, advOpts);
+                    this.ADV_OPTIONS = this.formFactory.getAdvOpts(this.form, cutReplaceOpts);
                     if ( this.form ) this.form.remove();
                 }
             }
         };
 
         //Add advanced options to form
-        const advOpts = await Hoot.api.getAdvancedChangesetOptions();
-        if ( advOpts ) {
-            this.cutReplaceOptions.form = this.cutReplaceOptions.form.concat(advOpts.map(this.formFactory.advOpt2DomMeta));
+        const cutReplaceOpts = await Hoot.api.getAdvancedChangesetOptions();
+        if ( cutReplaceOpts ) {
+            this.cutReplaceOptions.form = this.cutReplaceOptions.form.concat(cutReplaceOpts.map(this.formFactory.advOpt2DomMeta));
+        }
+
+        // form for differentail options
+        this.differentialOptions = {
+            title: 'Options',
+            form: [],
+            button: {
+                text: 'Done',
+                id: 'DoneBtn',
+                disabled: null,
+                onClick: () => {
+                    this.ADV_OPTIONS = this.formFactory.getAdvOpts(this.form, differentialOpts);
+                    if ( this.form ) this.form.remove();
+                }
+            }
+        };
+
+        //Add advanced options to form
+        const differentialOpts = await Hoot.api.getAdvancedOptions('differential');
+        if ( differentialOpts ) {
+            this.differentialOptions.form = this.differentialOptions.form.concat(differentialOpts.map(this.formFactory.advOpt2DomMeta));
         }
     }
 
@@ -286,6 +307,10 @@ export default class TaskingManagerPanel extends Tab {
                         && this.cutReplaceOptions.form.length > 0) {
                         let formId = 'cutReplaceForm';
                         this.form = this.formFactory.generateForm('body', formId, this.cutReplaceOptions);
+                    } else if (this.deriveDropdown.property('value') === 'Differential'
+                        && this.differentialOptions.form.length > 0) {
+                        let formId = 'differentialForm';
+                        this.form = this.formFactory.generateForm('body', formId, this.differentialOptions);
                     } else {
                         // currently only cut & replace will have advanced options so clear it when other option is selected
                         this.ADV_OPTIONS = null;
