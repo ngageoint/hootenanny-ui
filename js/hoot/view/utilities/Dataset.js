@@ -69,7 +69,7 @@ Hoot.view.utilities.dataset = function(context)
 
         var table = form.append('div')
         .attr('id','datasettable')
-            .classed('col12 fill-white small strong row10 overflow keyline-all', true);
+            .classed('col12 fill-white small strong row12 overflow keyline-all', true);
 
         var datasetColHeaders = [{title: 'Dataset', class: '14%'}, {title: 'Last Accessed', class: '7%'}, {title: 'Import Date', class: '6%'}, {title: 'Size', class: '1%'}];
         table.insert('div').attr('id', 'datasettableHeader')
