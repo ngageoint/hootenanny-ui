@@ -38,6 +38,7 @@ export default class ImportDataset {
         this.translations.unshift( {
             NAME: 'NONE',
             PATH: 'NONE',
+            displayPath: 'NONE',
             DESCRIPTION: 'No Translations',
             NONE: 'true'
         } );
@@ -386,16 +387,19 @@ export default class ImportDataset {
             transCombo    = this.schemaInput.datum(),
             typeCombo     = this.typeInput.datum(),
 
-            translation   = _filter( transCombo.data, o => o.NAME === transVal )[ 0 ],
+            translation   = _filter( transCombo.data, o => o.NAME === transVal || o.displayPath === transVal )[ 0 ],
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
 
-            translationName,
+            translationIdentifier,
             folderId;
 
         if ( translation.DEFAULT && ( translation.PATH && translation.PATH.length ) ) {
-            translationName = translation.PATH;
-        } else {
-            translationName = translation.NAME + '.js';
+            translationIdentifier = translation.PATH;
+        } else if ( translation.id ) {
+            translationIdentifier = translation.id;
+        }
+        else {
+            translationIdentifier = translation.NAME + '.js';
         }
 
         if ( newFolderName ) {
@@ -409,7 +413,7 @@ export default class ImportDataset {
 
         let data = {
             NONE_TRANSLATION: translation.NONE === 'true',
-            TRANSLATION: translationName,
+            TRANSLATION: translationIdentifier,
             INPUT_TYPE: importType.value,
             INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
             ADV_UPLOAD_OPTS: this.getAdvOpts(),

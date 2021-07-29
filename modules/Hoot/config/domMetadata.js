@@ -199,7 +199,7 @@ export function importSingleForm() {
             placeholder: 'Select Data Translations Schema',
             disabled: true,
             data: this.translations,
-            itemKey: 'NAME'
+            itemKey: 'displayPath'
         }
     ];
 }
