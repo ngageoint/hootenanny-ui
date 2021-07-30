@@ -328,32 +328,34 @@ export default class ImportMultiDatasets {
             transCombo    = this.schemaInput.datum(),
             typeCombo     = this.typeInput.datum(),
 
-            translation   = _filter( transCombo.data, o => o.NAME === transVal )[ 0 ],
+            translation   = _filter( transCombo.data, o => o.NAME === transVal || o.displayPath === transVal )[ 0 ],
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
             asSingle      = this.asSingleLayer.property('checked'),
             asSingleName  = this.asSingleLayerName.property('value'),
 
-            translationName,
+            translationIdentifier,
             folderId;
 
         //if no translation, set NONE
         if ( !translation ) {
             translation = { NONE: 'true' };
-            translationName = '';
+            translationIdentifier = '';
         }
 
         if ( translation.DEFAULT ) {
             if ( translation.PATH && translation.PATH.length ) {
-                translationName = translation.PATH;
+                translationIdentifier = translation.PATH;
             }
             else if ( translation.IMPORTPATH && translation.IMPORTPATH.length ) {
-                translationName = translation.IMPORTPATH;
+                translationIdentifier = translation.IMPORTPATH;
             }
             else {
-                translationName = translation.NAME + '.js';
+                translationIdentifier = translation.NAME + '.js';
             }
+        } else if ( translation.id ) {
+            translationIdentifier = translation.id;
         } else {
-            translationName = translation.NAME + '.js';
+            translationIdentifier = translation.NAME + '.js';
         }
 
         if ( newFolderName ) {
@@ -408,7 +410,7 @@ export default class ImportMultiDatasets {
 
                 let params = {
                     NONE_TRANSLATION: translation.NONE === 'true',
-                    TRANSLATION: translationName,
+                    TRANSLATION: translationIdentifier,
                     INPUT_TYPE: importType.value,
                     INPUT_NAME: name,
                     formData: this.getFormData(importFiles),
