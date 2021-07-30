@@ -202,6 +202,9 @@ Hoot.tools = function (context) {
                 }
                 advOptionsStr += '-D "' + opt.name + ( (opt.name === 'conflate.post.ops' || opt.name === 'conflate.pre.ops') ? '+=' : '=' ) + opt.value + '"';
             });
+            if (advOptionsStr.indexOf('NetworkMatchCreator') > -1) {
+                advOptionsStr += ' -D "conflate.rubber.sheet.element.criteria=hoot::HighwayCriterion;hoot::HighwayWayNodeCriterion"';
+            }
             data.ADV_OPTIONS = advOptionsStr;
         }/* else {
             // Do the default onew
