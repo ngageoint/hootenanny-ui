@@ -1762,7 +1762,7 @@ export default class API {
             .catch( err => {
                 let alert = {
                     message: `Failed to ${ lockParam } task ${ taskId } for project ${ projectId }.\n` +
-                        'Make sure you are logged into tasking manager in a different tab and that you' +
+                        'Make sure you are logged into tasking manager in a different tab and that you ' +
                         'have not locked any other tasks for this project',
                     type: 'error',
                     status: err.status
@@ -1886,19 +1886,20 @@ export default class API {
             }
         };
 
+        let lockStatus = lock ? 'lock' : 'unlock';
         return this.request( params )
             .then( resp => {
                 return {
                     data: resp.data,
-                    message: `Task ${ taskId } ${ lockParam }ed`,
+                    message: `Task ${ taskId } ${ lockStatus }ed`,
                     status: 200,
                     type: 'success'
                 };
             } )
             .catch( err => {
                 let alert = {
-                    message: `Failed to ${ lockParam } task ${ taskId } for project ${ projectId }.\n` +
-                        'Make sure you are logged into tasking manager in a different tab and that you' +
+                    message: `Failed to ${ lockStatus } task ${ taskId } for project ${ projectId }.\n` +
+                        'Make sure you are logged into tasking manager in a different tab and that you ' +
                         'have not locked any other tasks for this project',
                     type: 'error',
                     status: err.status
@@ -1936,25 +1937,65 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    /**
-     * Marks the specified task under the specified project as validated
-     */
-    validateTM4Task( projectId, taskId, formData ) {
+    invalidateTaskTm4( projectId, taskId, formData ) {
+        let lockParam = 'lock-for-validation';
         let authToken = this.getTM4AuthToken();
 
         const params = {
-            url: `/tm4api/v2/projects/${ projectId }/tasks/actions/unlock-after-validation/`,
+            url: `/tm4api/v2/projects/${ projectId }/tasks/actions/${ lockParam }/`,
             method: 'POST',
             headers: {
                 'Accept': '*/*',
+                'Content-Type': 'application/json',
                 'Authorization': authToken,
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            data: formData
+            data: {
+                taskIds: [ taskId ]
+            }
         };
 
-        return this.request( params )
-            .then( resp => resp.data );
+        return this.markTM4TaskDone( projectId, taskId ) // Need to mark task as done mapping
+            .then( () => this.request( params ) ) // lock for validation
+            .then( () => {
+                const invalidateParams = {
+                    url: `/tm4api/v2/projects/${ projectId }/tasks/actions/unlock-after-validation/`, // invalidate task
+                    method: 'POST',
+                    headers: {
+                        'Accept': '*/*',
+                        'Authorization': authToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    data: formData
+                };
+
+                this.request( invalidateParams )
+                    .then( resp => {
+                        return {
+                            data: resp.data,
+                            message: `Task ${ taskId } invalidated`,
+                            status: 200,
+                            type: 'success'
+                        };
+                    } );
+
+            } )
+            .catch( err => {
+                let alert = {
+                    message: `Failed to lock task ${ taskId } for project ${ projectId }.\n` +
+                        'Make sure you are logged into tasking manager in a different tab and that you ' +
+                        'have not locked any other tasks for this project',
+                    type: 'error',
+                    status: err.status
+                };
+
+                if ( err.data && err.data.error_msg ) {
+                    alert.message = err.data.error_msg;
+                    alert.status = err.status;
+                }
+
+                return alert;
+            } );
     }
 
     getTM4AuthToken() {
