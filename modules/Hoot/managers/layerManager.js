@@ -34,7 +34,7 @@ import {
 } from '../../util';
 
 import {
-    polyStringToCoords
+    polyStringToCoords, polyStringToCoordsList
 } from '../tools/utilities';
 
 export default class Layers {
@@ -306,15 +306,25 @@ export default class Layers {
                 this.hootOverlay = this.hoot.context.layers().layer( 'hoot' );
             }
 
-            this.hootOverlay.geojson( {
-                type: 'FeatureCollection',
-                features: [ {
+            // Check if layers bounds is multiple polygon and get array
+            let coordsList;
+            if ( lyr.bounds && lyr.bounds.includes( ';' ) ) {
+                coordsList = polyStringToCoordsList( lyr.bounds );
+            }
+
+            let featuresList = coordsList.map( coords => {
+                return {
                     type: 'Feature',
                     geometry: {
                         type: 'LineString',
-                        coordinates: polyCoords
+                        coordinates: coords
                     }
-                } ],
+                };
+            } );
+
+            this.hootOverlay.geojson( {
+                type: 'FeatureCollection',
+                features: featuresList,
                 properties: {
                     name: layer.name,
                     mapId: layer.id

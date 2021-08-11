@@ -633,10 +633,14 @@ export default class Jobs extends Tab {
                     }
                 }
 
-                const jobInfoText = jobInfo.join( ' ➜ ' );
+                const jobInfoTitle = jobInfo.join( ' ➜ ' );
+                const jobInfoText = jobInfoTitle.length > 100 ? jobInfoTitle.substr(0, 100) + '...' : jobInfoTitle;
                 // Job Info
                 props.push({
-                    span: [{ text: jobInfoText }]
+                    span: [{
+                        text: jobInfoText,
+                        title: jobInfoTitle
+                    }]
                 });
 
                 //Status
@@ -961,6 +965,7 @@ export default class Jobs extends Tab {
         span.exit().remove();
         span.enter().append('span')
             .merge(span)
+            .attr( 'title', d => d.title ? d.title : '' )
             .text( d => d.text );
 
     }

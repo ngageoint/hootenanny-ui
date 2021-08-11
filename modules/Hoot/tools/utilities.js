@@ -143,6 +143,39 @@ export const polyStringToCoords = str => {
     } );
 };
 
+// converts string of coordinates list into list of list of coords
+// ie. str: -77.212,39.056;-77.207,39.057;-77.212,39.056;-77.240,39.091;-77.245,39.093;-77.240,39.091
+// into:
+// [
+//     [
+//         [-77.212,39.056],
+//         [-77.207,39.057],
+//         [-77.212,39.056]
+//     ],
+//     [
+//         [-77.240,39.091],
+//         [-77.245,39.093],
+//         [-77.240,39.091]
+//     ]
+// ]
+export const polyStringToCoordsList = str => {
+    let coordsList = [];
+    let coordArray = str.split(';');
+    let index = 0;
+
+    while (index < coordArray.length) {
+        let lastIndex = coordArray.indexOf( coordArray[index], index + 1 );
+        // just to prevent infinite loop. grab everything up to end of array
+        lastIndex = lastIndex > -1 ? lastIndex : coordArray.length - 1;
+
+        let singlePolyCoords = coordArray.slice(index, lastIndex+1).join( ';' );
+        coordsList.push( polyStringToCoords( singlePolyCoords ) );
+        index = lastIndex + 1;
+    }
+
+    return coordsList;
+};
+
 export const duration = (start, end, ago) => {
     let duration,
         diff = (end - start) / 1000;
