@@ -36,6 +36,7 @@ import {
 import {
     polyStringToCoords, polyStringToCoordsList
 } from '../tools/utilities';
+import _cloneDeep from 'lodash-es/cloneDeep';
 
 export default class Layers {
     constructor( hoot ) {
@@ -310,6 +311,8 @@ export default class Layers {
             let coordsList;
             if ( lyr.bounds && lyr.bounds.includes( ';' ) ) {
                 coordsList = polyStringToCoordsList( lyr.bounds );
+            } else {
+                coordsList = _cloneDeep( [ polyCoords ] );
             }
 
             let featuresList = coordsList.map( coords => {

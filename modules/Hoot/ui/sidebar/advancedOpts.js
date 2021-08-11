@@ -91,8 +91,8 @@ export default class AdvancedOpts {
 
     createHeader() {
         let header = this.form
-                .append( 'div' )
-                .classed( 'advanced-opts-header big keyline-bottom flex justify-between align-center', true );
+            .append( 'div' )
+            .classed( 'advanced-opts-header big keyline-bottom flex justify-between align-center', true );
 
         header
             .append( 'div' )
@@ -126,72 +126,72 @@ export default class AdvancedOpts {
                 this.createGroups(this.advancedOptions, showingOpts);
             });
 
-            favoritesBar
-                .append( 'div' )
-                .classed( 'fav-button-placement', true )
-                .append( 'button' )
-                .classed( 'advanced-opts-reset button secondary strong hidden', true )
-                .attr( 'id', 'saveFav')
-                .text( 'Save Favorite' )
-                .on('click', async item => {
+        favoritesBar
+            .append( 'div' )
+            .classed( 'fav-button-placement', true )
+            .append( 'button' )
+            .classed( 'advanced-opts-reset button secondary strong hidden', true )
+            .attr( 'id', 'saveFav')
+            .text( 'Save Favorite' )
+            .on('click', async item => {
 
-                    let currentFavorites = Hoot.config.users[Hoot.user().id].members;
+                let currentFavorites = Hoot.config.users[Hoot.user().id].members;
 
-                    this.saveOpts = new SaveFavoriteOpt(currentFavorites).render();
+                this.saveOpts = new SaveFavoriteOpt(currentFavorites).render();
 
-                    this.saveOpts.saveOpt[0].data = this.savingFavoriteOpts();
+                this.saveOpts.saveOpt[0].data = this.savingFavoriteOpts();
 
-                    Hoot.events.once('modal-closed', () => delete this.saveOpts);
+                Hoot.events.once('modal-closed', () => delete this.saveOpts);
 
-                    return this;
+                return this;
 
-                });
+            });
 
-            favoritesBar
-                .append( 'div' )
-                .classed( 'fav-button-placement', true )
-                .append( 'button' )
-                .classed( 'advanced-opts-reset button secondary strong hidden', true )
-                .attr( 'id', 'updateFav')
-                .text( 'Update Favorite' )
-                .on( 'click', async function() {
-                    let activeFavorite = d3.select( '#conflateType' ).property( 'value' );
+        favoritesBar
+            .append( 'div' )
+            .classed( 'fav-button-placement', true )
+            .append( 'button' )
+            .classed( 'advanced-opts-reset button secondary strong hidden', true )
+            .attr( 'id', 'updateFav')
+            .text( 'Update Favorite' )
+            .on( 'click', async function() {
+                let activeFavorite = d3.select( '#conflateType' ).property( 'value' );
 
-                    let optUpdate = instance.favoritesOptionsSource.filter( opt => opt.name === activeFavorite );
+                let optUpdate = instance.favoritesOptionsSource.filter( opt => opt.name === activeFavorite );
 
-                    let toUpdate =  instance.updateFavoriteOpt( optUpdate );
+                let toUpdate =  instance.updateFavoriteOpt( optUpdate );
 
-                    let updateOpt = {
-                        conflateType: optUpdate.conflateType,
+                let updateOpt = {
+                    conflateType: optUpdate.conflateType,
+                    name: activeFavorite,
+                    members: {
+                        members: toUpdate,
                         name: activeFavorite,
-                        members: {
-                            members: toUpdate,
-                            name: activeFavorite,
-                            label: activeFavorite,
-                        }
-                    };
+                        label: activeFavorite,
+                    }
+                };
 
-                    await Hoot.api.saveFavoriteOpts( updateOpt );
+                await Hoot.api.saveFavoriteOpts( updateOpt );
 
-                    await Hoot.getAllUsers();
+                await Hoot.getAllUsers();
 
 
-                    Hoot.message.alert( {
-                        message: 'Fav. Opts Updated Successfully',
-                        type: 'success'
-                    } );
+                Hoot.message.alert( {
+                    message: 'Fav. Opts Updated Successfully',
+                    type: 'success'
                 } );
+            } );
 
-            favoritesBar
-                .append( 'div' )
-                .classed( 'fav-button-placement', true )
-                .append( 'button' )
-                .classed( 'advanced-opts-reset button secondary strong hidden', true )
-                .attr( 'id', 'deleteFav')
-                .text( 'Delete Favorite' )
-                .on( 'click', function() {
-                    new DeleteFavoriteOpt().handleSubmit();
-                } );
+        favoritesBar
+            .append( 'div' )
+            .classed( 'fav-button-placement', true )
+            .append( 'button' )
+            .classed( 'advanced-opts-reset button secondary strong hidden', true )
+            .attr( 'id', 'deleteFav')
+            .text( 'Delete Favorite' )
+            .on( 'click', function() {
+                new DeleteFavoriteOpt().handleSubmit();
+            } );
 
     }
 
@@ -470,11 +470,11 @@ export default class AdvancedOpts {
                         d3.select('#saveFav').classed('hidden', false );
                     }
                 });
-                let sendFavorites = instance.checkFavOptSend();
+            let sendFavorites = instance.checkFavOptSend();
 
-                if ( sendFavorites ) {
-                    d.send = true;
-                }
+            if ( sendFavorites ) {
+                d.send = true;
+            }
 
         } else {
             fieldInput
@@ -483,10 +483,10 @@ export default class AdvancedOpts {
             if ( type === 'combobox' ) {
                 let d = fieldInput.datum(),
                     comboData = _map(d.data, n => {
-                    const t = d.itemKey ? n[ d.itemKey ] : n,
-                        v = d.valueKey ? n[ d.valueKey ] : t;
+                        const t = d.itemKey ? n[ d.itemKey ] : n,
+                            v = d.valueKey ? n[ d.valueKey ] : t;
                         return { value: v, title: t };
-                } );
+                    } );
 
                 if ( d.sort ) {
                     comboData = comboData.sort((a, b) => {
@@ -509,11 +509,11 @@ export default class AdvancedOpts {
                         d.send =  d3.select( this ).property( 'value' ) !== d.default;
                     });
 
-                    let sendFavorites = instance.checkFavOptSend();
+                let sendFavorites = instance.checkFavOptSend();
 
-                    if ( sendFavorites ) {
-                        d.send = true;
-                    }
+                if ( sendFavorites ) {
+                    d.send = true;
+                }
 
             } else if ( type === 'multiCombobox' ) {
                 const container = d3.select( fieldInput.node().parentNode );
@@ -557,11 +557,11 @@ export default class AdvancedOpts {
                                 .call(instance.notNumber, value);
                         }
                     });
-                    let sendFavorites = instance.checkFavOptSend();
+                let sendFavorites = instance.checkFavOptSend();
 
-                    if ( sendFavorites ) {
-                        d.send = true;
-                    }
+                if ( sendFavorites ) {
+                    d.send = true;
+                }
 
             }
 
@@ -642,8 +642,8 @@ export default class AdvancedOpts {
         }
 
         let group = this.contentDiv
-                .selectAll( '.form-group' )
-                .data( advOpts );
+            .selectAll( '.form-group' )
+            .data( advOpts );
 
         group.exit()
             .remove();
@@ -688,7 +688,7 @@ export default class AdvancedOpts {
 
             let defaultDisables = ['Attribute', 'Differential'];
             if ( defaultDisables.indexOf(d.name) !== -1 ) {
-                let shouldDisable = d3.select( '#conflateType' ).property( 'value' ) === d.name;
+                let shouldDisable = d3.select( '#conflateType' ).property( 'value' ).includes( d.name );
                 group.select( '.adv-opt-title' )
                     .classed( 'adv-opt-title-disabled', !shouldDisable );
 
@@ -868,7 +868,7 @@ export default class AdvancedOpts {
         else {
             if ( input.property('classList').contains('favopt') ) {
                 input.classed('favopt', false );
-             }
+            }
             return 'text-input';
         }
     }
@@ -886,8 +886,8 @@ export default class AdvancedOpts {
         function flatten( arr ) {
             return arr.reduce( function( flat, toFlatten) {
                 return flat.concat( Array.isArray(toFlatten) ?
-                flatten(toFlatten)
-                : checkType(toFlatten) );
+                    flatten(toFlatten)
+                    : checkType(toFlatten) );
             }, []);
         }
 
@@ -930,8 +930,8 @@ export default class AdvancedOpts {
             let memOption = arr.option;
             return arr.reduce( function( flat, toFlatten) {
                 return flat.concat( Array.isArray(toFlatten) ?
-                flatten(toFlatten)
-                : checkType(toFlatten, memOption ) );
+                    flatten(toFlatten)
+                    : checkType(toFlatten, memOption ) );
             }, []);
         }
 
@@ -1013,7 +1013,7 @@ export default class AdvancedOpts {
                 if ( group.name === member.option ) {
                     group.members.push( member );
                 }
-             } );
+            } );
         } );
 
         return saveGroup;
