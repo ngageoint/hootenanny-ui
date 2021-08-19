@@ -10,6 +10,7 @@ import _map     from 'lodash-es/map';
 
 import FormFactory           from '../../tools/formFactory';
 import { modifyDatasetForm } from '../../config/domMetadata';
+import { unallowableWordsExist } from '../../tools/utilities';
 
 export default class ModifyDataset {
     constructor( datasets ) {
@@ -70,11 +71,10 @@ export default class ModifyDataset {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
-        if ( reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
+        if ( unallowableWordsExist( str ) || unallowedPattern.test( str ) ) {
             valid = false;
         }
 

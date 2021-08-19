@@ -6,6 +6,7 @@
 
 import FormFactory from '../../tools/formFactory';
 import EditBookmarkNote from './editBookmarkNote';
+import { unallowableWordsExist } from '../../tools/utilities';
 
 export default class PublishBookmark {
     constructor() {
@@ -70,12 +71,11 @@ export default class PublishBookmark {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
         if ( d.id !== 'bookmarkCreatorEmail' ) {
-            if ( reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
+            if ( unallowableWordsExist( str ) || unallowedPattern.test( str ) ) {
                 valid = false;
             }
         }

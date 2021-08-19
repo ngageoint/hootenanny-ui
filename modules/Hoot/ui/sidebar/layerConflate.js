@@ -11,6 +11,7 @@ import SidebarForm                from './sidebarForm';
 import AdvancedOpts               from './advancedOpts';
 import FormFactory                from '../../tools/formFactory';
 import { layerConflateForm }      from '../../config/domMetadata';
+import { unallowableWordsExist } from '../../tools/utilities';
 
 class LayerConflate extends SidebarForm {
     constructor( container, d ) {
@@ -181,11 +182,10 @@ class LayerConflate extends SidebarForm {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
-        if ( reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
+        if ( unallowableWordsExist( str ) || unallowedPattern.test( str ) ) {
             valid = false;
         }
 

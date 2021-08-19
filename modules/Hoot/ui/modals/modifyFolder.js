@@ -7,8 +7,9 @@
 import _find from 'lodash-es/find';
 import _get  from 'lodash-es/get';
 
-import FormFactory           from '../../tools/formFactory';
-import { modifyDatasetForm } from '../../config/domMetadata';
+import FormFactory             from '../../tools/formFactory';
+import { modifyDatasetForm }   from '../../config/domMetadata';
+import { unallowableWordsExist } from '../../tools/utilities';
 
 export default class ModifyFolder {
     constructor( d ) {
@@ -87,12 +88,11 @@ export default class ModifyFolder {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\[\]\\';/!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
         if ( !str.length ||
-            reservedWords.indexOf( str.toLowerCase() ) > -1 ||
+            unallowableWordsExist( str ) ||
             unallowedPattern.test( str ) ) {
             valid = false;
         }

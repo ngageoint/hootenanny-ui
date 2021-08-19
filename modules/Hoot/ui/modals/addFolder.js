@@ -6,6 +6,7 @@
 
 import FormFactory       from '../../tools/formFactory';
 import { addFolderForm } from '../../config/domMetadata';
+import {unallowableWordsExist} from '../../tools/utilities';
 
 export default class AddFolder {
     constructor(parentId = 0) {
@@ -39,11 +40,10 @@ export default class AddFolder {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
-        if ( !str.length || reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
+        if ( !str.length || unallowableWordsExist( str ) || unallowedPattern.test( str ) ) {
             valid = false;
         }
 

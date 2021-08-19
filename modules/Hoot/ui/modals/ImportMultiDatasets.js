@@ -11,6 +11,7 @@ import _filter             from 'lodash-es/filter';
 import _find               from 'lodash-es/find';
 import _get                from 'lodash-es/get';
 import _forEach            from 'lodash-es/forEach';
+import ImportDataset       from './importDataset';
 
 export default class ImportMultiDatasets {
     constructor( translations, path ) {
@@ -283,7 +284,7 @@ export default class ImportMultiDatasets {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
+            reservedWords    = [ 'root', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
@@ -600,22 +601,10 @@ export default class ImportMultiDatasets {
             .attr( 'webkitdirectory', null )
             .attr( 'directory', null );
 
-        if ( typeVal === 'OSM' ) {
-            uploader
-                .property( 'multiple', true )
-                .attr( 'accept', '.osm, .osm.zip, .pbf' );
-        } else if ( typeVal === 'FILE' ) {
-            uploader
-                .property( 'multiple', true )
-                .attr( 'accept', '.shp, .shx, .dbf' );
-        } else if ( typeVal === 'GEOJSON' ) {
-            uploader
-                .property( 'multiple', true )
-                .attr( 'accept', '.geojson', '.geo' );
-        } else if ( typeVal === 'GPKG' ) {
-            uploader
-                .property( 'multiple', true )
-                .attr( 'accept', '.gpkg' );
-        }
+        const importMap = ImportDataset.importTypeMap();
+
+        uploader
+            .property( 'multiple', true )
+            .attr( 'accept', importMap[ typeVal ] );
     }
 }

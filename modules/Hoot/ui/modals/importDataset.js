@@ -9,13 +9,11 @@ import _find    from 'lodash-es/find';
 import _forEach from 'lodash-es/forEach';
 import _reject  from 'lodash-es/reject';
 
-import FormFactory        from '../../tools/formFactory';
-import { getBrowserInfo } from '../../tools/utilities';
-import {
-    importSingleForm,
-}           from '../../config/domMetadata';
+import FormFactory from '../../tools/formFactory';
+import { getBrowserInfo, unallowableWordsExist } from '../../tools/utilities';
+import { importSingleForm } from '../../config/domMetadata';
 import _get from 'lodash-es/get';
-import axios         from 'axios/dist/axios';
+import axios from 'axios/dist/axios';
 
 
 /**
@@ -69,6 +67,17 @@ export default class ImportDataset {
                 value: 'DIR'
             }
         ];
+    }
+
+    static importTypeMap() {
+        return {
+            'DIR': null,
+            'GEONAMES': '.geonames, .txt',
+            'OSM': '.osm, .osm.zip, .pbf',
+            'FILE': '.shp, .shx, .dbf, .prj, .zip',
+            'GEOJSON': '.geojson, .json',
+            'GPKG': '.gpkg',
+        };
     }
 
     /**
@@ -323,11 +332,10 @@ export default class ImportDataset {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
-        if ( reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
+        if ( unallowableWordsExist( str ) || unallowedPattern.test( str ) ) {
             valid = false;
         }
 
@@ -579,39 +587,13 @@ export default class ImportDataset {
      */
     setMultipartForType( typeVal ) {
         let uploader = d3.select( '#ingestFileUploader' );
+        const importMap = ImportDataset.importTypeMap();
+        const allowMultiple = [ 'FILE', 'GPKG' ];
 
         uploader
-            .property( 'multiple', true )
-            .attr( 'accept', null )
-            .attr( 'webkitdirectory', null )
-            .attr( 'directory', null );
-
-        if ( typeVal === 'DIR' ) {
-            uploader
-                .property( 'multiple', false )
-                .attr( 'accept', null )
-                .attr( 'webkitdirectory', '' )
-                .attr( 'directory', '' );
-        } else if ( typeVal === 'GEONAMES' ) {
-            uploader
-                .property( 'multiple', false )
-                .attr( 'accept', '.geonames, .txt' );
-        } else if ( typeVal === 'OSM' ) {
-            uploader
-                .property( 'multiple', false )
-                .attr( 'accept', '.osm, .osm.zip, .pbf' );
-        } else if ( typeVal === 'FILE' ) {
-            uploader
-                .property( 'multiple', true )
-                .attr( 'accept', '.shp, .shx, .dbf, .prj, .zip' );
-        } else if ( typeVal === 'GEOJSON' ) {
-            uploader
-                .property( 'multiple', false )
-                .attr( 'accept', '.geojson');
-        } else if ( typeVal === 'GPKG' ) {
-            uploader
-                .property( 'multiple', true)
-                .attr( 'accept', '.gpkg');
-        }
+            .property( 'multiple', allowMultiple.includes( typeVal ) )
+            .attr( 'accept', importMap[ typeVal ] )
+            .attr( 'webkitdirectory', typeVal === 'DIR' ? '' : null )
+            .attr( 'directory', typeVal === 'DIR' ? '' : null );
     }
 }
