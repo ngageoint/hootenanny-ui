@@ -75,7 +75,7 @@ export default class ImportDataset {
             'GEONAMES': '.geonames, .txt',
             'OSM': '.osm, .osm.zip, .pbf',
             'FILE': '.shp, .shx, .dbf, .prj, .zip',
-            'GEOJSON': '.geojson, .geo',
+            'GEOJSON': '.geojson, .json',
             'GPKG': '.gpkg',
         };
     }
