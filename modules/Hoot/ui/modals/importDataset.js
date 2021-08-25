@@ -401,12 +401,11 @@ export default class ImportDataset {
             translationIdentifier,
             folderId;
 
-        if ( translation.DEFAULT && ( translation.PATH && translation.PATH.length ) ) {
-            translationIdentifier = translation.PATH;
+        if ( translation.DEFAULT ) {
+            translationIdentifier = translation.PATH || translation.IMPORTPATH;
         } else if ( translation.id ) {
             translationIdentifier = translation.id;
-        }
-        else {
+        } else {
             translationIdentifier = translation.NAME + '.js';
         }
 
