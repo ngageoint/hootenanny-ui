@@ -151,7 +151,7 @@ export default class Translations extends Tab {
         let translationText;
 
         if ( d.DEFAULT ) {
-            translationText = await Hoot.api.getDefaultTranslation( d.PATH );
+            translationText = await Hoot.api.getDefaultTranslation( d.PATH || d.IMPORTPATH );
         } else {
             translationText = await Hoot.api.getTranslation( d.NAME || d.id );
         }
@@ -164,7 +164,7 @@ export default class Translations extends Tab {
             let translationText;
 
             if ( d.DEFAULT ) {
-                translationText = await Hoot.api.getDefaultTranslation( d.PATH );
+                translationText = await Hoot.api.getDefaultTranslation( d.PATH || d.EXPORTPATH );
             } else {
                 translationText = await Hoot.api.getTranslation( d.NAME || d.id );
             }
