@@ -369,6 +369,7 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     executeTask( task, syncCheck ) {
+        let mapId = this.currentProject.properties.hootMapId || this.currentProject.properties.hoot_map_id;
         let coordinates = polyStringFromGeom( task );
         const taskId = task.id || task.properties.taskId;
         let params = {
@@ -388,6 +389,24 @@ export default class TaskingManagerPanel extends Tab {
             customQuery : this.customQuery,
             ADV_OPTIONS: this.ADV_OPTIONS
         };
+
+        if ( mapId && mapId > -1 ) {
+            switch ( params.deriveType ) {
+                case 'Adds only': {
+                    data.input1 = mapId;
+                    break;
+                }
+                case 'Cut & Replace': {
+                    data.input2 = mapId;
+                    params.replacement = true;
+                    break;
+                }
+                case 'Differential': {
+                    data.input2 = mapId;
+                    break;
+                }
+            }
+        }
 
         this.setTaskStatus( taskId, 'Running' );
 
