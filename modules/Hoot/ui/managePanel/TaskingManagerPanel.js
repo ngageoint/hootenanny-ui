@@ -27,7 +27,7 @@ export default class TaskingManagerPanel extends Tab {
                 { deriveType: 'Adds only', description: `Add all data from ${Hoot.config.secondaryLabel} in the specified area into ${Hoot.config.referenceLabel}` },
                 { deriveType: 'Cut & Replace', description: `Replace the ${Hoot.config.referenceLabel} data in this region with ${Hoot.config.secondaryLabel} data` },
                 { deriveType: 'Differential', description: `Add the features from ${Hoot.config.secondaryLabel} that don't exist in ${Hoot.config.referenceLabel}` },
-                { deriveType: 'Differential w/ Tags', description: `Add the features from ${Hoot.config.secondaryLabel} that don't exist in ${Hoot.config.referenceLabel} but allow tag modifications of existing` }
+                { deriveType: 'Differential w/Tags', description: `Add the features from ${Hoot.config.secondaryLabel} that don't exist in ${Hoot.config.referenceLabel} but allow tag modifications of existing` }
             ]
         };
 
@@ -406,7 +406,7 @@ export default class TaskingManagerPanel extends Tab {
                     data.input2 = mapId;
                     break;
                 }
-                case 'Differential w/ Tags': {
+                case 'Differential w/Tags': {
                     data.APPLY_TAGS = true;
                     data.input2 = mapId;
                     break;
