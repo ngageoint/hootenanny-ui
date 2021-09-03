@@ -26,7 +26,8 @@ export default class TaskingManagerPanel extends Tab {
             options: [
                 { deriveType: 'Adds only', description: `Add all data from ${Hoot.config.secondaryLabel} in the specified area into ${Hoot.config.referenceLabel}` },
                 { deriveType: 'Cut & Replace', description: `Replace the ${Hoot.config.referenceLabel} data in this region with ${Hoot.config.secondaryLabel} data` },
-                { deriveType: 'Differential', description: `Add the features from ${Hoot.config.secondaryLabel} that don't exist in ${Hoot.config.referenceLabel}` }
+                { deriveType: 'Differential', description: `Add the features from ${Hoot.config.secondaryLabel} that don't exist in ${Hoot.config.referenceLabel}` },
+                { deriveType: 'Differential w/Tags', description: `Add the features from ${Hoot.config.secondaryLabel} that don't exist in ${Hoot.config.referenceLabel} but allow tag modifications of existing` }
             ]
         };
 
@@ -307,7 +308,7 @@ export default class TaskingManagerPanel extends Tab {
                         && this.cutReplaceOptions.form.length > 0) {
                         let formId = 'cutReplaceForm';
                         this.form = this.formFactory.generateForm('body', formId, this.cutReplaceOptions);
-                    } else if (this.deriveDropdown.property('value') === 'Differential'
+                    } else if (this.deriveDropdown.property('value').includes( 'Differential' )
                         && this.differentialOptions.form.length > 0) {
                         let formId = 'differentialForm';
                         this.form = this.formFactory.generateForm('body', formId, this.differentialOptions);
@@ -390,7 +391,7 @@ export default class TaskingManagerPanel extends Tab {
             ADV_OPTIONS: this.ADV_OPTIONS
         };
 
-        if ( mapId && mapId > -1 ) {
+        if ( mapId && mapId > -1 && Hoot.layers.findBy( 'id', mapId )) {
             switch ( params.deriveType ) {
                 case 'Adds only': {
                     data.input1 = mapId;
@@ -402,6 +403,11 @@ export default class TaskingManagerPanel extends Tab {
                     break;
                 }
                 case 'Differential': {
+                    data.input2 = mapId;
+                    break;
+                }
+                case 'Differential w/Tags': {
+                    data.APPLY_TAGS = true;
                     data.input2 = mapId;
                     break;
                 }
