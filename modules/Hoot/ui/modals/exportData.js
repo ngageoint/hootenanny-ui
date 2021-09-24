@@ -142,8 +142,8 @@ export default class ExportData {
 
     getTranslationPath() {
         const selectedTranslation = this.translationSchemaCombo.node().value;
-        const translation = this.translations.find( t => t.NAME === selectedTranslation );
-        return !translation.hasOwnProperty('PATH')  ? translation.EXPORTPATH : translation.PATH;
+        const translation = this.translations.find( t => t.name === selectedTranslation );
+        return !translation.hasOwnProperty('path')  ? translation.exportPath : translation.path;
     }
 
     getOutputType() {

@@ -392,7 +392,7 @@ export function exportDataForm( zipOutput ) {
             id: exportComboId,
             inputType: 'combobox',
             readonly: 'readonly',
-            data: this.translations.map(t => t.NAME),
+            data: this.translations.map(t => t.name),
             value: 'OSM',
             onChange: changeExport
         },

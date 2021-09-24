@@ -284,13 +284,13 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'exportDataset': {
-                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT );
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport );
                 this.exportDatasetModal = new ExportData( translations, d, 'Dataset' ).render();
                 Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
                 break;
             }
             case 'exportMultiDataset': {
-                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT );
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport );
                 let datasets = this.folderTree.selectedNodes;
                 this.exportDatasetModal = new ExportData ( translations, datasets, 'Datasets' ).render();
                 Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
@@ -298,7 +298,7 @@ export default class Datasets extends Tab {
             }
             case 'exportFolder': {
                 //probably don't need to get translations but once on init
-                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT);
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport);
                 this.exportDatasetModal = new ExportData( translations, d, 'Folder' ).render();
                 Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
                 break;

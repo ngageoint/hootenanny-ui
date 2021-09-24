@@ -15,11 +15,11 @@ export default class ModifyTranslation {
 
     render() {
         let metadata = {
-            title: this.translation.NAME || this.translation.name,
+            title: this.translation.name,
             form: this.form
         };
 
-        if ( !this.translation.DEFAULT ) {
+        if ( !this.translation.default ) {
             metadata.button = {
                 text: 'Save Edits',
                     id: 'editTranslationBtn',
@@ -35,13 +35,13 @@ export default class ModifyTranslation {
         this.templateInput    = d3.select( '#translationTemplate' );
         this.submitButton     = d3.select( '#editTranslationBtn' );
 
-        this.translationName.property( 'value', this.translation.NAME || this.translation.name );
-        this.descriptionInput.property( 'value', this.translation.DESCRIPTION );
+        this.translationName.property( 'value', this.translation.name );
+        this.descriptionInput.property( 'value', this.translation.description );
         const path = _get( _find( this.folderList, folder => folder.id === this.translation.folderId ), 'path' );
         this.pathNameInput.property( 'value', path );
 
 
-        if ( this.translation.DEFAULT ) {
+        if ( this.translation.default ) {
             this.translationName.attr( 'disabled', 'true' );
             this.descriptionInput.attr( 'disabled', 'true' );
             this.pathNameInput.attr( 'disabled', 'true' );
@@ -99,17 +99,17 @@ export default class ModifyTranslation {
         const translationExists = _find( Hoot.folders.translations, translation =>  translation.folderId === targetFolder && translation.name === name ),
             description     = this.descriptionInput.property( 'value' ),
             templateInput   = this.templateInput.property( 'value' ),
-            currentTranslationName = this.translation.NAME || this.translation.name,
+            currentTranslationName = this.translation.name,
             currentTranslationPath =_get( _find( this.folderList, folder => folder.id === this.translation.folderId ), 'path' );
 
-        if ( currentTranslationName === name && this.translation.DESCRIPTION === description &&
+        if ( currentTranslationName === name && this.translation.description === description &&
             currentTranslationPath === pathName && this.templateText === templateInput ) {
             let message = 'No modifications made to the translation.',
                 type    = 'warn';
 
             Hoot.message.alert( { message, type } );
             return false;
-        } else if ( translationExists && this.translation.DESCRIPTION === description && this.templateText === templateInput ) {
+        } else if ( translationExists && this.translation.description === description && this.templateText === templateInput ) {
             let message = 'A translation already exists with this name in the destination folder. Please remove the old translation and try again.',
                 type    = 'warn';
 

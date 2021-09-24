@@ -150,10 +150,10 @@ export default class Translations extends Tab {
     async translationPopup( d ) {
         let translationText;
 
-        if ( d.DEFAULT ) {
-            translationText = await Hoot.api.getDefaultTranslation( d.PATH || d.IMPORTPATH );
+        if ( d.default ) {
+            translationText = await Hoot.api.getDefaultTranslation( d.path || d.importPath );
         } else {
-            translationText = await Hoot.api.getTranslation( d.NAME || d.id );
+            translationText = await Hoot.api.getTranslation( d.name || d.id );
         }
 
         new ModifyTranslation( this, d, translationText ).render();
@@ -163,14 +163,14 @@ export default class Translations extends Tab {
         try {
             let translationText;
 
-            if ( d.DEFAULT ) {
-                translationText = await Hoot.api.getDefaultTranslation( d.PATH || d.EXPORTPATH );
+            if ( d.default ) {
+                translationText = await Hoot.api.getDefaultTranslation( d.path || d.exportPath );
             } else {
-                translationText = await Hoot.api.getTranslation( d.NAME || d.id );
+                translationText = await Hoot.api.getTranslation( d.name || d.id );
             }
 
             let transBlob = new Blob( [ translationText ], { type: 'text/javascript' } );
-            let name = d.NAME || d.name;
+            let name = d.name;
             saveAs( transBlob, name + '.js' );
 
         } catch ( e ) {
@@ -214,7 +214,7 @@ export default class Translations extends Tab {
                 let r = await Hoot.message.confirm('Are you sure you want to delete selected translations?');
                 if (!r) return;
 
-                Hoot.api.deleteTranslation( d.data.id || d.data.NAME )
+                Hoot.api.deleteTranslation( d.data.id || d.data.name )
                     .then( () => Hoot.folders.refreshTranslationInfo() )
                     .then( () => this.loadTranslations() );
                 break;
