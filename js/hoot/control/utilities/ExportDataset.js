@@ -49,25 +49,25 @@ Hoot.control.utilities.exportdataset = function(context) {
 
         // filters for exportable translations
         _.each(translations, function(tr){
-          if(tr.CANEXPORT && tr.CANEXPORT === true){
+          if(tr.canExport && tr.canExport === true){
               _transCombo.push(tr);
           }
         });
         if(_transCombo.length === 1){
             var emptyObj = {};
-            emptyObj.NAME='';
-            emptyObj.DESCRIPTION='';
+            emptyObj.name='';
+            emptyObj.description='';
             _transCombo.push(emptyObj);
           }
 
         var exportFormatList =
-          [{'DESCRIPTION': 'File Geodatabase'}, {'DESCRIPTION': 'Shapefile'},
-           //{'DESCRIPTION': 'Web Feature Service (WFS)'},
-           {'DESCRIPTION': 'OpenStreetMap (OSM)'},
-           {'DESCRIPTION': 'OpenStreetMap (PBF)'}];
+          [{'description': 'File Geodatabase'}, {'description': 'Shapefile'},
+           //{'description': 'Web Feature Service (WFS)'},
+           {'description': 'OpenStreetMap (OSM)'},
+           {'description': 'OpenStreetMap (PBF)'}];
         if (_dataset.canExportToOsmApiDb === true)
         {
-            exportFormatList.push({'DESCRIPTION': 'OSM API Database'});
+            exportFormatList.push({'description': 'OSM API Database'});
         }
 
         var d_form = [{
@@ -174,11 +174,11 @@ Hoot.control.utilities.exportdataset = function(context) {
     * @param field - fieldset metadata.
     **/
     var _getTranslationComboPlaceHolder = function(field) {
-        var defTrans = _.find(field.combobox.data, {DESCRIPTION: field.placeholder.default});
+        var defTrans = _.find(field.combobox.data, {description: field.placeholder.default});
         if(defTrans === undefined){
-            return field.combobox.data[0].DESCRIPTION;
+            return field.combobox.data[0].description;
         } else {
-            return defTrans.DESCRIPTION;
+            return defTrans.description;
         }
     };
 
@@ -190,8 +190,8 @@ Hoot.control.utilities.exportdataset = function(context) {
         var combo = d3.combobox()
             .data(_.map(a.combobox.data, function (n) {
                 return {
-                    value: n.DESCRIPTION,
-                    title: n.DESCRIPTION
+                    value: n.description,
+                    title: n.description
                 };
             }));
         d3.select(this)
@@ -224,12 +224,12 @@ Hoot.control.utilities.exportdataset = function(context) {
          hideFGDB=true;
         }
 
-        var selTrans = _.find(_transCombo,{'DESCRIPTION':transType});
+        var selTrans = _.find(_transCombo,{'description':transType});
         if(selTrans){
-         if(selTrans.NAME.substring(0,3)!=='TDS'){
+         if(selTrans.name.substring(0,3)!=='TDS'){
              hideFGDB=true;
          }
-         if(selTrans.NAME.substring(0,3)!=='OSM'){ 
+         if(selTrans.name.substring(0,3)!=='OSM'){
             hideExport=true;
         }
         } else {

@@ -46,8 +46,8 @@ Hoot.control.utilities.importdataset = function(context) {
         _trans = trans;
         if(_trans.length === 1){
             var emptyObj = {};
-            emptyObj.NAME = '';
-            emptyObj.DESCRIPTION = '';
+            emptyObj.name = '';
+            emptyObj.description = '';
             _trans.push(emptyObj);
         }
 
@@ -419,8 +419,8 @@ Hoot.control.utilities.importdataset = function(context) {
         var combo = d3.combobox()
             .data(_.map(a.combobox.data, function (n) {
                 return {
-                    value: n.DESCRIPTION,
-                    title: n.DESCRIPTION
+                    value: n.description,
+                    title: n.description
                 };
             }));
 
@@ -529,8 +529,8 @@ Hoot.control.utilities.importdataset = function(context) {
             var combo = d3.combobox()
                 .data(_.map(translationsList, function (n) {
                     return {
-                        value: n.DESCRIPTION,
-                        title: n.DESCRIPTION
+                        value: n.description,
+                        title: n.description
                     };
                 }));
 
@@ -538,9 +538,9 @@ Hoot.control.utilities.importdataset = function(context) {
                  .style('width', '100%')
                     .call(combo);
             if(typeName === 'GEONAMES'){
-                d3.select('#importDatasetSchema').value(_importTranslationsGeonames[0].DESCRIPTION);
+                d3.select('#importDatasetSchema').value(_importTranslationsGeonames[0].description);
             } else if(typeName === 'OSM'){
-                d3.select('#importDatasetSchema').value(_importTranslationsOsm[0].DESCRIPTION);
+                d3.select('#importDatasetSchema').value(_importTranslationsOsm[0].description);
             }
 
             d3.select('#ingestfileuploaderspancontainer').classed('hidden', false);
@@ -784,13 +784,13 @@ Hoot.control.utilities.importdataset = function(context) {
     _instance.getImportTranslations = function(trans, importTranslations,
         importTranslationsGeonames, importTranslationsOsm) {
         _.each(trans, function(t){
-            if(t.NAME === 'GEONAMES'){
+            if(t.name === 'GEONAMES'){
                 importTranslationsGeonames.push(t);
-            } else if(t.NAME === 'OSM'){
+            } else if(t.name === 'OSM'){
                 var emptyObj = {};
-                emptyObj.NAME = 'NONE';
-                emptyObj.PATH = 'NONE';
-                emptyObj.DESCRIPTION = 'No Translation';
+                emptyObj.name = 'NONE';
+                emptyObj.path = 'NONE';
+                emptyObj.description = 'No Translation';
                 emptyObj.NONE = 'true';
                 importTranslationsOsm.push(emptyObj);
 

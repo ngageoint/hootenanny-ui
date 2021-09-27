@@ -58,8 +58,8 @@ Hoot.model.export = function (context)
 
             for(var i=0; i<comboData.combobox.data.length; i++){
                 var o = comboData.combobox.data[i];
-                if(o.DESCRIPTION === transType){
-                    transName = o.NAME;
+                if(o.description === transType){
+                    transName = o.name;
                     oTrans = o;
                     break;
                 }
@@ -71,12 +71,12 @@ Hoot.model.export = function (context)
      // Checks to see if it is default translation and if so use the path specified
 
         var isDefTrans = false;
-        if(oTrans && oTrans.DEFAULT === true) {
-            if(oTrans.EXPORTPATH){
-                oTrans.PATH = oTrans.EXPORTPATH;
+        if(oTrans && oTrans.default === true) {
+            if(oTrans.exportPath){
+                oTrans.path = oTrans.exportPath;
             }
-            if(oTrans.PATH && oTrans.PATH.length > 0){
-                selectedTranslation = oTrans.PATH;
+            if(oTrans.path && oTrans.path.length > 0){
+                selectedTranslation = oTrans.path;
                 isDefTrans = true;
             }
         }

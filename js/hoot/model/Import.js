@@ -44,8 +44,8 @@ Hoot.model.import = function (context)
         var oTrans = null;
         for(var i=0; i<comboData.combobox.length; i++){
             var o = comboData.combobox[i];
-            if(o.DESCRIPTION === transType){
-                transName = o.NAME;
+            if(o.description === transType){
+                transName = o.name;
                 oTrans = o;
                 break;
             }
@@ -55,12 +55,12 @@ Hoot.model.import = function (context)
         // Checks to see if it is default translation and if so use the path specified
         var transcriptName = iD.data.hootConfig.defaultScript;
         var isDefTrans = false;
-        if(oTrans && oTrans.DEFAULT === true) {
-            if(oTrans.IMPORTPATH){
-                oTrans.PATH = oTrans.IMPORTPATH;
+        if(oTrans && oTrans.default === true) {
+            if(oTrans.importPath){
+                oTrans.path = oTrans.importPath;
             }
-            if(oTrans.PATH && oTrans.PATH.length > 0){
-                transcriptName = oTrans.PATH;
+            if(oTrans.path && oTrans.path.length > 0){
+                transcriptName = oTrans.path;
                 isDefTrans = true;
             }
         }
@@ -130,8 +130,8 @@ Hoot.model.import = function (context)
         var oTrans = null;
         for(var i=0; i<comboData.combobox.length; i++){
             var o = comboData.combobox[i];
-            if(o.DESCRIPTION === transType){
-                transName = o.NAME;
+            if(o.description === transType){
+                transName = o.name;
                 oTrans = o;
                 break;
             }
@@ -141,12 +141,12 @@ Hoot.model.import = function (context)
         // Checks to see if it is default translation and if so use the path specified
         var transcriptName = iD.data.hootConfig.defaultScript;
         var isDefTrans = false;
-        if(oTrans && oTrans.DEFAULT === true) {
-            if(oTrans.IMPORTPATH){
-                oTrans.PATH = oTrans.IMPORTPATH;
+        if(oTrans && oTrans.default === true) {
+            if(oTrans.importPath){
+                oTrans.path = oTrans.importPath;
             }
-            if(oTrans.PATH && oTrans.PATH.length > 0){
-                transcriptName = oTrans.PATH;
+            if(oTrans.path && oTrans.path.length > 0){
+                transcriptName = oTrans.path;
                 isDefTrans = true;
             }
         }
