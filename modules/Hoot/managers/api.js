@@ -514,7 +514,7 @@ export default class API {
 
     getDefaultTranslation( path ) {
         const params = {
-            path: `/ingest/customscript/getdefaultscript?SCRIPT_PATH=${ path }`,
+            path: `/ingest/customscript/getdefaultscript?scriptPath=${ path }`,
             method: 'GET'
         };
 
@@ -541,7 +541,7 @@ export default class API {
 
     deleteTranslation( identifier ) {
         const params = {
-            path: `/ingest/customscript/deletescript?SCRIPT_INFO=${ identifier }`,
+            path: `/ingest/customscript/deletescript?scriptInfo=${ identifier }`,
             method: 'GET'
         };
 
