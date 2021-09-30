@@ -79,7 +79,7 @@ Hoot.view.utilities.translation = function(context) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
 
-                    var r = confirm('Are you sure you want to delete selected translaton?');
+                    var r = confirm('Are you sure you want to delete selected translation?');
                     if (!r) { return; }
 
 
