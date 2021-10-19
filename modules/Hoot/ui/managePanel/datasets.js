@@ -17,6 +17,8 @@ import ModifyFolder       from '../modals/modifyFolder';
 import ExportData from '../modals/exportData';
 import ExportAlphaShape from '../modals/exportAlphaShape';
 import ExportTaskGrid from '../modals/exportTaskGrid';
+import pLimit from 'p-limit';
+import { rateLimit } from '../../config/apiConfig';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -83,6 +85,8 @@ export default class Datasets extends Tab {
                 width: '1%'
             }
         ];
+
+        this.limit = pLimit(rateLimit);
     }
 
     /**
@@ -196,7 +200,7 @@ export default class Datasets extends Tab {
      *
      * @param toDelete - array of items to delete
      */
-    deleteItems( toDelete ) {
+    deleteItems( toDelete ) { //rate limit?
         return Promise.all( _map( toDelete, item => {
             let data = item.data || item,
                 node = this.table.selectAll( `g[data-type="${ data.type }"][data-id="${ data.id }"]` );
@@ -206,13 +210,13 @@ export default class Datasets extends Tab {
                 .style( 'fill', 'rgb(255,0,0)' );
 
             if ( data.type === 'dataset' ) {
-                return Hoot.api.deleteLayer( data.id )
+                return this.limit(() => Hoot.api.deleteLayer( data.id )
                     .then( () => Hoot.layers.removeLayer( data.id ) )
                     .catch( ( err ) => {
                         err.message = err.data;
                         delete err.data;
                         Hoot.message.alert( err );
-                    });
+                    }));
             } else {
                 let children = item.children || data._children; // children are placed in root of object when folder is open
 

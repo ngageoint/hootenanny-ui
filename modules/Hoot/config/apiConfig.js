@@ -23,9 +23,11 @@ export const apiConfig = {
     translationServerPort: '8094',
     mergeServerPort: '8096',
     queryInterval: 2000,
-    runTasksInterval: 90000
+    runTasksInterval: 90000,
+    rateLimit: 2
 };
 
 export default apiConfig;
 
 export let baseUrl = `${apiConfig.path}`;
+export let rateLimit = `${apiConfig.rateLimit}`;

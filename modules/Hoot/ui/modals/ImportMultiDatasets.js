@@ -12,7 +12,8 @@ import _find               from 'lodash-es/find';
 import _get                from 'lodash-es/get';
 import _forEach            from 'lodash-es/forEach';
 import ImportDataset       from './importDataset';
-
+import pLimit              from 'p-limit';
+import { rateLimit }       from '../../config/apiConfig';
 export default class ImportMultiDatasets {
     constructor( translations, path ) {
         this.folderList     = Hoot.folders.folderPaths;
@@ -39,6 +40,7 @@ export default class ImportMultiDatasets {
             }
         ];
         this.jobIdList = [];
+        this.limit = pLimit(rateLimit);
     }
 
     /**
@@ -387,9 +389,13 @@ export default class ImportMultiDatasets {
 
         this.loadingState( fileNames.length );
 
+        //If "as single layer" is checked the browser makes a single upload request with multiple files
+        //otherwise it's an upload request per file
+        //Use rate limit so as not to overwhelm the db connections
+
         let proms = fileNames.map( (name, index) => {
 
-            return new Promise( resolve => {
+            return this.limit(() => {return new Promise( resolve => {
 
                 let importFiles = files;
 
@@ -420,6 +426,7 @@ export default class ImportMultiDatasets {
 
                 Hoot.api.uploadDataset( params )
                     .then( resp => {
+                        console.log('uploadDataset');
                         const jobId = resp.data[ 0 ].jobid;
                         this.jobIdList.push(jobId);
                         return Hoot.api.statusInterval( jobId );
@@ -445,12 +452,8 @@ export default class ImportMultiDatasets {
                         }
 
                         Hoot.message.alert( { message, type, keepOpen } );
-                    })
-                    .finally( () => {
-                        this.container.remove();
-                        Hoot.events.emit( 'modal-closed' );
                     });
-            });
+            })});
         });
 
         this.processRequest = this.allProgress( proms, ( n, fileName, status ) => {
@@ -492,6 +495,7 @@ export default class ImportMultiDatasets {
 
         proms.forEach( p => {
             p.then( resp => {
+                console.log('done');
                 n++;
                 cb( n, resp.fileName, resp.status );
             } );
