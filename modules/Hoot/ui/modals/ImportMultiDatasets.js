@@ -395,66 +395,68 @@ export default class ImportMultiDatasets {
 
         let proms = fileNames.map( (name, index) => {
 
-            return this.limit(() => {return new Promise( resolve => {
+            return this.limit(() => {
+                return new Promise( resolve => {
 
-                let importFiles = files;
+                    let importFiles = files;
 
-                if ( !asSingle ) {
-                    //filter files by name if not merging to single layer
-                    importFiles = _filter( files, file => {
+                    if ( !asSingle ) {
+                        //filter files by name if not merging to single layer
+                        importFiles = _filter( files, file => {
 
-                        let fName = file.name.split('.')[0];
+                            let fName = file.name.split('.')[0];
 
-                        return fName === name;
-                    } );
+                            return fName === name;
+                        } );
 
-                    if ( customSuffix ) {
-                        name = name + '_' + customSuffix;
+                        if ( customSuffix ) {
+                            name = name + '_' + customSuffix;
+                        }
+
+                        name =  Hoot.layers.checkLayerName( name );
                     }
 
-                    name =  Hoot.layers.checkLayerName( name );
-                }
+                    let params = {
+                        NONE_TRANSLATION: translation.NONE === 'true',
+                        TRANSLATION: translationIdentifier,
+                        INPUT_TYPE: importType.value,
+                        INPUT_NAME: name,
+                        formData: this.getFormData(importFiles),
+                        folderId
+                    };
 
-                let params = {
-                    NONE_TRANSLATION: translation.NONE === 'true',
-                    TRANSLATION: translationIdentifier,
-                    INPUT_TYPE: importType.value,
-                    INPUT_NAME: name,
-                    formData: this.getFormData(importFiles),
-                    folderId
-                };
+                    Hoot.api.uploadDataset( params )
+                        .then( resp => {
+                            const jobId = resp.data[ 0 ].jobid;
+                            this.jobIdList.push(jobId);
+                            return Hoot.api.statusInterval( jobId );
+                        })
+                        .then( resp => {
+                            // remove completed job from jobIdList
+                            this.jobIdList.splice( this.jobIdList.indexOf( resp.data.jobId ), 1 );
+                            resolve( {fileName: name, status: resp.data.status} );
+                        })
+                        .catch( err => {
+                            console.error(err);
 
-                Hoot.api.uploadDataset( params )
-                    .then( resp => {
-                        const jobId = resp.data[ 0 ].jobid;
-                        this.jobIdList.push(jobId);
-                        return Hoot.api.statusInterval( jobId );
-                    })
-                    .then( resp => {
-                        // remove completed job from jobIdList
-                        this.jobIdList.splice( this.jobIdList.indexOf( resp.data.jobId ), 1 );
-                        resolve( {fileName: name, status: resp.data.status} );
-                    })
-                    .catch( err => {
-                        console.error(err);
+                            let message = `Error running import on ${name}\n`,
+                                type = err.type,
+                                keepOpen = true;
 
-                        let message = `Error running import on ${name}\n`,
-                            type = err.type,
-                            keepOpen = true;
+                            if (typeof err.data === 'string') {
+                                message = err.data;
+                            }
 
-                        if (typeof err.data === 'string') {
-                            message = err.data;
-                        }
+                            if (err.data instanceof Object && err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                                message = err.data.commandDetail[0].stderr;
+                            }
 
-                        if (err.data instanceof Object && err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
-                            message = err.data.commandDetail[0].stderr;
-                        }
-
-                        Hoot.message.alert( { message, type, keepOpen } );
-                        this.container.remove();
-                        Hoot.events.emit( 'modal-closed' );
-                    });
-            })});
+                            Hoot.message.alert( { message, type, keepOpen } );
+                            this.container.remove();
+                            Hoot.events.emit( 'modal-closed' );
+                        });
+                });
+            });
         });
 
         this.processRequest = this.allProgress( proms, ( n, fileName, status ) => {
