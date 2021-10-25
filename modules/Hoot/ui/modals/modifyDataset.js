@@ -161,7 +161,7 @@ export default class ModifyDataset {
                     this.container.remove();
                     Hoot.events.emit( 'modal-closed' );
                 } );
-        } else {
+        } else {//rate limit?
             this.processRequest = Promise.all( _map( this.datasets, dataset => Hoot.folders.updateFolderLink( dataset.id, folderId ) ) )
                 .then( () => Hoot.folders.refreshAll() )
                 .then( () => Hoot.events.emit( 'render-dataset-table' ) )

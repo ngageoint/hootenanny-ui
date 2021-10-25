@@ -452,6 +452,9 @@ export default class ImportMultiDatasets {
                         }
 
                         Hoot.message.alert( { message, type, keepOpen } );
+
+                        this.container.remove();
+                        Hoot.events.emit( 'modal-closed' );
                     });
             })});
         });
@@ -536,7 +539,11 @@ export default class ImportMultiDatasets {
             this.submitButton
                 .select( 'span' )
                 .text( 'Cancelling...' );
-
+            //TODO: cancel queued promises
+            //otherwise the current promises are canceled, but then
+            //waiting promises are resolved
+            //may not be a problem except when the number of uploaded files
+            //greatly exceeds the rate limit
         } );
 
         this.submitButton.insert('i', 'span')

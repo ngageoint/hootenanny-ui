@@ -185,7 +185,7 @@ export default class ModifyFolder {
 
         } );
 
-        this.processRequest = Promise.all(requests)
+        this.processRequest = Promise.all(requests)//rate limit?
             .then( () => {
                 let visibilityRequests = [];
                 visibilityParamsList.forEach( params => {
