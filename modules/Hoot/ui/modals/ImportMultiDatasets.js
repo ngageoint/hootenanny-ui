@@ -426,7 +426,6 @@ export default class ImportMultiDatasets {
 
                 Hoot.api.uploadDataset( params )
                     .then( resp => {
-                        console.log('uploadDataset');
                         const jobId = resp.data[ 0 ].jobid;
                         this.jobIdList.push(jobId);
                         return Hoot.api.statusInterval( jobId );
@@ -452,7 +451,6 @@ export default class ImportMultiDatasets {
                         }
 
                         Hoot.message.alert( { message, type, keepOpen } );
-
                         this.container.remove();
                         Hoot.events.emit( 'modal-closed' );
                     });
@@ -498,7 +496,6 @@ export default class ImportMultiDatasets {
 
         proms.forEach( p => {
             p.then( resp => {
-                console.log('done');
                 n++;
                 cb( n, resp.fileName, resp.status );
             } );
