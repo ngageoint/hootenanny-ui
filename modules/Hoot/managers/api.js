@@ -1493,9 +1493,9 @@ export default class API {
             } );
     }
 
-    changesetStats( jobId, includeTags ) {
+    changesetStats( jobId ) {
         const params = {
-            path: `/grail/changesetstats?jobId=${ jobId }&includeTags=${ includeTags }`,
+            path: `/grail/changesetstats?jobId=${ jobId }`,
             method: 'GET'
         };
 

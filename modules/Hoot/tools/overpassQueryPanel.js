@@ -177,7 +177,7 @@ export default class OverpassQueryPanel {
 
         if ( this.formData.operationName === 'grailPull' ) {
             new GrailPull( this.formData ).render();
-        } else if ( this.formData.operationName === 'createDifferentialChangeset' ) {
+        } else if ( this.formData.operationName.startsWith('createDifferential') ) {
             new DifferentialChangeset( this.formData ).render();
         } else if ( this.formData.operationName === 'taskingManager' ) {
             this.formData.callback();

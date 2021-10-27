@@ -7,11 +7,16 @@ export default class DifferentialChangeset {
    }
 
     async render() {
-        let titleText = this.instance.boundsSelectType === 'visualExtent'
-            ? 'Create Differential from Visual Extent'
-            : this.instance.boundsSelectType === 'boundingBox'
-                ? 'Create Differential from Bounding Box'
-                : 'Create Differential';
+        let titleMode = 'Create';
+        let titleModifier = (this.instance.operationName === 'createDifferentialWithTagsChangeset') ?
+            'Diff w/Tags' : 'Differential';
+        this.deriveType = [titleModifier, 'changeset'].join(' ');
+        let titleExtent = (this.instance.boundsSelectType === 'visualExtent')
+            ? 'from Visual Extent'
+            : (this.instance.boundsSelectType === 'boundingBox')
+                ? 'from Bounding Box'
+                : '';
+        let titleText = [titleMode, titleModifier, titleExtent].join(' ');
 
         this.advOpts = await Hoot.api.getAdvancedOptions('differential');
         let advForm = this.advOpts.map(this.formFactory.advOpt2DomMeta);
@@ -57,8 +62,10 @@ export default class DifferentialChangeset {
             data.taskInfo = sessionStorage.getItem('tm:project') + ', ' + sessionStorage.getItem('tm:task');
         }
 
+        data.APPLY_TAGS = this.deriveType.includes('w/Tags');
+
         const params = {
-            deriveType : 'Differential changeset'
+            deriveType : this.deriveType
         };
 
         Hoot.api.deriveChangeset( data, params )
