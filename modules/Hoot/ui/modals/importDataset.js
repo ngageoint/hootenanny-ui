@@ -51,7 +51,7 @@ export default class ImportDataset {
                 value: 'OSM'
             },
             {
-                title: 'File (geojson)',
+                title: 'File (geojson, geojson.zip)',
                 value: 'GEOJSON'
             },
             {
@@ -75,7 +75,7 @@ export default class ImportDataset {
             'GEONAMES': '.geonames, .txt',
             'OSM': '.osm, .osm.zip, .pbf',
             'FILE': '.shp, .shx, .dbf, .prj, .zip',
-            'GEOJSON': '.geojson, .json',
+            'GEOJSON': '.geojson, .geojson.zip',
             'GPKG': '.gpkg',
         };
     }

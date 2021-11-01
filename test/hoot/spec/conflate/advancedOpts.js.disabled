@@ -9,23 +9,23 @@ describe( 'Advanced Options', () => {
             try {
                 let generateCount = 2,
                     layerParams   = await generateAdvOptsLayerParams( [ ...Array( generateCount ).keys() ] );
-    
+
                 await Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
                 await Hoot.folders.refreshAll();
                 await Hoot.events.emit( 'render-dataset-table' );
-    
+
                 await new Promise(res => {
                     d3.select( '#reference a' ).dispatch( 'click' ); // open add ref layer...
                     Hoot.events.on( 'load-layer', () => res());
-    
+
                     setTimeout(() => {
                         let reference = d3.select( '#reference' );
-    
+
                         reference // set desired ref dataset...
                             .select( '.recently-used-input' )
                             .property( 'value', layerParams[0].INPUT_NAME )
                             .dispatch( 'change' );
-    
+
                         setTimeout(() => {
                             reference // add layer
                                 .select( '.add-layer' )
@@ -37,20 +37,20 @@ describe( 'Advanced Options', () => {
                     return new Promise(res => {
                         d3.select( '#secondary a' ).dispatch( 'click' );
                         Hoot.events.on( 'load-layer', () => res());
-    
+
                         setTimeout(() => {
                             let secondary = d3.select( '#secondary' );
-                            
+
                             secondary
                                 .select( '.recently-used-input' )
                                 .property( 'value', layerParams[1].INPUT_NAME )
                                 .dispatch( 'change' );
-    
+
                             setTimeout(() => {
                                 secondary
                                     .select( '.add-layer' )
                                     .dispatch( 'click' );
-                                
+
                             }, 100);
                         }, 100);
                     });
@@ -64,7 +64,7 @@ describe( 'Advanced Options', () => {
                         }, 500);
                     });
                 });
-            } catch (e) { /* eslint-disable */ 
+            } catch (e) { /* eslint-disable */
             } finally { /* eslint-disable */
                 return Promise.resolve();
             }
@@ -73,12 +73,12 @@ describe( 'Advanced Options', () => {
             // this.enableTimeouts( false );
             let reference = d3.select( '#reference' ),
                 secondary = d3.select( '#secondary' );
-    
+
             Hoot.layers.removeLoadedLayer( reference.attr( 'data-id') );
-            Hoot.ui.sidebar.layerRemoved( reference.datum() );        
-    
+            Hoot.ui.sidebar.layerRemoved( reference.datum() );
+
             Hoot.layers.removeLoadedLayer( secondary.attr( 'data-id') );
-            Hoot.ui.sidebar.layerRemoved( secondary.datum() );  
+            Hoot.ui.sidebar.layerRemoved( secondary.datum() );
         } );
 
         it( 'has all conflation types toggled initially', () => {
@@ -99,9 +99,9 @@ describe( 'Advanced Options', () => {
             d3.select( '#roadOptions_group input' ).property( 'checked', false );
 
             options = advancedOptions.getOptions();
-            
-            expect( options.includes( 'hoot::HighwayMatchCreator' ) ).to.be.false;
-            expect( options.includes( 'hoot::HighwayMergerCreator' ) ).to.be.false;
+
+            expect( options.includes( 'HighwayMatchCreator' ) ).to.be.false;
+            expect( options.includes( 'HighwayMergerCreator' ) ).to.be.false;
             done();
         } );
         it ( 'makes only road input checked and users network matcher/merger when network selected', (done) => {
@@ -122,13 +122,12 @@ describe( 'Advanced Options', () => {
 
                 options = advancedOptions.getOptions();
 
-                expect( options.includes( 'hoot::NetworkMatchCreator' )).to.be.true
-                expect( options.includes( 'hoot::NetworkMergerCreator' )).to.be.true
-                expect( options.includes( 'hoot::HighwayMatchCreator' ) ).to.be.false;
-                expect( options.includes( 'hoot::HighwayMergerCreator' ) ).to.be.false;
+                expect( options.includes( 'NetworkMatchCreator' )).to.be.true
+                expect( options.includes( 'NetworkMergerCreator' )).to.be.true
+                expect( options.includes( 'HighwayMatchCreator' ) ).to.be.false;
+                expect( options.includes( 'HighwayMergerCreator' ) ).to.be.false;
                 done();
             }, 500);
         } );
     } );
 } );
-
