@@ -103,6 +103,15 @@ export function uiTools( context ) {
                     type: 'area',
                     icon: 'iD-icon-layers',
                     action: 'createDifferentialChangeset'
+                },
+                {
+                    title: 'Derive Differential w/Tags Changeset',
+                    tooltip: `Derives a differential with tags conflation changeset for a bounding box between ${reference} and ${secondary}`,
+                    placement: 'right',
+                    group: 'grail',
+                    type: 'area',
+                    icon: 'iD-icon-paste-tags-overwrite',
+                    action: 'createDifferentialWithTagsChangeset'
                 }
             ]
         };
@@ -190,7 +199,7 @@ export function uiTools( context ) {
 
                         Hoot.message.alert( { message, type } );
                     }
-                } else if ( d.action === 'grailPull' || d.action === 'createDifferentialChangeset' ) {
+                } else if ( d.action === 'grailPull' || d.action.startsWith('createDifferential')) {
                     let grailSelectBounds = new selectBounds( context );
 
                     grailSelectBounds.render( d.action );
