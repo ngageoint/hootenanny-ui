@@ -74,31 +74,31 @@ describe('Hoot.hoot', function(){
         it('sorts translations by DEFAULT and then by NAME', function() {
             var trans = [
                           {
-                            "PATH": "translations/b.js",
-                            "CANEXPORT": false,
-                            "DESCRIPTION": "b",
-                            "DEFAULT": false,
-                            "NAME": "b"
+                            "path": "translations/b.js",
+                            "canExport": false,
+                            "description": "b",
+                            "default": false,
+                            "name": "b"
                           },
                           {
-                            "PATH": "translations/ZZZ.js",
-                            "CANEXPORT": false,
-                            "DESCRIPTION": "test ZZZ",
-                            "DEFAULT": true,
-                            "NAME": "ZZZ"
+                            "path": "translations/ZZZ.js",
+                            "canExport": false,
+                            "description": "test ZZZ",
+                            "default": true,
+                            "name": "ZZZ"
                           },
                           {
-                            "PATH": "translations/c.js",
-                            "CANEXPORT": true,
-                            "DESCRIPTION": "c",
-                            "NAME": "c"
+                            "path": "translations/c.js",
+                            "canExport": true,
+                            "description": "c",
+                            "name": "c"
                           },
                           {
-                            "PATH": "translations/aaa.js",
-                            "CANEXPORT": true,
-                            "DESCRIPTION": "test aaa",
-                            "DEFAULT": true,
-                            "NAME": "aaa"
+                            "path": "translations/aaa.js",
+                            "canExport": true,
+                            "description": "test aaa",
+                            "default": true,
+                            "name": "aaa"
                           }
                         ];
             var expectedNames = ['aaa', 'ZZZ', 'b', 'c'];
