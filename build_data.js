@@ -518,7 +518,7 @@ function writeFaIcons(faIcons) {
         var prefix = key.substring(0, 3);   // `fas`, `far`, `fab`
         var name = key.substring(4);
         var def = fontawesome.findIconDefinition({ prefix: prefix, iconName: name });
-        writeFileProm('svg/fontawesome/' + key + '.svg', fontawesome.icon(def).html);
+        writeFileProm('svg/fontawesome/' + key + '.svg', fontawesome.icon(def).html.toString());
     }
 }
 

@@ -798,7 +798,7 @@ export default class Jobs extends Tab {
                                 title: 'upload changeset',
                                 icon: 'cloud_upload',
                                 action: async () => {
-                                    Hoot.api.changesetStats(d.jobId, false)
+                                    Hoot.api.changesetStats(d.jobId)
                                         .then( resp => {
                                             this.changesetStats = new ChangesetStats( d, resp.data ).render();
 
@@ -900,7 +900,7 @@ export default class Jobs extends Tab {
                                 title: 'view changeset stats',
                                 icon: 'library_books',
                                 action: async () => {
-                                    Hoot.api.changesetStats(d.jobId, false)
+                                    Hoot.api.changesetStats(d.jobId)
                                         .then( resp => {
                                             this.changesetStats = new ChangesetStats( d, resp.data, true ).render();
 

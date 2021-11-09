@@ -135,7 +135,7 @@ export default class SelectBounds extends EventEmitter {
             this.handleBounds( customDataLayer.extent() );
         }
 
-        if ( this.operationName === 'grailPull' || this.operationName === 'createDifferentialChangeset' ) {
+        if ( this.operationName === 'grailPull' || this.operationName.startsWith('createDifferential')) {
             if (primaryLayer) {
                 boundOptionsList.push( 'Reference Layer Extent' );
             }
@@ -230,7 +230,7 @@ export default class SelectBounds extends EventEmitter {
 
         if ( this.operationName === 'clipData' ) {
             new ClipDataset( this ).render();
-        } else if ( this.operationName === 'grailPull' || this.operationName === 'createDifferentialChangeset' ) {
+        } else if ( this.operationName === 'grailPull' || this.operationName.startsWith('createDifferential')) {
             new OverpassQueryPanel( this ).render();
         }
 
