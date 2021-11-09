@@ -71,7 +71,7 @@ describe('Hoot.hoot', function(){
     });
 
     describe('.sortTranslations',function() {
-        it('sorts translations by DEFAULT and then by NAME', function() {
+        it('sorts translations by default and then by name', function() {
             var trans = [
                           {
                             "path": "translations/b.js",
@@ -103,7 +103,7 @@ describe('Hoot.hoot', function(){
                         ];
             var expectedNames = ['aaa', 'ZZZ', 'b', 'c'];
             var sortedNames = trans.sort(hoot.sortTranslations).map(function(d) {
-                return d.NAME;
+                return d.name;
             });
             expect(sortedNames).to.be.eql(expectedNames);
         });
