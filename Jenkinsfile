@@ -51,7 +51,7 @@ pipeline {
                 expression { return params.cucumber }
             }
             steps {
-                sh "vagrant ssh ${params.Box} -c 'cd hoot; source ./SetupEnv.sh; scripts/jenkins/TestPullRequest_ui.sh'"
+                sh "vagrant ssh ${params.Box} -c 'cd hoot; make -s ui-test'"
             }
         }
     }
