@@ -116,7 +116,7 @@
     "npm-run-all": "^4.0.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "osm-community-index": "0.5.0",
-    "phantomjs-prebuilt": "~2.1.11",
+    "phantomjs-prebuilt": "~2.1.16",
     "request": "^2.88.0",
     "rollup": "~0.67.1",
     "rollup-plugin-commonjs": "^9.0.0",
