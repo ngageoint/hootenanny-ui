@@ -17,7 +17,6 @@ import ModifyFolder       from '../modals/modifyFolder';
 import ExportData from '../modals/exportData';
 import ExportAlphaShape from '../modals/exportAlphaShape';
 import ExportTaskGrid from '../modals/exportTaskGrid';
-import pLimit from 'p-limit';
 import { rateLimit } from '../../config/apiConfig';
 
 /**
@@ -86,7 +85,6 @@ export default class Datasets extends Tab {
             }
         ];
 
-        this.limit = pLimit(rateLimit);
     }
 
     /**
@@ -201,7 +199,8 @@ export default class Datasets extends Tab {
      * @param toDelete - array of items to delete
      */
     deleteItems( toDelete ) {
-        return Promise.all( _map( toDelete, item => {
+
+        const deleteItem = item => {
             let data = item.data || item,
                 node = this.table.selectAll( `g[data-type="${ data.type }"][data-id="${ data.id }"]` );
 
@@ -210,13 +209,13 @@ export default class Datasets extends Tab {
                 .style( 'fill', 'rgb(255,0,0)' );
 
             if ( data.type === 'dataset' ) {
-                return this.limit(() => Hoot.api.deleteLayer( data.id )
+                return Hoot.api.deleteLayer( data.id )
                     .then( () => Hoot.layers.removeLayer( data.id ) )
                     .catch( ( err ) => {
                         err.message = err.data;
                         delete err.data;
                         Hoot.message.alert( err );
-                    }));
+                    });
             } else {
                 let children = item.children || data._children; // children are placed in root of object when folder is open
 
@@ -239,7 +238,17 @@ export default class Datasets extends Tab {
                         });
                 }
             }
-        } ) );
+        }
+        //approach described here https://stackoverflow.com/a/51020535
+        async function doWork(iterator) {
+            for (let [index, item] of iterator) {
+                await deleteItem(item);
+            }
+        }
+        const iterator = toDelete.entries();
+        const workers = new Array(rateLimit).fill(iterator).map(doWork);
+
+        return Promise.allSettled( workers );
     }
 
     async handleContextMenuClick( [ tree, d, item ] ) {
