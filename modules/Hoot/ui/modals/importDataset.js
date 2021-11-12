@@ -169,7 +169,7 @@ export default class ImportDataset {
         // only available for ogr types
 
         function isOgr(type) {
-            return ['FILE', 'GPKG', 'DIR'].indexOf(type) > -1;
+            return ['FILE', 'GPKG', 'DIR', 'GEOJSON'].indexOf(type) > -1;
         }
 
         this.advOptsInputs.classed('hidden', !isOgr(selectedType));
