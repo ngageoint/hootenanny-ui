@@ -12,7 +12,6 @@ import _find               from 'lodash-es/find';
 import _get                from 'lodash-es/get';
 import _forEach            from 'lodash-es/forEach';
 import ImportDataset       from './importDataset';
-import pLimit              from 'p-limit';
 import { rateLimit }       from '../../config/apiConfig';
 export default class ImportMultiDatasets {
     constructor( translations, path ) {
@@ -40,7 +39,6 @@ export default class ImportMultiDatasets {
             }
         ];
         this.jobIdList = [];
-        this.limit = pLimit(rateLimit);
     }
 
     /**
@@ -310,7 +308,6 @@ export default class ImportMultiDatasets {
      * @param d - node data
      */
     deduplicateName( d ) {
-        console.log(d);
         let target = d3.select( `#${ d.id }` );
         target.property('value', Hoot.layers.checkLayerName( target.property('value') ));
     }
@@ -337,7 +334,8 @@ export default class ImportMultiDatasets {
             asSingleName  = this.asSingleLayerName.property('value'),
 
             translationIdentifier,
-            folderId;
+            folderId,
+            fileCount = 0;
 
         //if no translation, set NONE
         if ( !translation ) {
@@ -393,80 +391,83 @@ export default class ImportMultiDatasets {
         //otherwise it's an upload request per file
         //Use rate limit so as not to overwhelm the db connections
 
-        let proms = fileNames.map( (name, index) => {
 
-            return this.limit(() => {
-                return new Promise( resolve => {
+        const upload = (name) => {
 
-                    let importFiles = files;
+            return new Promise( resolve => {
 
-                    if ( !asSingle ) {
-                        //filter files by name if not merging to single layer
-                        importFiles = _filter( files, file => {
+                let importFiles = files;
 
-                            let fName = file.name.split('.')[0];
+                if ( !asSingle ) {
+                    //filter files by name if not merging to single layer
+                    importFiles = _filter( files, file => {
 
-                            return fName === name;
-                        } );
+                        let fName = file.name.split('.')[0];
 
-                        if ( customSuffix ) {
-                            name = name + '_' + customSuffix;
-                        }
+                        return fName === name;
+                    } );
 
-                        name =  Hoot.layers.checkLayerName( name );
+                    if ( customSuffix ) {
+                        name = name + '_' + customSuffix;
                     }
 
-                    let params = {
-                        NONE_TRANSLATION: translation.NONE === 'true',
-                        TRANSLATION: translationIdentifier,
-                        INPUT_TYPE: importType.value,
-                        INPUT_NAME: name,
-                        formData: this.getFormData(importFiles),
-                        folderId
-                    };
+                    name =  Hoot.layers.checkLayerName( name );
+                }
 
-                    Hoot.api.uploadDataset( params )
-                        .then( resp => {
-                            const jobId = resp.data[ 0 ].jobid;
-                            this.jobIdList.push(jobId);
-                            return Hoot.api.statusInterval( jobId );
-                        })
-                        .then( resp => {
-                            // remove completed job from jobIdList
-                            this.jobIdList.splice( this.jobIdList.indexOf( resp.data.jobId ), 1 );
-                            resolve( {fileName: name, status: resp.data.status} );
-                        })
-                        .catch( err => {
-                            console.error(err);
+                let params = {
+                    NONE_TRANSLATION: translation.NONE === 'true',
+                    TRANSLATION: translationIdentifier,
+                    INPUT_TYPE: importType.value,
+                    INPUT_NAME: name,
+                    formData: this.getFormData(importFiles),
+                    folderId
+                };
 
-                            let message = `Error running import on ${name}\n`,
-                                type = err.type,
-                                keepOpen = true;
+                Hoot.api.uploadDataset( params )
+                    .then( resp => {
+                        const jobId = resp.data[ 0 ].jobid;
+                        this.jobIdList.push(jobId);
+                        return Hoot.api.statusInterval( jobId );
+                    })
+                    .then( resp => {
+                        // remove completed job from jobIdList
+                        this.jobIdList.splice( this.jobIdList.indexOf( resp.data.jobId ), 1 );
+                        fileCount++;
+                        this.progressBar.property( 'value', fileCount );
+                        this.fileListInput
+                            .selectAll( asSingle ? 'option' : `option[value="${name}"]` )
+                            .classed( 'import-success', resp.data.status !== 'cancelled' )
+                            .classed( 'import-cancel', resp.data.status === 'cancelled' );
+                        resolve();
+                    })
+                    .catch( err => {
+                        console.error(err);
 
-                            if (typeof err.data === 'string') {
-                                message = err.data;
-                            }
+                        let message = `Error running import on ${name}\n`,
+                            type = err.type,
+                            keepOpen = true;
 
-                            if (err.data instanceof Object && err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
-                                message = err.data.commandDetail[0].stderr;
-                            }
+                        if (typeof err.data === 'string') {
+                            message = err.data;
+                        }
 
-                            Hoot.message.alert( { message, type, keepOpen } );
-                            this.container.remove();
-                            Hoot.events.emit( 'modal-closed' );
-                        });
-                });
+                        if (err.data instanceof Object && err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                            message = err.data.commandDetail[0].stderr;
+                        }
+
+                        Hoot.message.alert( { message, type, keepOpen } );
+                    });
             });
-        });
+        };
+        async function doWork(iterator) {
+            for (let [index, item] of iterator) {
+                await upload(item);
+            }
+        }
+        const iterator = fileNames.entries();
+        const workers = new Array(rateLimit).fill(iterator).map(doWork);
 
-        this.processRequest = this.allProgress( proms, ( n, fileName, status ) => {
-                this.progressBar.property( 'value', n );
-                this.fileListInput
-                    .selectAll( asSingle ? 'option' : `option[value="${fileName}"]` )
-                    .classed( 'import-success', status !== 'cancelled' )
-                    .classed( 'import-cancel', status === 'cancelled' )
-                    ;
-            } )
+        this.processRequest = Promise.allSettled(workers)
             .then( resp => {
                 let statuses = resp.reduce((map, obj) => {
                     if (map[obj.status]) {
@@ -491,20 +492,6 @@ export default class ImportMultiDatasets {
             });
     }
 
-    allProgress( proms, cb ) {
-        let n = 0;
-
-        cb( 0 );
-
-        proms.forEach( p => {
-            p.then( resp => {
-                n++;
-                cb( n, resp.fileName, resp.status );
-            } );
-        } );
-
-        return Promise.all( proms );
-    }
 
     /**
      *
@@ -538,11 +525,7 @@ export default class ImportMultiDatasets {
             this.submitButton
                 .select( 'span' )
                 .text( 'Cancelling...' );
-            //TODO: cancel queued promises
-            //otherwise the current promises are canceled, but then
-            //waiting promises are resolved
-            //may not be a problem except when the number of uploaded files
-            //greatly exceeds the rate limit
+
         } );
 
         this.submitButton.insert('i', 'span')
