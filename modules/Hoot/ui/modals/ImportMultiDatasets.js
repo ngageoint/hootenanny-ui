@@ -459,6 +459,7 @@ export default class ImportMultiDatasets {
                     });
             });
         };
+        //approach described here https://stackoverflow.com/a/51020535
         async function doWork(iterator) {
             for (let [index, item] of iterator) {
                 await upload(item);
