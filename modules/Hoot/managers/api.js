@@ -490,23 +490,21 @@ export default class API {
             .then( resp =>
                 resp.data.sort( ( a, b ) => {
                     // Set undefined to false
-                    if ( !a.DEFAULT ) a.DEFAULT = false;
-                    if ( !b.DEFAULT ) b.DEFAULT = false;
-                    // We check DEFAULT property, putting true first
-                    if ( a.DEFAULT !== b.DEFAULT ) {
-                        return ( a.DEFAULT ) ? -1 : 1;
+                    if ( !a.default ) a.default = false;
+                    if ( !b.default ) b.default = false;
+                    // We check default property, putting true first
+                    if ( a.default !== b.default ) {
+                        return ( a.default ) ? -1 : 1;
                     } else {
-                        let aName = a.NAME || a.name;
-                        let bName = b.NAME || b.name;
-                        // We only get here if the DEFAULT prop is equal
-                        return d3.ascending( aName.toLowerCase(), bName.toLowerCase() );
+                        // We only get here if the default prop is equal
+                        return d3.ascending( a.name.toLowerCase(), b.name.toLowerCase() );
                     }
                 } ) );
     }
 
     getTranslation( name ) {
         const params = {
-            path: `/ingest/customscript/getscript?SCRIPT_NAME=${ name }`,
+            path: `/ingest/customscript/getscript?scriptName=${ name }`,
             method: 'GET'
         };
 
@@ -516,7 +514,7 @@ export default class API {
 
     getDefaultTranslation( path ) {
         const params = {
-            path: `/ingest/customscript/getdefaultscript?SCRIPT_PATH=${ path }`,
+            path: `/ingest/customscript/getdefaultscript?scriptPath=${ path }`,
             method: 'GET'
         };
 
@@ -543,7 +541,7 @@ export default class API {
 
     deleteTranslation( identifier ) {
         const params = {
-            path: `/ingest/customscript/deletescript?SCRIPT_INFO=${ identifier }`,
+            path: `/ingest/customscript/deletescript?scriptInfo=${ identifier }`,
             method: 'GET'
         };
 

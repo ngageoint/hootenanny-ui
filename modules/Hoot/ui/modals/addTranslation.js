@@ -76,8 +76,8 @@ export default class AddTranslation {
         }
 
         const paramData = {
-            SCRIPT_NAME: translationName,
-            SCRIPT_DESCRIPTION: this.descriptionInput.property( 'value' ),
+            scriptName: translationName,
+            scriptDescription: this.descriptionInput.property( 'value' ),
             folderId : targetFolder,
         };
 

@@ -89,7 +89,7 @@ export default class LayerReview extends SidebarForm {
             .classed( 'button secondary small strong round', true )
             .text('Export Data')
             .on('click', async () => {
-                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT);
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport);
                 new ExportData(translations, { data: layer }, 'Dataset' ).render();
             });
 
