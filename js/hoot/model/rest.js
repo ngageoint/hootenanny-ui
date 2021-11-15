@@ -555,7 +555,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getTranslation = function(name,callback) {
-        d3.text('../hoot-services/ingest/customscript/getscript?SCRIPT_NAME='+ name, function (error, resp) {
+        d3.text('../hoot-services/ingest/customscript/getscript?scriptName='+ name, function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get Translation failed!'));
             }
@@ -564,7 +564,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.getDefaultTranslation = function(path,callback) {
-        d3.text('../hoot-services/ingest/customscript/getdefaultscript?SCRIPT_PATH='+ path, function (error, resp) {
+        d3.text('../hoot-services/ingest/customscript/getdefaultscript?scriptPath='+ path, function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get Translation failed!'));
             }
@@ -573,7 +573,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.deleteTranslation = function(name,callback) {
-        d3.text('../hoot-services/ingest/customscript/deletescript?SCRIPT_INFO='+name, function (error, resp) {
+        d3.text('../hoot-services/ingest/customscript/deletescript?scriptInfo='+name, function (error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Get Translation failed!'));
             }
@@ -582,7 +582,7 @@ Hoot.model.REST = function (command, data, callback, option) {
     };
 
     rest.postTranslation = function(data,callback) {
-        d3.json('../hoot-services/ingest/customscript/save?SCRIPT_NAME='+data.NAME+'&SCRIPT_DESCRIPTION='+data.DESCRIPTION)
+        d3.json('../hoot-services/ingest/customscript/save?scriptName='+data.name+'&scriptDescription='+data.description)
                     .header('Content-Type', 'text/plain')
                     .post(data.data, function (error, resp) {
                         if (error) {

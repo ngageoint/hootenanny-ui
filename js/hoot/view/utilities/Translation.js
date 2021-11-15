@@ -49,12 +49,12 @@ Hoot.view.utilities.translation = function(context) {
                     .style('position', 'relative')
                     .style('top', '20px')
                     .text(function (d) {
-                        if(d.DEFAULT){
-                            if(d.DEFAULT === true){
-                                return d.NAME + '*';
+                        if(d.default){
+                            if(d.default === true){
+                                return d.name + '*';
                             }
                         }
-                        return d.NAME || d.name;
+                        return d.name;
                     })
                     .on('click',function(d){
                         d3.event.stopPropagation();
@@ -65,10 +65,10 @@ Hoot.view.utilities.translation = function(context) {
                     .placement('right')
                     .html('true')
                     .title(function (d) {
-                        if(d.DEFAULT === true){
-                            return d.DESCRIPTION + ' (Hootenanny Default Translation)';
+                        if(d.default === true){
+                            return d.description + ' (Hootenanny Default Translation)';
                         }
-                        return d.DESCRIPTION;
+                        return d.description;
                     });
 
                     d3.selectAll('a.transl').call(tooltip);
@@ -79,7 +79,7 @@ Hoot.view.utilities.translation = function(context) {
                     d3.event.stopPropagation();
                     d3.event.preventDefault();
 
-                    var r = confirm('Are you sure you want to delete selected translaton?');
+                    var r = confirm('Are you sure you want to delete selected translation?');
                     if (!r) { return; }
 
 
@@ -88,7 +88,7 @@ Hoot.view.utilities.translation = function(context) {
 
 
                     var transTrashBtn = this;
-                    var name = n.NAME || n.name;
+                    var name = n.name;
                     var btnIdName = name.replace(/[&\/\\#,+()$~%.'':*?<>{}]/g,'_');
                     btnIdName = btnIdName.replace(/ /g, '_');
                     transTrashBtn.id = 'a' + btnIdName;
@@ -99,7 +99,7 @@ Hoot.view.utilities.translation = function(context) {
                             return;
                         }
                         var resp = JSON.parse(res);
-                        var respName = resp[0].NAME || resp[0].name;
+                        var respName = resp[0].name;
                         var idName = respName.replace(/[&\/\\#,+()$~%.'':*?<>{}]/g,'_');
                         idName = idName.replace(/ /g, '_');
                         var curBtn = d3.select('#a' + idName)[0];
@@ -110,7 +110,7 @@ Hoot.view.utilities.translation = function(context) {
 
                 })
                 .select(function (sel) {
-                    if(sel.DEFAULT === true){
+                    if(sel.default === true){
 
                         d3.select(this).classed('keyline-left fr _icon x pad2 col1', true);
                         d3.select(this).on('click', function () {

@@ -82,8 +82,8 @@ Hoot.control.utilities.translation = function(context) {
             .classed('round strong big pad1y loud dark center pad2x translationSave', true)
             .on('click', function () {
                 var data = {};
-                data.NAME = nameVal.value();
-                data.DESCRIPTION = descVal.value();
+                data.name = nameVal.value();
+                data.description = descVal.value();
                 data.data = transTemplate.value();
                 postTranslation(data);
             });
@@ -151,7 +151,7 @@ Hoot.control.utilities.translation = function(context) {
                 .append('div')
                 .classed('big pad1y keyline-bottom space-bottom2', true)
                 .append('h4')
-                .text(e.NAME)
+                .text(e.name)
                 .append('div')
                 .classed('fr _icon x point', true)
                 .on('click', function () {
@@ -169,7 +169,7 @@ Hoot.control.utilities.translation = function(context) {
             var descVal = desc.append('input')
                 .attr('type', 'text')
                 .classed('translationDescription',true);
-            descVal.value(e.DESCRIPTION);
+            descVal.value(e.description);
 
 
 
@@ -191,8 +191,8 @@ Hoot.control.utilities.translation = function(context) {
                 .classed('round strong big pad1y loud dark center pad2x', true)
                 .on('click', function () {
                     var data = {};
-                    data.NAME = e.NAME || e.name;
-                    data.DESCRIPTION = descVal.value();
+                    data.name = e.name || e.name;
+                    data.description = descVal.value();
                     data.data = textArea.value();
                     postTranslation(data);
                 });
@@ -202,7 +202,7 @@ Hoot.control.utilities.translation = function(context) {
                 savetransEdit.classed('hidden', false);
             });
 
-            if(e.DEFAULT === true){
+            if(e.default === true){
                 descVal.attr('disabled', true);
                 textArea.attr('disabled', true);
             }
@@ -223,13 +223,13 @@ Hoot.control.utilities.translation = function(context) {
     };
 
     hoot_control_utilities_translation.translationPopup = function(e) {
-        if(e.DEFAULT === true){
-            Hoot.model.REST('getDefaultTranslation', e.PATH, function (d) {
+        if(e.default === true){
+            Hoot.model.REST('getDefaultTranslation', e.path, function (d) {
                 hoot_control_utilities_translation.renderTranslationDlg(e, d);
 
             });
         } else {
-            Hoot.model.REST('getTranslation', e.NAME, function (d) {
+            Hoot.model.REST('getTranslation', e.name, function (d) {
                 hoot_control_utilities_translation.renderTranslationDlg(e, d);
 
             });
@@ -238,13 +238,13 @@ Hoot.control.utilities.translation = function(context) {
     };
 
     hoot_control_utilities_translation.exportTranslation = function(e) {
-        if(e.DEFAULT === true){
-            Hoot.model.REST('getDefaultTranslation', e.PATH, function (transText) {
-                hoot_control_utilities_translation.prepareTranslation(transText, e.NAME);
+        if(e.default === true){
+            Hoot.model.REST('getDefaultTranslation', e.path, function (transText) {
+                hoot_control_utilities_translation.prepareTranslation(transText, e.name);
             });
         } else {
-            Hoot.model.REST('getTranslation', e.NAME, function (transText) {
-                hoot_control_utilities_translation.prepareTranslation(transText, e.NAME);
+            Hoot.model.REST('getTranslation', e.name, function (transText) {
+                hoot_control_utilities_translation.prepareTranslation(transText, e.name);
             });
         }
     };

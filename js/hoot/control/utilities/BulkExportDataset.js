@@ -43,18 +43,18 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
         _trans = trans;
         if(_trans.length === 1){
             var emptyObj = {};
-            emptyObj.NAME = '';
-            emptyObj.DESCRIPTION = '';
+            emptyObj.name = '';
+            emptyObj.description = '';
             _trans.push(emptyObj);
         }
 
-        _exportTranslations = trans.filter(function(d) {return d.CANEXPORT===true;});
+        _exportTranslations = trans.filter(function(d) {return d.canExport===true;});
 
-        _exportFormatList = 
-            [   {'DESCRIPTION': 'File Geodatabase', 'VALUE': 'gdb'}, 
-                {'DESCRIPTION': 'Shapefile', 'VALUE': 'shp'},
-                {'DESCRIPTION': 'OpenStreetMap (OSM)', 'VALUE': 'osm'},
-                {'DESCRIPTION': 'OpenStreetMap (PBF)', 'VALUE': 'osm.pbf'}
+        _exportFormatList =
+            [   {'description': 'File Geodatabase', 'value': 'gdb'},
+                {'description': 'Shapefile', 'value': 'shp'},
+                {'description': 'OpenStreetMap (OSM)', 'value': 'osm'},
+                {'description': 'OpenStreetMap (PBF)', 'value': 'osm.pbf'}
             ];
 
         _rowNum = 0;
@@ -162,7 +162,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
     **/
     var _createTableBody = function(ingestDiv, exportList) {
         _table.append('tbody');
-        
+
         // Add row for each dataset
         var _rowContainer = d3.select('#bulkExportTable').select('tbody');
         _addRow(_rowContainer, exportList);
@@ -185,7 +185,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
         // If in progress, check to cancel
         var exportText = _submitExp.select('span').text();
         if(exportText === 'Cancel') {
-            _cancelJob();        
+            _cancelJob();
         } else if(exportText === 'Export') {
             if(!d3.selectAll('.invalidName').empty()){return;}
 
@@ -193,7 +193,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             d3.select('#bulkExportTable').selectAll('input').attr('readonly',true);
             d3.select('#bulkExportTable').selectAll('span').on('click', null);
 
-            //Places spinner 
+            //Places spinner
             var progcont = _submitExp.append('div');
             progcont.insert('div')
                     .classed('_icon _loading row1 col1 fl',true)
@@ -203,9 +203,9 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             progdiv.attr('id','exportprogdiv')
                     .style('max-height','24px')
                     .style('overflow','hidden');
-                    
+
             var logTxt = 'Initializing...';
-            
+
             progdiv.append('text')
                     .attr('id', 'exportprogresstext')
                     .attr('dy', '.3em').text(logTxt);
@@ -223,7 +223,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             _performBulkExport();
         }
     };
-        
+
     /**
     * @desc changes button to close
     **/
@@ -237,7 +237,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
     };
 
     /**
-    * @desc Performs bulk export for all rows 
+    * @desc Performs bulk export for all rows
     **/
     var _performBulkExport = function(){
         //Loop through each row and treat as separate export function
@@ -257,7 +257,7 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
         if(exportText ==='Cancelling Jobs' || exportText === 'Close') { return; }
 
         var row = d3.select(rowArray[rowNumber]);
-        
+
         var newLayerName = row.select('.reset.fileExport').value();
         _exportDatasetJob(row, newLayerName, function(){
             rowNumber++;
@@ -280,8 +280,8 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
 
         for(var i=0; i<comboData.combobox.data.length; i++){
             var o = comboData.combobox.data[i];
-            if(o.DESCRIPTION === transType){
-                transName = o.NAME;
+            if(o.description === transType){
+                transName = o.name;
                 oTrans = o;
                 break;
             }
@@ -299,8 +299,8 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
             'exportHootTags': row.select('.exportHootTags').property('checked')
         };
 
-        var _dataset = { 
-            'name': row.select('.fileExport').value(), 
+        var _dataset = {
+            'name': row.select('.fileExport').value(),
             'id': row.select('.fileExport').attr('lyr-id')
         };
 
@@ -336,8 +336,8 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
         var combo = d3.combobox()
             .data(_.map(a.combobox.data,function(n){
                 return {
-                    value: n.DESCRIPTION,
-                    title: n.DESCRIPTION
+                    value: n.description,
+                    title: n.description
                 };
             }));
 
@@ -353,21 +353,21 @@ Hoot.control.utilities.bulkexportdataset = function(context) {
         var combo = d3.combobox()
             .data(_.map(a.combobox.data,function(n){
                 return {
-                    value: n.DESCRIPTION,
-                    title: n.VALUE
+                    value: n.description,
+                    title: n.value
                 };
             }));
 
         d3.select(this).style('width','100%').call(combo);
     };
-   
+
     /**
     * @desc Adds new row of ingest input fields.
     * @param tbl - Bulk export list table div.
     **/
     var _addRow = function(tbl, exportList){
         if(_rowNum>10){
-            iD.ui.Alert('Please limit bulk export to 10 datasets or less.','warning',new Error().stack);            
+            iD.ui.Alert('Please limit bulk export to 10 datasets or less.','warning',new Error().stack);
         }
 
         _.each(exportList,function(lyr){

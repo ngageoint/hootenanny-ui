@@ -414,14 +414,14 @@ Hoot.hoot = function (context) {
 
     hoot.sortTranslations = function(a, b) {
         // Set undefined to false
-        if (!a.DEFAULT) a.DEFAULT = false;
-        if (!b.DEFAULT) b.DEFAULT = false;
+        if (!a.default) a.default = false;
+        if (!b.default) b.default = false;
         // We check DEFAULT property, putting true first
-        if (a.DEFAULT !== b.DEFAULT) {
-            return (a.DEFAULT) ? -1 : 1;
+        if (a.default !== b.default) {
+            return (a.default) ? -1 : 1;
         } else {
-            var aName = a.NAME || a.name;
-            var bName = b.NAME || b.name;
+            var aName = a.name;
+            var bName = b.name;
             // We only get here if the DEFAULT prop is equal
             return d3.ascending(aName.toLowerCase(), bName.toLowerCase());
         }

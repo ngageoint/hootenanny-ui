@@ -47,8 +47,8 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         _trans = trans;
         if(_trans.length === 1){
             var emptyObj = {};
-            emptyObj.NAME = '';
-            emptyObj.DESCRIPTION = '';
+            emptyObj.name = '';
+            emptyObj.description = '';
             _trans.push(emptyObj);
         }
 
@@ -217,7 +217,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
                 if(resp !== true){
                     d3.select(this).attr('title',resp).classed('invalidName',true);
                 } else {
-                    d3.select(this).attr('title',suffixTitle).classed('invalidName',false);                     
+                    d3.select(this).attr('title',suffixTitle).classed('invalidName',false);
                 }
 
                 _validateInputs();
@@ -232,7 +232,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         // If in progress, check to cancel
         var importText = _submitExp.select('span').text();
         if(importText === 'Cancel') {
-            _cancelJob();        
+            _cancelJob();
         } else if(importText === 'Import') {
             // For a sanity check, double check all inputs
             _validateInputs();
@@ -244,7 +244,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             d3.select('#bulkImportTable').selectAll('span').on('click', null);
             d3.select('#btnAddRow').remove();
 
-            //Places spinner 
+            //Places spinner
             var progcont = _submitExp.append('div');
             progcont.insert('div')
                     .classed('_icon _loading row1 col1 fl',true)
@@ -254,9 +254,9 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             progdiv.attr('id','importprogdiv')
                     .style('max-height','24px')
                     .style('overflow','hidden');
-                    
+
             var logTxt = 'Initializing...';
-            
+
             progdiv.append('text')
                     .attr('id', 'importprogresstext')
                     .attr('dy', '.3em').text(logTxt);
@@ -274,7 +274,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             _performBulkImport();
         }
     };
-        
+
     /**
     * @desc changes button to close
     **/
@@ -299,7 +299,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     };
 
     /**
-    * @desc Performs bulk import for all rows 
+    * @desc Performs bulk import for all rows
     **/
     var _performBulkImport = function(){
         //Loop through each row and treat as separate import function
@@ -446,7 +446,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
     var _validateInputs = function(){
         var rowArray = d3.select('#bulkImportTable').selectAll('tr[id^="row-"]');
         _.each(rowArray[0], function(row){
-            var r = d3.select(row); 
+            var r = d3.select(row);
             _validateInput(r);
         });
     };
@@ -474,7 +474,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
             row.select('.reset.LayerName')
                 .classed('invalidName',true)
                 .attr('title','This layer name is already being used in the multiple dataset import process.');
-            return false;            
+            return false;
         }
 
         //Check against layer name without custom suffix since that is already being checked
@@ -492,7 +492,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         return true;
     };
 
- 
+
     /**
     * @desc Helper function for valiating loaded data.
     * @param selType - Selected import type.
@@ -606,7 +606,7 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var isValid = _validateLoaded(selType, filesList, cntParam, totalFileSize);
         if(isValid !== true){ d3.select('.reset.bulk-import.fileImport[row="' + selRowNum + '"]').attr('title',isValid).classed('invalidName',true); }
         else { d3.select('.reset.bulk-import.fileImport[row="' + selRowNum + '"]').attr('title',null).classed('invalidName',false); }
-        
+
 
         d3.select('.reset.fileImport[row="' + selRowNum + '"]').value(fileNames.join('; '));
         var first = fileNames[0];
@@ -683,8 +683,8 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var combo = d3.combobox()
             .data(_.map(a.combobox.data,function(n){
                 return {
-                    value: n.DESCRIPTION,
-                    title: n.DESCRIPTION
+                    value: n.description,
+                    title: n.description
                 };
             }));
 
@@ -891,8 +891,8 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
         var combo = d3.combobox()
             .data(_.map(translationsList, function (n) {
                 return {
-                    value: n.DESCRIPTION,
-                    title: n.DESCRIPTION
+                    value: n.description,
+                    title: n.description
                 };
             }));
 
@@ -900,9 +900,9 @@ Hoot.control.utilities.bulkimportdataset = function(context) {
              .style('width', '100%')
                 .call(combo);
         if(typeName === 'GEONAMES'){
-            d3.select('.reset.Schema[row="' + selRowNum + '"]').value(_importTranslationsGeonames[0].DESCRIPTION);
+            d3.select('.reset.Schema[row="' + selRowNum + '"]').value(_importTranslationsGeonames[0].description);
         } else if(typeName === 'OSM'){
-            d3.select('.reset.Schema[row="' + selRowNum + '"]').value(_importTranslationsOsm[0].DESCRIPTION);
+            d3.select('.reset.Schema[row="' + selRowNum + '"]').value(_importTranslationsOsm[0].description);
         }
 
         d3.select('#ingestfileuploaderspancontainer-'+selRowNum).classed('hidden', false);

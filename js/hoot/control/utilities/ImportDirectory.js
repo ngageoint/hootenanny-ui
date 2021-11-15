@@ -48,8 +48,8 @@ Hoot.control.utilities.importdirectory = function(context) {
         _trans = trans;
         if(_trans.length === 1){
             var emptyObj = {};
-            emptyObj.NAME = '';
-            emptyObj.DESCRIPTION = '';
+            emptyObj.name = '';
+            emptyObj.description = '';
             _trans.push(emptyObj);
         }
 
@@ -195,8 +195,8 @@ Hoot.control.utilities.importdirectory = function(context) {
     var _getDescriptionList = function(){
         var translation = '';
 
-        var selectedTrans = d3.select('#importDirectorySchema').datum().combobox.filter(function(d){return d.DESCRIPTION === d3.select('#importDirectorySchema').value();});
-        try{translation = selectedTrans[0].NAME;}
+        var selectedTrans = d3.select('#importDirectorySchema').datum().combobox.filter(function(d){return d.description === d3.select('#importDirectorySchema').value();});
+        try{translation = selectedTrans[0].name;}
         catch(err) {
             iD.ui.Alert('Unable to retrieve translations from server','warning',new Error().stack);
             return;
@@ -219,7 +219,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             }
         });
     };
-    
+
 
     /**
     * @desc Validates user specified input.
@@ -243,7 +243,7 @@ Hoot.control.utilities.importdirectory = function(context) {
 
     /**
     * @desc Validate list of files
-    **/    
+    **/
     var _validateFileList = function(filesList){
          _.each(filesList, function(f){
             var strValidate = f.text || f.name || f;
@@ -277,11 +277,11 @@ Hoot.control.utilities.importdirectory = function(context) {
                 validName = false;
             }
 
-            selectedOpt.classed('invalidName',!validName);  
+            selectedOpt.classed('invalidName',!validName);
             if(validName){selectedOpt.attr('title',null);}
          });
 
-         return true; 
+         return true;
     };
 
     /**
@@ -344,15 +344,15 @@ Hoot.control.utilities.importdirectory = function(context) {
 
         var progcont = submitExp.append('div');
         progcont.classed('form-field', true);
-              
+
         var prog = progcont.append('span').append('progress');
         prog.classed('form-field', true);
         prog.value(fileNo.toString());
         prog.attr('max', fileNames.length.toString());
         prog.attr('id', 'dirImportProgress');
-        
 
-        progcont.append('div')        
+
+        progcont.append('div')
             .style('max-height','24px')
             .style('overflow','hidden')
             .append('text')
@@ -390,10 +390,10 @@ Hoot.control.utilities.importdirectory = function(context) {
             selectedOpt.classed('importSuccess',false)
                 .classed('importProgress',false)
                 .classed('importError',false);
-        } 
+        }
 
         // now make sure we scroll to it
-        
+
         var itemIdx = _getFilesList().indexOf(optName);
         try{
             var itemHeight = d3.select('#importDirectoryFilesList').select('option[value="' + optName + '"]').property('clientHeight');
@@ -424,7 +424,7 @@ Hoot.control.utilities.importdirectory = function(context) {
 
         var importFiles = _.filter(document.getElementById('ingestdirectoryuploader').files, function(file){
                 var fName = file.name.substring(0, file.name.length - 4);
-                if(file.name.toLowerCase().indexOf('.shp.xml') > -1){fName = file.name.substring(0, file.name.length - 8);} 
+                if(file.name.toLowerCase().indexOf('.shp.xml') > -1){fName = file.name.substring(0, file.name.length - 8);}
                 return fName === fileNames[fileNo].value;
             });
 
@@ -619,8 +619,8 @@ Hoot.control.utilities.importdirectory = function(context) {
         var combo = d3.combobox()
             .data(_.map(a.combobox.data, function (n) {
                 return {
-                    value: n.DESCRIPTION,
-                    title: n.DESCRIPTION
+                    value: n.description,
+                    title: n.description
                 };
             }));
 
@@ -671,7 +671,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             .attr('webkitdirectory', null)
             .attr('directory', null);
         }
-    };    
+    };
 
     /**
     * @desc Populated import types drop down.
@@ -724,8 +724,8 @@ Hoot.control.utilities.importdirectory = function(context) {
             var combo = d3.combobox()
                 .data(_.map(translationsList, function (n) {
                     return {
-                        value: n.DESCRIPTION,
-                        title: n.DESCRIPTION
+                        value: n.description,
+                        title: n.description
                     };
                 }));
 
@@ -733,10 +733,10 @@ Hoot.control.utilities.importdirectory = function(context) {
                  .style('width', '100%')
                     .call(combo);
             /*if(typeName === 'GEONAMES'){
-                d3.select('#importDirectorySchema').value(_importTranslationsGeonames[0].DESCRIPTION);
+                d3.select('#importDirectorySchema').value(_importTranslationsGeonames[0].description);
             } else */
             if(typeName === 'OSM'){
-                d3.select('#importDirectorySchema').value(_importTranslationsOsm[0].DESCRIPTION);
+                d3.select('#importDirectorySchema').value(_importTranslationsOsm[0].description);
             }
 
             d3.select('#ingestdirectoryuploaderspancontainer').classed('hidden', false);
@@ -848,11 +848,11 @@ Hoot.control.utilities.importdirectory = function(context) {
                             var inputName = _container.select('#importDirectoryFolderImport').value();
                             if(!inputName){
                                 _container.select('#importDirectoryFolderImport').value(folderName);
-                                _container.select('#importDirectoryNewFolderName').value(folderName);  
+                                _container.select('#importDirectoryNewFolderName').value(folderName);
                                 d3.select('#importDirectoryNewFolderName').call(_validateInput);
                             } else {
                                 _container.select('#importDirectoryFolderImport').value('');
-                                _container.select('#importDirectoryNewFolderName').value('');  
+                                _container.select('#importDirectoryNewFolderName').value('');
                             }
                         }
                     }
@@ -882,7 +882,7 @@ Hoot.control.utilities.importdirectory = function(context) {
     **/
     var _validateLoaded = function(selType, filesList) {
         //Filter based on selType, then add or remove from filesList
-        if(selType === 'FILE'){            
+        if(selType === 'FILE'){
             var isValid = true;
             _.each(filesList, function(f){
                 var grp = _.find(filesList, function(m){
@@ -940,7 +940,7 @@ Hoot.control.utilities.importdirectory = function(context) {
             var thresholdInMb = Math.floor((1*iD.data.hootConfig.ingest_size_threshold)/1000000);
             if(!window.confirm('The total size of ' + f.name + ' are greater than ingest threshold size of ' +
                 thresholdInMb + 'MB and it may have problem. Do you wish to continue?')){
-                
+
                 // Clear everything
                 d3.select('#importDirectoryFolderImport').value('');
                 d3.select('#importDirectoryNewFolderName').value('');
@@ -1020,13 +1020,13 @@ Hoot.control.utilities.importdirectory = function(context) {
     **/
     _instance.getImportTranslations = function(trans, importTranslations, importTranslationsOsm) {
         _.each(trans, function(t){
-            if(t.NAME === 'GEONAMES'){
+            if(t.name === 'GEONAMES'){
                 //importTranslationsGeonames.push(t);
-            } else if(t.NAME === 'OSM'){
+            } else if(t.name === 'OSM'){
                 var emptyObj = {};
-                emptyObj.NAME = 'NONE';
-                emptyObj.PATH = 'NONE';
-                emptyObj.DESCRIPTION = 'No Translation';
+                emptyObj.name = 'NONE';
+                emptyObj.path = 'NONE';
+                emptyObj.description = 'No Translation';
                 emptyObj.NONE = 'true';
                 importTranslationsOsm.push(emptyObj);
 
