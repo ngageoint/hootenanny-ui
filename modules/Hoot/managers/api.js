@@ -1870,7 +1870,7 @@ export default class API {
      * Sets the lock state for the specified task under the specified project
      */
     setTM4TaskLock( projectId, taskId, lock ) {
-        let lockParam = lock ? 'lock-for-mapping' : 'stop-mapping';
+        let lockParam = lock ? 'lock-for-conflation' : 'stop-mapping';
         let authToken = this.getTM4AuthToken();
 
         const params = {
@@ -1927,7 +1927,7 @@ export default class API {
                 'X-Requested-With': 'XMLHttpRequest'
             },
             data: {
-                status: 'MAPPED'
+                status: 'CONFLATED'
             }
         };
 
