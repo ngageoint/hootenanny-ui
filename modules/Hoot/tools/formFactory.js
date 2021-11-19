@@ -569,10 +569,9 @@ export default class FormFactory {
 
         if ( opt.data ) {
             domMeta.data = opt.data;
-
-            if ( opt.displayToHootMap ) {
-                domMeta.displayToHootMap = opt.displayToHootMap;
-            }
+            if (opt.itemKey) domMeta.itemKey = opt.itemKey;
+            if (opt.valueKey) domMeta.valueKey = opt.valueKey;
+            if (opt.displayToHootMap) domMeta.displayToHootMap = opt.displayToHootMap;
         }
 
         return domMeta;
