@@ -84,7 +84,6 @@ export default class Datasets extends Tab {
                 width: '1%'
             }
         ];
-
     }
 
     /**
@@ -199,7 +198,6 @@ export default class Datasets extends Tab {
      * @param toDelete - array of items to delete
      */
     deleteItems( toDelete ) {
-
         const deleteItem = item => {
             let data = item.data || item,
                 node = this.table.selectAll( `g[data-type="${ data.type }"][data-id="${ data.id }"]` );
