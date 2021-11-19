@@ -959,8 +959,8 @@ export default class API {
 
         return this.request( params )
             .then( resp => {
-                let fileBlob = new Blob( [ resp.data ], { type: 'application/xml' } );
-                saveAs( fileBlob, `changeset_${id}.osc` );
+                let fileBlob = new Blob( [ resp.data ], { type: 'application/zip' } );
+                saveAs( fileBlob, `changeset_${id}.osc.zip` );
             })
             .catch( err => {
                 console.error(err);
