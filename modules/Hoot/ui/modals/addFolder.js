@@ -81,6 +81,9 @@ export default class AddFolder {
             isPublic: isPublic
         };
 
+        //Disable submit so it can't be clicked while processing
+        this.submitButton.node().disabled = true;
+
         this.processRequest = Hoot.api.addFolder( params )
             .then( () => Hoot.folders.refreshAll() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )

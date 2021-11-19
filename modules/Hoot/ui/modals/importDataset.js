@@ -34,11 +34,11 @@ export default class ImportDataset {
 
         // Add "NONE" option to beginning of array
         this.translations.unshift( {
-            NAME: 'NONE',
-            PATH: 'NONE',
+            name: 'NONE',
+            path: 'NONE',
             displayPath: 'NONE',
-            DESCRIPTION: 'No Translations',
-            NONE: 'true'
+            description: 'No Translations',
+            none: 'true'
         } );
 
         this.importTypes = [
@@ -151,9 +151,9 @@ export default class ImportDataset {
 
         // filter translations for selected type
         if ( selectedType === 'GEONAMES' ) {
-            translationsList = _filter( this.translations, o => o.NAME === 'GEONAMES' );
+            translationsList = _filter( this.translations, o => o.name === 'GEONAMES' );
         } else {
-            translationsList = _reject( this.translations, o => o.NAME === 'GEONAMES' );
+            translationsList = _reject( this.translations, o => o.name === 'GEONAMES' );
         }
 
         schemaCombo.data = translationsList;
@@ -162,14 +162,14 @@ export default class ImportDataset {
         this.setMultipartForType( selectedType );
         this.formFactory.populateCombobox( this.schemaInput );
 
-        this.schemaInput.property( 'value', translationsList[ 0 ].NAME );
+        this.schemaInput.property( 'value', translationsList[ 0 ].name );
 
         // wish this could be expressed in the import opts from the server
         // but we need this hack right now to make the advanced import options
         // only available for ogr types
 
         function isOgr(type) {
-            return ['FILE', 'GPKG', 'DIR'].indexOf(type) > -1;
+            return ['FILE', 'GPKG', 'DIR', 'GEOJSON'].indexOf(type) > -1;
         }
 
         this.advOptsInputs.classed('hidden', !isOgr(selectedType));
@@ -395,18 +395,18 @@ export default class ImportDataset {
             transCombo    = this.schemaInput.datum(),
             typeCombo     = this.typeInput.datum(),
 
-            translation   = _filter( transCombo.data, o => o.NAME === transVal || o.displayPath === transVal )[ 0 ],
+            translation   = _filter( transCombo.data, o => o.name === transVal || o.displayPath === transVal )[ 0 ],
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
 
             translationIdentifier,
             folderId;
 
-        if ( translation.DEFAULT ) {
-            translationIdentifier = translation.PATH || translation.IMPORTPATH;
+        if ( translation.default ) {
+            translationIdentifier = translation.path || translation.importPath;
         } else if ( translation.id ) {
             translationIdentifier = translation.id;
         } else {
-            translationIdentifier = translation.NAME + '.js';
+            translationIdentifier = translation.name + '.js';
         }
 
         if ( newFolderName ) {
@@ -419,7 +419,7 @@ export default class ImportDataset {
         }
 
         let data = {
-            NONE_TRANSLATION: translation.NONE === 'true',
+            NONE_TRANSLATION: translation.none === 'true',
             TRANSLATION: translationIdentifier,
             INPUT_TYPE: importType.value,
             INPUT_NAME: Hoot.layers.checkLayerName( layerName ),

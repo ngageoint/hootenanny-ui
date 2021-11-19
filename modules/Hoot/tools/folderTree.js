@@ -321,7 +321,7 @@ export default class FolderTree extends EventEmitter {
         const self = this;
 
         let nodeElement = nodes.enter().append( 'g' )
-            .attr( 'data-name', d => d.data.name || d.data.NAME )
+            .attr( 'data-name', d => d.data.name )
             .attr( 'data-id', d => d.data.id )
             .attr( 'data-type', d => d.data.type )
             .attr( 'transform', `translate( 0, ${ source.x0 } )` )
@@ -387,7 +387,7 @@ export default class FolderTree extends EventEmitter {
                 let dd = d.depth - 1;
                 return 25.5 + (11 * dd);
             } )
-            .append( 'tspan' ).text( d => d.data.name || d.data.NAME );
+            .append( 'tspan' ).text( d => d.data.name );
 
         // Render node owner
         if ( this.isDatasetTable || this.isTranslationTable ) {
@@ -618,7 +618,7 @@ export default class FolderTree extends EventEmitter {
                 opts = [...this.translationContextMenu.slice()];
 
                 // Don't allow move and delete for default translations
-                if ( !d.data.DEFAULT ) {
+                if ( !d.data.default ) {
                     opts.push({
                         title: 'Delete',
                         _icon: 'trash',

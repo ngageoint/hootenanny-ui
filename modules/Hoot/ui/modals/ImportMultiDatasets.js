@@ -111,7 +111,7 @@ export default class ImportMultiDatasets {
         }
 
         // filter out geoname translations
-        translationsList = _reject( this.translations, o => o.NAME === 'GEONAMES' );
+        translationsList = _reject( this.translations, o => o.name === 'GEONAMES' );
 
         schemaCombo.data = translationsList;
 
@@ -328,7 +328,7 @@ export default class ImportMultiDatasets {
             transCombo    = this.schemaInput.datum(),
             typeCombo     = this.typeInput.datum(),
 
-            translation   = _filter( transCombo.data, o => o.NAME === transVal || o.displayPath === transVal )[ 0 ],
+            translation   = _filter( transCombo.data, o => o.name === transVal || o.displayPath === transVal )[ 0 ],
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
             asSingle      = this.asSingleLayer.property('checked'),
             asSingleName  = this.asSingleLayerName.property('value'),
@@ -343,20 +343,20 @@ export default class ImportMultiDatasets {
             translationIdentifier = '';
         }
 
-        if ( translation.DEFAULT ) {
-            if ( translation.PATH && translation.PATH.length ) {
-                translationIdentifier = translation.PATH;
+        if ( translation.default ) {
+            if ( translation.path && translation.path.length ) {
+                translationIdentifier = translation.path;
             }
-            else if ( translation.IMPORTPATH && translation.IMPORTPATH.length ) {
-                translationIdentifier = translation.IMPORTPATH;
+            else if ( translation.importPath && translation.importPath.length ) {
+                translationIdentifier = translation.importPath;
             }
             else {
-                translationIdentifier = translation.NAME + '.js';
+                translationIdentifier = translation.name + '.js';
             }
         } else if ( translation.id ) {
             translationIdentifier = translation.id;
         } else {
-            translationIdentifier = translation.NAME + '.js';
+            translationIdentifier = translation.name + '.js';
         }
 
         if ( newFolderName ) {

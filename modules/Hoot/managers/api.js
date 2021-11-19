@@ -490,23 +490,21 @@ export default class API {
             .then( resp =>
                 resp.data.sort( ( a, b ) => {
                     // Set undefined to false
-                    if ( !a.DEFAULT ) a.DEFAULT = false;
-                    if ( !b.DEFAULT ) b.DEFAULT = false;
-                    // We check DEFAULT property, putting true first
-                    if ( a.DEFAULT !== b.DEFAULT ) {
-                        return ( a.DEFAULT ) ? -1 : 1;
+                    if ( !a.default ) a.default = false;
+                    if ( !b.default ) b.default = false;
+                    // We check default property, putting true first
+                    if ( a.default !== b.default ) {
+                        return ( a.default ) ? -1 : 1;
                     } else {
-                        let aName = a.NAME || a.name;
-                        let bName = b.NAME || b.name;
-                        // We only get here if the DEFAULT prop is equal
-                        return d3.ascending( aName.toLowerCase(), bName.toLowerCase() );
+                        // We only get here if the default prop is equal
+                        return d3.ascending( a.name.toLowerCase(), b.name.toLowerCase() );
                     }
                 } ) );
     }
 
     getTranslation( name ) {
         const params = {
-            path: `/ingest/customscript/getscript?SCRIPT_NAME=${ name }`,
+            path: `/ingest/customscript/getscript?scriptName=${ name }`,
             method: 'GET'
         };
 
@@ -516,7 +514,7 @@ export default class API {
 
     getDefaultTranslation( path ) {
         const params = {
-            path: `/ingest/customscript/getdefaultscript?SCRIPT_PATH=${ path }`,
+            path: `/ingest/customscript/getdefaultscript?scriptPath=${ path }`,
             method: 'GET'
         };
 
@@ -543,7 +541,7 @@ export default class API {
 
     deleteTranslation( identifier ) {
         const params = {
-            path: `/ingest/customscript/deletescript?SCRIPT_INFO=${ identifier }`,
+            path: `/ingest/customscript/deletescript?scriptInfo=${ identifier }`,
             method: 'GET'
         };
 
@@ -961,8 +959,8 @@ export default class API {
 
         return this.request( params )
             .then( resp => {
-                let fileBlob = new Blob( [ resp.data ], { type: 'application/xml' } );
-                saveAs( fileBlob, `changeset_${id}.osc` );
+                let fileBlob = new Blob( [ resp.data ], { type: 'application/zip' } );
+                saveAs( fileBlob, `changeset_${id}.osc.zip` );
             })
             .catch( err => {
                 console.error(err);
@@ -1493,9 +1491,9 @@ export default class API {
             } );
     }
 
-    changesetStats( jobId, includeTags ) {
+    changesetStats( jobId ) {
         const params = {
-            path: `/grail/changesetstats?jobId=${ jobId }&includeTags=${ includeTags }`,
+            path: `/grail/changesetstats?jobId=${ jobId }`,
             method: 'GET'
         };
 
@@ -1872,7 +1870,7 @@ export default class API {
      * Sets the lock state for the specified task under the specified project
      */
     setTM4TaskLock( projectId, taskId, lock ) {
-        let lockParam = lock ? 'lock-for-mapping' : 'stop-mapping';
+        let lockParam = lock ? 'lock-for-conflation' : 'stop-mapping';
         let authToken = this.getTM4AuthToken();
 
         const params = {
@@ -1929,7 +1927,7 @@ export default class API {
                 'X-Requested-With': 'XMLHttpRequest'
             },
             data: {
-                status: 'MAPPED'
+                status: 'CONFLATED'
             }
         };
 

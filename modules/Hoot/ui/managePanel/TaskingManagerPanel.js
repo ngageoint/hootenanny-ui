@@ -76,7 +76,7 @@ export default class TaskingManagerPanel extends Tab {
             this.cutReplaceOptions.form = this.cutReplaceOptions.form.concat(cutReplaceOpts.map(this.formFactory.advOpt2DomMeta));
         }
 
-        // form for differentail options
+        // form for differential options
         this.differentialOptions = {
             title: 'Options',
             form: [],

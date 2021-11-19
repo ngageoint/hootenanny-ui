@@ -6,7 +6,6 @@ export default class ChangesetStats {
         this.job = job;
         this.changesetInfo = data;
         this.viewOnly = viewOnly;
-        this.includeTags = false;
         this.changesetEditor = uiChangesetEditor(Hoot.context)
             .on('change', changeTags);
         const that = this;
@@ -99,30 +98,6 @@ export default class ChangesetStats {
             .classed( 'changesetInfo', true );
 
         this.infoGrid(table);
-
-        if (hasTags) {
-            let tagsOption = this.form
-                .select( '.wrapper div' )
-                .insert( 'div', '.changeset-editor' )
-                .classed( 'tagInput', true );
-
-            tagsOption.append( 'label' )
-                .text('Apply Tag Differential?');
-
-            const checkbox = tagsOption.append( 'input' )
-                .attr( 'type', 'checkbox' )
-                .property( 'checked', this.includeTags )
-                .attr( 'class', 'applyTags' )
-                .on('click', async ()  => {
-                    this.includeTags = checkbox.property( 'checked' );
-                    const stats = await Hoot.api.changesetStats(this.job.jobId, this.includeTags);
-                    this.changesetInfo = stats.data;
-
-                    this.form.select('table').remove();
-                    tagsOption.remove();
-                    this.createTable();
-                });
-        }
     }
 
     infoGrid (tableElement) {
@@ -235,7 +210,6 @@ export default class ChangesetStats {
         params.comment = Hoot.context.storage('comment') || '';
         params.hashtags = Hoot.context.storage('hashtags') || '';
         params.source = Hoot.context.storage('source') || '';
-        params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
 
         if ( this.job.tags && this.job.tags.taskInfo ) {
             params.taskInfo = this.job.tags.taskInfo;
