@@ -12,7 +12,7 @@ import _find               from 'lodash-es/find';
 import _get                from 'lodash-es/get';
 import _forEach            from 'lodash-es/forEach';
 import ImportDataset       from './importDataset';
-
+import { rateLimit }       from '../../config/apiConfig';
 export default class ImportMultiDatasets {
     constructor( translations, path ) {
         this.folderList     = Hoot.folders.folderPaths;
@@ -308,7 +308,6 @@ export default class ImportMultiDatasets {
      * @param d - node data
      */
     deduplicateName( d ) {
-        console.log(d);
         let target = d3.select( `#${ d.id }` );
         target.property('value', Hoot.layers.checkLayerName( target.property('value') ));
     }
@@ -335,7 +334,8 @@ export default class ImportMultiDatasets {
             asSingleName  = this.asSingleLayerName.property('value'),
 
             translationIdentifier,
-            folderId;
+            folderId,
+            fileCount = 0;
 
         //if no translation, set NONE
         if ( !translation ) {
@@ -387,7 +387,12 @@ export default class ImportMultiDatasets {
 
         this.loadingState( fileNames.length );
 
-        let proms = fileNames.map( (name, index) => {
+        //If "as single layer" is checked the browser makes a single upload request with multiple files
+        //otherwise it's an upload request per file
+        //Use rate limit so as not to overwhelm the db connections
+
+
+        const upload = (name) => {
 
             return new Promise( resolve => {
 
@@ -427,7 +432,13 @@ export default class ImportMultiDatasets {
                     .then( resp => {
                         // remove completed job from jobIdList
                         this.jobIdList.splice( this.jobIdList.indexOf( resp.data.jobId ), 1 );
-                        resolve( {fileName: name, status: resp.data.status} );
+                        fileCount++;
+                        this.progressBar.property( 'value', fileCount );
+                        this.fileListInput
+                            .selectAll( asSingle ? 'option' : `option[value="${name}"]` )
+                            .classed( 'import-success', resp.data.status !== 'cancelled' )
+                            .classed( 'import-cancel', resp.data.status === 'cancelled' );
+                        resolve();
                     })
                     .catch( err => {
                         console.error(err);
@@ -445,22 +456,19 @@ export default class ImportMultiDatasets {
                         }
 
                         Hoot.message.alert( { message, type, keepOpen } );
-                    })
-                    .finally( () => {
-                        this.container.remove();
-                        Hoot.events.emit( 'modal-closed' );
                     });
             });
-        });
+        };
+        //approach described here https://stackoverflow.com/a/51020535
+        async function doWork(iterator) {
+            for (let [index, item] of iterator) {
+                await upload(item);
+            }
+        }
+        const iterator = fileNames.entries();
+        const workers = new Array(rateLimit).fill(iterator).map(doWork);
 
-        this.processRequest = this.allProgress( proms, ( n, fileName, status ) => {
-                this.progressBar.property( 'value', n );
-                this.fileListInput
-                    .selectAll( asSingle ? 'option' : `option[value="${fileName}"]` )
-                    .classed( 'import-success', status !== 'cancelled' )
-                    .classed( 'import-cancel', status === 'cancelled' )
-                    ;
-            } )
+        this.processRequest = Promise.allSettled(workers)
             .then( resp => {
                 let statuses = resp.reduce((map, obj) => {
                     if (map[obj.status]) {
@@ -485,20 +493,6 @@ export default class ImportMultiDatasets {
             });
     }
 
-    allProgress( proms, cb ) {
-        let n = 0;
-
-        cb( 0 );
-
-        proms.forEach( p => {
-            p.then( resp => {
-                n++;
-                cb( n, resp.fileName, resp.status );
-            } );
-        } );
-
-        return Promise.all( proms );
-    }
 
     /**
      *

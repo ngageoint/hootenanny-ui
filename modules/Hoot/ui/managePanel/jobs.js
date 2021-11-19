@@ -206,7 +206,7 @@ export default class Jobs extends Tab {
     async deleteJobs(self) {
         function deleteJobs() {
             d3.select('#util-jobs').classed('wait', true);
-            Promise.all( delIds.map( id => Hoot.api.deleteJobStatus(id)) )
+            Promise.all( delIds.map( id => Hoot.api.deleteJobStatus(id)) )//rate limit?
                 .then( resp => self.loadJobs() )
                 .finally( () => {
                     self.selectNone();

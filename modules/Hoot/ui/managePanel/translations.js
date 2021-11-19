@@ -178,7 +178,7 @@ export default class Translations extends Tab {
         }
     }
 
-    deleteItems( toDelete ) {
+    deleteItems( toDelete ) {//rate limit?
         return Promise.all( _map( toDelete, item => {
             let data = item.data || item;
 
