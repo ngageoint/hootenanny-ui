@@ -28,7 +28,7 @@ export function operationCircularize(selectedIDs, context) {
     operation.disabled = function() {
         var reason;
         if (extent.percentContainedIn(context.extent()) < 0.8) {
-            reason = 'too_large';
+            //reason = 'too_large';
         } else if (context.hasHiddenConnections(entityId)) {
             reason = 'connected_to_hidden';
         }
