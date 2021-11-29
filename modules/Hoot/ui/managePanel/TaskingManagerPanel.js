@@ -418,6 +418,7 @@ export default class TaskingManagerPanel extends Tab {
 
         let executeCommand;
         if ( syncCheck ) {
+            this.setTaskStatus( taskId, 'Waiting for Overpass to sync' );
             executeCommand = Hoot.api.overpassSyncCheck( `${ this.currentProject.id }_${ taskId }` );
         } else {
             executeCommand = Hoot.api.deriveChangeset( data, params );
