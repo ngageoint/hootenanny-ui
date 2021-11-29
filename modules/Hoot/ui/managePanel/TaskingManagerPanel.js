@@ -431,7 +431,7 @@ export default class TaskingManagerPanel extends Tab {
 
                 if ( resp.status === 200 ) {
                     if ( this.tmVersion === 4 ) {
-                        status = 'Mapped';
+                        status = 'Conflated';
                         await Hoot.api.markTM4TaskDone( this.currentProject.id, taskId );
                     } else {
                         status = 'Done';
