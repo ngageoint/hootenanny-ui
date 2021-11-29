@@ -153,7 +153,7 @@ export default class Translations extends Tab {
         if ( d.default ) {
             translationText = await Hoot.api.getDefaultTranslation( d.path || d.importPath );
         } else {
-            translationText = await Hoot.api.getTranslation( d.name || d.id );
+            translationText = await Hoot.api.getTranslation( d.id );
         }
 
         new ModifyTranslation( this, d, translationText ).render();
@@ -166,7 +166,7 @@ export default class Translations extends Tab {
             if ( d.default ) {
                 translationText = await Hoot.api.getDefaultTranslation( d.path || d.exportPath );
             } else {
-                translationText = await Hoot.api.getTranslation( d.name || d.id );
+                translationText = await Hoot.api.getTranslation( d.id );
             }
 
             let transBlob = new Blob( [ translationText ], { type: 'text/javascript' } );
