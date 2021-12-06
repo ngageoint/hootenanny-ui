@@ -426,8 +426,6 @@ export default class TaskingManagerPanel extends Tab {
 
         return executeCommand
             .then( async resp => {
-                await this.refreshTimeoutTaskList();
-
                 let status;
 
                 if ( resp.status === 200 ) {
@@ -438,43 +436,46 @@ export default class TaskingManagerPanel extends Tab {
                         status = 'Done';
                         await Hoot.api.markTaskDone( this.currentProject.id, taskId );
                     }
-                } else if ( this.timeoutTasks.includes( taskId ) ) {
-                    Hoot.message.alert( resp );
-                    this.setTaskStatus( taskId, 'Timed out' );
-                    this.lockedTaskButtons( taskId );
-                    return resp;
                 } else {
-                    status = 'Invalidated';
+                    await this.refreshTimeoutTaskList();
 
-                    let validateRequest;
-                    if ( this.tmVersion === 4 ) {
-                        const formData = {
-                            validatedTasks : [{
-                                comment: 'Hootenanny failure',
-                                status: 'INVALIDATED',
-                                taskId: taskId
-                            }]
-                        };
-                        validateRequest = Hoot.api.invalidateTaskTm4( this.currentProject.id, taskId, formData );
+                    if ( this.timeoutTasks.includes( taskId ) ) {
+                        Hoot.message.alert( resp );
+                        this.setTaskStatus( taskId, 'Timed out' );
+                        this.lockedTaskButtons( taskId );
+                        return resp;
                     } else {
-                        const formData = new FormData();
-                        formData.set( 'comment', 'Hootenanny failure' );
-                        formData.set( 'invalidate', 'true' );
-                        validateRequest = Hoot.api.validateTask( this.currentProject.id, taskId, formData );
-                    }
+                        status = 'Invalidated';
 
-                    validateRequest.then( resp => {
-                            const alert = {
-                                message: resp.msg,
-                                type: resp.success ? 'success' : 'error'
+                        let validateRequest;
+                        if ( this.tmVersion === 4 ) {
+                            const formData = {
+                                validatedTasks : [{
+                                    comment: 'Hootenanny failure',
+                                    status: 'INVALIDATED',
+                                    taskId: taskId
+                                }]
                             };
+                            validateRequest = Hoot.api.invalidateTaskTm4( this.currentProject.id, taskId, formData );
+                        } else {
+                            const formData = new FormData();
+                            formData.set( 'comment', 'Hootenanny failure' );
+                            formData.set( 'invalidate', 'true' );
+                            validateRequest = Hoot.api.validateTask( this.currentProject.id, taskId, formData );
+                        }
 
-                            Hoot.message.alert( alert );
-                        } );
+                        validateRequest.then( resp => {
+                                const alert = {
+                                    message: resp.msg,
+                                    type: resp.success ? 'success' : 'error'
+                                };
 
-                    resp.message += ' Check the jobs panel if you want to download the diff-error file.';
+                                Hoot.message.alert( alert );
+                            } );
+
+                        resp.message += ' Check the jobs panel if you want to download the diff-error file.';
+                    }
                 }
-
                 Hoot.message.alert( resp );
                 this.setTaskStatus( taskId, status );
                 this.unlockedTaskButtons( taskId );
