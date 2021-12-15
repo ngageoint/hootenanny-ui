@@ -1,10 +1,9 @@
+import AdvancedOpts  from '../../../../modules/Hoot/ui/sidebar/advancedOpts';
 
 const { generateAdvOptsLayerParams } = require( '../../helpers' );
 
 
-describe( 'Advanced Options', () => {
-    let layerParams, advancedOptions, options;
-    describe( 'Toggle on and off certain conflation types', () => {
+describe.only( 'Advanced Options', () => {
         before( async function () { // upload 2 datasets and have conflate ui showing...
             try {
                 let generateCount = 2,
@@ -12,6 +11,7 @@ describe( 'Advanced Options', () => {
 
                 await Promise.all( _.map( layerParams, params => Hoot.api.uploadDataset( params ) ) ); // generate  test layer
                 await Hoot.folders.refreshAll();
+                await Hoot.layers.refreshAll();
                 await Hoot.events.emit( 'render-dataset-table' );
 
                 await new Promise(res => {
@@ -70,7 +70,6 @@ describe( 'Advanced Options', () => {
             }
         } );
         after( function () {
-            // this.enableTimeouts( false );
             let reference = d3.select( '#reference' ),
                 secondary = d3.select( '#secondary' );
 
@@ -81,53 +80,51 @@ describe( 'Advanced Options', () => {
             Hoot.ui.sidebar.layerRemoved( secondary.datum() );
         } );
 
-        it( 'has all conflation types toggled initially', () => {
-            advancedOptions = Hoot.ui.sidebar.forms.conflate.advancedOptions;
+        it( 'has all conflation types toggled initially', (done) => {
             d3.selectAll( '#advanced-opts-panel .advanced-opts-content .form-group')
                 .each(function(d) {
-                    const input = d3.select( this ).select( 'input' );
+                    const input = d.select( 'input' );
                     expect( input.property( 'checked' ) ).to.be.true;
                 });
-
-            options = advancedOptions.getOptions();
-
-            expect( options.includes( 'match.creators' )  ).to.be.true;
-            expect( options.includes( 'merger.creators' )  ).to.be.true;
+                setTimeout(() => {
+                    let { advanced, cleaning } = AdvancedOpts.getInstance().getOptions();
+                    
+                    expect( advanced.includes( 'match.creators' )  ).to.be.true;
+                    expect( advanced.includes( 'merger.creators' )  ).to.be.true;
+                    done();
+                }, 500);
 
         } );
         it ( 'removes specific merger and match creators when relevant conflation types are unchecked', (done) => {
-            d3.select( '#roadOptions_group input' ).property( 'checked', false );
+            d3.select( '#Roads-toggle input' ).property( 'checked', false );
 
-            options = advancedOptions.getOptions();
+            let { advanced, cleaning } = AdvancedOpts.getInstance().getOptions();
 
-            expect( options.includes( 'HighwayMatchCreator' ) ).to.be.false;
-            expect( options.includes( 'HighwayMergerCreator' ) ).to.be.false;
+            expect( advanced.includes( 'HighwayMatchCreator' ) ).to.be.false;
+            expect( advanced.includes( 'HighwayMergerCreator' ) ).to.be.false;
             done();
         } );
         it ( 'makes only road input checked and users network matcher/merger when network selected', (done) => {
             d3.select( '#conflateType')
-                .property( 'value', 'Network')
-                .dispatch( 'change' );
+            .property( 'value', 'Network')
+            .dispatch( 'change' );
 
-            setTimeout(() => {
-                d3.selectAll( '.advanced-opts-content .form-group')
-                    .each(function(d) {
-                        const input = d3.select( this ).select( 'input' );
-                        if ( d.id === 'roadOptions' ) {
-                            expect( input.property( 'checked' ) ).to.be.true;
-                        } else {
-                            expect( input.property( 'checked' ) ).to.be.false;
-                        }
-                    });
-
-                options = advancedOptions.getOptions();
-
-                expect( options.includes( 'NetworkMatchCreator' )).to.be.true
-                expect( options.includes( 'NetworkMergerCreator' )).to.be.true
-                expect( options.includes( 'HighwayMatchCreator' ) ).to.be.false;
-                expect( options.includes( 'HighwayMergerCreator' ) ).to.be.false;
-                done();
-            }, 500);
+        setTimeout(() => {
+            d3.selectAll( '.advanced-opts-content .form-group')
+                .each(function(d) {
+                    const input = d3.select( this ).select( 'input' );
+                    if ( d.id === 'Roads-toggle' ) {
+                        expect( input.property( 'checked' ) ).to.be.true;
+                    } else {
+                        expect( input.property( 'checked' ) ).to.be.false;
+                    }
+                });
+                let { advanced, cleaning } = AdvancedOpts.getInstance().getOptions();
+                expect( advanced.includes( 'NetworkMatchCreator' )).to.be.true
+                expect( advanced.includes( 'NetworkMergerCreator' )).to.be.true
+                expect( advanced.includes( 'HighwayMatchCreator' ) ).to.be.false;
+                expect( advanced.includes( 'HighwayMergerCreator' ) ).to.be.false;
+            done();
+        }, 500);
         } );
-    } );
 } );
