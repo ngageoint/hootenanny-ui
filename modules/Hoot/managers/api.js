@@ -112,7 +112,7 @@ export default class API {
                         res( { data, type: 'success', status: 200, jobId } );
                     } else if ( status === 'cancelled' ) {
                         res( { data, type: 'warn', status: 200 } );
-                    } else if ( status === 'failed' ) {
+                    } else if ( status === 'failed' ) {//add a 404 handler to ignore
                         Hoot.api.getJobError(jobId)
                                     .then( resp => {
                                         let message = resp.errors.join('\n');
@@ -1915,7 +1915,7 @@ export default class API {
     /**
      * Marks the specified task under the specified project as done
      */
-    markTM4TaskDone( projectId, taskId ) {
+    markTM4TaskDone( projectId, taskId, status ) {
         let authToken = this.getTM4AuthToken();
 
         const params = {
@@ -1927,73 +1927,12 @@ export default class API {
                 'X-Requested-With': 'XMLHttpRequest'
             },
             data: {
-                status: 'CONFLATED'
+                status: status
             }
         };
 
         return this.request( params )
             .then( resp => resp.data );
-    }
-
-    invalidateTaskTm4( projectId, taskId, formData ) {
-        let lockParam = 'lock-for-validation';
-        let authToken = this.getTM4AuthToken();
-
-        const params = {
-            url: `/tm4api/v2/projects/${ projectId }/tasks/actions/${ lockParam }/`,
-            method: 'POST',
-            headers: {
-                'Accept': '*/*',
-                'Content-Type': 'application/json',
-                'Authorization': authToken,
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            data: {
-                taskIds: [ taskId ]
-            }
-        };
-
-        return this.markTM4TaskDone( projectId, taskId ) // Need to mark task as done mapping
-            .then( () => this.request( params ) ) // lock for validation
-            .then( () => {
-                const invalidateParams = {
-                    url: `/tm4api/v2/projects/${ projectId }/tasks/actions/unlock-after-validation/`, // invalidate task
-                    method: 'POST',
-                    headers: {
-                        'Accept': '*/*',
-                        'Authorization': authToken,
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    data: formData
-                };
-
-                this.request( invalidateParams )
-                    .then( resp => {
-                        return {
-                            data: resp.data,
-                            message: `Task ${ taskId } invalidated`,
-                            status: 200,
-                            type: 'success'
-                        };
-                    } );
-
-            } )
-            .catch( err => {
-                let alert = {
-                    message: `Failed to lock task ${ taskId } for project ${ projectId }.\n` +
-                        'Make sure you are logged into tasking manager in a different tab and that you ' +
-                        'have not locked any other tasks for this project',
-                    type: 'error',
-                    status: err.status
-                };
-
-                if ( err.data && err.data.error_msg ) {
-                    alert.message = err.data.error_msg;
-                    alert.status = err.status;
-                }
-
-                return alert;
-            } );
     }
 
     getTM4AuthToken() {

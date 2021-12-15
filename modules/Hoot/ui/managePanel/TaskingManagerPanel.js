@@ -33,7 +33,7 @@ export default class TaskingManagerPanel extends Tab {
 
         // what tasking manager state number stands for
         this.taskingManagerStatus = {
-            1: 'Invalidated',
+            1: 'Partially conflated',
             2: 'Done',
             3: 'Validated'
         };
@@ -349,7 +349,7 @@ export default class TaskingManagerPanel extends Tab {
             let taskState;
             if ( this.tmVersion === 4 ) {
                 let state = taskData.properties.state || taskData.properties.taskStatus;
-                taskState = state.charAt(0).toUpperCase() + state.substr(1).toLowerCase();
+                taskState = (state.charAt(0).toUpperCase() + state.substr(1).toLowerCase()).replaceAll('_', ' ');
             } else {
                 taskState = this.taskingManagerStatus[ taskData.properties.state ];
             }
@@ -431,7 +431,7 @@ export default class TaskingManagerPanel extends Tab {
                 if ( resp.status === 200 ) {
                     if ( this.tmVersion === 4 ) {
                         status = 'Conflated';
-                        await Hoot.api.markTM4TaskDone( this.currentProject.id, taskId );
+                        await Hoot.api.markTM4TaskDone( this.currentProject.id, taskId, 'CONFLATED' );
                     } else {
                         status = 'Done';
                         await Hoot.api.markTaskDone( this.currentProject.id, taskId );
@@ -445,18 +445,11 @@ export default class TaskingManagerPanel extends Tab {
                         this.lockedTaskButtons( taskId );
                         return resp;
                     } else {
-                        status = 'Invalidated';
+                        status = 'Partially conflated';
 
                         let validateRequest;
                         if ( this.tmVersion === 4 ) {
-                            const formData = {
-                                validatedTasks : [{
-                                    comment: 'Hootenanny failure',
-                                    status: 'INVALIDATED',
-                                    taskId: taskId
-                                }]
-                            };
-                            validateRequest = Hoot.api.invalidateTaskTm4( this.currentProject.id, taskId, formData );
+                            validateRequest = Hoot.api.markTM4TaskDone( this.currentProject.id, taskId, 'PARTIALLY_CONFLATED' );
                         } else {
                             const formData = new FormData();
                             formData.set( 'comment', 'Hootenanny failure' );
@@ -590,7 +583,7 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     runAllOptionsModal() {
-        const options = [ 'Ready', 'Invalidated' ];
+        const options = [ 'Ready', 'Partially conflated' ];
 
         let metadata = {
             title: 'Task Filter',
@@ -600,7 +593,7 @@ export default class TaskingManagerPanel extends Tab {
                 disabled: null,
                 onClick: () => {
                     const selectedOptions = options.filter( option => {
-                        return container.select( `#${ option }` ).property( 'checked' );
+                        return container.select( `#${ option.replaceAll(' ', '_') }` ).property( 'checked' );
                     } );
 
                     const unRunTasks = this.tasksTable.selectAll( '.taskingManager-item' ).filter( function() {
@@ -627,7 +620,7 @@ export default class TaskingManagerPanel extends Tab {
                 .classed( 'pad0y', true )
                 .text( option )
                     .append( 'input' )
-                    .attr( 'id', option )
+                    .attr( 'id', option.replaceAll(' ', '_') )
                     .attr( 'type', 'checkbox' )
                     .property( 'checked', true );
 
