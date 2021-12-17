@@ -26,7 +26,7 @@ describe.only( 'Advanced Options', () => {
                         let layerNames = Hoot.layers.allLayers
                             .filter(lyr => lyr.name.startsWith('advOpts_'))
                             .map(lyr => lyr.name);
-                        expect(layerParams.map( lyr => lyr.name).every( lyrName => layerNames.includes(lyrName) )).to.be.true;
+                        expect(layerParams.map( lyr => lyr.INPUT_NAME).every( lyrName => layerNames.includes(lyrName) )).to.be.true;
                     } )
                 ));
 
