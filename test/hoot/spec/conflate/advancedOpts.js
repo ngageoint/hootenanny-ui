@@ -76,8 +76,9 @@ describe.only( 'Advanced Options', () => {
                 .then(() => {
                     return new Promise(res => {
                         setTimeout(() => {
-                            d3.select( '#conflate .toggle-button' )
-                                .dispatch( 'click' );
+                            let conButton = d3.select( '#conflate .toggle-button' );
+                            expect( conButton.size() ).to.be.equal(1);
+                            conButton.dispatch( 'click' );
                             res();
                         }, 500);
                     });
@@ -100,18 +101,16 @@ describe.only( 'Advanced Options', () => {
         } );
 
         it( 'has all conflation types toggled initially', (done) => {
-            // let conButton = d3.select( '#conflate .toggle-button' );
-            // expect( conButton.size() ).to.be.equal(1);
             let advOptsToggle = d3.select( '#advanced-opts-toggle' );
             expect( advOptsToggle.size() ).to.be.equal(1);
             advOptsToggle.dispatch( 'click' );
 
-            // setTimeout(() => {
-            //     let adv_panel =  d3.selectAll( '#advanced-opts-panel' );
-            //     expect( adv_panel.size()).to.be.equal(1);
+            setTimeout(() => {
+                let adv_panel =  d3.selectAll( '#advanced-opts-panel' );
+                expect( adv_panel.size()).to.be.equal(1);
 
-                // let adv_opts_groups = d3.selectAll( '#advanced-opts-panel .advanced-opts-content .form-group');
-                // expect( adv_opts_groups.size()).to.be.equal(13);
+                let adv_opts_groups = d3.selectAll( '#advanced-opts-panel .advanced-opts-content .form-group');
+                expect( adv_opts_groups.size()).to.be.equal(17);
                 // adv_opts_groups.each(function(d) {
                 //     const input = d.select( 'input' );
                 //     expect( input.property( 'checked' ) ).to.be.true;
@@ -123,9 +122,8 @@ describe.only( 'Advanced Options', () => {
                 //     expect( advanced.includes( 'merger.creators' )  ).to.be.true;
                 //     done();
                 // }, 500);
-            //     done();
-            // }, 500);
-            done();
+                done();
+            }, 500);
         } );
         // it ( 'removes specific merger and match creators when relevant conflation types are unchecked', (done) => {
         //     d3.select( '#Roads-toggle input' ).property( 'checked', false );
