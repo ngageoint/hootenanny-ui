@@ -30,90 +30,81 @@ describe.only( 'Advanced Options', () => {
                     } )
                 ));
 
-                // await Hoot.events.emit( 'render-dataset-table' );
+                await Hoot.events.emit( 'render-dataset-table' );
 
-                // await new Promise(res => {
-                //     d3.select( '#reference a' ).dispatch( 'click' ); // open add ref layer...
-                //     Hoot.events.on( 'load-layer', () => res());
-                //     console.log(' click add reference ');
+                await new Promise(res => {
+                    d3.select( '#reference a' ).dispatch( 'click' ); // open add ref layer...
+                    Hoot.events.on( 'load-layer', () => res());
 
-                //     setTimeout(() => {
-                //         let reference = d3.select( '#reference' );
-                //         expect(reference.size()).to.be.equal(1);
+                    setTimeout(() => {
+                        let reference = d3.select( '#reference' );
+                        expect(reference.size()).to.be.equal(1);
 
-                //         reference // set desired ref dataset...
-                //             .select( '.recently-used-input' )
-                //             .property( 'value', layerParams[0].INPUT_NAME )
-                //             .dispatch( 'change' );
+                        reference // set desired ref dataset...
+                            .select( '.recently-used-input' )
+                            .property( 'value', layerParams[0].INPUT_NAME )
+                            .dispatch( 'change' );
 
-                //         setTimeout(() => {
-                //             reference // add layer
-                //                 .select( '.add-layer' )
-                //                 .dispatch( 'click' );
-                //             console.log(' click add reference ');
-                //         }, 1000);
-                //     }, 1000);
-                // })
-                // .then(() => { // same logic as above, just for secondary...
-                //     return new Promise(res => {
-                //         d3.select( '#secondary a' ).dispatch( 'click' );
-                //         Hoot.events.on( 'load-layer', () => res());
+                        setTimeout(() => {
+                            reference // add layer
+                                .select( '.add-layer' )
+                                .dispatch( 'click' );
+                        }, 100);
+                    }, 100);
+                })
+                .then(() => { // same logic as above, just for secondary...
+                    return new Promise(res => {
+                        d3.select( '#secondary a' ).dispatch( 'click' );
+                        Hoot.events.on( 'load-layer', () => res());
 
-                //         setTimeout(() => {
-                //             let secondary = d3.select( '#secondary' );
+                        setTimeout(() => {
+                            let secondary = d3.select( '#secondary' );
 
-                //             secondary
-                //                 .select( '.recently-used-input' )
-                //                 .property( 'value', layerParams[1].INPUT_NAME )
-                //                 .dispatch( 'change' );
+                            secondary
+                                .select( '.recently-used-input' )
+                                .property( 'value', layerParams[1].INPUT_NAME )
+                                .dispatch( 'change' );
 
-                //             setTimeout(() => {
-                //                 secondary
-                //                     .select( '.add-layer' )
-                //                     .dispatch( 'click' );
-
-                //             }, 100);
-                //         }, 100);
-                //     });
-                // })
-                // .then(() => {
-                //     return new Promise(res => {
-                //         setTimeout(() => {
-                //             d3.select( '#conflate .toggle-button' )
-                //                 .dispatch( 'click' );
-                //             res();
-                //         }, 500);
-                //     });
-                // });
+                            setTimeout(() => {
+                                secondary
+                                    .select( '.add-layer' )
+                                    .dispatch( 'click' );
+                            }, 100);
+                        }, 100);
+                    });
+                })
+                .then(() => {
+                    return new Promise(res => {
+                        setTimeout(() => {
+                            d3.select( '#conflate .toggle-button' )
+                                .dispatch( 'click' );
+                            res();
+                        }, 500);
+                    });
+                });
             } finally { /* eslint-disable */
                 return Promise.resolve();
             }
         } );
         after( async () => {
-            // let reference = d3.select( '#reference' ),
-            //     secondary = d3.select( '#secondary' );
+            let reference = d3.select( '#reference' ),
+                secondary = d3.select( '#secondary' );
 
-            // Hoot.layers.removeLoadedLayer( reference.attr('data-id') );
-            // Hoot.ui.sidebar.layerRemoved( reference.datum() );
+            Hoot.layers.removeLoadedLayer( reference.attr('data-id') );
+            Hoot.ui.sidebar.layerRemoved( reference.datum() );
 
-            // Hoot.layers.removeLoadedLayer( secondary.attr( data-id') );
-            // Hoot.ui.sidebar.layerRemoved( secondary.datum() );
-
+            Hoot.layers.removeLoadedLayer( secondary.attr( 'data-id') );
+            Hoot.ui.sidebar.layerRemoved( secondary.datum() );
 
             await Promise.all(layerParams.map(lyr => Hoot.api.deleteLayer(lyr.INPUT_NAME)));
-            await Hoot.layers.refreshLayers();
-            expect(Hoot.layers.allLayers
-                .filter(lyr => lyr.name.startsWith('advOpts_')).length)
-                .to.be.equal( 0 );
         } );
 
         it( 'has all conflation types toggled initially', (done) => {
-            done();
             // let conButton = d3.select( '#conflate .toggle-button' );
             // expect( conButton.size() ).to.be.equal(1);
-            // let advOptsToggle = d3.select( '#advanced-opts-toggle' );
-            // expect( advOptsToggle.size() ).to.be.equal(1);
-            // advOptsToggle.dispatch( 'click' );
+            let advOptsToggle = d3.select( '#advanced-opts-toggle' );
+            expect( advOptsToggle.size() ).to.be.equal(1);
+            advOptsToggle.dispatch( 'click' );
 
             // setTimeout(() => {
             //     let adv_panel =  d3.selectAll( '#advanced-opts-panel' );
@@ -134,7 +125,7 @@ describe.only( 'Advanced Options', () => {
                 // }, 500);
             //     done();
             // }, 500);
-
+            done();
         } );
         // it ( 'removes specific merger and match creators when relevant conflation types are unchecked', (done) => {
         //     d3.select( '#Roads-toggle input' ).property( 'checked', false );
