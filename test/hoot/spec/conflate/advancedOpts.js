@@ -107,33 +107,31 @@ describe.only( 'Advanced Options', () => {
 
             setTimeout(() => {
                 let adv_panel =  d3.selectAll( '#advanced-opts-panel' );
-                expect( adv_panel.size()).to.be.equal(1);
+                expect( adv_panel.size() ).to.be.equal(1);
 
                 let adv_opts_groups = d3.selectAll( '#advanced-opts-panel .advanced-opts-content .form-group');
-                expect( adv_opts_groups.size()).to.be.equal(17);
-                // adv_opts_groups.each(function(d) {
-                //     const input = d.select( 'input' );
-                //     expect( input.property( 'checked' ) ).to.be.true;
-                // });
-                // setTimeout(() => {
-                //     let { advanced, cleaning } = AdvancedOpts.getInstance().getOptions();
+                expect( adv_opts_groups.size(), 'adv opt groups' ).to.be.equal(17);
 
-                //     expect( advanced.includes( 'match.creators' )  ).to.be.true;
-                //     expect( advanced.includes( 'merger.creators' )  ).to.be.true;
-                //     done();
-                // }, 500);
-                done();
+                adv_opts_groups.selectAll( 'input[type=checkbox].conflate-type-toggle' ).each(function() {
+                    expect( d3.select(this).property( 'checked' ), 'all conflate types to be enabled' ).to.be.true;
+                });
+
+                setTimeout(() => {
+                    let { advanced, cleaning } = AdvancedOpts.getInstance().getOptions();
+                    expect( Object.keys(advanced).length === 0, 'adv opts to be empty' ).to.be.true;
+                    let disabled = AdvancedOpts.getInstance().getDisabledFeatures();
+                    expect( disabled.length === 0, 'disabled features to be empty' ).to.be.true;
+                    done();
+                }, 500);
             }, 500);
         } );
-        // it ( 'removes specific merger and match creators when relevant conflation types are unchecked', (done) => {
-        //     d3.select( '#Roads-toggle input' ).property( 'checked', false );
+        it ( 'removes specific merger and match creators when relevant conflation types are unchecked', (done) => {
+            d3.select( '#Roads-toggle' ).property( 'checked', false );
 
-        //     let { advanced, cleaning } = AdvancedOpts.getInstance().getOptions();
-
-        //     expect( advanced.includes( 'HighwayMatchCreator' ) ).to.be.false;
-        //     expect( advanced.includes( 'HighwayMergerCreator' ) ).to.be.false;
-        //     done();
-        // } );
+            let disabled = AdvancedOpts.getInstance().getDisabledFeatures();
+            expect( disabled.includes( 'Roads', 'roads are disabled' ) ).to.be.true;
+            done();
+        } );
         // it ( 'makes only road input checked and users network matcher/merger when network selected', (done) => {
         //     d3.select( '#conflateType')
         //     .property( 'value', 'Network')
