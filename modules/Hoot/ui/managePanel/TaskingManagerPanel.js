@@ -443,6 +443,7 @@ export default class TaskingManagerPanel extends Tab {
                         Hoot.message.alert( resp );
                         this.setTaskStatus( taskId, 'Timed out' );
                         this.lockedTaskButtons( taskId );
+                        resp.status = 502; //set status to gateway timeout
                         return resp;
                     } else {
                         status = 'Partially conflated';
@@ -572,8 +573,9 @@ export default class TaskingManagerPanel extends Tab {
             await this.setLockState( task, true );
             const response = await this.executeTask( task, this.timeoutTasks.includes( task.id ) );
 
-            // When timeout occurs
-            if ( response.status === 500 ) {
+            // When timeout occurs we have to stop
+            // to ensure that next task data pulled is not stale
+            if ( response.status === 502 ) {
                 await this.refreshTimeoutTaskList();
                 break;
             }
