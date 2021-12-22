@@ -21,13 +21,15 @@ describe.only( 'Advanced Options', () => {
                         await Hoot.folders.refreshAll();
 
                         expect(Hoot.layers.allLayers
-                            .filter(lyr => lyr.name.startsWith('advOpts_')).length)
+                            .filter(lyr => lyr.name.startsWith('advOpts_')).length,
+                            'there are two adv opts layers')
                             .to.be.equal( 2 );
 
                         let layerNames = Hoot.layers.allLayers
                             .filter(lyr => lyr.name.startsWith('advOpts_'))
                             .map(lyr => lyr.name);
-                        expect(layerParams.map( lyr => lyr.INPUT_NAME).every( lyrName => layerNames.includes(lyrName) )).to.be.true;
+                        expect(layerParams.map( lyr => lyr.INPUT_NAME).every( lyrName => layerNames.includes(lyrName) ),
+                            'the layer names match what was uploaded').to.be.true;
                     } )
                 ));
 
@@ -39,7 +41,7 @@ describe.only( 'Advanced Options', () => {
 
                     setTimeout(() => {
                         let reference = d3.select( '#reference' );
-                        expect(reference.size()).to.be.equal(1);
+                        expect(reference.size(), 'there is a reference layer section').to.be.equal(1);
 
                         reference // set desired ref dataset...
                             .select( '.recently-used-input' )
@@ -60,6 +62,7 @@ describe.only( 'Advanced Options', () => {
 
                         setTimeout(() => {
                             let secondary = d3.select( '#secondary' );
+                            expect(secondary.size(), 'there is a secondary layer section').to.be.equal(1);
 
                             secondary
                                 .select( '.recently-used-input' )
@@ -78,7 +81,7 @@ describe.only( 'Advanced Options', () => {
                     return new Promise(res => {
                         setTimeout(() => {
                             let conButton = d3.select( '#conflate .toggle-button' );
-                            expect( conButton.size() ).to.be.equal(1);
+                            expect( conButton.size(), 'there is a conflate button' ).to.be.equal(1);
                             conButton.dispatch( 'click' );
                             res();
                         }, 500);
@@ -104,12 +107,12 @@ describe.only( 'Advanced Options', () => {
 
         it( 'has all conflation types toggled initially', (done) => {
             let advOptsToggle = d3.select( '#advanced-opts-toggle' );
-            expect( advOptsToggle.size() ).to.be.equal(1);
+            expect( advOptsToggle.size(), 'there is an adv opts toggle' ).to.be.equal(1);
             advOptsToggle.dispatch( 'click' );
 
             setTimeout(() => {
                 let adv_panel =  d3.selectAll( '#advanced-opts-panel' );
-                expect( adv_panel.size() ).to.be.equal(1);
+                expect( adv_panel.size(), 'there is an adv opts panel' ).to.be.equal(1);
 
                 let adv_opts_groups = d3.selectAll( '#advanced-opts-panel .advanced-opts-content .form-group');
                 expect( adv_opts_groups.size(), 'adv opt groups' ).to.be.equal(17);
@@ -137,21 +140,35 @@ describe.only( 'Advanced Options', () => {
         } );
 
         function checkGroupState(group, disabled) {
-            expect (
+            expect(
                 d3.select('#' + group + '_group span')
-                .attr('class').includes('disabled')
-            ).to.equal(disabled);
-            expect (
+                .attr('class').includes('disabled'),
+                group + ' group span is ' + (disabled ? 'disabled' : 'enabled')
+                ).to.equal(disabled);
+            expect(
                 d3.select('#' + group + '_group .adv-opt-toggle')
-                .attr('class').includes('disabled')
+                .attr('class').includes('disabled'),
+                group + ' group toggle is ' + (disabled ? 'disabled' : 'enabled')
             ).to.equal(disabled);
-
-
         }
 
-        it ( 'makes Differential adv opts enabled to Diff and Diff w/Tags', (done) => {
+        it ( 'makes Differential adv opts enabled for Differential', (done) => {
             d3.select( '#conflateType')
                 .property( 'value', 'Differential')
+                .dispatch( 'change' );
+
+            setTimeout(() => {
+                //assert Differential enabled
+                checkGroupState('Differential', false);
+                //assert Attribute disabled
+                checkGroupState('Attribute', true);
+                done();
+            }, 500);
+        } );
+
+        it ( 'makes Differential adv opts enabled for Differential w/Tags', (done) => {
+            d3.select( '#conflateType')
+                .property( 'value', 'Differential w/Tags')
                 .dispatch( 'change' );
 
             setTimeout(() => {
@@ -174,7 +191,18 @@ describe.only( 'Advanced Options', () => {
                 //assert Attribute enabled
                 checkGroupState('Attribute', false);
                 //assert Building param defaults overridden
-
+                expect(
+                    d3.select('#BuildingMergeManyToManyMatches')
+                    .select('input[type=checkbox]').property('checked')
+                ).to.be.true;
+                expect(
+                    d3.select('#BuildingForceContainedMatch')
+                    .select('input[type=checkbox]').property('checked')
+                ).to.be.true;
+                expect(
+                    d3.select('#BuildingKeepMoreComplexGeometryWhenAutoMerging')
+                    .select('input[type=checkbox]').property('checked')
+                ).to.be.false;
                 done();
             }, 500);
         } );
