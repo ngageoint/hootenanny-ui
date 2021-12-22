@@ -4,7 +4,7 @@ import AdvancedOpts  from '../../../../modules/Hoot/ui/sidebar/advancedOpts';
 const { generateAdvOptsLayerParams } = require( '../../helpers' );
 
 
-describe.only( 'Advanced Options', () => {
+describe( 'Advanced Options', () => {
         let layerParams;
         const className = 'advancedOptsTest';
 
