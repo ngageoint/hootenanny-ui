@@ -6,6 +6,7 @@ const { generateAdvOptsLayerParams } = require( '../../helpers' );
 
 describe.only( 'Advanced Options', () => {
         let layerParams;
+
         before( async () => { // upload 2 datasets and have conflate ui showing...
             try {
                 let generateCount = 2;
@@ -87,6 +88,7 @@ describe.only( 'Advanced Options', () => {
                 return Promise.resolve();
             }
         } );
+
         after( async () => {
             let reference = d3.select( '#reference' ),
                 secondary = d3.select( '#secondary' );
@@ -125,17 +127,19 @@ describe.only( 'Advanced Options', () => {
                 }, 500);
             }, 500);
         } );
-        it ( 'removes specific merger and match creators when relevant conflation types are unchecked', (done) => {
+
+        it ( 'disables features when relevant conflation types are unchecked', (done) => {
             d3.select( '#Roads-toggle' ).property( 'checked', false );
 
             let disabled = AdvancedOpts.getInstance().getDisabledFeatures();
             expect( disabled.includes( 'Roads', 'roads are disabled' ) ).to.be.true;
             done();
         } );
+
         // it ( 'makes only road input checked and users network matcher/merger when network selected', (done) => {
         //     d3.select( '#conflateType')
-        //     .property( 'value', 'Network')
-        //     .dispatch( 'change' );
+        //         .property( 'value', 'Network')
+        //         .dispatch( 'change' );
 
         //     setTimeout(() => {
         //         d3.selectAll( '.advanced-opts-content .form-group')
@@ -147,12 +151,98 @@ describe.only( 'Advanced Options', () => {
         //                     expect( input.property( 'checked' ) ).to.be.false;
         //                 }
         //             });
-        //             let { advanced, cleaning } = AdvancedOpts.getInstance().getOptions();
-        //             expect( advanced.includes( 'NetworkMatchCreator' )).to.be.true
-        //             expect( advanced.includes( 'NetworkMergerCreator' )).to.be.true
-        //             expect( advanced.includes( 'HighwayMatchCreator' ) ).to.be.false;
-        //             expect( advanced.includes( 'HighwayMergerCreator' ) ).to.be.false;
+        //             // let { advanced, cleaning } = AdvancedOpts.getInstance().getOptions();
+        //             // expect( advanced.includes( 'NetworkMatchCreator' )).to.be.true
+        //             // expect( advanced.includes( 'NetworkMergerCreator' )).to.be.true
+        //             // expect( advanced.includes( 'HighwayMatchCreator' ) ).to.be.false;
+        //             // expect( advanced.includes( 'HighwayMergerCreator' ) ).to.be.false;
         //         done();
         //     }, 500);
         // } );
+
+        it ( 'makes Differential adv opts enabled to Diff and Diff w/Tags', (done) => {
+            d3.select( '#conflateType')
+                .property( 'value', 'Differential')
+                .dispatch( 'change' );
+
+            setTimeout(() => {
+                //assert Differential enabled
+                expect (
+                    d3.select('#Differential_group span')
+                    .attr('class').includes('disabled')
+                ).to.be.false;
+                expect (
+                    d3.select('#Differential_group .adv-opt-toggle')
+                    .attr('class').includes('disabled')
+                ).to.be.false;
+                //assert Attribute disabled
+                expect (
+                    d3.select('#Attribute_group span')
+                    .attr('class').includes('disabled')
+                ).to.be.true;
+                expect (
+                    d3.select('#Attribute_group .adv-opt-toggle')
+                    .attr('class').includes('disabled')
+                ).to.be.true;
+                done();
+            }, 500);
+        } );
+
+        it ( 'makes Attribute adv opts enabled to Attribute', (done) => {
+            d3.select( '#conflateType')
+                .property( 'value', 'Attribute')
+                .dispatch( 'change' );
+
+            setTimeout(() => {
+                //assert Differential disabled
+                expect (
+                    d3.select('#Differential_group span')
+                    .attr('class').includes('disabled')
+                ).to.be.true;
+                expect (
+                    d3.select('#Differential_group .adv-opt-toggle')
+                    .attr('class').includes('disabled')
+                ).to.be.true;
+                //assert Attribute enabled
+                expect (
+                    d3.select('#Attribute_group span')
+                    .attr('class').includes('disabled')
+                ).to.be.false;
+                expect (
+                    d3.select('#Attribute_group .adv-opt-toggle')
+                    .attr('class').includes('disabled')
+                ).to.be.false;
+                //assert Building param defaults overridden
+
+                done();
+            }, 500);
+        } );
+
+        it ( 'makes Attribute/Differential adv opts disabled for Reference and others', (done) => {
+            d3.select( '#conflateType')
+                .property( 'value', 'Reference')
+                .dispatch( 'change' );
+
+            setTimeout(() => {
+                //assert Differential disabled
+                expect (
+                    d3.select('#Differential_group span')
+                    .attr('class').includes('disabled')
+                ).to.be.true;
+                expect (
+                    d3.select('#Differential_group .adv-opt-toggle')
+                    .attr('class').includes('disabled')
+                ).to.be.true;
+                //assert Attribute disabled
+                expect (
+                    d3.select('#Attribute_group span')
+                    .attr('class').includes('disabled')
+                ).to.be.true;
+                expect (
+                    d3.select('#Attribute_group .adv-opt-toggle')
+                    .attr('class').includes('disabled')
+                ).to.be.true;
+                done();
+            }, 500);
+        } );
 } );
