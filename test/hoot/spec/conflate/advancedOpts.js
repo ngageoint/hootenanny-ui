@@ -6,6 +6,7 @@ const { generateAdvOptsLayerParams } = require( '../../helpers' );
 
 describe.only( 'Advanced Options', () => {
         let layerParams;
+        const className = 'advancedOptsTest';
 
         before( async () => { // upload 2 datasets and have conflate ui showing...
             try {
@@ -37,7 +38,7 @@ describe.only( 'Advanced Options', () => {
 
                 await new Promise(res => {
                     d3.select( '#reference a' ).dispatch( 'click' ); // open add ref layer...
-                    Hoot.events.on( 'load-layer', () => res());
+                    Hoot.events.listen( className, 'load-layer', () => res());
 
                     setTimeout(() => {
                         let reference = d3.select( '#reference' );
@@ -58,7 +59,7 @@ describe.only( 'Advanced Options', () => {
                 .then(() => { // same logic as above, just for secondary...
                     return new Promise(res => {
                         d3.select( '#secondary a' ).dispatch( 'click' );
-                        Hoot.events.on( 'load-layer', () => res());
+                        Hoot.events.listen( className, 'load-layer', () => res());
 
                         setTimeout(() => {
                             let secondary = d3.select( '#secondary' );
