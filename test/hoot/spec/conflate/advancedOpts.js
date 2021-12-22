@@ -207,9 +207,36 @@ describe.only( 'Advanced Options', () => {
             }, 500);
         } );
 
-        it ( 'makes Attribute/Differential adv opts disabled for Reference and others', (done) => {
+        it ( 'makes Attribute/Differential adv opts disabled for Reference', (done) => {
             d3.select( '#conflateType')
                 .property( 'value', 'Reference')
+                .dispatch( 'change' );
+
+            setTimeout(() => {
+                //assert Differential disabled
+                checkGroupState('Differential', true);
+                //assert Attribute disabled
+                checkGroupState('Attribute', true);
+                //assert Building param defaults are set
+                expect(
+                    d3.select('#BuildingMergeManyToManyMatches')
+                    .select('input[type=checkbox]').property('checked')
+                ).to.be.false;
+                expect(
+                    d3.select('#BuildingForceContainedMatch')
+                    .select('input[type=checkbox]').property('checked')
+                ).to.be.false;
+                expect(
+                    d3.select('#BuildingKeepMoreComplexGeometryWhenAutoMerging')
+                    .select('input[type=checkbox]').property('checked')
+                ).to.be.true;
+                done();
+            }, 500);
+        } );
+
+        it ( 'makes Attribute/Differential adv opts disabled for Horizontal', (done) => {
+            d3.select( '#conflateType')
+                .property( 'value', 'Horizontal')
                 .dispatch( 'change' );
 
             setTimeout(() => {
@@ -220,4 +247,19 @@ describe.only( 'Advanced Options', () => {
                 done();
             }, 500);
         } );
+
+        it ( 'makes Attribute/Differential adv opts disabled for Network', (done) => {
+            d3.select( '#conflateType')
+                .property( 'value', 'Network')
+                .dispatch( 'change' );
+
+            setTimeout(() => {
+                //assert Differential disabled
+                checkGroupState('Differential', true);
+                //assert Attribute disabled
+                checkGroupState('Attribute', true);
+                done();
+            }, 500);
+        } );
+
 } );
