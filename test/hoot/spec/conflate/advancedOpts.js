@@ -84,7 +84,9 @@ describe( 'Advanced Options', () => {
                             let conButton = d3.select( '#conflate .toggle-button' );
                             expect( conButton.size(), 'there is a conflate button' ).to.be.equal(1);
                             conButton.dispatch( 'click' );
-                            res();
+                            setTimeout(() => {
+                                res();
+                            }, 500);
                         }, 500);
                     });
                 });
