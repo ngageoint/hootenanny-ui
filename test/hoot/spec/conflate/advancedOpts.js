@@ -136,29 +136,18 @@ describe.only( 'Advanced Options', () => {
             done();
         } );
 
-        // it ( 'makes only road input checked and users network matcher/merger when network selected', (done) => {
-        //     d3.select( '#conflateType')
-        //         .property( 'value', 'Network')
-        //         .dispatch( 'change' );
+        function checkGroupState(group, disabled) {
+            expect (
+                d3.select('#' + group + '_group span')
+                .attr('class').includes('disabled')
+            ).to.equal(disabled);
+            expect (
+                d3.select('#' + group + '_group .adv-opt-toggle')
+                .attr('class').includes('disabled')
+            ).to.equal(disabled);
 
-        //     setTimeout(() => {
-        //         d3.selectAll( '.advanced-opts-content .form-group')
-        //             .each(function(d) {
-        //                 const input = d3.select( this ).select( 'input' );
-        //                 if ( d.id === 'Roads-toggle' ) {
-        //                     expect( input.property( 'checked' ) ).to.be.true;
-        //                 } else {
-        //                     expect( input.property( 'checked' ) ).to.be.false;
-        //                 }
-        //             });
-        //             // let { advanced, cleaning } = AdvancedOpts.getInstance().getOptions();
-        //             // expect( advanced.includes( 'NetworkMatchCreator' )).to.be.true
-        //             // expect( advanced.includes( 'NetworkMergerCreator' )).to.be.true
-        //             // expect( advanced.includes( 'HighwayMatchCreator' ) ).to.be.false;
-        //             // expect( advanced.includes( 'HighwayMergerCreator' ) ).to.be.false;
-        //         done();
-        //     }, 500);
-        // } );
+
+        }
 
         it ( 'makes Differential adv opts enabled to Diff and Diff w/Tags', (done) => {
             d3.select( '#conflateType')
@@ -167,23 +156,9 @@ describe.only( 'Advanced Options', () => {
 
             setTimeout(() => {
                 //assert Differential enabled
-                expect (
-                    d3.select('#Differential_group span')
-                    .attr('class').includes('disabled')
-                ).to.be.false;
-                expect (
-                    d3.select('#Differential_group .adv-opt-toggle')
-                    .attr('class').includes('disabled')
-                ).to.be.false;
+                checkGroupState('Differential', false);
                 //assert Attribute disabled
-                expect (
-                    d3.select('#Attribute_group span')
-                    .attr('class').includes('disabled')
-                ).to.be.true;
-                expect (
-                    d3.select('#Attribute_group .adv-opt-toggle')
-                    .attr('class').includes('disabled')
-                ).to.be.true;
+                checkGroupState('Attribute', true);
                 done();
             }, 500);
         } );
@@ -195,23 +170,9 @@ describe.only( 'Advanced Options', () => {
 
             setTimeout(() => {
                 //assert Differential disabled
-                expect (
-                    d3.select('#Differential_group span')
-                    .attr('class').includes('disabled')
-                ).to.be.true;
-                expect (
-                    d3.select('#Differential_group .adv-opt-toggle')
-                    .attr('class').includes('disabled')
-                ).to.be.true;
+                checkGroupState('Differential', true);
                 //assert Attribute enabled
-                expect (
-                    d3.select('#Attribute_group span')
-                    .attr('class').includes('disabled')
-                ).to.be.false;
-                expect (
-                    d3.select('#Attribute_group .adv-opt-toggle')
-                    .attr('class').includes('disabled')
-                ).to.be.false;
+                checkGroupState('Attribute', false);
                 //assert Building param defaults overridden
 
                 done();
@@ -225,23 +186,9 @@ describe.only( 'Advanced Options', () => {
 
             setTimeout(() => {
                 //assert Differential disabled
-                expect (
-                    d3.select('#Differential_group span')
-                    .attr('class').includes('disabled')
-                ).to.be.true;
-                expect (
-                    d3.select('#Differential_group .adv-opt-toggle')
-                    .attr('class').includes('disabled')
-                ).to.be.true;
+                checkGroupState('Differential', true);
                 //assert Attribute disabled
-                expect (
-                    d3.select('#Attribute_group span')
-                    .attr('class').includes('disabled')
-                ).to.be.true;
-                expect (
-                    d3.select('#Attribute_group .adv-opt-toggle')
-                    .attr('class').includes('disabled')
-                ).to.be.true;
+                checkGroupState('Attribute', true);
                 done();
             }, 500);
         } );
