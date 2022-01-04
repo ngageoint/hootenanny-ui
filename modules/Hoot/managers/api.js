@@ -938,7 +938,7 @@ export default class API {
 
     saveDataset( id, name ) {
         const params = {
-            path: `/job/export/${id}?outputname=${name}&removecache=true`,
+            path: `/job/export/${id}?outputname=${name}`,
             responseType: 'arraybuffer',
             method: 'GET'
         };
