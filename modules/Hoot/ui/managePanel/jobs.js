@@ -931,6 +931,23 @@ export default class Jobs extends Tab {
 
                 }
 
+                // Add action for download of export if the job status has the output name recorded
+                // users can then do this after initial download that occurs when the export job completes
+                if (d.jobType.toUpperCase() === 'EXPORT' && d.tags && d.tags.outputname ) {
+                    actions.push({
+                        title: 'download export',
+                        icon: 'get_app',
+                        action: async () => {
+                            Hoot.api.saveDataset( d.jobId, d.tags.outputname )
+                                .catch( err => {
+                                    console.error(err);
+                                    Hoot.message.alert( err );
+                                    return false;
+                                } );
+                        }
+                    });
+                }
+
                 props.push({
                     i: actions
                 });
