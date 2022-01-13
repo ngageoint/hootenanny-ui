@@ -86,7 +86,7 @@ describe( 'Advanced Options', () => {
                             conButton.dispatch( 'click' );
                             setTimeout(() => {
                                 res();
-                            }, 15000); //first time the hoot-services get adv opt request there is a long caching op that needs to happen
+                            }, 500);
                         }, 500);
                     });
                 });
