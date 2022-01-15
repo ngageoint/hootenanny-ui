@@ -125,7 +125,7 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-scss": "^0.4.0",
     "sass-loader": "^7.1.0",
-    "shelljs": "^0.8.0",
+    "shelljs": "^0.8.5",
     "shx": "^0.3.0",
     "sinon": "^6.0.0",
     "sinon-chai": "^3.1.0",
