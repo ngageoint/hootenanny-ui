@@ -1,5 +1,4 @@
-{
-  "dataAddressFormats": [
+[
     {
       "format": [
         ["housenumber", "street"],
@@ -142,4 +141,3 @@
       ]
     }
   ]
-}

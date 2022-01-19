@@ -14,7 +14,8 @@ import { select as d3_select } from 'd3-selection';
 import { t, currentLocale, addTranslation, setLocale } from '../util/locale';
 
 import { coreHistory } from './history';
-import { dataLocales, dataEn } from '../../data';
+import dataLocales from '../../data';
+import dataEn from '../../data';
 import { geoRawMercator } from '../geo/raw_mercator';
 import { modeSelect } from '../modes/select';
 import { presetIndex } from '../presets';

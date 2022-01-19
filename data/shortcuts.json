@@ -1,5 +1,4 @@
-{
-  "dataShortcuts": [
+[
     {
       "tab": "browsing",
       "text": "shortcuts.browsing.title",
@@ -318,4 +317,3 @@
       ]
     }
   ]
-}

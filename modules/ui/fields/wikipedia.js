@@ -12,7 +12,7 @@ import { d3combobox as d3_combobox } from '../../lib/d3.combobox.js';
 
 import { t } from '../../util/locale';
 import { actionChangeTags } from '../../actions/index';
-import { dataWikipedia } from '../../../data/index';
+import dataWikipedia from '../../../data/index';
 import { services } from '../../services/index';
 import { svgIcon } from '../../svg/index';
 import { utilDetect } from '../../util/detect';

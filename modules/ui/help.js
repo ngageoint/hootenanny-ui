@@ -3,7 +3,7 @@ import {
     select as d3_select
 } from 'd3-selection';
 
-import marked from 'marked';
+import { marked } from 'marked';
 import { svgIcon } from '../svg';
 import { uiCmd } from './cmd';
 import { uiBackground } from './background';

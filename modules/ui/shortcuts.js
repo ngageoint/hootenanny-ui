@@ -4,7 +4,7 @@ import {
 } from 'd3-selection';
 
 import { t } from '../util/locale';
-import { dataShortcuts } from '../../data';
+import dataShortcuts from '../../data';
 import { svgIcon } from '../svg';
 import { uiCmd } from './cmd';
 import { uiModal } from './modal';

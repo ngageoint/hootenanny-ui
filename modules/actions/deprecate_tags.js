@@ -3,7 +3,7 @@ import _clone from 'lodash-es/clone';
 import _omit from 'lodash-es/omit';
 import _toPairs from 'lodash-es/toPairs';
 
-import { dataDeprecated } from '../../data';
+import dataDeprecated from '../../data';
 
 
 export function actionDeprecateTags(entityId) {

@@ -1,4 +1,4 @@
-import { dataDiscarded } from '../../data';
+import dataDiscarded from '../../data';
 
 export function actionDiscardTags(difference) {
 

@@ -11,7 +11,7 @@ import { t, textDirection } from '../../util/locale';
 import { localize } from './helper';
 
 import { coreGraph } from '../../core/graph';
-import { dataIntroGraph } from '../../../data/intro_graph.json';
+import dataIntroGraph from '../../../data/intro_graph.json';
 import { modeBrowse } from '../../modes/browse';
 import { osmEntity } from '../../osm/entity';
 import { services } from '../../services';
