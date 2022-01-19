@@ -32,7 +32,7 @@ const webpackConfig = {
             {
                 test: /\.js$/,
                 use: {
-                    loader: 'istanbul-instrumenter-loader',
+                    loader: 'coverage-istanbul-loader',
                     options: { esModules: true }
                 },
                 include: path.resolve( __dirname, 'modules/Hoot/' ),

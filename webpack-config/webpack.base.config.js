@@ -10,12 +10,14 @@ const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const CopyWebpackPlugin    = require( 'copy-webpack-plugin' );
 
 const
-    extractAssets  = new CopyWebpackPlugin( [
+    extractAssets = new CopyWebpackPlugin(
         {
-            from: './img', // context: root
-            to: './img' // context: dist
+            patterns: [{
+                from: './img', // context: root
+                to: './img' // context: dist
+            }]
         }
-    ] );
+    );
 
 module.exports = {
     context: resolve( __dirname, '../' ),
@@ -57,6 +59,13 @@ module.exports = {
             './img': resolve( __dirname, '../img' ),
             'lib': resolve( __dirname, '../modules/lib' ),
             'data': resolve( __dirname, '../data' )
+        },
+        fallback: {
+            dns: false,
+            fs: false,
+            net: false,
+            tls: false,
+            child_process: false
         }
     },
     plugins: [
@@ -66,11 +75,4 @@ module.exports = {
         } ),
         new webpack.EnvironmentPlugin( [ 'NODE_ENV' ] )
     ],
-    node: {
-        dns: 'empty',
-        fs: 'empty',
-        net: 'empty',
-        tls: 'empty',
-        child_process: 'empty'
-    }
 };

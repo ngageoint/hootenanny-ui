@@ -5,12 +5,13 @@
  *******************************************************************************************************/
 
 const webpack = require( 'webpack' );
-const Merge = require( 'webpack-merge' );
-const OptimizeCssAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' );
-const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
+const { merge } = require( 'webpack-merge' );
+const TerserPlugin = require("terser-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
 const CommonConfig = require( './webpack.base.config' );
 
-module.exports = Merge( CommonConfig, {
+module.exports = merge( CommonConfig, {
     mode: 'production',
     module: {
         rules: [
@@ -18,26 +19,32 @@ module.exports = Merge( CommonConfig, {
                 test: /\.js$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/
+            },
+            {
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"]
             }
         ]
     },
     optimization: {
         splitChunks: {
             chunks: 'initial'
-        }
+        },
+        minimize: true,
+        minimizer: [
+            // For webpack@5 you can use the `...` syntax to extend existing minimizers (i.e. `terser-webpack-plugin`), uncomment the next line
+            // `...`,
+            new TerserPlugin(),
+            new CssMinimizerPlugin(),
+        ]
     },
+
     plugins: [
         new webpack.LoaderOptionsPlugin( {
             minimize: false,
             debug: false
         } ),
         new webpack.optimize.ModuleConcatenationPlugin(),
-        new UglifyJsPlugin( {
-            sourceMap: false
-        } ),
-        new OptimizeCssAssetsPlugin( {
-            assetNameRegExp: /\.css$/,
-            cssProcessorOptions: { discardComments: { removeAll: true } }
-        } ),
+        new MiniCssExtractPlugin(),
     ]
 } );

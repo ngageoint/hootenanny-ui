@@ -5,19 +5,18 @@
  *******************************************************************************************************/
 
 const path         = require( 'path' );
-const Merge        = require( 'webpack-merge' );
+const { merge }    = require( 'webpack-merge' );
 const CommonConfig = require('./webpack.base.config');
 
-module.exports = Merge( CommonConfig, {
+module.exports = merge( CommonConfig, {
     mode: 'development',
     devtool: 'cheap-module-source-map',
     devServer: {
         compress: true,
         port: 8080,
-        publicPath: '/',
-        contentBase: './dist',
-        stats: {
-            timings: true
+        static: {
+            directory: path.join(__dirname, '../dist'),
+            publicPath: './',
         },
         proxy: {
             '/hoot-services': 'http://localhost:8888',
@@ -60,5 +59,8 @@ module.exports = Merge( CommonConfig, {
                 },
             }
         ]
-    }
+    },
+    stats: {
+        timings: true
+    },
 });
