@@ -266,6 +266,7 @@ function generateTranslations(fields, presets, tstrings) {
             field['label#'] = f.keys.map(function(key) { return key + '=*'; }).join(', ');
             if (fields.options) {
                 Object.entries(field.options).forEach(function(opt) {
+                    var k = opt[1];
                     if (id === 'access') {
                         field.options[k]['title#'] = field.options[k]['description#'] = 'access=' + k;
                     } else {
@@ -277,7 +278,6 @@ function generateTranslations(fields, presets, tstrings) {
             field['label#'] = f.key + '=*';
             if (fields.options) {
                 Object.entries(field.options).forEach(function(opt) {
-                    var v = opt[1];
                     var k = opt[0];
                     field.options[k + '#'] = f.key + '=' + k;
                 });

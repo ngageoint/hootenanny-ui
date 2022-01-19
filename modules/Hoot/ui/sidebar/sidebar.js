@@ -108,13 +108,9 @@ export default class Sidebar {
         this.wrapper.selectAll('.layer-conflate')
             .data(this.conflateFormData).enter()
             .select(async function (d) {
-                try {
-                    const layerConflate = new LayerConflate(d3.select(this), d);
-                    await layerConflate.getData();
-                    that.forms[d.id] = layerConflate;
-                } catch (e) {
-                    throw e;
-                }
+                const layerConflate = new LayerConflate(d3.select(this), d);
+                await layerConflate.getData();
+                that.forms[d.id] = layerConflate;
             });
 
     }
