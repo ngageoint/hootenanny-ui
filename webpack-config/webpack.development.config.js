@@ -61,6 +61,7 @@ module.exports = merge( CommonConfig, {
         ]
     },
     stats: {
-        timings: true
+        timings: true,
+        errorDetails: true
     },
 });
