@@ -7,11 +7,8 @@ const proxy = require( 'express-http-proxy' );
 
 const materialIconFiles = [
     { pattern: 'node_modules/material-icons/iconfont/material-icons.css', included: true },
-    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.eot', included: false },
-    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.svg', included: false },
-    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.ttf', included: false },
-    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.woff', included: false },
-    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.woff2', included: false },
+    { pattern: 'node_modules/material-icons/iconfont/material-icons.woff', included: false },
+    { pattern: 'node_modules/material-icons/iconfont/material-icons.woff2', included: false },
 ];
 
 const webpackConfig = {
