@@ -575,7 +575,8 @@ export default class TaskingManagerPanel extends Tab {
 
             // When timeout occurs we have to stop
             // to ensure that next task data pulled is not stale
-            if ( response.status === 502 ) {
+            // We also halt on partially conflated tasks so the diff-error osc can be manually applied
+            if ( response.status === 502 || response.status === 500 ) {
                 await this.refreshTimeoutTaskList();
                 break;
             }
