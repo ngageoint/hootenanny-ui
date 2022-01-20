@@ -80,15 +80,15 @@ module.exports = function buildData() {
         var tasks = [
             writeFileProm(
                 'data/presets/categories.json',
-                prettyStringify({ categories: categories })
+                prettyStringify(categories )
             ),
             writeFileProm(
                 'data/presets/fields.json',
-                prettyStringify({ fields: fields }, { maxLength: 9999 })
+                prettyStringify(fields, { maxLength: 9999 })
             ),
             writeFileProm(
                 'data/presets/presets.json',
-                prettyStringify({ presets: presets }, { maxLength: 9999 })
+                prettyStringify(presets, { maxLength: 9999 })
             ),
             writeFileProm('data/presets.yaml', translationsToYAML(translations)),
             writeFileProm('data/taginfo.json', prettyStringify(taginfo), { maxLength: 9999 }),
@@ -468,8 +468,8 @@ function validatePresetFields(presets, fields) {
     });
 }
 
-function validateDefaults (defaults, categories, presets) {
-    Object.entries(defaults.defaults).forEach(function(dAry) {
+function validateDefaults(defaults, categories, presets) {
+    Object.entries(defaults).forEach(function(dAry) {
         var members = dAry[1];
         var name = dAry[0];
         members.forEach(function (id) {

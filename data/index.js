@@ -23,20 +23,8 @@ import tdsv61FieldValues from './tdsv61_field_values.json';
 import tdsv70FieldValues from './tdsv70_field_values.json';
 import mgcpFieldValues from './mgcp_field_values.json';
 
-import { geoArea as d3_geoArea } from 'd3-geo';
 import whichPolygon from 'which-polygon';
 
-
-// index the osm-community-index
-var ociFeatureCollection = _values(ociFeatures).map(function(feature) {
-    // workaround for which-polygon: only supports `properties`, not `id`
-    // https://github.com/mapbox/which-polygon/pull/6
-    feature.properties = {
-        id: feature.id,
-        area: d3_geoArea(feature)   // also precompute areas
-    };
-    return feature;
-});
 
 export default {
     dataAddressFormats: dataAddressFormats,
@@ -51,11 +39,11 @@ export default {
 
 export var data = {
     community: {
-        features: ociFeatures,
-        resources: ociResources,
+        features: [],
+        resources: [],
         query: whichPolygon({
             type: 'FeatureCollection',
-            features: ociFeatureCollection
+            features: []
         })
     },
     imagery: dataImagery,  //legacy
