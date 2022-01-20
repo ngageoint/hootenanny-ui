@@ -33,7 +33,7 @@ export default class TaskingManagerPanel extends Tab {
 
         // what tasking manager state number stands for
         this.taskingManagerStatus = {
-            1: 'Invalidated',
+            1: 'Partially conflated',
             2: 'Done',
             3: 'Validated'
         };
@@ -349,7 +349,7 @@ export default class TaskingManagerPanel extends Tab {
             let taskState;
             if ( this.tmVersion === 4 ) {
                 let state = taskData.properties.state || taskData.properties.taskStatus;
-                taskState = state.charAt(0).toUpperCase() + state.substr(1).toLowerCase();
+                taskState = (state.charAt(0).toUpperCase() + state.substr(1).toLowerCase()).replaceAll('_', ' ');
             } else {
                 taskState = this.taskingManagerStatus[ taskData.properties.state ];
             }
@@ -426,55 +426,50 @@ export default class TaskingManagerPanel extends Tab {
 
         return executeCommand
             .then( async resp => {
-                await this.refreshTimeoutTaskList();
-
                 let status;
 
                 if ( resp.status === 200 ) {
                     if ( this.tmVersion === 4 ) {
                         status = 'Conflated';
-                        await Hoot.api.markTM4TaskDone( this.currentProject.id, taskId );
+                        await Hoot.api.markTM4TaskDone( this.currentProject.id, taskId, 'CONFLATED' );
                     } else {
                         status = 'Done';
                         await Hoot.api.markTaskDone( this.currentProject.id, taskId );
                     }
-                } else if ( this.timeoutTasks.includes( taskId ) ) {
-                    Hoot.message.alert( resp );
-                    this.setTaskStatus( taskId, 'Timed out' );
-                    this.lockedTaskButtons( taskId );
-                    return resp;
                 } else {
-                    status = 'Invalidated';
+                    await this.refreshTimeoutTaskList();
 
-                    let validateRequest;
-                    if ( this.tmVersion === 4 ) {
-                        const formData = {
-                            validatedTasks : [{
-                                comment: 'Hootenanny failure',
-                                status: 'INVALIDATED',
-                                taskId: taskId
-                            }]
-                        };
-                        validateRequest = Hoot.api.invalidateTaskTm4( this.currentProject.id, taskId, formData );
+                    if ( this.timeoutTasks.includes( taskId ) ) {
+                        Hoot.message.alert( resp );
+                        this.setTaskStatus( taskId, 'Timed out' );
+                        this.lockedTaskButtons( taskId );
+                        resp.status = 502; //set status to gateway timeout
+                        return resp;
                     } else {
-                        const formData = new FormData();
-                        formData.set( 'comment', 'Hootenanny failure' );
-                        formData.set( 'invalidate', 'true' );
-                        validateRequest = Hoot.api.validateTask( this.currentProject.id, taskId, formData );
+                        status = 'Partially conflated';
+
+                        let validateRequest;
+                        if ( this.tmVersion === 4 ) {
+                            validateRequest = Hoot.api.markTM4TaskDone( this.currentProject.id, taskId, 'PARTIALLY_CONFLATED' );
+                        } else {
+                            const formData = new FormData();
+                            formData.set( 'comment', 'Hootenanny failure' );
+                            formData.set( 'invalidate', 'true' );
+                            validateRequest = Hoot.api.validateTask( this.currentProject.id, taskId, formData );
+                        }
+
+                        validateRequest.then( resp => {
+                                const alert = {
+                                    message: resp.msg,
+                                    type: resp.success ? 'success' : 'error'
+                                };
+
+                                Hoot.message.alert( alert );
+                            } );
+
+                        resp.message += ' Check the jobs panel if you want to download the diff-error file.';
                     }
-
-                    validateRequest.then( resp => {
-                            const alert = {
-                                message: resp.msg,
-                                type: resp.success ? 'success' : 'error'
-                            };
-
-                            Hoot.message.alert( alert );
-                        } );
-
-                    resp.message += ' Check the jobs panel if you want to download the diff-error file.';
                 }
-
                 Hoot.message.alert( resp );
                 this.setTaskStatus( taskId, status );
                 this.unlockedTaskButtons( taskId );
@@ -578,8 +573,9 @@ export default class TaskingManagerPanel extends Tab {
             await this.setLockState( task, true );
             const response = await this.executeTask( task, this.timeoutTasks.includes( task.id ) );
 
-            // When timeout occurs
-            if ( response.status === 500 ) {
+            // When timeout occurs we have to stop
+            // to ensure that next task data pulled is not stale
+            if ( response.status === 502 ) {
                 await this.refreshTimeoutTaskList();
                 break;
             }
@@ -589,7 +585,7 @@ export default class TaskingManagerPanel extends Tab {
     }
 
     runAllOptionsModal() {
-        const options = [ 'Ready', 'Invalidated' ];
+        const options = [ 'Ready', 'Partially conflated' ];
 
         let metadata = {
             title: 'Task Filter',
@@ -599,7 +595,7 @@ export default class TaskingManagerPanel extends Tab {
                 disabled: null,
                 onClick: () => {
                     const selectedOptions = options.filter( option => {
-                        return container.select( `#${ option }` ).property( 'checked' );
+                        return container.select( `#${ option.replaceAll(' ', '_') }` ).property( 'checked' );
                     } );
 
                     const unRunTasks = this.tasksTable.selectAll( '.taskingManager-item' ).filter( function() {
@@ -626,7 +622,7 @@ export default class TaskingManagerPanel extends Tab {
                 .classed( 'pad0y', true )
                 .text( option )
                     .append( 'input' )
-                    .attr( 'id', option )
+                    .attr( 'id', option.replaceAll(' ', '_') )
                     .attr( 'type', 'checkbox' )
                     .property( 'checked', true );
 

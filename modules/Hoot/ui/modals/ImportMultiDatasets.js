@@ -111,7 +111,7 @@ export default class ImportMultiDatasets {
         }
 
         // filter out geoname translations
-        translationsList = _reject( this.translations, o => o.name === 'GEONAMES' );
+        translationsList = _reject( this.translations, o => o.name === 'GeoNames' );
 
         schemaCombo.data = translationsList;
 

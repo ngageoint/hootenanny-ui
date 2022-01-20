@@ -151,9 +151,9 @@ export default class ImportDataset {
 
         // filter translations for selected type
         if ( selectedType === 'GEONAMES' ) {
-            translationsList = _filter( this.translations, o => o.name === 'GEONAMES' );
+            translationsList = _filter( this.translations, o => o.name === 'GeoNames' );
         } else {
-            translationsList = _reject( this.translations, o => o.name === 'GEONAMES' );
+            translationsList = _reject( this.translations, o => o.name === 'GeoNames' );
         }
 
         schemaCombo.data = translationsList;
