@@ -16,7 +16,7 @@ module.exports = merge( CommonConfig, {
         port: 8080,
         static: {
             directory: path.join(__dirname, '../dist'),
-            publicPath: './',
+            publicPath: '/',
         },
         proxy: {
             '/hoot-services': 'http://localhost:8888',
