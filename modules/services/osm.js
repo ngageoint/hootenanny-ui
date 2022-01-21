@@ -435,7 +435,7 @@ export default {
         if (_changeset.inflight) abortRequest(_changeset.inflight);
 
         _tileCache = { loaded: {}, inflight: {}, seen: {} };
-        _noteCache = { loaded: {}, inflight: {}, inflightPost: {}, note: {}, rtree: RBush() };
+        _noteCache = { loaded: {}, inflight: {}, inflightPost: {}, note: {}, rtree: new RBush() };
         _userCache = { toLoad: {}, user: {} };
         _changeset = {};
 

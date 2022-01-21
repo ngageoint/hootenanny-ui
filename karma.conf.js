@@ -4,6 +4,7 @@
 const path  = require( 'path' );
 const url = require( 'url' );
 const proxy = require( 'express-http-proxy' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
 const materialIconFiles = [
     { pattern: 'node_modules/material-icons/iconfont/material-icons.css', included: true },
@@ -19,12 +20,15 @@ const webpackConfig = {
         rules: [
             // instrument only testing sources with Istanbulvar fs = require('fs')
             {
-                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3|eot|woff2|woff)$/,
-                use: [
-                    {
-                        loader: 'file-loader'
-                    }
-                ]
+                test: /\.(jpe?g|gif|png|svg|wav|mp3)$/,
+                type: 'asset/inline',
+            },
+            {
+                test: /\.(woff(2)?|ttf|eot)$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: './img/[name][ext]',
+                },
             },
             {
                 test: /\.js$/,
@@ -38,6 +42,7 @@ const webpackConfig = {
             {
                 test: /\.(scss|css)$/,
                 use: [
+                    MiniCssExtractPlugin.loader,
                     'css-loader',
                     'sass-loader'
                 ]
@@ -50,7 +55,12 @@ const webpackConfig = {
             'lib': path.resolve( __dirname, 'modules/lib' ),
             'data': path.resolve( __dirname, 'data' )
         }
-    }
+    },
+    plugins: [
+        new MiniCssExtractPlugin( {
+            filename: '[name].css'
+        } ),
+    ],
 };
 
 module.exports = function( config ) {
