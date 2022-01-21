@@ -7,7 +7,7 @@ import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { select as d3_select } from 'd3-selection';
 import { d3combobox as d3_combobox } from '../../lib/d3.combobox.js';
 
-import dataAddressFormats from '../../../data';
+import { dataAddressFormats } from '../../../data';
 
 import {
     geoExtent,

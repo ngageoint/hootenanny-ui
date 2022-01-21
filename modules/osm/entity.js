@@ -6,7 +6,7 @@ import _without from 'lodash-es/without';
 
 import { debug } from '../index';
 import { osmIsInterestingTag } from './tags';
-import dataDeprecated from '../../data/index';
+import { dataDeprecated } from '../../data/index';
 
 
 export function osmEntity(attrs) {

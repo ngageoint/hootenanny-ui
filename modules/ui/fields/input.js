@@ -5,7 +5,7 @@ import {
 } from 'd3-selection';
 
 import { t, textDirection } from '../../util/locale';
-import dataPhoneFormats from '../../../data';
+import { dataPhoneFormats } from '../../../data';
 import { services } from '../../services';
 import { tooltip } from '../../util/tooltip';
 

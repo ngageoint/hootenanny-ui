@@ -10,7 +10,7 @@ import {
 import { d3combobox as d3_combobox } from '../../lib/d3.combobox.js';
 
 import { t } from '../../util/locale';
-import dataWikipedia from '../../../data';
+import { dataWikipedia } from '../../../data';
 import { services } from '../../services';
 import { svgIcon } from '../../svg';
 import { tooltip } from '../../util/tooltip';

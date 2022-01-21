@@ -12,7 +12,7 @@ import { diff3Merge } from 'node-diff3';
 import { t } from '../util/locale';
 import { actionDeleteMultiple } from './delete_multiple';
 import { osmEntity } from '../osm';
-import dataDiscarded from '../../data';
+import { dataDiscarded } from '../../data';
 
 
 export function actionMergeRemoteChanges(id, localGraph, remoteGraph, formatUser) {
