@@ -33,16 +33,15 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3|eot|woff2|woff)$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            outputPath: 'img/',
-                            name: '[name].[ext]'
-                        }
-                    }
-                ]
+                test: /\.(jpe?g|gif|png|svg|wav|mp3)$/,
+                type: 'asset/inline',
+            },
+            {
+                test: /\.(woff(2)?|ttf|eot)$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: './img/[name][ext]',
+                },
             },
             {
                 test: /\.(scss|css)$/,
