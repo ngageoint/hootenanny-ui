@@ -503,13 +503,13 @@ function writeEnJson(tstrings) {
         var core = YAML.load(data[0]);
         var imagery = YAML.load(data[1]);
         var community = YAML.load(data[2]);
-        var en = Object.assign(
-            core,
-            { en: { presets: tstrings } },
-            imagery,
-            { en: { community: community.en } }
+        var en = Object.assign({},
+            core.en,
+            { presets: tstrings },
+            imagery.en,
+            { community: community.en }
         );
-        return writeFileProm('dist/locales/en.json', JSON.stringify(en, null, 4));
+        return writeFileProm('dist/locales/en.json', JSON.stringify({en: en}, null, 4));
     });
 }
 

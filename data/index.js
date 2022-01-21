@@ -1,17 +1,23 @@
 import _values from 'lodash-es/values';
 
-import dataWikipedia from 'wmf-sitematrix';
+export var dataWikipedia = [
+    [
+        "English",
+        "English",
+        "en"
+    ]
+];
 
-import dataAddressFormats from './address-formats.json';
-import dataDeprecated from './deprecated.json';
-import dataDiscarded from './discarded.json';
-import dataLocales from './locales.json';
-import dataPhoneFormats from './phone-formats.json';
-import dataShortcuts from './shortcuts.json';
+export { default as dataAddressFormats } from './address-formats.json';
+export { default as dataDeprecated } from './deprecated.json';
+export { default as dataDiscarded } from './discarded.json';
+export { default as dataLocales } from './locales.json';
+export { default as dataPhoneFormats } from './phone-formats.json';
+export { default as dataShortcuts } from './shortcuts.json';
 
 export { default as dataImperial } from './imperial.json';
 export { default as dataDriveLeft } from './drive-left.json';
-import dataEn from '../dist/locales/en.json';
+export { default as dataEn } from '../dist/locales/en.json';
 
 import dataImagery from './imagery.json';
 import presets from './presets/presets.json';
@@ -25,17 +31,6 @@ import mgcpFieldValues from './mgcp_field_values.json';
 
 import whichPolygon from 'which-polygon';
 
-
-export default {
-    dataAddressFormats: dataAddressFormats,
-    dataDeprecated: dataDeprecated,
-    dataDiscarded: dataDiscarded,
-    dataLocales: dataLocales,
-    dataPhoneFormats: dataPhoneFormats,
-    dataShortcuts: dataShortcuts,
-    dataWikipedia: dataWikipedia,
-    dataEn: dataEn
-}
 
 export var data = {
     community: {
