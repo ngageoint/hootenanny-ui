@@ -19,10 +19,6 @@ module.exports = merge( CommonConfig, {
                 test: /\.js$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/
-            },
-            {
-                test: /\.css$/,
-                use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"]
             }
         ]
     },
@@ -35,7 +31,6 @@ module.exports = merge( CommonConfig, {
             new CssMinimizerPlugin(),
         ],
     },
-
     plugins: [
         new webpack.LoaderOptionsPlugin( {
             minimize: false,
