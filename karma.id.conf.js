@@ -31,7 +31,7 @@ module.exports = function (config) {
         { pattern: 'dist/iD.css', included: true },
         { pattern: 'dist/**/*', included: false },
         'test/spec/spec_helpers.js',
-        'test/spec/**/*.js'
+        'test/spec/*/!(localized|wikipedia).js'
       ],
 
 
