@@ -33,7 +33,7 @@ export default class Translations extends Tab {
 
         this.translationButtons = [
             {
-                title: 'Add New Translations',
+                title: 'Add Translation',
                 icon: 'play_for_work',
                 onClick: 'import-translation'
             },

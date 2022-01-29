@@ -19,7 +19,7 @@ export default class AddTranslation {
 
     render() {
         let metadata = {
-            title: 'Create New Translations',
+            title: 'Add Translation',
             form: this.form,
             button: {
                 text: 'Save Edits',
