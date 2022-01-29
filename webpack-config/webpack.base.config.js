@@ -33,11 +33,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(jpe?g|gif|png|svg|wav|mp3)$/,
-                type: 'asset/inline',
-            },
-            {
-                test: /\.(woff(2)?|ttf|eot)$/,
+                test: /\.(jpe?g|gif|png|svg|wav|mp3|woff(2)?|ttf|eot)$/,
                 type: 'asset/resource',
                 generator: {
                     filename: './img/[name][ext]',
