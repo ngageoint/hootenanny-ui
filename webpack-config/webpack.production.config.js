@@ -13,6 +13,7 @@ const CommonConfig = require( './webpack.base.config' );
 
 module.exports = merge( CommonConfig, {
     mode: 'production',
+    devtool: 'source-map',
     module: {
         rules: [
             {
