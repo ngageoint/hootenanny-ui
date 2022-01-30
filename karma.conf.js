@@ -20,11 +20,7 @@ const webpackConfig = {
         rules: [
             // instrument only testing sources with Istanbulvar fs = require('fs')
             {
-                test: /\.(jpe?g|gif|png|svg|wav|mp3)$/,
-                type: 'asset/inline',
-            },
-            {
-                test: /\.(woff(2)?|ttf|eot)$/,
+                test: /\.(jpe?g|gif|png|svg|wav|mp3|woff(2)?|ttf|eot)$/,
                 type: 'asset/resource',
                 generator: {
                     filename: './img/[name][ext]',
@@ -36,13 +32,18 @@ const webpackConfig = {
                     loader: 'coverage-istanbul-loader',
                     options: { esModules: true }
                 },
-                include: path.resolve( __dirname, 'modules/Hoot/' ),
+                include: path.resolve( __dirname, 'modules/' ),
                 enforce: 'post'
             },
             {
                 test: /\.(scss|css)$/,
                 use: [
-                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            publicPath: './'
+                        }
+                    },
                     'css-loader',
                     'sass-loader'
                 ]
