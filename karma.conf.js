@@ -32,7 +32,7 @@ const webpackConfig = {
                     loader: 'coverage-istanbul-loader',
                     options: { esModules: true }
                 },
-                include: path.resolve( __dirname, 'modules/' ),
+                include: path.resolve( __dirname, 'modules/Hoot/' ),
                 enforce: 'post'
             },
             {
@@ -100,8 +100,17 @@ module.exports = function( config ) {
             { pattern: 'test/data/LAP030.shx', included: false },
             { pattern: 'test/data/RomanColosseum_WV2naturalcolor_clip.tif', included: false},
 
+            // 'node_modules/chai/chai.js',
+            // 'node_modules/sinon/pkg/sinon.js',
+            // 'node_modules/sinon-chai/lib/sinon-chai.js',
+            // 'node_modules/happen/happen.js',
             'css/**/*.css',
             'css/**/*.scss',
+            // { pattern: 'dist/iD.min.js', included: true },
+            // { pattern: 'dist/iD.css', included: true },
+            // { pattern: 'dist/**/*', included: false },
+            // 'test/spec/spec_helpers.js',
+            // 'test/spec/*/!(localized|wikipedia).js',
             'test/hoot/index.js'
         ],
 
