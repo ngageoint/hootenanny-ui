@@ -8,6 +8,7 @@ module.exports = function (config) {
       basePath: '',
 
       plugins: [
+        // 'karma-coverage-istanbul-reporter',
         'karma-remap-istanbul',
         'karma-coverage',
         'karma-mocha',
@@ -26,7 +27,7 @@ module.exports = function (config) {
         'node_modules/sinon/pkg/sinon.js',
         'node_modules/sinon-chai/lib/sinon-chai.js',
         'node_modules/happen/happen.js',
-        'node_modules/fetch-mock/es5/client-bundle.js',
+        // 'node_modules/fetch-mock/es5/client-bundle.js',
         { pattern: 'dist/iD.min.js', included: true },
         { pattern: 'dist/iD.css', included: true },
         { pattern: 'dist/**/*', included: false },
@@ -49,7 +50,7 @@ module.exports = function (config) {
       // preprocess matching files before serving them to the browser
       // available preprocessors: https://www.npmjs.com/search?q=keywords:karma-preprocessor
       preprocessors: {
-        'dist/iD.js': ['coverage']
+        //'dist/iD.min.js': ['coverage']
       },
 
 
@@ -57,6 +58,7 @@ module.exports = function (config) {
       // possible values: 'dots', 'progress'
       // available reporters: https://www.npmjs.com/search?q=keywords:karma-reporter
       reporters: ['progress', 'coverage', 'karma-remap-istanbul'],
+      // reporters: ['progress', 'coverage', 'coverage-istanbul'],
 
 
       // web server port
@@ -105,5 +107,11 @@ module.exports = function (config) {
           html: 'coverage'
         }
       }
+
+      // coverageIstanbulReporter: {
+      //   reports: [ 'html', 'lcov', 'text-summary' ],
+      //   dir: 'coverage',
+      //   fixWebpackSourcePaths: true
+      // },
     });
   };
