@@ -1,5 +1,4 @@
 {
-  "dataLocales": {
     "af": {"rtl": false},
     "ar": {"rtl": true},
     "ar-AA": {"rtl": true},
@@ -84,4 +83,3 @@
     "zh-HK": {"rtl": false},
     "zh-TW": {"rtl": false}
   }
-}

@@ -65,7 +65,7 @@ export function uiConflicts(context) {
 
         headerEnter
             .append('h3')
-            .text(t('save.conflicts.header'));
+            .text(t('save.conflict.header'));
 
         var bodyEnter = selection.selectAll('.body')
             .data([0])
@@ -76,7 +76,7 @@ export function uiConflicts(context) {
         var conflictsHelpEnter = bodyEnter
             .append('div')
             .attr('class', 'conflicts-help')
-            .text(t('save.conflicts.help'));
+            .text(t('save.conflict.help'));
 
 
         // Download changes link
@@ -109,12 +109,12 @@ export function uiConflicts(context) {
         linkEnter
             .call(svgIcon('#iD-icon-load', 'inline'))
             .append('span')
-            .text(t('save.conflicts.download_changes'));
+            .text(t('save.conflict.download_changes'));
 
 
         bodyEnter
             .append('div')
-            .attr('class', 'conflicts-container fillL3')
+            .attr('class', 'conflict-container fillL3')
             .call(showConflict, 0);
 
         bodyEnter
@@ -122,7 +122,7 @@ export function uiConflicts(context) {
             .attr('class', 'conflicts-done')
             .attr('opacity', 0)
             .style('display', 'none')
-            .text(t('save.conflicts.done'));
+            .text(t('save.conflict.done'));
 
         var buttonsEnter = bodyEnter
             .append('div')
@@ -175,7 +175,7 @@ export function uiConflicts(context) {
         conflictEnter
             .append('h4')
             .attr('class', 'conflicts-count')
-            .text(t('save.conflicts.count', { num: index + 1, total: _conflictList.length }));
+            .text(t('save.conflict.count', { num: index + 1, total: _conflictList.length }));
 
         conflictEnter
             .append('a')
@@ -213,7 +213,7 @@ export function uiConflicts(context) {
             .data(['previous', 'next'])
             .enter()
             .append('button')
-            .text(function(d) { return t('save.conflicts.' + d); })
+            .text(function(d) { return t('save.conflict.' + d); })
             .attr('class', 'conflicts-nav-button action col6')
             .attr('disabled', function(d, i) {
                 return (i === 0 && index === 0) ||
@@ -222,7 +222,7 @@ export function uiConflicts(context) {
             .on('click', function(d, i) {
                 d3_event.preventDefault();
 
-                var container = parent.selectAll('.conflicts-container');
+                var container = parent.selectAll('.conflict-container');
                 var sign = (i === 0 ? -1 : 1);
 
                 container

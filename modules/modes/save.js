@@ -268,8 +268,8 @@ export function modeSave(context) {
 
                 var forceLocal = action(id, localGraph, remoteGraph).withOption('force_local');
                 var forceRemote = action(id, localGraph, remoteGraph).withOption('force_remote');
-                var keepMine = t('save.conflicts.' + (remote.visible ? 'keep_local' : 'restore'));
-                var keepTheirs = t('save.conflicts.' + (remote.visible ? 'keep_remote' : 'delete'));
+                var keepMine = t('save.conflict.' + (remote.visible ? 'keep_local' : 'restore'));
+                var keepTheirs = t('save.conflict.' + (remote.visible ? 'keep_remote' : 'delete'));
 
                 _conflicts.push({
                     id: id,

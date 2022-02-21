@@ -72,7 +72,7 @@ export default class LayerReview extends SidebarForm {
     }
     /**
      * Update text to reflect that all reviews have been resolved.
-     * Display buttons to export data or to add another datasets
+     * Display buttons to export data or to add another dataset
      */
     reviewComplete() {
         this.reviewInfo.text( 'All reviews resolved!' );

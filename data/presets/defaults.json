@@ -1,5 +1,4 @@
 {
-  "defaults": {
     "area": [
       "category-landuse",
       "category-building",
@@ -191,5 +190,4 @@
       "type/site",
       "relation"
     ]
-  }
 }

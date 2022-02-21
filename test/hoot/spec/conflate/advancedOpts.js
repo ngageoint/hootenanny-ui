@@ -90,6 +90,8 @@ describe( 'Advanced Options', () => {
                         }, 500);
                     });
                 });
+            } catch (e) {
+                console.error(e);
             } finally { /* eslint-disable */
                 return Promise.resolve();
             }

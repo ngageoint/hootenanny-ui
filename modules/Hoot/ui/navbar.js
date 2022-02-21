@@ -174,7 +174,7 @@ export default class Navbar {
         this.menuButton.classed( 'active', !vis );
         managePanel.container.classed( 'hidden', vis );
 
-        d3.selectAll( '.context-menu, .datasets-options-menu' ).remove();
+        d3.selectAll( '.context-menu' ).remove();
 
         managePanel.isOpen = !managePanel.isOpen;
     }

@@ -3,7 +3,7 @@ import _forEach from 'lodash-es/forEach';
 
 import { json as d3_json } from 'd3-request';
 
-import rbush from 'rbush';
+import RBush from 'rbush';
 import { geoExtent } from '../geo';
 import { utilQsString } from '../util';
 
@@ -17,13 +17,13 @@ export default {
 
     init: function() {
         inflight = {};
-        nominatimCache = rbush();
+        nominatimCache = new RBush();
     },
 
     reset: function() {
         _forEach(inflight, function(req) { req.abort(); });
         inflight = {};
-        nominatimCache = rbush();
+        nominatimCache = new RBush();
     },
 
 

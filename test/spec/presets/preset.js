@@ -1,4 +1,3 @@
-/* globals context: true */
 describe('iD.presetPreset', function() {
     it('has optional fields', function() {
         var preset = iD.presetPreset('test', {});

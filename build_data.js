@@ -1,11 +1,4 @@
 /* eslint-disable no-console */
-const requireESM = require('esm')(module);
-const _cloneDeep = requireESM('lodash-es/cloneDeep').default;
-const _forEach = requireESM('lodash-es/forEach').default;
-const _isEmpty = requireESM('lodash-es/isEmpty').default;
-const _merge = requireESM('lodash-es/merge').default;
-const _toPairs = requireESM('lodash-es/toPairs').default;
-
 const colors = require('colors/safe');
 const fs = require('fs');
 const glob = require('glob');
@@ -87,15 +80,15 @@ module.exports = function buildData() {
         var tasks = [
             writeFileProm(
                 'data/presets/categories.json',
-                prettyStringify({ categories: categories })
+                prettyStringify(categories )
             ),
             writeFileProm(
                 'data/presets/fields.json',
-                prettyStringify({ fields: fields }, { maxLength: 9999 })
+                prettyStringify(fields, { maxLength: 9999 })
             ),
             writeFileProm(
                 'data/presets/presets.json',
-                prettyStringify({ presets: presets }, { maxLength: 9999 })
+                prettyStringify(presets, { maxLength: 9999 })
             ),
             writeFileProm('data/presets.yaml', translationsToYAML(translations)),
             writeFileProm('data/taginfo.json', prettyStringify(taginfo), { maxLength: 9999 }),
@@ -215,7 +208,7 @@ function suggestionsToPresets(presets) {
             icon: preset.icon,
             fields: preset.fields,
             geometry: preset.geometry,
-            tags: _merge({}, preset.tags, wikidataTag),
+            tags: Object.assign({}, preset.tags, wikidataTag),
             addTags: suggestion.tags,
             removeTags: suggestion.tags,
             reference: preset.reference,
@@ -257,20 +250,23 @@ function generatePresets(tstrings, faIcons) {
         }
     });
 
-    presets = _merge(presets, suggestionsToPresets(presets));
+    presets = Object.assign(presets, suggestionsToPresets(presets));
     return presets;
 }
 
 
 function generateTranslations(fields, presets, tstrings) {
-    var translations = _cloneDeep(tstrings);
+    var translations = JSON.parse(JSON.stringify(tstrings));
 
-    _forEach(translations.fields, function(field, id) {
+    Object.entries(translations.fields).forEach(function(fld) {
+        var field = fld[1];
+        var id = fld[0];
         var f = fields[id];
         if (f.keys) {
-            field['label#'] = _forEach(f.keys).map(function(key) { return key + '=*'; }).join(', ');
-            if (!_isEmpty(field.options)) {
-                _forEach(field.options, function(v,k) {
+            field['label#'] = f.keys.map(function(key) { return key + '=*'; }).join(', ');
+            if (fields.options) {
+                Object.entries(field.options).forEach(function(opt) {
+                    var k = opt[1];
                     if (id === 'access') {
                         field.options[k]['title#'] = field.options[k]['description#'] = 'access=' + k;
                     } else {
@@ -280,8 +276,9 @@ function generateTranslations(fields, presets, tstrings) {
             }
         } else if (f.key) {
             field['label#'] = f.key + '=*';
-            if (!_isEmpty(field.options)) {
-                _forEach(field.options, function(v,k) {
+            if (fields.options) {
+                Object.entries(field.options).forEach(function(opt) {
+                    var k = opt[0];
                     field.options[k + '#'] = f.key + '=' + k;
                 });
             }
@@ -292,10 +289,12 @@ function generateTranslations(fields, presets, tstrings) {
         }
     });
 
-    _forEach(translations.presets, function(preset, id) {
+    Object.entries(translations.presets).forEach(function(pAry) {
+        var preset = pAry[1];
+        var id = pAry[0];
         var p = presets[id];
-        if (!_isEmpty(p.tags))
-            preset['name#'] = _toPairs(p.tags).map(function(pair) { return pair[0] + '=' + pair[1]; }).join(', ');
+        if (p.tags)
+            preset['name#'] = Object.entries(p.tags).map(function(pair) { return pair[0] + '=' + pair[1]; }).join(', ');
         if (p.searchable !== false) {
             if (p.terms && p.terms.length)
                 preset['terms#'] = 'terms: ' + p.terms.join();
@@ -326,7 +325,7 @@ function generateTaginfo(presets, fields) {
         'tags': []
     };
 
-    _forEach(presets, function(preset) {
+    Object.values(presets).forEach(function(preset) {
         if (preset.suggestion) return;
 
         var keys = Object.keys(preset.tags);
@@ -364,7 +363,7 @@ function generateTaginfo(presets, fields) {
         coalesceTags(taginfo, tag);
     });
 
-    _forEach(fields, function(field) {
+    Object.values(fields).forEach(function(field) {
         var keys = field.keys || [ field.key ] || [];
 
         keys.forEach(function(key) {
@@ -388,7 +387,7 @@ function generateTaginfo(presets, fields) {
         });
     });
 
-    _forEach(taginfo.tags, function(elem) {
+    taginfo.tags.forEach(function(elem) {
         if (elem.description)
             elem.description = elem.description.join(', ');
     });
@@ -444,7 +443,7 @@ function generateTaginfo(presets, fields) {
 }
 
 function validateCategoryPresets(categories, presets) {
-    _forEach(categories, function(category) {
+    Object.values(categories).forEach(function(category) {
         if (category.members) {
             category.members.forEach(function(preset) {
                 if (presets[preset] === undefined) {
@@ -457,7 +456,7 @@ function validateCategoryPresets(categories, presets) {
 }
 
 function validatePresetFields(presets, fields) {
-    _forEach(presets, function(preset) {
+    Object.values(presets).forEach(function(preset) {
         if (preset.fields) {
             preset.fields.forEach(function(field) {
                 if (fields[field] === undefined) {
@@ -469,8 +468,10 @@ function validatePresetFields(presets, fields) {
     });
 }
 
-function validateDefaults (defaults, categories, presets) {
-    _forEach(defaults.defaults, function (members, name) {
+function validateDefaults(defaults, categories, presets) {
+    Object.entries(defaults).forEach(function(dAry) {
+        var members = dAry[1];
+        var name = dAry[0];
         members.forEach(function (id) {
             if (!presets[id] && !categories[id]) {
                 console.error('Unknown category or preset: ' + id + ' in default ' + name);
@@ -488,7 +489,7 @@ function translationsToYAML(translations) {
             : (a > b ? 1 : a < b ? -1 : 0);
     }
 
-    return YAML.safeDump({ en: { presets: translations }}, { sortKeys: commentFirst, lineWidth: -1 })
+    return YAML.dump({ en: { presets: translations }}, { sortKeys: commentFirst, lineWidth: -1 })
         .replace(/\'.*#\':/g, '#');
 }
 
@@ -502,13 +503,13 @@ function writeEnJson(tstrings) {
         var core = YAML.load(data[0]);
         var imagery = YAML.load(data[1]);
         var community = YAML.load(data[2]);
-        var en = _merge(
-            core,
-            { en: { presets: tstrings } },
-            imagery,
-            { en: { community: community.en } }
+        var en = Object.assign({},
+            core.en,
+            { presets: tstrings },
+            imagery.en,
+            { community: community.en }
         );
-        return writeFileProm('dist/locales/en.json', JSON.stringify(en, null, 4));
+        return writeFileProm('dist/locales/en.json', JSON.stringify({en: en}, null, 4));
     });
 }
 

@@ -14,10 +14,14 @@
         }
 
         .vertex {
-            cursor: url(./img/cursor-select-point.png), pointer;
+            cursor: url(./img/cursor-select-vertex.png), pointer;
         }
 
         .line {
+            cursor: url(./img/cursor-select-line.png), pointer;
+        }
+
+        .area {
             cursor: url(./img/cursor-select-area.png), pointer;
         }
 
@@ -31,7 +35,7 @@
         .vertex,
         .line,
         .area {
-            cursor: url(./img/cursor-select-split.png), pointer;
+            cursor: url(./img/cursor-select-add.png), pointer;
         }
 
         .selected {
