@@ -1,5 +1,17 @@
 [
   {
+    "key":"ADI::Administrative Division",
+    "value":[
+      "International or Supranational",
+      "Local",
+      "Municipal",
+      "National",
+      "No Information",
+      "Other",
+      "Subnational"
+    ]
+  },
+  {
     "key":"ADR::Address",
     "value":[
       "Value"
@@ -16,132 +28,18 @@
     "value":[
       "Artificial Mountain",
       "Ferris Wheel",
+      "No Information",
       "Other",
       "Roller-coaster",
       "Spherical",
       "Vertical Ride",
-      "Water Attraction",
-      "noInformation"
+      "Water Attraction"
     ]
   },
   {
     "key":"AOO::Angle of Orientation",
     "value":[
       "Value"
-    ]
-  },
-  {
-    "key":"APT2::Airfield Use [2]",
-    "value":[
-      "Emergency",
-      "General Aviation Aircraft Operating Only",
-      "Glider Site",
-      "Hang Glider Site",
-      "Major Airfield",
-      "Minor Airfield",
-      "Other",
-      "Parascending Site",
-      "Search and Rescue Airfield",
-      "Ultralight Site",
-      "Winch Launched Hang Glider Site",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"APT3::Airfield Use [3]",
-    "value":[
-      "Emergency",
-      "General Aviation Aircraft Operating Only",
-      "Glider Site",
-      "Hang Glider Site",
-      "Major Airfield",
-      "Minor Airfield",
-      "Other",
-      "Parascending Site",
-      "Search and Rescue Airfield",
-      "Ultralight Site",
-      "Winch Launched Hang Glider Site",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"APT::Airfield Use",
-    "value":[
-      "Emergency",
-      "General Aviation Aircraft Operating Only",
-      "Glider Site",
-      "Hang Glider Site",
-      "Major Airfield",
-      "Minor Airfield",
-      "Other",
-      "Parascending Site",
-      "Search and Rescue Airfield",
-      "Ultralight Site",
-      "Winch Launched Hang Glider Site",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"APU2::Apron Usage [2]",
-    "value":[
-      "Alert",
-      "Compass Rose",
-      "De-icing and/or Anti-icing",
-      "Decontamination",
-      "Engine Run Up",
-      "Firing-In",
-      "Fuelling",
-      "Hot Refuelling",
-      "INS Alignment",
-      "Loading and/or Unloading",
-      "Maintenance",
-      "Other",
-      "Parking",
-      "Transient",
-      "Weapon Loading",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"APU3::Apron Usage [3]",
-    "value":[
-      "Alert",
-      "Compass Rose",
-      "De-icing and/or Anti-icing",
-      "Decontamination",
-      "Engine Run Up",
-      "Firing-In",
-      "Fuelling",
-      "Hot Refuelling",
-      "INS Alignment",
-      "Loading and/or Unloading",
-      "Maintenance",
-      "Other",
-      "Parking",
-      "Transient",
-      "Weapon Loading",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"APU::Apron Usage",
-    "value":[
-      "Alert",
-      "Compass Rose",
-      "De-icing and/or Anti-icing",
-      "Decontamination",
-      "Engine Run Up",
-      "Firing-In",
-      "Fuelling",
-      "Hot Refuelling",
-      "INS Alignment",
-      "Loading and/or Unloading",
-      "Maintenance",
-      "Other",
-      "Parking",
-      "Transient",
-      "Weapon Loading",
-      "noInformation"
     ]
   },
   {
@@ -152,11 +50,142 @@
       "General Aviation",
       "Holding",
       "Military",
+      "No Information",
       "Other",
       "Passenger",
       "Remote Parking",
-      "Services and/or Hangar",
-      "noInformation"
+      "Services and/or Hangar"
+    ]
+  },
+  {
+    "key":"AQN::Aquifer Name",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"AQO2::Aquifer Overburden [2]",
+    "value":[
+      "Basalt",
+      "Boulders",
+      "Clay",
+      "Conglomerate",
+      "Dolomite",
+      "Granite",
+      "Gravel",
+      "Igneous Rock",
+      "Karst",
+      "Limestone",
+      "Marl",
+      "Metamorphic Rock",
+      "Mud",
+      "No Information",
+      "Other",
+      "Sand",
+      "Schist",
+      "Semi-consolidated and Consolidated Volcanic Ash",
+      "Unconsolidated",
+      "Volcanic Rock"
+    ]
+  },
+  {
+    "key":"AQO3::Aquifer Overburden [3]",
+    "value":[
+      "Basalt",
+      "Boulders",
+      "Clay",
+      "Conglomerate",
+      "Dolomite",
+      "Granite",
+      "Gravel",
+      "Igneous Rock",
+      "Karst",
+      "Limestone",
+      "Marl",
+      "Metamorphic Rock",
+      "Mud",
+      "No Information",
+      "Other",
+      "Sand",
+      "Schist",
+      "Semi-consolidated and Consolidated Volcanic Ash",
+      "Unconsolidated",
+      "Volcanic Rock"
+    ]
+  },
+  {
+    "key":"AQO::Aquifer Overburden",
+    "value":[
+      "Basalt",
+      "Boulders",
+      "Clay",
+      "Conglomerate",
+      "Dolomite",
+      "Granite",
+      "Gravel",
+      "Igneous Rock",
+      "Karst",
+      "Limestone",
+      "Marl",
+      "Metamorphic Rock",
+      "Mud",
+      "No Information",
+      "Other",
+      "Sand",
+      "Schist",
+      "Semi-consolidated and Consolidated Volcanic Ash",
+      "Unconsolidated",
+      "Volcanic Rock"
+    ]
+  },
+  {
+    "key":"AQP::Aquifer Composition",
+    "value":[
+      "Basalt",
+      "Boulders",
+      "Clay",
+      "Conglomerate",
+      "Dolomite",
+      "Granite",
+      "Gravel",
+      "Igneous Rock",
+      "Karst",
+      "Limestone",
+      "Marl",
+      "Metamorphic Rock",
+      "Mud",
+      "No Information",
+      "Other",
+      "Sand",
+      "Schist",
+      "Semi-consolidated and Consolidated Volcanic Ash",
+      "Unconsolidated",
+      "Volcanic Rock"
+    ]
+  },
+  {
+    "key":"AQTC::Aquifer Thickness (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"AQTL::Aquifer Thickness (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"AQTU::Aquifer Thickness (upper value)",
+    "value":[
+      "Value"
     ]
   },
   {
@@ -182,6 +211,7 @@
       "Laterite",
       "Macadam",
       "Membrane",
+      "No Information",
       "Non-bituminous Mix",
       "Other",
       "Pierced Steel Planking",
@@ -189,8 +219,7 @@
       "Snow",
       "Stone",
       "Water",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
@@ -210,6 +239,7 @@
       "Laterite",
       "Macadam",
       "Membrane",
+      "No Information",
       "Non-bituminous Mix",
       "Other",
       "Pierced Steel Planking",
@@ -217,8 +247,7 @@
       "Snow",
       "Stone",
       "Water",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
@@ -238,6 +267,7 @@
       "Laterite",
       "Macadam",
       "Membrane",
+      "No Information",
       "Non-bituminous Mix",
       "Other",
       "Pierced Steel Planking",
@@ -245,8 +275,7 @@
       "Snow",
       "Stone",
       "Water",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
@@ -264,8 +293,8 @@
       "J - Active Civil Heliport",
       "K - Active Military Heliport (with less than minimum facilities)",
       "L - Active Civil Heliport (with less than minimum facilities)",
-      "X - Decoy",
-      "noInformation"
+      "No Information",
+      "X - Decoy"
     ]
   },
   {
@@ -278,15 +307,15 @@
       "Fibre-optic",
       "Guide",
       "Load Bearing",
+      "No Information",
       "Other",
-      "Power Distribution Line",
-      "Power Transmission Line",
+      "Power Line",
       "Restraining",
       "Telegraph",
       "Telephone",
       "Tethering",
       "Towing",
-      "noInformation"
+      "Transmission Line"
     ]
   },
   {
@@ -299,15 +328,15 @@
       "Fibre-optic",
       "Guide",
       "Load Bearing",
+      "No Information",
       "Other",
-      "Power Distribution Line",
-      "Power Transmission Line",
+      "Power Line",
       "Restraining",
       "Telegraph",
       "Telephone",
       "Tethering",
       "Towing",
-      "noInformation"
+      "Transmission Line"
     ]
   },
   {
@@ -320,25 +349,33 @@
       "Fibre-optic",
       "Guide",
       "Load Bearing",
+      "No Information",
       "Other",
-      "Power Distribution Line",
-      "Power Transmission Line",
+      "Power Line",
       "Restraining",
       "Telegraph",
       "Telephone",
       "Tethering",
       "Towing",
-      "noInformation"
+      "Transmission Line"
+    ]
+  },
+  {
+    "key":"ATB::Attached Building",
+    "value":[
+      "False",
+      "No Information",
+      "True"
     ]
   },
   {
     "key":"ATC::Aqueduct Type",
     "value":[
+      "No Information",
       "Qanat",
       "Surface",
       "Underground",
-      "Underwater",
-      "noInformation"
+      "Underwater"
     ]
   },
   {
@@ -348,21 +385,54 @@
     ]
   },
   {
+    "key":"AWP::Aeronautical Obstacle Light Present",
+    "value":[
+      "False",
+      "No Information",
+      "True"
+    ]
+  },
+  {
     "key":"AXS::Aerodrome Surface Status",
     "value":[
       "Closed",
+      "No Information",
       "Open",
       "Parked or Disabled Aircraft",
-      "Work in Progress",
-      "noInformation"
+      "Work in Progress"
+    ]
+  },
+  {
+    "key":"AYRC::Aquifer Yield Rating (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"AYRL::Aquifer Yield Rating (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"AYRU::Aquifer Yield Rating (upper value)",
+    "value":[
+      "Value"
     ]
   },
   {
     "key":"AZC::Man-made",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -382,8 +452,8 @@
       "Mean Lower Low Water",
       "Mean Lower Low Water Springs",
       "Mean Sea Level",
-      "Other",
-      "noInformation"
+      "No Information",
+      "Other"
     ]
   },
   {
@@ -397,8 +467,8 @@
     "value":[
       "Dense",
       "Moderate",
-      "Sparse",
-      "noInformation"
+      "No Information",
+      "Sparse"
     ]
   },
   {
@@ -408,9 +478,9 @@
       "Chain-link",
       "Concertina Wire",
       "Electrified Wire",
+      "No Information",
       "Other",
-      "Spiked",
-      "noInformation"
+      "Spiked"
     ]
   },
   {
@@ -419,11 +489,11 @@
       "Difficult",
       "Easy",
       "Impossible",
-      "noInformation"
+      "No Information"
     ]
   },
   {
-    "key":"BEN::Basic Encyclopedia (BE) Number",
+    "key":"BEL::Base Elevation",
     "value":[
       "Value"
     ]
@@ -433,13 +503,63 @@
     "value":[
       "Caisson",
       "Lock Gate",
+      "No Information",
       "Other",
-      "Tide Lock",
-      "noInformation"
+      "Tide Lock"
     ]
   },
   {
-    "key":"BH141_SLTA::Inland Waterbody Bank : Shoreline Type (first bank)",
+    "key":"BH141_AWBA::Inland Waterbody Bank (1) : Above Water Bank Slope (first bank)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BH141_AWBB::Inland Waterbody Bank (2) : Above Water Bank Slope (second bank)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BH141_IBOA::Inland Waterbody Bank (1) : Bank Orientation (first bank)",
+    "value":[
+      "Indeterminate",
+      "Left",
+      "No Flow",
+      "No Information",
+      "Other",
+      "Right"
+    ]
+  },
+  {
+    "key":"BH141_IBOB::Inland Waterbody Bank (2) : Bank Orientation (second bank)",
+    "value":[
+      "Indeterminate",
+      "Left",
+      "No Flow",
+      "No Information",
+      "Other",
+      "Right"
+    ]
+  },
+  {
+    "key":"BH141_SHDA::Inland Waterbody Bank (1) : Shoreline Delineated (first bank)",
+    "value":[
+      "False",
+      "No Information",
+      "True"
+    ]
+  },
+  {
+    "key":"BH141_SHDB::Inland Waterbody Bank (2) : Shoreline Delineated (second bank)",
+    "value":[
+      "False",
+      "No Information",
+      "True"
+    ]
+  },
+  {
+    "key":"BH141_SLTA::Inland Waterbody Bank (1) : Shoreline Type (first bank)",
     "value":[
       "Building Rubble",
       "Erosion Rubble",
@@ -447,15 +567,15 @@
       "Mangrove",
       "Marshy",
       "Mud",
+      "No Information",
       "Other",
       "Sandy",
       "Shingly",
-      "Stony",
-      "noInformation"
+      "Stony"
     ]
   },
   {
-    "key":"BH141_SLTB::Inland Waterbody Bank : Shoreline Type (second bank)",
+    "key":"BH141_SLTB::Inland Waterbody Bank (2) : Shoreline Type (second bank)",
     "value":[
       "Building Rubble",
       "Erosion Rubble",
@@ -463,11 +583,23 @@
       "Mangrove",
       "Marshy",
       "Mud",
+      "No Information",
       "Other",
       "Sandy",
       "Shingly",
-      "Stony",
-      "noInformation"
+      "Stony"
+    ]
+  },
+  {
+    "key":"BH141_WBHA::Inland Waterbody Bank (1) : Waterbody Bank Height (first bank)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BH141_WBHB::Inland Waterbody Bank (2) : Waterbody Bank Height (second bank)",
+    "value":[
+      "Value"
     ]
   },
   {
@@ -476,9 +608,9 @@
       "Bedrock",
       "Clay and Silt",
       "Concrete",
-      "Coral",
       "Gravel and Cobble",
       "Masonry",
+      "No Information",
       "Other",
       "Paved",
       "Peat",
@@ -488,8 +620,7 @@
       "Sand and Gravel",
       "Sand over Mud",
       "Silty Sands",
-      "Soil",
-      "noInformation"
+      "Soil"
     ]
   },
   {
@@ -498,9 +629,9 @@
       "Bedrock",
       "Clay and Silt",
       "Concrete",
-      "Coral",
       "Gravel and Cobble",
       "Masonry",
+      "No Information",
       "Other",
       "Paved",
       "Peat",
@@ -510,8 +641,7 @@
       "Sand and Gravel",
       "Sand over Mud",
       "Silty Sands",
-      "Soil",
-      "noInformation"
+      "Soil"
     ]
   },
   {
@@ -520,9 +650,9 @@
       "Bedrock",
       "Clay and Silt",
       "Concrete",
-      "Coral",
       "Gravel and Cobble",
       "Masonry",
+      "No Information",
       "Other",
       "Paved",
       "Peat",
@@ -532,8 +662,7 @@
       "Sand and Gravel",
       "Sand over Mud",
       "Silty Sands",
-      "Soil",
-      "noInformation"
+      "Soil"
     ]
   },
   {
@@ -554,6 +683,7 @@
       "Flat Bog",
       "Horizontal Fen",
       "Lowland Polygon Bog",
+      "No Information",
       "Northern Ribbed Fen",
       "Other",
       "Palsa Bog",
@@ -564,8 +694,7 @@
       "Slope Bog",
       "Slope Fen",
       "String Bog",
-      "Veneer Bog",
-      "noInformation"
+      "Veneer Bog"
     ]
   },
   {
@@ -575,12 +704,112 @@
       "Drawbridge",
       "Fixed",
       "Lift-bridge",
+      "No Information",
       "Opening",
       "Other",
       "Retractable",
       "Submersible",
-      "Swing-bridge",
-      "noInformation"
+      "Swing-bridge"
+    ]
+  },
+  {
+    "key":"BPWHAC::Inland Waterbody Bank (1) : Predominant Waterbody Bank Height (first bank) (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"BPWHAL::Inland Waterbody Bank (1) : Predominant Waterbody Bank Height (first bank) (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BPWHAU::Inland Waterbody Bank (1) : Predominant Waterbody Bank Height (first bank) (upper value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BPWHBC::Inland Waterbody Bank (2) : Predominant Waterbody Bank Height (second bank) (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"BPWHBL::Inland Waterbody Bank (2) : Predominant Waterbody Bank Height (second bank) (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BPWHBU::Inland Waterbody Bank (2) : Predominant Waterbody Bank Height (second bank) (upper value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BPWSAC::Inland Waterbody Bank (1) : Predominant Waterbody Bank Slope (first bank) (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"BPWSAL::Inland Waterbody Bank (1) : Predominant Waterbody Bank Slope (first bank) (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BPWSAU::Inland Waterbody Bank (1) : Predominant Waterbody Bank Slope (first bank) (upper value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BPWSBC::Inland Waterbody Bank (2) : Predominant Waterbody Bank Slope (second bank) (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"BPWSBL::Inland Waterbody Bank (2) : Predominant Waterbody Bank Slope (second bank) (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BPWSBU::Inland Waterbody Bank (2) : Predominant Waterbody Bank Slope (second bank) (upper value)",
+    "value":[
+      "Value"
     ]
   },
   {
@@ -600,16 +829,17 @@
       "Covered",
       "Floating",
       "Girder",
+      "No Information",
       "Open Spandrel Arch",
       "Other",
       "Slab",
       "Stringer Beam",
+      "Submersible",
       "Suspension",
       "Tower Suspension",
       "Transporter",
       "Trestle",
-      "Truss",
-      "noInformation"
+      "Truss"
     ]
   },
   {
@@ -623,16 +853,17 @@
       "Covered",
       "Floating",
       "Girder",
+      "No Information",
       "Open Spandrel Arch",
       "Other",
       "Slab",
       "Stringer Beam",
+      "Submersible",
       "Suspension",
       "Tower Suspension",
       "Transporter",
       "Trestle",
-      "Truss",
-      "noInformation"
+      "Truss"
     ]
   },
   {
@@ -646,36 +877,31 @@
       "Covered",
       "Floating",
       "Girder",
+      "No Information",
       "Open Spandrel Arch",
       "Other",
       "Slab",
       "Stringer Beam",
+      "Submersible",
       "Suspension",
       "Tower Suspension",
       "Transporter",
       "Trestle",
-      "Truss",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"BSM::Mobile Bridge Span",
-    "value":[
-      "False",
-      "True",
-      "noInformation"
+      "Truss"
     ]
   },
   {
     "key":"BSU::Building Superstructure Type",
     "value":[
       "Chimney",
+      "Clerestory",
       "Cupola",
       "Dome",
       "Elevator Machine Room",
       "HVAC Equipment",
       "Lightning Rod",
       "Minaret",
+      "No Information",
       "Ornamental Element",
       "Other",
       "Parapet",
@@ -683,11 +909,59 @@
       "Roof Garden",
       "Signage",
       "Skylight",
-      "Solar Panels",
       "Steeple",
       "Tower",
-      "Turret",
-      "noInformation"
+      "Turret"
+    ]
+  },
+  {
+    "key":"BWVCAC::Inland Waterbody Bank (1) : Waterbody Bank Vegetation Cover (first bank) (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"BWVCAL::Inland Waterbody Bank (1) : Waterbody Bank Vegetation Cover (first bank) (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BWVCAU::Inland Waterbody Bank (1) : Waterbody Bank Vegetation Cover (first bank) (upper value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BWVCBC::Inland Waterbody Bank (2) : Waterbody Bank Vegetation Cover (second bank) (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"BWVCBL::Inland Waterbody Bank (2) : Waterbody Bank Vegetation Cover (second bank) (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"BWVCBU::Inland Waterbody Bank (2) : Waterbody Bank Vegetation Cover (second bank) (upper value)",
+    "value":[
+      "Value"
     ]
   },
   {
@@ -697,11 +971,11 @@
       "Joint Military and Civilian",
       "Military",
       "Municipal",
+      "No Information",
       "Other",
       "Private",
       "Public",
-      "Tribal",
-      "noInformation"
+      "Tribal"
     ]
   },
   {
@@ -714,15 +988,15 @@
       "Fibre-optic",
       "Guide",
       "Load Bearing",
+      "No Information",
       "Other",
-      "Power Distribution Line",
-      "Power Transmission Line",
+      "Power Line",
       "Restraining",
       "Telegraph",
       "Telephone",
       "Tethering",
       "Towing",
-      "noInformation"
+      "Transmission Line"
     ]
   },
   {
@@ -735,15 +1009,15 @@
       "Fibre-optic",
       "Guide",
       "Load Bearing",
+      "No Information",
       "Other",
-      "Power Distribution Line",
-      "Power Transmission Line",
+      "Power Line",
       "Restraining",
       "Telegraph",
       "Telephone",
       "Tethering",
       "Towing",
-      "noInformation"
+      "Transmission Line"
     ]
   },
   {
@@ -756,15 +1030,15 @@
       "Fibre-optic",
       "Guide",
       "Load Bearing",
+      "No Information",
       "Other",
-      "Power Distribution Line",
-      "Power Transmission Line",
+      "Power Line",
       "Restraining",
       "Telegraph",
       "Telephone",
       "Tethering",
       "Towing",
-      "noInformation"
+      "Transmission Line"
     ]
   },
   {
@@ -777,12 +1051,12 @@
       "Managed Resource Protected Area",
       "National Park",
       "Natural Monument",
+      "No Information",
       "Other",
       "Protected Landscape or Seascape",
       "Species Management Area",
       "Strict Nature Reserve",
-      "Wilderness Area",
-      "noInformation"
+      "Wilderness Area"
     ]
   },
   {
@@ -793,18 +1067,29 @@
       "Gondola Lift",
       "Industrial Ropeway",
       "Material Tramway",
+      "No Information",
       "Other",
       "Ski Tow",
-      "T-bar Lift",
-      "noInformation"
+      "T-bar Lift"
     ]
   },
   {
     "key":"CBP::Containment Berm Present",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
+    ]
+  },
+  {
+    "key":"CCG::Military Environmental Hazard Category",
+    "value":[
+      "Biological",
+      "Chemical",
+      "No Information",
+      "Nuclear and/or Radiological",
+      "Other",
+      "Thermal"
     ]
   },
   {
@@ -812,34 +1097,112 @@
     "value":[
       "Complete",
       "Moveable",
+      "No Information",
       "Open",
-      "Partial",
-      "noInformation"
+      "Partial"
     ]
   },
   {
     "key":"CDA::Covered Drain",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
     "key":"CET::Grading Type",
     "value":[
       "Many Sides",
+      "No Information",
       "No Sides",
       "One Side",
       "Other",
-      "Two Sides",
-      "noInformation"
+      "Two Sides"
     ]
   },
   {
     "key":"CID::Cell Identifier",
     "value":[
       "Value"
+    ]
+  },
+  {
+    "key":"CNS::Controlled",
+    "value":[
+      "False",
+      "No Information",
+      "True"
+    ]
+  },
+  {
+    "key":"CON::Route Width Constriction Type",
+    "value":[
+      "Arcade",
+      "Bridge Pier",
+      "Bridge Superstructure",
+      "Bridge Tower",
+      "Building",
+      "Causeway Structure",
+      "Cave",
+      "Culvert",
+      "Curb",
+      "Cut",
+      "Dam",
+      "Dropgate",
+      "Embankment",
+      "Entrance and/or Exit",
+      "Fence",
+      "Fire Hydrant",
+      "Ford",
+      "Gallery",
+      "Gantry",
+      "Gate",
+      "Hedgerow",
+      "Memorial Monument",
+      "No Information",
+      "Non-building Structure",
+      "Other",
+      "Parking Garage",
+      "Pass",
+      "Pipeline",
+      "Pipeline Crossing Point",
+      "Prepared Watercourse Crossing",
+      "Railway Signal",
+      "Railway Switch",
+      "Ramp",
+      "Reduced Track or Lane Count",
+      "Retail Stand",
+      "Road Interchange",
+      "Rock Formation",
+      "Route-related Structure",
+      "Stair",
+      "Steep Terrain Face",
+      "Transportation Block",
+      "Transportation Route Protection Structure",
+      "Tunnel",
+      "Underpass"
+    ]
+  },
+  {
+    "key":"COS::Facility Operational Status",
+    "value":[
+      "No Information",
+      "Non-operational",
+      "Not in Operation",
+      "Operational",
+      "Partially Operational",
+      "Planned",
+      "Temporarily Non-operational"
+    ]
+  },
+  {
+    "key":"CPA::Survey Control Point Type",
+    "value":[
+      "Horizontal Position",
+      "Horizontal Position and Benchmark",
+      "No Information",
+      "Vertical Position"
     ]
   },
   {
@@ -851,8 +1214,6 @@
       "Fixed Cells, 5 Arc Degree",
       "No Information",
       "Other",
-      "The attribute value is known, but is not currently a valid member of the attribute range.",
-      "There is no information specified regarding the attribute value.",
       "Variable Cells"
     ]
   },
@@ -861,10 +1222,10 @@
     "value":[
       "Bridge Crane",
       "Container Crane",
+      "No Information",
       "Other",
       "Rotating Crane",
-      "Tower Crane",
-      "noInformation"
+      "Tower Crane"
     ]
   },
   {
@@ -873,17 +1234,71 @@
       "Fixed",
       "Floating",
       "Mobile",
+      "No Information",
       "Other",
-      "Travelling",
-      "noInformation"
+      "Travelling"
+    ]
+  },
+  {
+    "key":"CSC2::Intersection Control Type [2]",
+    "value":[
+      "Ground Marking",
+      "No Control",
+      "No Information",
+      "Other",
+      "Priority Sign",
+      "Signal Device",
+      "Stop Sign",
+      "Yield Sign"
+    ]
+  },
+  {
+    "key":"CSC3::Intersection Control Type [3]",
+    "value":[
+      "Ground Marking",
+      "No Control",
+      "No Information",
+      "Other",
+      "Priority Sign",
+      "Signal Device",
+      "Stop Sign",
+      "Yield Sign"
+    ]
+  },
+  {
+    "key":"CSC::Intersection Control Type",
+    "value":[
+      "Ground Marking",
+      "No Control",
+      "No Information",
+      "Other",
+      "Priority Sign",
+      "Signal Device",
+      "Stop Sign",
+      "Yield Sign"
+    ]
+  },
+  {
+    "key":"CSO::Contaminant Source",
+    "value":[
+      "Dredging",
+      "Factories",
+      "Farm Run-off",
+      "Military Operations",
+      "Naturally Occurring",
+      "No Information",
+      "Other",
+      "Sewers",
+      "Spoil",
+      "Wrecks"
     ]
   },
   {
     "key":"CST::Contained within Service Tunnel",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -891,9 +1306,9 @@
     "value":[
       "Box with Load",
       "Box with Soil",
+      "No Information",
       "Other",
-      "Regular with Soil",
-      "noInformation"
+      "Regular with Soil"
     ]
   },
   {
@@ -903,53 +1318,24 @@
     ]
   },
   {
-    "key":"CVT2::Conveyor Type [2]",
+    "key":"CUL::Cultural Context Type",
     "value":[
-      "Apron",
-      "Belt",
-      "Bucket",
-      "Flight",
-      "Not Visible",
+      "Clan",
+      "Ethnic Group",
+      "Language",
+      "National Identity",
+      "No Information",
       "Other",
-      "Rollers",
-      "Screw Auger",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"CVT3::Conveyor Type [3]",
-    "value":[
-      "Apron",
-      "Belt",
-      "Bucket",
-      "Flight",
-      "Not Visible",
-      "Other",
-      "Rollers",
-      "Screw Auger",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"CVT::Conveyor Type",
-    "value":[
-      "Apron",
-      "Belt",
-      "Bucket",
-      "Flight",
-      "Not Visible",
-      "Other",
-      "Rollers",
-      "Screw Auger",
-      "noInformation"
+      "Religion",
+      "Tribe"
     ]
   },
   {
     "key":"CWT::Contained within Tunnel",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -959,35 +1345,12 @@
     ]
   },
   {
-    "key":"DFT::Dam Face Type",
-    "value":[
-      "Slope",
-      "Vertical",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"DFU::Dam Function",
-    "value":[
-      "Flood Control",
-      "Hydroelectric Power Generation",
-      "Impoundment",
-      "Irrigation",
-      "Navigation",
-      "Other",
-      "Recreation",
-      "Water Supply",
-      "Weir",
-      "noInformation"
-    ]
-  },
-  {
     "key":"DGC::Transportation Block Type",
     "value":[
       "Drop Gate",
+      "No Information",
       "Other",
-      "Rolling Block",
-      "noInformation"
+      "Rolling Block"
     ]
   },
   {
@@ -997,11 +1360,36 @@
     ]
   },
   {
+    "key":"DMBC::Undergrowth Density (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"DMBL::Undergrowth Density (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"DMBU::Undergrowth Density (upper value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
     "key":"DMD::Dammed",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -1017,13 +1405,55 @@
     ]
   },
   {
+    "key":"DPAC::Aquifer Depth (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"DPAL::Aquifer Depth (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"DPAU::Aquifer Depth (upper value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
     "key":"DQS::Data Quality Statement",
     "value":[
       "Value"
     ]
   },
   {
+    "key":"DWT::Dam Type",
+    "value":[
+      "Flood Control",
+      "Hydroelectric Power Generation",
+      "Navigation",
+      "No Information",
+      "Other",
+      "Weir"
+    ]
+  },
+  {
     "key":"DZC::Deck Count",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"DZP::Deepest Depth Below Surface Level",
     "value":[
       "Value"
     ]
@@ -1034,71 +1464,104 @@
       "Battery",
       "Military Parapet",
       "Military Trench",
+      "No Information",
       "Other",
       "Rampart",
-      "Redoubt",
-      "noInformation"
+      "Redoubt"
     ]
   },
   {
-    "key":"EPW::Electrical Power Generation Capacity",
+    "key":"EQC::Equivalent Scale Category",
     "value":[
-      "Value"
+      "1:1,000,000",
+      "1:100,000",
+      "1:12,500",
+      "1:2,000,000",
+      "1:25,000",
+      "1:250,000",
+      "1:5,000",
+      "1:5,000,000",
+      "1:50,000",
+      "1:500,000",
+      "No Information",
+      "Other"
+    ]
+  },
+  {
+    "key":"ESC::Elevation Surface Category",
+    "value":[
+      "Inland Water",
+      "Land",
+      "No Information",
+      "Snow Field and/or Ice-field",
+      "Vegetation",
+      "Water"
     ]
   },
   {
     "key":"ETS::Extraction Specification",
     "value":[
-      "Digital Feature Extraction Guide (DFEG).",
-      "Global Topographic Data Store (RTDS) Extraction Guide (EG).",
-      "Local Topographic Data Store (LTDS) Extraction Guide (EG).",
-      "MIL-C-89202A: Combat Charts.",
-      "MIL-D-89000: Digital Terrain Elevation Data (DTED) Level 1 (1CD).",
-      "MIL-D-89000: Digital Terrain Elevation Data (DTED) Level 2 (1CF).",
-      "MIL-H-89201/1: Harbor, approach, and coastal charts at scales 1:25,000 and larger (HAC 1).",
-      "MIL-H-89201/2: Harbor, approach, and coastal charts at scales 1:25,001 to 1:50,000 (HAC 2).",
-      "MIL-H-89201/3: Harbor, approach, and coastal charts at scales 1:50,001 to 1:100,000 (HAC 3).",
-      "MIL-H-89201/4: Harbor, approach, and coastal charts at scales 1:100,001 to 1:250,000 (HAC 4).",
-      "MIL-H-89201/5: Harbor, approach, and coastal charts at scales 1:250,001 to 1:350,000 (HAC 5).",
-      "MIL-H-89201/6: Harbor, approach, and coastal charts at scales 1:350,001 to 1:600,000 (HAC 6).",
-      "MIL-H-89201/7: Harbor, approach, and coastal charts at scales 1:600,001 to 1:750,000 (HAC 7).",
-      "MIL-H-89201/8: Harbor, approach, and coastal charts at scales 1:750,001 to 1:1,000,000 (HAC 8).",
-      "MIL-H-89201/9: Harbor, approach, and coastal charts at scales 1:1,000,000 and smaller (HAC 9).",
-      "MIL-J-89100: Joint Operations Graphics Series 1501A and 1501 (JOG Air/Ground).",
-      "MIL-O-89102: Operational Navigation Charts (ONC).",
-      "MIL-PRF-89023(1): Digital Nautical Chart (DNC).",
-      "MIL-PRF-89032(Draft): Vector Smart Map (VMAP) Level 2.",
-      "MIL-PRF-89033(1): Vector Smart Map (VMAP) Level 1.",
-      "MIL-PRF-89035A: Urban Vector Map (UVMAP).",
-      "MIL-PRF-89037A: Digital Topographic Data (DTOP).",
-      "MIL-PRF-89039(2): Vector Smart Map (VMAP) Level 0.",
-      "MIL-PRF-89040A(2): Vector Product Interim Terrain Data (VITD).",
-      "MIL-PRF-89049(1): Foundation Feature Data.",
-      "MIL-PRF-89049/10: Tactical Ocean Data Level 0 (TOD0).",
-      "MIL-PRF-89049/11: Tactical Ocean Data Level 1 (TOD1).",
-      "MIL-PRF-89049/12: Tactical Ocean Data Level 2 (TOD2).",
-      "MIL-PRF-89049/13(Draft): Tactical Ocean Data Level 3 (TOD3).",
-      "MIL-PRF-89049/14: Tactical Ocean Data Level 4 (TOD4).",
-      "MIL-T-89101: Tactical Pilotage Charts (TPC).",
-      "MIL-T-89301A(1): Topographic Line Map (TLM) 1:100K.",
-      "MIL-T-89301A(1): Topographic Line Map (TLM) 1:50K.",
-      "Multinational Geospatial Co-Production (MGCP) Technical Reference Documentation (TRD).",
-      "NGA Air Target Chart (ATC).",
-      "NGA Joint Operations Graphic - Radar (JOGR).",
-      "NGA Mission Specific Data, Level 1 Data Content Specification.",
-      "NGA Mission Specific Data, Level 2 Data Content Specification.",
-      "NGA Mission Specific Data, Level 3 Data Content Specification.",
-      "NGA Mission Specific Data, Level 4 Data Content Specification.",
-      "NGA Mission Specific Data, Level 5 Data Content Specification.",
-      "NGA Terrain Contour Matching - Enroute/Midcourse (TERCOM E).",
-      "NGA Terrain Contour Matching - Landfall (TERCOM L).",
-      "NGA Terrain Contour Matching - Terminal (TERCOM T).",
+      "1AA-TPC",
+      "1AB-ONC",
+      "1AE-JOG-A/G",
+      "1CD-DTED-1",
+      "1CE-DFAD-1",
+      "1CF-DTED-2",
+      "1CG-DFAD-2",
+      "2AA/001-HAC-1",
+      "2AA/002-HAC-2",
+      "2AA/003-HAC-3",
+      "2AA/004-HAC-4",
+      "2AA/005-HAC-5",
+      "2AA/006-HAC-6",
+      "2AA/007-HAC-7",
+      "2AA/008-HAC-8",
+      "2AA/009-HAC-9",
+      "2AD-Combat",
+      "3AA-TLM50",
+      "3AG-TLM100",
+      "3KA-VITD",
+      "3KC/001-DTOP",
+      "3KH-VMap-2",
+      "3KL-VMap-0",
+      "3KM-VMap-1",
+      "3KU-UVMap",
+      "4AA-ATC",
+      "4AC-JOG-R",
+      "4GE-TERCOM-L",
+      "4GF-TERCOM-E",
+      "4GG-TERCOM-T",
+      "5EE-FFD",
+      "DFEG",
+      "DNC",
+      "GTDS-EG",
+      "LTDS-EG",
+      "MGCP TRD",
+      "MSD1",
+      "MSD2",
+      "MSD3",
+      "MSD4",
+      "MSD5",
       "No Information",
       "Other",
-      "PS/ICE/200 (MIL-PRF-89005): Digital Feature Analysis Data (DFAD) Level 1.",
-      "PS/ICG/200 (MIL-PRF-89005): Digital Feature Analysis Data (DFAD) Level 1.",
-      "Regional Topographic Data Store (RTDS) Extraction Guide (EG).",
-      "Specialized-Urban Topographic Data Store (S-UTDS) Extraction Guide (EG)."
+      "RTDS-EG",
+      "S-UTDS-EG",
+      "TOD0",
+      "TOD1",
+      "TOD2",
+      "TOD3",
+      "TOD4"
+    ]
+  },
+  {
+    "key":"ETY::Engine Test Cell Type",
+    "value":[
+      "Jet Engine Dismounted",
+      "Jet Engine Mounted",
+      "No Information",
+      "Other",
+      "Rocket Engine Horizontal",
+      "Rocket Engine Upright"
     ]
   },
   {
@@ -1114,11 +1577,29 @@
     ]
   },
   {
+    "key":"EXP::Route Width Expansion Type",
+    "value":[
+      "Increased Track or Lane Count",
+      "No Information",
+      "Other",
+      "Railway Sidetrack",
+      "Roadside Rest Area",
+      "Shoulder",
+      "Siding"
+    ]
+  },
+  {
     "key":"FAC::Solid Maritime Construction",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
+    ]
+  },
+  {
+    "key":"FCL::Ferry Crossing Distance",
+    "value":[
+      "Value"
     ]
   },
   {
@@ -1126,8 +1607,8 @@
     "value":[
       "Divided Different",
       "Divided Same",
-      "Non-divided",
-      "noInformation"
+      "No Information",
+      "Non-divided"
     ]
   },
   {
@@ -1138,8 +1619,8 @@
       "Fixed Barrage",
       "Flood Gate",
       "Movable Barrage",
-      "Other",
-      "noInformation"
+      "No Information",
+      "Other"
     ]
   },
   {
@@ -1148,8 +1629,8 @@
       "Cable",
       "Free-moving",
       "Ice",
-      "Other",
-      "noInformation"
+      "No Information",
+      "Other"
     ]
   },
   {
@@ -1320,6 +1801,7 @@
       "Metal Ore Mining",
       "Metal Product Manufacturing",
       "Metal Refining",
+      "Migrant Labour",
       "Military Recruitment",
       "Military Reserve Activities",
       "Military Vehicle Manufacture",
@@ -1340,6 +1822,7 @@
       "National Government",
       "Navigation",
       "Night Club",
+      "No Information",
       "Non-specialized Store",
       "Nonmetallic Mineral Product Manufacturing",
       "Nuclear Research Centre",
@@ -1401,6 +1884,7 @@
       "Residence",
       "Residential Care",
       "Resort",
+      "Resort Hotel",
       "Restaurant",
       "Restroom",
       "Retail Banking",
@@ -1486,8 +1970,7 @@
       "Wireless Telecommunications",
       "Wood-based Manufacturing",
       "Wooden Construction Product Manufacture",
-      "Yacht-club",
-      "noInformation"
+      "Yacht-club"
     ]
   },
   {
@@ -1658,6 +2141,7 @@
       "Metal Ore Mining",
       "Metal Product Manufacturing",
       "Metal Refining",
+      "Migrant Labour",
       "Military Recruitment",
       "Military Reserve Activities",
       "Military Vehicle Manufacture",
@@ -1678,6 +2162,7 @@
       "National Government",
       "Navigation",
       "Night Club",
+      "No Information",
       "Non-specialized Store",
       "Nonmetallic Mineral Product Manufacturing",
       "Nuclear Research Centre",
@@ -1739,6 +2224,7 @@
       "Residence",
       "Residential Care",
       "Resort",
+      "Resort Hotel",
       "Restaurant",
       "Restroom",
       "Retail Banking",
@@ -1824,8 +2310,7 @@
       "Wireless Telecommunications",
       "Wood-based Manufacturing",
       "Wooden Construction Product Manufacture",
-      "Yacht-club",
-      "noInformation"
+      "Yacht-club"
     ]
   },
   {
@@ -1996,6 +2481,7 @@
       "Metal Ore Mining",
       "Metal Product Manufacturing",
       "Metal Refining",
+      "Migrant Labour",
       "Military Recruitment",
       "Military Reserve Activities",
       "Military Vehicle Manufacture",
@@ -2016,6 +2502,7 @@
       "National Government",
       "Navigation",
       "Night Club",
+      "No Information",
       "Non-specialized Store",
       "Nonmetallic Mineral Product Manufacturing",
       "Nuclear Research Centre",
@@ -2077,6 +2564,7 @@
       "Residence",
       "Residential Care",
       "Resort",
+      "Resort Hotel",
       "Restaurant",
       "Restroom",
       "Retail Banking",
@@ -2162,8 +2650,7 @@
       "Wireless Telecommunications",
       "Wood-based Manufacturing",
       "Wooden Construction Product Manufacture",
-      "Yacht-club",
-      "noInformation"
+      "Yacht-club"
     ]
   },
   {
@@ -2175,13 +2662,13 @@
       "Fishing Harbour",
       "Marina",
       "Naval Base",
+      "No Information",
       "Other",
       "Passenger Terminal",
       "Ro-Ro Terminal",
       "Shipyard",
       "Tanker Terminal",
-      "Timber-yard",
-      "noInformation"
+      "Timber-yard"
     ]
   },
   {
@@ -2193,13 +2680,13 @@
       "Fishing Harbour",
       "Marina",
       "Naval Base",
+      "No Information",
       "Other",
       "Passenger Terminal",
       "Ro-Ro Terminal",
       "Shipyard",
       "Tanker Terminal",
-      "Timber-yard",
-      "noInformation"
+      "Timber-yard"
     ]
   },
   {
@@ -2211,13 +2698,13 @@
       "Fishing Harbour",
       "Marina",
       "Naval Base",
+      "No Information",
       "Other",
       "Passenger Terminal",
       "Ro-Ro Terminal",
       "Shipyard",
       "Tanker Terminal",
-      "Timber-yard",
-      "noInformation"
+      "Timber-yard"
     ]
   },
   {
@@ -2228,16 +2715,16 @@
       "Fill",
       "Levee",
       "Mound",
-      "Other",
-      "noInformation"
+      "No Information",
+      "Other"
     ]
   },
   {
     "key":"FLO::Floating",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -2247,8 +2734,8 @@
       "Minor",
       "Minor and Hard",
       "Minor and Soft",
-      "Other",
-      "noInformation"
+      "No Information",
+      "Other"
     ]
   },
   {
@@ -2258,10 +2745,10 @@
       "Field Artillery",
       "Grenade",
       "Impact Area",
+      "No Information",
       "Other",
       "Small Arms",
-      "Tank",
-      "noInformation"
+      "Tank"
     ]
   },
   {
@@ -2271,10 +2758,10 @@
       "Field Artillery",
       "Grenade",
       "Impact Area",
+      "No Information",
       "Other",
       "Small Arms",
-      "Tank",
-      "noInformation"
+      "Tank"
     ]
   },
   {
@@ -2284,18 +2771,18 @@
       "Field Artillery",
       "Grenade",
       "Impact Area",
+      "No Information",
       "Other",
       "Small Arms",
-      "Tank",
-      "noInformation"
+      "Tank"
     ]
   },
   {
     "key":"FSC::Flight Strip Capable",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -2307,9 +2794,9 @@
       "Geotextile",
       "Metal",
       "Netting",
+      "No Information",
       "Other",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
@@ -2319,10 +2806,10 @@
       "Casement",
       "Keep",
       "Martello Tower",
+      "No Information",
       "Non-specific Fortified",
       "Other",
-      "Pillbox",
-      "noInformation"
+      "Pillbox"
     ]
   },
   {
@@ -2332,43 +2819,58 @@
       "AA011::Shear Wall",
       "AA020::Mine Shaft Superstructure",
       "AA040::Rig",
+      "AA045::Borehole",
       "AA052::Hydrocarbons Field",
       "AA054::Non-water Well",
       "AB000::Disposal Site",
       "AB010::Recycling Site",
+      "AB021::Liquid Diffuser",
       "AB040::Aeration Basin",
       "AC010::Blast-furnace",
       "AC020::Catalytic Cracker",
       "AC030::Settling Pond",
+      "AC040::Hydrocarbon Products Facility",
       "AC060::Industrial Furnace",
+      "AC507::Sewage Treatment Plant",
       "AD010::Electric Power Station",
       "AD020::Solar Panel",
       "AD025::Solar Farm",
       "AD030::Power Substation",
+      "AD041::Nuclear Reactor Containment",
+      "AD050::Heating Facility",
+      "AD055::Cooling Facility",
       "AD060::Wind Farm",
       "AF010::Smokestack",
       "AF020::Conveyor",
+      "AF021::Bucket Elevator",
       "AF030::Cooling Tower",
       "AF040::Crane",
+      "AF050::Excavating Machine",
+      "AF060::Engine Test Cell",
       "AF070::Flare Pipe",
       "AF080::Hopper",
       "AG030::Shopping Complex",
+      "AG040::Office Park",
+      "AG050::Billboard",
       "AH025::Engineered Earthwork",
       "AH055::Fortified Building",
       "AH060::Underground Bunker",
       "AH070::Checkpoint",
       "AI020::Caravan Park",
-      "AI021::Manufactured Home Park",
+      "AI021::Mobile Home Park",
+      "AI030::Camp",
       "AJ030::Holding Pen",
       "AJ050::Windmill",
       "AJ051::Wind Turbine",
       "AJ055::Water Mill",
+      "AJ080::Stable",
       "AJ085::Barn",
       "AJ110::Greenhouse",
       "AK020::Amusement Park Attraction",
       "AK030::Amusement Park",
       "AK040::Sports Ground",
       "AK060::Camp-site",
+      "AK061::Picnic Site",
       "AK070::Drive-in Theatre",
       "AK080::Outdoor Theatre Screen",
       "AK090::Fairground",
@@ -2376,8 +2878,10 @@
       "AK101::Golf Driving Range",
       "AK110::Grandstand",
       "AK120::Park",
+      "AK121::Lookout",
       "AK130::Racetrack",
       "AK150::Ski-jump",
+      "AK155::Ski-run",
       "AK160::Stadium",
       "AK161::Scoreboard",
       "AK164::Amphitheatre",
@@ -2388,6 +2892,7 @@
       "AL012::Archeological Site",
       "AL013::Building",
       "AL014::Non-building Structure",
+      "AL017::Fire Hydrant",
       "AL018::Building Superstructure",
       "AL019::Shed",
       "AL020::Built-up Area",
@@ -2397,10 +2902,12 @@
       "AL060::Dragon's Teeth",
       "AL065::Minefield",
       "AL070::Fence",
+      "AL073::Flagpole",
       "AL080::Gantry",
       "AL099::Hut",
       "AL105::Settlement",
       "AL110::Light Support Structure",
+      "AL120::Missile Site",
       "AL130::Memorial Monument",
       "AL140::Particle Accelerator",
       "AL142::Astronomical Observatory",
@@ -2408,7 +2915,10 @@
       "AL165::Pipeline Crossing Point",
       "AL170::Public Square",
       "AL175::Courtyard",
+      "AL180::Retail Stand",
+      "AL195::Ramp",
       "AL200::Ruins",
+      "AL201::Interest Site",
       "AL208::Shanty Town",
       "AL211::Transportation Route Protection Structure",
       "AL241::Tower",
@@ -2420,6 +2930,7 @@
       "AL376::Castle Complex",
       "AL510::Tethered Balloon",
       "AM010::Storage Depot",
+      "AM011::Shipping Container",
       "AM020::Grain Storage Structure",
       "AM030::Grain Elevator",
       "AM040::Mineral Pile",
@@ -2434,18 +2945,20 @@
       "AN060::Railway Yard",
       "AN075::Railway Turntable",
       "AN076::Roundhouse",
-      "AN080::Railway Switch",
+      "AN085::Railway Signal",
       "AP010::Cart Track",
       "AP020::Road Interchange",
       "AP030::Road",
-      "AP033::Engineered Turnaround Site",
       "AP040::Gate",
       "AP041::Vehicle Barrier",
       "AP050::Trail",
       "AQ035::Sidewalk",
       "AQ040::Bridge",
       "AQ045::Bridge Span",
+      "AQ050::Bridge Superstructure",
       "AQ055::Bridge Tower",
+      "AQ056::Bridge Pier",
+      "AQ059::Transportation Route Characteristic Change",
       "AQ060::Control Tower",
       "AQ062::Crossing",
       "AQ063::Causeway Structure",
@@ -2456,9 +2969,13 @@
       "AQ080::Ferry Station",
       "AQ095::Tunnel Mouth",
       "AQ110::Mooring Mast",
+      "AQ111::Prepared Watercourse Crossing",
       "AQ113::Pipeline",
+      "AQ114::Storm Drain",
+      "AQ115::Utility Cover",
       "AQ116::Pumping Station",
       "AQ118::Sharp Curve",
+      "AQ120::Steep Grade",
       "AQ125::Transportation Station",
       "AQ130::Tunnel",
       "AQ135::Roadside Rest Area",
@@ -2466,9 +2983,14 @@
       "AQ141::Parking Garage",
       "AQ150::Stair",
       "AQ151::Arcade",
+      "AQ160::Traffic Light",
+      "AQ161::Street Lamp",
+      "AQ162::Street Sign",
       "AQ170::Motor Vehicle Station",
+      "AQ180::Weigh Station",
       "AT005::Cable",
       "AT010::Dish Aerial",
+      "AT011::Aerial",
       "AT012::Aerial Farm",
       "AT041::Cableway",
       "AT042::Pylon",
@@ -2481,10 +3003,15 @@
       "BB081::Shoreline Construction",
       "BB082::Shoreline Ramp",
       "BB090::Dry Dock",
+      "BB110::Fish Weir",
       "BB199::Floating Dry Dock",
+      "BB201::Small Craft Facility",
+      "BB241::Shipyard",
       "BC050::Lighthouse",
+      "BC070::Light Vessel",
       "BD100::Structural Pile",
       "BD115::Offshore Construction",
+      "BD140::Snag",
       "BD181::Hulk",
       "BH010::Aqueduct",
       "BH012::Qanat Shaft",
@@ -2501,6 +3028,7 @@
       "BH090::Land Subject to Inundation",
       "BH100::Moat",
       "BH110::Penstock",
+      "BH116::Aquifer",
       "BH120::Rapids",
       "BH135::Rice Field",
       "BH140::River",
@@ -2511,6 +3039,7 @@
       "BH165::Spillway",
       "BH170::Natural Pool",
       "BH180::Waterfall",
+      "BH220::Waterwork",
       "BH230::Water Well",
       "BI005::Vessel Lift",
       "BI006::Ship Elevator",
@@ -2521,13 +3050,20 @@
       "BI044::Flood Control Structure",
       "BI045::Basin Gate",
       "BI050::Water Intake Tower",
+      "BI060::Fish Ladder",
+      "BI070::Gauging Station",
       "BJ020::Moraine",
       "BJ030::Glacier",
       "BJ031::Crevasse",
       "BJ040::Ice Cliff",
       "BJ060::Ice Peak",
+      "BJ065::Ice Shelf",
+      "BJ080::Polar Ice",
+      "BJ099::Ice-cap",
       "BJ100::Snow Field and/or Ice-field",
       "BJ110::Tundra",
+      "CA010::Elevation Contour",
+      "CA030::Spot Elevation",
       "DA005::Asphalt Lake",
       "DA010::Soil Surface Region",
       "DB010::Steep Terrain Face",
@@ -2535,6 +3071,7 @@
       "DB061::Crevice",
       "DB070::Cut",
       "DB071::Cut Line",
+      "DB080::Depression",
       "DB090::Embankment",
       "DB100::Esker",
       "DB110::Geologic Fault",
@@ -2543,9 +3080,12 @@
       "DB160::Rock Formation",
       "DB170::Sand Dunes",
       "DB180::Volcano",
+      "DB190::Volcanic Dyke",
+      "DB211::Landslide Mass",
       "EA010::Crop Land",
       "EA020::Hedgerow",
       "EA030::Plant Nursery",
+      "EA031::Botanic Garden",
       "EA040::Orchard",
       "EA050::Vineyard",
       "EA055::Hop Field",
@@ -2561,8 +3101,11 @@
       "ED010::Marsh",
       "ED020::Swamp",
       "EE010::Logging Site",
+      "EE030::Desert",
+      "FA012::Contaminated Region",
       "FA015::Firing Range",
       "FA100::Test Site",
+      "FA110::International Date Line",
       "FA165::Training Site",
       "FA210::Conservation Area",
       "GB005::Land Aerodrome",
@@ -2571,7 +3114,7 @@
       "GB035::Heliport",
       "GB040::Launch Pad",
       "GB045::Stopway",
-      "GB050::Defensive Revetment",
+      "GB050::Aircraft Revetment",
       "GB055::Runway",
       "GB065::Water Aerodrome",
       "GB070::Seaplane Run",
@@ -2579,22 +3122,26 @@
       "GB230::Aircraft Hangar",
       "GB250::Hardened Aircraft Shelter",
       "SU001::Military Installation",
+      "SU004::Cantonment Area",
       "ZB030::Boundary Monument",
+      "ZB035::Control Point",
       "ZD020::Void Collection Area",
+      "ZD030::Cultural Context Location",
       "ZD040::Named Location",
       "ZD045::Annotated Location",
       "ZI031::Dataset",
-      "ZI039::Entity Collection Metadata"
+      "ZI040::Spatial Metadata Entity Collection",
+      "ZI041::Non-spatial Metadata Entity Collection"
     ]
   },
   {
-    "key":"GB052_RIDH::Runway Direction : Runway Designator (high end)",
+    "key":"GB052_RIDH::Runway Direction (high end) : Runway Designator (high)",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"GB052_RIDL::Runway Direction : Runway Designator (low end)",
+    "key":"GB052_RIDL::Runway Direction (low end) : Runway Designator (low)",
     "value":[
       "Value"
     ]
@@ -2603,8 +3150,8 @@
     "key":"GFT::Geologic Fault Trace Visible",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -2614,13 +3161,13 @@
       "Fumarole",
       "Geyser",
       "Hot Spring",
+      "No Information",
       "Other",
-      "Sulphur Spring",
-      "noInformation"
+      "Sulphur Spring"
     ]
   },
   {
-    "key":"GSGCHC::Runway Direction : Surface Slope (high end) [interval closure]",
+    "key":"GSGCHC::Runway Direction (high end) : Surface Slope (high) (interval closure)",
     "value":[
       "Closed Interval",
       "Greater-than Semi-interval",
@@ -2633,19 +3180,19 @@
     ]
   },
   {
-    "key":"GSGCHL::Runway Direction : Surface Slope (high end) [lower value]",
+    "key":"GSGCHL::Runway Direction (high end) : Surface Slope (high) (lower value)",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"GSGCHU::Runway Direction : Surface Slope (high end) [upper value]",
+    "key":"GSGCHU::Runway Direction (high end) : Surface Slope (high) (upper value)",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"GSGCLC::Runway Direction : Surface Slope (low end) [interval closure]",
+    "key":"GSGCLC::Runway Direction (low end) : Surface Slope (low) (interval closure)",
     "value":[
       "Closed Interval",
       "Greater-than Semi-interval",
@@ -2658,13 +3205,13 @@
     ]
   },
   {
-    "key":"GSGCLL::Runway Direction : Surface Slope (low end) [lower value]",
+    "key":"GSGCLL::Runway Direction (low end) : Surface Slope (low) (lower value)",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"GSGCLU::Runway Direction : Surface Slope (low end) [upper value]",
+    "key":"GSGCLU::Runway Direction (low end) : Surface Slope (low) (upper value)",
     "value":[
       "Value"
     ]
@@ -2675,17 +3222,17 @@
       "Border Crossing",
       "Crossing",
       "Entrance",
+      "No Information",
       "Other",
-      "Toll-gate",
-      "noInformation"
+      "Toll-gate"
     ]
   },
   {
     "key":"GUG::Guyed",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -2695,12 +3242,12 @@
       "Hospital",
       "Land Aerodrome",
       "Military Installation",
+      "No Information",
       "Non-hospital Building",
       "Offshore Construction",
       "Other",
       "Rig",
-      "Water Aerodrome",
-      "noInformation"
+      "Water Aerodrome"
     ]
   },
   {
@@ -2716,15 +3263,61 @@
     ]
   },
   {
-    "key":"HGS::Spillway Height",
+    "key":"HGT::Height Above Surface Level",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"HGT::Height Above Surface Level",
+    "key":"HHD::Homogenous Habitation Distribution",
     "value":[
-      "Value"
+      "False",
+      "No Information",
+      "True"
+    ]
+  },
+  {
+    "key":"HQC::Hypsography Portrayal Type",
+    "value":[
+      "Approximate Auxiliary Contour",
+      "Approximate Depression Auxiliary Contour",
+      "Approximate Depression Index Contour",
+      "Approximate Depression Intermediate Contour",
+      "Approximate Index Contour",
+      "Approximate Intermediate Contour",
+      "Auxiliary Carrying Contour",
+      "Auxiliary Contour",
+      "Connector Line",
+      "Depression Auxiliary Contour",
+      "Depression Index Contour",
+      "Depression Intermediate Contour",
+      "Form Line",
+      "Half Auxiliary Contour",
+      "Index Carrying Contour",
+      "Index Contour",
+      "Intermediate Carrying Contour",
+      "Intermediate Contour",
+      "Mound Index Contour",
+      "Mound Intermediate Contour",
+      "No Information",
+      "Other",
+      "Quarter Auxiliary Contour",
+      "Transition Line"
+    ]
+  },
+  {
+    "key":"HSS::Historic Significance",
+    "value":[
+      "Ancient",
+      "Battlefield",
+      "Historic",
+      "Military",
+      "National",
+      "No Information",
+      "Not Significant",
+      "Other",
+      "Political",
+      "Religious"
     ]
   },
   {
@@ -2732,9 +3325,9 @@
     "value":[
       "Bomb Shelter",
       "Fallout Shelter",
+      "No Information",
       "Other",
-      "Storm Shelter",
-      "noInformation"
+      "Storm Shelter"
     ]
   },
   {
@@ -2742,9 +3335,9 @@
     "value":[
       "Bomb Shelter",
       "Fallout Shelter",
+      "No Information",
       "Other",
-      "Storm Shelter",
-      "noInformation"
+      "Storm Shelter"
     ]
   },
   {
@@ -2752,9 +3345,9 @@
     "value":[
       "Bomb Shelter",
       "Fallout Shelter",
+      "No Information",
       "Other",
-      "Storm Shelter",
-      "noInformation"
+      "Storm Shelter"
     ]
   },
   {
@@ -2764,16 +3357,24 @@
       "G - Underground",
       "M - Multi-bay",
       "N - Nose In",
+      "No Information",
       "O - Open End",
       "S - Single Bay",
-      "T - T-Shaped",
-      "noInformation"
+      "T - T-Shaped"
     ]
   },
   {
     "key":"HVA::Height Vertical Accuracy (90%)",
     "value":[
       "Value"
+    ]
+  },
+  {
+    "key":"HYP::Hydrologic Persistence",
+    "value":[
+      "Intermittent",
+      "No Information",
+      "Perennial"
     ]
   },
   {
@@ -3075,17 +3676,261 @@
     ]
   },
   {
-    "key":"IKO::ICAO Location Indicator",
+    "key":"IC2::ISO 3166-1 Country Code (alpha3)",
     "value":[
-      "Value"
+      "AFGHANISTAN",
+      "ALAND ISLANDS",
+      "ALBANIA",
+      "ALGERIA",
+      "AMERICAN SAMOA",
+      "ANDORRA",
+      "ANGOLA",
+      "ANGUILLA",
+      "ANTARCTICA",
+      "ANTIGUA AND BARBUDA",
+      "ARGENTINA",
+      "ARMENIA",
+      "ARUBA",
+      "AUSTRALIA",
+      "AUSTRIA",
+      "AZERBAIJAN",
+      "BAHAMAS",
+      "BAHRAIN",
+      "BANGLADESH",
+      "BARBADOS",
+      "BELARUS",
+      "BELGIUM",
+      "BELIZE",
+      "BENIN",
+      "BERMUDA",
+      "BHUTAN",
+      "BOLIVIA",
+      "BOSNIA AND HERZEGOVINA",
+      "BOTSWANA",
+      "BOUVET ISLAND",
+      "BRAZIL",
+      "BRITISH INDIAN OCEAN TERRITORY",
+      "BRUNEI DARUSSALAM",
+      "BULGARIA",
+      "BURKINA FASO",
+      "BURUNDI",
+      "CAMBODIA",
+      "CAMEROON",
+      "CANADA",
+      "CAPE VERDE",
+      "CAYMAN ISLANDS",
+      "CENTRAL AFRICAN REPUBLIC",
+      "CHAD",
+      "CHILE",
+      "CHINA",
+      "CHRISTMAS ISLAND",
+      "COCOS (KEELING) ISLANDS",
+      "COLOMBIA",
+      "COMOROS",
+      "CONGO",
+      "CONGO, THE DEMOCRATIC REPUBLIC OF THE",
+      "COOK ISLANDS",
+      "COSTA RICA",
+      "COTE DIVOIRE",
+      "CROATIA",
+      "CUBA",
+      "CYPRUS",
+      "CZECH REPUBLIC",
+      "DENMARK",
+      "DJIBOUTI",
+      "DOMINICA",
+      "DOMINICAN REPUBLIC",
+      "ECUADOR",
+      "EGYPT",
+      "EL SALVADOR",
+      "EQUATORIAL GUINEA",
+      "ERITREA",
+      "ESTONIA",
+      "ETHIOPIA",
+      "FALKLAND ISLANDS (MALVINAS)",
+      "FAROE ISLANDS",
+      "FIJI",
+      "FINLAND",
+      "FRANCE",
+      "FRENCH GUIANA",
+      "FRENCH POLYNESIA",
+      "FRENCH SOUTHERN TERRITORIES",
+      "GABON",
+      "GAMBIA",
+      "GEORGIA",
+      "GERMANY",
+      "GHANA",
+      "GIBRALTAR",
+      "GREECE",
+      "GREENLAND",
+      "GRENADA",
+      "GUADELOUPE",
+      "GUAM",
+      "GUATEMALA",
+      "GUERNSEY",
+      "GUINEA",
+      "GUINEA-BISSAU",
+      "GUYANA",
+      "HAITI",
+      "HEARD ISLAND AND MCDONALD ISLANDS",
+      "HOLY SEE (VATICAN CITY STATE)",
+      "HONDURAS",
+      "HONG KONG",
+      "HUNGARY",
+      "ICELAND",
+      "INDIA",
+      "INDONESIA",
+      "IRAN, ISLAMIC REPUBLIC OF",
+      "IRAQ",
+      "IRELAND",
+      "ISLE OF MAN",
+      "ISRAEL",
+      "ITALY",
+      "JAMAICA",
+      "JAPAN",
+      "JERSEY",
+      "JORDAN",
+      "KAZAKHSTAN",
+      "KENYA",
+      "KIRIBATI",
+      "KOREA, DEMOCRATIC PEOPLES REPUBLIC OF",
+      "KOREA, REPUBLIC OF",
+      "KUWAIT",
+      "KYRGYZSTAN",
+      "LAO PEOPLES DEMOCRATIC REPUBLIC",
+      "LATVIA",
+      "LEBANON",
+      "LESOTHO",
+      "LIBERIA",
+      "LIBYAN ARAB JAMAHIRIYA",
+      "LIECHTENSTEIN",
+      "LITHUANIA",
+      "LUXEMBOURG",
+      "MACAO",
+      "MACEDONIA, THE FORMER YUGOSLAV REPUBLIC OF",
+      "MADAGASCAR",
+      "MALAWI",
+      "MALAYSIA",
+      "MALDIVES",
+      "MALI",
+      "MALTA",
+      "MARSHALL ISLANDS",
+      "MARTINIQUE",
+      "MAURITANIA",
+      "MAURITIUS",
+      "MAYOTTE",
+      "MEXICO",
+      "MICRONESIA, FEDERATED STATES OF",
+      "MOLDOVA, REPUBLIC OF",
+      "MONACO",
+      "MONGOLIA",
+      "MONTENEGRO",
+      "MONTSERRAT",
+      "MOROCCO",
+      "MOZAMBIQUE",
+      "MYANMAR",
+      "NAMIBIA",
+      "NAURU",
+      "NEPAL",
+      "NETHERLANDS",
+      "NETHERLANDS ANTILLES",
+      "NEW CALEDONIA",
+      "NEW ZEALAND",
+      "NICARAGUA",
+      "NIGER",
+      "NIGERIA",
+      "NIUE",
+      "NORFOLK ISLAND",
+      "NORTHERN MARIANA ISLANDS",
+      "NORWAY",
+      "No Information",
+      "OMAN",
+      "PAKISTAN",
+      "PALAU",
+      "PALESTINIAN TERRITORY, OCCUPIED",
+      "PANAMA",
+      "PAPUA NEW GUINEA",
+      "PARAGUAY",
+      "PERU",
+      "PHILIPPINES",
+      "PITCAIRN",
+      "POLAND",
+      "PORTUGAL",
+      "PUERTO RICO",
+      "QATAR",
+      "REUNION",
+      "ROMANIA",
+      "RUSSIAN FEDERATION",
+      "RWANDA",
+      "SAINT BARTHELEMY",
+      "SAINT HELENA",
+      "SAINT KITTS AND NEVIS",
+      "SAINT LUCIA",
+      "SAINT MARTIN (French part)",
+      "SAINT PIERRE AND MIQUELON",
+      "SAINT VINCENT AND THE GRENADINES",
+      "SAMOA",
+      "SAN MARINO",
+      "SAO TOME AND PRINCIPE",
+      "SAUDI ARABIA",
+      "SENEGAL",
+      "SERBIA",
+      "SEYCHELLES",
+      "SIERRA LEONE",
+      "SINGAPORE",
+      "SLOVAKIA",
+      "SLOVENIA",
+      "SOLOMON ISLANDS",
+      "SOMALIA",
+      "SOUTH AFRICA",
+      "SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS",
+      "SPAIN",
+      "SRI LANKA",
+      "SUDAN",
+      "SURINAME",
+      "SVALBARD AND JAN MAYEN",
+      "SWAZILAND",
+      "SWEDEN",
+      "SWITZERLAND",
+      "SYRIAN ARAB REPUBLIC",
+      "TAIWAN, PROVINCE OF CHINA",
+      "TAJIKISTAN",
+      "TANZANIA, UNITED REPUBLIC OF",
+      "THAILAND",
+      "TIMOR-LESTE",
+      "TOGO",
+      "TOKELAU",
+      "TONGA",
+      "TRINIDAD AND TOBAGO",
+      "TUNISIA",
+      "TURKEY",
+      "TURKMENISTAN",
+      "TURKS AND CAICOS ISLANDS",
+      "TUVALU",
+      "UGANDA",
+      "UKRAINE",
+      "UNITED ARAB EMIRATES",
+      "UNITED KINGDOM",
+      "UNITED STATES",
+      "UNITED STATES MINOR OUTLYING ISLANDS",
+      "URUGUAY",
+      "UZBEKISTAN",
+      "VANUATU",
+      "VENEZUELA",
+      "VIET NAM",
+      "VIRGIN ISLANDS, BRITISH",
+      "VIRGIN ISLANDS, U.S.",
+      "WALLIS AND FUTUNA",
+      "WESTERN SAHARA",
+      "YEMEN",
+      "ZAMBIA",
+      "ZIMBABWE"
     ]
   },
   {
-    "key":"INU::Inundation Type",
+    "key":"IKO::ICAO Location Indicator",
     "value":[
-      "Controlled",
-      "Natural",
-      "noInformation"
+      "Value"
     ]
   },
   {
@@ -3094,12 +3939,12 @@
       "Basin",
       "Lake",
       "Landlocked Sea",
+      "No Information",
       "Other",
       "Pond",
       "Reservoir",
       "Undifferentiated Water Body",
-      "Water-hole",
-      "noInformation"
+      "Water-hole"
     ]
   },
   {
@@ -3133,7 +3978,13 @@
     ]
   },
   {
-    "key":"LDC::Dam Crest Length",
+    "key":"LCA::Lifting Capacity",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"LEA::Least Depth Below Surface Level",
     "value":[
       "Value"
     ]
@@ -3142,8 +3993,24 @@
     "key":"LMC::Navigation Landmark",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
+    ]
+  },
+  {
+    "key":"LND::Land Morphology",
+    "value":[
+      "Depression",
+      "Dome",
+      "No Information",
+      "Other",
+      "Ridge"
+    ]
+  },
+  {
+    "key":"LNU::Usable Length",
+    "value":[
+      "Value"
     ]
   },
   {
@@ -3154,9 +4021,15 @@
       "Below Ground Surface",
       "Below Waterbody Bottom",
       "Below Waterbody Surface",
+      "No Information",
       "On Surface",
-      "On Waterbody Bottom",
-      "noInformation"
+      "On Waterbody Bottom"
+    ]
+  },
+  {
+    "key":"LOG::Gradient Length",
+    "value":[
+      "Value"
     ]
   },
   {
@@ -3169,8 +4042,8 @@
     "key":"LUN::Located Underground",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -3180,14 +4053,9 @@
     ]
   },
   {
-    "key":"MAG::Magnetic Variation",
-    "value":[
-      "Value"
-    ]
-  },
-  {
     "key":"MCC2::Structural Material Type [2]",
     "value":[
+      "Aluminum",
       "Asphalt",
       "Bedrock",
       "Boulders",
@@ -3203,7 +4071,9 @@
       "Masonry",
       "Metal",
       "Mud",
+      "No Information",
       "Other",
+      "Plastic",
       "Prestressed Concrete",
       "Reinforced Concrete",
       "Rock",
@@ -3213,13 +4083,13 @@
       "Steel",
       "Stone",
       "Treated Timber",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
     "key":"MCC3::Structural Material Type [3]",
     "value":[
+      "Aluminum",
       "Asphalt",
       "Bedrock",
       "Boulders",
@@ -3235,7 +4105,9 @@
       "Masonry",
       "Metal",
       "Mud",
+      "No Information",
       "Other",
+      "Plastic",
       "Prestressed Concrete",
       "Reinforced Concrete",
       "Rock",
@@ -3245,13 +4117,13 @@
       "Steel",
       "Stone",
       "Treated Timber",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
     "key":"MCC::Structural Material Type",
     "value":[
+      "Aluminum",
       "Asphalt",
       "Bedrock",
       "Boulders",
@@ -3267,7 +4139,9 @@
       "Masonry",
       "Metal",
       "Mud",
+      "No Information",
       "Other",
+      "Plastic",
       "Prestressed Concrete",
       "Reinforced Concrete",
       "Rock",
@@ -3277,16 +4151,15 @@
       "Steel",
       "Stone",
       "Treated Timber",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
     "key":"MCX::Motorized Crossing",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -3305,16 +4178,128 @@
     "key":"MES::Median Present",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
+    ]
+  },
+  {
+    "key":"MFB::Manufactured Building",
+    "value":[
+      "False",
+      "No Information",
+      "True"
     ]
   },
   {
     "key":"MNS::Man-made Shoreline",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
+    ]
+  },
+  {
+    "key":"MST2::Missile Site Type [2]",
+    "value":[
+      "Anti-ballistic Missile (ABM)",
+      "Intercontinental Ballistic Missile (ICBM)",
+      "Intermediate-range Ballistic Missile (IRBM)",
+      "Medium-range Ballistic Missile (MRBM)",
+      "No Information",
+      "Other",
+      "SA-1 Guild",
+      "SA-10 Grumble",
+      "SA-11 Gadfly",
+      "SA-12 Gladiator/Giant",
+      "SA-13 Gopher",
+      "SA-14 Gremlin",
+      "SA-15 Gauntlet",
+      "SA-16 Gimlet",
+      "SA-17 Grizzly",
+      "SA-18 Grouse",
+      "SA-19 Grisom",
+      "SA-2 Guideline",
+      "SA-3 Goa",
+      "SA-4 Ganef",
+      "SA-5 Gammon",
+      "SA-6 Gainful",
+      "SA-7 Grail",
+      "SA-8 Gecko",
+      "SA-9 Gaskin",
+      "Surface-to-air Missile (SAM)",
+      "Surface-to-surface Missile (SSM)"
+    ]
+  },
+  {
+    "key":"MST3::Missile Site Type [3]",
+    "value":[
+      "Anti-ballistic Missile (ABM)",
+      "Intercontinental Ballistic Missile (ICBM)",
+      "Intermediate-range Ballistic Missile (IRBM)",
+      "Medium-range Ballistic Missile (MRBM)",
+      "No Information",
+      "Other",
+      "SA-1 Guild",
+      "SA-10 Grumble",
+      "SA-11 Gadfly",
+      "SA-12 Gladiator/Giant",
+      "SA-13 Gopher",
+      "SA-14 Gremlin",
+      "SA-15 Gauntlet",
+      "SA-16 Gimlet",
+      "SA-17 Grizzly",
+      "SA-18 Grouse",
+      "SA-19 Grisom",
+      "SA-2 Guideline",
+      "SA-3 Goa",
+      "SA-4 Ganef",
+      "SA-5 Gammon",
+      "SA-6 Gainful",
+      "SA-7 Grail",
+      "SA-8 Gecko",
+      "SA-9 Gaskin",
+      "Surface-to-air Missile (SAM)",
+      "Surface-to-surface Missile (SSM)"
+    ]
+  },
+  {
+    "key":"MST::Missile Site Type",
+    "value":[
+      "Anti-ballistic Missile (ABM)",
+      "Intercontinental Ballistic Missile (ICBM)",
+      "Intermediate-range Ballistic Missile (IRBM)",
+      "Medium-range Ballistic Missile (MRBM)",
+      "No Information",
+      "Other",
+      "SA-1 Guild",
+      "SA-10 Grumble",
+      "SA-11 Gadfly",
+      "SA-12 Gladiator/Giant",
+      "SA-13 Gopher",
+      "SA-14 Gremlin",
+      "SA-15 Gauntlet",
+      "SA-16 Gimlet",
+      "SA-17 Grizzly",
+      "SA-18 Grouse",
+      "SA-19 Grisom",
+      "SA-2 Guideline",
+      "SA-3 Goa",
+      "SA-4 Ganef",
+      "SA-5 Gammon",
+      "SA-6 Gainful",
+      "SA-7 Grail",
+      "SA-8 Gecko",
+      "SA-9 Gaskin",
+      "Surface-to-air Missile (SAM)",
+      "Surface-to-surface Missile (SSM)"
+    ]
+  },
+  {
+    "key":"MUB::Multi-unit Building",
+    "value":[
+      "False",
+      "No Information",
+      "True"
     ]
   },
   {
@@ -3331,13 +4316,14 @@
       "Borrow-pit",
       "Contour Strip-mine",
       "Dredge",
+      "No Information",
       "Opencast",
       "Other",
       "Peatery",
       "Placer",
       "Prospect",
       "Quarry",
-      "noInformation"
+      "Strip-mine"
     ]
   },
   {
@@ -3352,10 +4338,10 @@
       "Arctic Land",
       "Area",
       "Locality",
+      "No Information",
       "Other",
       "Populated Locality",
-      "Region",
-      "noInformation"
+      "Region"
     ]
   },
   {
@@ -3377,9 +4363,9 @@
       "Navigable and Operational",
       "Navigable but Abandoned",
       "Navigable with Periodic Restrictions",
+      "No Information",
       "Not Navigable",
-      "Other",
-      "noInformation"
+      "Other"
     ]
   },
   {
@@ -3387,13 +4373,13 @@
     "value":[
       "Barge",
       "Catenary Turntable",
+      "No Information",
       "Other",
       "Platform",
       "Submerged Platform",
       "Submerged Turret",
       "Terminal Buoy",
-      "Vessel",
-      "noInformation"
+      "Vessel"
     ]
   },
   {
@@ -3406,8 +4392,8 @@
     "key":"ONE::One-way",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -3426,6 +4412,7 @@
       "Frame Bridge Span",
       "Gantry",
       "Memorial Monument",
+      "No Information",
       "Non-building Structure",
       "Other",
       "Overhead Walkway",
@@ -3439,8 +4426,7 @@
       "Traffic Sign",
       "Transportation Block",
       "Transportation Route Protection Structure",
-      "Tunnel",
-      "noInformation"
+      "Tunnel"
     ]
   },
   {
@@ -3450,11 +4436,11 @@
       "Daytime",
       "Never Operating",
       "Night-time",
+      "No Information",
       "Other",
       "Restricted",
       "Summer Season",
-      "Winter Season",
-      "noInformation"
+      "Winter Season"
     ]
   },
   {
@@ -3467,41 +4453,41 @@
     "key":"OWO::Waterbody Overhead Obstruction",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
     "key":"PBY2::By-product [2]",
     "value":[
+      "No Information",
       "Other",
       "Refuse",
       "Slag",
       "Sludge",
-      "Spoil",
-      "noInformation"
+      "Spoil"
     ]
   },
   {
     "key":"PBY3::By-product [3]",
     "value":[
+      "No Information",
       "Other",
       "Refuse",
       "Slag",
       "Sludge",
-      "Spoil",
-      "noInformation"
+      "Spoil"
     ]
   },
   {
     "key":"PBY::By-product",
     "value":[
+      "No Information",
       "Other",
       "Refuse",
       "Slag",
       "Sludge",
-      "Spoil",
-      "noInformation"
+      "Spoil"
     ]
   },
   {
@@ -3512,16 +4498,16 @@
       "Destroyed",
       "Dismantled",
       "Intact",
-      "Unmaintained",
-      "noInformation"
+      "No Information",
+      "Unmaintained"
     ]
   },
   {
     "key":"PEC::Port of Entry",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -3537,60 +4523,15 @@
     ]
   },
   {
-    "key":"PFI::Acquisition Platform Identifier",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"PLT2::Pipeline Type [2]",
-    "value":[
-      "Bubbler System",
-      "Intake Pipe",
-      "Other",
-      "Outfall Pipe",
-      "Pipeline Valve",
-      "Sewer",
-      "Transport Pipe",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"PLT3::Pipeline Type [3]",
-    "value":[
-      "Bubbler System",
-      "Intake Pipe",
-      "Other",
-      "Outfall Pipe",
-      "Pipeline Valve",
-      "Sewer",
-      "Transport Pipe",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"PLT::Pipeline Type",
-    "value":[
-      "Bubbler System",
-      "Intake Pipe",
-      "Other",
-      "Outfall Pipe",
-      "Pipeline Valve",
-      "Sewer",
-      "Transport Pipe",
-      "noInformation"
-    ]
-  },
-  {
     "key":"POS2::Power Source [2]",
     "value":[
       "Geothermal",
       "Hydro-electric",
+      "No Information",
       "Nuclear",
       "Other",
       "Thermal",
-      "Tidal",
-      "noInformation"
+      "Tidal"
     ]
   },
   {
@@ -3598,11 +4539,11 @@
     "value":[
       "Geothermal",
       "Hydro-electric",
+      "No Information",
       "Nuclear",
       "Other",
       "Thermal",
-      "Tidal",
-      "noInformation"
+      "Tidal"
     ]
   },
   {
@@ -3610,11 +4551,11 @@
     "value":[
       "Geothermal",
       "Hydro-electric",
+      "No Information",
       "Nuclear",
       "Other",
       "Thermal",
-      "Tidal",
-      "noInformation"
+      "Tidal"
     ]
   },
   {
@@ -3624,7 +4565,6 @@
       "Ammunition",
       "Basalt",
       "Bauxite",
-      "Beverage",
       "Biodiesel",
       "Bivalve Mollusc",
       "Brick",
@@ -3669,6 +4609,7 @@
       "Mussels",
       "Natural Gas Condensate",
       "Nickel",
+      "No Information",
       "Other",
       "Oysters",
       "Petrol",
@@ -3694,8 +4635,7 @@
       "Uranium",
       "Vanadium",
       "Water",
-      "Zinc",
-      "noInformation"
+      "Zinc"
     ]
   },
   {
@@ -3705,7 +4645,6 @@
       "Ammunition",
       "Basalt",
       "Bauxite",
-      "Beverage",
       "Biodiesel",
       "Bivalve Mollusc",
       "Brick",
@@ -3750,6 +4689,7 @@
       "Mussels",
       "Natural Gas Condensate",
       "Nickel",
+      "No Information",
       "Other",
       "Oysters",
       "Petrol",
@@ -3775,8 +4715,7 @@
       "Uranium",
       "Vanadium",
       "Water",
-      "Zinc",
-      "noInformation"
+      "Zinc"
     ]
   },
   {
@@ -3786,7 +4725,6 @@
       "Ammunition",
       "Basalt",
       "Bauxite",
-      "Beverage",
       "Biodiesel",
       "Bivalve Mollusc",
       "Brick",
@@ -3831,6 +4769,7 @@
       "Mussels",
       "Natural Gas Condensate",
       "Nickel",
+      "No Information",
       "Other",
       "Oysters",
       "Petrol",
@@ -3856,16 +4795,7 @@
       "Uranium",
       "Vanadium",
       "Water",
-      "Zinc",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"PRM::Permanent",
-    "value":[
-      "False",
-      "True",
-      "noInformation"
+      "Zinc"
     ]
   },
   {
@@ -3874,13 +4804,13 @@
       "Coal",
       "Coke",
       "Gravel",
+      "No Information",
       "Ore",
       "Other",
       "Salt",
       "Sand",
       "Stone",
-      "Sulphur",
-      "noInformation"
+      "Sulphur"
     ]
   },
   {
@@ -3889,13 +4819,13 @@
       "Coal",
       "Coke",
       "Gravel",
+      "No Information",
       "Ore",
       "Other",
       "Salt",
       "Sand",
       "Stone",
-      "Sulphur",
-      "noInformation"
+      "Sulphur"
     ]
   },
   {
@@ -3904,13 +4834,13 @@
       "Coal",
       "Coke",
       "Gravel",
+      "No Information",
       "Ore",
       "Other",
       "Salt",
       "Sand",
       "Stone",
-      "Sulphur",
-      "noInformation"
+      "Sulphur"
     ]
   },
   {
@@ -3931,6 +4861,7 @@
       "Breakwater",
       "Groin",
       "Mole",
+      "No Information",
       "Other",
       "Pier",
       "Promenade",
@@ -3940,8 +4871,7 @@
       "Riprap",
       "Seawall",
       "Training Wall",
-      "Wharf",
-      "noInformation"
+      "Wharf"
     ]
   },
   {
@@ -3952,8 +4882,8 @@
       "'I'",
       "'T'",
       "'Y'",
-      "Other",
-      "noInformation"
+      "No Information",
+      "Other"
     ]
   },
   {
@@ -3965,10 +4895,23 @@
       "Iron",
       "Masonry",
       "Metal",
+      "No Information",
       "Other",
       "Steel",
-      "Wood",
-      "noInformation"
+      "Wood"
+    ]
+  },
+  {
+    "key":"RAC::Radar Antenna Configuration",
+    "value":[
+      "Dome Enclosed",
+      "Mast Mounted",
+      "No Information",
+      "Other",
+      "Radome",
+      "Radome on Tower",
+      "Scanner",
+      "Tower Mounted"
     ]
   },
   {
@@ -3980,25 +4923,21 @@
   {
     "key":"RAS::Radar Station Function",
     "value":[
-      "Aerodrome Ground Surveillance",
       "Aircraft Flight Tracking",
       "Coastal Radar",
       "Early Warning",
       "Fire Control Tracking",
       "General Surveillance",
       "Launch Control Tracking",
+      "No Information",
       "Other",
-      "Precision Approach",
       "Satellite Tracking",
-      "Weather",
-      "noInformation"
+      "Weather"
     ]
   },
   {
     "key":"RCG::Resource Content Originator",
     "value":[
-      "Armed Forces General Headquarters (Qatar)",
-      "Army (Australia)",
       "Army Geographic Agency (Netherlands)",
       "Army Geographic Centre (Spain)",
       "Army Geographic Institute (Portugal)",
@@ -4007,42 +4946,24 @@
       "Defence Geographic Centre Intelligence Collection Group (United Kingdom)",
       "Defence Imagery and Geospatial Organisation (Australia)",
       "Defense Information Security (Italy)",
-      "Directorate Geospatial Information (South Africa)",
-      "Directorate of Survey (Kuwait)",
-      "El Instituto Nacional de Estadistica y Geografia (Mexico)",
       "General Command of Mapping (Turkey)",
       "Geographic Service (Belgium)",
       "Geographic Service of the Czech Armed Forces (Czech Republic)",
       "Geospatial Information Agency (Latvia)",
       "Geospatial Intelligence Organisation (New Zealand)",
       "Hellenic Military Geographic Service (Greece)",
-      "Imagery Support Group (Singapore)",
-      "Information Network Security Agency (Ethiopia)",
       "Joint Geography Bureau (France)",
-      "Korean Defense Intelligence Agency (South Korea)",
       "Mapping Service (Hungary)",
       "Mapping and Charting Establishment (Canada)",
-      "Materiel Production Center (Taiwan)",
-      "Military Geographic Division (Croatia)",
       "Military Geographic Group (Estonia)",
       "Military Geographic Service (Norway)",
       "Military Geography Division (Poland)",
       "Military Mapping Centre (Lithuania)",
-      "Military Survey Department (United Arab Emirates)",
       "Military Topographic Directorate (Romania)",
       "Military Topographic Service (Bulgaria)",
-      "Ministry of Construction and Urban Development (Mongolia)",
-      "Ministry of Defense of Japan (Japan)",
-      "Ministry of Defense of Saudi Arabia (Saudi Arabia)",
-      "Ministry of State for Defense (Kenya)",
       "National Army Topographic Service (Moldova)",
-      "National Intelligence Service (South Korea)",
-      "National Mapping and Resource Information Authority (Philippines)",
-      "National Security Bureau (Taiwan)",
-      "National Survey Authority (Oman)",
       "No Information",
       "Other",
-      "Royal Jordanian Geographic Centre (Jordan)",
       "Swedish Armed Forces (Sweden)",
       "Topographic Institute (Slovakia)",
       "Topographic Service (Finland)",
@@ -4073,92 +4994,23 @@
       "U.S. Southern Command (USSOUTHCOM)",
       "U.S. Special Operations Command (USSOCOM)",
       "U.S. Strategic Command (USSTRATCOM)",
-      "U.S. Transportation Command (USTRANSCOM)",
-      "direccion_del_servicio_geografico_military_(paraguay)",
-      "direccion_general_de_registros_catastro_y_geografia_(honduras)",
-      "diretoria_de_servico_geografico_(brazil)",
-      "instituto_cartografico_militar_(dominican_republic)",
-      "instituto_geografico_agustin_codazzi_(colombia)",
-      "instituto_geografico_militar_(chile)",
-      "instituto_geografico_militar_(ecuador)",
-      "instituto_geografico_nacional_(argentina)",
-      "instituto_geografico_nacional_(guatemala)",
-      "instituto_geografico_nacional_(peru)",
-      "instituto_geografico_nacional_tommy_guardia_(panama)",
-      "instituto_geografico_y_del_catastro_nacional_(el_salvador)",
-      "instituto_nicaraguense_de_estudios_terretoriales_(nicaragua)",
-      "servicio_geografico_militar_(guatemala)",
-      "servicio_geografico_militar_(uruguay)"
+      "U.S. Transportation Command (USTRANSCOM)"
     ]
   },
   {
     "key":"RFD::Roofed",
     "value":[
       "False",
-      "True",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"RIN_ROI2::Route Identification [2] [route designation type]",
-    "value":[
-      "International",
-      "Local",
-      "National",
-      "National Motorway",
-      "Other",
-      "Secondary",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"RIN_ROI3::Route Identification [3] [route designation type]",
-    "value":[
-      "International",
-      "Local",
-      "National",
-      "National Motorway",
-      "Other",
-      "Secondary",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"RIN_ROI::Route Identification [route designation type]",
-    "value":[
-      "International",
-      "Local",
-      "National",
-      "National Motorway",
-      "Other",
-      "Secondary",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"RIN_RTN2::Route Identification [2] [route designation]",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"RIN_RTN3::Route Identification [3] [route designation]",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"RIN_RTN::Route Identification [route designation]",
-    "value":[
-      "Value"
+      "No Information",
+      "True"
     ]
   },
   {
     "key":"RIP::Rig Present",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -4167,6 +5019,7 @@
       "Cloverleaf",
       "Diamond",
       "Fork",
+      "No Information",
       "Other",
       "Rotary",
       "Staggered Ramps",
@@ -4174,8 +5027,7 @@
       "Symmetrical Ramps",
       "Trumpet",
       "Turban",
-      "Wye",
-      "noInformation"
+      "Wye"
     ]
   },
   {
@@ -4184,9 +5036,9 @@
       "Columnar",
       "Fossilized Forest",
       "Needle",
+      "No Information",
       "Other",
-      "Pinnacle",
-      "noInformation"
+      "Pinnacle"
     ]
   },
   {
@@ -4194,13 +5046,13 @@
     "value":[
       "Depressed",
       "Level",
+      "No Information",
       "Not Applicable",
-      "Raised",
-      "noInformation"
+      "Raised"
     ]
   },
   {
-    "key":"RMWC::Route Median Width [interval closure]",
+    "key":"RMWC::Route Median Width (interval closure)",
     "value":[
       "Closed Interval",
       "Greater-than Semi-interval",
@@ -4213,23 +5065,15 @@
     ]
   },
   {
-    "key":"RMWL::Route Median Width [lower value]",
+    "key":"RMWL::Route Median Width (lower value)",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"RMWU::Route Median Width [upper value]",
+    "key":"RMWU::Route Median Width (upper value)",
     "value":[
       "Value"
-    ]
-  },
-  {
-    "key":"ROR::Road Interchange Ramp",
-    "value":[
-      "False",
-      "True",
-      "noInformation"
     ]
   },
   {
@@ -4242,11 +5086,11 @@
       "Long-haul",
       "Marine Railway",
       "Museum",
+      "No Information",
       "Other",
       "Rail Rapid Transit",
       "Tramway",
-      "Underground Railway",
-      "noInformation"
+      "Underground Railway"
     ]
   },
   {
@@ -4259,11 +5103,11 @@
       "Long-haul",
       "Marine Railway",
       "Museum",
+      "No Information",
       "Other",
       "Rail Rapid Transit",
       "Tramway",
-      "Underground Railway",
-      "noInformation"
+      "Underground Railway"
     ]
   },
   {
@@ -4276,42 +5120,86 @@
       "Long-haul",
       "Marine Railway",
       "Museum",
+      "No Information",
       "Other",
       "Rail Rapid Transit",
       "Tramway",
-      "Underground Railway",
-      "noInformation"
+      "Underground Railway"
     ]
   },
   {
     "key":"RSA::Branch Railway Type",
     "value":[
+      "No Information",
       "Other",
       "Passing",
       "Siding",
-      "Spur",
-      "noInformation"
+      "Spur"
     ]
   },
   {
     "key":"RTA::Linear Feature Arrangement",
     "value":[
       "Double Arrangement",
+      "Juxtaposition",
       "Multiple Arrangements",
+      "No Information",
       "Other",
-      "Single Arrangement",
-      "noInformation"
+      "Single Arrangement"
     ]
   },
   {
-    "key":"RTY::Roadway Type",
+    "key":"RTN2::Route Designation [2]",
     "value":[
-      "Limited Access Motorway",
-      "Motorway",
+      "Value"
+    ]
+  },
+  {
+    "key":"RTN3::Route Designation [3]",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"RTN::Route Designation",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"RTN_ROI2::Route Designation [2] (route designation type)",
+    "value":[
+      "International",
+      "Local",
+      "National",
+      "National Motorway",
+      "No Information",
       "Other",
-      "Road",
-      "Street",
-      "noInformation"
+      "Secondary"
+    ]
+  },
+  {
+    "key":"RTN_ROI3::Route Designation [3] (route designation type)",
+    "value":[
+      "International",
+      "Local",
+      "National",
+      "National Motorway",
+      "No Information",
+      "Other",
+      "Secondary"
+    ]
+  },
+  {
+    "key":"RTN_ROI::Route Designation (route designation type)",
+    "value":[
+      "International",
+      "Local",
+      "National",
+      "National Motorway",
+      "No Information",
+      "Other",
+      "Secondary"
     ]
   },
   {
@@ -4320,95 +5208,66 @@
       "Branch-line",
       "High Speed Rail",
       "Main Line",
-      "Other",
-      "noInformation"
+      "No Information",
+      "Other"
     ]
   },
   {
     "key":"SAD::Sand Dune Stabilized",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
     "key":"SBB::Supported by Bridge Span",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
     "key":"SBC::Shelter Belt",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
     "key":"SBT2::Substation Type [2]",
     "value":[
       "Converter Substation",
+      "No Information",
       "Other",
       "Switched Substation",
-      "Transformer Substation",
-      "noInformation"
+      "Transformer Substation"
     ]
   },
   {
     "key":"SBT3::Substation Type [3]",
     "value":[
       "Converter Substation",
+      "No Information",
       "Other",
       "Switched Substation",
-      "Transformer Substation",
-      "noInformation"
+      "Transformer Substation"
     ]
   },
   {
     "key":"SBT::Substation Type",
     "value":[
       "Converter Substation",
+      "No Information",
       "Other",
       "Switched Substation",
-      "Transformer Substation",
-      "noInformation"
+      "Transformer Substation"
     ]
   },
   {
-    "key":"SDO::Sand Dune Orientation",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"SDT::Sand Dune Type",
-    "value":[
-      "Crescent",
-      "Dome",
-      "Dome and Transverse",
-      "Linear",
-      "Other",
-      "Parabolic",
-      "Ripple",
-      "Star",
-      "Transverse",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"SEP::Divided",
-    "value":[
-      "False",
-      "True",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"SGCC::Surface Slope [interval closure]",
+    "key":"SDCC::Soil Depth (interval closure)",
     "value":[
       "Closed Interval",
       "Greater-than Semi-interval",
@@ -4421,23 +5280,128 @@
     ]
   },
   {
-    "key":"SGCL::Surface Slope [lower value]",
+    "key":"SDCL::Soil Depth (lower value)",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"SGCU::Surface Slope [upper value]",
+    "key":"SDCU::Soil Depth (upper value)",
     "value":[
       "Value"
+    ]
+  },
+  {
+    "key":"SDO::Sand Dune Orientation",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"SDSC::Stem Diameter (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"SDSL::Stem Diameter (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"SDSU::Stem Diameter (upper value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"SDT::Sand Dune Type",
+    "value":[
+      "Crescent",
+      "Dome",
+      "Dome and Transverse",
+      "Linear",
+      "No Information",
+      "Other",
+      "Parabolic",
+      "Ripple",
+      "Star",
+      "Transverse"
+    ]
+  },
+  {
+    "key":"SEP::Divided",
+    "value":[
+      "False",
+      "No Information",
+      "True"
+    ]
+  },
+  {
+    "key":"SGCC::Surface Slope (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"SGCL::Surface Slope (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"SGCU::Surface Slope (upper value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"SHC::Safe Horizontal Clearance",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"SHD::Shoreline Delineated",
+    "value":[
+      "False",
+      "No Information",
+      "True"
+    ]
+  },
+  {
+    "key":"SHT::Shipping Container Type",
+    "value":[
+      "Deliverable Container",
+      "Dumpster",
+      "ISO Container",
+      "No Information",
+      "Other",
+      "Roll-off Dumpster",
+      "Tank Container"
     ]
   },
   {
     "key":"SIC::Frozen Cover Type",
     "value":[
       "Ice-field",
-      "Snowfield",
-      "noInformation"
+      "No Information",
+      "Snowfield"
     ]
   },
   {
@@ -4445,9 +5409,9 @@
     "value":[
       "Log Ramp",
       "Marine Ramp",
+      "No Information",
       "Other",
-      "Slipway",
-      "noInformation"
+      "Slipway"
     ]
   },
   {
@@ -4460,26 +5424,20 @@
       "Mangrove",
       "Marshy",
       "Mud",
+      "No Information",
       "Not Applicable",
       "Other",
       "Sandy",
       "Shingly",
-      "Stony",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"SPM::Speed Limit (KPH)",
-    "value":[
-      "Value"
+      "Stony"
     ]
   },
   {
     "key":"SPT::Supported",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -4504,6 +5462,7 @@
       "Moderately Dissected",
       "Moderately Dissected with scattered Rock Outcrops",
       "No Effect",
+      "No Information",
       "Numerous Boulders",
       "Numerous Cobbles and Boulders",
       "Numerous Crevasses",
@@ -4533,8 +5492,21 @@
       "Stony Soil with scattered Boulders",
       "Talus",
       "Unweathered Lava",
-      "Weathered Lava",
-      "noInformation"
+      "Weathered Lava"
+    ]
+  },
+  {
+    "key":"SRE::Traffic Restriction Type",
+    "value":[
+      "No Information",
+      "Other",
+      "Railway Switch",
+      "Reduced Track or Lane Count",
+      "Road Interchange",
+      "Sharp Curve",
+      "Sharp Curves",
+      "Steep Curves",
+      "Steep Grade"
     ]
   },
   {
@@ -4542,8 +5514,8 @@
     "value":[
       "At Shoreline",
       "Inland",
-      "Offshore",
-      "noInformation"
+      "No Information",
+      "Offshore"
     ]
   },
   {
@@ -4563,6 +5535,7 @@
       "Horizontal Capped Cylindrical",
       "Horizontal Cylindrical",
       "Multiple Arched",
+      "No Information",
       "Obelisk",
       "Other",
       "Plaque",
@@ -4574,8 +5547,30 @@
       "Statue",
       "Statue on Pedestal",
       "Vertical Capped Cylindrical",
-      "Vertical Cylindrical",
-      "noInformation"
+      "Vertical Cylindrical"
+    ]
+  },
+  {
+    "key":"SSE::Seasonal Ice Limit",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"SSG::Street Sign Type",
+    "value":[
+      "Direction",
+      "Electronic Message",
+      "General Information",
+      "Mandatory Regulation",
+      "No Information",
+      "Other",
+      "Place Identification",
+      "Prohibited or Restricted Activity",
+      "Road Identification",
+      "Route Marker",
+      "Traffic Control",
+      "Warning"
     ]
   },
   {
@@ -4585,6 +5580,8 @@
       "Domed",
       "Flat",
       "Flat with Clerestory",
+      "Flat with Parapet",
+      "No Information",
       "Other",
       "Pitched",
       "Pitched with Clerestory",
@@ -4592,7 +5589,12 @@
       "Sawtoothed",
       "Semi-cylindrical",
       "With Clerestory",
-      "noInformation"
+      "With Cupola",
+      "With Minaret",
+      "With Smokestack",
+      "With Steeple",
+      "With Tower",
+      "With Turret"
     ]
   },
   {
@@ -4602,6 +5604,8 @@
       "Domed",
       "Flat",
       "Flat with Clerestory",
+      "Flat with Parapet",
+      "No Information",
       "Other",
       "Pitched",
       "Pitched with Clerestory",
@@ -4609,7 +5613,12 @@
       "Sawtoothed",
       "Semi-cylindrical",
       "With Clerestory",
-      "noInformation"
+      "With Cupola",
+      "With Minaret",
+      "With Smokestack",
+      "With Steeple",
+      "With Tower",
+      "With Turret"
     ]
   },
   {
@@ -4619,6 +5628,8 @@
       "Domed",
       "Flat",
       "Flat with Clerestory",
+      "Flat with Parapet",
+      "No Information",
       "Other",
       "Pitched",
       "Pitched with Clerestory",
@@ -4626,7 +5637,45 @@
       "Sawtoothed",
       "Semi-cylindrical",
       "With Clerestory",
-      "noInformation"
+      "With Cupola",
+      "With Minaret",
+      "With Smokestack",
+      "With Steeple",
+      "With Tower",
+      "With Turret"
+    ]
+  },
+  {
+    "key":"STL2::Nomadic Seasonal Location [2]",
+    "value":[
+      "Autumn",
+      "No Information",
+      "Other",
+      "Spring",
+      "Summer",
+      "Winter"
+    ]
+  },
+  {
+    "key":"STL3::Nomadic Seasonal Location [3]",
+    "value":[
+      "Autumn",
+      "No Information",
+      "Other",
+      "Spring",
+      "Summer",
+      "Winter"
+    ]
+  },
+  {
+    "key":"STL::Nomadic Seasonal Location",
+    "value":[
+      "Autumn",
+      "No Information",
+      "Other",
+      "Spring",
+      "Summer",
+      "Winter"
     ]
   },
   {
@@ -4642,6 +5691,7 @@
       "MH: Micraceous",
       "ML-CL: Silt, Fine Sand and Lean Clay",
       "ML: Silt and Fine Sand",
+      "No Information",
       "Not Evaluated",
       "OH: Organic Clay",
       "OL: Organic Silt and Clay",
@@ -4650,28 +5700,33 @@
       "SC: Clayey Sand",
       "SM: Silty Sand",
       "SP: Poorly-graded Sand",
-      "SW: Well-graded Sand",
-      "noInformation"
+      "SW: Well-graded Sand"
     ]
   },
   {
     "key":"SWC::Soil Wetness Condition",
     "value":[
+      "No Information",
       "Normally Dry",
       "Normally Frozen",
       "Normally Moist",
-      "Normally Wet",
-      "noInformation"
+      "Normally Wet"
     ]
   },
   {
     "key":"SWT::Natural Pool Type",
     "value":[
+      "No Information",
       "Other",
       "Resurgence",
       "Spring",
-      "Walled-in Spring",
-      "noInformation"
+      "Walled-in Spring"
+    ]
+  },
+  {
+    "key":"SWW::Static Water Level",
+    "value":[
+      "Value"
     ]
   },
   {
@@ -4679,19 +5734,19 @@
     "value":[
       "Arch",
       "Box",
+      "No Information",
       "Other",
-      "Semicircular",
-      "noInformation"
+      "Semicircular"
     ]
   },
   {
     "key":"TEL::Telescope Type",
     "value":[
+      "No Information",
       "Optical",
       "Other",
       "Parabolic Radio Aerial",
-      "Radio Aerial Array",
-      "noInformation"
+      "Radio Aerial Array"
     ]
   },
   {
@@ -4704,16 +5759,16 @@
     "key":"THR::Through Route",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
     "key":"TID::Tide Influenced",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -4724,21 +5779,21 @@
       "'I' Frame",
       "'Y' Frame",
       "Mast",
+      "No Information",
       "Other",
       "Pole",
       "Tower Mill",
       "Tripod",
       "Truss",
-      "Tubular",
-      "noInformation"
+      "Tubular"
     ]
   },
   {
     "key":"TRA::Pedestrian Traversable",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -4747,19 +5802,19 @@
       "Deciduous",
       "Evergreen",
       "Mixed",
-      "Other",
-      "noInformation"
+      "No Information",
+      "Other"
     ]
   },
   {
     "key":"TRP::Transportation Route Protection Structure Type",
     "value":[
       "Gallery",
+      "No Information",
       "Other",
       "Protection Shed",
       "Rock Protection Shed",
-      "Snow Protection Shed",
-      "noInformation"
+      "Snow Protection Shed"
     ]
   },
   {
@@ -4775,6 +5830,7 @@
       "Drove",
       "Inland Waterway",
       "Maritime",
+      "No Information",
       "No Transportation System",
       "Other",
       "Pack-road",
@@ -4788,8 +5844,7 @@
       "Runway",
       "Taxiway",
       "Truck",
-      "Underground Railway",
-      "noInformation"
+      "Underground Railway"
     ]
   },
   {
@@ -4805,6 +5860,7 @@
       "Drove",
       "Inland Waterway",
       "Maritime",
+      "No Information",
       "No Transportation System",
       "Other",
       "Pack-road",
@@ -4818,8 +5874,7 @@
       "Runway",
       "Taxiway",
       "Truck",
-      "Underground Railway",
-      "noInformation"
+      "Underground Railway"
     ]
   },
   {
@@ -4835,6 +5890,7 @@
       "Drove",
       "Inland Waterway",
       "Maritime",
+      "No Information",
       "No Transportation System",
       "Other",
       "Pack-road",
@@ -4848,8 +5904,32 @@
       "Runway",
       "Taxiway",
       "Truck",
-      "Underground Railway",
-      "noInformation"
+      "Underground Railway"
+    ]
+  },
+  {
+    "key":"TSCC::Tree Spacing (interval closure)",
+    "value":[
+      "Closed Interval",
+      "Greater-than Semi-interval",
+      "Greater-than or Equal Semi-interval",
+      "Greater-than to Less-than-or-equal Interval",
+      "Greater-than-or-equal to Less-than Interval",
+      "Less-than Semi-interval",
+      "Less-than or Equal Semi-interval",
+      "Open Interval"
+    ]
+  },
+  {
+    "key":"TSCL::Tree Spacing (lower value)",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"TSCU::Tree Spacing (upper value)",
+    "value":[
+      "Value"
     ]
   },
   {
@@ -4865,12 +5945,12 @@
       "Lava Flow",
       "Loess",
       "Mud",
+      "No Information",
       "Other",
       "Paved",
       "Rock",
       "Sand",
-      "Soil",
-      "noInformation"
+      "Soil"
     ]
   },
   {
@@ -4886,12 +5966,12 @@
       "Lava Flow",
       "Loess",
       "Mud",
+      "No Information",
       "Other",
       "Paved",
       "Rock",
       "Sand",
-      "Soil",
-      "noInformation"
+      "Soil"
     ]
   },
   {
@@ -4907,22 +5987,22 @@
       "Lava Flow",
       "Loess",
       "Mud",
+      "No Information",
       "Other",
       "Paved",
       "Rock",
       "Sand",
-      "Soil",
-      "noInformation"
+      "Soil"
     ]
   },
   {
     "key":"TST::Cable Suspended Shape",
     "value":[
       "Mountain Catenary",
+      "No Information",
       "Other",
       "Overwater Catenary",
-      "Symmetric Catenary",
-      "noInformation"
+      "Symmetric Catenary"
     ]
   },
   {
@@ -4933,11 +6013,11 @@
       "Guard Tower",
       "Industrial Tower",
       "Lookout Tower",
+      "No Information",
       "Observation Tower",
       "Other",
       "Solar Power Tower",
-      "Telecommunication Tower",
-      "noInformation"
+      "Telecommunication Tower"
     ]
   },
   {
@@ -4948,11 +6028,11 @@
       "Guard Tower",
       "Industrial Tower",
       "Lookout Tower",
+      "No Information",
       "Observation Tower",
       "Other",
       "Solar Power Tower",
-      "Telecommunication Tower",
-      "noInformation"
+      "Telecommunication Tower"
     ]
   },
   {
@@ -4963,11 +6043,11 @@
       "Guard Tower",
       "Industrial Tower",
       "Lookout Tower",
+      "No Information",
       "Observation Tower",
       "Other",
       "Solar Power Tower",
-      "Telecommunication Tower",
-      "noInformation"
+      "Telecommunication Tower"
     ]
   },
   {
@@ -4979,9 +6059,9 @@
       "Columbarium",
       "Crypt",
       "Mausoleum",
+      "No Information",
       "Other",
-      "Surface Vault",
-      "noInformation"
+      "Surface Vault"
     ]
   },
   {
@@ -4995,13 +6075,35 @@
       "Lead-in Taxilane",
       "Lead-out Taxilane",
       "Loop",
+      "No Information",
       "Other",
       "Parallel Taxiway",
       "Perimeter",
       "Rapid Exit and/or Turnoff Taxiway",
       "Stub Taxiway",
-      "Turnaround Taxiway",
-      "noInformation"
+      "Turnaround Taxiway"
+    ]
+  },
+  {
+    "key":"TYP::Thoroughfare Type",
+    "value":[
+      "Avenue",
+      "Boulevard",
+      "Circle",
+      "Close",
+      "Drive",
+      "Lane",
+      "Limited Access Motorway",
+      "Motorway",
+      "No Information",
+      "Other",
+      "Parkway",
+      "Place",
+      "Ramp",
+      "Road",
+      "Roundabout",
+      "Street",
+      "Terrace"
     ]
   },
   {
@@ -5020,16 +6122,76 @@
     "key":"UMA::Underground Mine Access",
     "value":[
       "Drift",
+      "No Information",
       "Not Applicable",
       "Shaft",
-      "Slope",
-      "noInformation"
+      "Slope"
     ]
   },
   {
     "key":"URI::Unique Resource Identifier",
     "value":[
       "Value"
+    ]
+  },
+  {
+    "key":"UTY2::Accessible Utility Type [2]",
+    "value":[
+      "Cable Television",
+      "Cooling Fluid Circulation",
+      "Digital Fibre-optic System",
+      "Electric Power Distribution",
+      "Heating Fluid Circulation",
+      "Natural Gas Distribution",
+      "No Information",
+      "Other",
+      "Sewage",
+      "Storm Sewer",
+      "Street Light",
+      "Telegraph",
+      "Telephone",
+      "Traffic Light",
+      "Water Distribution"
+    ]
+  },
+  {
+    "key":"UTY3::Accessible Utility Type [3]",
+    "value":[
+      "Cable Television",
+      "Cooling Fluid Circulation",
+      "Digital Fibre-optic System",
+      "Electric Power Distribution",
+      "Heating Fluid Circulation",
+      "Natural Gas Distribution",
+      "No Information",
+      "Other",
+      "Sewage",
+      "Storm Sewer",
+      "Street Light",
+      "Telegraph",
+      "Telephone",
+      "Traffic Light",
+      "Water Distribution"
+    ]
+  },
+  {
+    "key":"UTY::Accessible Utility Type",
+    "value":[
+      "Cable Television",
+      "Cooling Fluid Circulation",
+      "Digital Fibre-optic System",
+      "Electric Power Distribution",
+      "Heating Fluid Circulation",
+      "Natural Gas Distribution",
+      "No Information",
+      "Other",
+      "Sewage",
+      "Storm Sewer",
+      "Street Light",
+      "Telegraph",
+      "Telephone",
+      "Traffic Light",
+      "Water Distribution"
     ]
   },
   {
@@ -5042,13 +6204,13 @@
       "No Available Imagery",
       "No Available Map Source",
       "No Available Survey",
+      "No Information",
       "No Suitable Imagery",
       "Not Requested",
       "Not Required",
       "Other",
       "Snow Cover",
-      "Vegetation Cover",
-      "noInformation"
+      "Vegetation Cover"
     ]
   },
   {
@@ -5061,13 +6223,13 @@
       "No Available Imagery",
       "No Available Map Source",
       "No Available Survey",
+      "No Information",
       "No Suitable Imagery",
       "Not Requested",
       "Not Required",
       "Other",
       "Snow Cover",
-      "Vegetation Cover",
-      "noInformation"
+      "Vegetation Cover"
     ]
   },
   {
@@ -5080,13 +6242,13 @@
       "No Available Imagery",
       "No Available Map Source",
       "No Available Survey",
+      "No Information",
       "No Suitable Imagery",
       "Not Requested",
       "Not Required",
       "Other",
       "Snow Cover",
-      "Vegetation Cover",
-      "noInformation"
+      "Vegetation Cover"
     ]
   },
   {
@@ -5102,6 +6264,7 @@
       "Masonry",
       "Metal",
       "Mud-based Construction",
+      "No Information",
       "Other",
       "Plant Material",
       "Prestressed Concrete",
@@ -5110,8 +6273,7 @@
       "Steel",
       "Stone",
       "Treated Timber",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
@@ -5127,6 +6289,7 @@
       "Masonry",
       "Metal",
       "Mud-based Construction",
+      "No Information",
       "Other",
       "Plant Material",
       "Prestressed Concrete",
@@ -5135,8 +6298,7 @@
       "Steel",
       "Stone",
       "Treated Timber",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
@@ -5152,6 +6314,7 @@
       "Masonry",
       "Metal",
       "Mud-based Construction",
+      "No Information",
       "Other",
       "Plant Material",
       "Prestressed Concrete",
@@ -5160,14 +6323,7 @@
       "Steel",
       "Stone",
       "Treated Timber",
-      "Wood",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"VCS::Vertical Clearance, Safe",
-    "value":[
-      "Value"
+      "Wood"
     ]
   },
   {
@@ -5175,9 +6331,9 @@
     "value":[
       "Bathymetry",
       "Hypsography",
+      "No Information",
       "Other",
-      "Waterbody Bottom Composition",
-      "noInformation"
+      "Waterbody Bottom Composition"
     ]
   },
   {
@@ -5185,9 +6341,9 @@
     "value":[
       "Bathymetry",
       "Hypsography",
+      "No Information",
       "Other",
-      "Waterbody Bottom Composition",
-      "noInformation"
+      "Waterbody Bottom Composition"
     ]
   },
   {
@@ -5195,9 +6351,9 @@
     "value":[
       "Bathymetry",
       "Hypsography",
+      "No Information",
       "Other",
-      "Waterbody Bottom Composition",
-      "noInformation"
+      "Waterbody Bottom Composition"
     ]
   },
   {
@@ -5209,8 +6365,6 @@
       "No Information",
       "North American Vertical Datum (NAVD) 1988",
       "Other",
-      "The attribute value is known, but is not currently a valid member of the attribute range",
-      "There is no information specified regarding the attribute value.",
       "WGS 84 EGM08 Geoid",
       "WGS 84 EGM96 Geoid",
       "WGS 84 Ellipsoid"
@@ -5222,10 +6376,10 @@
       "Grassland",
       "Grassland with Trees",
       "Meadow",
+      "No Information",
       "Other",
       "Tropical Grass",
-      "Without Trees",
-      "noInformation"
+      "Without Trees"
     ]
   },
   {
@@ -5240,9 +6394,9 @@
       "Caravan",
       "Caravanette",
       "Motorcycle",
+      "No Information",
       "Other",
-      "Ship",
-      "noInformation"
+      "Ship"
     ]
   },
   {
@@ -5252,8 +6406,14 @@
       "Cinder Cone",
       "Composite",
       "Cone",
-      "Shield",
-      "noInformation"
+      "No Information",
+      "Shield"
+    ]
+  },
+  {
+    "key":"VLM::Volume",
+    "value":[
+      "Value"
     ]
   },
   {
@@ -5262,7 +6422,7 @@
       "Active",
       "Dormant",
       "Inactive or Extinct",
-      "noInformation"
+      "No Information"
     ]
   },
   {
@@ -5275,49 +6435,58 @@
     "key":"VSP2::Vegetation Species [2]",
     "value":[
       "Bamboo",
+      "Casuarina",
+      "Conifer",
       "Cypress",
+      "Eucalyptus",
+      "Filao",
       "Mangrove",
       "Nipa",
+      "No Information",
       "Other",
-      "Palm",
-      "Swamp Cypress",
-      "noInformation"
+      "Palm"
     ]
   },
   {
     "key":"VSP3::Vegetation Species [3]",
     "value":[
       "Bamboo",
+      "Casuarina",
+      "Conifer",
       "Cypress",
+      "Eucalyptus",
+      "Filao",
       "Mangrove",
       "Nipa",
+      "No Information",
       "Other",
-      "Palm",
-      "Swamp Cypress",
-      "noInformation"
+      "Palm"
     ]
   },
   {
     "key":"VSP::Vegetation Species",
     "value":[
       "Bamboo",
+      "Casuarina",
+      "Conifer",
       "Cypress",
+      "Eucalyptus",
+      "Filao",
       "Mangrove",
       "Nipa",
+      "No Information",
       "Other",
-      "Palm",
-      "Swamp Cypress",
-      "noInformation"
+      "Palm"
     ]
   },
   {
-    "key":"VTI::Vegetation Trafficability Impact",
+    "key":"VST::Vehicle Scale Count",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"WBD::Waterbody Depth",
+    "key":"WAD::Water Well Construction Description",
     "value":[
       "Value"
     ]
@@ -5328,14 +6497,46 @@
       "Braided Stream",
       "Channelized Stream",
       "Gorge",
+      "Lost Watercourse",
+      "No Information",
       "Normal Channel",
       "Other",
-      "Wadi",
-      "noInformation"
+      "Split Stream",
+      "Wadi"
+    ]
+  },
+  {
+    "key":"WD1::Route Minimum Travelled Way Width",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"WD2::Route Total Usable Width",
+    "value":[
+      "Value"
     ]
   },
   {
     "key":"WD3::Terrain Gap Width",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"WD5::Width at Top",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"WDH::Predominant Maximum Water Depth",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"WDL::Predominant Minimum Water Depth",
     "value":[
       "Value"
     ]
@@ -5352,6 +6553,7 @@
       "Capped",
       "Christmas Tree",
       "Manifold",
+      "No Information",
       "Other",
       "Protective Structure",
       "Pump",
@@ -5359,8 +6561,7 @@
       "Separator",
       "Stock Tank",
       "Treater",
-      "Wellhead",
-      "noInformation"
+      "Wellhead"
     ]
   },
   {
@@ -5369,6 +6570,7 @@
       "Capped",
       "Christmas Tree",
       "Manifold",
+      "No Information",
       "Other",
       "Protective Structure",
       "Pump",
@@ -5376,8 +6578,7 @@
       "Separator",
       "Stock Tank",
       "Treater",
-      "Wellhead",
-      "noInformation"
+      "Wellhead"
     ]
   },
   {
@@ -5386,6 +6587,7 @@
       "Capped",
       "Christmas Tree",
       "Manifold",
+      "No Information",
       "Other",
       "Protective Structure",
       "Pump",
@@ -5393,8 +6595,7 @@
       "Separator",
       "Stock Tank",
       "Treater",
-      "Wellhead",
-      "noInformation"
+      "Wellhead"
     ]
   },
   {
@@ -5404,9 +6605,9 @@
       "Drilled",
       "Dug",
       "Dug or Drilled",
+      "No Information",
       "Other",
-      "Walled-in",
-      "noInformation"
+      "Walled-in"
     ]
   },
   {
@@ -5423,9 +6624,9 @@
       "Awash at Chart Datum",
       "Awash at Low Water",
       "Covers and Uncovers",
+      "No Information",
       "Other",
-      "Partly Submerged",
-      "noInformation"
+      "Partly Submerged"
     ]
   },
   {
@@ -5441,16 +6642,10 @@
       "Headwaters",
       "Meander",
       "Mouth",
+      "No Information",
       "Other",
       "Pool",
-      "Reach",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"WOC::Dam Crest Width",
-    "value":[
-      "Value"
+      "Reach"
     ]
   },
   {
@@ -5464,9 +6659,9 @@
     "value":[
       "Flume",
       "Headrace",
+      "No Information",
       "Sluice",
-      "Tailrace",
-      "noInformation"
+      "Tailrace"
     ]
   },
   {
@@ -5475,18 +6670,42 @@
       "Disappearing",
       "Dissipating",
       "Hole",
+      "No Information",
       "Other",
-      "Sinkhole",
-      "noInformation"
+      "Sinkhole"
+    ]
+  },
+  {
+    "key":"WT2::Width of Second Travelled Way",
+    "value":[
+      "Value"
     ]
   },
   {
     "key":"WTI::Wall Type",
     "value":[
       "Free-standing",
+      "No Information",
       "Other",
-      "Retaining",
-      "noInformation"
+      "Retaining"
+    ]
+  },
+  {
+    "key":"WVA::Predominant Average Water Velocity",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"WVH::Predominant Maximum Water Velocity",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"WVL::Predominant Minimum Water Velocity",
+    "value":[
+      "Value"
     ]
   },
   {
@@ -5500,101 +6719,99 @@
       "Joint",
       "Marines",
       "Navy",
+      "No Information",
       "Not Applicable",
-      "Other",
-      "noInformation"
+      "Other"
     ]
   },
   {
     "key":"YWQ::Water Potability",
     "value":[
       "Contaminated",
+      "No Information",
       "Nonpotable",
       "Other",
       "Potable",
-      "Treatable",
-      "noInformation"
+      "Treatable"
     ]
   },
   {
-    "key":"ZI001_SDP::Source Information : Source Description",
+    "key":"ZI001_NSD::Source Information : Non-spatial Source Date and Time",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"ZI001_SDV::Source Information : Source Date and Time",
+    "key":"ZI001_NSN::Source Information : Non-spatial Source Description",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"ZI001_SPS::Source Information : Spatial Source",
+    "key":"ZI001_NSP::Source Information : Non-spatial Source Type",
     "value":[
-      "False",
-      "True",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"ZI001_SRT::Source Information : Source Type",
-    "value":[
-      "(US) Modernized Integrated Data Base.",
-      "A DeLorme proprietary global feature data set consisting of a dense seamless topographical map of the world.",
-      "A NAVTEQ proprietary road and feature information data set used for routing and identification of points of interest.",
-      "A TomTom proprietary road and feature data set generally used for routing and identification of points of interest.",
-      "A military (for example: NGA or defense service) map or chart, whether in hardcopy format or digitally scanned.",
-      "A non-military (for example: commercial or personally prepared) map or chart in hardcopy format.",
-      "A non-military map or chart, in a digital (often proprietary) format, sold commercially and usually accompanied by distribution and/or use restrictions.",
-      "GPS-based field-collected open source data.",
-      "Ikonos imagery of unspecified type and resolution.",
-      "Imagery from (US) National Technical Means (NTM).",
-      "Imagery of unspecified type and resolution.",
-      "Mission-specific and/or operational data set prepared by a US Combatant Command.",
-      "NGA Automated Aeronautical Facilities Information File.",
-      "NGA Controlled Imagery Base 1 metre data.",
-      "NGA Digital Aeronautical Flight Information File.",
-      "NGA Digital Nautical Chart.",
-      "NGA Digital Vertical Obstruction File.",
-      "NGA Foundation Feature Data.",
-      "NGA GeoNames.",
-      "NGA Interim Terrain Data.",
-      "NGA Interim Vector Data.",
-      "NGA Stereo Airfield Collection.",
-      "NGA Urban Vector Map.",
-      "NGA Vector Interim Terrain Data.",
-      "NGA Vector Map Level 2.",
+      "AAFIF",
+      "CIB 1",
+      "Commercial Data",
+      "DAFIF",
+      "DNC",
+      "DVOF",
+      "FFD",
+      "GPS",
+      "GeoNames",
+      "ITD",
+      "IVD",
+      "Ikonos Imagery",
+      "Imagery",
+      "Landsat Imagery",
+      "MIDB",
+      "Maxar Imagery",
+      "Military Map Data",
+      "NTM Imagery",
       "No Information",
+      "Non-military Map",
+      "ORBIMAGE Imagery",
+      "Open Source Information",
+      "Operations Data",
       "Other",
-      "QuickBird imagery of unspecified type and resolution.",
-      "Unclassified published information, whether obtained from digital or hardcopy sources.",
-      "commercial",
-      "deLormeDigitalAtlasEarth",
-      "gpsBasedFieldCollect",
-      "ikonosImagery",
-      "imageryUnspecified",
-      "militaryMapData",
-      "navteqData",
-      "ngaAutoAirFacInfoFile",
-      "ngaControlledImageBase1",
-      "ngaDigitalAirFltInfoFile",
-      "ngaDigitalNauticalChart",
-      "ngaDigitalVertObstruction",
-      "ngaFoundationFeatureData",
-      "ngaGeoNames",
-      "ngaInterimTerrainData",
-      "ngaInterimVectorData",
-      "ngaStereoAirfieldCollect",
-      "ngaUrbanVectorMap",
-      "ngaVectorInterimTerrain",
-      "ngaVectorMap2",
-      "nonMilitaryMap",
-      "openSource",
-      "operationsData",
-      "quickBirdImagery",
-      "tomTomData",
-      "usModernizedIntegratedDB",
-      "usNtmImagery"
+      "QuickBird Imagery",
+      "SAC",
+      "UVMap",
+      "VITD",
+      "VMap 2"
+    ]
+  },
+  {
+    "key":"ZI001_SSD::Source Information : Spatial Source Date and Time",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"ZI001_SSN::Source Information : Spatial Source Description",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"ZI001_SSY::Source Information : Spatial Source Type",
+    "value":[
+      "CIB 1",
+      "DNC",
+      "FFD",
+      "GPS",
+      "GeoEye-1 Imagery",
+      "ITD",
+      "Ikonos Imagery",
+      "Imagery",
+      "MIDB",
+      "Maxar Imagery",
+      "NTM Imagery",
+      "No Information",
+      "ORBIMAGE Imagery",
+      "Operations Data",
+      "Other",
+      "QuickBird Imagery"
     ]
   },
   {
@@ -5607,9 +6824,7 @@
       "Other",
       "Reflective Surface",
       "Stereoscopic Imagery",
-      "TIN Data",
-      "The attribute value is known, but is not currently a valid member of the attribute range.",
-      "There is no information specified regarding the attribute value."
+      "TIN Data"
     ]
   },
   {
@@ -5625,7 +6840,13 @@
     ]
   },
   {
-    "key":"ZI002_UFI::Restriction Information : Unique Entity Identifier",
+    "key":"ZI002_CCN::Restriction Information : Commercial Copyright Notice",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"ZI002_CDR::Restriction Information : Commercial Distribution Restriction",
     "value":[
       "Value"
     ]
@@ -5637,10 +6858,8 @@
     ]
   },
   {
-    "key":"ZI004_RCG::Feature Metadata : Process Step Information : Resource Content Originator",
+    "key":"ZI004_RCG::Process Step Information : Resource Content Originator",
     "value":[
-      "Armed Forces General Headquarters (Qatar)",
-      "Army (Australia)",
       "Army Geographic Agency (Netherlands)",
       "Army Geographic Centre (Spain)",
       "Army Geographic Institute (Portugal)",
@@ -5649,42 +6868,24 @@
       "Defence Geographic Centre Intelligence Collection Group (United Kingdom)",
       "Defence Imagery and Geospatial Organisation (Australia)",
       "Defense Information Security (Italy)",
-      "Directorate Geospatial Information (South Africa)",
-      "Directorate of Survey (Kuwait)",
-      "El Instituto Nacional de Estadistica y Geografia (Mexico)",
       "General Command of Mapping (Turkey)",
       "Geographic Service (Belgium)",
       "Geographic Service of the Czech Armed Forces (Czech Republic)",
       "Geospatial Information Agency (Latvia)",
       "Geospatial Intelligence Organisation (New Zealand)",
       "Hellenic Military Geographic Service (Greece)",
-      "Imagery Support Group (Singapore)",
-      "Information Network Security Agency (Ethiopia)",
       "Joint Geography Bureau (France)",
-      "Korean Defense Intelligence Agency (South Korea)",
       "Mapping Service (Hungary)",
       "Mapping and Charting Establishment (Canada)",
-      "Materiel Production Center (Taiwan)",
-      "Military Geographic Division (Croatia)",
       "Military Geographic Group (Estonia)",
       "Military Geographic Service (Norway)",
       "Military Geography Division (Poland)",
       "Military Mapping Centre (Lithuania)",
-      "Military Survey Department (United Arab Emirates)",
       "Military Topographic Directorate (Romania)",
       "Military Topographic Service (Bulgaria)",
-      "Ministry of Construction and Urban Development (Mongolia)",
-      "Ministry of Defense of Japan (Japan)",
-      "Ministry of Defense of Saudi Arabia (Saudi Arabia)",
-      "Ministry of State for Defense (Kenya)",
       "National Army Topographic Service (Moldova)",
-      "National Intelligence Service (South Korea)",
-      "National Mapping and Resource Information Authority (Philippines)",
-      "National Security Bureau (Taiwan)",
-      "National Survey Authority (Oman)",
       "No Information",
       "Other",
-      "Royal Jordanian Geographic Centre (Jordan)",
       "Swedish Armed Forces (Sweden)",
       "Topographic Institute (Slovakia)",
       "Topographic Service (Finland)",
@@ -5715,26 +6916,17 @@
       "U.S. Southern Command (USSOUTHCOM)",
       "U.S. Special Operations Command (USSOCOM)",
       "U.S. Strategic Command (USSTRATCOM)",
-      "U.S. Transportation Command (USTRANSCOM)",
-      "direccion_del_servicio_geografico_military_(paraguay)",
-      "direccion_general_de_registros_catastro_y_geografia_(honduras)",
-      "diretoria_de_servico_geografico_(brazil)",
-      "instituto_cartografico_militar_(dominican_republic)",
-      "instituto_geografico_agustin_codazzi_(colombia)",
-      "instituto_geografico_militar_(chile)",
-      "instituto_geografico_militar_(ecuador)",
-      "instituto_geografico_nacional_(argentina)",
-      "instituto_geografico_nacional_(guatemala)",
-      "instituto_geografico_nacional_(peru)",
-      "instituto_geografico_nacional_tommy_guardia_(panama)",
-      "instituto_geografico_y_del_catastro_nacional_(el_salvador)",
-      "instituto_nicaraguense_de_estudios_terretoriales_(nicaragua)",
-      "servicio_geografico_militar_(guatemala)",
-      "servicio_geografico_militar_(uruguay)"
+      "U.S. Transportation Command (USTRANSCOM)"
     ]
   },
   {
-    "key":"ZI005_FNA2::Geographic Name Information : Full Name (second)",
+    "key":"ZI005_FNA1::Geographic Name Information : (first) Full Name",
+    "value":[
+      "Value"
+    ]
+  },
+  {
+    "key":"ZI005_FNA2::Geographic Name Information : (second) Full Name",
     "value":[
       "Value"
     ]
@@ -5746,25 +6938,19 @@
     ]
   },
   {
-    "key":"ZI005_FNA::Geographic Name Information : Full Name (first)",
+    "key":"ZI005_NFN1::Geographic Name Information : (first) Name Identifier",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"ZI005_NFN2::Geographic Name Information : Name Identifier (second)",
+    "key":"ZI005_NFN2::Geographic Name Information : (second) Name Identifier",
     "value":[
       "Value"
     ]
   },
   {
     "key":"ZI005_NFN::Geographic Name Information : Name Identifier",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"ZI005_NFN::Geographic Name Information : Name Identifier (first)",
     "value":[
       "Value"
     ]
@@ -5801,6 +6987,7 @@
       "Maize",
       "Maple",
       "Millet",
+      "No Information",
       "Oat",
       "Oil Crop",
       "Oil Palm",
@@ -5825,8 +7012,7 @@
       "Tuber",
       "Vegetable Crop",
       "Walnut",
-      "Wheat",
-      "noInformation"
+      "Wheat"
     ]
   },
   {
@@ -5855,6 +7041,7 @@
       "Maize",
       "Maple",
       "Millet",
+      "No Information",
       "Oat",
       "Oil Crop",
       "Oil Palm",
@@ -5879,8 +7066,7 @@
       "Tuber",
       "Vegetable Crop",
       "Walnut",
-      "Wheat",
-      "noInformation"
+      "Wheat"
     ]
   },
   {
@@ -5911,6 +7097,7 @@
       "Maize",
       "Maple",
       "Millet",
+      "No Information",
       "Oat",
       "Oil Crop",
       "Oil Palm",
@@ -5936,8 +7123,7 @@
       "Tuber",
       "Vegetable Crop",
       "Walnut",
-      "Wheat",
-      "noInformation"
+      "Wheat"
     ]
   },
   {
@@ -5947,12 +7133,12 @@
       "Intermingled Woods",
       "Irregular",
       "Linear",
+      "No Information",
       "Other",
       "Regular",
       "Terraced",
       "Treeless",
-      "Trellised",
-      "noInformation"
+      "Trellised"
     ]
   },
   {
@@ -5962,12 +7148,12 @@
       "Intermingled Woods",
       "Irregular",
       "Linear",
+      "No Information",
       "Other",
       "Regular",
       "Terraced",
       "Treeless",
-      "Trellised",
-      "noInformation"
+      "Trellised"
     ]
   },
   {
@@ -5977,12 +7163,12 @@
       "Intermingled Woods",
       "Irregular",
       "Linear",
+      "No Information",
       "Other",
       "Regular",
       "Terraced",
       "Treeless",
-      "Trellised",
-      "noInformation"
+      "Trellised"
     ]
   },
   {
@@ -5990,10 +7176,11 @@
     "value":[
       "Fallow",
       "Grazing",
+      "No Information",
       "Other",
       "Permanent",
-      "Slash and Burn",
-      "noInformation"
+      "Permanent Irrigation",
+      "Slash and Burn"
     ]
   },
   {
@@ -6001,10 +7188,11 @@
     "value":[
       "Fallow",
       "Grazing",
+      "No Information",
       "Other",
       "Permanent",
-      "Slash and Burn",
-      "noInformation"
+      "Permanent Irrigation",
+      "Slash and Burn"
     ]
   },
   {
@@ -6012,33 +7200,22 @@
     "value":[
       "Fallow",
       "Grazing",
+      "No Information",
       "Other",
       "Permanent",
-      "Slash and Burn",
-      "noInformation"
+      "Permanent Irrigation",
+      "Slash and Burn"
     ]
   },
   {
     "key":"ZI013_IRG::Crop Information : Irrigation Method",
     "value":[
       "Center Pivot",
-      "Drip",
       "Furrow",
-      "Lateral Move",
       "Linear Move",
+      "No Information",
       "Other",
-      "Overhead",
-      "Subirrigation",
-      "Terrace",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"ZI013_PIG::Crop Information : Permanent Irrigation",
-    "value":[
-      "False",
-      "True",
-      "noInformation"
+      "Overhead"
     ]
   },
   {
@@ -6047,13 +7224,13 @@
       "Ash",
       "Cinders",
       "No Byproduct",
+      "No Information",
       "Other",
       "Radioactive Material",
       "Refuse",
       "Scrap-metal",
       "Sewage",
-      "Slag",
-      "noInformation"
+      "Slag"
     ]
   },
   {
@@ -6062,13 +7239,13 @@
       "Ash",
       "Cinders",
       "No Byproduct",
+      "No Information",
       "Other",
       "Radioactive Material",
       "Refuse",
       "Scrap-metal",
       "Sewage",
-      "Slag",
-      "noInformation"
+      "Slag"
     ]
   },
   {
@@ -6077,13 +7254,13 @@
       "Ash",
       "Cinders",
       "No Byproduct",
+      "No Information",
       "Other",
       "Radioactive Material",
       "Refuse",
       "Scrap-metal",
       "Sewage",
-      "Slag",
-      "noInformation"
+      "Slag"
     ]
   },
   {
@@ -6134,6 +7311,7 @@
       "Milled Grain",
       "Motor Vehicle",
       "Munitions",
+      "No Information",
       "No Product",
       "Non-solid Hydrocarbon Fuel",
       "Nuclear Fuel",
@@ -6164,8 +7342,7 @@
       "Water",
       "Whale Products",
       "Wine",
-      "Zinc",
-      "noInformation"
+      "Zinc"
     ]
   },
   {
@@ -6216,6 +7393,7 @@
       "Milled Grain",
       "Motor Vehicle",
       "Munitions",
+      "No Information",
       "No Product",
       "Non-solid Hydrocarbon Fuel",
       "Nuclear Fuel",
@@ -6246,8 +7424,7 @@
       "Water",
       "Whale Products",
       "Wine",
-      "Zinc",
-      "noInformation"
+      "Zinc"
     ]
   },
   {
@@ -6298,6 +7475,7 @@
       "Milled Grain",
       "Motor Vehicle",
       "Munitions",
+      "No Information",
       "No Product",
       "Non-solid Hydrocarbon Fuel",
       "Nuclear Fuel",
@@ -6328,8 +7506,7 @@
       "Water",
       "Whale Products",
       "Wine",
-      "Zinc",
-      "noInformation"
+      "Zinc"
     ]
   },
   {
@@ -6354,6 +7531,7 @@
       "Lumber",
       "Manganese",
       "Metal",
+      "No Information",
       "No Raw Material",
       "Oil",
       "Ore",
@@ -6375,8 +7553,7 @@
       "Vegetation",
       "Water",
       "Wood",
-      "Zinc",
-      "noInformation"
+      "Zinc"
     ]
   },
   {
@@ -6401,6 +7578,7 @@
       "Lumber",
       "Manganese",
       "Metal",
+      "No Information",
       "No Raw Material",
       "Oil",
       "Ore",
@@ -6422,8 +7600,7 @@
       "Vegetation",
       "Water",
       "Wood",
-      "Zinc",
-      "noInformation"
+      "Zinc"
     ]
   },
   {
@@ -6448,6 +7625,7 @@
       "Lumber",
       "Manganese",
       "Metal",
+      "No Information",
       "No Raw Material",
       "Oil",
       "Ore",
@@ -6469,8 +7647,7 @@
       "Vegetation",
       "Water",
       "Wood",
-      "Zinc",
-      "noInformation"
+      "Zinc"
     ]
   },
   {
@@ -6488,30 +7665,18 @@
       "Ice",
       "Macadam",
       "Metal",
+      "No Information",
       "Other",
       "Rigid Pavement",
       "Snow",
       "Stabilized Earth",
       "Unimproved",
       "Wood",
-      "Wood Plank",
-      "noInformation"
+      "Wood Plank"
     ]
   },
   {
     "key":"ZI016_WD1::Route Pavement Information : Route Minimum Travelled Way Width",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"ZI016_WD2::Route Pavement Information : Route Total Usable Width",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"ZI016_WT2::Route Pavement Information : Width of Second Travelled Way",
     "value":[
       "Value"
     ]
@@ -6523,9 +7688,9 @@
       "Closed in Winter",
       "Fair-weather",
       "Limited All-weather",
+      "No Information",
       "Other",
-      "Winter Only",
-      "noInformation"
+      "Winter Only"
     ]
   },
   {
@@ -6539,26 +7704,26 @@
     "value":[
       "Broad",
       "Narrow",
-      "Standard",
-      "noInformation"
+      "No Information",
+      "Standard"
     ]
   },
   {
     "key":"ZI017_RIR::Track Information : Railway in Road",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
     "key":"ZI017_RRA::Track Information : Railway Power Method",
     "value":[
       "Electrified Track",
+      "No Information",
       "Non-electrified",
       "Other",
-      "Overhead Electrified",
-      "noInformation"
+      "Overhead Electrified"
     ]
   },
   {
@@ -6571,12 +7736,12 @@
       "Ladder Track",
       "Maglev",
       "Monorail",
+      "No Information",
       "Other",
       "Paired Track",
       "Rip Track",
       "Stub Track",
-      "Team Track",
-      "noInformation"
+      "Team Track"
     ]
   },
   {
@@ -6585,12 +7750,12 @@
       "Cellular Phone",
       "Microwave Radio Relay",
       "Mobile Phone",
+      "No Information",
       "Other",
       "Radio Broadcast",
       "Radio Telephone",
       "Radio-telegraph",
-      "Television (TV)",
-      "noInformation"
+      "Television (TV)"
     ]
   },
   {
@@ -6600,12 +7765,12 @@
       "Graded",
       "Grass",
       "Grooved",
+      "No Information",
       "Oiled",
       "Other",
       "Porous Friction Course",
       "Rolled",
-      "Rubberized Seal Coat",
-      "noInformation"
+      "Rubberized Seal Coat"
     ]
   },
   {
@@ -6615,12 +7780,12 @@
       "Graded",
       "Grass",
       "Grooved",
+      "No Information",
       "Oiled",
       "Other",
       "Porous Friction Course",
       "Rolled",
-      "Rubberized Seal Coat",
-      "noInformation"
+      "Rubberized Seal Coat"
     ]
   },
   {
@@ -6630,12 +7795,12 @@
       "Graded",
       "Grass",
       "Grooved",
+      "No Information",
       "Oiled",
       "Other",
       "Porous Friction Course",
       "Rolled",
-      "Rubberized Seal Coat",
-      "noInformation"
+      "Rubberized Seal Coat"
     ]
   },
   {
@@ -6655,6 +7820,7 @@
       "Laterite",
       "Macadam",
       "Membrane",
+      "No Information",
       "Non-bituminous Mix",
       "Other",
       "Pierced Steel Planking",
@@ -6662,8 +7828,7 @@
       "Snow",
       "Stone",
       "Water",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
@@ -6683,6 +7848,7 @@
       "Laterite",
       "Macadam",
       "Membrane",
+      "No Information",
       "Non-bituminous Mix",
       "Other",
       "Pierced Steel Planking",
@@ -6690,8 +7856,7 @@
       "Snow",
       "Stone",
       "Water",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
@@ -6711,6 +7876,7 @@
       "Laterite",
       "Macadam",
       "Membrane",
+      "No Information",
       "Non-bituminous Mix",
       "Other",
       "Pierced Steel Planking",
@@ -6718,8 +7884,7 @@
       "Snow",
       "Stone",
       "Water",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
@@ -6727,11 +7892,11 @@
     "value":[
       "Completely Paved",
       "Mostly Paved",
+      "No Information",
       "Other",
       "Partially Paved",
       "Unpaved",
-      "Unprepared",
-      "noInformation"
+      "Unprepared"
     ]
   },
   {
@@ -6742,1456 +7907,11 @@
       "Fair Estimated",
       "Good",
       "Good Estimated",
+      "No Information",
       "Poor",
       "Poor Estimated",
       "Under Construction",
-      "Unserviceable",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"ZI020_GE42::(Location Country) Designation : GENC Short URN-based Identifier (second)",
-    "value":[
-      "AFGHANISTAN",
-      "AKROTIRI",
-      "ALBANIA",
-      "ALGERIA",
-      "AMERICAN SAMOA",
-      "ANDORRA",
-      "ANGOLA",
-      "ANGUILLA",
-      "ANTARCTICA",
-      "ANTIGUA AND BARBUDA",
-      "ARGENTINA",
-      "ARMENIA",
-      "ARUBA",
-      "ASHMORE AND CARTIER ISLANDS",
-      "AUSTRALIA",
-      "AUSTRIA",
-      "AZERBAIJAN",
-      "BAHAMAS, THE",
-      "BAHRAIN",
-      "BAKER ISLAND",
-      "BANGLADESH",
-      "BARBADOS",
-      "BASSAS DA INDIA",
-      "BELARUS",
-      "BELGIUM",
-      "BELIZE",
-      "BENIN",
-      "BERMUDA",
-      "BHUTAN",
-      "BOLIVIA",
-      "BONAIRE, SINT EUSTATIUS, AND SABA",
-      "BOSNIA AND HERZEGOVINA",
-      "BOTSWANA",
-      "BOUVET ISLAND",
-      "BRAZIL",
-      "BRITISH INDIAN OCEAN TERRITORY",
-      "BRUNEI",
-      "BULGARIA",
-      "BURKINA FASO",
-      "BURMA",
-      "BURUNDI",
-      "CAMBODIA",
-      "CAMEROON",
-      "CANADA",
-      "CAPE VERDE",
-      "CAYMAN ISLANDS",
-      "CENTRAL AFRICAN REPUBLIC",
-      "CHAD",
-      "CHILE",
-      "CHINA",
-      "CHRISTMAS ISLAND",
-      "CLIPPERTON ISLAND",
-      "COCOS (KEELING) ISLANDS",
-      "COLOMBIA",
-      "COMOROS",
-      "CONGO (BRAZZAVILLE)",
-      "CONGO (KINSHASA)",
-      "COOK ISLANDS",
-      "CORAL SEA ISLANDS",
-      "COSTA RICA",
-      "COTE DIVOIRE",
-      "CROATIA",
-      "CUBA",
-      "CURACAO",
-      "CYPRUS",
-      "CZECH REPUBLIC",
-      "DENMARK",
-      "DHEKELIA",
-      "DIEGO GARCIA",
-      "DJIBOUTI",
-      "DOMINICA",
-      "DOMINICAN REPUBLIC",
-      "ECUADOR",
-      "EGYPT",
-      "EL SALVADOR",
-      "ENTITY 1",
-      "ENTITY 2",
-      "ENTITY 3",
-      "ENTITY 4",
-      "ENTITY 5",
-      "EQUATORIAL GUINEA",
-      "ERITREA",
-      "ESTONIA",
-      "ETHIOPIA",
-      "ETOROFU, HABOMAI, KUNASHIRI, AND SHIKOTAN ISLANDS",
-      "EUROPA ISLAND",
-      "FALKLAND ISLANDS (ISLAS MALVINAS)",
-      "FAROE ISLANDS",
-      "FIJI",
-      "FINLAND",
-      "FRANCE",
-      "FRENCH GUIANA",
-      "FRENCH POLYNESIA",
-      "FRENCH SOUTHERN AND ANTARCTIC LANDS",
-      "GABON",
-      "GAMBIA, THE",
-      "GAZA STRIP",
-      "GEORGIA",
-      "GERMANY",
-      "GHANA",
-      "GIBRALTAR",
-      "GLORIOSO ISLANDS",
-      "GREECE",
-      "GREENLAND",
-      "GRENADA",
-      "GUADELOUPE",
-      "GUAM",
-      "GUANTANAMO BAY NAVAL BASE",
-      "GUATEMALA",
-      "GUERNSEY",
-      "GUINEA",
-      "GUINEA-BISSAU",
-      "GUYANA",
-      "HAITI",
-      "HEARD ISLAND AND MCDONALD ISLANDS",
-      "HONDURAS",
-      "HONG KONG",
-      "HOWLAND ISLAND",
-      "HUNGARY",
-      "ICELAND",
-      "INDIA",
-      "INDONESIA",
-      "IRAN",
-      "IRAQ",
-      "IRELAND",
-      "ISLE OF MAN",
-      "ISRAEL",
-      "ITALY",
-      "JAMAICA",
-      "JAN MAYEN",
-      "JAPAN",
-      "JARVIS ISLAND",
-      "JERSEY",
-      "JOHNSTON ATOLL",
-      "JORDAN",
-      "JUAN DE NOVA ISLAND",
-      "KAZAKHSTAN",
-      "KENYA",
-      "KINGMAN REEF",
-      "KIRIBATI",
-      "KOREA, NORTH",
-      "KOREA, SOUTH",
-      "KOSOVO",
-      "KUWAIT",
-      "KYRGYZSTAN",
-      "LAOS",
-      "LATVIA",
-      "LEBANON",
-      "LESOTHO",
-      "LIBERIA",
-      "LIBYA",
-      "LIECHTENSTEIN",
-      "LITHUANIA",
-      "LUXEMBOURG",
-      "MACAU",
-      "MACEDONIA",
-      "MADAGASCAR",
-      "MALAWI",
-      "MALAYSIA",
-      "MALDIVES",
-      "MALI",
-      "MALTA",
-      "MARSHALL ISLANDS",
-      "MARTINIQUE",
-      "MAURITANIA",
-      "MAURITIUS",
-      "MAYOTTE",
-      "MEXICO",
-      "MICRONESIA, FEDERATED STATES OF",
-      "MIDWAY ISLANDS",
-      "MOLDOVA",
-      "MONACO",
-      "MONGOLIA",
-      "MONTENEGRO",
-      "MONTSERRAT",
-      "MOROCCO",
-      "MOZAMBIQUE",
-      "NAMIBIA",
-      "NAURU",
-      "NAVASSA ISLAND",
-      "NEPAL",
-      "NETHERLANDS",
-      "NEW CALEDONIA",
-      "NEW ZEALAND",
-      "NICARAGUA",
-      "NIGER",
-      "NIGERIA",
-      "NIUE",
-      "NO MANS LAND",
-      "NORFOLK ISLAND",
-      "NORTHERN MARIANA ISLANDS",
-      "NORWAY",
-      "No Information",
-      "OMAN",
-      "Other",
-      "PAKISTAN",
-      "PALAU",
-      "PALESTINIAN TERRITORY",
-      "PALMYRA ATOLL",
-      "PANAMA",
-      "PAPUA NEW GUINEA",
-      "PARACEL ISLANDS",
-      "PARAGUAY",
-      "PERU",
-      "PHILIPPINES",
-      "PITCAIRN ISLANDS",
-      "POLAND",
-      "PORTUGAL",
-      "PUERTO RICO",
-      "QATAR",
-      "REUNION",
-      "ROMANIA",
-      "RUSSIA",
-      "RWANDA",
-      "SAINT BARTHELEMY",
-      "SAINT HELENA, ASCENSION, AND TRISTAN DA CUNHA",
-      "SAINT KITTS AND NEVIS",
-      "SAINT LUCIA",
-      "SAINT MARTIN",
-      "SAINT PIERRE AND MIQUELON",
-      "SAINT VINCENT AND THE GRENADINES",
-      "SAMOA",
-      "SAN MARINO",
-      "SAO TOME AND PRINCIPE",
-      "SAUDI ARABIA",
-      "SENEGAL",
-      "SERBIA",
-      "SEYCHELLES",
-      "SIERRA LEONE",
-      "SINGAPORE",
-      "SINT MAARTEN",
-      "SLOVAKIA",
-      "SLOVENIA",
-      "SOLOMON ISLANDS",
-      "SOMALIA",
-      "SOUTH AFRICA",
-      "SOUTH GEORGIA AND SOUTH SANDWICH ISLANDS",
-      "SOUTH SUDAN",
-      "SPAIN",
-      "SPRATLY ISLANDS",
-      "SRI LANKA",
-      "SUDAN",
-      "SURINAME",
-      "SVALBARD",
-      "SWAZILAND",
-      "SWEDEN",
-      "SWITZERLAND",
-      "SYRIA",
-      "TAIWAN",
-      "TAJIKISTAN",
-      "TANZANIA",
-      "THAILAND",
-      "TIMOR-LESTE",
-      "TOGO",
-      "TOKELAU",
-      "TONGA",
-      "TRINIDAD AND TOBAGO",
-      "TROMELIN ISLAND",
-      "TUNISIA",
-      "TURKEY",
-      "TURKMENISTAN",
-      "TURKS AND CAICOS ISLANDS",
-      "TUVALU",
-      "UGANDA",
-      "UKRAINE",
-      "UNITED ARAB EMIRATES",
-      "UNITED KINGDOM",
-      "UNITED STATES",
-      "UNKNOWN",
-      "URUGUAY",
-      "UZBEKISTAN",
-      "VANUATU",
-      "VATICAN CITY",
-      "VENEZUELA",
-      "VIETNAM",
-      "VIRGIN ISLANDS, BRITISH",
-      "VIRGIN ISLANDS, U.S.",
-      "WAKE ISLAND",
-      "WALLIS AND FUTUNA",
-      "WEST BANK",
-      "WESTERN SAHARA",
-      "YEMEN",
-      "ZAMBIA",
-      "ZIMBABWE"
-    ]
-  },
-  {
-    "key":"ZI020_GE43::(Location Country) Designation : GENC Short URN-based Identifier (third)",
-    "value":[
-      "AFGHANISTAN",
-      "AKROTIRI",
-      "ALBANIA",
-      "ALGERIA",
-      "AMERICAN SAMOA",
-      "ANDORRA",
-      "ANGOLA",
-      "ANGUILLA",
-      "ANTARCTICA",
-      "ANTIGUA AND BARBUDA",
-      "ARGENTINA",
-      "ARMENIA",
-      "ARUBA",
-      "ASHMORE AND CARTIER ISLANDS",
-      "AUSTRALIA",
-      "AUSTRIA",
-      "AZERBAIJAN",
-      "BAHAMAS, THE",
-      "BAHRAIN",
-      "BAKER ISLAND",
-      "BANGLADESH",
-      "BARBADOS",
-      "BASSAS DA INDIA",
-      "BELARUS",
-      "BELGIUM",
-      "BELIZE",
-      "BENIN",
-      "BERMUDA",
-      "BHUTAN",
-      "BOLIVIA",
-      "BONAIRE, SINT EUSTATIUS, AND SABA",
-      "BOSNIA AND HERZEGOVINA",
-      "BOTSWANA",
-      "BOUVET ISLAND",
-      "BRAZIL",
-      "BRITISH INDIAN OCEAN TERRITORY",
-      "BRUNEI",
-      "BULGARIA",
-      "BURKINA FASO",
-      "BURMA",
-      "BURUNDI",
-      "CAMBODIA",
-      "CAMEROON",
-      "CANADA",
-      "CAPE VERDE",
-      "CAYMAN ISLANDS",
-      "CENTRAL AFRICAN REPUBLIC",
-      "CHAD",
-      "CHILE",
-      "CHINA",
-      "CHRISTMAS ISLAND",
-      "CLIPPERTON ISLAND",
-      "COCOS (KEELING) ISLANDS",
-      "COLOMBIA",
-      "COMOROS",
-      "CONGO (BRAZZAVILLE)",
-      "CONGO (KINSHASA)",
-      "COOK ISLANDS",
-      "CORAL SEA ISLANDS",
-      "COSTA RICA",
-      "COTE DIVOIRE",
-      "CROATIA",
-      "CUBA",
-      "CURACAO",
-      "CYPRUS",
-      "CZECH REPUBLIC",
-      "DENMARK",
-      "DHEKELIA",
-      "DIEGO GARCIA",
-      "DJIBOUTI",
-      "DOMINICA",
-      "DOMINICAN REPUBLIC",
-      "ECUADOR",
-      "EGYPT",
-      "EL SALVADOR",
-      "ENTITY 1",
-      "ENTITY 2",
-      "ENTITY 3",
-      "ENTITY 4",
-      "ENTITY 5",
-      "EQUATORIAL GUINEA",
-      "ERITREA",
-      "ESTONIA",
-      "ETHIOPIA",
-      "ETOROFU, HABOMAI, KUNASHIRI, AND SHIKOTAN ISLANDS",
-      "EUROPA ISLAND",
-      "FALKLAND ISLANDS (ISLAS MALVINAS)",
-      "FAROE ISLANDS",
-      "FIJI",
-      "FINLAND",
-      "FRANCE",
-      "FRENCH GUIANA",
-      "FRENCH POLYNESIA",
-      "FRENCH SOUTHERN AND ANTARCTIC LANDS",
-      "GABON",
-      "GAMBIA, THE",
-      "GAZA STRIP",
-      "GEORGIA",
-      "GERMANY",
-      "GHANA",
-      "GIBRALTAR",
-      "GLORIOSO ISLANDS",
-      "GREECE",
-      "GREENLAND",
-      "GRENADA",
-      "GUADELOUPE",
-      "GUAM",
-      "GUANTANAMO BAY NAVAL BASE",
-      "GUATEMALA",
-      "GUERNSEY",
-      "GUINEA",
-      "GUINEA-BISSAU",
-      "GUYANA",
-      "HAITI",
-      "HEARD ISLAND AND MCDONALD ISLANDS",
-      "HONDURAS",
-      "HONG KONG",
-      "HOWLAND ISLAND",
-      "HUNGARY",
-      "ICELAND",
-      "INDIA",
-      "INDONESIA",
-      "IRAN",
-      "IRAQ",
-      "IRELAND",
-      "ISLE OF MAN",
-      "ISRAEL",
-      "ITALY",
-      "JAMAICA",
-      "JAN MAYEN",
-      "JAPAN",
-      "JARVIS ISLAND",
-      "JERSEY",
-      "JOHNSTON ATOLL",
-      "JORDAN",
-      "JUAN DE NOVA ISLAND",
-      "KAZAKHSTAN",
-      "KENYA",
-      "KINGMAN REEF",
-      "KIRIBATI",
-      "KOREA, NORTH",
-      "KOREA, SOUTH",
-      "KOSOVO",
-      "KUWAIT",
-      "KYRGYZSTAN",
-      "LAOS",
-      "LATVIA",
-      "LEBANON",
-      "LESOTHO",
-      "LIBERIA",
-      "LIBYA",
-      "LIECHTENSTEIN",
-      "LITHUANIA",
-      "LUXEMBOURG",
-      "MACAU",
-      "MACEDONIA",
-      "MADAGASCAR",
-      "MALAWI",
-      "MALAYSIA",
-      "MALDIVES",
-      "MALI",
-      "MALTA",
-      "MARSHALL ISLANDS",
-      "MARTINIQUE",
-      "MAURITANIA",
-      "MAURITIUS",
-      "MAYOTTE",
-      "MEXICO",
-      "MICRONESIA, FEDERATED STATES OF",
-      "MIDWAY ISLANDS",
-      "MOLDOVA",
-      "MONACO",
-      "MONGOLIA",
-      "MONTENEGRO",
-      "MONTSERRAT",
-      "MOROCCO",
-      "MOZAMBIQUE",
-      "NAMIBIA",
-      "NAURU",
-      "NAVASSA ISLAND",
-      "NEPAL",
-      "NETHERLANDS",
-      "NEW CALEDONIA",
-      "NEW ZEALAND",
-      "NICARAGUA",
-      "NIGER",
-      "NIGERIA",
-      "NIUE",
-      "NO MANS LAND",
-      "NORFOLK ISLAND",
-      "NORTHERN MARIANA ISLANDS",
-      "NORWAY",
-      "No Information",
-      "OMAN",
-      "Other",
-      "PAKISTAN",
-      "PALAU",
-      "PALESTINIAN TERRITORY",
-      "PALMYRA ATOLL",
-      "PANAMA",
-      "PAPUA NEW GUINEA",
-      "PARACEL ISLANDS",
-      "PARAGUAY",
-      "PERU",
-      "PHILIPPINES",
-      "PITCAIRN ISLANDS",
-      "POLAND",
-      "PORTUGAL",
-      "PUERTO RICO",
-      "QATAR",
-      "REUNION",
-      "ROMANIA",
-      "RUSSIA",
-      "RWANDA",
-      "SAINT BARTHELEMY",
-      "SAINT HELENA, ASCENSION, AND TRISTAN DA CUNHA",
-      "SAINT KITTS AND NEVIS",
-      "SAINT LUCIA",
-      "SAINT MARTIN",
-      "SAINT PIERRE AND MIQUELON",
-      "SAINT VINCENT AND THE GRENADINES",
-      "SAMOA",
-      "SAN MARINO",
-      "SAO TOME AND PRINCIPE",
-      "SAUDI ARABIA",
-      "SENEGAL",
-      "SERBIA",
-      "SEYCHELLES",
-      "SIERRA LEONE",
-      "SINGAPORE",
-      "SINT MAARTEN",
-      "SLOVAKIA",
-      "SLOVENIA",
-      "SOLOMON ISLANDS",
-      "SOMALIA",
-      "SOUTH AFRICA",
-      "SOUTH GEORGIA AND SOUTH SANDWICH ISLANDS",
-      "SOUTH SUDAN",
-      "SPAIN",
-      "SPRATLY ISLANDS",
-      "SRI LANKA",
-      "SUDAN",
-      "SURINAME",
-      "SVALBARD",
-      "SWAZILAND",
-      "SWEDEN",
-      "SWITZERLAND",
-      "SYRIA",
-      "TAIWAN",
-      "TAJIKISTAN",
-      "TANZANIA",
-      "THAILAND",
-      "TIMOR-LESTE",
-      "TOGO",
-      "TOKELAU",
-      "TONGA",
-      "TRINIDAD AND TOBAGO",
-      "TROMELIN ISLAND",
-      "TUNISIA",
-      "TURKEY",
-      "TURKMENISTAN",
-      "TURKS AND CAICOS ISLANDS",
-      "TUVALU",
-      "UGANDA",
-      "UKRAINE",
-      "UNITED ARAB EMIRATES",
-      "UNITED KINGDOM",
-      "UNITED STATES",
-      "UNKNOWN",
-      "URUGUAY",
-      "UZBEKISTAN",
-      "VANUATU",
-      "VATICAN CITY",
-      "VENEZUELA",
-      "VIETNAM",
-      "VIRGIN ISLANDS, BRITISH",
-      "VIRGIN ISLANDS, U.S.",
-      "WAKE ISLAND",
-      "WALLIS AND FUTUNA",
-      "WEST BANK",
-      "WESTERN SAHARA",
-      "YEMEN",
-      "ZAMBIA",
-      "ZIMBABWE"
-    ]
-  },
-  {
-    "key":"ZI020_GE44::(Location Country) Designation : GENC Short URN-based Identifier (fourth)",
-    "value":[
-      "AFGHANISTAN",
-      "AKROTIRI",
-      "ALBANIA",
-      "ALGERIA",
-      "AMERICAN SAMOA",
-      "ANDORRA",
-      "ANGOLA",
-      "ANGUILLA",
-      "ANTARCTICA",
-      "ANTIGUA AND BARBUDA",
-      "ARGENTINA",
-      "ARMENIA",
-      "ARUBA",
-      "ASHMORE AND CARTIER ISLANDS",
-      "AUSTRALIA",
-      "AUSTRIA",
-      "AZERBAIJAN",
-      "BAHAMAS, THE",
-      "BAHRAIN",
-      "BAKER ISLAND",
-      "BANGLADESH",
-      "BARBADOS",
-      "BASSAS DA INDIA",
-      "BELARUS",
-      "BELGIUM",
-      "BELIZE",
-      "BENIN",
-      "BERMUDA",
-      "BHUTAN",
-      "BOLIVIA",
-      "BONAIRE, SINT EUSTATIUS, AND SABA",
-      "BOSNIA AND HERZEGOVINA",
-      "BOTSWANA",
-      "BOUVET ISLAND",
-      "BRAZIL",
-      "BRITISH INDIAN OCEAN TERRITORY",
-      "BRUNEI",
-      "BULGARIA",
-      "BURKINA FASO",
-      "BURMA",
-      "BURUNDI",
-      "CAMBODIA",
-      "CAMEROON",
-      "CANADA",
-      "CAPE VERDE",
-      "CAYMAN ISLANDS",
-      "CENTRAL AFRICAN REPUBLIC",
-      "CHAD",
-      "CHILE",
-      "CHINA",
-      "CHRISTMAS ISLAND",
-      "CLIPPERTON ISLAND",
-      "COCOS (KEELING) ISLANDS",
-      "COLOMBIA",
-      "COMOROS",
-      "CONGO (BRAZZAVILLE)",
-      "CONGO (KINSHASA)",
-      "COOK ISLANDS",
-      "CORAL SEA ISLANDS",
-      "COSTA RICA",
-      "COTE DIVOIRE",
-      "CROATIA",
-      "CUBA",
-      "CURACAO",
-      "CYPRUS",
-      "CZECH REPUBLIC",
-      "DENMARK",
-      "DHEKELIA",
-      "DIEGO GARCIA",
-      "DJIBOUTI",
-      "DOMINICA",
-      "DOMINICAN REPUBLIC",
-      "ECUADOR",
-      "EGYPT",
-      "EL SALVADOR",
-      "ENTITY 1",
-      "ENTITY 2",
-      "ENTITY 3",
-      "ENTITY 4",
-      "ENTITY 5",
-      "EQUATORIAL GUINEA",
-      "ERITREA",
-      "ESTONIA",
-      "ETHIOPIA",
-      "ETOROFU, HABOMAI, KUNASHIRI, AND SHIKOTAN ISLANDS",
-      "EUROPA ISLAND",
-      "FALKLAND ISLANDS (ISLAS MALVINAS)",
-      "FAROE ISLANDS",
-      "FIJI",
-      "FINLAND",
-      "FRANCE",
-      "FRENCH GUIANA",
-      "FRENCH POLYNESIA",
-      "FRENCH SOUTHERN AND ANTARCTIC LANDS",
-      "GABON",
-      "GAMBIA, THE",
-      "GAZA STRIP",
-      "GEORGIA",
-      "GERMANY",
-      "GHANA",
-      "GIBRALTAR",
-      "GLORIOSO ISLANDS",
-      "GREECE",
-      "GREENLAND",
-      "GRENADA",
-      "GUADELOUPE",
-      "GUAM",
-      "GUANTANAMO BAY NAVAL BASE",
-      "GUATEMALA",
-      "GUERNSEY",
-      "GUINEA",
-      "GUINEA-BISSAU",
-      "GUYANA",
-      "HAITI",
-      "HEARD ISLAND AND MCDONALD ISLANDS",
-      "HONDURAS",
-      "HONG KONG",
-      "HOWLAND ISLAND",
-      "HUNGARY",
-      "ICELAND",
-      "INDIA",
-      "INDONESIA",
-      "IRAN",
-      "IRAQ",
-      "IRELAND",
-      "ISLE OF MAN",
-      "ISRAEL",
-      "ITALY",
-      "JAMAICA",
-      "JAN MAYEN",
-      "JAPAN",
-      "JARVIS ISLAND",
-      "JERSEY",
-      "JOHNSTON ATOLL",
-      "JORDAN",
-      "JUAN DE NOVA ISLAND",
-      "KAZAKHSTAN",
-      "KENYA",
-      "KINGMAN REEF",
-      "KIRIBATI",
-      "KOREA, NORTH",
-      "KOREA, SOUTH",
-      "KOSOVO",
-      "KUWAIT",
-      "KYRGYZSTAN",
-      "LAOS",
-      "LATVIA",
-      "LEBANON",
-      "LESOTHO",
-      "LIBERIA",
-      "LIBYA",
-      "LIECHTENSTEIN",
-      "LITHUANIA",
-      "LUXEMBOURG",
-      "MACAU",
-      "MACEDONIA",
-      "MADAGASCAR",
-      "MALAWI",
-      "MALAYSIA",
-      "MALDIVES",
-      "MALI",
-      "MALTA",
-      "MARSHALL ISLANDS",
-      "MARTINIQUE",
-      "MAURITANIA",
-      "MAURITIUS",
-      "MAYOTTE",
-      "MEXICO",
-      "MICRONESIA, FEDERATED STATES OF",
-      "MIDWAY ISLANDS",
-      "MOLDOVA",
-      "MONACO",
-      "MONGOLIA",
-      "MONTENEGRO",
-      "MONTSERRAT",
-      "MOROCCO",
-      "MOZAMBIQUE",
-      "NAMIBIA",
-      "NAURU",
-      "NAVASSA ISLAND",
-      "NEPAL",
-      "NETHERLANDS",
-      "NEW CALEDONIA",
-      "NEW ZEALAND",
-      "NICARAGUA",
-      "NIGER",
-      "NIGERIA",
-      "NIUE",
-      "NO MANS LAND",
-      "NORFOLK ISLAND",
-      "NORTHERN MARIANA ISLANDS",
-      "NORWAY",
-      "No Information",
-      "OMAN",
-      "Other",
-      "PAKISTAN",
-      "PALAU",
-      "PALESTINIAN TERRITORY",
-      "PALMYRA ATOLL",
-      "PANAMA",
-      "PAPUA NEW GUINEA",
-      "PARACEL ISLANDS",
-      "PARAGUAY",
-      "PERU",
-      "PHILIPPINES",
-      "PITCAIRN ISLANDS",
-      "POLAND",
-      "PORTUGAL",
-      "PUERTO RICO",
-      "QATAR",
-      "REUNION",
-      "ROMANIA",
-      "RUSSIA",
-      "RWANDA",
-      "SAINT BARTHELEMY",
-      "SAINT HELENA, ASCENSION, AND TRISTAN DA CUNHA",
-      "SAINT KITTS AND NEVIS",
-      "SAINT LUCIA",
-      "SAINT MARTIN",
-      "SAINT PIERRE AND MIQUELON",
-      "SAINT VINCENT AND THE GRENADINES",
-      "SAMOA",
-      "SAN MARINO",
-      "SAO TOME AND PRINCIPE",
-      "SAUDI ARABIA",
-      "SENEGAL",
-      "SERBIA",
-      "SEYCHELLES",
-      "SIERRA LEONE",
-      "SINGAPORE",
-      "SINT MAARTEN",
-      "SLOVAKIA",
-      "SLOVENIA",
-      "SOLOMON ISLANDS",
-      "SOMALIA",
-      "SOUTH AFRICA",
-      "SOUTH GEORGIA AND SOUTH SANDWICH ISLANDS",
-      "SOUTH SUDAN",
-      "SPAIN",
-      "SPRATLY ISLANDS",
-      "SRI LANKA",
-      "SUDAN",
-      "SURINAME",
-      "SVALBARD",
-      "SWAZILAND",
-      "SWEDEN",
-      "SWITZERLAND",
-      "SYRIA",
-      "TAIWAN",
-      "TAJIKISTAN",
-      "TANZANIA",
-      "THAILAND",
-      "TIMOR-LESTE",
-      "TOGO",
-      "TOKELAU",
-      "TONGA",
-      "TRINIDAD AND TOBAGO",
-      "TROMELIN ISLAND",
-      "TUNISIA",
-      "TURKEY",
-      "TURKMENISTAN",
-      "TURKS AND CAICOS ISLANDS",
-      "TUVALU",
-      "UGANDA",
-      "UKRAINE",
-      "UNITED ARAB EMIRATES",
-      "UNITED KINGDOM",
-      "UNITED STATES",
-      "UNKNOWN",
-      "URUGUAY",
-      "UZBEKISTAN",
-      "VANUATU",
-      "VATICAN CITY",
-      "VENEZUELA",
-      "VIETNAM",
-      "VIRGIN ISLANDS, BRITISH",
-      "VIRGIN ISLANDS, U.S.",
-      "WAKE ISLAND",
-      "WALLIS AND FUTUNA",
-      "WEST BANK",
-      "WESTERN SAHARA",
-      "YEMEN",
-      "ZAMBIA",
-      "ZIMBABWE"
-    ]
-  },
-  {
-    "key":"ZI020_GE4::(Location Country) Designation : GENC Short URN-based Identifier",
-    "value":[
-      "AFGHANISTAN",
-      "AKROTIRI",
-      "ALBANIA",
-      "ALGERIA",
-      "AMERICAN SAMOA",
-      "ANDORRA",
-      "ANGOLA",
-      "ANGUILLA",
-      "ANTARCTICA",
-      "ANTIGUA AND BARBUDA",
-      "ARGENTINA",
-      "ARMENIA",
-      "ARUBA",
-      "ASHMORE AND CARTIER ISLANDS",
-      "AUSTRALIA",
-      "AUSTRIA",
-      "AZERBAIJAN",
-      "BAHAMAS, THE",
-      "BAHRAIN",
-      "BAKER ISLAND",
-      "BANGLADESH",
-      "BARBADOS",
-      "BASSAS DA INDIA",
-      "BELARUS",
-      "BELGIUM",
-      "BELIZE",
-      "BENIN",
-      "BERMUDA",
-      "BHUTAN",
-      "BOLIVIA",
-      "BONAIRE, SINT EUSTATIUS, AND SABA",
-      "BOSNIA AND HERZEGOVINA",
-      "BOTSWANA",
-      "BOUVET ISLAND",
-      "BRAZIL",
-      "BRITISH INDIAN OCEAN TERRITORY",
-      "BRUNEI",
-      "BULGARIA",
-      "BURKINA FASO",
-      "BURMA",
-      "BURUNDI",
-      "CAMBODIA",
-      "CAMEROON",
-      "CANADA",
-      "CAPE VERDE",
-      "CAYMAN ISLANDS",
-      "CENTRAL AFRICAN REPUBLIC",
-      "CHAD",
-      "CHILE",
-      "CHINA",
-      "CHRISTMAS ISLAND",
-      "CLIPPERTON ISLAND",
-      "COCOS (KEELING) ISLANDS",
-      "COLOMBIA",
-      "COMOROS",
-      "CONGO (BRAZZAVILLE)",
-      "CONGO (KINSHASA)",
-      "COOK ISLANDS",
-      "CORAL SEA ISLANDS",
-      "COSTA RICA",
-      "COTE DIVOIRE",
-      "CROATIA",
-      "CUBA",
-      "CURACAO",
-      "CYPRUS",
-      "CZECH REPUBLIC",
-      "DENMARK",
-      "DHEKELIA",
-      "DIEGO GARCIA",
-      "DJIBOUTI",
-      "DOMINICA",
-      "DOMINICAN REPUBLIC",
-      "ECUADOR",
-      "EGYPT",
-      "EL SALVADOR",
-      "ENTITY 1",
-      "ENTITY 2",
-      "ENTITY 3",
-      "ENTITY 4",
-      "ENTITY 5",
-      "EQUATORIAL GUINEA",
-      "ERITREA",
-      "ESTONIA",
-      "ETHIOPIA",
-      "ETOROFU, HABOMAI, KUNASHIRI, AND SHIKOTAN ISLANDS",
-      "EUROPA ISLAND",
-      "FALKLAND ISLANDS (ISLAS MALVINAS)",
-      "FAROE ISLANDS",
-      "FIJI",
-      "FINLAND",
-      "FRANCE",
-      "FRENCH GUIANA",
-      "FRENCH POLYNESIA",
-      "FRENCH SOUTHERN AND ANTARCTIC LANDS",
-      "GABON",
-      "GAMBIA, THE",
-      "GAZA STRIP",
-      "GEORGIA",
-      "GERMANY",
-      "GHANA",
-      "GIBRALTAR",
-      "GLORIOSO ISLANDS",
-      "GREECE",
-      "GREENLAND",
-      "GRENADA",
-      "GUADELOUPE",
-      "GUAM",
-      "GUANTANAMO BAY NAVAL BASE",
-      "GUATEMALA",
-      "GUERNSEY",
-      "GUINEA",
-      "GUINEA-BISSAU",
-      "GUYANA",
-      "HAITI",
-      "HEARD ISLAND AND MCDONALD ISLANDS",
-      "HONDURAS",
-      "HONG KONG",
-      "HOWLAND ISLAND",
-      "HUNGARY",
-      "ICELAND",
-      "INDIA",
-      "INDONESIA",
-      "IRAN",
-      "IRAQ",
-      "IRELAND",
-      "ISLE OF MAN",
-      "ISRAEL",
-      "ITALY",
-      "JAMAICA",
-      "JAN MAYEN",
-      "JAPAN",
-      "JARVIS ISLAND",
-      "JERSEY",
-      "JOHNSTON ATOLL",
-      "JORDAN",
-      "JUAN DE NOVA ISLAND",
-      "KAZAKHSTAN",
-      "KENYA",
-      "KINGMAN REEF",
-      "KIRIBATI",
-      "KOREA, NORTH",
-      "KOREA, SOUTH",
-      "KOSOVO",
-      "KUWAIT",
-      "KYRGYZSTAN",
-      "LAOS",
-      "LATVIA",
-      "LEBANON",
-      "LESOTHO",
-      "LIBERIA",
-      "LIBYA",
-      "LIECHTENSTEIN",
-      "LITHUANIA",
-      "LUXEMBOURG",
-      "MACAU",
-      "MACEDONIA",
-      "MADAGASCAR",
-      "MALAWI",
-      "MALAYSIA",
-      "MALDIVES",
-      "MALI",
-      "MALTA",
-      "MARSHALL ISLANDS",
-      "MARTINIQUE",
-      "MAURITANIA",
-      "MAURITIUS",
-      "MAYOTTE",
-      "MEXICO",
-      "MICRONESIA, FEDERATED STATES OF",
-      "MIDWAY ISLANDS",
-      "MOLDOVA",
-      "MONACO",
-      "MONGOLIA",
-      "MONTENEGRO",
-      "MONTSERRAT",
-      "MOROCCO",
-      "MOZAMBIQUE",
-      "NAMIBIA",
-      "NAURU",
-      "NAVASSA ISLAND",
-      "NEPAL",
-      "NETHERLANDS",
-      "NEW CALEDONIA",
-      "NEW ZEALAND",
-      "NICARAGUA",
-      "NIGER",
-      "NIGERIA",
-      "NIUE",
-      "NO MANS LAND",
-      "NORFOLK ISLAND",
-      "NORTHERN MARIANA ISLANDS",
-      "NORWAY",
-      "No Information",
-      "OMAN",
-      "Other",
-      "PAKISTAN",
-      "PALAU",
-      "PALESTINIAN TERRITORY",
-      "PALMYRA ATOLL",
-      "PANAMA",
-      "PAPUA NEW GUINEA",
-      "PARACEL ISLANDS",
-      "PARAGUAY",
-      "PERU",
-      "PHILIPPINES",
-      "PITCAIRN ISLANDS",
-      "POLAND",
-      "PORTUGAL",
-      "PUERTO RICO",
-      "QATAR",
-      "REUNION",
-      "ROMANIA",
-      "RUSSIA",
-      "RWANDA",
-      "SAINT BARTHELEMY",
-      "SAINT HELENA, ASCENSION, AND TRISTAN DA CUNHA",
-      "SAINT KITTS AND NEVIS",
-      "SAINT LUCIA",
-      "SAINT MARTIN",
-      "SAINT PIERRE AND MIQUELON",
-      "SAINT VINCENT AND THE GRENADINES",
-      "SAMOA",
-      "SAN MARINO",
-      "SAO TOME AND PRINCIPE",
-      "SAUDI ARABIA",
-      "SENEGAL",
-      "SERBIA",
-      "SEYCHELLES",
-      "SIERRA LEONE",
-      "SINGAPORE",
-      "SINT MAARTEN",
-      "SLOVAKIA",
-      "SLOVENIA",
-      "SOLOMON ISLANDS",
-      "SOMALIA",
-      "SOUTH AFRICA",
-      "SOUTH GEORGIA AND SOUTH SANDWICH ISLANDS",
-      "SOUTH SUDAN",
-      "SPAIN",
-      "SPRATLY ISLANDS",
-      "SRI LANKA",
-      "SUDAN",
-      "SURINAME",
-      "SVALBARD",
-      "SWAZILAND",
-      "SWEDEN",
-      "SWITZERLAND",
-      "SYRIA",
-      "TAIWAN",
-      "TAJIKISTAN",
-      "TANZANIA",
-      "THAILAND",
-      "TIMOR-LESTE",
-      "TOGO",
-      "TOKELAU",
-      "TONGA",
-      "TRINIDAD AND TOBAGO",
-      "TROMELIN ISLAND",
-      "TUNISIA",
-      "TURKEY",
-      "TURKMENISTAN",
-      "TURKS AND CAICOS ISLANDS",
-      "TUVALU",
-      "UGANDA",
-      "UKRAINE",
-      "UNITED ARAB EMIRATES",
-      "UNITED KINGDOM",
-      "UNITED STATES",
-      "UNKNOWN",
-      "URUGUAY",
-      "UZBEKISTAN",
-      "VANUATU",
-      "VATICAN CITY",
-      "VENEZUELA",
-      "VIETNAM",
-      "VIRGIN ISLANDS, BRITISH",
-      "VIRGIN ISLANDS, U.S.",
-      "WAKE ISLAND",
-      "WALLIS AND FUTUNA",
-      "WEST BANK",
-      "WESTERN SAHARA",
-      "YEMEN",
-      "ZAMBIA",
-      "ZIMBABWE"
-    ]
-  },
-  {
-    "key":"ZI020_GE4::(Location Country) Designation : GENC Short URN-based Identifier (first)",
-    "value":[
-      "AFGHANISTAN",
-      "AKROTIRI",
-      "ALBANIA",
-      "ALGERIA",
-      "AMERICAN SAMOA",
-      "ANDORRA",
-      "ANGOLA",
-      "ANGUILLA",
-      "ANTARCTICA",
-      "ANTIGUA AND BARBUDA",
-      "ARGENTINA",
-      "ARMENIA",
-      "ARUBA",
-      "ASHMORE AND CARTIER ISLANDS",
-      "AUSTRALIA",
-      "AUSTRIA",
-      "AZERBAIJAN",
-      "BAHAMAS, THE",
-      "BAHRAIN",
-      "BAKER ISLAND",
-      "BANGLADESH",
-      "BARBADOS",
-      "BASSAS DA INDIA",
-      "BELARUS",
-      "BELGIUM",
-      "BELIZE",
-      "BENIN",
-      "BERMUDA",
-      "BHUTAN",
-      "BOLIVIA",
-      "BONAIRE, SINT EUSTATIUS, AND SABA",
-      "BOSNIA AND HERZEGOVINA",
-      "BOTSWANA",
-      "BOUVET ISLAND",
-      "BRAZIL",
-      "BRITISH INDIAN OCEAN TERRITORY",
-      "BRUNEI",
-      "BULGARIA",
-      "BURKINA FASO",
-      "BURMA",
-      "BURUNDI",
-      "CAMBODIA",
-      "CAMEROON",
-      "CANADA",
-      "CAPE VERDE",
-      "CAYMAN ISLANDS",
-      "CENTRAL AFRICAN REPUBLIC",
-      "CHAD",
-      "CHILE",
-      "CHINA",
-      "CHRISTMAS ISLAND",
-      "CLIPPERTON ISLAND",
-      "COCOS (KEELING) ISLANDS",
-      "COLOMBIA",
-      "COMOROS",
-      "CONGO (BRAZZAVILLE)",
-      "CONGO (KINSHASA)",
-      "COOK ISLANDS",
-      "CORAL SEA ISLANDS",
-      "COSTA RICA",
-      "COTE DIVOIRE",
-      "CROATIA",
-      "CUBA",
-      "CURACAO",
-      "CYPRUS",
-      "CZECH REPUBLIC",
-      "DENMARK",
-      "DHEKELIA",
-      "DIEGO GARCIA",
-      "DJIBOUTI",
-      "DOMINICA",
-      "DOMINICAN REPUBLIC",
-      "ECUADOR",
-      "EGYPT",
-      "EL SALVADOR",
-      "ENTITY 1",
-      "ENTITY 2",
-      "ENTITY 3",
-      "ENTITY 4",
-      "ENTITY 5",
-      "EQUATORIAL GUINEA",
-      "ERITREA",
-      "ESTONIA",
-      "ETHIOPIA",
-      "ETOROFU, HABOMAI, KUNASHIRI, AND SHIKOTAN ISLANDS",
-      "EUROPA ISLAND",
-      "FALKLAND ISLANDS (ISLAS MALVINAS)",
-      "FAROE ISLANDS",
-      "FIJI",
-      "FINLAND",
-      "FRANCE",
-      "FRENCH GUIANA",
-      "FRENCH POLYNESIA",
-      "FRENCH SOUTHERN AND ANTARCTIC LANDS",
-      "GABON",
-      "GAMBIA, THE",
-      "GAZA STRIP",
-      "GEORGIA",
-      "GERMANY",
-      "GHANA",
-      "GIBRALTAR",
-      "GLORIOSO ISLANDS",
-      "GREECE",
-      "GREENLAND",
-      "GRENADA",
-      "GUADELOUPE",
-      "GUAM",
-      "GUANTANAMO BAY NAVAL BASE",
-      "GUATEMALA",
-      "GUERNSEY",
-      "GUINEA",
-      "GUINEA-BISSAU",
-      "GUYANA",
-      "HAITI",
-      "HEARD ISLAND AND MCDONALD ISLANDS",
-      "HONDURAS",
-      "HONG KONG",
-      "HOWLAND ISLAND",
-      "HUNGARY",
-      "ICELAND",
-      "INDIA",
-      "INDONESIA",
-      "IRAN",
-      "IRAQ",
-      "IRELAND",
-      "ISLE OF MAN",
-      "ISRAEL",
-      "ITALY",
-      "JAMAICA",
-      "JAN MAYEN",
-      "JAPAN",
-      "JARVIS ISLAND",
-      "JERSEY",
-      "JOHNSTON ATOLL",
-      "JORDAN",
-      "JUAN DE NOVA ISLAND",
-      "KAZAKHSTAN",
-      "KENYA",
-      "KINGMAN REEF",
-      "KIRIBATI",
-      "KOREA, NORTH",
-      "KOREA, SOUTH",
-      "KOSOVO",
-      "KUWAIT",
-      "KYRGYZSTAN",
-      "LAOS",
-      "LATVIA",
-      "LEBANON",
-      "LESOTHO",
-      "LIBERIA",
-      "LIBYA",
-      "LIECHTENSTEIN",
-      "LITHUANIA",
-      "LUXEMBOURG",
-      "MACAU",
-      "MACEDONIA",
-      "MADAGASCAR",
-      "MALAWI",
-      "MALAYSIA",
-      "MALDIVES",
-      "MALI",
-      "MALTA",
-      "MARSHALL ISLANDS",
-      "MARTINIQUE",
-      "MAURITANIA",
-      "MAURITIUS",
-      "MAYOTTE",
-      "MEXICO",
-      "MICRONESIA, FEDERATED STATES OF",
-      "MIDWAY ISLANDS",
-      "MOLDOVA",
-      "MONACO",
-      "MONGOLIA",
-      "MONTENEGRO",
-      "MONTSERRAT",
-      "MOROCCO",
-      "MOZAMBIQUE",
-      "NAMIBIA",
-      "NAURU",
-      "NAVASSA ISLAND",
-      "NEPAL",
-      "NETHERLANDS",
-      "NEW CALEDONIA",
-      "NEW ZEALAND",
-      "NICARAGUA",
-      "NIGER",
-      "NIGERIA",
-      "NIUE",
-      "NO MANS LAND",
-      "NORFOLK ISLAND",
-      "NORTHERN MARIANA ISLANDS",
-      "NORWAY",
-      "No Information",
-      "OMAN",
-      "Other",
-      "PAKISTAN",
-      "PALAU",
-      "PALESTINIAN TERRITORY",
-      "PALMYRA ATOLL",
-      "PANAMA",
-      "PAPUA NEW GUINEA",
-      "PARACEL ISLANDS",
-      "PARAGUAY",
-      "PERU",
-      "PHILIPPINES",
-      "PITCAIRN ISLANDS",
-      "POLAND",
-      "PORTUGAL",
-      "PUERTO RICO",
-      "QATAR",
-      "REUNION",
-      "ROMANIA",
-      "RUSSIA",
-      "RWANDA",
-      "SAINT BARTHELEMY",
-      "SAINT HELENA, ASCENSION, AND TRISTAN DA CUNHA",
-      "SAINT KITTS AND NEVIS",
-      "SAINT LUCIA",
-      "SAINT MARTIN",
-      "SAINT PIERRE AND MIQUELON",
-      "SAINT VINCENT AND THE GRENADINES",
-      "SAMOA",
-      "SAN MARINO",
-      "SAO TOME AND PRINCIPE",
-      "SAUDI ARABIA",
-      "SENEGAL",
-      "SERBIA",
-      "SEYCHELLES",
-      "SIERRA LEONE",
-      "SINGAPORE",
-      "SINT MAARTEN",
-      "SLOVAKIA",
-      "SLOVENIA",
-      "SOLOMON ISLANDS",
-      "SOMALIA",
-      "SOUTH AFRICA",
-      "SOUTH GEORGIA AND SOUTH SANDWICH ISLANDS",
-      "SOUTH SUDAN",
-      "SPAIN",
-      "SPRATLY ISLANDS",
-      "SRI LANKA",
-      "SUDAN",
-      "SURINAME",
-      "SVALBARD",
-      "SWAZILAND",
-      "SWEDEN",
-      "SWITZERLAND",
-      "SYRIA",
-      "TAIWAN",
-      "TAJIKISTAN",
-      "TANZANIA",
-      "THAILAND",
-      "TIMOR-LESTE",
-      "TOGO",
-      "TOKELAU",
-      "TONGA",
-      "TRINIDAD AND TOBAGO",
-      "TROMELIN ISLAND",
-      "TUNISIA",
-      "TURKEY",
-      "TURKMENISTAN",
-      "TURKS AND CAICOS ISLANDS",
-      "TUVALU",
-      "UGANDA",
-      "UKRAINE",
-      "UNITED ARAB EMIRATES",
-      "UNITED KINGDOM",
-      "UNITED STATES",
-      "UNKNOWN",
-      "URUGUAY",
-      "UZBEKISTAN",
-      "VANUATU",
-      "VATICAN CITY",
-      "VENEZUELA",
-      "VIETNAM",
-      "VIRGIN ISLANDS, BRITISH",
-      "VIRGIN ISLANDS, U.S.",
-      "WAKE ISLAND",
-      "WALLIS AND FUTUNA",
-      "WEST BANK",
-      "WESTERN SAHARA",
-      "YEMEN",
-      "ZAMBIA",
-      "ZIMBABWE"
+      "Unserviceable"
     ]
   },
   {
@@ -8199,8 +7919,8 @@
     "value":[
       "Dry",
       "Intermittent",
-      "Perennial",
-      "noInformation"
+      "No Information",
+      "Perennial"
     ]
   },
   {
@@ -8211,21 +7931,21 @@
       "Brine",
       "Fresh",
       "Mineral",
+      "No Information",
       "Not Applicable",
       "Saline",
-      "Seawater",
-      "noInformation"
+      "Seawater"
     ]
   },
   {
     "key":"ZI024_YWQ::Water Resource Information : Water Potability",
     "value":[
       "Contaminated",
+      "No Information",
       "Nonpotable",
       "Other",
       "Potable",
-      "Treatable",
-      "noInformation"
+      "Treatable"
     ]
   },
   {
@@ -8236,51 +7956,17 @@
       "Awash at Chart Datum",
       "Awash at Low Water",
       "Covers and Uncovers",
+      "No Information",
       "Other",
-      "Partly Submerged",
-      "noInformation"
-    ]
-  },
-  {
-    "key":"ZI026_CTUC::Feature Metadata : Cartographic Usability Range [interval closure]",
-    "value":[
-      "Closed Interval",
-      "Greater-than Semi-interval",
-      "Greater-than or Equal Semi-interval",
-      "Greater-than to Less-than-or-equal Interval",
-      "Greater-than-or-equal to Less-than Interval",
-      "Less-than Semi-interval",
-      "Less-than or Equal Semi-interval",
-      "Open Interval"
-    ]
-  },
-  {
-    "key":"ZI026_CTUL::Feature Metadata : Cartographic Usability Range [lower value]",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"ZI026_CTUU::Feature Metadata : Cartographic Usability Range [upper value]",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"ZI026_SUR::Feature Metadata : Survey Coverage Category",
-    "value":[
-      "Inadequately Surveyed",
-      "Surveyed",
-      "Unsurveyed",
-      "noInformation"
+      "Partly Submerged"
     ]
   },
   {
     "key":"ZI032_GUG::Pylon Information : Guyed",
     "value":[
       "False",
-      "True",
-      "noInformation"
+      "No Information",
+      "True"
     ]
   },
   {
@@ -8291,8 +7977,8 @@
       "'I'",
       "'T'",
       "'Y'",
-      "Other",
-      "noInformation"
+      "No Information",
+      "Other"
     ]
   },
   {
@@ -8304,22 +7990,22 @@
       "Iron",
       "Masonry",
       "Metal",
+      "No Information",
       "Other",
       "Steel",
-      "Wood",
-      "noInformation"
+      "Wood"
     ]
   },
   {
     "key":"ZI032_TOS::Pylon Information : Tower Shape",
     "value":[
       "Mast",
+      "No Information",
       "Other",
       "Pole",
       "Tripod",
       "Truss",
-      "Tubular",
-      "noInformation"
+      "Tubular"
     ]
   },
   {
@@ -8331,21 +8017,21 @@
       "Hinduism",
       "Islam",
       "Judaism",
-      "Mixed and/or No Designation",
       "Nestorian",
+      "No Information",
       "Orthodox",
       "Other",
       "Protestant",
       "Roman Catholic",
       "Shia",
       "Shinto",
-      "Sunni",
-      "noInformation"
+      "Sunni"
     ]
   },
   {
     "key":"ZI037_RFA::Religious Information : Religious Facility Type",
     "value":[
+      "Burial Site",
       "Cathedral",
       "Chapel",
       "Church",
@@ -8356,6 +8042,7 @@
       "Mission",
       "Monastery",
       "Mosque",
+      "No Information",
       "Noviciate",
       "Other",
       "Pagoda",
@@ -8366,74 +8053,85 @@
       "Stupa",
       "Synagogue",
       "Tabernacle",
-      "Temple",
-      "noInformation"
+      "Temple"
+    ]
+  },
+  {
+    "key":"ZI071_CTX::Cave Information : Cave Type",
+    "value":[
+      "Aeolian",
+      "Erosional",
+      "Glacier",
+      "Lava",
+      "No Information",
+      "Other",
+      "Solution",
+      "Talus",
+      "Waterbody"
     ]
   },
   {
     "key":"ZI071_FFN2::Cave Information : Feature Function [2]",
     "value":[
       "Defence Activities",
+      "No Information",
       "Other",
       "Religious Activities",
       "Residence",
-      "Warehousing and Storage",
-      "noInformation"
+      "Warehousing and Storage"
     ]
   },
   {
     "key":"ZI071_FFN3::Cave Information : Feature Function [3]",
     "value":[
       "Defence Activities",
+      "No Information",
       "Other",
       "Religious Activities",
       "Residence",
-      "Warehousing and Storage",
-      "noInformation"
+      "Warehousing and Storage"
     ]
   },
   {
     "key":"ZI071_FFN::Cave Information : Feature Function",
     "value":[
       "Defence Activities",
+      "No Information",
       "Other",
       "Religious Activities",
       "Residence",
-      "Warehousing and Storage",
-      "noInformation"
+      "Warehousing and Storage"
     ]
   },
   {
     "key":"ZI071_UAO::Cave Information : Underground Access Orientation",
     "value":[
       "Horizontal",
+      "No Information",
       "Slopes Downward",
       "Slopes Upward",
       "Vertical Down",
-      "Vertical Up",
-      "noInformation"
+      "Vertical Up"
     ]
   },
   {
-    "key":"ZSAX_RS0::Restriction Information : Security Attributes Group [resource classification]",
+    "key":"ZSAX_RS0::Restriction Information : Security Attributes Group (resource classification)",
+    "value":[
+      "C",
+      "R",
+      "S",
+      "TS",
+      "U"
+    ]
+  },
+  {
+    "key":"ZSAX_RX3::Restriction Information : Security Attributes Group (resource non-intelligence community markings)",
     "value":[
       "Value"
     ]
   },
   {
-    "key":"ZSAX_RX0::Restriction Information : Security Attributes Group [resource dissemination controls]",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"ZSAX_RX3::Restriction Information : Security Attributes Group [resource non-intelligence community markings]",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"ZSAX_RX4::Restriction Information : Security Attributes Group [resource owner-producer]",
+    "key":"ZSAX_RX4::Restriction Information : Security Attributes Group (resource owner-producer)",
     "value":[
       "Value"
     ]
@@ -8446,42 +8144,6 @@
   },
   {
     "key":"ZVH::Highest Elevation",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"early_date::Earliest image date in mosaic",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"image_id::Image Id",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"img_layer::Imagery Layer Name",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"img_mosaic::Image Mosaic",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"late_date::Latest image date in mosaic",
-    "value":[
-      "Value"
-    ]
-  },
-  {
-    "key":"legacy_id::Legacy Image Id",
     "value":[
       "Value"
     ]
