@@ -747,11 +747,20 @@ export default class FolderTree extends EventEmitter {
             } )
             .append('span').text( item => item.title );
 
-
+        // Make sure the context menu does not dip below the screen horizon
+        let windowHeight = window.innerHeight;
+        let yCoord = d3.event.pageY - 2;
         this.contextMenu
             .style( 'left', `${ d3.event.pageX - 2 }px` )
-            .style( 'top', `${ d3.event.pageY - 2 }px` )
+            .style( 'top', `${ yCoord }px` )
             .style( 'display', 'block' );
+        let menuHeight = this.contextMenu.node().offsetHeight;
+        let overflowHeight = windowHeight - (yCoord + menuHeight);
+        if (overflowHeight < 0) {
+            this.contextMenu
+                .style( 'top', `${ yCoord + overflowHeight }px` )
+        }
+
     }
 
     /**
