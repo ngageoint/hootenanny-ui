@@ -758,7 +758,7 @@ export default class FolderTree extends EventEmitter {
         let overflowHeight = windowHeight - (yCoord + menuHeight);
         if (overflowHeight < 0) {
             this.contextMenu
-                .style( 'top', `${ yCoord + overflowHeight }px` )
+                .style( 'top', `${ yCoord + overflowHeight }px` );
         }
 
     }
