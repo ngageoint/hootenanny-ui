@@ -21,25 +21,21 @@ git clone https://github.com/ngageoint/hootenanny-ui.git
 
 Run `npm install` after cloning the repo to install all dependencies for the project
 
-#### Running Hoot locally
+#### Running Hoot UI locally for development purposes
 
 - Run `npm start`
 - Open `http://localhost:8080/` in a web browser
+- This relies on a vagrant machine running locally with port 8888 forwarding to tomcat
 
 #### Building Hoot for production
 
 -  Run `npm run production`
 
-This will bundle the application and place static files inside `/dist`. To test the production build, you must start an express server to proxy all requests to where hoot-services is running. You can start a preconfigured server by doing the following:
-
-- `cd` into `/hoot-server`
-- Run `npm install`
-- Run `npm start`
-- Open `http://localhost:8080/` in a web browser
+This will bundle the application and place static files inside `/dist`. This production build is what gets deployed via tomcat in the vagrant machine of the main [Hootenanny](https://github.com/ngageoint/hootenanny/) repo and by the RPMs available for CentOS7 [here](https://github.com/ngageoint/hootenanny-rpms/blob/master/docs/install.md).
 
 #### Testing
 
-- Run `npm run test:hoot`
+- Run `npm test`
 
 After Webpack finishes bundling, Chrome should automatically open and begin executing tests. Code coverage summary will output to CLI when tests are complete and full coverage details can be viewed by opening `/coverage/index.html` in the browser.
 
