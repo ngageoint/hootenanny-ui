@@ -36,7 +36,7 @@ osmEntity.id.next = {
 
 
 osmEntity.id.fromOSM = function(type, id, mapId) {
-    var mapIdPart = (mapId) ? '_' + mapId : '';
+    var mapIdPart = (mapId > -1) ? '_' + mapId : '';
     return type[0] + id + mapIdPart;
 };
 
