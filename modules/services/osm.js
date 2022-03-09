@@ -365,8 +365,7 @@ async function parseXML(xml, callback, options, mapId) {
             uid = child.getElementsByTagName('id')[0].textContent;
 
         } else {
-            uid = osmEntity.id.fromOSM(child.nodeName, child.attributes.id.value);
-            uid += mapId !== -1 ? '_' + mapId : '';
+            uid = osmEntity.id.fromOSM(child.nodeName, child.attributes.id.value, mapId);
 
             if (options.skipSeen) {
                 if (_tileCache.seen[uid]) return null;  // avoid reparsing a "seen" entity
