@@ -25,8 +25,8 @@ export function osmEntity(attrs) {
 }
 
 
-osmEntity.id = function(type) {
-    return osmEntity.id.fromOSM(type, osmEntity.id.next[type]--);
+osmEntity.id = function(type, mapId) {
+    return osmEntity.id.fromOSM(type, osmEntity.id.next[type]--, mapId);
 };
 
 
@@ -35,8 +35,9 @@ osmEntity.id.next = {
 };
 
 
-osmEntity.id.fromOSM = function(type, id) {
-    return type[0] + id;
+osmEntity.id.fromOSM = function(type, id, mapId) {
+    var mapIdPart = (mapId > -1) ? '_' + mapId : '';
+    return type[0] + id + mapIdPart;
 };
 
 
@@ -85,7 +86,7 @@ osmEntity.prototype = {
         }
 
         if (!this.id && this.type) {
-            this.id = osmEntity.id(this.type);
+            this.id = osmEntity.id(this.type, this.mapId);
         }
         if (!this.hasOwnProperty('visible')) {
             this.visible = true;
