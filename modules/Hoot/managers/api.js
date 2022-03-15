@@ -1849,9 +1849,13 @@ export default class API {
      * Retrieves all the tasks from tasking manager for the specified project
      */
     getTM4Tasks( projectId ) {
+        let authToken = this.getTM4AuthToken();
         const params = {
             url: `/tm4api/v2/projects/${ projectId }/`,
-            method: 'GET'
+            method: 'GET',
+            headers: {
+              'Authorization': authToken
+            }
         };
 
         return this.request( params )
