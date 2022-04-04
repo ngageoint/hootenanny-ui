@@ -80,7 +80,7 @@ export default class Merge {
             mergedFeature = featureUpdate; // feature that is updated is now the new merged feature
         } catch ( e ) {
             window.console.error( e );
-            let message = 'Unable to merge features' + ((e.data.error) ? (': ' + e.data.error.message) : ''),
+            let message = 'Unable to merge features' + ((e.data) ? (': ' + e.data) : ''),
                 type    = 'error';
             Hoot.message.alert( { message, type } );
             this.checkMergeButton();
@@ -362,7 +362,10 @@ export default class Merge {
             let isPolyPoly = (toFeature.type === 'way' && toFeature.isClosed()
                 && fromFeature.type === 'way' && fromFeature.isClosed());
 
-            if (this.isPoiPoly || isPoiPoi || isPolyPoly) {
+            let isRailWay = (toFeature.type === 'way' && !toFeature.isClosed() && toFeature.tags.railway
+                && fromFeature.type === 'way' && !fromFeature.isClosed() && fromFreature.tags.railway);
+
+            if (this.isPoiPoly || isPoiPoi || isPolyPoly || isRailWay) {
                 this.toggleMergeButton( false );
                 if (this.isPoiPoly) {
                     let poi = (toFeature.type === 'node') ? toFeature : fromFeature;
