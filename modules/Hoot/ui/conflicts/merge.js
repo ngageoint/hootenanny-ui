@@ -363,7 +363,7 @@ export default class Merge {
                 && fromFeature.type === 'way' && fromFeature.isClosed());
 
             let isRailWay = (toFeature.type === 'way' && !toFeature.isClosed() && toFeature.tags.railway
-                && fromFeature.type === 'way' && !fromFeature.isClosed() && fromFreature.tags.railway);
+                && fromFeature.type === 'way' && !fromFeature.isClosed() && fromFeature.tags.railway);
 
             if (this.isPoiPoly || isPoiPoi || isPolyPoly || isRailWay) {
                 this.toggleMergeButton( false );
