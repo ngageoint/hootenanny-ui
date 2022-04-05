@@ -121,6 +121,10 @@ export default class TaskingManagerPanel extends Tab {
         if ( this.projectList.status === 400 ) {
             Hoot.message.alert( this.projectList );
         } else if ( this.projectList ) {
+            // this seems to happen if there are no visible conflation projects
+            if ( !this.projectList.features ) {
+                this.projectList.features = [];
+            }
             this.projectList.features = this.projectList.features.filter( task => task.properties.hoot_map_id || task.properties.hootMapId );
             this.loadProjectsTable( this.projectList.features );
         }
@@ -388,7 +392,8 @@ export default class TaskingManagerPanel extends Tab {
             bounds: coordinates,
             taskInfo: `taskingManager:${ this.currentProject.id }_${ taskId }`,
             customQuery : this.customQuery,
-            ADV_OPTIONS: this.ADV_OPTIONS
+            ADV_OPTIONS: this.ADV_OPTIONS,
+            comment: this.currentProject.properties.changesetComment || ''
         };
 
         if ( mapId && mapId > -1 && Hoot.layers.findBy( 'id', mapId )) {
@@ -683,6 +688,8 @@ export default class TaskingManagerPanel extends Tab {
         let tasksList;
         if ( this.tmVersion === 4 ) {
             tasksList = await Hoot.api.getTM4Tasks( this.currentProject.id );
+            // store the changeset comment
+            this.currentProject.properties.changesetComment = tasksList.changesetComment;
             tasksList = tasksList.tasks;
             tasksList.features.sort( (a, b) => (a.properties.taskId > b.properties.taskId) ? 1 : -1 );
         } else {
