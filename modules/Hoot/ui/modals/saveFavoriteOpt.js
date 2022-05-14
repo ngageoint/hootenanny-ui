@@ -115,7 +115,6 @@ export default class SaveFavoriteOpt {
                 name: favoriteName,
                 label: favoriteName,
                 conflateType: confType
-
             }
         };
 

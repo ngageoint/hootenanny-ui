@@ -1,6 +1,6 @@
 import FormFactory from './formFactory';
 
-import { checkForUnallowedChar, formatBbox, uuidv4 } from './utilities';
+import { checkForUnallowedChar, uuidv4 } from './utilities';
 import _find                                         from 'lodash-es/find';
 import OverpassQueryPanel                            from './overpassQueryPanel';
 import _get                                          from 'lodash-es/get';
@@ -8,15 +8,18 @@ import _get                                          from 'lodash-es/get';
 export default class GrailPull {
     constructor( instance ) {
         this.instance = instance;
-        this.maxFeatureCount = Hoot.config.maxFeatureCount;
+        this.extentType = this.instance.boundsSelectType;
+        this.privateOverpassActive = false;
     }
 
     render() {
-        let titleText = this.instance.bboxSelectType === 'visualExtent'
-            ? 'Pull Remote Data for Visual Extent'
-            : this.instance.bboxSelectType === 'boundingBox'
-                ? 'Pull Remote Data for Bounding Box'
-                : 'Pull Remote Data';
+        let titleText = 'Pull Remote Data';
+
+        if ( this.extentType !== 'boundsHistory' ) {
+            // capitalizes the first character and splits the string at each capital letter such that
+            // 'customDataExtent' becomes 'Custom Data Extent'
+            titleText += ' for ' + this.extentType[0].toUpperCase() + this.extentType.slice(1).split(/(?=[A-Z])/).join(' ');
+        }
 
         let metadata = {
             title: titleText,
@@ -55,7 +58,7 @@ export default class GrailPull {
     }
 
     async createTable() {
-        const overpassParams = { BBOX: this.instance.bbox };
+        const overpassParams = { bounds: this.instance.bounds };
         if ( this.instance.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
             overpassParams.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
@@ -99,28 +102,19 @@ export default class GrailPull {
 
         // add private overpass data first if exists
         if ( rowData.columns.length === 2 ) {
+            this.privateOverpassActive = true;
+
             rows.append('td')
                 .classed( 'strong', data => data[rowData.columns[1]] > 0 )
-                .classed( 'badData', data => data.label === 'total' && data[rowData.columns[1]] > this.maxFeatureCount )
                 .text( data => data[rowData.columns[1]] );
         }
 
         // column for public overpass counts
         rows.append('td')
             .classed( 'strong', data => data[rowData.columns[0]] > 0 )
-            .classed( 'badData', data => data.label === 'total' && data[rowData.columns[0]] > this.maxFeatureCount )
             .text( data => data[rowData.columns[0]] );
 
-        if ( rows.selectAll('td.badData').size() ) {
-            this.form.select( '.hoot-menu' )
-                .insert( 'div', '.modal-footer' )
-                .classed( 'badData', true )
-                .text( `Max feature count of ${this.maxFeatureCount} exceeded` );
-
-            this.submitButton.node().disabled = true;
-        } else {
-            this.submitButton.node().disabled = false;
-        }
+        this.submitButton.node().disabled = false;
 
         this.layerNameTable();
     }
@@ -203,9 +197,9 @@ export default class GrailPull {
     async handleSubmit() {
         this.loadingState();
 
-        const bbox = this.instance.bbox;
+        const bounds = this.instance.bounds;
 
-        if ( !bbox ) {
+        if ( !bounds ) {
             Hoot.message.alert( 'Need a bounding box!' );
             return;
         }
@@ -215,7 +209,18 @@ export default class GrailPull {
             pathId,
             projectName;
 
-        if (sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task')) {
+        const railsParams = {
+            bounds   : bounds,
+            input1   : this.form.select( '.outputName-0' ).property( 'value' )
+        };
+
+        const overpassParams = {
+            bounds   : bounds,
+            input1   : this.form.select( '.outputName-1' ).property( 'value' )
+        };
+
+        if ( this.extentType === 'customDataExtent' &&
+            sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task') ) {
             /**
              * If we are coming from tasking manager, and we dont' have project folder, add it.
              */
@@ -235,26 +240,22 @@ export default class GrailPull {
             } else {
                 folderId = pathId;
             }
+
+            railsParams.taskInfo = overpassParams.taskInfo = projectName + ', ' + folderName;
         } else {
-            folderName = 'grail_' + bbox.replace(/,/g, '_');
+            if ( this.extentType === 'customDataExtent' ) {
+                folderName = 'grail_' + Hoot.context.layers().layer('data').getCustomName();
+            } else {
+                folderName = 'grail_' + bounds.replace(/,/g, '_');
+            }
+
             pathId = _get(_find(Hoot.folders.folderPaths, folder => folder.name === folderName), 'id');
             if (!pathId) {
                 folderId = (await Hoot.folders.addFolder('', folderName )).folderId;
             } else {
                 folderId = pathId;
             }
-
         }
-
-        const railsParams = {
-            BBOX     : formatBbox( bbox ),
-            input1   : this.form.select( '.outputName-0' ).property( 'value' )
-        };
-
-        const overpassParams = {
-            BBOX     : formatBbox( bbox ),
-            input1   : this.form.select( '.outputName-1' ).property( 'value' )
-        };
 
         if ( this.instance.overpassQueryContainer.select( '#customQueryToggle' ).property( 'checked' ) ) {
             const customQuery          = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
@@ -284,62 +285,56 @@ export default class GrailPull {
                 const loadedPrimary   = Hoot.layers.findLoadedBy( 'refType', 'primary' ),
                       loadedSecondary = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
 
-                // add grail pulled layers if nothing is on map
-                if ( !loadedPrimary && !loadedSecondary ) {
-                    let submitPromises = [];
+                // Finding layer id by name is fine here because we check for duplicate name in the grail pull
+                let refLayer = Hoot.layers.findBy( 'name', railsParams.input1 ),
+                    secLayer = Hoot.layers.findBy( 'name', overpassParams.input1 ),
+                    submitPromises = [];
 
-                    // Finding layer id by name is fine here because we check for duplicate name in the grail pull
-                    let refLayer = Hoot.layers.findBy( 'name', railsParams.input1 );
-                    if ( referenceCheckbox && refLayer ) {
-                        let refParams = {
-                            name: railsParams.input1,
-                            id: refLayer.id,
-                            color: 'violet',
-                            refType: 'primary'
-                        };
-
-                        submitPromises.push( Hoot.ui.sidebar.forms.reference.submitLayer( refParams ) );
-                    }
-
-                    let secLayer = Hoot.layers.findBy( 'name', overpassParams.input1 );
-                    if ( secondaryCheckbox && secLayer ) {
-                        let secParams = {
-                            name: overpassParams.input1,
-                            id: secLayer.id,
-                            color: 'orange',
-                            refType: 'secondary'
-                        };
-
-                        submitPromises.push( Hoot.ui.sidebar.forms.secondary.submitLayer( secParams ) );
-                    }
-
-                    return Promise.all( submitPromises );
-                } else if (this.instance.bboxSelectType === 'secondaryLayerExtent') {
+                if ( referenceCheckbox && refLayer ) {
                     // Remove reference layer if there is one
                     if ( loadedPrimary ) {
                         Hoot.layers.removeActiveLayer( loadedPrimary.id, 'reference', 'primary' );
                     }
 
-                    // load newly pulled layer
-                    let layerInfo = {
+                    let refParams = {
                         name: railsParams.input1,
-                        id: Hoot.layers.findBy( 'name', railsParams.input1 ).id
+                        id: refLayer.id,
+                        color: 'violet',
+                        refType: 'primary'
                     };
 
-                    return Hoot.ui.sidebar.forms.reference.submitLayer( layerInfo );
+                    submitPromises.push( Hoot.ui.sidebar.forms.reference.submitLayer( refParams ) );
                 }
+
+                if ( secondaryCheckbox && secLayer ) {
+                    // Remove secondary layer if there is one
+                    if ( loadedSecondary ) {
+                        Hoot.layers.removeActiveLayer( loadedSecondary.id, 'secondary', 'secondary' );
+                    }
+
+                    let secParams = {
+                        name: overpassParams.input1,
+                        id: secLayer.id,
+                        color: 'orange',
+                        refType: 'secondary'
+                    };
+
+                    submitPromises.push( Hoot.ui.sidebar.forms.secondary.submitLayer( secParams ) );
+                }
+
+                return Promise.all( submitPromises );
             } )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( () => this.form.remove() );
 
 
-        let history = JSON.parse( Hoot.context.storage('history') );
-        if ( history.bboxHistory.length >= 5 ) {
-            // Removes oldest (last in list) bbox
-            history.bboxHistory = history.bboxHistory.slice( 0, 4 );
+        let boundsHistory = JSON.parse( Hoot.context.storage('bounds_history') );
+        if ( boundsHistory.boundsHistory.length >= 5 ) {
+            // Removes oldest (last in list) bounds
+            boundsHistory.boundsHistory = boundsHistory.boundsHistory.slice( 0, 4 );
         }
-        history.bboxHistory.unshift( bbox );
-        Hoot.context.storage( 'history', JSON.stringify( history ) );
+        boundsHistory.boundsHistory.unshift( bounds );
+        Hoot.context.storage( 'bounds_history', JSON.stringify( boundsHistory ) );
 
     }
 

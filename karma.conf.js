@@ -4,14 +4,12 @@
 const path  = require( 'path' );
 const url = require( 'url' );
 const proxy = require( 'express-http-proxy' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
 const materialIconFiles = [
     { pattern: 'node_modules/material-icons/iconfont/material-icons.css', included: true },
-    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.eot', included: false },
-    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.svg', included: false },
-    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.ttf', included: false },
-    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.woff', included: false },
-    { pattern: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.woff2', included: false },
+    { pattern: 'node_modules/material-icons/iconfont/material-icons.woff', included: false },
+    { pattern: 'node_modules/material-icons/iconfont/material-icons.woff2', included: false },
 ];
 
 const webpackConfig = {
@@ -22,17 +20,16 @@ const webpackConfig = {
         rules: [
             // instrument only testing sources with Istanbulvar fs = require('fs')
             {
-                test: /\.(jpe?g|gif|png|svg|ttf|wav|mp3|eot|woff2|woff)$/,
-                use: [
-                    {
-                        loader: 'file-loader'
-                    }
-                ]
+                test: /\.(jpe?g|gif|png|svg|wav|mp3|woff(2)?|ttf|eot)$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: './img/[name][ext]',
+                },
             },
             {
                 test: /\.js$/,
                 use: {
-                    loader: 'istanbul-instrumenter-loader',
+                    loader: 'coverage-istanbul-loader',
                     options: { esModules: true }
                 },
                 include: path.resolve( __dirname, 'modules/Hoot/' ),
@@ -41,6 +38,12 @@ const webpackConfig = {
             {
                 test: /\.(scss|css)$/,
                 use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            publicPath: './'
+                        }
+                    },
                     'css-loader',
                     'sass-loader'
                 ]
@@ -53,7 +56,12 @@ const webpackConfig = {
             'lib': path.resolve( __dirname, 'modules/lib' ),
             'data': path.resolve( __dirname, 'data' )
         }
-    }
+    },
+    plugins: [
+        new MiniCssExtractPlugin( {
+            filename: '[name].css'
+        } ),
+    ],
 };
 
 module.exports = function( config ) {
@@ -92,8 +100,17 @@ module.exports = function( config ) {
             { pattern: 'test/data/LAP030.shx', included: false },
             { pattern: 'test/data/RomanColosseum_WV2naturalcolor_clip.tif', included: false},
 
+            // 'node_modules/chai/chai.js',
+            // 'node_modules/sinon/pkg/sinon.js',
+            // 'node_modules/sinon-chai/lib/sinon-chai.js',
+            // 'node_modules/happen/happen.js',
             'css/**/*.css',
             'css/**/*.scss',
+            // { pattern: 'dist/iD.min.js', included: true },
+            // { pattern: 'dist/iD.css', included: true },
+            // { pattern: 'dist/**/*', included: false },
+            // 'test/spec/spec_helpers.js',
+            // 'test/spec/*/!(localized|wikipedia).js',
             'test/hoot/index.js'
         ],
 
@@ -117,7 +134,8 @@ module.exports = function( config ) {
             '/base/css/img/': '/base/img/',
             '/base/css/hoot/img/': '/base/img/',
             '/base/css/hoot/modules/img/': '/base/img/',
-            '/hoot-services': 'http://localhost:8787/hoot-services'
+            '/hoot-services': 'http://localhost:8787/hoot-services',
+            '/static' : 'http://localhost:8787/static'
         },
 
 

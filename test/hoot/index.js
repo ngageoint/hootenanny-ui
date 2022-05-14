@@ -8,9 +8,6 @@ let iD        = require( '../../modules/index' ),
     Hoot      = require( '../../modules/Hoot/hoot' ).default,
     _         = require( 'lodash-es' ),
     chai      = require( 'chai' );
-    // sinonChai = require( 'sinon-chai' );
-
-// chai.use( sinonChai );
 
 let id = iD.Context();
 
@@ -40,5 +37,6 @@ beforeEach( function( done ) {
 } );
 
 const tests = require.context( './spec/', true, /.js$/ );
+//        'test/spec/*/!(localized|wikipedia).js'
 
 tests.keys().forEach( tests );

@@ -1,8 +1,8 @@
 import _flatten from 'lodash-es/flatten';
 import _isEmpty from 'lodash-es/isEmpty';
 import _reduce from 'lodash-es/reduce';
-import _union from 'lodash-es/union';
 import _throttle from 'lodash-es/throttle';
+import _union from 'lodash-es/union';
 
 import {
     geoBounds as d3_geoBounds,
@@ -17,7 +17,7 @@ import {
 } from 'd3-selection';
 
 import stringify from 'fast-json-stable-stringify';
-import toGeoJSON from '@mapbox/togeojson';
+import { gpx, kml } from '@tmcw/togeojson';
 
 import { geoExtent, geoPolygonIntersectsPolygon } from '../geo';
 import { services } from '../services';
@@ -40,6 +40,7 @@ export function svgData(projection, context, dispatch) {
     var _fileList;
     var _template;
     var _src;
+    var _customName;
 
 
     function init() {
@@ -157,7 +158,10 @@ export function svgData(projection, context, dispatch) {
 
 
     function isPolygon(d) {
-        return d.geometry.type === 'Polygon' || d.geometry.type === 'MultiPolygon';
+        return d.geometry.type === 'Polygon' || d.geometry.type === 'MultiPolygon' ||
+            (d.geometry.type === 'GeometryCollection' && d.geometry.geometries.every(function(geom) {
+                return geom.type === 'Polygon' || geom.type === 'MultiPolygon';
+            }));
     }
 
 
@@ -212,22 +216,22 @@ export function svgData(projection, context, dispatch) {
 
         // Draw clip paths for polygons
         var clipPaths = surface.selectAll('defs').selectAll('.clipPath-data')
-           .data(polygonData, featureKey);
+            .data(polygonData, featureKey);
 
         clipPaths.exit()
-           .remove();
+            .remove();
 
         var clipPathsEnter = clipPaths.enter()
-           .append('clipPath')
-           .attr('class', 'clipPath-data')
-           .attr('id', clipPathID);
+            .append('clipPath')
+            .attr('class', 'clipPath-data')
+            .attr('id', clipPathID);
 
         clipPathsEnter
-           .append('path');
+            .append('path');
 
         clipPaths.merge(clipPathsEnter)
-           .selectAll('path')
-           .attr('d', getAreaPath);
+            .selectAll('path')
+            .attr('d', getAreaPath);
 
 
         // Draw fill, shadow, stroke layers
@@ -336,10 +340,10 @@ export function svgData(projection, context, dispatch) {
         var gj;
         switch (extension) {
             case '.gpx':
-                gj = toGeoJSON.gpx(xmlToDom(data));
+                gj = gpx(xmlToDom(data));
                 break;
             case '.kml':
-                gj = toGeoJSON.kml(xmlToDom(data));
+                gj = kml(xmlToDom(data));
                 break;
             case '.geojson':
             case '.json':
@@ -456,6 +460,7 @@ export function svgData(projection, context, dispatch) {
 
         if (!fileList || !fileList.length) return this;
         var f = fileList[0];
+        _customName = f.name;
         var extension = getExtension(f.name);
         var reader = new FileReader();
         reader.onload = (function() {
@@ -478,6 +483,7 @@ export function svgData(projection, context, dispatch) {
 
         // strip off any querystring/hash from the url before checking extension
         var testUrl = url.split(/[?#]/)[0];
+        _customName = testUrl;
         var extension = getExtension(testUrl) || defaultExtension;
         if (extension) {
             _template = null;
@@ -496,39 +502,62 @@ export function svgData(projection, context, dispatch) {
     };
 
 
+    drawData.getCustomName = function() {
+        return _customName;
+    };
+
+
     drawData.getSrc = function() {
         return _src || '';
     };
 
-    function flattenCoords() {
-        var features = getFeatures(_geojson);
+    function flattenGeoms(c, type) {
+        /* eslint-disable no-fallthrough */
+        switch (type) {
+            case 'Point':
+                c = [c];
+            case 'MultiPoint':
+            case 'LineString':
+                break;
+
+            case 'MultiPolygon':
+                c = _flatten(c);
+            case 'Polygon':
+            case 'MultiLineString':
+                c = _flatten(c);
+                break;
+        }
+        /* eslint-enable no-fallthrough */
+
+        return c;
+    }
+
+    function flattenCoords( feature ) {
+        var features = feature ? getFeatures(feature) : getFeatures(_geojson);
         if (!features.length) return;
 
         var coords = _reduce(features, function(coords, feature) {
-            var c = feature.geometry.coordinates;
-
-            /* eslint-disable no-fallthrough */
-            switch (feature.geometry.type) {
-                case 'Point':
-                    c = [c];
-                case 'MultiPoint':
-                case 'LineString':
-                    break;
-
-                case 'MultiPolygon':
-                    c = _flatten(c);
-                case 'Polygon':
-                case 'MultiLineString':
-                    c = _flatten(c);
-                    break;
+            var c = [];
+            if (feature.geometry.geometries) {
+                feature.geometry.geometries.forEach( function(geom) {
+                    c = c.concat(flattenGeoms(geom.coordinates, geom.type));
+                });
+            } else {
+                c = flattenGeoms(feature.geometry.coordinates, feature.geometry.type);
             }
-            /* eslint-enable no-fallthrough */
 
             return _union(coords, c);
         }, []);
 
         return coords;
     }
+
+    drawData.getCoordsString = function( feature ) {
+        return flattenCoords( feature ).map( coordinate => {
+            const [ lon, lat ] = coordinate;
+            return lon.toFixed( 6 ) + ',' + lat.toFixed( 6 );
+        } ).join(';');
+    };
 
     drawData.extent = function() {
         return geoExtent(d3_geoBounds({ type: 'LineString', coordinates: flattenCoords() }));

@@ -10,6 +10,7 @@ import _map     from 'lodash-es/map';
 
 import FormFactory           from '../../tools/formFactory';
 import { modifyDatasetForm } from '../../config/domMetadata';
+import { unallowableWordsExist } from '../../tools/utilities';
 
 export default class ModifyDataset {
     constructor( datasets ) {
@@ -70,11 +71,10 @@ export default class ModifyDataset {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
-        if ( reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
+        if ( unallowableWordsExist( str ) || unallowedPattern.test( str ) ) {
             valid = false;
         }
 
@@ -161,7 +161,7 @@ export default class ModifyDataset {
                     this.container.remove();
                     Hoot.events.emit( 'modal-closed' );
                 } );
-        } else {
+        } else {//rate limit?
             this.processRequest = Promise.all( _map( this.datasets, dataset => Hoot.folders.updateFolderLink( dataset.id, folderId ) ) )
                 .then( () => Hoot.folders.refreshAll() )
                 .then( () => Hoot.events.emit( 'render-dataset-table' ) )

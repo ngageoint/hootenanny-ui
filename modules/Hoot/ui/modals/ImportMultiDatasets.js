@@ -11,7 +11,8 @@ import _filter             from 'lodash-es/filter';
 import _find               from 'lodash-es/find';
 import _get                from 'lodash-es/get';
 import _forEach            from 'lodash-es/forEach';
-
+import ImportDataset       from './importDataset';
+import { rateLimit }       from '../../config/apiConfig';
 export default class ImportMultiDatasets {
     constructor( translations, path ) {
         this.folderList     = Hoot.folders.folderPaths;
@@ -110,7 +111,7 @@ export default class ImportMultiDatasets {
         }
 
         // filter out geoname translations
-        translationsList = _reject( this.translations, o => o.NAME === 'GEONAMES' );
+        translationsList = _reject( this.translations, o => o.name === 'GeoNames' );
 
         schemaCombo.data = translationsList;
 
@@ -184,7 +185,7 @@ export default class ImportMultiDatasets {
                     .append( 'option' )
                     .classed( 'file-import-option', true )
                     .attr( 'value', file.name )
-                    .text( file.name );
+                    .text( Hoot.layers.checkLayerName( file.name ) );
             } );
         }
 
@@ -283,7 +284,7 @@ export default class ImportMultiDatasets {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
+            reservedWords    = [ 'root', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
@@ -298,6 +299,17 @@ export default class ImportMultiDatasets {
         target.classed( 'invalid', !valid );
         this.formValid = valid;
         this.updateButtonState();
+    }
+
+    /**
+     * De-duplicate input layer name
+     * append a (#) if not unique
+     *
+     * @param d - node data
+     */
+    deduplicateName( d ) {
+        let target = d3.select( `#${ d.id }` );
+        target.property('value', Hoot.layers.checkLayerName( target.property('value') ));
     }
 
     /**
@@ -316,32 +328,35 @@ export default class ImportMultiDatasets {
             transCombo    = this.schemaInput.datum(),
             typeCombo     = this.typeInput.datum(),
 
-            translation   = _filter( transCombo.data, o => o.NAME === transVal )[ 0 ],
+            translation   = _filter( transCombo.data, o => o.name === transVal || o.displayPath === transVal )[ 0 ],
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
             asSingle      = this.asSingleLayer.property('checked'),
             asSingleName  = this.asSingleLayerName.property('value'),
 
-            translationName,
-            folderId;
+            translationIdentifier,
+            folderId,
+            fileCount = 0;
 
         //if no translation, set NONE
         if ( !translation ) {
             translation = { NONE: 'true' };
-            translationName = '';
+            translationIdentifier = '';
         }
 
-        if ( translation.DEFAULT ) {
-            if ( translation.PATH && translation.PATH.length ) {
-                translationName = translation.PATH;
+        if ( translation.default ) {
+            if ( translation.path && translation.path.length ) {
+                translationIdentifier = translation.path;
             }
-            else if ( translation.IMPORTPATH && translation.IMPORTPATH.length ) {
-                translationName = translation.IMPORTPATH;
+            else if ( translation.importPath && translation.importPath.length ) {
+                translationIdentifier = translation.importPath;
             }
             else {
-                translationName = translation.NAME + '.js';
+                translationIdentifier = translation.name + '.js';
             }
+        } else if ( translation.id ) {
+            translationIdentifier = translation.id;
         } else {
-            translationName = translation.NAME + '.js';
+            translationIdentifier = translation.name + '.js';
         }
 
         if ( newFolderName ) {
@@ -361,7 +376,7 @@ export default class ImportMultiDatasets {
 
         //if import as single layer, use new layer name
         if (asSingle) {
-            fileNames.push(asSingleName);
+            fileNames.push(Hoot.layers.checkLayerName( asSingleName ));
         } else {
             this.fileListInput
                 .selectAll( 'option' )
@@ -372,7 +387,12 @@ export default class ImportMultiDatasets {
 
         this.loadingState( fileNames.length );
 
-        let proms = fileNames.map( (name, index) => {
+        //If "as single layer" is checked the browser makes a single upload request with multiple files
+        //otherwise it's an upload request per file
+        //Use rate limit so as not to overwhelm the db connections
+
+
+        const upload = (name) => {
 
             return new Promise( resolve => {
 
@@ -390,11 +410,13 @@ export default class ImportMultiDatasets {
                     if ( customSuffix ) {
                         name = name + '_' + customSuffix;
                     }
+
+                    name =  Hoot.layers.checkLayerName( name );
                 }
 
                 let params = {
                     NONE_TRANSLATION: translation.NONE === 'true',
-                    TRANSLATION: translationName,
+                    TRANSLATION: translationIdentifier,
                     INPUT_TYPE: importType.value,
                     INPUT_NAME: name,
                     formData: this.getFormData(importFiles),
@@ -410,7 +432,13 @@ export default class ImportMultiDatasets {
                     .then( resp => {
                         // remove completed job from jobIdList
                         this.jobIdList.splice( this.jobIdList.indexOf( resp.data.jobId ), 1 );
-                        resolve( {fileName: name, status: resp.data.status} );
+                        fileCount++;
+                        this.progressBar.property( 'value', fileCount );
+                        this.fileListInput
+                            .selectAll( asSingle ? 'option' : `option[value="${name}"]` )
+                            .classed( 'import-success', resp.data.status !== 'cancelled' )
+                            .classed( 'import-cancel', resp.data.status === 'cancelled' );
+                        resolve();
                     })
                     .catch( err => {
                         console.error(err);
@@ -419,24 +447,28 @@ export default class ImportMultiDatasets {
                             type = err.type,
                             keepOpen = true;
 
-                        if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
-                            message += err.data.commandDetail[0].stderr;
+                        if (typeof err.data === 'string') {
+                            message = err.data;
+                        }
+
+                        if (err.data instanceof Object && err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                            message = err.data.commandDetail[0].stderr;
                         }
 
                         Hoot.message.alert( { message, type, keepOpen } );
                     });
-
             });
-        });
+        };
+        //approach described here https://stackoverflow.com/a/51020535
+        async function doWork(iterator) {
+            for (let [index, item] of iterator) {
+                await upload(item);
+            }
+        }
+        const iterator = fileNames.entries();
+        const workers = new Array(rateLimit).fill(iterator).map(doWork);
 
-        this.processRequest = this.allProgress( proms, ( n, fileName, status ) => {
-                this.progressBar.property( 'value', n );
-                this.fileListInput
-                    .selectAll( asSingle ? 'option' : `option[value="${fileName}"]` )
-                    .classed( 'import-success', status !== 'cancelled' )
-                    .classed( 'import-cancel', status === 'cancelled' )
-                    ;
-            } )
+        this.processRequest = Promise.allSettled(workers)
             .then( resp => {
                 let statuses = resp.reduce((map, obj) => {
                     if (map[obj.status]) {
@@ -461,20 +493,6 @@ export default class ImportMultiDatasets {
             });
     }
 
-    allProgress( proms, cb ) {
-        let n = 0;
-
-        cb( 0 );
-
-        proms.forEach( p => {
-            p.then( resp => {
-                n++;
-                cb( n, resp.fileName, resp.status );
-            } );
-        } );
-
-        return Promise.all( proms );
-    }
 
     /**
      *
@@ -577,22 +595,10 @@ export default class ImportMultiDatasets {
             .attr( 'webkitdirectory', null )
             .attr( 'directory', null );
 
-        if ( typeVal === 'OSM' ) {
-            uploader
-                .property( 'multiple', true )
-                .attr( 'accept', '.osm, .osm.zip, .pbf' );
-        } else if ( typeVal === 'FILE' ) {
-            uploader
-                .property( 'multiple', true )
-                .attr( 'accept', '.shp, .shx, .dbf' );
-        } else if ( typeVal === 'GEOJSON' ) {
-            uploader
-                .property( 'multiple', true )
-                .attr( 'accept', '.geojson', '.geo' );
-        } else if ( typeVal === 'GPKG' ) {
-            uploader
-                .property( 'multiple', true )
-                .attr( 'accept', '.gpkg' );
-        }
+        const importMap = ImportDataset.importTypeMap();
+
+        uploader
+            .property( 'multiple', true )
+            .attr( 'accept', importMap[ typeVal ] );
     }
 }

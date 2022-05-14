@@ -1,14 +1,36 @@
 @import '../../modules/variables';
 
-.add-translation-button {
-    display: flex;
-    align-items: center;
-    height: 40px !important;
-    padding: 0 20px 0 10px;
+#translation-table-header {
+    padding: 0 20px;
+    background-color: $dark1;
+    color: white;
+    width: 100%;
+    height: 25px;
+    font-weight: bold;
+
+    th {
+        position: relative;
+        top: 2px;
+        text-align: left;
+    }
+}
+
+.translation-buttons {
+    margin-bottom: 20px;
+
+    .translation-action-button {
+        padding: 0 10px;
+        border-radius: 4px;
+        margin-right: 5px;
+
+        .label {
+            margin-left: 5px;
+        }
+    }
 }
 
 .translation-table {
-    height: 400px;
+    height: 90%;
     margin-top: 20px;
     overflow-y: auto;
     box-shadow: 0 3px 10px $dark-opacity10;

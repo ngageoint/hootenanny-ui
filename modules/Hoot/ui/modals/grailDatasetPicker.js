@@ -1,36 +1,40 @@
 import FormFactory from '../../tools/formFactory';
 
 export default class GrailDatasetPicker {
-    constructor( layer, parentId ) {
+    constructor( layer, parentId, params ) {
         this.layer = layer;
         this.parentId = parentId;
+        this.params = params;
         this.formFactory = new FormFactory();
 
     }
 
     async render() {
 
-        //if layer has no bbox (reflecting filter when pulling data)
+        //if layer has no bounds (reflecting filter when pulling data)
         //use the layer mbr extent
-        if (!this.layer.bbox) this.layer.bbox = (await Hoot.layers.layerExtent( this.layer.id )).toParam();
+        if (!this.layer.bounds) this.layer.bounds = (await Hoot.layers.layerExtent( this.layer.id )).toParam();
 
-        let data = Hoot.layers.grailReferenceLayers(this.layer);
+        this.refDatasets = Hoot.layers.grailReferenceLayers(this.layer);
         let metadata;
-        if (data.length) {
+        if (this.refDatasets.length) {
+            const referenceComboboxMeta = {
+                label: 'Select Reference Dataset',
+                id: 'refDataset',
+                inputType: 'combobox',
+                placeholder: 'Select a dataset',
+                data: this.refDatasets,
+                readonly: 'readonly',
+                sort: false,
+                itemKey: 'name',
+                _valueKey: 'id',
+                onChange: () => this.updateSubmitButton( )
+            };
+            this.checkForReference( referenceComboboxMeta );
+
             metadata = {
                 title: 'Grail Datasets',
-                form: [{
-                    label: 'Select Reference Dataset',
-                    id: 'refDataset',
-                    inputType: 'combobox',
-                    placeholder: 'Select a dataset',
-                    data: data,
-                    readonly: 'readonly',
-                    sort: false,
-                    itemKey: 'name',
-                    _valueKey: 'id',
-                    onChange: d => this.updateSubmitButton( )
-                }],
+                form: [ referenceComboboxMeta ],
                 button: {
                     text: 'Submit',
                     id: 'SubmitBtn',
@@ -40,21 +44,39 @@ export default class GrailDatasetPicker {
 
             //Add advanced options to form
             this.advOpts = await Hoot.api.getAdvancedChangesetOptions();
-            metadata.form = metadata.form.concat(this.advOpts.map(this.formFactory.advOpt2DomMeta));
+            if ( this.advOpts ) {
+                metadata.form = metadata.form.concat(this.advOpts.map(this.formFactory.advOpt2DomMeta));
+            }
 
         } else {
             metadata = {
                 title: 'No Suitable Grail Reference Datasets'
             };
-
-
-
         }
         let formId = 'grailDatasetForm';
         this.form  = this.formFactory.generateForm( 'body', formId, metadata );
 
-        this.submitButton = d3.select( `#${ metadata.button.id }` );
-        this.updateSubmitButton();
+        if (this.refDatasets.length) {
+            this.submitButton = d3.select( `#${ metadata.button.id }` );
+            this.updateSubmitButton();
+        }
+    }
+
+    checkForReference( metadataObj ) {
+        let secondaryDataset = '';
+        const layerHash = this.layer.name.split('_');
+        const matchHash = layerHash.length > 0 ? layerHash[ layerHash.length - 1 ] : '';
+
+        if ( matchHash ) {
+            this.refDatasets.forEach( refData => {
+                if ( refData.name.endsWith( matchHash ) ) {
+                    metadataObj.value = refData.name;
+                    metadataObj._value = refData.id;
+                }
+            } );
+        }
+
+        return secondaryDataset;
     }
 
     updateSubmitButton() {
@@ -72,14 +94,17 @@ export default class GrailDatasetPicker {
             return;
         }
 
-        const params  = {};
-        params.input1 = refId;
-        params.input2 = this.layer.id;
-        params.parentId = this.parentId;
-        params.BBOX = this.layer.bbox;
-        params.ADV_OPTIONS = this.formFactory.getAdvOpts(this.form, this.advOpts);
+        const data  = {};
+        data.input1 = refId;
+        data.input2 = this.layer.id;
+        data.parentId = this.parentId;
+        data.bounds = this.layer.bounds;
+        data.ADV_OPTIONS = this.formFactory.getAdvOpts(this.form, this.advOpts);
+        data.taskInfo = this.params.taskInfo;
 
-        Hoot.api.deriveChangeset( params, true )
+        this.params.replacement = true;
+
+        Hoot.api.deriveChangeset( data, this.params )
             .then( resp => Hoot.message.alert( resp ) );
 
         this.form.remove();

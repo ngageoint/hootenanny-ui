@@ -10,6 +10,7 @@ Vagrant.configure(2) do |config|
     # AWS Provider.  Set enviornment variables for values below to use
     config.vm.provider :aws do |aws, override|
       override.nfs.functional = false
+      aws.region_config ENV['AWS_DEFAULT_REGION'], :ami => ENV['AWS_MINIMAL_AMI_ID']
       aws.subnet_id = ENV['AWS_SUBNET_ID']
       aws.instance_type = ENV.fetch('AWS_INSTANCE_TYPE', 'm5.2xlarge')
 
@@ -31,6 +32,9 @@ Vagrant.configure(2) do |config|
       aws.tags = {
         'Name' => ENV.fetch('AWS_INSTANCE_NAME_TAG', "jenkins-hootenanny-ui-#{os.downcase}"),
         'URL'  => ENV.fetch('AWS_INSTANCE_URL_TAG', 'https://github.com/ngageoint/hootenanny-ui'),
+        'env' => ENV.fetch('HOOT_UI_AWS_ENV_TAG', 'testing'),
+        'use' => ENV.fetch('HOOT_UI_AWS_USE_TAG', 'Jenkins'),
+        'group' => ENV.fetch('HOOT_UI_AWS_GROUP_TAG', 'devops')
       }
 
       if ENV.key?('JOB_NAME')

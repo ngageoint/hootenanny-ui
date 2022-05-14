@@ -1,5 +1,4 @@
-{
-  "dataDeprecated": [
+[
     {
       "old": {"amenity": "firepit"},
       "replace": {"leisure": "firepit"}
@@ -53,4 +52,3 @@
       "replace": {"shop": "supermarket", "organic": "only"}
     }
   ]
-}

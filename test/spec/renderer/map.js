@@ -3,7 +3,7 @@ describe('iD.Map', function() {
 
     beforeEach(function() {
         content = d3.select('body').append('div');
-        context = iD.Context();
+        context = iD.Context().assetPath('../dist/').container(content);
         map = context.map();
         content.call(map);
     });
@@ -74,7 +74,8 @@ describe('iD.Map', function() {
     describe('#center', function() {
         it('gets and sets center', function() {
             expect(map.center([0, 0])).to.equal(map);
-            expect(map.center()).to.eql([0, 0]);
+            expect(map.center()[0]).to.be.closeTo(0, 1e-6);
+            expect(map.center()[1]).to.be.closeTo(0, 1e-6);
             expect(map.center([10, 15])).to.equal(map);
             expect(map.center()[0]).to.be.closeTo(10, 1e-6);
             expect(map.center()[1]).to.be.closeTo(15, 1e-6);

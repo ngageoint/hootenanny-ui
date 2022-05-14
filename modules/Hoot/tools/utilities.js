@@ -132,6 +132,50 @@ export const formatBbox = str => {
     return `${minx},${miny},${maxx},${maxy}`;
 };
 
+export const polyStringFromGeom = geom => {
+    return Hoot.context.layers().layer('data').getCoordsString( geom );
+};
+
+export const polyStringToCoords = str => {
+    return str.split(';').map( coordString => {
+        const coords = coordString.split(',');
+        return [ +coords[0], +coords[1] ];
+    } );
+};
+
+// converts string of coordinates list into list of list of coords
+// ie. str: -77.212,39.056;-77.207,39.057;-77.212,39.056;-77.240,39.091;-77.245,39.093;-77.240,39.091
+// into:
+// [
+//     [
+//         [-77.212,39.056],
+//         [-77.207,39.057],
+//         [-77.212,39.056]
+//     ],
+//     [
+//         [-77.240,39.091],
+//         [-77.245,39.093],
+//         [-77.240,39.091]
+//     ]
+// ]
+export const polyStringToCoordsList = str => {
+    let coordsList = [];
+    let coordArray = str.split(';');
+    let index = 0;
+
+    while (index < coordArray.length) {
+        let lastIndex = coordArray.indexOf( coordArray[index], index + 1 );
+        // just to prevent infinite loop. grab everything up to end of array
+        lastIndex = lastIndex > -1 ? lastIndex : coordArray.length - 1;
+
+        let singlePolyCoords = coordArray.slice(index, lastIndex+1).join( ';' );
+        coordsList.push( polyStringToCoords( singlePolyCoords ) );
+        index = lastIndex + 1;
+    }
+
+    return coordsList;
+};
+
 export const duration = (start, end, ago) => {
     let duration,
         diff = (end - start) / 1000;
@@ -157,7 +201,8 @@ export const duration = (start, end, ago) => {
         {unit: 'hour', value: 60}, //minutes per hour
         {unit: 'day', value: 24}, //hours per day
         {unit: 'month', value: 30}, //days per month
-        {unit: 'year', value: 12}  //months per year
+        {unit: 'year', value: 12},  //months per year
+        {unit: 'millennium', value: 1000} // years per millennium
     ];
     let lastUnit = units[0].unit;
 

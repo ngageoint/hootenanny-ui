@@ -32,7 +32,8 @@ export default class Jobs extends Tab {
             offset: null,
             limit: 25,
             jobType: null,
-            status: null
+            status: null,
+            groupJobId: null
         };
 
         this.filtering = new Filtering(this);
@@ -48,6 +49,9 @@ export default class Jobs extends Tab {
             delete: 'delete',
             derive_changeset: 'change_history',
             upload_changeset: 'cloud_upload',
+            bulk_add: 'add_to_photos',
+            bulk_replace: 'flip_to_front',
+            bulk_differential: 'change_history',
             unknown: 'help'
         };
 
@@ -65,6 +69,38 @@ export default class Jobs extends Tab {
         };
 
         this.lastClick = 0;
+    }
+
+    resetParams( reload ) {
+        this.params = {
+            sort: '-start',
+            offset: null,
+            limit: 25,
+            jobType: null,
+            status: null,
+            groupJobId: null
+        };
+
+        if ( reload ) {
+            this.updateResetFilterBtn();
+            this.loadJobs();
+            this.selectNone();
+        }
+    }
+
+    updateResetFilterBtn() {
+        let hasFilter = false;
+
+        Object.keys( this.columnFilters ).forEach( filterOpt => {
+            const param = this.params[filterOpt];
+            if ( param !== null && param !== '' ) {
+                hasFilter = true;
+            }
+        });
+
+        hasFilter = hasFilter || !!this.params.groupJobId;
+
+        this.panelWrapper.select( '#resetFiltersBtn' ).property( 'disabled', !hasFilter );
     }
 
     selectNone() {
@@ -85,6 +121,8 @@ export default class Jobs extends Tab {
 
     setFilter(column, values) {
         this.params[column] = values;
+
+        this.updateResetFilterBtn();
         this.loadJobs();
         this.selectNone();
     }
@@ -97,6 +135,14 @@ export default class Jobs extends Tab {
 
     getPages() {
         return Math.ceil(this.total / this.params.limit) || 1; //still need page 1 for zero results
+    }
+
+    setGroupJobId(groupJobId) {
+        this.params.groupJobId = groupJobId;
+
+        this.updateResetFilterBtn();
+        this.loadJobs();
+        this.selectNone();
     }
 
     render() {
@@ -132,9 +178,11 @@ export default class Jobs extends Tab {
         this.panelWrapper
             .append( 'h3' )
             .text( 'Running Jobs' );
+
         this.jobsRunningTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-running keyline-all fill-white', true );
+
         let header = this.panelWrapper
             .append( 'h3' )
             .classed( 'jobs-history', true )
@@ -142,6 +190,14 @@ export default class Jobs extends Tab {
         let pager = header.append('div')
             .classed('paging fr', true);
         this.paging.render(pager);
+
+        header.append('button')
+            .attr( 'id', 'resetFiltersBtn' )
+            .property( 'disabled', true )
+            .classed('resetFilters button fr primary text-light', true)
+            .text( 'Reset Filters')
+            .on( 'click', () => this.resetParams( true ));
+
         this.jobsHistoryTable = this.panelWrapper
             .append( 'div' )
             .classed( 'jobs-table jobs-history keyline-all fill-white', true );
@@ -150,7 +206,7 @@ export default class Jobs extends Tab {
     async deleteJobs(self) {
         function deleteJobs() {
             d3.select('#util-jobs').classed('wait', true);
-            Promise.all( delIds.map( id => Hoot.api.deleteJobStatus(id)) )
+            Promise.all( delIds.map( id => Hoot.api.deleteJobStatus(id)) )//rate limit?
                 .then( resp => self.loadJobs() )
                 .finally( () => {
                     self.selectNone();
@@ -374,6 +430,15 @@ export default class Jobs extends Tab {
             this.paging.setPage( this.getPages() );
         }
 
+        const columnInfo = [
+            { column: 'jobType', label: 'Job Type', sort: 'type' },
+            { label: 'Information' },
+            { column: 'status', label: 'Status', sort: 'status' },
+            { label: 'Started', sort: 'start' },
+            { label: 'Duration', sort: 'duration' },
+            { label: 'Actions' }
+        ];
+
         let that = this;
         let table = this.jobsHistoryTable
             .selectAll('table')
@@ -381,20 +446,19 @@ export default class Jobs extends Tab {
         let tableEnter = table.enter()
                 .append('table');
 
+        let colGroup = tableEnter.append( 'colgroup' );
+        columnInfo.forEach( col => {
+            colGroup.append( 'col' )
+                .style( 'width', col.width );
+        });
+
         let thead = tableEnter
             .append('thead');
         let th = thead.selectAll('tr')
             .data([0])
             .enter().append('tr')
             .selectAll('th')
-            .data([
-                {column: 'jobType', label: 'Job Type', sort: 'type'},
-                {label: 'Output'},
-                {column: 'status', label: 'Status', sort: 'status'},
-                {label: 'Started', sort: 'start'},
-                {label: 'Duration', sort: 'duration'},
-                {label: 'Actions'}
-            ])
+            .data(columnInfo)
             .enter().append('th')
             .classed('sort', d => d.sort)
             .classed('filter', d => this.columnFilters[d.column])
@@ -525,18 +589,59 @@ export default class Jobs extends Tab {
                     span: [{text: d.jobType.toUpperCase()}]
                 });
 
-                //Output
-                let map = Hoot.layers.findBy( 'id', d.mapId );
+                let map = Hoot.layers.findBy( 'id', d.mapId ),
+                    jobInfo = [],
+                    jobTags = d.tags;
 
-                if (map) {
-                    props.push({
-                        span: [{text: map.name}]
-                    });
-                } else {
-                    props.push({
-                        span: [{text: 'Map no longer exists'}]
-                    });
+                if ( jobTags ) {
+                    let inputInfo = '',
+                        outputInfo = '';
+
+                    // Set input info
+                    if ( jobTags.taskInfo ) {
+                        inputInfo += jobTags.taskInfo;
+                    } else if ( jobTags.input1 || jobTags.input2 ) {
+                        let input1 = Hoot.layers.findBy( 'id', parseInt(jobTags.input1, 10) ),
+                            input2 = Hoot.layers.findBy( 'id', parseInt(jobTags.input2, 10) );
+
+                        inputInfo += input1 ? input1.name : '';
+                        inputInfo += input2 ? ' • ' + input2.name : '';
+                    } else if ( jobTags.bounds ){
+                        inputInfo += jobTags.bounds;
+                    } else if ( jobTags.parentId ) {
+                        inputInfo += jobTags.parentId;
+                    }
+
+                    if ( inputInfo !== '' ) {
+                        jobInfo.push( inputInfo );
+                    }
+
+                    // used for showing conflation type if exists
+                    if ( jobTags.conflationType ) {
+                        jobInfo.push( jobTags.conflationType + ' conflation' );
+                    }
+
+                    // Set output info
+                    if ( map ) {
+                        outputInfo += map.name;
+                    } else if ( jobTags && jobTags.deriveType ) {
+                        outputInfo += jobTags.deriveType;
+                    }
+
+                    if ( outputInfo !== '' ) {
+                        jobInfo.push( outputInfo );
+                    }
                 }
+
+                const jobInfoTitle = jobInfo.join( ' ➜ ' );
+                const jobInfoText = jobInfoTitle.length > 100 ? jobInfoTitle.substr(0, 100) + '...' : jobInfoTitle;
+                // Job Info
+                props.push({
+                    span: [{
+                        text: jobInfoText,
+                        title: jobInfoTitle
+                    }]
+                });
 
                 //Status
                 let statusIcon = this.statusIcon[d.status] || 'help';
@@ -584,6 +689,14 @@ export default class Jobs extends Tab {
                         this.commandDetails.render();
 
                         Hoot.events.once( 'modal-closed', () => delete this.commandDetails );
+                    }
+                });
+
+                actions.push({
+                    title: 'show related',
+                    icon: 'linear_scale',
+                    action: () => {
+                        this.setGroupJobId( d.jobId );
                     }
                 });
 
@@ -638,25 +751,21 @@ export default class Jobs extends Tab {
 
                     // If the upload changeset job is marked having conflicts
                     // add action to download conflicted changes
-                    if (d.statusDetail.toUpperCase() === 'CONFLICTS'
-                        && d.jobType.toUpperCase() === 'UPLOAD_CHANGESET') {
+                    if (//d.statusDetail.toUpperCase() === 'CONFLICTS' &&
+                        (d.jobType.toUpperCase() === 'UPLOAD_CHANGESET' || d.jobType.toUpperCase().includes('BULK'))) {
 
                         actions.push({
                             title: 'download conflicted changes',
                             icon: 'archive',
                             action: async () => {
+                                const name = d.jobType.toUpperCase().includes('BULK') ? d.jobId : d.tags.parentId;
                                 let param = {
-                                    input: d.tags.parentId,
+                                    input: name,
                                     inputtype: 'changesets',
-                                    outputname: d.tags.parentId,
+                                    outputname: name,
                                     outputtype: 'zip'
                                 };
-                                // Hoot.api.saveChangeset( d.tags.parentId, 'diff-error' )
-                                //     .catch( err => {
-                                //         console.error(err);
-                                //         Hoot.message.alert( err );
-                                //         return false;
-                                //     } );
+
                                 Hoot.api.exportDataset(param)
                                     .then( resp => {
                                         self.jobId = resp.data.jobid;
@@ -689,7 +798,7 @@ export default class Jobs extends Tab {
                                 title: 'upload changeset',
                                 icon: 'cloud_upload',
                                 action: async () => {
-                                    Hoot.api.changesetStats(d.jobId, false)
+                                    Hoot.api.changesetStats(d.jobId)
                                         .then( resp => {
                                             this.changesetStats = new ChangesetStats( d, resp.data ).render();
 
@@ -716,25 +825,32 @@ export default class Jobs extends Tab {
                                     action: async () => {
                                         const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
 
-                                        const params  = {};
-                                        params.input1 = parseInt(tagsInfo.input1, 10);
-                                        params.input2 = d.mapId;
-                                        params.parentId = d.jobId;
+                                        const data  = {};
+                                        data.input1 = parseInt(tagsInfo.input1, 10);
+                                        data.input2 = d.mapId;
+                                        data.parentId = d.jobId;
 
-                                        if (currentLayer.bbox) params.BBOX = currentLayer.bbox;
+                                        if (currentLayer.bounds) { data.bounds = currentLayer.bounds; }
+                                        if ( d.tags && d.tags.taskInfo ) { data.taskInfo = d.tags.taskInfo; }
 
-                                        Hoot.api.deriveChangeset( params )
+                                        const params = {
+                                            deriveType : 'Merged changeset'
+                                        };
+
+                                        Hoot.api.deriveChangeset( data, params )
                                             .then( resp => Hoot.message.alert( resp ) );
                                     }
                                 });
                             }
                         }
 
-                        // For conflate or import jobs add action for
+                        // For conflate or import or clip jobs add action for
                         // creating an adds-only changeset
                         // or a replacement changeset
                         if (d.jobType.toUpperCase() === 'CONFLATE'
-                            || d.jobType.toUpperCase() === 'IMPORT') {
+                            || d.jobType.toUpperCase() === 'IMPORT'
+                            || d.jobType.toUpperCase() === 'CLIP'
+                            ) {
                             let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
 
                             if (currentLayer && !currentLayer.grailReference) {
@@ -742,11 +858,16 @@ export default class Jobs extends Tab {
                                     title: 'derive changeset [adds only]',
                                     icon: 'add_to_photos',
                                     action: async () => {
-                                        const params  = {};
-                                        params.input1 = d.mapId;
-                                        params.parentId = d.jobId;
+                                        const data  = {};
+                                        data.input1 = d.mapId;
+                                        data.parentId = d.jobId;
+                                        if ( d.tags && d.tags.taskInfo ) { data.taskInfo = d.tags.taskInfo; }
 
-                                        Hoot.api.deriveChangeset( params )
+                                        const params = {
+                                            deriveType : 'Adds only'
+                                        };
+
+                                        Hoot.api.deriveChangeset( data, params )
                                             .then( resp => Hoot.message.alert( resp ) );
                                     }
                                 });
@@ -755,12 +876,15 @@ export default class Jobs extends Tab {
                                     title: 'derive changeset replacement',
                                     icon: 'flip_to_front',
                                     action: async () => {
-                                        let gpr = new GrailDatasetPicker(currentLayer, d.jobId);
+                                        const params = {
+                                            deriveType : 'Cut & Replace'
+                                        };
+                                        if ( d.tags && d.tags.taskInfo ) {
+                                            params.taskInfo = d.tags.taskInfo;
+                                        }
+
+                                        let gpr = new GrailDatasetPicker(currentLayer, d.jobId, params);
                                         gpr.render();
-
-                                        Hoot.events.once( 'modal-closed', () => {
-
-                                        });
                                     }
                                 });
                             }
@@ -770,6 +894,27 @@ export default class Jobs extends Tab {
                     // Add action for download of changeset
                     // users can do this even after the changeset has been applied
                     if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
+
+                        if (d.statusDetail.toUpperCase() === 'STALE') {
+                            actions.push({
+                                title: 'view changeset stats',
+                                icon: 'library_books',
+                                action: async () => {
+                                    Hoot.api.changesetStats(d.jobId)
+                                        .then( resp => {
+                                            this.changesetStats = new ChangesetStats( d, resp.data, true ).render();
+
+                                            Hoot.events.once( 'modal-closed', () => delete this.changesetStats );
+                                        } )
+                                        .catch( err => {
+                                            console.error(err);
+                                            Hoot.message.alert( err );
+                                            return false;
+                                        } );
+                                }
+                            });
+                        }
+
                         actions.push({
                             title: 'download changeset',
                             icon: 'archive',
@@ -784,6 +929,23 @@ export default class Jobs extends Tab {
                         });
                     }
 
+                }
+
+                // Add action for download of export if the job status has the output name recorded
+                // users can then do this after initial download that occurs when the export job completes
+                if (d.jobType.toUpperCase() === 'EXPORT' && d.tags && d.tags.outputname ) {
+                    actions.push({
+                        title: 'download export',
+                        icon: 'get_app',
+                        action: async () => {
+                            Hoot.api.saveDataset( d.jobId, d.tags.outputname )
+                                .catch( err => {
+                                    console.error(err);
+                                    Hoot.message.alert( err );
+                                    return false;
+                                } );
+                        }
+                    });
                 }
 
                 props.push({
@@ -820,6 +982,7 @@ export default class Jobs extends Tab {
         span.exit().remove();
         span.enter().append('span')
             .merge(span)
+            .attr( 'title', d => d.title ? d.title : '' )
             .text( d => d.text );
 
     }

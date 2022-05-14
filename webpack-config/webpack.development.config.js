@@ -5,22 +5,22 @@
  *******************************************************************************************************/
 
 const path         = require( 'path' );
-const Merge        = require( 'webpack-merge' );
+const { merge }    = require( 'webpack-merge' );
 const CommonConfig = require('./webpack.base.config');
 
-module.exports = Merge( CommonConfig, {
+module.exports = merge( CommonConfig, {
     mode: 'development',
     devtool: 'cheap-module-source-map',
     devServer: {
         compress: true,
         port: 8080,
-        publicPath: '/',
-        contentBase: './dist',
-        stats: {
-            timings: true
+        static: {
+            directory: path.join(__dirname, '../dist'),
+            publicPath: '/',
         },
         proxy: {
             '/hoot-services': 'http://localhost:8888',
+            '/static': 'http://localhost:8888',
             '/capabilities': 'http://localhost:8094',
             '/switcher': {
                 target: 'http://localhost:8094',
@@ -29,6 +29,14 @@ module.exports = Merge( CommonConfig, {
             '/p2p': {
                 target: 'http://localhost:8096',
                 pathRewrite: { '^/p2p': '' }
+            },
+            '/tasks': {
+                target: 'http://localhost:6543',
+                pathRewrite: { '^/tasks': '' }
+            },
+            '/tm4api': {
+                target: 'http://localhost:5000',
+                pathRewrite: { '^/tm4api': '/api' }
             }
         }
     },
@@ -51,5 +59,9 @@ module.exports = Merge( CommonConfig, {
                 },
             }
         ]
-    }
+    },
+    stats: {
+        timings: true,
+        errorDetails: true
+    },
 });

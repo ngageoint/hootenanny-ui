@@ -72,7 +72,7 @@ export default class LayerReview extends SidebarForm {
     }
     /**
      * Update text to reflect that all reviews have been resolved.
-     * Display buttons to export data or to add another datasets
+     * Display buttons to export data or to add another dataset
      */
     reviewComplete() {
         this.reviewInfo.text( 'All reviews resolved!' );
@@ -89,7 +89,7 @@ export default class LayerReview extends SidebarForm {
             .classed( 'button secondary small strong round', true )
             .text('Export Data')
             .on('click', async () => {
-                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT);
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport);
                 new ExportData(translations, { data: layer }, 'Dataset' ).render();
             });
 
@@ -108,8 +108,10 @@ export default class LayerReview extends SidebarForm {
      * Listen for events
      */
     listen() {
-        Hoot.events.on( 'meta-updated', text => this.updateReviewCount( text ) );
-        Hoot.events.on( 'review-complete', () => this.reviewComplete() );
-        Hoot.events.on( 'loaded-layer-removed', () => this.removeReviewUI() );
+        const className = this.constructor.name;
+
+        Hoot.events.listen( className, 'meta-updated', text => this.updateReviewCount( text ) );
+        Hoot.events.listen( className, 'review-complete', () => this.reviewComplete() );
+        Hoot.events.listen( className, 'loaded-layer-removed', () => this.removeReviewUI() );
     }
 }
