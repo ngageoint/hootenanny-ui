@@ -209,7 +209,7 @@ iD.translationserver = function(context) {
                 if (error) {
                     window.console.error(error);
                 } else {
-                    preset.tags = data.attrs;
+                    preset.tags = data.attrs || data;
                     callback(iD.presets.Preset(preset.id, preset, {}));
                 }
             });
