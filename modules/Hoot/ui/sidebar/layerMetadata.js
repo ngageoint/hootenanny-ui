@@ -260,47 +260,16 @@ export default class LayerMetadata {
                     }
                 },
                 layerfeatures: {
-                    count: {
-                    //     1: 'pois',
-                    //     2: 'roads',
-                    //     3: 'buildings'
-                    },
-                    [RefLayerName]: {
-                    //     pois: stats.POIs ? stats.POIs[0] : 0,
-                    //     roads: stats.Roads ? stats.Roads[0] : 0,
-                    //     buildings: stats.Buildings ? stats.Buildings[0] : 0
-                    },
-                    [SecLayerName]: {
-                    //     pois: stats.POIs ? stats.POIs[1] : 0,
-                    //     roads: stats.Roads ? stats.Roads[1] : 0,
-                    //     buildings: stats.Buildings ? stats.Buildings[1] : 0
-                    },
-                    [ConflatedLayer]: {
-                    //     pois: stats.POIs ? stats.POIs[2] : 0,
-                    //     roads: stats.Roads ? stats.Roads[2] : 0,
-                    //     buildings: stats.Buildings ? stats.Buildings[2] : 0
-                    }
+                    count: {},
+                    [RefLayerName]: {},
+                    [SecLayerName]: {},
+                    [ConflatedLayer]: {}
                 },
                 featurecounts: {
                     count: {
                         1: 'unmatched',
                         2: 'merged',
                         3: 'review'
-                    // },
-                    // pois: {
-                    //     unmatched: stats['Unmatched POIs'][2],
-                    //     merged: stats['Conflated POIs'][2],
-                    //     review: stats['POIs Marked for Review'][2]
-                    // },
-                    // roads: {
-                    //     unmatched: stats['Unmatched Roads'][2],
-                    //     merged: stats['Conflated Roads'][2],
-                    //     review: stats['Roads Marked for Review'][2]
-                    // },
-                    // buildings: {
-                    //     unmatched: stats['Unmatched Buildings'][2],
-                    //     merged: stats['Conflated Buildings'][2],
-                    //     review: stats['Buildings Marked for Review'][2]
                     }
                 },
                 featurepercents: {
@@ -308,21 +277,6 @@ export default class LayerMetadata {
                         1: 'unmatched',
                         2: 'merged',
                         3: 'review'
-                    // },
-                    // pois: {
-                    //     unmatched: formatPercent(stats['Percentage of Unmatched POIs'][2]),
-                    //     merged: formatPercent(stats['Percentage of POIs Conflated'][2]),
-                    //     review: formatPercent(stats['Percentage of POIs Marked for Review'][2])
-                    // },
-                    // roads: {
-                    //     unmatched: formatPercent(stats['Percentage of Unmatched Roads'][2]),
-                    //     merged: formatPercent(stats['Percentage of Roads Conflated'][2]),
-                    //     review: formatPercent(stats['Percentage of Roads Marked for Review'][2])
-                    // },
-                    // buildings: {
-                    //     unmatched: formatPercent(stats['Percentage of Unmatched Buildings'][2]),
-                    //     merged: formatPercent(stats['Percentage of Buildings Conflated'][2]),
-                    //     review: formatPercent(stats['Percentage of Buildings Marked for Review'][2])
                     }
                 }
             };
