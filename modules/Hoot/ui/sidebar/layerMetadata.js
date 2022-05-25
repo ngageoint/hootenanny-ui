@@ -365,50 +365,6 @@ export default class LayerMetadata {
 
             this.download += '\nStatistics:\n';
 
-            if (ConflationType.includes('Differential')) {
-
-                tableConfig.diffstats = {
-                    Differential: {
-                        1: 'original',
-                        2: 'new',
-                        3: 'total'
-                    }
-                };
-
-                if (stats.POIs && stats['New POIs']) {
-                    let poiOrig = parseInt(stats.POIs[0], 10),
-                        poiNew = parseInt(stats['New POIs'][3], 10);
-                    tableConfig.diffstats.POIs = {
-                        original: poiOrig,
-                        new: poiNew,
-                        total: poiOrig + poiNew
-                    };
-                }
-
-                if (stats.Buildings && stats['New Buildings']) {
-                    let buildOrig = parseInt(stats.Buildings[0], 10),
-                        buildNew = parseInt(stats['New Buildings'][3], 10);
-                    tableConfig.diffstats.Buildings = {
-                        original: buildOrig,
-                        buildNew: buildNew,
-                        total: poiOrig + poiNew
-                    };
-                }
-
-                if (stats['Meters of Roads'] && stats['Km of New Roads']) {
-                    let kmOrig = parseInt(stats['Meters of Roads'][0], 10) / 1000.0,
-                        kmNew = parseInt(stats['Km of New Roads'][3], 10);
-                    tableConfig.diffstats.kmOrig = {
-                        original: kmOrig.toFixed.toFixed(2),
-                        kmNew: kmNew.toFixed(2),
-                        total: (kmOrig + kmNew).toFixed(2)
-                    };
-                }
-
-                this.download += '\nDiff Stats:\n';
-                this.addToDownload(tableConfig.diffstats);
-            }
-
             this.download += '\nLayer Counts:\n';
             this.addToDownload(tableConfig.layercounts);
 
