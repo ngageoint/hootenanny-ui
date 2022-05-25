@@ -67,6 +67,7 @@ if (!window.mocha) {
 
 var _blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'];
 var _tileCache = { loaded: {}, inflight: {}, seen: {} };
+var _nodeCountCache = { loaded: {}, inflight: {} };
 var _noteCache = { loaded: {}, inflight: {}, inflightPost: {}, note: {}, rtree: new RBush() };
 var _userCache = { toLoad: {}, user: {} };
 var _changeset = {};
@@ -429,11 +430,13 @@ export default {
         _rateLimitError = undefined;
 
         _forEach(_tileCache.inflight, abortRequest);
+        // _forEach(_nodeCountCache.inflight, abortRequest);
         _forEach(_noteCache.inflight, abortRequest);
         _forEach(_noteCache.inflightPost, abortRequest);
         if (_changeset.inflight) abortRequest(_changeset.inflight);
 
         _tileCache = { loaded: {}, inflight: {}, seen: {} };
+        _nodeCountCache = { loaded: {}, inflight: {} };
         _noteCache = { loaded: {}, inflight: {}, inflightPost: {}, note: {}, rtree: new RBush() };
         _userCache = { toLoad: {}, user: {} };
         _changeset = {};
@@ -994,15 +997,35 @@ export default {
     },
 
     getNodesCount: async function( projection, zoom ) {
-console.log("nodesCount zoom->" + zoom);
         const tiles = this.getViewTiles(projection, zoom);
-        let count = 0;
 
-        if ( tiles.length > 0 ) {
-            const { nodescount } = await Hoot.api.getTileNodesCount( tiles );
-            count = nodescount;
+        //see which tile counts are already cached
+        const tilesToBeLoaded = tiles.filter(tile => {
+            return !(_nodeCountCache.loaded[tile.id] !== undefined || _nodeCountCache.inflight[tile.id]);
+        })
+
+        //console.log(tiles.length + " vs " + tilesToBeLoaded.length);
+
+        if ( tilesToBeLoaded.length > 0 ) {
+            tilesToBeLoaded.forEach((tile) => {
+                _nodeCountCache.inflight[tile.id] = true;
+            });
+            const counts = await Hoot.api.getTileNodesCount( tilesToBeLoaded );
+            tilesToBeLoaded.forEach((tile) => {
+                delete _nodeCountCache.inflight[tile.id];
+                _nodeCountCache.loaded[tile.id] = counts.tilecounts[tile.id];
+            });
         }
 
+        //add up all tile counts
+        const count = tiles.reduce((total, tile) => {
+            if (!isNaN(_nodeCountCache.loaded[tile.id])) {
+                return total += _nodeCountCache.loaded[tile.id];
+            } else {
+                return total;
+            }
+        }, 0);
+        console.log("total view tile nodes = " + count);
         return count;
     },
 
@@ -1073,16 +1096,19 @@ console.log("nodesCount zoom->" + zoom);
     loadTiles: async function(projection, zoom, callback) {
         if (_off) return;
 
-        const count = await this.getNodesCount(projection, zoom);
-        console.log("nodesCount ->" + count);
-        if (count > 4000) {
-            Hoot.context.flush();
+        if (!_isEmpty(_nodeCountCache.inflight)) return;
+        const tileZ = Math.min(zoom, _tileZoom);
+        const count = await this.getNodesCount(projection, tileZ);
+        // console.log("nodesCount ->" + tileZ + ": " + count);
+        if (isNaN(count) || count > 4000) {
+            //Hoot.context.flush();
+            callback("Too many features to load");//call editOff
             return;
         }
 
         var that = this;
         // determine the needed tiles to cover the view
-        const tiles = this.getViewTiles(projection, Math.min(zoom, _tileZoom));
+        const tiles = this.getViewTiles(projection, tileZ);
 
         // abort inflight requests that are no longer needed
         var hadRequests = !_isEmpty(_tileCache.inflight);
@@ -1332,6 +1358,7 @@ console.log("loadTiles tile.id->" + tile.id);
 
     removeTile( id ) {
         delete _tileCache.loaded[ id ];
+        delete _nodeCountCache.loaded[ id ];
         dispatch.call( 'loaded' );
     },
 

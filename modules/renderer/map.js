@@ -611,10 +611,15 @@ export function rendererMap(context) {
             .call(drawLayers);
 
         // OSM
-        if ( map.editable()) {
-            context.loadTiles( projection, () => {
-                if ( Hoot.layers.mergedLayer && Hoot.layers.mergedLayer.reviewItem ) {
-                    Hoot.events.emit( 'layer-reviews' );
+        if ( map.editable() ) {
+            context.loadTiles( projection, (err, result) => {
+                if (!err) {
+                    if ( Hoot.layers.mergedLayer && Hoot.layers.mergedLayer.reviewItem ) {
+                        Hoot.events.emit( 'layer-reviews' );
+                    }
+                } else {
+                    console.log(err);
+                    editOff();
                 }
             } );
 
@@ -628,11 +633,11 @@ export function rendererMap(context) {
         return map;
     }
 
-    map.debouncedBelowMaxNodes = _debounce( async function() {
-        const count = await context.connection().getNodesCount(projection, map.zoom());
-        console.log(count);
-        return count < 4000;
-    }, 300);
+    // map.debouncedBelowMaxNodes = _debounce( async function() {
+    //     const count = await context.connection().getNodesCount(projection, map.zoom());
+    //     console.log(count);
+    //     return count < 4000;
+    // }, 300);
 
     var immediateRedraw = function(difference, extent) {
         if (!difference && !extent) cancelPendingRedraw();
@@ -985,7 +990,7 @@ export function rendererMap(context) {
         if (!osmLayer.empty() && osmLayer.classed('disabled')) return false;
         // if (map.zoom() >= context.minEditableZoom()) return true;
         // return map.debouncedBelowMaxNodes();//move this
-    return map.zoom() >= context.minEditableZoom();
+        return map.zoom() >= context.minEditableZoom();
     };
 
 
