@@ -258,10 +258,13 @@ class LayerConflate extends SidebarForm {
         //If a task grid is present in custom data, use it to restrict conflation
         let customDataLayer = Hoot.context.layers().layer('data');
         let refBounds = Hoot.layers.findBy( 'id', data.INPUT1 ).bounds;
+        let secBounds = Hoot.layers.findBy( 'id', data.INPUT2 ).bounds;
         if ( customDataLayer.hasData() && customDataLayer.enabled() ) {
             data.bounds = customDataLayer.getCoordsString();
         } else if (refBounds) { //the reference layer has a bounds property indicating data is constrained via API pull
             data.bounds = refBounds;
+        } else if (secBounds) { //if no ref bounds, use the secondary bounds
+            data.bounds = secBounds;
         }
 
         return data;
