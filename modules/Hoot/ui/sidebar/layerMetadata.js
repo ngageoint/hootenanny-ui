@@ -260,47 +260,16 @@ export default class LayerMetadata {
                     }
                 },
                 layerfeatures: {
-                    count: {
-                        1: 'pois',
-                        2: 'roads',
-                        3: 'buildings'
-                    },
-                    [RefLayerName]: {
-                        pois: stats.POIs[0],
-                        roads: stats.Roads[0],
-                        buildings: stats.Buildings[0]
-                    },
-                    [SecLayerName]: {
-                        pois: stats.POIs[1],
-                        roads: stats.Roads[1],
-                        buildings: stats.Buildings[1]
-                    },
-                    [ConflatedLayer]: {
-                        pois: stats.POIs[2],
-                        roads: stats.Roads[2],
-                        buildings: stats.Buildings[2]
-                    }
+                    count: {},
+                    [RefLayerName]: {},
+                    [SecLayerName]: {},
+                    [ConflatedLayer]: {}
                 },
                 featurecounts: {
                     count: {
                         1: 'unmatched',
                         2: 'merged',
                         3: 'review'
-                    },
-                    pois: {
-                        unmatched: stats['Unmatched POIs'][2],
-                        merged: stats['Conflated POIs'][2],
-                        review: stats['POIs Marked for Review'][2]
-                    },
-                    roads: {
-                        unmatched: stats['Unmatched Roads'][2],
-                        merged: stats['Conflated Roads'][2],
-                        review: stats['Roads Marked for Review'][2]
-                    },
-                    buildings: {
-                        unmatched: stats['Unmatched Buildings'][2],
-                        merged: stats['Conflated Buildings'][2],
-                        review: stats['Buildings Marked for Review'][2]
                     }
                 },
                 featurepercents: {
@@ -308,24 +277,71 @@ export default class LayerMetadata {
                         1: 'unmatched',
                         2: 'merged',
                         3: 'review'
-                    },
-                    pois: {
-                        unmatched: formatPercent(stats['Percentage of Unmatched POIs'][2]),
-                        merged: formatPercent(stats['Percentage of POIs Conflated'][2]),
-                        review: formatPercent(stats['Percentage of POIs Marked for Review'][2])
-                    },
-                    roads: {
-                        unmatched: formatPercent(stats['Percentage of Unmatched Roads'][2]),
-                        merged: formatPercent(stats['Percentage of Roads Conflated'][2]),
-                        review: formatPercent(stats['Percentage of Roads Marked for Review'][2])
-                    },
-                    buildings: {
-                        unmatched: formatPercent(stats['Percentage of Unmatched Buildings'][2]),
-                        merged: formatPercent(stats['Percentage of Buildings Conflated'][2]),
-                        review: formatPercent(stats['Percentage of Buildings Marked for Review'][2])
                     }
                 }
             };
+
+            let featuresCount = 1;
+
+            //Add POI stats if present
+            if (stats.POIs) {
+                tableConfig.layerfeatures.count[featuresCount] = 'pois';
+                tableConfig.layerfeatures[RefLayerName].pois = stats.POIs[0];
+                tableConfig.layerfeatures[SecLayerName].pois = stats.POIs[1];
+                tableConfig.layerfeatures[ConflatedLayer].pois = stats.POIs[2];
+
+                tableConfig.featurecounts.pois = {
+                    unmatched: stats['Unmatched POIs'][2],
+                    merged: stats['Conflated POIs'][2],
+                    review: stats['POIs Marked for Review'][2]
+                };
+                tableConfig.featurepercents.pois = {
+                    unmatched: formatPercent(stats['Percentage of Unmatched POIs'][2]),
+                    merged: formatPercent(stats['Percentage of POIs Conflated'][2]),
+                    review: formatPercent(stats['Percentage of POIs Marked for Review'][2])
+                };
+                featuresCount++;
+            }
+
+            //Add Road stats if present
+            if (stats.Roads) {
+                tableConfig.layerfeatures.count[featuresCount] = 'roads';
+                tableConfig.layerfeatures[RefLayerName].roads = stats.Roads[0];
+                tableConfig.layerfeatures[SecLayerName].roads = stats.Roads[1];
+                tableConfig.layerfeatures[ConflatedLayer].roads = stats.Roads[2];
+
+                tableConfig.featurecounts.roads = {
+                    unmatched: stats['Unmatched Roads'][2],
+                    merged: stats['Conflated Roads'][2],
+                    review: stats['Roads Marked for Review'][2]
+                };
+                tableConfig.featurepercents.roads = {
+                    unmatched: formatPercent(stats['Percentage of Unmatched Roads'][2]),
+                    merged: formatPercent(stats['Percentage of Roads Conflated'][2]),
+                    review: formatPercent(stats['Percentage of Roads Marked for Review'][2])
+                };
+                featuresCount++;
+            }
+
+            //Add Building stats if present
+            if (stats.Buildings) {
+                tableConfig.layerfeatures.count[featuresCount] = 'buildings';
+                tableConfig.layerfeatures[RefLayerName].buildings = stats.Buildings[0];
+                tableConfig.layerfeatures[SecLayerName].buildings = stats.Buildings[1];
+                tableConfig.layerfeatures[ConflatedLayer].buildings = stats.Buildings[2];
+
+                tableConfig.featurecounts.buildings = {
+                    unmatched: stats['Unmatched Buildings'][2],
+                    merged: stats['Conflated Buildings'][2],
+                    review: stats['Buildings Marked for Review'][2]
+                };
+                tableConfig.featurepercents.buildings = {
+                    unmatched: formatPercent(stats['Percentage of Unmatched Buildings'][2]),
+                    merged: formatPercent(stats['Percentage of Buildings Conflated'][2]),
+                    review: formatPercent(stats['Percentage of Buildings Marked for Review'][2])
+                };
+                featuresCount++;
+            }
 
             //Add waterways stats if present
             if (stats.Waterways) {
@@ -344,45 +360,10 @@ export default class LayerMetadata {
                     merged: formatPercent(stats['Percentage of Waterways Conflated'][2]),
                     review: formatPercent(stats['Percentage of Waterways Marked for Review'][2])
                 };
+                featuresCount++;
             }
 
             this.download += '\nStatistics:\n';
-
-            if (ConflatedLayer.includes('Differentials')) {
-                // eslint-disable-next-line radix
-                let poiOrig = parseInt(stats.POIs[0]), poiNew = parseInt(stats['New POIs'][3]),
-                    // eslint-disable-next-line radix
-                    buildOrig = parseInt(stats.Buildings[0]), buildNew = parseInt(stats['New Buildings'][3]),
-                    // eslint-disable-next-line radix
-                    kmOrig = parseInt(stats.Buildings[0]) / 1000.0, kmNew = parseInt(stats['New Buildings'][3]);
-
-
-                tableConfig.diffstats = {
-                    Differential: {
-                        1: 'original',
-                        2: 'new',
-                        3: 'total'
-                    },
-                    POIs: {
-                        original: poiOrig,
-                        new: poiNew,
-                        total: poiOrig + poiNew
-                    },
-                    Buildings: {
-                        original: buildOrig,
-                        buildNew: buildNew,
-                        total: poiOrig + poiNew
-                    },
-                    kmOrig: {
-                        original: kmOrig.toFixed.toFixed(2),
-                        kmNew: kmNew.toFixed(2),
-                        total: (kmOrig + kmNew).toFixed(2)
-                    }
-                };
-
-                this.download += '\nDiff Stats:\n';
-                this.addToDownload(tableConfig.diffstats);
-            }
 
             this.download += '\nLayer Counts:\n';
             this.addToDownload(tableConfig.layercounts);
