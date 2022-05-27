@@ -18,7 +18,7 @@ import RBush from 'rbush';
 
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { xml as d3_xml } from 'd3-request';
-import { utilDetect } from '../util/detect';
+import axios from 'axios/dist/axios';
 
 import osmAuth from 'osm-auth';
 import { JXON } from '../util/jxon';
@@ -31,11 +31,9 @@ import {
     osmRelation,
     osmWay
 } from '../osm';
-import { services } from '../services/index';
 
 import {
     utilRebind,
-    utilIdleWorker,
     utilTiler,
     utilQsString
 } from '../util';
@@ -67,7 +65,7 @@ if (!window.mocha) {
 
 var _blacklists = ['.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*'];
 var _tileCache = { loaded: {}, inflight: {}, seen: {} };
-var _nodeCountCache = { loaded: {}, inflight: {} };
+var _nodeCountCache = { loaded: {}, loading: {} /*inflight*/ };
 var _noteCache = { loaded: {}, inflight: {}, inflightPost: {}, note: {}, rtree: new RBush() };
 var _userCache = { toLoad: {}, user: {} };
 var _changeset = {};
@@ -430,13 +428,16 @@ export default {
         _rateLimitError = undefined;
 
         _forEach(_tileCache.inflight, abortRequest);
-        // _forEach(_nodeCountCache.inflight, abortRequest);
+        if (_nodeCountCache.inflight) {
+            _nodeCountCache.inflight.cancel();
+            console.log("cancel from reset");
+        }
         _forEach(_noteCache.inflight, abortRequest);
         _forEach(_noteCache.inflightPost, abortRequest);
         if (_changeset.inflight) abortRequest(_changeset.inflight);
 
         _tileCache = { loaded: {}, inflight: {}, seen: {} };
-        _nodeCountCache = { loaded: {}, inflight: {} };
+        _nodeCountCache = { loaded: {}, loading: {} /*inflight*/ };
         _noteCache = { loaded: {}, inflight: {}, inflightPost: {}, note: {}, rtree: new RBush() };
         _userCache = { toLoad: {}, user: {} };
         _changeset = {};
@@ -998,21 +999,37 @@ export default {
 
     getNodesCount: async function( projection, zoom ) {
         const tiles = this.getViewTiles(projection, zoom);
-
+        const cancelToken = axios.CancelToken.source();
         //see which tile counts are already cached
         const tilesToBeLoaded = tiles.filter(tile => {
-            return !(_nodeCountCache.loaded[tile.id] !== undefined || _nodeCountCache.inflight[tile.id]);
+            return !(_nodeCountCache.loaded[tile.id] !== undefined || _nodeCountCache.loading[tile.id]);
         })
 
         //console.log(tiles.length + " vs " + tilesToBeLoaded.length);
 
         if ( tilesToBeLoaded.length > 0 ) {
+        // abort inflight nodecount requests that are no longer needed
+        if (_nodeCountCache.inflight) {
+            console.log(_nodeCountCache.inflight);
+            console.log("cancel from getNodesCount");
+            _nodeCountCache.inflight.cancel();
+            delete _nodeCountCache.inflight;
+            // dispatch.call('loaded');    // stop the spinner
+        }
+
             tilesToBeLoaded.forEach((tile) => {
-                _nodeCountCache.inflight[tile.id] = true;
+                _nodeCountCache.loading[tile.id] = true;
             });
-            const counts = await Hoot.api.getTileNodesCount( tilesToBeLoaded );
+            _nodeCountCache.inflight = cancelToken;
+            let counts;
+            try {
+                counts = await Hoot.api.getTileNodesCount( tilesToBeLoaded, cancelToken.token );
+                delete _nodeCountCache.inflight;
+            } catch(rej) {
+                console.log("getTileNodesCount canceled");
+            }
             tilesToBeLoaded.forEach((tile) => {
-                delete _nodeCountCache.inflight[tile.id];
+                delete _nodeCountCache.loading[tile.id];
                 _nodeCountCache.loaded[tile.id] = counts.tilecounts[tile.id];
             });
         }
@@ -1096,13 +1113,17 @@ export default {
     loadTiles: async function(projection, zoom, callback) {
         if (_off) return;
 
-        if (!_isEmpty(_nodeCountCache.inflight)) return;
         const tileZ = Math.min(zoom, _tileZoom);
-        const count = await this.getNodesCount(projection, tileZ);
+        let count;
+        try {
+            count = await this.getNodesCount(projection, tileZ);
+        } catch(rej) {
+            console.log("getNodesCount canceled");
+        }
         // console.log("nodesCount ->" + tileZ + ": " + count);
-        if (isNaN(count) || count > 10000) {
+        if (isNaN(count) || count > 10000 || count === 0) {
             //Hoot.context.flush();
-            callback("Too many features to load");//call editOff
+            callback("Too many features to load->" + count);//call editOff
             dispatch.call('loaded');     // stop the spinner
             var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
             visLayers.forEach(layer => Hoot.events.emit( 'layer-loaded', layer.name ));
