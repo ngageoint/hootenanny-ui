@@ -1067,7 +1067,7 @@ export default {
             x = x * 2;
             y = y * 2;
 
-            // exp is used to calculae the 2^exp number of tiles at each subsequent zoom level
+            // exp is used to calculate the 2^exp number of tiles at each subsequent zoom level
             let exp = zoom - id.z;
             let every = false;
             for (let childX = x; childX <= (x + 2^exp); childX++) {
@@ -1100,9 +1100,12 @@ export default {
         const tileZ = Math.min(zoom, _tileZoom);
         const count = await this.getNodesCount(projection, tileZ);
         // console.log("nodesCount ->" + tileZ + ": " + count);
-        if (isNaN(count) || count > 4000) {
+        if (isNaN(count) || count > 10000) {
             //Hoot.context.flush();
             callback("Too many features to load");//call editOff
+            dispatch.call('loaded');     // stop the spinner
+            var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
+            visLayers.forEach(layer => Hoot.events.emit( 'layer-loaded', layer.name ));
             return;
         }
 

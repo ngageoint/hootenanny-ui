@@ -62,7 +62,7 @@ var kMax = geoZoomToScale(24, TILESIZE);
 
 
 export function rendererMap(context) {
-    var dispatch = d3_dispatch('move', 'drawn');
+    var dispatch = d3_dispatch('move', 'drawn', 'toomanynodes');
     var projection = context.projection;
     var curtainProjection = context.curtainProjection;
     var drawLayers = svgLayers(projection, context);
@@ -88,6 +88,8 @@ export function rendererMap(context) {
     var minzoom = 0;
     var mouse;
     var mousemove;
+
+    var _tooManyNodes = false;
 
     var zoom = d3_zoom()
         .scaleExtent([kMin, kMax])
@@ -251,6 +253,10 @@ export function rendererMap(context) {
         });
 
         map.dimensions(utilGetDimensions(selection));
+
+        context.map().on('move.nodeCount', function() {
+            _tooManyNodes = false;
+        });
     }
 
 
@@ -614,11 +620,14 @@ export function rendererMap(context) {
         if ( map.editable() ) {
             context.loadTiles( projection, (err, result) => {
                 if (!err) {
+                    _tooManyNodes = false;
                     if ( Hoot.layers.mergedLayer && Hoot.layers.mergedLayer.reviewItem ) {
                         Hoot.events.emit( 'layer-reviews' );
                     }
                 } else {
                     console.log(err);
+                    _tooManyNodes = true;
+                    dispatch.call('toomanynodes', this);
                     editOff();
                 }
             } );
@@ -633,11 +642,10 @@ export function rendererMap(context) {
         return map;
     }
 
-    // map.debouncedBelowMaxNodes = _debounce( async function() {
-    //     const count = await context.connection().getNodesCount(projection, map.zoom());
-    //     console.log(count);
-    //     return count < 4000;
-    // }, 300);
+    map.tooManyNodes = function() {
+        return _tooManyNodes;
+    };
+
 
     var immediateRedraw = function(difference, extent) {
         if (!difference && !extent) cancelPendingRedraw();
@@ -990,6 +998,7 @@ export function rendererMap(context) {
         if (!osmLayer.empty() && osmLayer.classed('disabled')) return false;
         // if (map.zoom() >= context.minEditableZoom()) return true;
         // return map.debouncedBelowMaxNodes();//move this
+        if (map.tooManyNodes()) return false;
         return map.zoom() >= context.minEditableZoom();
     };
 

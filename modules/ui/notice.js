@@ -32,12 +32,16 @@ export function uiNotice(context) {
 
 
         function disableTooHigh() {
-            var canEdit = context.map().zoom() >= context.minEditableZoom();
+            var canEdit = context.map().zoom() >= context.minEditableZoom()
+                && !context.map().tooManyNodes();
             div.style('display', canEdit ? 'none' : 'block');
         }
 
         context.map()
             .on('move.notice', _debounce(disableTooHigh, 500));
+
+        context.map()
+            .on('toomanynodes', _debounce(disableTooHigh, 500));
 
         disableTooHigh();
     };
