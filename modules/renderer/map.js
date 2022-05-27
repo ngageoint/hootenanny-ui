@@ -624,6 +624,7 @@ export function rendererMap(context) {
                     if ( Hoot.layers.mergedLayer && Hoot.layers.mergedLayer.reviewItem ) {
                         Hoot.events.emit( 'layer-reviews' );
                     }
+                    drawVector( difference, extent );
                 } else {
                     console.log(err);
                     _tooManyNodes = true;
@@ -632,7 +633,6 @@ export function rendererMap(context) {
                 }
             } );
 
-            drawVector( difference, extent );
         } else {
             editOff();
         }
