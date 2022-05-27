@@ -22,7 +22,7 @@ export default class AddTranslation {
             title: 'Add Translation',
             form: this.form,
             button: {
-                text: 'Save Edits',
+                text: 'Save',
                 id: 'addTranslationBtn',
                 onClick: () => this.handleSubmit()
             }
@@ -45,20 +45,17 @@ export default class AddTranslation {
     }
 
     validateFields( d ) {
-        let target         = d3.select( `#${ d.id }` ),
-            nameVal        = this.nameInput.property( 'value' ),
-            descriptionVal = this.descriptionInput.property( 'value' ),
-            templateVal    = this.templateInput.property( 'value' );
+        let name        = this.nameInput.property( 'value' ),
+            description = this.descriptionInput.property( 'value' ),
+            template    = this.templateInput.property( 'value' );
 
-        if ( !target.property( 'value' ).length ) {
-            target.classed( 'invalid', true );
-        } else {
-            target.classed( 'invalid', false );
-        }
+        this.nameInput.classed( 'invalid', !name.length );
+        this.descriptionInput.classed( 'invalid', !description.length );
+        this.templateInput.classed( 'invalid', !template.length );
 
-        let formValid = nameVal.length && descriptionVal.length && templateVal.length;
+        let formValid = name.length && description.length && template.length;
 
-        this.submitButton.node().disabled = !formValid;
+        this.submitButton.attr('disabled', formValid ? null : true);
     }
 
     handleSubmit() {
