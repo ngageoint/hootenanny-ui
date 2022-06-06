@@ -105,7 +105,7 @@ export function rendererFeatures(context) {
 
     defineFeature('points', function isPoint(entity, resolver, geometry) {
         return geometry === 'point';
-    }, 200);
+    });
 
     defineFeature('traffic_roads', function isTrafficRoad(entity) {
         return traffic_roads[entity.tags.highway];
@@ -128,7 +128,7 @@ export function rendererFeatures(context) {
             entity.tags.parking === 'carports' ||
             entity.tags.parking === 'garage_boxes'
         );
-    }, 250);
+    });
 
     defineFeature('landuse', function isLanduse(entity, resolver, geometry) {
         return geometry === 'area' &&
