@@ -17,6 +17,7 @@ import ModifyFolder       from '../modals/modifyFolder';
 import ExportData from '../modals/exportData';
 import ExportAlphaShape from '../modals/exportAlphaShape';
 import ExportTaskGrid from '../modals/exportTaskGrid';
+import { rateLimit } from '../../config/apiConfig';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -55,7 +56,7 @@ export default class Datasets extends Tab {
             },
             {
                 title: 'Public Data',
-                icon: JSON.parse(Hoot.context.storage( 'publicVisibility' )) ? 'visibility' : 'visibility_off',
+                icon: JSON.parse(Hoot.context.storage( 'publicVisibilityDatasets' )) ? 'visibility' : 'visibility_off',
                 iconClass: 'public-visibility',
                 onClick: 'toggle-public-visibility'
             }
@@ -133,11 +134,11 @@ export default class Datasets extends Tab {
                         break;
                     }
                     case 'toggle-public-visibility': {
-                        let publicVisibilityPref = JSON.parse(Hoot.context.storage( 'publicVisibility' ));
-                        Hoot.context.storage( 'publicVisibility', !publicVisibilityPref);
+                        let publicVisibilityPref = JSON.parse(Hoot.context.storage( 'publicVisibilityDatasets' ));
+                        Hoot.context.storage( 'publicVisibilityDatasets', !publicVisibilityPref);
                         //Would be better to make this class render() method re-entrant
                         //but for now just surgically update icon
-                        d3.select('i.public-visibility').text(!publicVisibilityPref ? 'visibility' : 'visibility_off');
+                        d3.select('.dataset-buttons i.public-visibility').text(!publicVisibilityPref ? 'visibility' : 'visibility_off');
                         Hoot.events.emit( 'render-dataset-table' );
                         break;
                     }
@@ -197,7 +198,7 @@ export default class Datasets extends Tab {
      * @param toDelete - array of items to delete
      */
     deleteItems( toDelete ) {
-        return Promise.all( _map( toDelete, item => {
+        const deleteItem = item => {
             let data = item.data || item,
                 node = this.table.selectAll( `g[data-type="${ data.type }"][data-id="${ data.id }"]` );
 
@@ -235,7 +236,17 @@ export default class Datasets extends Tab {
                         });
                 }
             }
-        } ) );
+        };
+        //approach described here https://stackoverflow.com/a/51020535
+        async function doWork(iterator) {
+            for (let [index, item] of iterator) {
+                await deleteItem(item);
+            }
+        }
+        const iterator = toDelete.entries();
+        const workers = new Array(rateLimit).fill(iterator).map(doWork);
+
+        return Promise.allSettled( workers );
     }
 
     async handleContextMenuClick( [ tree, d, item ] ) {
@@ -284,13 +295,13 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'exportDataset': {
-                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT );
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport );
                 this.exportDatasetModal = new ExportData( translations, d, 'Dataset' ).render();
                 Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
                 break;
             }
             case 'exportMultiDataset': {
-                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT );
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport );
                 let datasets = this.folderTree.selectedNodes;
                 this.exportDatasetModal = new ExportData ( translations, datasets, 'Datasets' ).render();
                 Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
@@ -298,7 +309,7 @@ export default class Datasets extends Tab {
             }
             case 'exportFolder': {
                 //probably don't need to get translations but once on init
-                let translations = (await Hoot.api.getTranslations()).filter( t => t.CANEXPORT);
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport);
                 this.exportDatasetModal = new ExportData( translations, d, 'Folder' ).render();
                 Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
                 break;
@@ -340,7 +351,8 @@ export default class Datasets extends Tab {
      * Listen for re-render
      */
     listen() {
-        Hoot.events.on( 'render-dataset-table', () => this.renderFolderTree() );
-        Hoot.events.on( 'context-menu', ( ...params ) => this.handleContextMenuClick( params ) );
+        const className = this.constructor.name;
+        Hoot.events.listen( className, 'render-dataset-table', () => this.renderFolderTree() );
+        Hoot.events.listen( className, 'context-menu', ( ...params ) => this.handleContextMenuClick( params ) );
     }
 }

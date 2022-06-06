@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import _clone   from 'lodash-es/clone';
+import _cloneDeep   from 'lodash-es/cloneDeep';
 import _find    from 'lodash-es/find';
 import _forEach from 'lodash-es/forEach';
 import _reduce  from 'lodash-es/reduce';
@@ -14,7 +15,7 @@ import { JXON }             from '../../../util/jxon';
 import { t }                from '../../../util/locale';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions/index';
-import { osmNode }          from '../../../osm';
+import { uiFlash } from '../../../ui';
 
 /**
  * @class Merge
@@ -24,57 +25,66 @@ export default class Merge {
      * @param instance - conflicts class
      */
     constructor( instance ) {
+        this.instance = instance;
         this.data = instance.data;
 
         this.mergeArrow = {
             from: null,
             to: null
         };
+
+        this.isPoiPoly = false;
+
+        let that = this;
+        Hoot.context.history()
+            .on('undone.review_merge', function() {
+                that.checkMergeButton.call(that);
+            });
+        Hoot.context.history()
+            .on('redone.review_merge', function() {
+                that.checkMergeButton.call(that);
+            });
     }
 
     /**
-     * Merge together 2 POI nodes
+     * Merge together 2 POI nodes or POI and polygon
      *
      * @returns {Promise<void>}
      */
     async mergeFeatures() {
-        let features = _clone( this.data.currentFeatures ),
-            reverse  = d3.event.ctrlKey || d3.event.metaKey,
-            featureUpdate,
-            featureDelete,
+        let reverse  = (d3.event.ctrlKey || d3.event.metaKey) && !this.isPoiPoly,
+            featureUpdate = _cloneDeep((reverse) ? this.mergeArrow.from : this.mergeArrow.to),
+            featureDelete = _cloneDeep((reverse) ? this.mergeArrow.to : this.mergeArrow.from),
+            features = [featureUpdate, featureDelete],
             mergedFeature,
             reviewRefs;
 
         // show merge button
         this.toggleMergeButton( true );
 
-        if ( reverse ) {
-            // flip features
-            features.reverse();
-        }
-
         // This tag identifies the feature that is being merged into and will be removed by the server
         // after merging is completed. The tag is not needed by POI to Polygon conflation, however,
         // and will be ignored since POIs are always merged into polygons.
-        features[ 0 ].tags[ 'hoot:merge:target' ] = 'yes';
-
-        featureUpdate = features[ 0 ];
-        featureDelete = features[ 1 ];
+        featureUpdate.tags[ 'hoot:merge:target' ] = 'yes';
 
         try {
-            let mergedNode = await this.getMergedNode( features );
+            let mergedElement = await this.getMergedElement( features );
 
-            mergedNode.tags[ 'hoot:status' ] = 3;
+            mergedElement.tags[ 'hoot:status' ] = 3;
 
             Hoot.context.perform(
-                actionChangeTags( featureUpdate.id, mergedNode.tags ),
+                actionChangeTags( featureUpdate.id, mergedElement.tags ),
                 t( 'operations.change_tags.annotation' )
             );
 
-            mergedFeature = featureUpdate; // feature that is updated is now the new merged node
+            mergedFeature = featureUpdate; // feature that is updated is now the new merged feature
         } catch ( e ) {
             window.console.error( e );
-            throw new Error( 'Unable to merge features' );
+            let message = 'Unable to merge features' + ((e.data) ? (': ' + e.data) : ''),
+                type    = 'error';
+            Hoot.message.alert( { message, type } );
+            this.checkMergeButton();
+            return;
         }
 
         try {
@@ -87,19 +97,22 @@ export default class Merge {
             // TODO: get back to this
             // let missingRelationIds = this.getMissingRelationIds( reviewRefs );
         } catch ( e ) {
-            throw new Error( 'Unable to retrieve review references for merged items' );
+            let message = 'Unable to retrieve review references for merged items',
+                type    = 'error';
+            Hoot.message.alert( { message, type } );
+            return;
         }
 
         this.processMerge( reviewRefs, mergedFeature, featureDelete );
     }
 
     /**
-     * Process and finalize the merge by deleting the node being merged and by updating
-     * the tags of both nodes and their parent relations to indicate the relations have been resolved.
+     * Process and finalize the merge by deleting the feature being merged and by updating
+     * the tags of both review features and their parent relations to indicate the relations have been resolved.
      *
-     * @param reviewRefs - reference of nodes being merged
-     * @param mergedFeature - data of merged node
-     * @param featureToDelete - data of node to delete
+     * @param reviewRefs - reference of features being merged
+     * @param mergedFeature - data of merged element
+     * @param featureToDelete - data of feature to delete
      */
     processMerge( reviewRefs, mergedFeature, featureToDelete ) {
         let reviewRelationId = this.data.currentReviewItem.relationId;
@@ -139,9 +152,8 @@ export default class Merge {
                 }
 
                 if ( !exists && !refRelation.memberById( mergedFeature.id ) ) {
-                    let newNode = this.createNewRelationNodeMeta( mergedFeature.id, refRelation.id, refRelationMember.index );
-
-                    this.data.mergedConflicts.push( newNode );
+                    let newRelMember = this.createNewRelationMember( mergedFeature, refRelation.id, refRelationMember.index );
+                    this.data.mergedConflicts.push( newRelMember );
                 }
             }
         } );
@@ -158,10 +170,10 @@ export default class Merge {
     /**
      * Generate and parse the new merged feature
      *
-     * @param features - list of nodes to merge
-     * @returns {object} - merged node
+     * @param features - list of features to merge
+     * @returns {object} - merged feature
      */
-    async getMergedNode( features ) {
+    async getMergedElement( features ) {
         let jxonFeatures = [ JXON.stringify( features[ 0 ].asJXON() ), JXON.stringify( features[ 1 ].asJXON() ) ].join( '' ),
             osmXml     = `<osm version="0.6" upload="true" generator="hootenanny">${ jxonFeatures }</osm>`,
             mergedXml  = await Hoot.api.poiMerge( osmXml );
@@ -175,9 +187,9 @@ export default class Merge {
     }
 
     /**
-     * Generate parameters for nodes being merged together
+     * Generate parameters for features being merged together
      *
-     * @param features - list of nodes to merge
+     * @param features - list of features to merge
      * @returns {array} - data of merged items
      */
     getMergeItems( features ) {
@@ -197,7 +209,7 @@ export default class Merge {
     /**
      * Remove any irrelevant reviews that don't reference either of the 2 items being merged together
      *
-     * @param reviewRefs - reference of nodes being merged
+     * @param reviewRefs - reference of features being merged
      * @param mergeIds - ids of items being merged
      * @returns {array} - new list of relevant review items
      */
@@ -214,23 +226,23 @@ export default class Merge {
     }
 
     /**
-     * Generate metadata for merged node
+     * Generate metadata for merged feature
      *
-     * @param mergedNodeId - node ID
+     * @param merged - merged feature
      * @param relationId - relation ID
-     * @param mergedIdx - index of node in relation
+     * @param mergedIdx - index of merged feature in relation
      */
-    createNewRelationNodeMeta( mergedNodeId, relationId, mergedIdx ) {
-        let node = new osmNode(),
+    createNewRelationMember( merged, relationId, mergedIdx ) {
+        let member = {},
             obj  = {};
 
-        node.id    = mergedNodeId;
-        node.type  = 'node';
-        node.role  = 'reviewee';
-        node.index = mergedIdx;
+        member.id    = merged.id;
+        member.type  = merged.type;
+        member.role  = 'reviewee';
+        member.index = mergedIdx;
 
         obj.id  = relationId;
-        obj.obj = node;
+        obj.obj = member;
 
         return obj;
     }
@@ -238,7 +250,7 @@ export default class Merge {
     /**
      * Get IDs of missing relations
      *
-     * @param reviewRefs - reference of nodes being merged
+     * @param reviewRefs - reference of features being merged
      * @returns {array} - list of missing relation IDs
      */
     getMissingRelationIds( reviewRefs ) {
@@ -309,11 +321,23 @@ export default class Merge {
             return;
         }
 
-        let pt1   = d3.geoCentroid( this.mergeArrow.to.asGeoJSON( Hoot.context.graph() ) ),
-            pt2   = d3.geoCentroid( this.mergeArrow.from.asGeoJSON( Hoot.context.graph() ) ),
+        let pt1   = d3.geoCentroid( this.mergeArrow.from.asGeoJSON( Hoot.context.graph() ) ),
+            pt2   = d3.geoCentroid( this.mergeArrow.to.asGeoJSON( Hoot.context.graph() ) ),
             coord = [ pt1, pt2 ];
 
-        if ( mode === 'reverse' ) coord = coord.reverse();
+
+        //Don't allow reverse for poi->poly merge
+        if ( mode === 'reverse' && !this.isPoiPoly) coord = coord.reverse();
+
+        //Warn that reverse is not allowed for poi->poly merge
+        if (mode === 'reverse' && this.isPoiPoly) {
+            let flash = uiFlash()
+                .duration(4000)
+                .iconClass('operation disabled')
+                .text('Can\'t reverse POI->Poly merge');
+
+            flash();
+        }
 
         let gj = mode === 'delete' ? {} : {
             type: 'LineString',
@@ -323,4 +347,39 @@ export default class Merge {
 
         Hoot.context.background().updateArrowLayer( gj );
     }
+
+    checkMergeButton() {
+        let features = _clone( this.data.currentFeatures ),
+            toFeature = features[0] ? Hoot.context.hasEntity( features[0].id ) : null,
+            fromFeature = features[1] ? Hoot.context.hasEntity( features[1].id ) : null;
+
+        if ( toFeature && fromFeature) {
+            this.isPoiPoly = (toFeature.type === 'node' && fromFeature.type === 'way')
+                || (toFeature.type === 'way' && fromFeature.type === 'node');
+
+            let isPoiPoi = (toFeature.type === 'node' && fromFeature.type === 'node');
+
+            let isPolyPoly = (toFeature.type === 'way' && toFeature.isClosed()
+                && fromFeature.type === 'way' && fromFeature.isClosed());
+
+            let isRailWay = (toFeature.type === 'way' && !toFeature.isClosed() && toFeature.tags.railway
+                && fromFeature.type === 'way' && !fromFeature.isClosed() && fromFeature.tags.railway);
+
+            if (this.isPoiPoly || isPoiPoi || isPolyPoly || isRailWay) {
+                this.toggleMergeButton( false );
+                if (this.isPoiPoly) {
+                    let poi = (toFeature.type === 'node') ? toFeature : fromFeature;
+                    let poly = (toFeature.type === 'way') ? toFeature : fromFeature;
+                    this.activateMergeArrow( poi, poly ); //always merge poi->poly
+                } else {
+                    this.activateMergeArrow( fromFeature, toFeature );
+                }
+            } else {
+                this.toggleMergeButton( true );
+            }
+        } else {
+            this.toggleMergeButton( true );
+        }
+    }
+
 }

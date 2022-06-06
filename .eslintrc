@@ -48,6 +48,7 @@
         "no-octal": "error",
         "no-octal-escape": "error",
         "no-proto": "error",
+        "no-prototype-builtins": "off",
         "no-return-assign": "off",
         "no-script-url": "error",
         "no-self-compare": "error",
@@ -75,11 +76,6 @@
         "space-unary-ops": "error",
         "strict": ["error", "safe"],
         "wrap-regex": "off",
-        "quotes": ["error", "single"],
-        "settings": {
-            "flowtype": {
-                "onlyFilesWithFlowAnnotation": true
-            }
-        }
+        "quotes": ["error", "single"]
     }
 }

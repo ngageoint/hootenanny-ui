@@ -29,26 +29,33 @@ export default class API {
         this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
 
         this.queryInterval = this.config.queryInterval;
+        this.runTasksInterval = this.config.runTasksInterval;
         this.conflateTypes = null;
         this.importOpts = null;
         this.changesetOpts = null;
+        this.defaultOverpassQuery = '';
     }
 
     /**
      * Submit a request
      *
+     * If params.path is set then the request is sent to hoot services. Otherwise params.url is used as path
+     *
      * @param params - request data
      * @returns {Promise} - request
      */
     request( params ) {
-        return axios( {
+        const request = {
             url: params.url || `${ this.baseUrl }${ params.path }`,
             method: params.method || 'GET',
             headers: params.headers,
             data: params.data,
             params: params.params,
-            responseType: params.responseType
-        } ).catch( err => {
+            responseType: params.responseType,
+            cancelToken: params.cancelToken
+        };
+
+        return axios( request ).catch( err => {
             let { response } = err;
             let data, message, status, statusText, type;
 
@@ -64,7 +71,10 @@ export default class API {
                 type    = 'error';
             }
 
-            if ( status === 401 && statusText === 'Unauthorized' ) {
+            // only redirect to login page for unauthorized hoot services requests
+            // the axios request may be to non hoot services endpoints (tasking manager for example) and if those
+            // return a 401 there is no reason to logout of hootenanny
+            if ( status === 401 && statusText === 'Unauthorized' && request.url.includes('/hoot-services') ) {
                 window.location.replace( 'login.html' );
             }
 
@@ -73,7 +83,7 @@ export default class API {
     }
 
     internalError( { response } ) {
-        if ( response.status > 500 ) {
+        if ( response && response.status > 500 ) {
             return 'Hoot API is not responding.';
         } else {
             return false;
@@ -102,7 +112,7 @@ export default class API {
                         res( { data, type: 'success', status: 200, jobId } );
                     } else if ( status === 'cancelled' ) {
                         res( { data, type: 'warn', status: 200 } );
-                    } else if ( status === 'failed' ) {
+                    } else if ( status === 'failed' ) {//add a 404 handler to ignore
                         Hoot.api.getJobError(jobId)
                                     .then( resp => {
                                         let message = resp.errors.join('\n');
@@ -129,12 +139,30 @@ export default class API {
                 method: 'GET'
             };
             let that = this;
-            return this.request( params ).then( resp => {
-                that.conflateTypes = resp.data;
-                return that.conflateTypes;
-            });
+            return this.request( params )
+                .then( resp => {
+                    that.conflateTypes = resp.data;
+                    return that.conflateTypes;
+                });
         }
 
+    }
+
+    getDefaultOverpassQuery() {
+        if ( this.defaultOverpassQuery) {
+            return Promise.resolve( this.defaultOverpassQuery );
+        } else {
+            const params = {
+                path: '/grail/getDefaultOverpassQuery',
+                method: 'GET'
+            };
+            let that = this;
+            return this.request( params )
+                .then( resp => {
+                    that.defaultOverpassQuery = resp.data;
+                    return that.defaultOverpassQuery;
+                });
+        }
     }
 
     getSaveUser( userEmail ) {
@@ -224,14 +252,14 @@ export default class API {
                     status: 200,
                     type: 'success'
                 };
-        } )
-        .catch( err => {
-            return {
-                data: err.data,
-                message: 'Error saving favorite opts!',
-                type: 'error'
-            };
-        } );
+            } )
+            .catch( err => {
+                return {
+                    data: err.data,
+                    message: 'Error saving favorite opts!',
+                    type: 'error'
+                };
+            } );
     }
 
     deleteFavoriteOpts( opts ) {
@@ -462,21 +490,21 @@ export default class API {
             .then( resp =>
                 resp.data.sort( ( a, b ) => {
                     // Set undefined to false
-                    if ( !a.DEFAULT ) a.DEFAULT = false;
-                    if ( !b.DEFAULT ) b.DEFAULT = false;
-                    // We check DEFAULT property, putting true first
-                    if ( a.DEFAULT !== b.DEFAULT ) {
-                        return ( a.DEFAULT ) ? -1 : 1;
+                    if ( !a.default ) a.default = false;
+                    if ( !b.default ) b.default = false;
+                    // We check default property, putting true first
+                    if ( a.default !== b.default ) {
+                        return ( a.default ) ? -1 : 1;
                     } else {
-                        // We only get here if the DEFAULT prop is equal
-                        return d3.ascending( a.NAME.toLowerCase(), b.NAME.toLowerCase() );
+                        // We only get here if the default prop is equal
+                        return d3.ascending( a.name.toLowerCase(), b.name.toLowerCase() );
                     }
                 } ) );
     }
 
     getTranslation( name ) {
         const params = {
-            path: `/ingest/customscript/getscript?SCRIPT_NAME=${ name }`,
+            path: `/ingest/customscript/getscript?scriptName=${ name }`,
             method: 'GET'
         };
 
@@ -486,8 +514,124 @@ export default class API {
 
     getDefaultTranslation( path ) {
         const params = {
-            path: `/ingest/customscript/getdefaultscript?SCRIPT_PATH=${ path }`,
+            path: `/ingest/customscript/getdefaultscript?scriptPath=${ path }`,
             method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    postTranslation( data, paramData ) {
+        let payload = data;
+
+        const params = {
+            path: '/ingest/customscript/save',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            params: paramData,
+            data: payload
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    deleteTranslation( identifier ) {
+        const params = {
+            path: `/ingest/customscript/deletescript?scriptInfo=${ identifier }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( ( err ) => {
+                err.message = err.data;
+                Hoot.message.alert( err );
+            });
+    }
+
+    deleteTranslationFolder( folderId ) {
+        const params = {
+            path: '/ingest/customscript/deleteFolder',
+            method: 'DELETE',
+            params: {
+                folderId
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    createTranslationFolder( paramData ) {
+        if ( !paramData.isPublic ) {
+            paramData.isPublic = false;
+        }
+
+        const params = {
+            path: '/ingest/customscript/createfolder',
+            method: 'POST',
+            params: paramData
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getTranslationFolders() {
+        const params = {
+            path: '/ingest/customscript/getFolders',
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    modifyTranslation( data, paramData ) {
+        const params = {
+            path: '/ingest/customscript/modifyTranslation',
+            method: 'PUT',
+            params: paramData,
+            data
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( ( err ) => {
+                err.message = err.data;
+                Hoot.message.alert( err );
+            });
+    }
+
+    moveTranslationFolder( paramData ) {
+        const params = {
+            path: '/ingest/customscript/moveFolder',
+            method: 'PUT',
+            params: paramData
+        };
+
+        return this.request( params )
+            .then( resp => {
+                if ( resp.data.success === false ) {
+                    const message = 'error moving translation folder',
+                          type = 'error';
+
+                    return Promise.reject( { message, type } );
+                }
+
+                return resp.data;
+            } );
+    }
+
+    changeTranslationVisibility( paramData ) {
+        const params = {
+            path: '/ingest/customscript/changeVisibility',
+            method: 'PUT',
+            params: paramData
         };
 
         return this.request( params )
@@ -515,10 +659,11 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    getBookmarkById( bookmarkId ) {
+    getBookmarkById( queryParams ) {
         const params = {
-            path: `/job/review/bookmarks/get?bookmarkId=${ bookmarkId }`,
-            method: 'GET'
+            path: '/job/review/bookmarks/get',
+            method: 'GET',
+            params: queryParams
         };
 
         return this.request( params )
@@ -734,7 +879,7 @@ export default class API {
      * @param data - upload data
      * @returns {Promise} - request
      */
-    uploadDataset( data ) {
+    uploadDataset( data, cancelToken ) {
         if ( !data.TRANSLATION || !data.INPUT_TYPE || !data.formData || !data.INPUT_NAME ) {
             return false;
         }
@@ -749,7 +894,8 @@ export default class API {
                 NONE_TRANSLATION: data.NONE_TRANSLATION,
                 FOLDER_ID: data.folderId
             },
-            data: data.formData
+            data: data.formData,
+            cancelToken: cancelToken
         };
 
         if ( data.ADV_UPLOAD_OPTS && data.ADV_UPLOAD_OPTS.length ) {
@@ -788,7 +934,7 @@ export default class API {
 
     saveDataset( id, name ) {
         const params = {
-            path: `/job/export/${id}?outputname=${name}&removecache=true`,
+            path: `/job/export/${id}?outputname=${name}`,
             responseType: 'arraybuffer',
             method: 'GET'
         };
@@ -809,8 +955,8 @@ export default class API {
 
         return this.request( params )
             .then( resp => {
-                let fileBlob = new Blob( [ resp.data ], { type: 'application/xml' } );
-                saveAs( fileBlob, `changeset_${id}.osc` );
+                let fileBlob = new Blob( [ resp.data ], { type: 'application/zip' } );
+                saveAs( fileBlob, `changeset_${id}.osc.zip` );
             })
             .catch( err => {
                 console.error(err);
@@ -935,22 +1081,6 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    postTranslation( data ) {
-        let payload = data.data;
-
-        const params = {
-            path: `/ingest/customscript/save?SCRIPT_NAME=${ data.NAME }&SCRIPT_DESCRIPTION=${ data.DESCRIPTION }`,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain'
-            },
-            data: payload
-        };
-
-        return this.request( params )
-            .then( resp => resp.data );
-    }
-
     /**
      * Add a new folder to the database
      *
@@ -972,7 +1102,11 @@ export default class API {
         }
 
         return this.request( params )
-            .then( resp => resp.data );
+            .then( resp => resp.data )
+            .catch( ( err ) => {
+                err.message = err.data;
+                Hoot.message.alert( err );
+            });
     }
 
     updateMapFolderLinks( { mapId, folderId } ) {
@@ -1042,10 +1176,11 @@ export default class API {
                 method: 'GET'
             };
             let that = this;
-            return this.request( params ).then( resp => {
-                that.importOpts = resp.data.hoot2[0].members; //might need to refactor this response
-                return that.importOpts;
-            });
+            return this.request( params )
+                .then( resp => {
+                    that.importOpts = resp.data.hoot2[0].members; //might need to refactor this response
+                    return that.importOpts;
+                });
         }
     }
 
@@ -1058,10 +1193,11 @@ export default class API {
                 method: 'GET'
             };
             let that = this;
-            return this.request( params ).then( resp => {
-                that.changesetOpts = resp.data.members;
-                return that.changesetOpts;
-            });
+            return this.request( params )
+                .then( resp => {
+                    that.changesetOpts = resp.data.members;
+                    return that.changesetOpts;
+                });
         }
     }
 
@@ -1141,16 +1277,6 @@ export default class API {
         };
 
         return this.request( params );
-    }
-
-    deleteTranslation( name ) {
-        const params = {
-            path: `/ingest/customscript/deletescript?SCRIPT_NAME=${ name }`,
-            method: 'GET'
-        };
-
-        return this.request( params )
-            .then( resp => resp.data );
     }
 
     deleteBasemap( name ) {
@@ -1317,7 +1443,6 @@ export default class API {
             .catch( err => {
                 return {
                     data: err.data,
-
                     message: err.data.message || 'Error doing pull!',
                     status: err.status,
                     type: 'error'
@@ -1325,35 +1450,46 @@ export default class API {
             } );
     }
 
-    createDifferentialChangeset( data ) {
+    deriveChangeset( data, paramData ) {
         const params = {
-            path: '/grail/createdifferentialchangeset',
+            path: '/grail/createchangeset',
             method: 'POST',
+            params: paramData,
             data
         };
 
         return this.request( params )
             .then( resp => this.statusInterval( resp.data.jobid ) )
             .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Differential for selected region created.',
-                    status: 200,
-                    type: 'success'
-                };
+                const responseData = resp.data;
+                if ( responseData && responseData.status === 'cancelled' ) {
+                    return {
+                        data: responseData,
+                        message: `${ paramData.deriveType } job cancelled.`,
+                        status: 400,
+                        type: 'warn'
+                    };
+                } else {
+                    return {
+                        data: responseData,
+                        message: `${ paramData.deriveType } for selected region created.`,
+                        status: 200,
+                        type: 'success'
+                    };
+                }
             } )
             .catch( err => {
                 return {
-                    message : err.data.message || 'Differential changeset failed',
+                    message : err.data.message || `${ paramData.deriveType } changeset failed`,
                     status  : err.status,
                     type    : err.type
                 };
             } );
     }
 
-    changesetStats( jobId, includeTags ) {
+    changesetStats( jobId ) {
         const params = {
-            path: `/grail/changesetstats?jobId=${ jobId }&includeTags=${ includeTags }`,
+            path: `/grail/changesetstats?jobId=${ jobId }`,
             method: 'GET'
         };
 
@@ -1394,7 +1530,7 @@ export default class API {
                 };
             } )
             .catch( err => {
-                const message = err.data.message || 'Changeset upload failed.',
+                const message = err.data.message || 'Changeset upload failed. Diff-error file is available for download in job panel.',
                       status  = err.status,
                       type    = err.type;
 
@@ -1402,34 +1538,13 @@ export default class API {
             } );
     }
 
-    deriveChangeset( data, replacement ) {
+    getTimeoutTasks( projectId ) {
         const params = {
-            path: '/grail/derivechangeset',
-            method: 'POST',
-            params: {
-                replacement
-            },
-            data
+            path: `/grail/gettimeouttasks?projectId=${ projectId }`,
+            method: 'GET'
         };
 
-        return this.request( params )
-            .then( resp => this.statusInterval( resp.data.jobid ) )
-            .then( resp => {
-                return {
-                    data: resp.data,
-                    message: 'Derive changeset has succeeded.',
-                    status: 200,
-                    type: 'success'
-                };
-            } )
-            .catch( err => {
-                return {
-                    data: err.data,
-                    message: err.data.message || 'Error doing derive changeset!',
-                    status: err.status,
-                    type: 'error'
-                };
-            } );
+        return this.request( params );
     }
 
     /****************** TRANSLATIONS *******************/
@@ -1518,6 +1633,31 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    overpassSyncCheck( projectTaskInfo ) {
+        const params = {
+            path: `/grail/overpasssynccheck?projectTaskInfo=${ projectTaskInfo }`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => this.statusInterval( resp.data.jobid ) )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: 'Overpass sync complete.',
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                return {
+                    message: err.data,
+                    status: err.status,
+                    type: err.type
+                };
+            } );
+    }
+
     /**
      * Used to load geojson output (alpha shape, task grids) to the map
      *
@@ -1535,4 +1675,274 @@ export default class API {
 
         return this.request( params );
     }
+
+    /**
+     * TM2 API CALLS
+     */
+
+    /**
+     * Retrieves all the projects from tasking manager
+     */
+    getTMProjects( pageNumber ) {
+        const page = pageNumber || 1;
+
+        const params = {
+            url: `/tasks/hootprojects.json?hootProjects=true&page=${page}`,
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( () => {
+                let alert = {
+                    message: 'Failed to retrieve projects list from tasking manager.',
+                    type: 'error',
+                    status: 400
+                };
+
+                return alert;
+            } );
+    }
+
+    /**
+     * Retrieves all the tasks from tasking manager for the specified project
+     */
+    getTMTasks( projectId ) {
+        const params = {
+            url: `/tasks/project/${ projectId }/tasks.json`,
+            method: 'GET'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( () => {
+                let alert = {
+                    message: 'Failed to retrieve tasks.',
+                    type: 'error'
+                };
+
+                Hoot.message.alert( alert );
+            } );
+    }
+
+    /**
+     * Sets the lock state for the specified task under the specified project
+     */
+    setTaskLock( projectId, taskId, lock ) {
+        let lockParam = lock ? 'lock' : 'unlock';
+
+        const params = {
+            url: `/tasks/project/${ projectId }/task/${ taskId }/${ lockParam }`,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json, text/javascript, */*',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: `Task ${ taskId } ${ lockParam }ed`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                let alert = {
+                    message: `Failed to ${ lockParam } task ${ taskId } for project ${ projectId }.\n` +
+                        'Make sure you are logged into tasking manager in a different tab and that you ' +
+                        'have not locked any other tasks for this project',
+                    type: 'error',
+                    status: err.status
+                };
+
+                if ( err.data && err.data.error_msg ) {
+                    alert.message = err.data.error_msg;
+                    alert.status = err.status;
+                }
+
+                return alert;
+            } );
+    }
+
+    /**
+     * Marks the specified task under the specified project as done
+     */
+    markTaskDone( projectId, taskId ) {
+        const params = {
+            url: `/tasks/project/${ projectId }/task/${ taskId }/done`,
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    /**
+     * Marks the specified task under the specified project as validated
+     */
+    validateTask( projectId, taskId, formData ) {
+        const params = {
+            url: `/tasks/project/${ projectId }/task/${ taskId }/validate`,
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            data: formData
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+
+    /**
+     * TM4 API CALLS
+     */
+
+    /**
+     * Retrieves all the projects from tasking manager 4
+     */
+    getTM4Projects( pageNumber ) {
+        const page = pageNumber || 1;
+        const params = {
+            url: '/tm4api/v2/projects/',
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            params: {
+                hootenanny: true,
+                page: page
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( () => {
+                let alert = {
+                    message: 'Failed to retrieve projects list from tasking manager.',
+                    type: 'error',
+                    status: 400
+                };
+
+                return alert;
+            } );
+    }
+
+    /**
+     * Retrieves all the tasks from tasking manager for the specified project
+     */
+    getTM4Tasks( projectId ) {
+        let authToken = this.getTM4AuthToken();
+        const params = {
+            url: `/tm4api/v2/projects/${ projectId }/`,
+            method: 'GET',
+            headers: {
+              'Authorization': authToken
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( () => {
+                let alert = {
+                    message: 'Failed to retrieve tasks.',
+                    type: 'error'
+                };
+
+                Hoot.message.alert( alert );
+            } );
+    }
+
+    /**
+     * Sets the lock state for the specified task under the specified project
+     */
+    setTM4TaskLock( projectId, taskId, lock ) {
+        let lockParam = lock ? 'lock-for-conflation' : 'stop-mapping';
+        let authToken = this.getTM4AuthToken();
+
+        const params = {
+            url: `/tm4api/v2/projects/${ projectId }/tasks/actions/${ lockParam }/${ taskId }/`,
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json',
+                'Authorization': authToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+
+        let lockStatus = lock ? 'lock' : 'unlock';
+        return this.request( params )
+            .then( resp => {
+                return {
+                    data: resp.data,
+                    message: `Task ${ taskId } ${ lockStatus }ed`,
+                    status: 200,
+                    type: 'success'
+                };
+            } )
+            .catch( err => {
+                let alert = {
+                    message: `Failed to ${ lockStatus } task ${ taskId } for project ${ projectId }.\n` +
+                        'Make sure you are logged into tasking manager in a different tab and that you ' +
+                        'have not locked any other tasks for this project',
+                    type: 'error',
+                    status: err.status
+                };
+
+                if ( err.data && err.data.error_msg ) {
+                    alert.message = err.data.error_msg;
+                    alert.status = err.status;
+                }
+
+                return alert;
+            } );
+    }
+
+    /**
+     * Marks the specified task under the specified project as done
+     */
+    markTM4TaskDone( projectId, taskId, status ) {
+        let authToken = this.getTM4AuthToken();
+
+        const params = {
+            url: `/tm4api/v2/projects/${ projectId }/tasks/actions/unlock-after-mapping/${ taskId }/`,
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'Authorization': authToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            data: {
+                status: status
+            }
+        };
+
+        return this.request( params )
+            .then( resp => resp.data );
+    }
+
+    getTM4AuthToken() {
+        const match = document.cookie.match(new RegExp('(^| )authToken=([^;]+)'));
+        let authToken;
+        if (match) {
+            authToken = decodeURI(match[2]);
+        }
+
+        return authToken;
+    }
+
 }

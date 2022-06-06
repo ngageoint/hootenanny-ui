@@ -1,7 +1,5 @@
 import FormFactory from './formFactory';
 
-import { formatBbox } from './utilities';
-
 export default class DifferentialChangeset {
     constructor( instance ) {
         this.instance = instance;
@@ -9,11 +7,16 @@ export default class DifferentialChangeset {
    }
 
     async render() {
-        let titleText = this.instance.bboxSelectType === 'visualExtent'
-            ? 'Create Differential from Visual Extent'
-            : this.instance.bboxSelectType === 'boundingBox'
-                ? 'Create Differential from Bounding Box'
-                : 'Create Differential';
+        let titleMode = 'Create';
+        let titleModifier = (this.instance.operationName === 'createDifferentialWithTagsChangeset') ?
+            'Diff w/Tags' : 'Differential';
+        this.deriveType = [titleModifier, 'changeset'].join(' ');
+        let titleExtent = (this.instance.boundsSelectType === 'visualExtent')
+            ? 'from Visual Extent'
+            : (this.instance.boundsSelectType === 'boundingBox')
+                ? 'from Bounding Box'
+                : '';
+        let titleText = [titleMode, titleModifier, titleExtent].join(' ');
 
         this.advOpts = await Hoot.api.getAdvancedOptions('differential');
         let advForm = this.advOpts.map(this.formFactory.advOpt2DomMeta);
@@ -38,23 +41,34 @@ export default class DifferentialChangeset {
     }
 
     handleSubmit() {
-        const bbox   = this.instance.bbox,
-              params = {};
+        const bounds   = this.instance.bounds,
+              data = {};
 
-        if ( !bbox ) {
+        if ( !bounds ) {
             Hoot.message.alert( 'Need a bounding box!' );
             return;
         }
 
-        params.BBOX = formatBbox( bbox );
+        data.bounds = bounds;
 
         if ( this.instance.overpassQueryContainer.select('input').property('checked') ) {
-            params.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
+            data.customQuery = this.instance.overpassQueryContainer.select( 'textarea' ).property( 'value' );
         }
 
-        params.ADV_OPTIONS = this.formFactory.getAdvOpts(this.container, this.advOpts);
+        data.ADV_OPTIONS = this.formFactory.getAdvOpts(this.container, this.advOpts);
 
-        Hoot.api.createDifferentialChangeset( params )
+        if ( this.instance.boundsSelectType === 'customDataExtent' &&
+            sessionStorage.getItem('tm:project') && sessionStorage.getItem('tm:task') ) {
+            data.taskInfo = sessionStorage.getItem('tm:project') + ', ' + sessionStorage.getItem('tm:task');
+        }
+
+        data.APPLY_TAGS = this.deriveType.includes('w/Tags');
+
+        const params = {
+            deriveType : this.deriveType
+        };
+
+        Hoot.api.deriveChangeset( data, params )
             .then( ( resp ) => Hoot.message.alert( resp ) );
 
         this.container.remove();

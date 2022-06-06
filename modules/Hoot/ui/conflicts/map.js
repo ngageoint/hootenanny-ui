@@ -30,12 +30,22 @@ export default class Map {
      * @param panTo - true | false
      */
     highlightLayer( item1, item2, panTo ) {
-        let feature        = item1 ? Hoot.context.hasEntity( item1.id ) : null,
-            againstFeature = item2 ? Hoot.context.hasEntity( item2.id ) : null,
-            relation       = this.instance.graphSync.getCurrentRelation();
-
         // reference of current feature data in review process
-        this.data.currentFeatures = [ feature, againstFeature ];
+        this.data.currentFeatures = [];
+        let feature         = null,
+            againstFeature  = null,
+            relation        = this.instance.graphSync.getCurrentRelation();
+
+        //TODO: check hoot:status, input1 should be against feature by default
+        //i.e. we merge into the reference feature by default
+        if ( item1 ) {
+            feature = Hoot.context.hasEntity( item1.id );
+            this.data.currentFeatures.push( feature );
+        }
+        if ( item2 ) {
+            againstFeature = Hoot.context.hasEntity( item2.id );
+            this.data.currentFeatures.push( againstFeature );
+        }
 
         this.instance.info.buildTagTable();
 
@@ -48,16 +58,7 @@ export default class Map {
             this.setHighlight();
         }
 
-
-
-        if ( relation.tags[ 'hoot:review:type' ] === 'POI to Polygon' ||
-            ((feature && againstFeature) && feature.id.charAt( 0 ) === 'n' && againstFeature.id.charAt( 0 ) === 'n')
-        ) {
-            this.instance.merge.toggleMergeButton( false );
-            this.instance.merge.activateMergeArrow( feature, againstFeature );
-        } else {
-            this.instance.merge.toggleMergeButton( true );
-        }
+        this.instance.merge.checkMergeButton();
 
         if ( relation && relation.members && relation.members.length > 2 ) {
             let idx1 = relation.members.findIndex( d => d.id === item1.id ),

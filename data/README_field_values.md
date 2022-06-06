@@ -5,8 +5,7 @@ Each schema that the Translation Assistant uses requires a list of possible valu
 ### JSON File Structure
 The `XXX_field_values.json` file has this structure:
 ```
-{
-  "mgcpFieldValues":[
+[
   {
     "key":"AFA::Available Vessel Service",
     "value":[
@@ -22,8 +21,7 @@ The `XXX_field_values.json` file has this structure:
       "Value"
     ]
   }
-  ]
-}
+]
 ```
 
 
@@ -33,7 +31,7 @@ The scripts that generate the translation schema files can also generate the fie
 MGCP:
 ```
 $HOOT_HOME/scripts/schema/ConvertMGCPSchema_XML.py --fieldvalues \
-  $HOOT_HOME/conf/translations/MGCP_FeatureCatalogue_TRD4_v4.5_20190208.xml.gz > $HOOT_HOME/hoot-ui-2x/data/mgcp_field_values.json
+  $HOOT_HOME/conf/translations/MGCP_FeatureCatalogue_TRD4_v4.6_20210129.xml.gz > $HOOT_HOME/hoot-ui-2x/data/mgcp_field_values.json
 ```
 
 TDSv40:

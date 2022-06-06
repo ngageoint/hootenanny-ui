@@ -1,9 +1,3 @@
-/** ****************************************************************************************************
- * File: folderTree.js
- * Project: hootenanny-ui
- * @author Matt Putipong on 3/5/18
- *******************************************************************************************************/
-
 import _cloneDeep  from 'lodash-es/cloneDeep';
 import _difference from 'lodash-es/difference';
 import _drop       from 'lodash-es/drop';
@@ -33,7 +27,9 @@ export default class FolderTree extends EventEmitter {
         super();
 
         this.container              = container;
+        this.isAddDatasetTable      = this.container.attr( 'id' ) === 'add-ref-table' || this.container.attr( 'id' ) === 'add-secondary-table';
         this.isDatasetTable         = this.container.attr( 'id' ) === 'dataset-table';
+        this.isTranslationTable     = this.container.attr( 'id' ) === 'translation-table';
         this.selectedNodes          = [];
         this.lastSelectedNode       = null;
         this.lastSelectedRangeNodes = null;
@@ -107,6 +103,27 @@ export default class FolderTree extends EventEmitter {
             }
         ];
 
+        this.translationContextMenu = [
+            {
+                title: 'Modify/Move Translation',
+                _icon: 'info',
+                click: 'modifyTranslation'
+            },
+            {
+                title: 'Export Translation',
+                _icon: 'export',
+                click: 'exportTranslation'
+            }
+        ];
+
+        this.translationFolderContextMenu = [
+            {
+                title: 'Delete',
+                _icon: 'trash',
+                click: 'deleteTranslationFolder'
+            }
+        ];
+
         this.margin    = { top: 10, right: 20, bottom: 30, left: 0 };
         this.width     = '100%';
         this.height    = '100%';
@@ -144,18 +161,35 @@ export default class FolderTree extends EventEmitter {
     /**
      * Initialize the folder tree
      */
+    /**
+     * Initialize the folder tree
+     */
     async render() {
-        let folders = _cloneDeep( await Hoot.folders.getAvailFolderData() );
+        let folders, foldersTree;
 
-        if ( this.isDatasetTable ) {
+        if ( this.isDatasetTable || this.isAddDatasetTable ) {
+            folders = _cloneDeep( await Hoot.folders.getAvailFolderData() );
+
+            if ( this.isDatasetTable ) {
+                folders = _without( folders, _find( folders, { id: -1 } ) );
+            }
+
+            foldersTree = {
+                name: 'Datasets',
+                id: 'Datasets',
+                children: folders // prevent collision of data
+            };
+        } else if ( this.isTranslationTable ) {
+            folders = _cloneDeep( await Hoot.folders.getTranslationFolderData() );
+
             folders = _without( folders, _find( folders, { id: -1 } ) );
-        }
 
-        const foldersTree = {
-            name: 'Datasets',
-            id: 'Datasets',
-            children: folders // prevent collision of data
-        };
+            foldersTree = {
+                name: 'Translations',
+                id: 'Translations',
+                children: folders // prevent collision of data
+            };
+        }
 
         this.root    = d3.hierarchy( foldersTree );
         this.root.x0 = 0;
@@ -303,7 +337,7 @@ export default class FolderTree extends EventEmitter {
             .on( 'contextmenu', d => {
                 d3.event.preventDefault();
 
-                if ( this.isDatasetTable ) {
+                if ( this.isDatasetTable || this.isTranslationTable ) {
                     this.bindContextMenu( d );
                 }
             } );
@@ -338,6 +372,8 @@ export default class FolderTree extends EventEmitter {
                     }
                 } else if ( data.type === 'dataset' ) {
                     return '<i class="_icon data"></i>';
+                } else if ( data.type === 'translation' ) {
+                    return '<i class="_icon file"></i>';
                 }
             } );
 
@@ -354,7 +390,7 @@ export default class FolderTree extends EventEmitter {
             .append( 'tspan' ).text( d => d.data.name );
 
         // Render node owner
-        if ( this.isDatasetTable ) {
+        if ( this.isDatasetTable || this.isTranslationTable ) {
             nodeElement
                 .append( 'text' )
                 .style( 'fill', this.fontColor )
@@ -363,8 +399,9 @@ export default class FolderTree extends EventEmitter {
                 .attr( 'dx', '30%' )
                 .attr( 'text-anchor', 'start' )
                 .append( 'tspan' ).text( d => {
-
-                    return Hoot.users.getNameForId( d.data.userId );
+                    if ( d.data.userId ) {
+                        return Hoot.users.getNameForId( d.data.userId );
+                    }
                 } );
         }
 
@@ -420,7 +457,9 @@ export default class FolderTree extends EventEmitter {
             .attr( 'dx', '97%' )
             .attr( 'text-anchor', 'end' )
             .text( d => {
-                return formatSize( d.data.size );
+                if ( d.data.size ) {
+                    return formatSize( d.data.size );
+                }
             } );
 
         if ( this.isDatasetTable ) {
@@ -574,84 +613,109 @@ export default class FolderTree extends EventEmitter {
 
         const selectedCount = this.selectedNodes.length;
 
-        if ( data.type === 'dataset' ) {
+        if ( this.isTranslationTable ) {
+            if (data.type === 'translation') {
+                opts = [...this.translationContextMenu.slice()];
 
-            opts = [
-                {
-                    title: `Delete (${ selectedCount })`,
-                    _icon: 'trash',
-                    click: 'delete'
+                // Don't allow move and delete for default translations
+                if ( !d.data.default ) {
+                    opts.push({
+                        title: 'Delete',
+                        _icon: 'trash',
+                        click: 'deleteTranslation'
+                    });
                 }
-            ];
+            } else if (data.type === 'folder') {
+                opts = [...this.translationFolderContextMenu.slice()];
 
-            if ( selectedCount > 1 && selectedCount <= 10 ) {
-                // add options for multiple selected datasets
-                opts.push( this.datasetContextMenu.multiDatasetOpts );
-
-                opts.splice( 1, 0, {
-                    title: `Move (${ selectedCount })`,
-                    _icon: 'info',
-                    click: 'modifyDataset'
-                } );
-            } else {
-                // add options for single selected dataset
-                _forEach( this.datasetContextMenu.addDatasetOpts, o => {
-
-                    let formMeta = Hoot.ui.sidebar.forms[ o.formId ];
-
-                    if ( formMeta ) {
-                         let form = formMeta.form;
-                         if ( form && !form.attr( 'data-id' ) ) {
-                            opts.push( o );
-                        }
-                     }
-                } );
-
-                opts.splice( 4, 0, {
-                    title: `Move/Rename ${ data.name }`,
-                    _icon: 'info',
-                    click: 'modifyDataset'
-                } );
-
-                opts.push(this.datasetContextMenu.singleDatasetOpts);
-
-                if (Hoot.users.isAdvanced()) {
-                    opts = opts.concat(this.datasetContextMenu.conflationProjectOpts);
-                }
-            }
-        } else if ( data.type === 'folder' ) {
-
-            if ( selectedCount === 1 ) {
-                opts = [ ...this.folderContextMenu.slice() ]; // make copy of array to not overwrite default vals
-                opts.splice( 1, 0, {
-                title: 'Modify/Move Folder',
-                _icon: 'info',
-                click: 'modifyFolder'
-                } );
-            } else if ( selectedCount > 1 ) {
-                opts = [
-                    {
-                    title: `Delete (${ selectedCount })`,
-                    _icon: 'trash',
-                     click: 'delete'
-                    },
-                    {
-                    title: 'Move Folders',
+                opts.splice(1, 0, {
+                    title: 'Modify/Move Folder',
                     _icon: 'info',
                     click: 'modifyFolder'
-                    },
+                });
+            }
+        } else {
+
+            if (data.type === 'dataset') {
+
+                opts = [
                     {
-                    title: 'Export Data in Folders',
-                    _icon: 'export',
-                     click: 'exportFolder'
+                        title: `Delete (${selectedCount})`,
+                        _icon: 'trash',
+                        click: 'delete'
                     }
                 ];
-            }
 
+                if (selectedCount > 1 && selectedCount <= 10) {
+                    // add options for multiple selected datasets
+                    opts.push(this.datasetContextMenu.multiDatasetOpts);
+
+                    opts.splice(1, 0, {
+                        title: `Move (${selectedCount})`,
+                        _icon: 'info',
+                        click: 'modifyDataset'
+                    });
+                } else {
+                    // add options for single selected dataset
+                    _forEach(this.datasetContextMenu.addDatasetOpts, o => {
+
+                        let formMeta = Hoot.ui.sidebar.forms[o.formId];
+
+                        if (formMeta) {
+                            let form = formMeta.form;
+                            if (form && !form.attr('data-id')) {
+                                opts.push(o);
+                            }
+                        }
+                    });
+
+                    opts.splice(4, 0, {
+                        title: `Move/Rename ${data.name}`,
+                        _icon: 'info',
+                        click: 'modifyDataset'
+                    });
+
+                    opts.push(this.datasetContextMenu.singleDatasetOpts);
+
+                    if (Hoot.users.isAdvanced()) {
+                        opts = opts.concat(this.datasetContextMenu.conflationProjectOpts);
+                    }
+                }
+            } else if (data.type === 'folder') {
+
+                if (selectedCount === 1) {
+                    opts = [...this.folderContextMenu.slice()]; // make copy of array to not overwrite default vals
+                    opts.splice(1, 0, {
+                        title: 'Modify/Move Folder',
+                        _icon: 'info',
+                        click: 'modifyFolder'
+                    });
+                } else if (selectedCount > 1) {
+                    opts = [
+                        {
+                            title: `Delete (${selectedCount})`,
+                            _icon: 'trash',
+                            click: 'delete'
+                        },
+                        {
+                            title: 'Move Folders',
+                            _icon: 'info',
+                            click: 'modifyFolder'
+                        },
+                        {
+                            title: 'Export Data in Folders',
+                            _icon: 'export',
+                            click: 'exportFolder'
+                        }
+                    ];
+                }
+            }
         }
 
+        if (opts.length === 0) return;
+
         let body = d3.select( 'body' )
-            .on( 'click', () => d3.select( '.context-menu' ).style( 'display', 'none' ) );
+            .on( 'click', () => d3.selectAll( '.context-menu' ).style( 'display', 'none' ) );
 
         this.contextMenu = body
             .append( 'div' )
@@ -674,14 +738,29 @@ export default class FolderTree extends EventEmitter {
                     .call(svgIcon(`#iD-icon-${ item.icon }`));
                 }
             })
-            .on( 'click', item => Hoot.events.emit( 'context-menu', this, d, item ) )
+            .on( 'click', item => {
+                if (this.isTranslationTable) {
+                    return Hoot.events.emit( 'translation-context-menu', this, d, item );
+                } else {
+                    return Hoot.events.emit( 'context-menu', this, d, item );
+                }
+            } )
             .append('span').text( item => item.title );
 
-
+        // Make sure the context menu does not dip below the screen horizon
+        let windowHeight = window.innerHeight;
+        let yCoord = d3.event.pageY - 2;
         this.contextMenu
             .style( 'left', `${ d3.event.pageX - 2 }px` )
-            .style( 'top', `${ d3.event.pageY - 2 }px` )
+            .style( 'top', `${ yCoord }px` )
             .style( 'display', 'block' );
+        let menuHeight = this.contextMenu.node().offsetHeight;
+        let overflowHeight = windowHeight - (yCoord + menuHeight);
+        if (overflowHeight < 0) {
+            this.contextMenu
+                .style( 'top', `${ yCoord + overflowHeight }px` );
+        }
+
     }
 
     /**
@@ -799,6 +878,8 @@ export default class FolderTree extends EventEmitter {
 
                 if ( this.isDatasetTable && !d3.event.ctrlKey ) {
                     Hoot.folders.setOpenFolders( data.id, !isOpen );
+                } else if ( this.isTranslationTable ) {
+                    Hoot.folders.setOpenTranslationFolders( data.id, !isOpen );
                 }
             }
         }

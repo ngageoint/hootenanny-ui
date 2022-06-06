@@ -44,7 +44,10 @@ export function uiEntityEditor(context) {
     var debouncedTranslate = _debounce( ( entity, updateTags ) => {
         Hoot.translations.translateEntity( entity )
             .then( data => updateTags( data.preset, data.tags ) )
-            .catch( err => Hoot.message.alert( err ) );
+            .catch( err => {
+                console.error(err);
+                Hoot.message.alert( err );
+            } );
     }, 500 );
 
     function entityEditor(selection) {
@@ -354,7 +357,12 @@ export function uiEntityEditor(context) {
                 }, {} );
 
                 Hoot.translations.translateToOsm( entity.tags, translatedEntity )
-                    .then( changed => changeTagsCallback( changed, onInput ) );
+                    .then( changed => changeTagsCallback( changed, onInput ) )
+                    .catch( err => {
+                        console.error(err);
+                        Hoot.message.alert( err );
+                    } );
+
             }
         } else {
             changeTagsCallback(changed, onInput);

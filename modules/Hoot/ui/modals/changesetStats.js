@@ -2,10 +2,10 @@ import FormFactory from '../../tools/formFactory';
 import { uiChangesetEditor } from '../../../ui/changeset_editor';
 
 export default class ChangesetStats {
-    constructor( job, data ) {
+    constructor( job, data, viewOnly ) {
         this.job = job;
         this.changesetInfo = data;
-        this.includeTags = false;
+        this.viewOnly = viewOnly;
         this.changesetEditor = uiChangesetEditor(Hoot.context)
             .on('change', changeTags);
         const that = this;
@@ -56,27 +56,30 @@ export default class ChangesetStats {
     }
 
     render() {
-        let titleText = 'Upload Changeset';
+        let titleText = (this.viewOnly) ? 'Changeset Metadata' : 'Upload Changeset';
 
         let metadata = {
-            title: titleText,
-            button: {
+            title: titleText
+        };
+
+        if (!this.viewOnly) {
+            metadata.button = {
                 text: 'Upload Changeset',
                 id: 'SubmitBtn',
                 onClick: () => this.handleSubmit()
-            }
-        };
+            };
+        }
 
         let formId = 'changesetPushTable';
 
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
-        this.submitButton = d3.select( `#${ metadata.button.id }` );
-
-        this.createComment();
-
+        if (!this.viewOnly) {
+            this.submitButton = d3.select( `#${ metadata.button.id }` );
+            this.createComment();
+            this.updateSubmitButton();
+        }
         this.createTable();
 
-        this.updateSubmitButton();
     }
 
     updateSubmitButton() {
@@ -95,30 +98,6 @@ export default class ChangesetStats {
             .classed( 'changesetInfo', true );
 
         this.infoGrid(table);
-
-        if (hasTags) {
-            let tagsOption = this.form
-                .select( '.wrapper div' )
-                .insert( 'div', '.changeset-editor' )
-                .classed( 'tagInput', true );
-
-            tagsOption.append( 'label' )
-                .text('Apply Tag Differential?');
-
-            const checkbox = tagsOption.append( 'input' )
-                .attr( 'type', 'checkbox' )
-                .property( 'checked', this.includeTags )
-                .attr( 'class', 'applyTags' )
-                .on('click', async ()  => {
-                    this.includeTags = checkbox.property( 'checked' );
-                    const stats = await Hoot.api.changesetStats(this.job.jobId, this.includeTags);
-                    this.changesetInfo = stats.data;
-
-                    this.form.select('table').remove();
-                    tagsOption.remove();
-                    this.createTable();
-                });
-        }
     }
 
     infoGrid (tableElement) {
@@ -232,24 +211,14 @@ export default class ChangesetStats {
         params.hashtags = Hoot.context.storage('hashtags') || '';
         params.source = Hoot.context.storage('source') || '';
 
-
-        params.APPLY_TAGS = !tagsCheck.empty() ? tagsCheck.property('checked') : false;
+        if ( this.job.tags && this.job.tags.taskInfo ) {
+            params.taskInfo = this.job.tags.taskInfo;
+        }
 
         Hoot.api.changesetPush( params )
             .then( () => Hoot.layers.refreshLayers() )
             .then( () => Hoot.events.emit( 'render-dataset-table' ) )
             .then( resp => Hoot.message.alert( resp ) )
-            .then( () => { //refresh the ref layer if it's grail eligible
-                let refLayer = Hoot.layers.findBy( 'id', +this.job.tags.input1 );
-                if (refLayer && refLayer.grailReference) {
-                    let refreshParams = {
-                        BBOX: this.job.tags.bbox,
-                        input1: refLayer.name
-                    };
-                    let folderId = refLayer.folderId;
-                    Hoot.api.grailPullRailsPortToDb(refreshParams, folderId, Hoot.config.referenceLabel );
-                }
-            })
             .catch( err => {
                 Hoot.message.alert( err );
                 return false;

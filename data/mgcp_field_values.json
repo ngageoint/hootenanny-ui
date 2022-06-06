@@ -1,5 +1,4 @@
-{
-  "mgcpFieldValues":[
+[
   {
     "key":"ACC::Horizontal Accuracy Category",
     "value":[
@@ -1373,5 +1372,4 @@
       "Value"
     ]
   }
-  ]
-}
+]

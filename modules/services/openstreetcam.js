@@ -16,7 +16,7 @@ import {
     zoomIdentity as d3_zoomIdentity
 } from 'd3-zoom';
 
-import rbush from 'rbush';
+import RBush from 'rbush';
 
 import { geoExtent, geoScaleToZoom } from '../geo';
 import { utilDetect } from '../util/detect';
@@ -214,7 +214,7 @@ export default {
         }
 
         _oscCache = {
-            images: { inflight: {}, loaded: {}, nextPage: {}, rtree: rbush() },
+            images: { inflight: {}, loaded: {}, nextPage: {}, rtree: new RBush() },
             sequences: {}
         };
 

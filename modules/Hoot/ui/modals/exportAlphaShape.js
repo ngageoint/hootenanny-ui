@@ -121,7 +121,7 @@ export default class ExportAlphaShape {
             inputtype: 'db',
             outputname: self.data.name,
             outputtype: 'alpha.geojson'
-            // TASK_BBOX: '', //This would be needed to setting an osm pull bounds,
+            // bounds: '', //This would be needed to setting an osm pull bounds,
             // so stray features don't make the task extent too big
         };
 

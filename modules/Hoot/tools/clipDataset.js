@@ -19,9 +19,9 @@ export default class ClipDataset {
     }
 
     render() {
-        let titleText = this.instance.bboxSelectType === 'visualExtent'
+        let titleText = this.instance.boundsSelectType === 'visualExtent'
             ? 'Clip Data to Visual Extent'
-            : this.instance.bboxSelectType === 'boundingBox'
+            : this.instance.boundsSelectType === 'boundingBox'
                 ? 'Clip Data to Bounding Box'
                 : 'Clip Data';
 
@@ -182,7 +182,7 @@ export default class ClipDataset {
 
     handleSubmit() {
         let checkedRows = this.form.selectAll( '[type="checkbox"]' ),
-            bbox        = this.instance.bbox;
+            bounds      = this.instance.bounds;
 
         let self = this;
 
@@ -202,7 +202,7 @@ export default class ClipDataset {
             params.INPUT_NAME  = datasetName.property( 'value' ) || datasetName.attr( 'placeholder' );
             params.OUTPUT_NAME = Hoot.layers.checkLayerName(outputName.property( 'value' ) || outputName.attr( 'placeholder' ));
             params.FOLDER_ID   = folderId ? folderId : 0;
-            params.BBOX        = bbox;
+            params.bounds      = bounds;
 
             self.loadingState();
 

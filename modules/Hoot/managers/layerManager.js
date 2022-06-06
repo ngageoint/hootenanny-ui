@@ -12,10 +12,10 @@ import _forEach        from 'lodash-es/forEach';
 import _isEmpty        from 'lodash-es/isEmpty';
 import _map            from 'lodash-es/map';
 import _reduce         from 'lodash-es/reduce';
-import _remove from 'lodash-es/remove';
-import _debounce from 'lodash-es/debounce';
+import _remove         from 'lodash-es/remove';
 
 import { rgb as d3_rgb } from 'd3-color';
+import { geoBounds as d3_geoBounds } from 'd3-geo';
 
 import { geoExtent as GeoExtent } from '../../geo/index';
 import { utilDetect }             from '../../util/detect';
@@ -32,6 +32,11 @@ import {
     utilQsString,
     utilStringQs
 } from '../../util';
+
+import {
+    polyStringToCoords, polyStringToCoordsList
+} from '../tools/utilities';
+import _cloneDeep from 'lodash-es/cloneDeep';
 
 export default class Layers {
     constructor( hoot ) {
@@ -136,20 +141,35 @@ export default class Layers {
         return _find( this.loadedLayers, layer => layer[ key ] === val );
     }
 
-    //returns grail reference layers that have a bbox (i.e. were pulled from an api by bbox)
+    //returns grail reference layers that have a bounds (i.e. were pulled from an api by bounds)
     //and are not same as the secondary input layer
-    //and have a bbox that fully contains the bbox (or mbr extent) of the secondary input layer
+    //and have a bounds that fully contains the bounds (or mbr extent) of the secondary input layer
     grailReferenceLayers( lyr ) {
-        //the geo extent of the layer secondary layer
-        const bboxCoords = lyr.bbox.split(',').map( data => +data );
-        let extBbox = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
-        return this.allLayers.filter( d => d.grailReference && d.bbox && d.id !== lyr.id )
+        let extBounds;
+        // if contains ';' then bounds is polygon, else bbox
+        if ( lyr.bounds.includes(';') ) {
+            const polyCoords = polyStringToCoords( lyr.bounds );
+            extBounds = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
+        } else {
+            const bboxCoords = lyr.bounds.split(',').map( data => +data );
+            extBounds = new GeoExtent([ bboxCoords[0], bboxCoords[1] ], [ bboxCoords[2], bboxCoords[3] ]);
+        }
+
+        return this.allLayers.filter( d => d.grailReference && d.bounds && d.id !== lyr.id )
             .filter( d => {
                 //the geo extent of the candidate reference layer
                 //i.e. the one to be replaced in derive changeset replacement
-                const coords = d.bbox.split(',').map( data => +data );
-                let extLayer = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
-                return extLayer.contains(extBbox);
+                const bounds = d.bounds;
+                let extLayer;
+                if ( bounds.includes(';') ) {
+                    const polyCoords = polyStringToCoords( lyr.bounds );
+                    extLayer = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
+                } else {
+                    const coords = bounds.split(',').map( data => +data );
+                    extLayer = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+                }
+
+                return extLayer.contains(extBounds);
             });
     }
 
@@ -218,14 +238,21 @@ export default class Layers {
         try {
             let mapId       = params.id,
                 tags        = await this.hoot.api.getMapTags( mapId ),
-                layerExtent;
+                layerExtent, polyCoords;
 
             let lyr = this.findBy( 'id', mapId);
-            if (lyr.bbox) {
-                const coords = lyr.bbox.split(',').map( d => +d );
-                layerExtent = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+            if (lyr.bounds) {
+                if ( lyr.bounds.includes(';') ) {
+                    polyCoords = polyStringToCoords(lyr.bounds);
+                    layerExtent = new GeoExtent(d3_geoBounds({ type: 'LineString', coordinates: polyCoords }));
+                } else {
+                    const coords = lyr.bounds.split(',').map( d => +d );
+                    layerExtent = new GeoExtent([ coords[0], coords[1] ], [ coords[2], coords[3] ]);
+                    polyCoords = layerExtent.polygon();
+                }
             } else {
                 layerExtent = await this.layerExtent( mapId );
+                polyCoords = layerExtent.polygon();
             }
 
             let layer = {
@@ -236,7 +263,7 @@ export default class Layers {
                 isMerged: params.isMerged || false,
                 layers: params.layers || [],
                 extent: layerExtent,
-                polygon: layerExtent.polygon(),
+                polygon: polyCoords,
                 tags: tags,
                 visible: true, // Denotes whether the layer is toggled on/off
                 active: params.active || true // Whether the layer is loaded and can be toggled on/off
@@ -280,15 +307,27 @@ export default class Layers {
                 this.hootOverlay = this.hoot.context.layers().layer( 'hoot' );
             }
 
-            this.hootOverlay.geojson( {
-                type: 'FeatureCollection',
-                features: [ {
+            // Check if layers bounds is multiple polygon and get array
+            let coordsList;
+            if ( lyr.bounds && lyr.bounds.includes( ';' ) ) {
+                coordsList = polyStringToCoordsList( lyr.bounds );
+            } else {
+                coordsList = _cloneDeep( [ polyCoords ] );
+            }
+
+            let featuresList = coordsList.map( coords => {
+                return {
                     type: 'Feature',
                     geometry: {
                         type: 'LineString',
-                        coordinates: layerExtent.polygon()
+                        coordinates: coords
                     }
-                } ],
+                };
+            } );
+
+            this.hootOverlay.geojson( {
+                type: 'FeatureCollection',
+                features: featuresList,
                 properties: {
                     name: layer.name,
                     mapId: layer.id
@@ -333,7 +372,8 @@ export default class Layers {
             let mapId = mergedLayer.id;
             let sequence = -999;
             let direction = 'forward';
-            let reviewItem = await Hoot.api.getNextReview( {mapId, sequence, direction} );
+            let reviewItem = (Hoot.ui.conflicts.data.forcedReviewItem) ? Hoot.ui.conflicts.data.forcedReviewItem
+                                : await Hoot.api.getNextReview( {mapId, sequence, direction} );
             let reviewBounds = reviewItem.bounds.split(',').map(parseFloat);
             let min = [ reviewBounds[0], reviewBounds[1] ],
                 max = [ reviewBounds[2], reviewBounds[3] ];
@@ -477,6 +517,8 @@ export default class Layers {
 
         this.hoot.context.flush();
         this.hoot.ui.sidebar.reset();
+
+        this.hoot.events.emit( 'loaded-layer-removed' );
     }
 
     hideLayer( id ) {
@@ -546,10 +588,11 @@ export default class Layers {
         color   = this.getPalette( color );
         lighter = d3_rgb( color ).brighter();
 
-        sheets.insertRule( 'path.stroke.tag-hoot-' + mapId + ' { stroke:' + color + '}', sheets.cssRules.length - 1 );
-        sheets.insertRule( 'path.shadow.tag-hoot-' + mapId + ' { stroke:' + lighter + '}', sheets.cssRules.length - 1 );
-        sheets.insertRule( 'path.fill.tag-hoot-' + mapId + ' { fill:' + lighter + '}', sheets.cssRules.length - 1 );
-        sheets.insertRule( 'g.point.tag-hoot-' + mapId + ' .stroke { fill:' + color + '}', sheets.cssRules.length - 1 );
+        let cssRuleIndex = Math.max(0, sheets.cssRules.length - 1);
+        sheets.insertRule( 'path.stroke.tag-hoot-' + mapId + ' { stroke:' + color + '}', cssRuleIndex );
+        sheets.insertRule( 'path.shadow.tag-hoot-' + mapId + ' { stroke:' + lighter + '}', cssRuleIndex );
+        sheets.insertRule( 'path.fill.tag-hoot-' + mapId + ' { fill:' + lighter + '}', cssRuleIndex );
+        sheets.insertRule( 'g.point.tag-hoot-' + mapId + ' .stroke { fill:' + color + '}', cssRuleIndex );
     }
 
     setTopLayer( mapId ) {

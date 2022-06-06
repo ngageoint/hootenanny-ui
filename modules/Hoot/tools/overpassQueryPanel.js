@@ -1,13 +1,12 @@
 import FormFactory          from './formFactory';
 import GrailPull            from './grailPull';
-import selectBbox           from './selectBbox';
+import selectBounds           from './selectBounds';
 import DifferentialChangeset   from './differentialChangeset';
 
 
 export default class OverpassQueryPanel {
     constructor( instance ) {
-        this.formData        = instance;
-        this.maxFeatureCount = null;
+        this.formData = instance;
     }
 
     render() {
@@ -51,22 +50,24 @@ export default class OverpassQueryPanel {
             .on( 'click', () => {
                 this.form.remove();
 
-                const grailSelectBbox = new selectBbox( this.formData.context, this.formData );
-                grailSelectBbox.render( this.formData.operationName );
+                const grailSelectBounds = new selectBounds( this.formData.context, this.formData );
+                grailSelectBounds.render( this.formData.operationName );
             } );
 
         backButton.append( 'span' )
             .text( 'Back' );
     }
 
-    overpassQueryPanel() {
+    async overpassQueryPanel() {
         // construct input section for user custom overpass queries
         this.overpassQueryContainer = this.form
             .select( '.wrapper div' )
             .insert( 'div', '.modal-footer' )
             .classed( 'button-wrap user-input', true );
 
-        let overpassQueryValue = '',
+        const defaultValue = await Hoot.api.getDefaultOverpassQuery();
+
+        let overpassQueryValue = defaultValue,
             checkboxStatus = false;
         const containerExists = this.formData.overpassQueryContainer;
         if ( containerExists ) {
@@ -93,15 +94,9 @@ export default class OverpassQueryPanel {
                     }
                 });
 
-        const placeholder = '[out:json][bbox:{{bbox}}];\n' +
-            '(\n' +
-            '   node;<;>;\n' +
-            ');\n' +
-            'out meta;';
-
         const customQueryInput = this.overpassQueryContainer.append( 'textarea' )
             .classed( 'hidden', !checkboxStatus )
-            .attr( 'placeholder', placeholder )
+            .attr( 'placeholder', defaultValue )
             .property( 'value', overpassQueryValue )
             .on( 'input', () => {
                 const value = customQueryInput.node().value;
@@ -159,13 +154,11 @@ export default class OverpassQueryPanel {
         let queryString = '';
 
         if ( checkedInput.size() !== 0 ) {
-            queryString = '[out:json][bbox:{{bbox}}];\n' +
+            queryString = '[out:json];\n' +
             '(\n';
 
             checkedInput.each( option => {
-                queryString += `node["${ option.searchTerm }"]({{bbox}});\n`+
-                    `way["${ option.searchTerm }"]({{bbox}});\n` +
-                    `relation["${ option.searchTerm }"]({{bbox}});\n`;
+                queryString += `nwr["${ option.searchTerm }"]({{bbox}});\n`;
             } );
 
             // Close out and recurse down
@@ -184,8 +177,10 @@ export default class OverpassQueryPanel {
 
         if ( this.formData.operationName === 'grailPull' ) {
             new GrailPull( this.formData ).render();
-        } else if ( this.formData.operationName === 'createDifferentialChangeset' ) {
+        } else if ( this.formData.operationName.startsWith('createDifferential') ) {
             new DifferentialChangeset( this.formData ).render();
+        } else if ( this.formData.operationName === 'taskingManager' ) {
+            this.formData.callback();
         }
     }
 

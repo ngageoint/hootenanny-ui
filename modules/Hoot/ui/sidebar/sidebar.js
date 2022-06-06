@@ -108,13 +108,9 @@ export default class Sidebar {
         this.wrapper.selectAll('.layer-conflate')
             .data(this.conflateFormData).enter()
             .select(async function (d) {
-                try {
-                    const layerConflate = new LayerConflate(d3.select(this), d);
-                    await layerConflate.getData();
-                    that.forms[d.id] = layerConflate;
-                } catch (e) {
-                    throw e;
-                }
+                const layerConflate = new LayerConflate(d3.select(this), d);
+                await layerConflate.getData();
+                that.forms[d.id] = layerConflate;
             });
 
     }
@@ -224,8 +220,10 @@ export default class Sidebar {
     }
 
     listen() {
-        Hoot.events.on( 'layer-loaded', layerName => this.layerLoaded( layerName ) );
-        Hoot.events.on( 'layer-reviews', () => this.layerReviews() );
+        const className = this.constructor.name;
+
+        Hoot.events.listen( className, 'layer-loaded', layerName => this.layerLoaded( layerName ) );
+        Hoot.events.listen( className, 'layer-reviews', () => this.layerReviews() );
         window.onresize = () => this.adjustSize();
     }
 }

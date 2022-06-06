@@ -14,7 +14,8 @@ import { select as d3_select } from 'd3-selection';
 import { t, currentLocale, addTranslation, setLocale } from '../util/locale';
 
 import { coreHistory } from './history';
-import { dataLocales, dataEn } from '../../data';
+import { dataLocales } from '../../data';
+import { dataEn } from '../../data';
 import { geoRawMercator } from '../geo/raw_mercator';
 import { modeSelect } from '../modes/select';
 import { presetIndex } from '../presets';
@@ -37,8 +38,8 @@ export function coreContext() {
     var context = {};
     context.version = '2.12.1';
 
-    // create a special translations that contains the keys in place of the strings
-    var tkeys = _cloneDeep(dataEn);
+    // create a special translation that contains the keys in place of the strings
+    var tkeys = _cloneDeep(dataEn.en);
     var parents = [];
 
     function traverser(v, k, obj) {
@@ -54,7 +55,7 @@ export function coreContext() {
     _forOwn(tkeys, traverser);
     addTranslation('_tkeys_', tkeys);
 
-    addTranslation('en', dataEn);
+    addTranslation('en', dataEn.en);
     setLocale('en');
 
     var dispatch = d3_dispatch('enter', 'exit', 'change');

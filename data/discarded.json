@@ -1,5 +1,4 @@
 {
-  "dataDiscarded": {
     "created_by": true,
 
     "odbl": true,
@@ -50,4 +49,3 @@
     "yh:WIDTH": true,
     "yh:WIDTH_RANK": true
   }
-}

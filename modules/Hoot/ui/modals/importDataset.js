@@ -8,14 +8,13 @@ import _filter  from 'lodash-es/filter';
 import _find    from 'lodash-es/find';
 import _forEach from 'lodash-es/forEach';
 import _reject  from 'lodash-es/reject';
-import _remove  from 'lodash-es/remove';
 
-import FormFactory        from '../../tools/formFactory';
-import { getBrowserInfo } from '../../tools/utilities';
-import {
-    importSingleForm,
-}           from '../../config/domMetadata';
+import FormFactory from '../../tools/formFactory';
+import { getBrowserInfo, unallowableWordsExist } from '../../tools/utilities';
+import { importSingleForm } from '../../config/domMetadata';
 import _get from 'lodash-es/get';
+import axios from 'axios/dist/axios';
+
 
 /**
  * Form that allows user to import datasets into hoot
@@ -31,13 +30,15 @@ export default class ImportDataset {
         this.formFactory    = new FormFactory();
         this.processRequest = null;
         this.path           = path;
+        this.cancelToken    = axios.CancelToken.source();
 
         // Add "NONE" option to beginning of array
         this.translations.unshift( {
-            NAME: 'NONE',
-            PATH: 'NONE',
-            DESCRIPTION: 'No Translations',
-            NONE: 'true'
+            name: 'NONE',
+            path: 'NONE',
+            displayPath: 'NONE',
+            description: 'No Translations',
+            none: 'true'
         } );
 
         this.importTypes = [
@@ -50,7 +51,7 @@ export default class ImportDataset {
                 value: 'OSM'
             },
             {
-                title: 'File (geojson)',
+                title: 'File (geojson, geojson.zip)',
                 value: 'GEOJSON'
             },
             {
@@ -68,6 +69,17 @@ export default class ImportDataset {
         ];
     }
 
+    static importTypeMap() {
+        return {
+            'DIR': null,
+            'GEONAMES': '.geonames, .txt',
+            'OSM': '.osm, .osm.zip, .pbf',
+            'FILE': '.shp, .shx, .dbf, .prj, .zip',
+            'GEOJSON': '.geojson, .geojson.zip',
+            'GPKG': '.gpkg',
+        };
+    }
+
     /**
      * Set form parameters and create the form using the form factory
      */
@@ -80,6 +92,7 @@ export default class ImportDataset {
         this.advOpts.forEach(opt => {
             opt.hidden = true;
         });
+
         this.form = this.form.concat(this.advOpts.map(this.formFactory.advOpt2DomMeta));
 
         let metadata = {
@@ -138,9 +151,9 @@ export default class ImportDataset {
 
         // filter translations for selected type
         if ( selectedType === 'GEONAMES' ) {
-            translationsList = _filter( this.translations, o => o.NAME === 'GEONAMES' );
+            translationsList = _filter( this.translations, o => o.name === 'GeoNames' );
         } else {
-            translationsList = _reject( this.translations, o => o.NAME === 'GEONAMES' );
+            translationsList = _reject( this.translations, o => o.name === 'GeoNames' );
         }
 
         schemaCombo.data = translationsList;
@@ -149,14 +162,14 @@ export default class ImportDataset {
         this.setMultipartForType( selectedType );
         this.formFactory.populateCombobox( this.schemaInput );
 
-        this.schemaInput.property( 'value', translationsList[ 0 ].NAME );
+        this.schemaInput.property( 'value', translationsList[ 0 ].name );
 
         // wish this could be expressed in the import opts from the server
         // but we need this hack right now to make the advanced import options
         // only available for ogr types
 
         function isOgr(type) {
-            return ['FILE', 'GPKG', 'DIR'].indexOf(type) > -1;
+            return ['FILE', 'GPKG', 'DIR', 'GEOJSON'].indexOf(type) > -1;
         }
 
         this.advOptsInputs.classed('hidden', !isOgr(selectedType));
@@ -319,11 +332,10 @@ export default class ImportDataset {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
-        if ( reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
+        if ( unallowableWordsExist( str ) || unallowedPattern.test( str ) ) {
             valid = false;
         }
 
@@ -383,16 +395,18 @@ export default class ImportDataset {
             transCombo    = this.schemaInput.datum(),
             typeCombo     = this.typeInput.datum(),
 
-            translation   = _filter( transCombo.data, o => o.NAME === transVal )[ 0 ],
+            translation   = _filter( transCombo.data, o => o.name === transVal || o.displayPath === transVal )[ 0 ],
             importType    = _filter( typeCombo.data, o => o.title === typeVal )[ 0 ],
 
-            translationName,
+            translationIdentifier,
             folderId;
 
-        if ( translation.DEFAULT && ( translation.PATH && translation.PATH.length ) ) {
-            translationName = translation.PATH;
+        if ( translation.default ) {
+            translationIdentifier = translation.path || translation.importPath;
+        } else if ( translation.id ) {
+            translationIdentifier = translation.id;
         } else {
-            translationName = translation.NAME + '.js';
+            translationIdentifier = translation.name + '.js';
         }
 
         if ( newFolderName ) {
@@ -405,8 +419,8 @@ export default class ImportDataset {
         }
 
         let data = {
-            NONE_TRANSLATION: translation.NONE === 'true',
-            TRANSLATION: translationName,
+            NONE_TRANSLATION: translation.none === 'true',
+            TRANSLATION: translationIdentifier,
             INPUT_TYPE: importType.value,
             INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
             ADV_UPLOAD_OPTS: this.getAdvOpts(),
@@ -414,61 +428,77 @@ export default class ImportDataset {
             folderId
         };
 
-        this.processRequest = Hoot.api.uploadDataset( data )
-            .then( resp => {
-                this.loadingState();
+        this.loadingState();
 
-                this.jobId = resp.data[ 0 ].jobid;
+        this.processRequest =  Hoot.api.uploadDataset( data, this.cancelToken.token )
+        .then( resp => {
+            this.jobId = resp.data[ 0 ].jobid;
+            return Hoot.api.statusInterval( this.jobId );
+        } )
+        .then( async resp => {
+            let message;
 
-                return Hoot.api.statusInterval( this.jobId );
-            } )
-            .then( async resp => {
-                let message;
-                if (resp.data && resp.data.status === 'cancelled') {
-                    message = 'Import job cancelled';
+            if (resp.data && resp.data.status === 'cancelled') {
+                message = 'Import job cancelled';
 
-                    // Delete the newly created folder
-                    if ( newFolderName ) {
-                        await Hoot.api.deleteFolder( folderId );
-                        await Hoot.folders.removeFolder( folderId );
-                    }
-
-                    this.submitButton
-                        .select( 'span' )
-                        .text( 'Import' );
-                } else {
-                    message = 'Import job complete';
+                // Delete the newly created folder
+                if ( newFolderName ) {
+                    await Hoot.api.deleteFolder( folderId );
+                    await Hoot.folders.removeFolder( folderId );
                 }
 
+                this.submitButton
+                    .select( 'span' )
+                    .text( 'Import' );
+            } else {
+                message = 'Import job complete';
+            }
+
+            Hoot.message.alert( {
+                data: resp.data,
+                message: message,
+                status: 200,
+                type: resp.type
+            } );
+
+            return resp;
+        } )
+        .then( () => Hoot.folders.refreshAll() )
+        .then( () => Hoot.events.emit( 'render-dataset-table' ) )
+        .catch( err => {
+            console.error(err);
+
+            if ( err.message === 'Request cancelled.' ) {
                 Hoot.message.alert( {
-                    data: resp.data,
-                    message: message,
-                    status: 200,
-                    type: resp.type
+                    message: err.message,
+                    type: 'warn'
                 } );
 
-                return resp;
-            } )
-            .then( () => Hoot.folders.refreshAll() )
-            .then( () => Hoot.events.emit( 'render-dataset-table' ) )
-            .catch( err => {
-                console.error(err);
+            } else {
 
                 let message = 'Error running import',
-                    type = err.type,
-                    keepOpen = true;
+                type = err.type,
+                keepOpen = true;
 
-                if (err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
-                    message = err.data.commandDetail[0].stderr;
+                if ( err.data ) {
+                    if (typeof err.data === 'string') {
+                        message = err.data;
+                    }
+
+                    if (err.data instanceof Object && err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                        message = err.data.commandDetail[0].stderr;
+                    }
                 }
 
                 Hoot.message.alert( { message, type, keepOpen } );
+            }
+        } )
+        .finally( () => {
+            this.container.remove();
+            Hoot.events.emit( 'modal-closed' );
+        } );
 
-            } )
-            .finally( () => {
-                this.container.remove();
-                Hoot.events.emit( 'modal-closed' );
-            } );
+
     }
 
     /**
@@ -499,7 +529,12 @@ export default class ImportDataset {
 
         // overwrite the submit click action with a cancel action
         this.submitButton.on( 'click', () => {
-            Hoot.api.cancelJob(this.jobId);
+            if ( this.jobId ) {
+                Hoot.api.cancelJob(this.jobId);
+            }
+            else {
+                this.cancelToken.cancel('Request cancelled.');
+            }
         } );
 
         this.submitButton.insert('i', 'span')
@@ -509,7 +544,7 @@ export default class ImportDataset {
         this.container.selectAll( 'input' )
             .each( function() {
                 d3.select( this ).node().disabled = true;
-            } );
+        } );
     }
 
     /**
@@ -551,39 +586,13 @@ export default class ImportDataset {
      */
     setMultipartForType( typeVal ) {
         let uploader = d3.select( '#ingestFileUploader' );
+        const importMap = ImportDataset.importTypeMap();
+        const allowMultiple = [ 'FILE', 'GPKG' ];
 
         uploader
-            .property( 'multiple', true )
-            .attr( 'accept', null )
-            .attr( 'webkitdirectory', null )
-            .attr( 'directory', null );
-
-        if ( typeVal === 'DIR' ) {
-            uploader
-                .property( 'multiple', false )
-                .attr( 'accept', null )
-                .attr( 'webkitdirectory', '' )
-                .attr( 'directory', '' );
-        } else if ( typeVal === 'GEONAMES' ) {
-            uploader
-                .property( 'multiple', false )
-                .attr( 'accept', '.geonames, .txt' );
-        } else if ( typeVal === 'OSM' ) {
-            uploader
-                .property( 'multiple', false )
-                .attr( 'accept', '.osm, .osm.zip, .pbf' );
-        } else if ( typeVal === 'FILE' ) {
-            uploader
-                .property( 'multiple', true )
-                .attr( 'accept', '.shp, .shx, .dbf, .prj, .zip' );
-        } else if ( typeVal === 'GEOJSON' ) {
-            uploader
-                .property( 'multiple', false )
-                .attr( 'accept', '.geojson');
-        } else if ( typeVal === 'GPKG' ) {
-            uploader
-                .property( 'multiple', true)
-                .attr( 'accept', '.gpkg');
-        }
+            .property( 'multiple', allowMultiple.includes( typeVal ) )
+            .attr( 'accept', importMap[ typeVal ] )
+            .attr( 'webkitdirectory', typeVal === 'DIR' ? '' : null )
+            .attr( 'directory', typeVal === 'DIR' ? '' : null );
     }
 }

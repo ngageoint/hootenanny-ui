@@ -104,6 +104,18 @@ export default class ReviewBookmarks extends Tab {
             .attr( 'name', d => d.name )
             .attr( 'readonly', d => d.readonly );
 
+        let showTagged = filtersContainer.append( 'div' )
+            .classed( 'showTaggedBtn', true );
+
+        showTagged.append( 'input' )
+            .attr( 'type', 'checkbox' )
+            .attr( 'id', 'showTagged' )
+            .on( 'change', () => this.loadBookmarks() );
+
+        showTagged.append( 'label' )
+            .attr( 'for', 'showTagged' )
+            .text( 'Show tagged?' );
+
         filtersContainer
             .append( 'div' )
             .append( 'button' )
@@ -128,9 +140,7 @@ export default class ReviewBookmarks extends Tab {
     createBookmarkTable() {
         this.bookmarkTable = this.panelWrapper
             .append( 'div' )
-            .classed( 'bookmark-table keyline-all', true )
-            .append( 'div' )
-            .classed( 'inner-wrapper', true );
+            .classed( 'bookmark-table keyline-all', true );
     }
 
     createPagination() {
@@ -234,18 +244,22 @@ export default class ReviewBookmarks extends Tab {
         const layerName = d3.select( '#layerNameFilter' ).node().value;
         const layerId = layerName === '' ? '' : Hoot.layers.findBy( 'name', layerName ).id;
 
+        const showTagged = d3.select( '#showTagged' ).property( 'checked' );
+
         return {
             limit: this.perPageCount,
             orderBy: sortVal,
             creatorFilter: creatorId,
             layerNameFilter: layerId,
-            offset: (this.perPageCount * this.currentPageIdx)
+            offset: (this.perPageCount * this.currentPageIdx),
+            showTagged: showTagged
         };
     }
 
     tagBookmarks( bookmarks ) {
         _forEach( bookmarks, bookmark => {
             bookmark.layerName = _get( Hoot.layers.findBy( 'id', bookmark.mapId ), 'name' );
+            bookmark.visibility = _get( Hoot.layers.findBy( 'id', bookmark.mapId ), 'public' );
         } );
 
         return bookmarks;
@@ -307,66 +321,45 @@ export default class ReviewBookmarks extends Tab {
             .duration( 400 )
             .style( 'opacity', 1 );
 
-        let wrapper = items
-            .append( 'div' )
-            .classed( 'bookmark-wrapper', true );
-
-        let header = wrapper
+        let header = items
             .append( 'div' )
             .classed( 'bookmark-header flex justify-between align-center', true );
 
-        header
-            .append( 'div' )
-            .classed( 'bookmark-title', true )
+        header.append( 'div' )
+            .classed( 'bookmark-title truncate', true )
             .append( 'a' )
             .text( data => {
                 let title      = data.detail.bookmarkdetail.title,
-                    layerName  = data.layerName,
-                    relationId = `r${ data.relationId }_${ data.mapId }`;
+                    layerName  = data.layerName;
 
-                return `${ title } - [${ layerName } : ${ relationId }]`;
+                return `${ title } - ${ layerName }`;
             } )
             .on( 'click', d => this.openBookmarkNotes( d ) );
 
-        header
+        let details = header
             .append( 'div' )
-            .classed( 'delete-bookmark', true )
-            .append( 'button' )
-            .classed( '_icon trash', true )
-            .on( 'click', d => this.deleteBookmark( d ) );
+            .classed( 'bookmark-details truncate', true );
 
-        let body = wrapper
-            .append( 'div' )
-            .classed( 'bookmark-body', true );
-
-        let description = body
-            .append( 'div' )
-            .classed( 'bookmark-description', true );
-
-        description
-            .append( 'label' )
-            .text( 'Description:' );
-
-        description
-            .append( 'span' )
-            .text( d => d.detail.bookmarkdetail.desc );
-
-        let details = body
-            .append( 'div' )
-            .classed( 'bookmark-details', true );
-
-        details
-            .append( 'label' )
-            .text( 'Created At:' );
-
-        details
-            .append( 'span' )
+        details.append( 'span' )
             .text( data => {
                 let createdAt = new Date( data.createdAt ).toLocaleString(),
                     createdBy = Hoot.config.users[ data.createdBy ].display_name;
 
                 return `${ createdAt } by ${ createdBy }`;
             } );
+
+        let description = header
+            .append( 'div' )
+            .classed( 'bookmark-description truncate', true );
+
+        description.append( 'span' )
+            .text( d => d.detail.bookmarkdetail.desc );
+
+        header.append( 'div' )
+            .classed( 'delete-bookmark', true )
+            .append( 'button' )
+            .classed( '_icon trash', true )
+            .on( 'click', d => this.deleteBookmark( d ) );
     }
 
     clearFilter() {

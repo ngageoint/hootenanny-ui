@@ -1,56 +1,44 @@
 import _values from 'lodash-es/values';
 
-export { wikipedia as dataWikipedia } from 'wmf-sitematrix';
+export var dataWikipedia = [
+    [
+        "English",
+        "English",
+        "en"
+    ]
+];
 
-export { dataAddressFormats } from './address-formats.json';
-export { dataDeprecated } from './deprecated.json';
-export { dataDiscarded } from './discarded.json';
-export { dataLocales } from './locales.json';
-export { dataPhoneFormats } from './phone-formats.json';
-export { dataShortcuts } from './shortcuts.json';
+export { default as dataAddressFormats } from './address-formats.json';
+export { default as dataDeprecated } from './deprecated.json';
+export { default as dataDiscarded } from './discarded.json';
+export { default as dataLocales } from './locales.json';
+export { default as dataPhoneFormats } from './phone-formats.json';
+export { default as dataShortcuts } from './shortcuts.json';
 
 export { default as dataImperial } from './imperial.json';
 export { default as dataDriveLeft } from './drive-left.json';
-export { en as dataEn } from '../dist/locales/en.json';
+export { default as dataEn } from '../dist/locales/en.json';
 
-import {
-    features as ociFeatures,
-    resources as ociResources
-} from 'osm-community-index';
+import dataImagery from './imagery.json';
+import presets from './presets/presets.json';
+import defaults from './presets/defaults.json';
+import categories from './presets/categories.json';
+import fields from './presets/fields.json';
+import osmTagInfo from './osm-plus-taginfo.json';
+import tdsv61FieldValues from './tdsv61_field_values.json';
+import tdsv70FieldValues from './tdsv70_field_values.json';
+import mgcpFieldValues from './mgcp_field_values.json';
 
-import { dataImagery } from './imagery.json';
-import { presets } from './presets/presets.json';
-import { defaults } from './presets/defaults.json';
-import { categories } from './presets/categories.json';
-import { fields } from './presets/fields.json';
-import { osmTagInfo } from './osm-plus-taginfo.json';
-import { tdsv61FieldValues } from './tdsv61_field_values.json';
-import { tdsv70FieldValues } from './tdsv70_field_values.json';
-import { mgcpFieldValues } from './mgcp_field_values.json';
-
-import { geoArea as d3_geoArea } from 'd3-geo';
 import whichPolygon from 'which-polygon';
-
-
-// index the osm-community-index
-var ociFeatureCollection = _values(ociFeatures).map(function(feature) {
-    // workaround for which-polygon: only supports `properties`, not `id`
-    // https://github.com/mapbox/which-polygon/pull/6
-    feature.properties = {
-        id: feature.id,
-        area: d3_geoArea(feature)   // also precompute areas
-    };
-    return feature;
-});
 
 
 export var data = {
     community: {
-        features: ociFeatures,
-        resources: ociResources,
+        features: [],
+        resources: [],
         query: whichPolygon({
             type: 'FeatureCollection',
-            features: ociFeatureCollection
+            features: []
         })
     },
     imagery: dataImagery,  //legacy

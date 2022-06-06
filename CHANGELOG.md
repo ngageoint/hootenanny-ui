@@ -2514,7 +2514,7 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
 
 #### :tada: New Features
 * Add KML and GeoJSON support to GPX layer ([#3811], thanks [@mertemin])
-* Add language debugging mode that shows translations keys ([#3755])
+* Add language debugging mode that shows translation keys ([#3755])
 * Upgrade to MapillaryJS viewer v2.4
 * Add ability to restart ui and change locale on the fly ([#3764], thanks [@kepta])
 * Upgrade to latest maki icons ([#3024], [#3756], thanks [@ajithranka])
@@ -2811,7 +2811,7 @@ _Map traffic signals, stop signs, benches, crossings, street lamps, fountains, t
   * Remove diacritics (accented chars) when doing fuzzy searches (#3159)
 * Bugfixes:
   * Prevent imagery offset nudging buttons from getting stuck if user clicks again (#3576)
-  * Don't include terms for non-searchable presets in translations source (#3323)
+  * Don't include terms for non-searchable presets in translation source (#3323)
   * Let user know if the documentation points to a redirect page (#3337)
   * Fix line labeling placement for IE11, Edge (#3020)
   * Better label placement, use smaller collision boxes (#1645)

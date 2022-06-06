@@ -11,6 +11,7 @@ import SidebarForm                from './sidebarForm';
 import AdvancedOpts               from './advancedOpts';
 import FormFactory                from '../../tools/formFactory';
 import { layerConflateForm }      from '../../config/domMetadata';
+import { unallowableWordsExist } from '../../tools/utilities';
 
 class LayerConflate extends SidebarForm {
     constructor( container, d ) {
@@ -181,11 +182,10 @@ class LayerConflate extends SidebarForm {
             node             = target.node(),
             str              = node.value,
 
-            reservedWords    = [ 'root', 'dataset', 'dataset', 'folder' ],
             unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
             valid            = true;
 
-        if ( reservedWords.indexOf( str.toLowerCase() ) > -1 || unallowedPattern.test( str ) ) {
+        if ( unallowableWordsExist( str ) || unallowedPattern.test( str ) ) {
             valid = false;
         }
 
@@ -247,7 +247,9 @@ class LayerConflate extends SidebarForm {
             }
         }
 
-        if ( data.HOOT2_ADV_OPTIONS.hasOwnProperty( 'RoadEngines' ) && data.HOOT2_ADV_OPTIONS.RoadEngines === 'Network' ) {
+        if ( data.HOOT2_ADV_OPTIONS.hasOwnProperty( 'RoadEngines' ) &&
+                data.HOOT2_ADV_OPTIONS.RoadEngines === 'Network' &&
+                !data.DISABLED_FEATURES.includes( 'Roads' ) ) {
             data.CONFLATION_ALGORITHM = 'Network';
             delete data.HOOT2_ADV_OPTIONS.RoadEngines;
         }
@@ -255,11 +257,14 @@ class LayerConflate extends SidebarForm {
 
         //If a task grid is present in custom data, use it to restrict conflation
         let customDataLayer = Hoot.context.layers().layer('data');
-        let refBbox = Hoot.layers.findBy( 'id', data.INPUT1 ).bbox;
+        let refBounds = Hoot.layers.findBy( 'id', data.INPUT1 ).bounds;
+        let secBounds = Hoot.layers.findBy( 'id', data.INPUT2 ).bounds;
         if ( customDataLayer.hasData() && customDataLayer.enabled() ) {
-            data.TASK_BBOX = customDataLayer.extent().toParam();
-        } else if (refBbox) { //the reference layer has a bbox property indicating data is constrained via API pull
-            data.TASK_BBOX = refBbox;
+            data.bounds = customDataLayer.getCoordsString();
+        } else if (refBounds) { //the reference layer has a bounds property indicating data is constrained via API pull
+            data.bounds = refBounds;
+        } else if (secBounds) { //if no ref bounds, use the secondary bounds
+            data.bounds = secBounds;
         }
 
         return data;
@@ -284,7 +289,7 @@ class LayerConflate extends SidebarForm {
         d3.event.preventDefault();
 
         let data   = this.preConflation(),
-            params = {
+            layerParams = {
                 name: data.OUTPUT_NAME,
                 color: 'green',
                 isConflating: true,
@@ -295,12 +300,21 @@ class LayerConflate extends SidebarForm {
             this.advancedOptions.toggle();
         }
 
+        let refLayer = Hoot.layers.findLoadedBy( 'refType', 'primary' );
+        let secLayer = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
+
+        // Check if either layer has task manager tag data
+        if ( refLayer.tags && refLayer.tags.taskInfo ) {
+            data.taskInfo = refLayer.tags.taskInfo;
+        } else if ( secLayer.tags && secLayer.tags.taskInfo ) {
+            data.taskInfo = secLayer.tags.taskInfo;
+        }
 
         return Hoot.api.conflate( data )
             .then( resp => {
-                params.jobId = resp.data.jobid;
+                layerParams.jobId = resp.data.jobid;
 
-                this.loadingState( params );
+                this.loadingState( layerParams );
 
                 // hide input layer controllers
                 this.controller.hideInputs();
@@ -336,7 +350,7 @@ class LayerConflate extends SidebarForm {
                     // remove input layer controllers
                     d3.selectAll( '.add-controller' ).remove();
 
-                    this.postConflation( params );
+                    this.postConflation( layerParams );
                 }
             } )
             .catch( err => {
@@ -353,6 +367,10 @@ class LayerConflate extends SidebarForm {
                     message = err.data.commandDetail[0].stderr;
                 } else {
                     message = 'Error running conflation';
+                }
+
+                if ( !type ) {
+                    type = 'error';
                 }
 
                 // restore input layer controllers
