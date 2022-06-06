@@ -77,6 +77,7 @@ var _rateLimitError;
 var _userChangesets;
 var _userDetails;
 var _off;
+var _maxNodeCount = 50000;
 
 
 function authLoading() {
@@ -1121,7 +1122,7 @@ export default {
             console.log("getNodesCount canceled");
         }
         // console.log("nodesCount ->" + tileZ + ": " + count);
-        if (isNaN(count) || count > 10000 || count === 0) {
+        if (isNaN(count) || count > _maxNodeCount || count === 0) {
             //Hoot.context.flush();
             callback("Too many features to load->" + count);//call editOff
             dispatch.call('loaded');     // stop the spinner
