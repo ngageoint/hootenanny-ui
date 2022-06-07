@@ -431,7 +431,7 @@ export default {
         _forEach(_tileCache.inflight, abortRequest);
         if (_nodeCountCache.inflight) {
             _nodeCountCache.inflight.cancel();
-            console.log("cancel from reset");
+            console.log('cancel from reset');
         }
         _forEach(_noteCache.inflight, abortRequest);
         _forEach(_noteCache.inflightPost, abortRequest);
@@ -1004,7 +1004,7 @@ export default {
         //see which tile counts are already cached
         const tilesToBeLoaded = tiles.filter(tile => {
             return !(_nodeCountCache.loaded[tile.id] !== undefined || _nodeCountCache.loading[tile.id]);
-        })
+        });
 
         //console.log(tiles.length + " vs " + tilesToBeLoaded.length);
 
@@ -1012,7 +1012,7 @@ export default {
         // abort inflight nodecount requests that are no longer needed
         if (_nodeCountCache.inflight) {
             console.log(_nodeCountCache.inflight);
-            console.log("cancel from getNodesCount");
+            console.log('cancel from getNodesCount');
             _nodeCountCache.inflight.cancel();
             delete _nodeCountCache.inflight;
             // dispatch.call('loaded');    // stop the spinner
@@ -1026,8 +1026,8 @@ export default {
             try {
                 counts = await Hoot.api.getTileNodesCount( tilesToBeLoaded, cancelToken.token );
                 delete _nodeCountCache.inflight;
-            } catch(rej) {
-                console.log("getTileNodesCount canceled");
+            } catch (rej) {
+                console.log('getTileNodesCount canceled');
             }
             tilesToBeLoaded.forEach((tile) => {
                 delete _nodeCountCache.loading[tile.id];
@@ -1043,7 +1043,7 @@ export default {
                 return total;
             }
         }, 0);
-        console.log("total view tile nodes = " + count);
+        console.log('total view tile nodes = ' + count);
         return count;
     },
 
@@ -1056,7 +1056,7 @@ export default {
             y: Number(tileBits[1]),
             z: Number(zId[0]),
             mapId: zId[1]
-        }
+        };
     },
 
     checkTileCacheAbove: function(tileId) {
@@ -1118,13 +1118,13 @@ export default {
         let count;
         try {
             count = await this.getNodesCount(projection, tileZ);
-        } catch(rej) {
-            console.log("getNodesCount canceled");
+        } catch (rej) {
+            console.log('getNodesCount canceled');
         }
-        // console.log("nodesCount ->" + tileZ + ": " + count);
+        // console.log('nodesCount ->' + tileZ + ': ' + count);
         if (isNaN(count) || count > _maxNodeCount || count === 0) {
             //Hoot.context.flush();
-            callback("Too many features to load->" + count);//call editOff
+            callback('Too many features to load->' + count);//call editOff
             dispatch.call('loaded');     // stop the spinner
             var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
             visLayers.forEach(layer => Hoot.events.emit( 'layer-loaded', layer.name ));
@@ -1164,7 +1164,7 @@ export default {
 
             var options = { skipSeen: true };
             _tileCache.inflight[tile.id] = that.loadFromAPI( path, function(err, parsed) {
-console.log("loadTiles tile.id->" + tile.id);
+console.log('loadTiles tile.id->' + tile.id);
                 delete _tileCache.inflight[tile.id];
                 if (!err) {
                     _tileCache.loaded[tile.id] = true;
