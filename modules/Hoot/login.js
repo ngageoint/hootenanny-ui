@@ -45,7 +45,7 @@ class Login {
                     //a valid session exists so go to app main page
                     let pathname = window.location.pathname;
                     window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
-                } else if (resp.status === 401) {
+                } else if (resp.status === 401 || resp.status === 403) {
                     //client is not authenticated so do login
                     login.init();
                 } else {
@@ -76,7 +76,7 @@ class Login {
             headers: { 'Content-Type': 'text/plain' }
         };
 
-        return fetch(`${ this.baseUrl }/auth/oauth1/request`, params)
+        return fetch(`${ this.baseUrl }/auth/oauth2/authorize`, params)
             .then(resp => {
                 if (resp.status !== 200) throw Error
                 return resp.text();
@@ -104,17 +104,17 @@ class Login {
         };
     }
 
-    verifyOAuth(oauthToken, oauthVerifier) {
+    verifyOAuth(code, state) {
         const params = {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
         };
-        const url = `${this.baseUrl}/auth/oauth1/verify?oauth_token=${oauthToken}&oauth_verifier=${oauthVerifier}`;
+        const url = `${this.baseUrl}/auth/oauth2/callback?code=${code}&state=${state}`;
         fetch(url, params)
             .then(resp => {
-                if (resp.status !== 200) throw error;
+                if (resp.status !== 200) throw Error;
                 return resp.json();
             } )
             .then( resp => {

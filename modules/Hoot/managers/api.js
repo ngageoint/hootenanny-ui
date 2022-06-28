@@ -292,7 +292,7 @@ export default class API {
 
     getOAuthRedirectUrl() {
         const params = {
-            path: '/auth/oauth1/request',
+            path: '/auth/oauth2/authorize',
             method: 'GET',
             headers: {
                 'Content-Type': 'text/plain'
@@ -303,9 +303,9 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    verifyOAuth( oauth_token, oauth_verifier ) {
+    verifyOAuth( code, state ) {
         const params = {
-            path: `/auth/oauth1/verify?oauth_token=${ oauth_token }&oauth_verifier=${ oauth_verifier }`,
+            path: `/auth/oauth2/callback?code=${ code }&state=${ state }`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -318,7 +318,7 @@ export default class API {
 
     logout() {
         const params = {
-            path: '/auth/oauth1/logout',
+            path: '/auth/oauth2/logout',
             method: 'GET'
         };
 
