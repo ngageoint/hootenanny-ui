@@ -318,7 +318,7 @@ export default class API {
 
     logout() {
         const params = {
-            path: '/logout',
+            path: '/auth/oauth2/logout',
             method: 'GET'
         };
 
