@@ -318,7 +318,7 @@ export default class API {
 
     logout() {
         const params = {
-            path: '/auth/oauth2/logout',
+            path: '/logout',
             method: 'GET'
         };
 
@@ -408,6 +408,21 @@ export default class API {
             .then( resp => resp.data )
             .catch( err => {
                 const message = this.internalError( err ) || 'Unable to get Hootenanny core info';
+
+                return Promise.reject( message );
+            } );
+    }
+
+    authorize() {
+        const params = {
+            path: '/info/about/servicesVersionInfo',
+            method: 'HEAD'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( err => {
+                const message = this.internalError( err ) || 'Unauthenticated request to Hootenanny services';
 
                 return Promise.reject( message );
             } );

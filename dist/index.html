@@ -22,7 +22,7 @@
         <script>
             var hootHash = 'hootUrlHash';
 
-            Hoot.api.getServicesVersionInfo()
+            Hoot.api.authorize()
                 .then( () => {
                     // apply cached hash if present
                     if (localStorage.getItem(hootHash)) {
