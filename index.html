@@ -384,11 +384,11 @@
                     });
                 return result;
             }
-            var oauth_token = findGetParameter('oauth_token');
-            var oauth_verifier = findGetParameter('oauth_verifier');
-            if(oauth_token && oauth_verifier) {
+            var code = findGetParameter('code');
+            var state = findGetParameter('state');
+            if(code && state) {
                 // if we have these tokens, this is the spawned popup-
-                d3.json('../hoot-services/auth/oauth1/verify?oauth_verifier=' + oauth_verifier + '&oauth_token=' + oauth_token, function(e, r) {
+                d3.json('../hoot-services/auth/oauth2/callback?code=' + code + '&state=' + state, function(e, r) {
                     if(e) {
                         console.warn('failed to verify oauth tokens w/ provider:');
                         console.warn('XMLHttpRequest.status', e.status || null);
@@ -396,19 +396,18 @@
 
                         if(opener) {
                             window.onbeforeunload = function() {
-                                opener.oAuthDone(e, null);
+                                opener.oAuth2Done(e, null);
                             }
                             window.close();
                         } else {
-                            window.alert('Failed to complete oauth handshake. Check console for details & retry.');
-                            // clear oauth params.
+                            window.alert('Failed to complete oauth2 handshake. Check console for details & retry.');
+                            // clear oauth2 params.
                             window.history.pushState({}, document.title, window.location.pathname);
                         }
-
                     } else {
                         if(opener) {
                             window.onbeforeunload = function() {
-                                opener.oAuthDone(null, r);
+                                opener.oAuth2Done(null, r);
                             }
                             window.close();
                         } else {
@@ -443,13 +442,13 @@
                     function launch_login(oauth_redirect_url) {
                         window.open(oauth_redirect_url, "hootenanny_login_redirect", "width=500,height=800,toolbar=no,status=no,menubar=no");
 
-                        window.oAuthDone = function(e, user_object) {
+                        window.oAuth2Done = function(e, user_object) {
                             if(e) {
-                                console.warn('failed to verify oauth tokens w/ provider:');
+                                console.warn('failed to verify oauth2 tokens w/ provider:');
                                 console.warn('XMLHttpRequest.status', e.status || null);
                                 console.warn('XMLHttpRequest.responseText ', e.responseText || null);
 
-                                window.alert('Failed to complete oauth handshake. Check console for details & retry.');
+                                window.alert('Failed to complete oauth2 handshake. Check console for details & retry.');
                                 window.history.pushState({}, document.title, window.location.pathname);
 
                             } else {
@@ -463,7 +462,7 @@
                     Hoot.model.REST('servicesVersionInfo', function(services_version_info) {
                         if(services_version_info && services_version_info.error) {
                             // redirect.
-                            Hoot.model.REST('getOAuthRedirectURL', function(oauth_redirect_url) {
+                            Hoot.model.REST('getOAuth2RedirectURL', function(oauth_redirect_url) {
                                 if(oauth_redirect_url && oauth_redirect_url.error) {
                                     // failed to get oauth redirect url from hoot-services.
                                     // must be offline or misconfigured.

@@ -743,8 +743,8 @@ Hoot.model.REST = function (command, data, callback, option) {
             callback(null, resp);
         });
     };
-    rest.getOAuthRedirectURL = function(callback) {
-        d3.text('../hoot-services/auth/oauth1/request', function(error, resp) {
+    rest.getOAuth2RedirectURL = function(callback) {
+        d3.text('../hoot-services/auth/oauth2/authorize', function(error, resp) {
             if (error) {
                 return callback(_alertError(error, 'Failed to get redirect URL for oauth provider!'));
             }
@@ -752,7 +752,7 @@ Hoot.model.REST = function (command, data, callback, option) {
         });
     };
     rest.logout = function(callback) {
-        d3.text('../hoot-services/auth/oauth1/logout', function(err) {
+        d3.text('../hoot-services/auth/oauth2/logout', function(err) {
             if (err) {
                 return callback(_alertError(err, 'Failed to logout!'));
             } else {
