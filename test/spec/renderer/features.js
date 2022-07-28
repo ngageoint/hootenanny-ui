@@ -520,8 +520,8 @@ describe('iD.Features', function() {
             autoHidden = features.autoHidden();
             msg = ++i + ' points';
 
-            expect(hidden, msg).to.include('points');
-            expect(autoHidden, msg).to.include('points');
+            expect(hidden, msg).to.not.include('points');
+            expect(autoHidden, msg).to.not.include('points');
         });
 
         it('doubles auto-hide threshold when doubling viewport size', function() {
@@ -551,8 +551,8 @@ describe('iD.Features', function() {
             autoHidden = features.autoHidden();
             msg = ++i + ' points';
 
-            expect(hidden, msg).to.include('points');
-            expect(autoHidden, msg).to.include('points');
+            expect(hidden, msg).to.not.include('points');
+            expect(autoHidden, msg).to.not.include('points');
         });
     });
 
