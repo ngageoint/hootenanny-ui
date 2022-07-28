@@ -2,6 +2,7 @@ import _compact from 'lodash-es/compact';
 import _map from 'lodash-es/map';
 import _throttle from 'lodash-es/throttle';
 import _values from 'lodash-es/values';
+import _debounce from 'lodash-es/debounce';
 
 import { set as d3_set } from 'd3-collection';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
@@ -61,7 +62,7 @@ var kMax = geoZoomToScale(24, TILESIZE);
 
 
 export function rendererMap(context) {
-    var dispatch = d3_dispatch('move', 'drawn');
+    var dispatch = d3_dispatch('move', 'drawn', 'toomanynodes');
     var projection = context.projection;
     var curtainProjection = context.curtainProjection;
     var drawLayers = svgLayers(projection, context);
@@ -87,6 +88,8 @@ export function rendererMap(context) {
     var minzoom = 0;
     var mouse;
     var mousemove;
+
+    var _tooManyNodes = false;
 
     var zoom = d3_zoom()
         .scaleExtent([kMin, kMax])
@@ -250,6 +253,10 @@ export function rendererMap(context) {
         });
 
         map.dimensions(utilGetDimensions(selection));
+
+        context.map().on('move.nodeCount', function() {
+            _tooManyNodes = false;
+        });
     }
 
 
@@ -611,9 +618,17 @@ export function rendererMap(context) {
 
         // OSM
         if ( map.editable() ) {
-            context.loadTiles( projection, () => {
-                if ( Hoot.layers.mergedLayer && Hoot.layers.mergedLayer.reviewItem ) {
-                    Hoot.events.emit( 'layer-reviews' );
+            context.loadTiles( projection, (err, result) => {
+                if (!err) {
+                    _tooManyNodes = false;
+                    if ( Hoot.layers.mergedLayer && Hoot.layers.mergedLayer.reviewItem ) {
+                        Hoot.events.emit( 'layer-reviews' );
+                    }
+                } else {
+                    console.log(err);
+                    _tooManyNodes = true;
+                    dispatch.call('toomanynodes', this);
+                    editOff();
                 }
             } );
 
@@ -627,6 +642,9 @@ export function rendererMap(context) {
         return map;
     }
 
+    map.tooManyNodes = function() {
+        return _tooManyNodes;
+    };
 
 
     var immediateRedraw = function(difference, extent) {
@@ -978,7 +996,9 @@ export function rendererMap(context) {
     map.editable = function() {
         var osmLayer = surface.selectAll('.data-layer.osm');
         if (!osmLayer.empty() && osmLayer.classed('disabled')) return false;
-
+        // if (map.zoom() >= context.minEditableZoom()) return true;
+        // return map.debouncedBelowMaxNodes();//move this
+        if (map.tooManyNodes()) return false;
         return map.zoom() >= context.minEditableZoom();
     };
 

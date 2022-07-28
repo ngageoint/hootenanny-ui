@@ -35,9 +35,9 @@ describe('iD.Map', function() {
         });
 
         it('respects minzoom', function() {
-            map.minzoom(16);
-            map.zoom(15);
-            expect(map.zoom()).to.equal(16);
+            map.minzoom(9);
+            map.zoom(7);
+            expect(map.zoom()).to.equal(9);
         });
     });
 

@@ -698,17 +698,16 @@ export default class API {
             } );
     }
 
-    // TODO: remove this if not needed
-    getTileNodesCount( data ) {
+    getTileNodesCount( data, cancelToken ) {
         const params = {
             path: '/osm/api/0.6/map/nodescount',
             method: 'POST',
             headers: {
-                'Content-Type': 'text/plain'
+                'Content-Type': 'application/json'
             },
-            data
+            data,
+            cancelToken: cancelToken
         };
-
         return this.request( params )
             .then( resp => resp.data );
     }
