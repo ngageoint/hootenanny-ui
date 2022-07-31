@@ -11,14 +11,7 @@ export default class ModifyTranslationFolder {
         let descendents = this.getDescendents([ this.translationFolder.id ], this.translationFoldersList);
 
         //filter out the folder itself and all of it's descendents
-        this.folderList = [
-            {
-                path : '/',
-                id : 0,
-                name: 'root',
-                userId: Hoot.user().id //hack to make root always visible to user
-            }
-        ].concat(Hoot.folders.translationFolders)
+        this.folderList = Hoot.folders.translationFolders
             .filter(f => {
                 return !descendents.includes(f.id) && this.translationFolder.parentId !== f.id;
             });

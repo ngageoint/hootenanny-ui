@@ -21,7 +21,7 @@ export default class ModifyTranslation {
 
         if ( !this.translation.default ) {
             metadata.button = {
-                text: 'Save Edits',
+                text: 'Save',
                     id: 'editTranslationBtn',
                     onClick: () => this.handleSubmit()
             };
@@ -48,7 +48,8 @@ export default class ModifyTranslation {
             this.templateInput.attr( 'disabled', 'true' );
         } else {
             this.pathNameInput.attr( 'readonly', 'true' );
-            this.submitButton.node().disabled = false;
+            this.submitButton.attr( 'disabled', 'true' );
+
         }
     }
 
@@ -59,36 +60,15 @@ export default class ModifyTranslation {
     validateFields() {
         let name        = this.translationName.property( 'value' ),
             description = this.descriptionInput.property( 'value' ),
-            pathName    = this.pathNameInput.property( 'value' ),
             template    = this.templateInput.property( 'value' );
 
-        if ( !this.translationName.property( 'value' ).length ) {
-            this.translationName.classed( 'invalid', true );
-        } else {
-            this.translationName.classed( 'invalid', false );
-        }
+        this.translationName.classed( 'invalid', !name.length );
+        this.descriptionInput.classed( 'invalid', !description.length );
+        this.templateInput.classed( 'invalid', !template.length );
 
-        if ( !this.descriptionInput.property( 'value' ).length ) {
-            this.descriptionInput.classed( 'invalid', true );
-        } else {
-            this.descriptionInput.classed( 'invalid', false );
-        }
+        let formValid = name.length && description.length && template.length;
 
-        if ( !this.pathNameInput.property( 'value' ).length ) {
-            this.pathNameInput.classed( 'invalid', true );
-        } else {
-            this.pathNameInput.classed( 'invalid', false );
-        }
-
-        if ( !this.templateInput.property( 'value' ).length ) {
-            this.templateInput.classed( 'invalid', true );
-        } else {
-            this.templateInput.classed( 'invalid', false );
-        }
-
-        let formValid = name.length && description.length && pathName.length && template.length;
-
-        this.submitButton.node().disabled = !formValid;
+        this.submitButton.attr('disabled', formValid ? null : true);
     }
 
     handleSubmit() {

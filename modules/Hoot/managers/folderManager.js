@@ -295,7 +295,16 @@ export default class FolderManager {
     }
 
     get translationFolders() {
-        return this._translationFolders.filter(this.filterTranslationVisible);
+        return [
+            {
+                path : '/',
+                id : 0,
+                name: 'root',
+                userId: Hoot.user().id //hack to make root always visible to user
+            }
+        ].concat(
+            this._translationFolders.filter(this.filterTranslationVisible)
+        );
     }
 
     get translations() {
