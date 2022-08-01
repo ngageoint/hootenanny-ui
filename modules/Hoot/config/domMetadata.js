@@ -167,6 +167,15 @@ export function importSingleForm() {
             onChange: () => this.handleMultipartChange()
         },
         {
+            label: 'Import URL',
+            id: 'importUrl',
+            class: 'import-url',
+            inputType: 'text',
+            placeholder: 'Enter URL (http, ftp, s3)',
+            required: false,
+            onChange: d => this.handleUrlChange( d )
+        },
+        {
             label: 'Layer Name',
             id: 'importLayerName',
             class: 'layer-name',

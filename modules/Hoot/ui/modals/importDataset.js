@@ -114,6 +114,7 @@ export default class ImportDataset {
 
         this.typeInput          = this.container.select( '#importType' );
         this.fileInput          = this.container.select( '#importFile' );
+        this.urlInput           = this.container.select( '#importUrl' );
         this.layerNameInput     = this.container.select( '#importLayerName' );
         this.pathNameInput      = this.container.select( '#importPathName' );
         this.newFolderNameInput = this.container.select( '#importNewFolderName' );
@@ -137,13 +138,14 @@ export default class ImportDataset {
 
         // clear values
         this.fileInput.property( 'value', '' );
+        this.urlInput.property( 'value', '' );
         this.layerNameInput.property( 'value', '' );
         this.schemaInput.property( 'value', '' );
 
         // enable input
         if ( !selectedType ) {
             this.fileInput.node().disabled   = true;
-            this.schemaInput.node().disabled = true;
+            this.schemaInput.node().disabled = false;
         } else {
             this.fileInput.node().disabled   = false;
             this.schemaInput.node().disabled = false;
@@ -227,6 +229,7 @@ export default class ImportDataset {
 
         saveName = saveName.indexOf( '.' ) ? saveName.substring( 0, saveName.indexOf( '.' ) ) : saveName;
         this.fileInput.property( 'value', fileNames.join( '; ' ) );
+        this.urlInput.property( 'value', '' );
         this.layerNameInput.property( 'value', Hoot.layers.checkLayerName(saveName) );
 
         this.formValid = true;
@@ -322,6 +325,42 @@ export default class ImportDataset {
     }
 
     /**
+     * Validate URL remote data input
+     *
+     * @param d - node data
+     */
+    handleUrlChange( d ) {
+        let target           = d3.select( `#${ d.id }` ),
+            node             = target.node(),
+            str              = node.value,
+
+            allowedPattern = new RegExp( /^(https?:\/\/|s3:\/\/)/ ),
+            valid            = true;
+
+        if ( !allowedPattern.test( str ) ) {
+            valid = false;
+        }
+
+        if ( d.required && !str.length ) {
+            valid = false;
+        }
+
+        if (valid) {
+            //clear out and file upload
+            this.fileInput.property( 'value', '' );
+            this.fileIngest.property('value', '');
+            let saveName = str.substring( str.lastIndexOf('/')+1, str.lastIndexOf('.') );
+            this.layerNameInput.property( 'value', Hoot.layers.checkLayerName(saveName) );
+            this.schemaInput.node().disabled = false;
+            this.schemaInput.property( 'value', this.translations[ 0 ].name );
+        }
+
+        target.classed( 'invalid', !valid );
+        this.formValid = valid;
+        this.updateButtonState();
+    }
+
+    /**
      * Validate user input to make sure it doesn't
      * contain un-allowed characters and isn't an empty string
      *
@@ -385,6 +424,7 @@ export default class ImportDataset {
      */
     async handleSubmit() {
         let layerName     = this.layerNameInput.property( 'value' ),
+            url           = this.urlInput.property( 'value' ),
             pathName      = this.pathNameInput.property( 'value' ),
             newFolderName = this.newFolderNameInput.property( 'value' ),
             pathId        = _get( _find( Hoot.folders.folderPaths, folder => folder.path === pathName ), 'id' ),
@@ -421,16 +461,22 @@ export default class ImportDataset {
         let data = {
             NONE_TRANSLATION: translation.none === 'true',
             TRANSLATION: translationIdentifier,
-            INPUT_TYPE: importType.value,
             INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
             ADV_UPLOAD_OPTS: this.getAdvOpts(),
-            formData: this.getFormData( this.fileIngest.node().files ),
             folderId
         };
 
         this.loadingState();
 
-        this.processRequest =  Hoot.api.uploadDataset( data, this.cancelToken.token )
+        //remote url or file upload
+        if (url) {
+            data.URL = url;
+        } else {
+            data.INPUT_TYPE = importType.value;
+            data.formData = this.getFormData( this.fileIngest.node().files );
+        }
+
+        this.processRequest = Hoot.api.import( data, this.cancelToken.token )
         .then( resp => {
             this.jobId = resp.data[ 0 ].jobid;
             return Hoot.api.statusInterval( this.jobId );
@@ -551,14 +597,13 @@ export default class ImportDataset {
      * Enable/disable button based on form validity
      */
     updateButtonState() {
-        let importType = this.typeInput.node().value,
-            self       = this;
+        let self = this;
 
         this.container.selectAll( '.text-input' )
             .each( function() {
                 let classes = d3.select( this ).attr( 'class' ).split( ' ' );
 
-                if ( classes.indexOf( 'invalid' ) > -1 || !importType.length ) {
+                if ( classes.indexOf( 'invalid' ) > -1 ) {
                     self.formValid = false;
                 }
             } );
