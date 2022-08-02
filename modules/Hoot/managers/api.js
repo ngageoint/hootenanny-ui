@@ -292,7 +292,7 @@ export default class API {
 
     getOAuthRedirectUrl() {
         const params = {
-            path: '/auth/oauth1/request',
+            path: '/auth/oauth2/authorize',
             method: 'GET',
             headers: {
                 'Content-Type': 'text/plain'
@@ -303,9 +303,9 @@ export default class API {
             .then( resp => resp.data );
     }
 
-    verifyOAuth( oauth_token, oauth_verifier ) {
+    verifyOAuth( code, state ) {
         const params = {
-            path: `/auth/oauth1/verify?oauth_token=${ oauth_token }&oauth_verifier=${ oauth_verifier }`,
+            path: `/auth/oauth2/callback?code=${ code }&state=${ state }`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -318,7 +318,7 @@ export default class API {
 
     logout() {
         const params = {
-            path: '/auth/oauth1/logout',
+            path: '/auth/oauth2/logout',
             method: 'GET'
         };
 
@@ -408,6 +408,21 @@ export default class API {
             .then( resp => resp.data )
             .catch( err => {
                 const message = this.internalError( err ) || 'Unable to get Hootenanny core info';
+
+                return Promise.reject( message );
+            } );
+    }
+
+    authorize() {
+        const params = {
+            path: '/info/about/servicesVersionInfo',
+            method: 'HEAD'
+        };
+
+        return this.request( params )
+            .then( resp => resp.data )
+            .catch( err => {
+                const message = this.internalError( err ) || 'Unauthenticated request to Hootenanny services';
 
                 return Promise.reject( message );
             } );
@@ -1387,8 +1402,7 @@ export default class API {
             } )
             .catch( err => {
                 return {
-                    data: err.data,
-                    message: err.data.message || 'Error doing pull!',
+                    message: err.data || 'Error doing pull!',
                     status: err.status,
                     type: 'error'
                 };
@@ -1445,8 +1459,7 @@ export default class API {
             } )
             .catch( err => {
                 return {
-                    data: err.data,
-                    message: err.data.message || 'Error doing pull!',
+                    message: err.data || 'Error doing pull!',
                     status: err.status,
                     type: 'error'
                 };
@@ -1483,7 +1496,7 @@ export default class API {
             } )
             .catch( err => {
                 return {
-                    message : err.data.message || `${ paramData.deriveType } changeset failed`,
+                    message : err.data || `${ paramData.deriveType } changeset failed`,
                     status  : err.status,
                     type    : err.type
                 };
@@ -1533,11 +1546,12 @@ export default class API {
                 };
             } )
             .catch( err => {
-                const message = err.data.message || 'Changeset upload failed. Diff-error file is available for download in job panel.',
+                const message = err.data || 'Changeset upload failed. Diff-error file is available for download in job panel.',
                       status  = err.status,
-                      type    = err.type;
+                      type    = err.type,
+                      keepOpen = true;
 
-                return Promise.reject( { message, status, type } );
+                return Promise.reject( { message, status, type, keepOpen } );
             } );
     }
 

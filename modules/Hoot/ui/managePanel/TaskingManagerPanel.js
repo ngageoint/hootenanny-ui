@@ -485,7 +485,7 @@ export default class TaskingManagerPanel extends Tab {
                 console.error( err );
 
                 const errMessage =  {
-                    message : err.data.message || `${ params.deriveType } changeset failed`,
+                    message : err.data || `${ params.deriveType } changeset failed`,
                     status  : err.status,
                     type    : err.type
                 };

@@ -101,11 +101,11 @@
 <script>
 
     let login = new Login();
-    let oauthToken = login.findGetParameter('oauth_token'),
-        oauthVerifier = login.findGetParameter('oauth_verifier');
-    if (oauthToken && oauthVerifier) {
+    let code = login.findGetParameter('code'),
+        state = login.findGetParameter('state');
+    if (code && state) {
         // if we have these tokens, this is the spawned popup-
-        login.verifyOAuth(oauthToken, oauthVerifier);
+        login.verifyOAuth(code, state);
     } else {
         // check if we already have a valid session
         // if so redirect to main app, if not start the login process
