@@ -65,6 +65,10 @@ export default class ImportDataset {
             {
                 title: 'Directory (FGDB)',
                 value: 'DIR'
+            },
+            {
+                title: 'Remote URL (zip)',
+                value: 'URL'
             }
         ];
     }
@@ -115,6 +119,8 @@ export default class ImportDataset {
         this.typeInput          = this.container.select( '#importType' );
         this.fileInput          = this.container.select( '#importFile' );
         this.urlInput           = this.container.select( '#importUrl' );
+        this.urlUsername        = this.container.select( '#importRemoteUsername' );
+        this.urlPassword        = this.container.select( '#importRemotePassword' );
         this.layerNameInput     = this.container.select( '#importLayerName' );
         this.pathNameInput      = this.container.select( '#importPathName' );
         this.newFolderNameInput = this.container.select( '#importNewFolderName' );
@@ -145,7 +151,7 @@ export default class ImportDataset {
         // enable input
         if ( !selectedType ) {
             this.fileInput.node().disabled   = true;
-            this.schemaInput.node().disabled = false;
+            this.schemaInput.node().disabled = true;
         } else {
             this.fileInput.node().disabled   = false;
             this.schemaInput.node().disabled = false;
@@ -157,6 +163,13 @@ export default class ImportDataset {
         } else {
             translationsList = _reject( this.translations, o => o.name === 'GeoNames' );
         }
+
+        // Show input data files except for remote url
+        let isRemote = selectedType === 'URL';
+        ['#importUrl', '#importRemoteUsername', '#importRemotePassword']
+            .forEach(d => this.container.select(d + '_container').classed('hidden', !isRemote));
+        this.container.select('#importFile_container').classed('hidden', isRemote);
+
 
         schemaCombo.data = translationsList;
 
@@ -425,6 +438,8 @@ export default class ImportDataset {
     async handleSubmit() {
         let layerName     = this.layerNameInput.property( 'value' ),
             url           = this.urlInput.property( 'value' ),
+            remoteUser    = this.urlUsername.property( 'value' ),
+            remotePw      = this.urlPassword.property( 'value' ),
             pathName      = this.pathNameInput.property( 'value' ),
             newFolderName = this.newFolderNameInput.property( 'value' ),
             pathId        = _get( _find( Hoot.folders.folderPaths, folder => folder.path === pathName ), 'id' ),
@@ -471,6 +486,8 @@ export default class ImportDataset {
         //remote url or file upload
         if (url) {
             data.URL = url;
+            data.USERNAME = remoteUser;
+            data.PASSWORD = remotePw;
         } else {
             data.INPUT_TYPE = importType.value;
             data.formData = this.getFormData( this.fileIngest.node().files );
