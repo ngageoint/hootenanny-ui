@@ -947,6 +947,8 @@ export default class API {
             params: {
                 TRANSLATION: data.TRANSLATION,
                 URL: data.URL,
+                USERNAME: data.USERNAME,
+                PASSWORD: data.PASSWORD,
                 INPUT_NAME: data.INPUT_NAME,
                 NONE_TRANSLATION: data.NONE_TRANSLATION,
                 FOLDER_ID: data.folderId

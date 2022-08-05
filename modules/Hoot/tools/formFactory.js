@@ -202,6 +202,10 @@ export default class FormFactory {
                     d.createCustom( field );
                     break;
                 }
+                case 'password': {
+                    self.createPasswordField( field );
+                    break;
+                }
                 default: {
                     self.createTextField( field );
                     break;
@@ -393,6 +397,34 @@ export default class FormFactory {
         return field
             .append( 'input' )
             .attr( 'type', 'text' )
+            .attr( 'id', d => d.id )
+            .attr( 'class', d => d.class )
+            .attr( 'placeholder', d => d.placeholder )
+            .attr( 'value', d => d.value )
+            .attr( 'readonly', d => d.readOnly )
+            .attr( 'disabled', d => d.disabled )
+            .classed( 'text-input', true )
+            .on( 'keyup', function( d ) {
+                if ( d.onChange ) {
+                    d.onChange( d, this );
+                }
+            } )
+            .on( 'blur', function( d ) {
+                if ( d.onBlur ) {
+                    d.onBlur( d, this );
+                }
+            } );
+    }
+
+    /**
+     * Create a password input
+     *
+     * @param field - field div
+     */
+     createPasswordField( field ) {
+        return field
+            .append( 'input' )
+            .attr( 'type', 'password' )
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
             .attr( 'placeholder', d => d.placeholder )

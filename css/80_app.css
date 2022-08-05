@@ -153,6 +153,7 @@ textarea  {
 }
 
 textarea,
+input[type=password],
 input[type=text],
 input[type=search],
 input[type=number],
@@ -168,6 +169,7 @@ input[type=email] {
     text-overflow: ellipsis;
 }
 [dir='rtl'] textarea,
+[dir='rtl'] input[type=password],
 [dir='rtl'] input[type=text],
 [dir='rtl'] input[type=search],
 [dir='rtl'] input[type=number],
