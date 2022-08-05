@@ -121,36 +121,23 @@ class Login {
             } )
             .then( resp => {
                 if ( opener ) {
-                    window.onbeforeunload = function() {
-                        opener.oAuthDone( null, resp );
-                    };
 
                     let pathname = opener.location.pathname;
-
                     // redirect parent
                     opener.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
 
+                    // callback
+                    opener.oAuthDone( null, resp );
+
                     // close self
-                    window.close();
-                } else {
-                    localStorage.setItem( 'user', JSON.stringify( resp ) );
-
-                    let pathname = window.location.pathname;
-
-                    window.location.replace( pathname.substr( 0, pathname.lastIndexOf( '/' ) + 1 ) );
+                    self.close();
                 }
             } )
             .catch( err => {
                 if ( opener ) {
-                    window.onbeforeunload = function() {
-                        opener.oAuthDone( err, null );
-                    };
+                    opener.oAuthDone( err, null );
 
                     self.close();
-                } else {
-                    window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
-                    // clear oauth params.
-                    window.history.pushState( {}, document.title, window.location.pathname );
                 }
             } );
     }
