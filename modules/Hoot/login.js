@@ -90,10 +90,9 @@ class Login {
         window.oAuthDone = ( e, user_object ) => {
             if ( e ) {
                 window.console.warn( 'Failed to verify oauth tokens w/ provider:' );
-                window.console.warn( 'XMLHttpRequest.status', e.status || null );
-                window.console.warn( 'XMLHttpRequest.responseText ', e.responseText || null );
+                window.console.warn( 'Error ', e.message || null );
 
-                window.alert( 'Failed to complete oauth handshake. Check console for details & retry.' );
+                window.alert( e.message );
                 window.history.pushState( {}, document.title, window.location.pathname );
 
             } else {
@@ -114,8 +113,11 @@ class Login {
         const url = `${this.baseUrl}/auth/oauth2/callback?code=${code}&state=${state}`;
         fetch(url, params)
             .then(resp => {
-                if (resp.status !== 200) throw Error;
-                return resp.json();
+                if (!resp.ok) {
+                    return resp.text().then(text => { throw new Error(text) })
+                } else {
+                    return resp.json();
+                }
             } )
             .then( resp => {
                 if ( opener ) {
