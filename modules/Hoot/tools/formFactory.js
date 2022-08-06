@@ -140,7 +140,7 @@ export default class FormFactory {
             .classed( 'round-top keyline-bottom', d => d.inputType !== 'checkbox' )
             .classed( 'keyline-right', d => d.inputType === 'checkbox' );
 
-        fieldHeader
+        let label = fieldHeader
             .append( 'label' )
             .classed( 'strong', true )
             .text( d => d.label );
@@ -203,7 +203,22 @@ export default class FormFactory {
                     break;
                 }
                 case 'password': {
-                    self.createPasswordField( field );
+                    let pw = self.createPasswordField( field );
+                    field.select('.form-field-header').append('i')
+                        .attr('class', 'password-field-icon material-icons')
+                        .text('visibility_off')
+                        .on('click', () => {
+                            let icon = d3.select(this).select('i');
+                            let txt = icon.text();
+                            if (txt === 'visibility_off') {
+                                icon.text('visibility');
+                                pw.attr('type', 'text');
+                            } else {
+                                icon.text('visibility_off');
+                                pw.attr('type', 'password');
+                            }
+
+                        });
                     break;
                 }
                 default: {
@@ -421,7 +436,7 @@ export default class FormFactory {
      *
      * @param field - field div
      */
-     createPasswordField( field ) {
+    createPasswordField( field ) {
         return field
             .append( 'input' )
             .attr( 'type', 'password' )
