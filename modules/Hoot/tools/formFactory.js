@@ -140,7 +140,7 @@ export default class FormFactory {
             .classed( 'round-top keyline-bottom', d => d.inputType !== 'checkbox' )
             .classed( 'keyline-right', d => d.inputType === 'checkbox' );
 
-        let label = fieldHeader
+        fieldHeader
             .append( 'label' )
             .classed( 'strong', true )
             .text( d => d.label );
