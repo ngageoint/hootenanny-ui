@@ -614,13 +614,14 @@ export default class ImportDataset {
      * Enable/disable button based on form validity
      */
     updateButtonState() {
-        let self = this;
+        let importType = this.typeInput.node().value,
+            self       = this;
 
         this.container.selectAll( '.text-input' )
             .each( function() {
                 let classes = d3.select( this ).attr( 'class' ).split( ' ' );
 
-                if ( classes.indexOf( 'invalid' ) > -1 ) {
+                if ( classes.indexOf( 'invalid' ) > -1 || !importType.length ) {
                     self.formValid = false;
                 }
             } );
