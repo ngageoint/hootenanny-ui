@@ -14,10 +14,11 @@ import ImportMultiDataset from '../modals/ImportMultiDatasets';
 import AddFolder          from '../modals/addFolder';
 import ModifyDataset      from '../modals/modifyDataset';
 import ModifyFolder       from '../modals/modifyFolder';
-import ExportData from '../modals/exportData';
-import ExportAlphaShape from '../modals/exportAlphaShape';
-import ExportTaskGrid from '../modals/exportTaskGrid';
-import { rateLimit } from '../../config/apiConfig';
+import ExportData         from '../modals/exportData';
+import OpenInJosm         from '../modals/openInJosm';
+import ExportAlphaShape   from '../modals/exportAlphaShape';
+import ExportTaskGrid     from '../modals/exportTaskGrid';
+import { rateLimit }      from '../../config/apiConfig';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -305,6 +306,19 @@ export default class Datasets extends Tab {
                 let datasets = this.folderTree.selectedNodes;
                 this.exportDatasetModal = new ExportData ( translations, datasets, 'Datasets' ).render();
                 Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
+                break;
+            }
+            case 'openInJosm': {
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport );
+                this.openInJosmModal = new OpenInJosm ( translations, d, 'Dataset' ).render();
+                Hoot.events.once( 'modal-closed', () => delete this.openInJosmModal);
+                break;
+            }
+            case 'openMultiInJosm': {
+                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport );
+                let datasets = this.folderTree.selectedNodes;
+                this.openInJosmModal = new OpenInJosm ( translations, datasets, 'Datasets' ).render();
+                Hoot.events.once( 'modal-closed', () => delete this.openInJosmModal);
                 break;
             }
             case 'exportFolder': {

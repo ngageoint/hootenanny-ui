@@ -437,6 +437,65 @@ export function exportDataForm( zipOutput ) {
     return meta;
 }
 
+export function openInJosmForm( zipOutput ) {
+
+    const exportComboId = 'exportTranslationCombo',
+          exportFormatId = 'exportFormatCombo',
+          exportNameId = 'dataExportNameTextInput',
+          exportHootTags = 'exportHootTags',
+          that = this;
+
+    function changeExport() {
+
+        const showHootTags = d3.select( `#${exportFormatId}` ).property( 'value' ).indexOf('OpenStreetMap') === 0
+                        && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('OSM') === 0;
+
+        d3.select( `#${exportHootTags}_container` )
+            .classed( 'hidden', !showHootTags );
+
+        that.validate( exportComboId );
+        that.validate( exportFormatId );
+    }
+
+    let meta = [
+        {
+            label: 'Translation Schema',
+            id: exportComboId,
+            inputType: 'combobox',
+            readonly: 'readonly',
+            data: this.translations.map(t => t.name),
+            value: 'OSM',
+            onChange: changeExport
+        },
+        {
+            label: 'Export Format',
+            id: exportFormatId,
+            inputType: 'combobox',
+            data: [ 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
+            value: 'OpenStreetMap (OSM)',
+            onChange: changeExport
+        },
+        {
+            label: 'Include Hootenanny tags?',
+            id: exportHootTags,
+            inputType: 'checkbox',
+            checked: false,
+            hidden: false
+        },
+    ];
+
+    if ( zipOutput ) {
+        meta.push({
+            label: 'Output Zip Name',
+            id: exportNameId,
+            inputType: 'text',
+            onChange: () => this.validate( exportNameId )
+        });
+    }
+
+    return meta;
+}
+
 export function translationAddForm() {
     return [
         {

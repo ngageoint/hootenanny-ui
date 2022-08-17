@@ -1007,6 +1007,28 @@ export default class API {
         return this.request( params );
     }
 
+    openInJosm( data ) {
+
+        const requiredKeys = [
+            'input',
+            'inputtype',
+            'outputname',
+            'outputtype'
+        ];
+
+        if (!requiredKeys.every( k => data.hasOwnProperty(k) )) {
+            return Promise.reject( new Error( ' invalid request payload' ) );
+        }
+
+        const params = {
+            path: '/job/export/execute',
+            method: 'POST',
+            data: data
+        };
+
+        return this.request( params );
+    }
+
     updateFolder( { folderId, parentId } ) {
         const params = {
             path: `/osm/api/0.6/map/folders/${ folderId }/move/${ parentId }`,
