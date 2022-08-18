@@ -293,32 +293,6 @@ export default class API {
             } );
     }
 
-    getOAuthRedirectUrl() {
-        const params = {
-            path: '/auth/oauth2/authorize',
-            method: 'GET',
-            headers: {
-                'Content-Type': 'text/plain'
-            }
-        };
-
-        return this.request( params )
-            .then( resp => resp.data );
-    }
-
-    verifyOAuth( code, state ) {
-        const params = {
-            path: `/auth/oauth2/callback?code=${ code }&state=${ state }`,
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-
-        return this.request( params )
-            .then( resp => resp.data );
-    }
-
     logout() {
         const params = {
             path: '/auth/oauth2/logout',
