@@ -2,6 +2,9 @@
  * File: api.js
  * Project: hootenanny-ui
  * @author Matt Putipong on 3/2/18
+ * @apiNote Changelog: <br>
+ *      Milla Zagorski 8-10-2022: Added code to allow for opening layer(s) in JOSM. <br>
+ *
  *******************************************************************************************************/
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
@@ -1007,8 +1010,7 @@ export default class API {
         return this.request( params );
     }
 
-    openInJosm( data ) {
-
+    openInJosm(data) {
         const requiredKeys = [
             'input',
             'inputtype',
@@ -1016,8 +1018,8 @@ export default class API {
             'outputtype'
         ];
 
-        if (!requiredKeys.every( k => data.hasOwnProperty(k) )) {
-            return Promise.reject( new Error( ' invalid request payload' ) );
+        if (!requiredKeys.every(k => data.hasOwnProperty(k))) {
+            return Promise.reject(new Error(' invalid request payload'));
         }
 
         const params = {
@@ -1025,8 +1027,7 @@ export default class API {
             method: 'POST',
             data: data
         };
-
-        return this.request( params );
+        return this.request(params);
     }
 
     updateFolder( { folderId, parentId } ) {

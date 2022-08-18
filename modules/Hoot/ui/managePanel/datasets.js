@@ -2,6 +2,9 @@
  * File: navbar.js
  * Project: hootenanny-ui
  * @author Matt Putipong on 2/27/18
+ * @apiNote Changelog: <br>
+ *      Milla Zagorski 8-10-2022: Added code to allow for opening layer(s) in JOSM. <br>
+ *
  *******************************************************************************************************/
 
 import _map from 'lodash-es/map';
@@ -251,6 +254,9 @@ export default class Datasets extends Tab {
     }
 
     async handleContextMenuClick( [ tree, d, item ] ) {
+
+        let openJosmMessage = 'Make sure JOSM is already launched and running before proceeding.';
+
         switch ( item.click ) {
             case 'delete': {
                 let warningMsg = d.data.type === 'folder' ? 'folder and all data?' : 'datasets?',
@@ -309,12 +315,18 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'openInJosm': {
-                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport );
-                this.openInJosmModal = new OpenInJosm ( translations, d, 'Dataset' ).render();
-                Hoot.events.once( 'modal-closed', () => delete this.openInJosmModal);
+                let confirm = await Hoot.message.confirm(openJosmMessage);
+                if ( !confirm ) return;
+
+                let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
+                this.openInJosmModal = new OpenInJosm(translations, d, 'Dataset', 'datasets').render();
+                Hoot.events.once('modal-closed', () => delete this.openInJosmModal);
                 break;
             }
             case 'openMultiInJosm': {
+                let confirm = await Hoot.message.confirm(openJosmMessage);
+                if ( !confirm ) return;
+
                 let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport );
                 let datasets = this.folderTree.selectedNodes;
                 this.openInJosmModal = new OpenInJosm ( translations, datasets, 'Datasets' ).render();

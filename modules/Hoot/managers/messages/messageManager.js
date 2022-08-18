@@ -2,9 +2,13 @@
  * File: messageManager.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 8/16/18
+ * @apiNote Changelog: <br>
+ *      Milla Zagorski 8-10-2022: Added code to allow for opening the initial review layer in JOSM. <br>
+ *
  *******************************************************************************************************/
 
 import Alert from './alert';
+import OpenInJosm from '../../ui/modals/openInJosm';
 
 export default class MessageManager {
     constructor( hoot ) {
@@ -107,5 +111,72 @@ export default class MessageManager {
             // focuses the 'ok' button so user can press enter without having to click the ok button
             okButton.node().focus();
         } );
+    }
+
+    /**
+     * Used by layerManager.js to either open the review layer in iD or JOSM when <br>
+     * prompted by initial review of a conflated layer that has conflicts.
+     *
+     * @param {String} message - The message to be displayed in the modal.
+     * @param {layer} mergedLayer - The merged review layer.
+     * @returns {String} Returns a response ("josm" = open review layer in JOSM).
+     */
+    confirmEditor(message, mergedLayer) {
+        return new Promise(res => {
+            let overlay = d3.select('body')
+                .append('div')
+                .classed('hoot-confirm overlay confirm-overlay', true);
+
+            let wrapper = overlay
+                .append('div')
+                .classed('wrapper', true);
+
+            let modal = wrapper
+                .append('div')
+                .classed('contain hoot-menu fill-white round modal', true);
+
+            modal
+                .append('div')
+                .classed('confirm-message', true)
+                .html(message);
+
+            let buttonContainer = modal
+                .append('div')
+                .classed('confirm-actions flex justify-end', true);
+
+            buttonContainer
+                .append('button')
+                .classed('secondary', true)
+                .text('Cancel')
+                .on('click', () => {
+                    overlay.remove();
+                    res(false);
+                });
+
+            buttonContainer
+                .append('button')
+                .classed('primary', true)
+                .text('Open here')
+                .on('click', () => {
+                    overlay.remove();
+                    res(true);
+                });
+
+            buttonContainer
+                .append('button')
+                .classed('primary', true)
+                .text('Open in JOSM')
+                .on('click', async () => {
+                    overlay.remove();
+                    res('josm');
+
+                    let openJosmMessage = 'Make sure JOSM is already launched and running before proceeding.';
+                    let confirm = await Hoot.message.confirm(openJosmMessage);
+                    if (!confirm) return;
+
+                    let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
+                    new OpenInJosm(translations, { data: mergedLayer }, 'Dataset', 'init_review').render();
+                });
+        });
     }
 }

@@ -4,6 +4,12 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
 
+/*
+* @apiNote Changelog: <br>
+*      Milla Zagorski 8-10-2022: Added code to allow for opening layer(s) in JOSM. <br>
+*
+*/
+
 export function layerConflateForm( data ) {
     return [
         {
@@ -437,24 +443,40 @@ export function exportDataForm( zipOutput ) {
     return meta;
 }
 
-export function openInJosmForm( zipOutput ) {
+export function openInJosmForm(zipOutput) {
 
-    const exportComboId = 'exportTranslationCombo',
-          exportFormatId = 'exportFormatCombo',
-          exportNameId = 'dataExportNameTextInput',
-          exportHootTags = 'exportHootTags',
-          that = this;
+    const exportComboId = 'openTranslationCombo',
+        exportFormatId = 'openFormatCombo',
+        exportHootTags = 'openHootTags',
+        that = this,
+        source = this.source;
+
+    console.log('SOURCE: ', source);
 
     function changeExport() {
 
-        const showHootTags = d3.select( `#${exportFormatId}` ).property( 'value' ).indexOf('OpenStreetMap') === 0
-                        && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('OSM') === 0;
+        const showHootTags = d3.select(`#${exportFormatId}`).property('value').indexOf('OpenStreetMap') === 0
+            && d3.select(`#${exportComboId}`).property('value').indexOf('OSM') === 0;
 
-        d3.select( `#${exportHootTags}_container` )
-            .classed( 'hidden', !showHootTags );
+        d3.select(`#${exportHootTags}_container`)
+            .classed('hidden', !showHootTags);
 
-        that.validate( exportComboId );
-        that.validate( exportFormatId );
+        that.validate(exportComboId);
+        that.validate(exportFormatId);
+
+        showPbfPluginMessage();
+    }
+
+    function showPbfPluginMessage() {
+        const dataFormat = d3.select(`#${exportFormatId}`).property('value').indexOf('OpenStreetMap (OSM)');
+
+        if (dataFormat === -1) {
+            let message = 'When selecting "pbf", make sure the "pbf" plugin is installed in JOSM before clicking the "Open" button.',
+                type = 'warn',
+                keepOpen = true;
+
+            Hoot.message.alert({ message, type, keepOpen });
+        }
     }
 
     let meta = [
@@ -468,10 +490,10 @@ export function openInJosmForm( zipOutput ) {
             onChange: changeExport
         },
         {
-            label: 'Export Format',
+            label: 'Data Format',
             id: exportFormatId,
             inputType: 'combobox',
-            data: [ 'OpenStreetMap (OSM)', 'OpenStreetMap (PBF)' ],
+            data: source === 'init_review' ? ['OpenStreetMap (OSM)'] : ['OpenStreetMap (OSM)', 'OpenStreetMap (PBF)'],
             value: 'OpenStreetMap (OSM)',
             onChange: changeExport
         },
@@ -483,15 +505,6 @@ export function openInJosmForm( zipOutput ) {
             hidden: false
         },
     ];
-
-    if ( zipOutput ) {
-        meta.push({
-            label: 'Output Zip Name',
-            id: exportNameId,
-            inputType: 'text',
-            onChange: () => this.validate( exportNameId )
-        });
-    }
 
     return meta;
 }

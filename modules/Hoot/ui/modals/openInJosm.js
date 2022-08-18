@@ -1,27 +1,28 @@
 /*******************************************************************************************************
  * File: openInJosm.js
+ * Description: allows OSM or OSM.PBF files to be opened in JOSM from the hootenanny-ui.
  * Project: hootenanny-ui
  * @author Milla Zagorski
  * @date 8-10-2022
  *******************************************************************************************************/
 
-import FormFactory       from '../../tools/formFactory';
+import FormFactory from '../../tools/formFactory';
 import { openInJosmForm } from '../../config/domMetadata';
 
-import _flattenDeep   from 'lodash-es/flattenDeep';
-import _isEmpty       from 'lodash-es/isEmpty';
-import { formatSize } from '../../tools/utilities';
-
 export default class OpenInJosm {
-    constructor( translations, d, type ) {
+    constructor(translations, d, type, source) {
+
         const isDatasets = type === 'Datasets';
         this.translations = translations;
         this.input = isDatasets ? d.map(n => n.name).join(',') : d.data.name;
         this.id = isDatasets ? d.map(n => n.id).join(',') : d.data.id;
         this.type = type;
-        this.form = openInJosmForm.call(this, isDatasets );
+        this.source = source;
+        this.form = openInJosmForm.call(this, isDatasets);
         this.data = d;
         this.maxExportSize = 2000000000; // 2GB
+
+        this.isCancelled = false;
     }
 
     render() {
@@ -37,97 +38,54 @@ export default class OpenInJosm {
         };
 
         this.formFactory = new FormFactory();
-        this.container = this.formFactory.generateForm( 'body', 'export-data-form', metadata );
-        this.translationSchemaCombo = this.container.select( '#exportTranslationCombo' );
-        this.exportFormatCombo = this.container.select( '#exportFormatCombo' );
-        this.includeHootTagsCheckbox = this.container.select( '#exportHootTags' );
-        this.submitButton = this.container.select( '#openDatasetBtn' );
+        this.container = this.formFactory.generateForm('body', 'open-data-form', metadata);
+        this.translationSchemaCombo = this.container.select('#openTranslationCombo');
+        this.exportFormatCombo = this.container.select('#openFormatCombo');
+        this.includeHootTagsCheckbox = this.container.select('#openHootTags');
+        this.submitButton = this.container.select('#openDatasetBtn');
         this.submitButton.attr('disabled', null);
 
-        if ( this.type === 'Datasets' ) {
-            this.dataExportNameTextInput.attr( 'placeholder', this.input.split(',').join('_') );
-        } else if ( this.type === 'Folder' ) {
-            const folderSize = this.calculateFolderSize( this.data );
-
-            if ( folderSize > this.maxExportSize ) {
-                this.container.select( 'form' )
-                .append( 'div' )
-                .classed( 'keyline-all round center alert-warn', true )
-                .text(
-                    `WARNING: Exporting ${ formatSize(folderSize) } will take a long time.`
-                );
-            }
-        }
         let container = this.container;
-        Hoot.events.once( 'modal-closed', () => {
+        Hoot.events.once('modal-closed', () => {
             container.remove();
         });
 
         return this;
     }
 
-    /**
-     * Recurses through the folder down and calculates the size, in bytes, of all the datasets under the root file
-     * @param root
-     * @returns total folder size in bytes
-     */
-    calculateFolderSize ( root ) {
-        let stack = [ root ];
-        let totalSize = 0;
-
-        while ( stack.length > 0 ) {
-            const folder = stack.pop();
-            // children are stored in different locations in the object based on whether the folder is open or not
-            // return an empty array if null or undefined
-            const children = folder.children || folder._children || (folder.data ? folder.data._children : []) || [];
-
-            // skip if no children
-            if (children.length === 0) continue;
-
-            totalSize += children.filter( child => child.size ).reduce( ( acc, dataset ) => {
-                return acc + dataset.size;
-            }, 0 );
-
-            const folders = children.filter( child => child.type === 'folder' );
-            stack = stack.concat(folders);
-        }
-
-        return totalSize;
-    }
-
-    validate ( name ) {
-        this.formValid = this.validateFields( this.translationSchemaCombo.node(), name ) &&
-            this.validateFields( this.exportFormatCombo.node(), name );
+    validate(name) {
+        this.formValid = this.validateFields(this.translationSchemaCombo.node(), name) &&
+            this.validateFields(this.exportFormatCombo.node(), name);
 
         this.updateButtonState();
     }
 
-    validateFields( d, name ) {
-        let id              = d.id,
-            target          = d3.select( `#${id}` ),
-            invalid         = !target.property( 'value' ).length;
+    validateFields(d, name) {
+        let id = d.id,
+            target = d3.select(`#${id}`),
+            invalid = !target.property('value').length;
 
-        if ( id === name ) {
-            target.classed( 'invalid', invalid );
+        if (id === name) {
+            target.classed('invalid', invalid);
         }
 
         return !invalid;
     }
 
-    validateTextInput ( d, name ) {
-        let id               = d.id,
-            target           = d3.select( `#${id}` ),
-            node             = target.node(),
-            str              = node.value,
+    validateTextInput(d, name) {
+        let id = d.id,
+            target = d3.select(`#${id}`),
+            node = target.node(),
+            str = node.value,
 
-            unallowedPattern = new RegExp( /[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g ),
-            valid            = true;
+            unallowedPattern = new RegExp(/[~`#$%\^&*+=\-\[\]\\';\./!,/{}|\\":<>\?|]/g),
+            valid = true;
 
-        if ( !str.length || unallowedPattern.test( str )) {
+        if (!str.length || unallowedPattern.test(str)) {
             valid = false;
         }
-        if ( id === name ) {
-            target.classed( 'invalid', !valid );
+        if (id === name) {
+            target.classed('invalid', !valid);
         }
 
         return valid;
@@ -139,8 +97,8 @@ export default class OpenInJosm {
 
     getTranslationPath() {
         const selectedTranslation = this.translationSchemaCombo.node().value;
-        const translation = this.translations.find( t => t.name === selectedTranslation );
-        return !translation.hasOwnProperty('path')  ? translation.exportPath : translation.path;
+        const translation = this.translations.find(t => t.name === selectedTranslation);
+        return !translation.hasOwnProperty('path') ? translation.exportPath : translation.path;
     }
 
     getOutputType() {
@@ -152,38 +110,35 @@ export default class OpenInJosm {
 
     loadingState() {
         this.submitButton
-            .select( 'span' )
-            .text( 'Cancel Export' );
+            .select('span')
+            .text('Cancel');
 
         // overwrite the submit click action with a cancel action
-        this.submitButton.on( 'click', () => {
+        this.submitButton.on('click', () => {
+            this.isCancelled = true;
             Hoot.api.cancelJob(this.jobId);
-        } );
+        });
 
         this.submitButton
-            .append( 'div' )
-            .classed( '_icon _loading float-right', true )
-            .attr( 'id', 'importSpin' );
+            .append('div')
+            .classed('_icon _loading float-right', true)
+            .attr('id', 'importSpin');
 
-        this.container.selectAll( 'input' )
-            .each( function() {
-                d3.select( this ).node().disabled = true;
-            } );
+        this.container.selectAll('input')
+            .each(function () {
+                d3.select(this).node().disabled = true;
+            });
     }
 
     getInputType() {
         let type;
-        switch ( this.type ) {
+        switch (this.type) {
             case 'Dataset': {
                 type = 'db';
                 break;
             }
             case 'Datasets': {
                 type = 'dbs';
-                break;
-            }
-            case 'Folder' : {
-                type = 'folder';
                 break;
             }
             default: break;
@@ -195,8 +150,7 @@ export default class OpenInJosm {
         let output;
         switch (this.type) {
             case 'Datasets': {
-                let input = this.dataExportNameTextInput.property( 'value' );
-                output = _isEmpty( input ) ? this.dataExportNameTextInput.attr( 'placeholder' ) : input;
+                output = 'hoot_export_datasets';
                 break;
             }
             default: {
@@ -209,16 +163,17 @@ export default class OpenInJosm {
 
     handleSubmit() {
         let self = this,
-            data = {
-                input: self.id,
-                inputtype: self.getInputType(),
-                includehoottags: self.includeHootTagsCheckbox.property( 'checked' ),
-                outputname: self.getOutputName(),
-                outputtype: self.getOutputType(),
-                translation: self.getTranslationPath()
-            };
+            initialName = self.getOutputName(),
+            finalName = initialName.replace(/\s/g, '');
 
-        console.log('\tDATA**: ', data);
+        let data = {
+            input: self.id,
+            inputtype: self.getInputType(),
+            includehoottags: self.includeHootTagsCheckbox.property('checked'),
+            outputname: finalName,
+            outputtype: self.getOutputType(),
+            translation: self.getTranslationPath()
+        };
 
         this.loadingState();
 
@@ -229,38 +184,29 @@ export default class OpenInJosm {
                 return Hoot.api.statusInterval(this.jobId);
             })
             .then(async resp => {
-                if (resp.data && resp.data.status !== 'cancelled') {
+
+                if (resp.data && !this.isCancelled) {
                     await Hoot.api.saveDataset(this.jobId, data.outputname);
                 }
                 return resp;
             })
             .then(resp => {
                 Hoot.events.emit('modal-closed');
-
                 return resp;
             })
             .then(resp => {
                 let message;
-                if (resp.data && resp.data.status === 'cancelled') {
-                    message = 'Open data in JOSM cancelled';
-                } else {
-                    const dataType = data.inputType === 'Folder' ? 'folder' : 'Dataset';
-                    message = `'${data.outputname}' ${dataType} saved to your "Downloads" folder.`;
+                if (resp.data && this.isCancelled) {
+                    message = 'Open data in JOSM cancelled.';
+                    Hoot.message.alert({
+                        message: message,
+                        type: 'warn'
+                    });
                 }
-
-                Hoot.message.alert({
-                    data: resp.data,
-                    message: message,
-                    status: 200,
-                    type: resp.type
-                });
-
                 return resp;
             })
             .catch((err) => {
-                console.error(err);
-
-                let message = 'Error opening data in JOSM',
+                let message = 'Error opening data in JOSM.',
                     type = err.type,
                     keepOpen = true;
 
@@ -273,21 +219,29 @@ export default class OpenInJosm {
             .finally(() => {
                 Hoot.events.emit('modal-closed');
 
-                // THIS WILL ALERT JOSM THERE IS A FILE TO LOAD
-                const alertHootRevLayer = {
-                    layer_name: data.outputname
-                };
-                const hootRevParams = Object.keys(alertHootRevLayer)
-                    .map((key) => `${key}=${encodeURIComponent(alertHootRevLayer[key])}`)
-                    .join('&');
-                const finalHootRevUri = `?${hootRevParams}?`;
-                let alertUrl = new URL(finalHootRevUri, `http://127.0.0.1:8111/alertHootReview`);
-                callJosmRemoteControl(alertUrl);
+                // Alert JOSM that there is a file to load
+                if (!this.isCancelled) {
+                    const alertHootRevLayer = {
+                        layer_name: data.outputname
+                    };
+
+                    const hootRevParams = Object.keys(alertHootRevLayer)
+                        .map((key) => `${key}=${encodeURIComponent(alertHootRevLayer[key])}`)
+                        .join('&');
+                    const finalHootRevUri = `?${hootRevParams}?`;
+                    let alertUrl = new URL(finalHootRevUri, 'http://127.0.0.1:8111/alertHootReview');
+
+                    callJosmRemoteControl(alertUrl);
+                }
             });
     }
 }
 
-//---------------------------------------------------------------------
+
+/**
+ * Call JOSM remote control to alert JOSM that there is a file to load.
+ * @param uri {String} The URI used to alert JOSM via remote control.
+ */
 let safariWindowReference = null;
 const callJosmRemoteControl = function (uri) {
     // Safari won't send AJAX commands to the default (insecure) JOSM port when
@@ -297,7 +251,7 @@ const callJosmRemoteControl = function (uri) {
     // requests via the opening of a separate window instead of AJAX.
     // Source: https://github.com/osmlab/maproulette3
     if (window.safari) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             if (safariWindowReference && !safariWindowReference.closed) {
                 safariWindowReference.close();
             }
@@ -314,15 +268,17 @@ const callJosmRemoteControl = function (uri) {
         });
     }
     return fetch(uri)
-        .then((response) => response.status === 200)
-        .catch((error) => {
-            console.log(error);
+        .then(response => {
+            let message = 'Open in JOSM completed.';
+            Hoot.message.alert({
+                message: message,
+                type: 'success'
+            });
 
-            // var fs = require('fs');
-            // var filePath = 'pathtofile'; 
-            // fs.unlinkSync(filePath);
-
-            let message = 'Make sure that JOSM is already open.',
+            return response.status === 200;
+        })
+        .catch(() => {
+            let message = 'Make sure that JOSM is already open.  The exported file is saved to your "Downloads" folder.',
                 type = 'error',
                 keepOpen = true;
 
