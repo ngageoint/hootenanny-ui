@@ -237,7 +237,6 @@ export default class OpenInJosm {
     }
 }
 
-
 /**
  * Call JOSM remote control to alert JOSM that there is a file to load.
  * @param uri {String} The URI used to alert JOSM via remote control.
