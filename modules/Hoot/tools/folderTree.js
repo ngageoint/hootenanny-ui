@@ -47,12 +47,12 @@ export default class FolderTree extends EventEmitter {
             },
             multiOpenJosmOpts: {
                 title: 'Open Selected Datasets in JOSM',
-                _icon: 'josm-logo',
+                _icon: 'data',
                 click: 'openMultiInJosm'
             },
             singleOpenJosmOpts: {
-                title: 'Open in JOSM',
-                _icon: 'josm-logo',
+                title: 'Open Dataset in JOSM',
+                _icon: 'data',
                 click: 'openInJosm'
             },
             conflationProjectOpts: [
@@ -662,7 +662,7 @@ export default class FolderTree extends EventEmitter {
                     opts = [
                         {
                             title: `Open Selected Datasets in JOSM (${selectedCount})`,
-                            _icon: 'josm-logo',
+                            _icon: 'data',
                             click: 'openMultiInJosm'
                         }
                     ];
