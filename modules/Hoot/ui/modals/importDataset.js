@@ -347,7 +347,7 @@ export default class ImportDataset {
             node             = target.node(),
             str              = node.value,
 
-            allowedPattern = new RegExp( /^(https?:\/\/|ftp:\/\/|s3:\/\/)/ ),
+            allowedPattern = new RegExp( /^(https?:\/\/|s?ftps?:\/\/|s3:\/\/)/ ),
             valid            = true;
 
         if ( !allowedPattern.test( str ) ) {
