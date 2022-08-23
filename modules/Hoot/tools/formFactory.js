@@ -202,6 +202,25 @@ export default class FormFactory {
                     d.createCustom( field );
                     break;
                 }
+                case 'password': {
+                    let pw = self.createPasswordField( field );
+                    field.select('.form-field-header').append('i')
+                        .attr('class', 'password-field-icon material-icons')
+                        .text('visibility_off')
+                        .on('click', () => {
+                            let icon = d3.select(this).select('i');
+                            let txt = icon.text();
+                            if (txt === 'visibility_off') {
+                                icon.text('visibility');
+                                pw.attr('type', 'text');
+                            } else {
+                                icon.text('visibility_off');
+                                pw.attr('type', 'password');
+                            }
+
+                        });
+                    break;
+                }
                 default: {
                     self.createTextField( field );
                     break;
@@ -393,6 +412,34 @@ export default class FormFactory {
         return field
             .append( 'input' )
             .attr( 'type', 'text' )
+            .attr( 'id', d => d.id )
+            .attr( 'class', d => d.class )
+            .attr( 'placeholder', d => d.placeholder )
+            .attr( 'value', d => d.value )
+            .attr( 'readonly', d => d.readOnly )
+            .attr( 'disabled', d => d.disabled )
+            .classed( 'text-input', true )
+            .on( 'keyup', function( d ) {
+                if ( d.onChange ) {
+                    d.onChange( d, this );
+                }
+            } )
+            .on( 'blur', function( d ) {
+                if ( d.onBlur ) {
+                    d.onBlur( d, this );
+                }
+            } );
+    }
+
+    /**
+     * Create a password input
+     *
+     * @param field - field div
+     */
+    createPasswordField( field ) {
+        return field
+            .append( 'input' )
+            .attr( 'type', 'password' )
             .attr( 'id', d => d.id )
             .attr( 'class', d => d.class )
             .attr( 'placeholder', d => d.placeholder )
