@@ -163,8 +163,37 @@ export function importSingleForm() {
             icon: 'folder',
             readOnly: true,
             disabled: true,
+            hidden: true,
             multipartId: 'ingestFileUploader',
             onChange: () => this.handleMultipartChange()
+        },
+        {
+            label: 'Import URL',
+            id: 'importUrl',
+            class: 'import-url',
+            inputType: 'text',
+            placeholder: 'Enter URL (http, ftp, s3)',
+            required: false,
+            hidden: true,
+            onChange: d => this.handleUrlChange( d )
+        },
+        {
+            label: 'Remote Username',
+            id: 'importRemoteUsername',
+            class: 'import-username',
+            inputType: 'text',
+            placeholder: 'Enter remote username (or access key id)',
+            hidden: true,
+            required: false
+        },
+        {
+            label: 'Remote Password',
+            id: 'importRemotePassword',
+            class: 'import-password',
+            inputType: 'password',
+            placeholder: 'Enter remote password (or access key secret)',
+            hidden: true,
+            required: false
         },
         {
             label: 'Layer Name',

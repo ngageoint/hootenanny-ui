@@ -65,6 +65,10 @@ export default class ImportDataset {
             {
                 title: 'Directory (FGDB)',
                 value: 'DIR'
+            },
+            {
+                title: 'Remote URL (zip)',
+                value: 'URL'
             }
         ];
     }
@@ -114,6 +118,9 @@ export default class ImportDataset {
 
         this.typeInput          = this.container.select( '#importType' );
         this.fileInput          = this.container.select( '#importFile' );
+        this.urlInput           = this.container.select( '#importUrl' );
+        this.urlUsername        = this.container.select( '#importRemoteUsername' );
+        this.urlPassword        = this.container.select( '#importRemotePassword' );
         this.layerNameInput     = this.container.select( '#importLayerName' );
         this.pathNameInput      = this.container.select( '#importPathName' );
         this.newFolderNameInput = this.container.select( '#importNewFolderName' );
@@ -137,6 +144,7 @@ export default class ImportDataset {
 
         // clear values
         this.fileInput.property( 'value', '' );
+        this.urlInput.property( 'value', '' );
         this.layerNameInput.property( 'value', '' );
         this.schemaInput.property( 'value', '' );
 
@@ -155,6 +163,13 @@ export default class ImportDataset {
         } else {
             translationsList = _reject( this.translations, o => o.name === 'GeoNames' );
         }
+
+        // Show input data files except for remote url
+        let isRemote = selectedType === 'URL';
+        ['#importUrl', '#importRemoteUsername', '#importRemotePassword']
+            .forEach(d => this.container.select(d + '_container').classed('hidden', !isRemote));
+        this.container.select('#importFile_container').classed('hidden', isRemote);
+
 
         schemaCombo.data = translationsList;
 
@@ -227,6 +242,7 @@ export default class ImportDataset {
 
         saveName = saveName.indexOf( '.' ) ? saveName.substring( 0, saveName.indexOf( '.' ) ) : saveName;
         this.fileInput.property( 'value', fileNames.join( '; ' ) );
+        this.urlInput.property( 'value', '' );
         this.layerNameInput.property( 'value', Hoot.layers.checkLayerName(saveName) );
 
         this.formValid = true;
@@ -322,6 +338,42 @@ export default class ImportDataset {
     }
 
     /**
+     * Validate URL remote data input
+     *
+     * @param d - node data
+     */
+    handleUrlChange( d ) {
+        let target           = d3.select( `#${ d.id }` ),
+            node             = target.node(),
+            str              = node.value,
+
+            allowedPattern = new RegExp( /^(https?:\/\/|s?ftps?:\/\/|s3:\/\/)/ ),
+            valid            = true;
+
+        if ( !allowedPattern.test( str ) ) {
+            valid = false;
+        }
+
+        if ( d.required && !str.length ) {
+            valid = false;
+        }
+
+        if (valid) {
+            //clear out and file upload
+            this.fileInput.property( 'value', '' );
+            this.fileIngest.property('value', '');
+            let saveName = str.substring( str.lastIndexOf('/')+1, str.lastIndexOf('.') );
+            this.layerNameInput.property( 'value', Hoot.layers.checkLayerName(saveName) );
+            this.schemaInput.node().disabled = false;
+            this.schemaInput.property( 'value', this.translations[ 0 ].name );
+        }
+
+        target.classed( 'invalid', !valid );
+        this.formValid = valid;
+        this.updateButtonState();
+    }
+
+    /**
      * Validate user input to make sure it doesn't
      * contain un-allowed characters and isn't an empty string
      *
@@ -385,6 +437,9 @@ export default class ImportDataset {
      */
     async handleSubmit() {
         let layerName     = this.layerNameInput.property( 'value' ),
+            url           = this.urlInput.property( 'value' ),
+            remoteUser    = this.urlUsername.property( 'value' ),
+            remotePw      = this.urlPassword.property( 'value' ),
             pathName      = this.pathNameInput.property( 'value' ),
             newFolderName = this.newFolderNameInput.property( 'value' ),
             pathId        = _get( _find( Hoot.folders.folderPaths, folder => folder.path === pathName ), 'id' ),
@@ -421,16 +476,24 @@ export default class ImportDataset {
         let data = {
             NONE_TRANSLATION: translation.none === 'true',
             TRANSLATION: translationIdentifier,
-            INPUT_TYPE: importType.value,
             INPUT_NAME: Hoot.layers.checkLayerName( layerName ),
             ADV_UPLOAD_OPTS: this.getAdvOpts(),
-            formData: this.getFormData( this.fileIngest.node().files ),
             folderId
         };
 
         this.loadingState();
 
-        this.processRequest =  Hoot.api.uploadDataset( data, this.cancelToken.token )
+        //remote url or file upload
+        if (url) {
+            data.URL = url;
+            data.USERNAME = remoteUser;
+            data.PASSWORD = remotePw;
+        } else {
+            data.INPUT_TYPE = importType.value;
+            data.formData = this.getFormData( this.fileIngest.node().files );
+        }
+
+        this.processRequest = Hoot.api.import( data, this.cancelToken.token )
         .then( resp => {
             this.jobId = resp.data[ 0 ].jobid;
             return Hoot.api.statusInterval( this.jobId );

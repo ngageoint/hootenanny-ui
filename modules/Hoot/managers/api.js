@@ -865,6 +865,14 @@ export default class API {
             .then( resp => resp.data );
     }
 
+    import( data, cancelToken ) {
+        if (data.URL) {
+            return this.remoteDataset( data, cancelToken );
+        } else {
+            return this.uploadDataset( data, cancelToken );
+        }
+    }
+
     /**
      * Upload imported files to the database
      *
@@ -887,6 +895,38 @@ export default class API {
                 FOLDER_ID: data.folderId
             },
             data: data.formData,
+            cancelToken: cancelToken
+        };
+
+        if ( data.ADV_UPLOAD_OPTS && data.ADV_UPLOAD_OPTS.length ) {
+            params.params.ADV_UPLOAD_OPTS = data.ADV_UPLOAD_OPTS.join(',');
+        }
+
+        return this.request( params );
+    }
+
+    /**
+     * Import remote file to the database
+     *
+     * @returns {Promise} - request
+     */
+    remoteDataset( data, cancelToken ) {
+        if ( !data.TRANSLATION || !data.INPUT_NAME || !data.URL ) {
+            return false;
+        }
+
+        const params = {
+            path: '/ingest/ingest/remote',
+            method: 'GET',
+            params: {
+                TRANSLATION: data.TRANSLATION,
+                URL: data.URL,
+                USERNAME: data.USERNAME,
+                PASSWORD: data.PASSWORD,
+                INPUT_NAME: data.INPUT_NAME,
+                NONE_TRANSLATION: data.NONE_TRANSLATION,
+                FOLDER_ID: data.folderId
+            },
             cancelToken: cancelToken
         };
 
