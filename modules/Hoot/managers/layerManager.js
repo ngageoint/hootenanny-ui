@@ -21,6 +21,7 @@ import { geoExtent as GeoExtent } from '../../geo/index';
 import { utilDetect }             from '../../util/detect';
 import colorPalette               from '../config/colorPalette';
 
+import AdvancedOpts               from '../ui/sidebar/advancedOpts';
 import { osmChangeset } from '../../osm';
 
 import {
@@ -486,6 +487,11 @@ export default class Layers {
 
     removeLoadedLayer( id, toggle ) {
         if ( id && this.loadedLayers[ id ] ) {
+            // toggle adv opts panel if visible
+            if (!d3.select( '#advanced-opts-panel').empty()) {
+                let advOptsPanel = AdvancedOpts.getInstance();
+                advOptsPanel.toggle()
+            }
             if (this.loadedLayers[ id ].isMerged && this.mergedLayer) {
                 this.removeLoadedLayer(this.mergedLayer.tags.input1);
                 this.removeLoadedLayer(this.mergedLayer.tags.input2);
