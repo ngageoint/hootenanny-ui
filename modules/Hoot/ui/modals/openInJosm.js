@@ -162,78 +162,94 @@ export default class OpenInJosm {
     }
 
     handleSubmit() {
-        let self = this,
-            initialName = self.getOutputName(),
-            finalName = initialName.replace(/\s/g, '');
 
-        let data = {
-            input: self.id,
-            inputtype: self.getInputType(),
-            includehoottags: self.includeHootTagsCheckbox.property('checked'),
-            outputname: finalName,
-            outputtype: self.getOutputType(),
-            translation: self.getTranslationPath()
-        };
+        // Check that JOSM is available for loading the data
+        let checkJosmUrl = new URL('http://127.0.0.1:8111/version?jsonp=test');
+        callJosmRemoteControl(checkJosmUrl, 'JOSM is up and running!', 'Make sure that JOSM is already open.').then(value => {
 
-        this.loadingState();
+            // Proceed if JOSM is already open
+            if (value) {
+                let self = this,
+                    initialName = self.getOutputName(),
+                    finalName = initialName.replace(/\s/g, '');
 
-        this.processRequest = Hoot.api.openInJosm(data)
-            .then(resp => {
-                this.jobId = resp.data.jobid;
+                let data = {
+                    input: self.id,
+                    inputtype: self.getInputType(),
+                    includehoottags: self.includeHootTagsCheckbox.property('checked'),
+                    outputname: finalName,
+                    outputtype: self.getOutputType(),
+                    translation: self.getTranslationPath()
+                };
 
-                return Hoot.api.statusInterval(this.jobId);
-            })
-            .then(async resp => {
+                this.loadingState();
 
-                if (resp.data && !this.isCancelled) {
-                    await Hoot.api.saveDataset(this.jobId, data.outputname);
-                }
-                return resp;
-            })
-            .then(resp => {
-                Hoot.events.emit('modal-closed');
-                return resp;
-            })
-            .then(resp => {
-                let message;
-                if (resp.data && this.isCancelled) {
-                    message = 'Open data in JOSM cancelled.';
-                    Hoot.message.alert({
-                        message: message,
-                        type: 'warn'
+                this.processRequest = Hoot.api.openInJosm(data)
+                    .then(resp => {
+                        this.jobId = resp.data.jobid;
+
+                        return Hoot.api.statusInterval(this.jobId);
+                    })
+                    .then(async resp => {
+
+                        if (resp.data && !this.isCancelled) {
+                            await Hoot.api.saveDataset(this.jobId, data.outputname);
+                        }
+                        return resp;
+                    })
+                    .then(resp => {
+                        Hoot.events.emit('modal-closed');
+                        return resp;
+                    })
+                    .then(resp => {
+                        let message;
+                        if (resp.data && this.isCancelled) {
+                            message = 'Open data in JOSM cancelled.';
+                            Hoot.message.alert({
+                                message: message,
+                                type: 'warn'
+                            });
+                        }
+                        return resp;
+                    })
+                    .catch((err) => {
+                        let message = 'Error opening data in JOSM.',
+                            type = err.type,
+                            keepOpen = true;
+
+                        if (err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                            message = err.data.commandDetail[0].stderr;
+                        }
+
+                        Hoot.message.alert({ message, type, keepOpen });
+                    })
+                    .finally(() => {
+                        Hoot.events.emit('modal-closed');
+
+                        // Alert JOSM that there is a file to load
+                        if (!this.isCancelled) {
+
+                            const alertHootRevLayer = {
+                                layer_name: data.outputname
+                            };
+
+                            const hootRevParams = Object.keys(alertHootRevLayer)
+                                .map((key) => `${key}=${encodeURIComponent(alertHootRevLayer[key])}`)
+                                .join('&');
+                            const finalHootRevUri = `?${hootRevParams}?`;
+                            let alertUrl = new URL(finalHootRevUri, 'http://127.0.0.1:8111/alertHootReview');
+
+                            callJosmRemoteControl(alertUrl, 'Dataset(s) loaded in JOSM.', 'Error loading data into JOSM.');
+                        }
                     });
-                }
-                return resp;
-            })
-            .catch((err) => {
-                let message = 'Error opening data in JOSM.',
-                    type = err.type,
-                    keepOpen = true;
-
-                if (err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
-                    message = err.data.commandDetail[0].stderr;
-                }
-
-                Hoot.message.alert({ message, type, keepOpen });
-            })
-            .finally(() => {
-                Hoot.events.emit('modal-closed');
-
-                // Alert JOSM that there is a file to load
-                if (!this.isCancelled) {
-                    const alertHootRevLayer = {
-                        layer_name: data.outputname
-                    };
-
-                    const hootRevParams = Object.keys(alertHootRevLayer)
-                        .map((key) => `${key}=${encodeURIComponent(alertHootRevLayer[key])}`)
-                        .join('&');
-                    const finalHootRevUri = `?${hootRevParams}?`;
-                    let alertUrl = new URL(finalHootRevUri, 'http://127.0.0.1:8111/alertHootReview');
-
-                    callJosmRemoteControl(alertUrl);
-                }
-            });
+            } else {
+                let message = 'Dataset(s) could not be loaded into JOSM.';
+                Hoot.message.alert({
+                    message: message,
+                    type: 'error'
+                });
+            }
+        });
     }
 }
 
@@ -242,7 +258,7 @@ export default class OpenInJosm {
  * @param uri {String} The URI used to alert JOSM via remote control.
  */
 let safariWindowReference = null;
-const callJosmRemoteControl = function (uri) {
+const callJosmRemoteControl = function (uri, goodMessage, badMessage) {
     // Safari won't send AJAX commands to the default (insecure) JOSM port when
     // on a secure site, and the secure JOSM port uses a self-signed certificate
     // that requires the user to jump through a bunch of hoops to trust before
@@ -268,21 +284,19 @@ const callJosmRemoteControl = function (uri) {
     }
     return fetch(uri)
         .then(response => {
-            let message = 'Open in JOSM completed.';
+            let message = goodMessage;
             Hoot.message.alert({
                 message: message,
                 type: 'success'
             });
-
             return response.status === 200;
         })
         .catch(() => {
-            let message = 'Make sure that JOSM is already open.  The exported file is saved to your "Downloads" folder.',
-                type = 'error',
-                keepOpen = true;
-
-            Hoot.message.alert({ message, type, keepOpen });
-
+            let message = badMessage;
+            Hoot.message.alert({
+                message: message,
+                type: 'error'
+            });
             return false;
         });
 };

@@ -170,10 +170,6 @@ export default class MessageManager {
                     overlay.remove();
                     res('josm');
 
-                    let openJosmMessage = 'Make sure JOSM is already launched and running before proceeding.';
-                    let confirm = await Hoot.message.confirm(openJosmMessage);
-                    if (!confirm) return;
-
                     let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
                     new OpenInJosm(translations, { data: mergedLayer }, 'Dataset', 'init_review').render();
                 });

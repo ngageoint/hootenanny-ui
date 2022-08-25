@@ -255,8 +255,6 @@ export default class Datasets extends Tab {
 
     async handleContextMenuClick( [ tree, d, item ] ) {
 
-        let openJosmMessage = 'Make sure JOSM is already launched and running before proceeding.';
-
         switch ( item.click ) {
             case 'delete': {
                 let warningMsg = d.data.type === 'folder' ? 'folder and all data?' : 'datasets?',
@@ -315,18 +313,12 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'openInJosm': {
-                let confirm = await Hoot.message.confirm(openJosmMessage);
-                if ( !confirm ) return;
-
                 let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
                 this.openInJosmModal = new OpenInJosm(translations, d, 'Dataset', 'datasets').render();
                 Hoot.events.once('modal-closed', () => delete this.openInJosmModal);
                 break;
             }
             case 'openMultiInJosm': {
-                let confirm = await Hoot.message.confirm(openJosmMessage);
-                if ( !confirm ) return;
-
                 let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport );
                 let datasets = this.folderTree.selectedNodes;
                 this.openInJosmModal = new OpenInJosm ( translations, datasets, 'Datasets' ).render();
