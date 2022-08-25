@@ -431,7 +431,7 @@ export default {
         _forEach(_tileCache.inflight, abortRequest);
         if (_nodeCountCache.inflight) {
             _nodeCountCache.inflight.cancel();
-            console.trace('cancel from reset');
+            console.debug('cancel from reset');
         }
         _forEach(_noteCache.inflight, abortRequest);
         _forEach(_noteCache.inflightPost, abortRequest);
@@ -991,7 +991,7 @@ export default {
         });
 
         tiles = _flatten(tiles);
-        // console.trace("tiles count -> " + tiles.length);
+        // console.debug("tiles count -> " + tiles.length);
 
         return tiles;
     },
@@ -1004,13 +1004,13 @@ export default {
             return !(_nodeCountCache.loaded[tile.id] !== undefined || _nodeCountCache.loading[tile.id]);
         });
 
-        //console.trace(tiles.length + " vs " + tilesToBeLoaded.length);
+        //console.debug(tiles.length + " vs " + tilesToBeLoaded.length);
 
         if ( tilesToBeLoaded.length > 0 ) {
         // abort inflight nodecount requests that are no longer needed
         if (_nodeCountCache.inflight) {
-            console.trace(_nodeCountCache.inflight);
-            console.trace('cancel from getNodesCount');
+            console.debug(_nodeCountCache.inflight);
+            console.debug('cancel from getNodesCount');
             _nodeCountCache.inflight.cancel();
             delete _nodeCountCache.inflight;
             // dispatch.call('loaded');    // stop the spinner
@@ -1025,7 +1025,7 @@ export default {
                 counts = await Hoot.api.getTileNodesCount( tilesToBeLoaded, cancelToken.token );
                 delete _nodeCountCache.inflight;
             } catch (rej) {
-                console.trace('getTileNodesCount canceled');
+                console.debug('getTileNodesCount canceled');
             }
             tilesToBeLoaded.forEach((tile) => {
                 delete _nodeCountCache.loading[tile.id];
@@ -1041,7 +1041,7 @@ export default {
                 return total;
             }
         }, 0);
-        console.trace('total view tile nodes = ' + count);
+        console.debug('total view tile nodes = ' + count);
         return count;
     },
 
@@ -1117,9 +1117,9 @@ export default {
         try {
             count = await this.getNodesCount(projection, tileZ);
         } catch (rej) {
-            console.trace('getNodesCount canceled');
+            console.debug('getNodesCount canceled');
         }
-        // console.trace('nodesCount ->' + tileZ + ': ' + count);
+        // console.debug('nodesCount ->' + tileZ + ': ' + count);
         if (isNaN(count) || count > _maxNodeCount || count === 0) {
             //Hoot.context.flush();
             callback('Too many features to load->' + count);//call editOff
@@ -1162,7 +1162,7 @@ export default {
 
             var options = { skipSeen: true };
             _tileCache.inflight[tile.id] = that.loadFromAPI( path, function(err, parsed) {
-                console.trace('loadTiles tile.id->' + tile.id);
+                console.debug('loadTiles tile.id->' + tile.id);
                 delete _tileCache.inflight[tile.id];
                 if (!err) {
                     _tileCache.loaded[tile.id] = true;
