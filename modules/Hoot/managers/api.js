@@ -6,6 +6,7 @@
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
 import { saveAs }    from 'file-saver';
+import { utilDetect } from '../../util/detect';
 
 /**
  * API calls to backend services
@@ -24,7 +25,7 @@ export default class API {
         };
 
         this.baseUrl = this.config.path;
-
+        this.detect = utilDetect();
         this.mergeUrl       = Object.assign( new URL( this.host ), mergePortOrPath( this.config.mergeServerPort ) );
         this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
 
@@ -976,6 +977,12 @@ export default class API {
                 let fileBlob = new Blob( [ resp.data ], { type: 'application/zip' } );
                 saveAs( fileBlob, name );
             });
+    }
+
+    openDatasetInJosm( id, name ) {
+        window.open('http://127.0.0.1:8111/import?url='
+            + `${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.zip`
+        , '_blank');
     }
 
     saveChangeset( id, name ) {

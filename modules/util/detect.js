@@ -107,6 +107,8 @@ export function utilDetect(force) {
         origin = loc.protocol + '//' + loc.hostname + (loc.port ? ':' + loc.port: '');
     }
 
+    detected.origin = origin;
+
     detected.host = origin + loc.pathname;
 
     detected.filedrop = (window.FileReader && 'ondrop' in window);
