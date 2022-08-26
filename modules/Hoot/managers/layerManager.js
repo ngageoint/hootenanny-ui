@@ -488,8 +488,8 @@ export default class Layers {
     removeLoadedLayer( id, toggle ) {
         if ( id && this.loadedLayers[ id ] ) {
             // toggle adv opts panel if visible
-            if (!d3.select( '#advanced-opts-panel').empty()) {
-                let advOptsPanel = AdvancedOpts.getInstance();
+            let advOptsPanel = AdvancedOpts.getInstance();
+            if (advOptsPanel.isOpen) {
                 advOptsPanel.toggle();
             }
             if (this.loadedLayers[ id ].isMerged && this.mergedLayer) {
