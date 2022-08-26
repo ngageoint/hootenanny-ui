@@ -174,7 +174,7 @@ export default class ExportTaskGrid {
             } )
             .then( async resp => {
                 if (resp.data && resp.data.status !== 'cancelled') {
-                    await Hoot.api.saveDataset( self.jobId, param.outputname );
+                    await Hoot.api.saveDataset( self.jobId, param.outputname + '.' + param.outputtype );
                 }
                 return resp;
             } )
