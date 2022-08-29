@@ -980,10 +980,18 @@ export default class API {
     }
 
     openDatasetInJosm( id, name ) {
-        window.open('http://127.0.0.1:8111/import?url='
-            + `${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.zip`
-        , '_blank');
-    }
+        const params = {
+            path: '/osm/api/0.6/user/session',
+            method: 'GET'
+        };
+        return this.request( params )
+            .then( resp => {
+                window.open('http://127.0.0.1:8111/import?'
+                + `headers=Cookie,SESSION=${resp.data}`
+                + `&url=${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.zip`
+            , '_blank');
+        });
+     }
 
     saveChangeset( id, name ) {
         const params = {
