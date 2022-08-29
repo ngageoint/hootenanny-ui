@@ -477,11 +477,7 @@ export function openInJosmForm(zipOutput) {
     const exportComboId = 'openTranslationCombo',
         exportFormatId = 'openFormatCombo',
         exportHootTags = 'openHootTags',
-        that = this,
-        source = this.source;
-
-    console.log('SOURCE: ', source);
-
+        that = this;
     function changeExport() {
 
         const showHootTags = d3.select(`#${exportFormatId}`).property('value').indexOf('OpenStreetMap') === 0
@@ -522,7 +518,7 @@ export function openInJosmForm(zipOutput) {
             label: 'Data Format',
             id: exportFormatId,
             inputType: 'combobox',
-            data: source === 'init_review' ? ['OpenStreetMap (OSM)'] : ['OpenStreetMap (OSM)', 'OpenStreetMap (PBF)'],
+            data: ['OpenStreetMap (OSM)', 'OpenStreetMap (PBF)'],
             value: 'OpenStreetMap (OSM)',
             onChange: changeExport
         },

@@ -96,7 +96,12 @@ export default class OpenInJosm {
     }
 
     getTranslationPath() {
-        const selectedTranslation = this.translationSchemaCombo.node().value;
+        let selectedTranslation = null;
+        if (this.source === 'init_review') {
+            selectedTranslation = 'OSM';
+        } else {
+            selectedTranslation = this.translationSchemaCombo.node().value;
+        }
         const translation = this.translations.find(t => t.name === selectedTranslation);
         return !translation.hasOwnProperty('path') ? translation.exportPath : translation.path;
     }
@@ -176,13 +181,15 @@ export default class OpenInJosm {
                 let data = {
                     input: self.id,
                     inputtype: self.getInputType(),
-                    includehoottags: self.includeHootTagsCheckbox.property('checked'),
+                    includehoottags: this.source === 'init_review' ? true : self.includeHootTagsCheckbox.property('checked'),
                     outputname: finalName,
-                    outputtype: self.getOutputType(),
+                    outputtype: this.source === 'init_review' ? 'OSM' : self.getOutputType(),
                     translation: self.getTranslationPath()
                 };
 
-                this.loadingState();
+                if (this.source !== 'init_review') {
+                    this.loadingState();
+                }
 
                 this.processRequest = Hoot.api.openInJosm(data)
                     .then(resp => {
