@@ -72,8 +72,8 @@ class LayerConflate extends SidebarForm {
     }
 
     updateLayerColors(newColor, refType) {
-        this.fieldset.selectAll(`#${refType}.thumb`)
-            .attr('class', `thumb round _icon data light contain inline fill-${ newColor }` );
+        this.fieldset.selectAll(`.${refType}.thumb`)
+            .attr('class', `${refType} thumb round _icon data light contain inline fill-${ newColor }` );
     }
 
     checkForFavorite() {
@@ -111,8 +111,7 @@ class LayerConflate extends SidebarForm {
             .selectAll( '.thumb' )
             .data( layers ).enter()
             .append( 'div' )
-            .attr( 'class', d => `thumb round _icon data light contain inline fill-${ d.color }` )
-            .attr( 'id', d => `${d.refType}` );
+            .attr( 'class', d => `${d.refType} thumb round _icon data light contain inline fill-${ d.color }` );
     }
 
     createButtons() {
