@@ -628,6 +628,19 @@ export default class Jobs extends Tab {
                         outputInfo += jobTags.deriveType;
                     }
 
+                    // Set export info
+                    if ( jobTags.outputname ) {
+                        outputInfo += jobTags.outputname;
+                        if ( jobTags.outputtype ) {
+                            outputInfo += '.' + jobTags.outputtype;
+                        }
+                    }
+
+                    // Set delete info
+                    if ( jobTags.layername ) {
+                        outputInfo += jobTags.layername;
+                    }
+
                     if ( outputInfo !== '' ) {
                         jobInfo.push( outputInfo );
                     }
