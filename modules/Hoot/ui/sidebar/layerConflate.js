@@ -284,7 +284,7 @@ class LayerConflate extends SidebarForm {
         Hoot.layers.loadLayer( params );
     }
 
-    handleSubmit() {
+    async handleSubmit() {
         d3.event.stopPropagation();
         d3.event.preventDefault();
 
@@ -298,6 +298,13 @@ class LayerConflate extends SidebarForm {
 
         if ( this.advancedOptions.isOpen ) {
             this.advancedOptions.toggle();
+        }
+
+        if (this.newFolderNameInput.node().value.length > 0) {
+            let newFolderName = this.newFolderNameInput.node().value;
+            let newFolderId;
+            newFolderId = (await Hoot.folders.addFolder( newFolderName, newFolderName )).folderId;
+            data.OUTPUT_FOLDER = parseInt(newFolderId, 10);
         }
 
         let refLayer = Hoot.layers.findLoadedBy( 'refType', 'primary' );
