@@ -38,7 +38,7 @@ export default class AdvancedOpts {
     }
 
     get isOpen() {
-        return this.form.classed( 'visible' );
+        return this.form && this.form.classed( 'visible' );
     }
 
     async init() {
