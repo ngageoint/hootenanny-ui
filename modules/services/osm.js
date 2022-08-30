@@ -1043,7 +1043,7 @@ export default {
                 return total;
             }
         }, 0);
-        console.log('total view tile nodes = ' + count);
+        console.debug('total view tile nodes = ' + count);
         return count;
     },
 
