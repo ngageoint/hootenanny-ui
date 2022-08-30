@@ -72,8 +72,10 @@ class LayerConflate extends SidebarForm {
     }
 
     updateLayerColors(newColor, refType) {
-        this.fieldset.selectAll(`.${refType}.thumb`)
-            .attr('class', `${refType} thumb round _icon data light contain inline fill-${ newColor }` );
+        let thumb = this.fieldset.select(`.${refType}.thumb`);
+        let oldColor = thumb.attr('class').split(' ').find(d => d.startsWith('fill-'));
+        thumb.classed(`${ oldColor }`, false);
+        thumb.classed(`fill-${ newColor }`, true);
     }
 
     checkForFavorite() {
