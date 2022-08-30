@@ -986,10 +986,16 @@ export default class API {
         };
         return this.request( params )
             .then( resp => {
-                window.open('http://127.0.0.1:8111/import?'
-                + `headers=Cookie,SESSION=${resp.data}`
-                + `&url=${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.zip`
-            , '_blank');
+                let rc = window.open('http://127.0.0.1:8111/import?'
+                    + `headers=Cookie,SESSION=${resp.data}`
+                    + `&url=${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.zip`
+                    , '_blank');
+                // Close the window after 1 second
+                setTimeout(() => {
+                    if (rc && !rc.closed) {
+                        rc.close();
+                    }
+                }, 1000);
         });
      }
 
