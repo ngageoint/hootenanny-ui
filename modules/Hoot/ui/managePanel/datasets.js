@@ -314,15 +314,17 @@ export default class Datasets extends Tab {
             }
             case 'openInJosm': {
                 let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
-                this.openInJosmModal = new OpenInJosm(translations, d, 'Dataset', 'dataset').render();
-                Hoot.events.once('modal-closed', () => delete this.openInJosmModal);
+                // this.openInJosmModal = new OpenInJosm(translations, d, 'Dataset', 'dataset').handleSubmit();
+                // Hoot.events.once('modal-closed', () => delete this.openInJosmModal);
+                new OpenInJosm(translations, d, 'Dataset', 'dataset').handleSubmit();
                 break;
             }
             case 'openMultiInJosm': {
-                let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport );
+                let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
                 let datasets = this.folderTree.selectedNodes;
-                this.openInJosmModal = new OpenInJosm ( translations, datasets, 'Datasets', 'datasets').render();
-                Hoot.events.once( 'modal-closed', () => delete this.openInJosmModal);
+                // this.openInJosmModal = new OpenInJosm(translations, datasets, 'Datasets', 'datasets').handleSubmit();
+                // Hoot.events.once('modal-closed', () => delete this.openInJosmModal);
+                new OpenInJosm(translations, datasets, 'Datasets', 'datasets').handleSubmit();
                 break;
             }
             case 'exportFolder': {

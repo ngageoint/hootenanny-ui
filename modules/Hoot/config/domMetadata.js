@@ -472,23 +472,6 @@ export function exportDataForm( zipOutput ) {
     return meta;
 }
 
-export function openInJosmForm() {
-
-    const exportHootTags = 'openHootTags';
-
-    let meta = [
-        {
-            label: 'Include Hootenanny tags?',
-            id: exportHootTags,
-            inputType: 'checkbox',
-            checked: false,
-            hidden: false
-        },
-    ];
-
-    return meta;
-}
-
 export function translationAddForm() {
     return [
         {

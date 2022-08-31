@@ -7,7 +7,6 @@
  *******************************************************************************************************/
 
 import FormFactory from '../../tools/formFactory';
-import { openInJosmForm } from '../../config/domMetadata';
 
 export default class OpenInJosm {
     constructor(translations, d, type, source) {
@@ -18,7 +17,6 @@ export default class OpenInJosm {
         this.id = isDatasets ? d.map(n => n.id).join(',') : d.data.id;
         this.type = type;
         this.source = source;
-        this.form = openInJosmForm.call(this, isDatasets);
         this.data = d;
         this.maxExportSize = 2000000000; // 2GB
 
@@ -169,15 +167,11 @@ export default class OpenInJosm {
                 let data = {
                     input: self.id,
                     inputtype: self.getInputType(),
-                    includehoottags: this.source === 'init_review' ? true : self.includeHootTagsCheckbox.property('checked'),
+                    includehoottags: true,
                     outputname: finalName,
                     outputtype: 'OSM',
                     translation: self.getTranslationPath()
                 };
-
-                if (this.source !== 'init_review') {
-                    this.loadingState();
-                }
 
                 this.processRequest = Hoot.api.openInJosm(data)
                     .then(resp => {
