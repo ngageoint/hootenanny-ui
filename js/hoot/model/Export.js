@@ -217,7 +217,7 @@ Hoot.model.export = function (context)
                     var sUrl = '../hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
                     if (selectedOutType === 'osm.pbf') {
                         // specify the file ext since the default is zip and there is no need to zip a pbf file
-                        sUrl = sUrl + '&ext=osm.pbf';
+                        sUrl = sUrl + '&ext=pbf';
                     }
                     var link = document.createElement('a');
                     link.href = sUrl;
