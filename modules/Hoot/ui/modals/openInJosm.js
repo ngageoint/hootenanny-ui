@@ -96,21 +96,9 @@ export default class OpenInJosm {
     }
 
     getTranslationPath() {
-        let selectedTranslation = null;
-        if (this.source === 'init_review') {
-            selectedTranslation = 'OSM';
-        } else {
-            selectedTranslation = this.translationSchemaCombo.node().value;
-        }
+        let selectedTranslation = 'OSM';
         const translation = this.translations.find(t => t.name === selectedTranslation);
         return !translation.hasOwnProperty('path') ? translation.exportPath : translation.path;
-    }
-
-    getOutputType() {
-        return {
-            'OpenStreetMap (OSM)': 'osm',
-            'OpenStreetMap (PBF)': 'osm.pbf'
-        }[this.exportFormatCombo.node().value];
     }
 
     loadingState() {
@@ -183,7 +171,7 @@ export default class OpenInJosm {
                     inputtype: self.getInputType(),
                     includehoottags: this.source === 'init_review' ? true : self.includeHootTagsCheckbox.property('checked'),
                     outputname: finalName,
-                    outputtype: this.source === 'init_review' ? 'OSM' : self.getOutputType(),
+                    outputtype: 'OSM',
                     translation: self.getTranslationPath()
                 };
 
