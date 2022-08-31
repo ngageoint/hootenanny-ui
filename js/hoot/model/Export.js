@@ -176,7 +176,7 @@ Hoot.model.export = function (context)
             clearInterval(statusTimer);
             var outNameParam = '';
             if (outputname !== null) {
-                outNameParam = 'outputname=' + outputname;
+                outNameParam = 'outputname=' + outputname + '.' + selectedOutType;
             }
             if (exportCallback) {
                 exportCallback(result.status);
