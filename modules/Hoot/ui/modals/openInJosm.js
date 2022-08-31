@@ -99,28 +99,6 @@ export default class OpenInJosm {
         return !translation.hasOwnProperty('path') ? translation.exportPath : translation.path;
     }
 
-    loadingState() {
-        this.submitButton
-            .select('span')
-            .text('Cancel');
-
-        // overwrite the submit click action with a cancel action
-        this.submitButton.on('click', () => {
-            this.isCancelled = true;
-            Hoot.api.cancelJob(this.jobId);
-        });
-
-        this.submitButton
-            .append('div')
-            .classed('_icon _loading float-right', true)
-            .attr('id', 'importSpin');
-
-        this.container.selectAll('input')
-            .each(function () {
-                d3.select(this).node().disabled = true;
-            });
-    }
-
     getInputType() {
         let type;
         switch (this.type) {
