@@ -71,6 +71,13 @@ class LayerConflate extends SidebarForm {
         this.fieldset = new FormFactory().createFieldSets( this.innerWrapper, this.formData );
     }
 
+    updateLayerColors(newColor, refType) {
+        let thumb = this.fieldset.select(`.${refType}.thumb`);
+        let oldColor = thumb.attr('class').split(' ').find(d => d.startsWith('fill-'));
+        thumb.classed(`${ oldColor }`, false);
+        thumb.classed(`fill-${ newColor }`, true);
+    }
+
     checkForFavorite() {
 
         let defaultTypes = ['Reference', 'Attribute', 'Differential', 'Differential w/Tags', 'Horizontal', 'Network'];
@@ -106,7 +113,7 @@ class LayerConflate extends SidebarForm {
             .selectAll( '.thumb' )
             .data( layers ).enter()
             .append( 'div' )
-            .attr( 'class', d => `thumb round _icon data light contain inline fill-${ d.color }` );
+            .attr( 'class', d => `${d.refType} thumb round _icon data light contain inline fill-${ d.color }` );
     }
 
     createButtons() {
