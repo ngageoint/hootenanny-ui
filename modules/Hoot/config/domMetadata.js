@@ -29,14 +29,6 @@ export function layerConflateForm( data ) {
             readonly: 'readonly'
         },
         {
-            label: 'New Folder Name (leave blank otherwise)',
-            id: 'conflateNewFolderName',
-            class: 'new-folder-name',
-            inputType: 'text',
-            type: 'newfoldername',
-            onChange: d => this.validateTextInput( d )
-        },
-        {
             label: 'Type',
             id: 'conflateType',
             inputType: 'combobox',

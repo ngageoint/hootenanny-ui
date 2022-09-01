@@ -60,7 +60,6 @@ class LayerConflate extends SidebarForm {
 
         this.saveAsInput         = d3.select( '#conflateSaveAs' );
         this.folderPathInput     = d3.select( '#conflateFolderPath' );
-        this.newFolderNameInput  = d3.select( '#conflateNewFolderName' );
         this.typeInput           = d3.select( '#conflateType' );
         this.algorithmInput      = d3.select( '#conflateAlgorithm' );
         this.refLayerInput       = d3.select( '#conflateRefLayer' );
@@ -300,12 +299,6 @@ class LayerConflate extends SidebarForm {
             this.advancedOptions.toggle();
         }
 
-        if (this.newFolderNameInput.node().value.length > 0) {
-            let newFolderName = this.newFolderNameInput.node().value;
-            let newFolderId;
-            newFolderId = (await Hoot.folders.addFolder( newFolderName, newFolderName )).folderId;
-            data.OUTPUT_FOLDER = parseInt(newFolderId, 10);
-        }
 
         let refLayer = Hoot.layers.findLoadedBy( 'refType', 'primary' );
         let secLayer = Hoot.layers.findLoadedBy( 'refType', 'secondary' );
