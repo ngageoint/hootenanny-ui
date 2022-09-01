@@ -152,8 +152,12 @@ export default class Merge {
                 }
 
                 if ( !exists && !refRelation.memberById( mergedFeature.id ) ) {
-                    let newRelMember = this.createNewRelationMember( mergedFeature, refRelation.id, refRelationMember.index );
-                    this.data.mergedConflicts.push( newRelMember );
+                    refRelation.tags[ 'hoot:review:needs' ] = 'no';
+
+                    Hoot.context.perform(
+                        actionChangeTags( refRelation.id, refRelation.tags ),
+                        t( 'operations.change_tags.annotation' )
+                    );
                 }
             }
         } );
@@ -223,28 +227,6 @@ export default class Merge {
 
             return arr;
         }, [] );
-    }
-
-    /**
-     * Generate metadata for merged feature
-     *
-     * @param merged - merged feature
-     * @param relationId - relation ID
-     * @param mergedIdx - index of merged feature in relation
-     */
-    createNewRelationMember( merged, relationId, mergedIdx ) {
-        let member = {},
-            obj  = {};
-
-        member.id    = merged.id;
-        member.type  = merged.type;
-        member.role  = 'reviewee';
-        member.index = mergedIdx;
-
-        obj.id  = relationId;
-        obj.obj = member;
-
-        return obj;
     }
 
     /**
