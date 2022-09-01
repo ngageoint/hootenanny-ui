@@ -625,7 +625,7 @@ export function rendererMap(context) {
                         Hoot.events.emit( 'layer-reviews' );
                     }
                 } else {
-                    console.log(err);
+                    console.debug(err);
                     _tooManyNodes = true;
                     dispatch.call('toomanynodes', this);
                     editOff();

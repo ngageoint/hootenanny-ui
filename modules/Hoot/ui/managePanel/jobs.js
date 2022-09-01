@@ -628,6 +628,19 @@ export default class Jobs extends Tab {
                         outputInfo += jobTags.deriveType;
                     }
 
+                    // Set export info
+                    if ( jobTags.outputname ) {
+                        outputInfo += jobTags.outputname;
+                        if ( jobTags.outputtype ) {
+                            outputInfo += '.' + jobTags.outputtype;
+                        }
+                    }
+
+                    // Set delete info
+                    if ( jobTags.layername ) {
+                        outputInfo += jobTags.layername;
+                    }
+
                     if ( outputInfo !== '' ) {
                         jobInfo.push( outputInfo );
                     }
@@ -938,7 +951,19 @@ export default class Jobs extends Tab {
                         title: 'download export',
                         icon: 'get_app',
                         action: async () => {
-                            Hoot.api.saveDataset( d.jobId, d.tags.outputname )
+                            Hoot.api.saveDataset( d.jobId, d.tags.outputname + '.' + d.tags.outputtype )
+                                .catch( err => {
+                                    console.error(err);
+                                    Hoot.message.alert( err );
+                                    return false;
+                                } );
+                        }
+                    });
+                    actions.push({
+                        title: 'open in josm',
+                        icon: 'map',
+                        action: async () => {
+                            Hoot.api.openDatasetInJosm( d.jobId, d.tags.outputname + '.' + d.tags.outputtype )
                                 .catch( err => {
                                     console.error(err);
                                     Hoot.message.alert( err );

@@ -6,6 +6,7 @@
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
 import { saveAs }    from 'file-saver';
+import { utilDetect } from '../../util/detect';
 
 /**
  * API calls to backend services
@@ -24,7 +25,7 @@ export default class API {
         };
 
         this.baseUrl = this.config.path;
-
+        this.detect = utilDetect();
         this.mergeUrl       = Object.assign( new URL( this.host ), mergePortOrPath( this.config.mergeServerPort ) );
         this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
 
@@ -977,6 +978,26 @@ export default class API {
                 saveAs( fileBlob, name );
             });
     }
+
+    openDatasetInJosm( id, name ) {
+        const params = {
+            path: '/osm/api/0.6/user/session',
+            method: 'GET'
+        };
+        return this.request( params )
+            .then( resp => {
+                let rc = window.open('http://127.0.0.1:8111/import?'
+                    + `headers=Cookie,SESSION=${resp.data}`
+                    + `&url=${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.zip`
+                    , '_blank');
+                // Close the window after 1 second
+                setTimeout(() => {
+                    if (rc && !rc.closed) {
+                        rc.close();
+                    }
+                }, 1000);
+        });
+     }
 
     saveChangeset( id, name ) {
         const params = {
