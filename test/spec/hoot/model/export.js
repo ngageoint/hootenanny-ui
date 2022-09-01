@@ -93,7 +93,7 @@ describe('iD.Hoot.Model.Export', function(){
             expect(oReq.inputtype).to.eql("db");
             expect(oReq.input).to.eql("test_input_name");
             expect(oReq.outputtype).to.eql("gdb");
-            expect(oReq.outputname).to.eql("out_name_123");
+            expect(oReq.outputname).to.eql("out_name_123.gdb");
             expect(requests[0].url).to.eql("../hoot-services/job/export/execute");
             done();
           });

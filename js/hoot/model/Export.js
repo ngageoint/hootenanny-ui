@@ -176,7 +176,7 @@ Hoot.model.export = function (context)
             clearInterval(statusTimer);
             var outNameParam = '';
             if (outputname !== null) {
-                outNameParam = 'outputname=' + outputname;
+                outNameParam = 'outputname=' + outputname + '.' + selectedOutType;
             }
             if (exportCallback) {
                 exportCallback(result.status);
@@ -215,10 +215,10 @@ Hoot.model.export = function (context)
                 }
                 else {
                     var sUrl = '../hoot-services/job/export/' + result.jobId + '?' + outNameParam + '&removecache=true';
-                    if (selectedOutType === 'osm.pbf') {
-                        // specify the file ext since the default is zip and there is no need to zip a pbf file
-                        sUrl = sUrl + '&ext=osm.pbf';
-                    }
+                    // if (selectedOutType === 'osm.pbf') {
+                    //     // specify the file ext since the default is zip and there is no need to zip a pbf file
+                    //     sUrl = sUrl + '&ext=pbf';
+                    // }
                     var link = document.createElement('a');
                     link.href = sUrl;
                     if (link.download !== undefined) {
