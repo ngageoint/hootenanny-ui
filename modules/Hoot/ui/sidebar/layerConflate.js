@@ -283,7 +283,7 @@ class LayerConflate extends SidebarForm {
         Hoot.layers.loadLayer( params );
     }
 
-    async handleSubmit() {
+    handleSubmit() {
         d3.event.stopPropagation();
         d3.event.preventDefault();
 
