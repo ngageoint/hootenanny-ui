@@ -18,7 +18,6 @@ import AddFolder          from '../modals/addFolder';
 import ModifyDataset      from '../modals/modifyDataset';
 import ModifyFolder       from '../modals/modifyFolder';
 import ExportData         from '../modals/exportData';
-import OpenInJosm         from '../modals/openInJosm';
 import ExportAlphaShape   from '../modals/exportAlphaShape';
 import ExportTaskGrid     from '../modals/exportTaskGrid';
 import { rateLimit }      from '../../config/apiConfig';
@@ -314,13 +313,13 @@ export default class Datasets extends Tab {
             }
             case 'openInJosm': {
                 let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
-                new OpenInJosm(translations, d, 'Dataset', 'dataset').handleSubmit();
+                Hoot.api.openDataInJosm(translations, d, 'Dataset');
                 break;
             }
             case 'openMultiInJosm': {
                 let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
                 let datasets = this.folderTree.selectedNodes;
-                new OpenInJosm(translations, datasets, 'Datasets', 'datasets').handleSubmit();
+                Hoot.api.openDataInJosm(translations, datasets, 'Datasets');
                 break;
             }
             case 'exportFolder': {

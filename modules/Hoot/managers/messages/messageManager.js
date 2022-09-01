@@ -8,7 +8,6 @@
  *******************************************************************************************************/
 
 import Alert from './alert';
-import OpenInJosm from '../../ui/modals/openInJosm';
 
 export default class MessageManager {
     constructor( hoot ) {
@@ -171,7 +170,7 @@ export default class MessageManager {
                     res('josm');
 
                     let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
-                    new OpenInJosm(translations, { data: mergedLayer }, 'Dataset', 'init_review').handleSubmit();
+                    Hoot.api.openDataInJosm(translations, { data: mergedLayer }, 'Dataset');
                 });
         });
     }
