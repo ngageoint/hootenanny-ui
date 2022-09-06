@@ -960,10 +960,10 @@ export default class Jobs extends Tab {
                         }
                     });
                     actions.push({
-                        title: 'open in JOSM',
+                        title: 'open in josm',
                         icon: 'map',
                         action: async () => {
-                            Hoot.api.openDatasetInJosm( d.jobId, d.tags.outputname + '.' + d.tags.outputtype, d.tags.outputname )
+                            Hoot.api.openDatasetInJosm( d.jobId, d.tags.outputname, d.tags.outputtype )
                                 .catch( err => {
                                     console.error(err);
                                     Hoot.message.alert( err );

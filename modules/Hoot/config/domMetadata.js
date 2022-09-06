@@ -4,12 +4,6 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
 
-/*
-* @apiNote Changelog: <br>
-*      Milla Zagorski 8-10-2022: Added code to allow for opening layer(s) in JOSM. <br>
-*
-*/
-
 export function layerConflateForm( data ) {
     return [
         {

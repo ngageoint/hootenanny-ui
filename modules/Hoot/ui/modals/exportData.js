@@ -240,8 +240,6 @@ export default class ExportData {
             .then( async resp => {
                 if (resp.data && resp.data.status !== 'cancelled') {
                     await Hoot.api.saveDataset( this.jobId, data.outputname + '.' + data.outputtype + '.zip' );
-                    // or open in JOSM remote control
-                    //Hoot.api.openDatasetInJosm( this.jobId, data.outputname + '.' + data.outputtype );
                 }
                 return resp;
             } )

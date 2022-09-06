@@ -982,7 +982,7 @@ export default class API {
             });
     }
 
-    openDatasetInJosm( id, name, outputName ) {
+    openDatasetInJosm( id, name, ext ) {
         const params = {
             path: '/osm/api/0.6/user/session',
             method: 'GET'
@@ -992,8 +992,8 @@ export default class API {
                 let rc = window.open('http://127.0.0.1:8111/import?'
                     + `headers=Cookie,SESSION=${resp.data}`
                     + '&new_layer=true'
-                    + `&layer_name=${outputName}`
-                    + `&url=${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.zip`
+                    + `&layer_name=${name}`
+                    + `&url=${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.${ext}.zip`
                     , '_blank');
                 // Close the window after 1 second
                 setTimeout(() => {
@@ -1048,26 +1048,6 @@ export default class API {
     }
 
     /****************** OPEN DATA IN JOSM FROM INITIAL CONFLATE OR MANAGE PANEL/DATASETS*******************/
-    openInJosm(data) {
-        const requiredKeys = [
-            'input',
-            'inputtype',
-            'outputname',
-            'outputtype'
-        ];
-
-        if (!requiredKeys.every(k => data.hasOwnProperty(k))) {
-            return Promise.reject(new Error(' invalid request payload'));
-        }
-
-        const params = {
-            path: '/job/export/execute',
-            method: 'POST',
-            data: data
-        };
-        return this.request(params);
-    }
-
     /**
      * Call JOSM remote control to alert JOSM that there is a file to load.
      * @param uri {String} The URI used to alert JOSM via remote control.
@@ -1118,43 +1098,43 @@ export default class API {
             });
     }
 
-    getOutputName(type, input) {
-        let output;
-        switch (type) {
-            case 'Datasets': {
-                output = 'hoot_export_datasets';
-                break;
-            }
-            default: {
-                output = input;
-                break;
-            }
-        }
-        return output;
-    }
-
-    getInputType(type) {
-        switch (type) {
-            case 'Dataset': {
-                type = 'db';
-                break;
-            }
-            case 'Datasets': {
-                type = 'dbs';
-                break;
-            }
-            default: break;
-        }
-        return type;
-    }
-
-    getTranslationPath(translations) {
-        let selectedTranslation = 'OSM';
-        const translation = translations.find(t => t.name === selectedTranslation);
-        return !translation.hasOwnProperty('path') ? translation.exportPath : translation.path;
-    }
-
     openDataInJosm(translations, d, type) {
+
+        function getOutputName(type, input) {
+            let output;
+            switch (type) {
+                case 'Datasets': {
+                    output = 'hoot_export_datasets';
+                    break;
+                }
+                default: {
+                    output = input;
+                    break;
+                }
+            }
+            return output;
+        }
+
+        function getInputType(type) {
+            switch (type) {
+                case 'Dataset': {
+                    type = 'db';
+                    break;
+                }
+                case 'Datasets': {
+                    type = 'dbs';
+                    break;
+                }
+                default: break;
+            }
+            return type;
+        }
+
+        function getTranslationPath(translations) {
+            let selectedTranslation = 'OSM';
+            const translation = translations.find(t => t.name === selectedTranslation);
+            return !translation.hasOwnProperty('path') ? translation.exportPath : translation.path;
+        }
 
         // Check that JOSM is available for loading the data
         let checkJosmUrl = new URL('http://127.0.0.1:8111/version?jsonp=test');
@@ -1166,19 +1146,19 @@ export default class API {
                 const isDatasets = type === 'Datasets';
                 let id = isDatasets ? d.map(n => n.id).join(',') : d.data.id,
                     input = isDatasets ? d.map(n => n.name).join(',') : d.data.name,
-                    initialName = this.getOutputName(type, input),
+                    initialName = getOutputName(type, input),
                     finalName = initialName.replace(/\s/g, '');
 
                 let data = {
                     input: id,
-                    inputtype: this.getInputType(type),
+                    inputtype: getInputType(type),
                     includehoottags: true,
                     outputname: finalName,
-                    outputtype: 'OSM',
-                    translation: this.getTranslationPath(translations)
+                    outputtype: 'osm',
+                    translation: getTranslationPath(translations)
                 };
 
-                this.openInJosm(data)
+                this.exportDataset(data)
                     .then(resp => {
                         this.jobId = resp.data.jobid;
 
@@ -1187,7 +1167,7 @@ export default class API {
                     .then(async resp => {
 
                         if (resp.data && !this.isCancelled) {
-                            await this.openDatasetInJosm(this.jobId, data.outputname + '.OSM', data.outputname);
+                            await this.openDatasetInJosm(this.jobId, data.outputname, data.outputtype);
                         }
                         return resp;
                     })
