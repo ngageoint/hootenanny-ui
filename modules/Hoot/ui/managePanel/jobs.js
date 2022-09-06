@@ -854,6 +854,29 @@ export default class Jobs extends Tab {
                                             .then( resp => Hoot.message.alert( resp ) );
                                     }
                                 });
+                                //Derive a changeset as JOSM osm with action attibutes
+                                actions.push({
+                                    title: 'open_in_josm',
+                                    icon: 'map',
+                                    action: async () => {
+                                        const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
+
+                                        const data  = {};
+                                        data.input1 = parseInt(tagsInfo.input1, 10);
+                                        data.input2 = d.mapId;
+                                        data.parentId = d.jobId;
+
+                                        if (currentLayer.bounds) { data.bounds = currentLayer.bounds; }
+                                        if ( d.tags && d.tags.taskInfo ) { data.taskInfo = d.tags.taskInfo; }
+
+                                        const params = {
+                                            deriveType : 'Open in JOSM'
+                                        };
+
+                                        Hoot.api.deriveChangeset( data, params )
+                                            .then( resp => Hoot.message.alert( resp ) );
+                                    }
+                                });
                             }
                         }
 
