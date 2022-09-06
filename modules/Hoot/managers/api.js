@@ -982,7 +982,7 @@ export default class API {
             });
     }
 
-    openDatasetInJosm( id, name ) {
+    openDatasetInJosm( id, name, outputName ) {
         const params = {
             path: '/osm/api/0.6/user/session',
             method: 'GET'
@@ -991,6 +991,8 @@ export default class API {
             .then( resp => {
                 let rc = window.open('http://127.0.0.1:8111/import?'
                     + `headers=Cookie,SESSION=${resp.data}`
+                    + '&new_layer=true'
+                    + `&layer_name=${outputName}`
                     + `&url=${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.zip`
                     , '_blank');
                 // Close the window after 1 second
@@ -1045,7 +1047,7 @@ export default class API {
         return this.request( params );
     }
 
-    /****************** OPEN DATA IN JOSM *******************/
+    /****************** OPEN DATA IN JOSM FROM INITIAL CONFLATE OR MANAGE PANEL/DATASETS*******************/
     openInJosm(data) {
         const requiredKeys = [
             'input',
@@ -1185,7 +1187,7 @@ export default class API {
                     .then(async resp => {
 
                         if (resp.data && !this.isCancelled) {
-                            await this.saveDataset(this.jobId, data.outputname);
+                            await this.openDatasetInJosm(this.jobId, data.outputname + '.OSM', data.outputname);
                         }
                         return resp;
                     })
@@ -1217,22 +1219,6 @@ export default class API {
                     })
                     .finally(() => {
                         Hoot.events.emit('modal-closed');
-
-                        // Alert JOSM that there is a file to load
-                        if (!this.isCancelled) {
-
-                            const alertHootRevLayer = {
-                                layer_name: data.outputname
-                            };
-
-                            const hootRevParams = Object.keys(alertHootRevLayer)
-                                .map((key) => `${key}=${encodeURIComponent(alertHootRevLayer[key])}`)
-                                .join('&');
-                            const finalHootRevUri = `?${hootRevParams}?`;
-                            let alertUrl = new URL(finalHootRevUri, 'http://127.0.0.1:8111/alertHootReview');
-
-                            this.callJosmRemoteControl(alertUrl, 'Dataset(s) loaded in JOSM.', 'Error loading data into JOSM.');
-                        }
                     });
             } else {
                 let message = 'Dataset(s) could not be loaded into JOSM.';
@@ -1243,7 +1229,7 @@ export default class API {
             }
         });
     }
-    /*********************************************************/
+    /******************************************************************************************************/
 
     updateFolder( { folderId, parentId } ) {
         const params = {
