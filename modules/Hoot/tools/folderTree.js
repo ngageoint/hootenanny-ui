@@ -45,11 +45,11 @@ export default class FolderTree extends EventEmitter {
                 _icon: 'export',
                 click: 'exportDataset'
             },
-            multiOpenJosmOpts: {
-                title: 'Open Selected Datasets in JOSM',
-                icon: 'map',
-                click: 'openMultiInJosm'
-            },
+            // multiOpenJosmOpts: {
+            //     title: 'Open Selected Datasets in JOSM',
+            //     icon: 'map',
+            //     click: 'openMultiInJosm'
+            // },
             singleOpenJosmOpts: {
                 title: 'Open Dataset in JOSM',
                 icon: 'map',
@@ -658,14 +658,14 @@ export default class FolderTree extends EventEmitter {
 
                 if (selectedCount > 1 && selectedCount <= 10) {
 
-                    // add options for opening multiple datasets in JOSM
-                    opts = [
-                        {
-                            title: `Open Selected Datasets in JOSM (${selectedCount})`,
-                            _icon: 'data',
-                            click: 'openMultiInJosm'
-                        }
-                    ];
+                    // // add options for opening multiple datasets in JOSM
+                    // opts = [
+                    //     {
+                    //         title: `Open Selected Datasets in JOSM (${selectedCount})`,
+                    //         _icon: 'data',
+                    //         click: 'openMultiInJosm'
+                    //     }
+                    // ];
 
                     // add options for multiple selected datasets
                     opts.push(this.datasetContextMenu.multiDatasetOpts);
