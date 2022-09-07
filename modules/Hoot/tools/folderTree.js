@@ -45,6 +45,16 @@ export default class FolderTree extends EventEmitter {
                 _icon: 'export',
                 click: 'exportDataset'
             },
+            // multiOpenJosmOpts: {
+            //     title: 'Open Selected Datasets in JOSM',
+            //     icon: 'map',
+            //     click: 'openMultiInJosm'
+            // },
+            singleOpenJosmOpts: {
+                title: 'Open Dataset in JOSM',
+                icon: 'map',
+                click: 'openInJosm'
+            },
             conflationProjectOpts: [
                 {
                     title:'Export Alpha Shape',
@@ -647,6 +657,16 @@ export default class FolderTree extends EventEmitter {
                 ];
 
                 if (selectedCount > 1 && selectedCount <= 10) {
+
+                    // // add options for opening multiple datasets in JOSM
+                    // opts = [
+                    //     {
+                    //         title: `Open Selected Datasets in JOSM (${selectedCount})`,
+                    //         _icon: 'data',
+                    //         click: 'openMultiInJosm'
+                    //     }
+                    // ];
+
                     // add options for multiple selected datasets
                     opts.push(this.datasetContextMenu.multiDatasetOpts);
 
@@ -674,6 +694,9 @@ export default class FolderTree extends EventEmitter {
                         _icon: 'info',
                         click: 'modifyDataset'
                     });
+
+                    // add options for opening a single dataset in JOSM
+                    opts.push(this.datasetContextMenu.singleOpenJosmOpts);
 
                     opts.push(this.datasetContextMenu.singleDatasetOpts);
 
@@ -730,7 +753,7 @@ export default class FolderTree extends EventEmitter {
             .enter()
             .append( 'li' )
             //trying to deprecate the _icon class and replace with svgIcon
-            //in the meantime, both are supported though shold be exclusive
+            //in the meantime, both are supported though should be exclusive
             .attr( 'class', item => (item._icon) ? `_icon ${ item._icon }` : null )
             .each( function(item) {
                 if (item.icon) {

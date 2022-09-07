@@ -2,6 +2,9 @@
  * File: api.js
  * Project: hootenanny-ui
  * @author Matt Putipong on 3/2/18
+ * @apiNote Changelog: <br>
+ *      Milla Zagorski 8-10-2022: Added code to allow for opening layer(s) in JOSM from initial conflation or Manage Panel. <br>
+ *
  *******************************************************************************************************/
 import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
@@ -979,7 +982,7 @@ export default class API {
             });
     }
 
-    openDatasetInJosm( id, name ) {
+    openDatasetInJosm( id, name, ext ) {
         const params = {
             path: '/osm/api/0.6/user/session',
             method: 'GET'
@@ -988,7 +991,9 @@ export default class API {
             .then( resp => {
                 let rc = window.open('http://127.0.0.1:8111/import?'
                     + `headers=Cookie,SESSION=${resp.data}`
-                    + `&url=${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.zip`
+                    + '&new_layer=true'
+                    + `&layer_name=${name}`
+                    + `&url=${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.${ext}.zip`
                     , '_blank');
                 // Close the window after 1 second
                 setTimeout(() => {
@@ -1041,6 +1046,170 @@ export default class API {
 
         return this.request( params );
     }
+
+    /****************** OPEN DATA IN JOSM FROM INITIAL CONFLATE OR MANAGE PANEL/DATASETS*******************/
+    /**
+     * Call JOSM remote control to alert JOSM that there is a file to load.
+     * @param uri {String} The URI used to alert JOSM via remote control.
+     * @param goodMessage {String} Message for a successful connection.
+     * @param badMessage {String} Message for an unsuccessful connection.
+     */
+    callJosmRemoteControl(uri, goodMessage, badMessage) {
+        // Safari won't send AJAX commands to the default (insecure) JOSM port when
+        // on a secure site, and the secure JOSM port uses a self-signed certificate
+        // that requires the user to jump through a bunch of hoops to trust before
+        // communication can proceed. So for Safari only, fall back to sending JOSM
+        // requests via the opening of a separate window instead of AJAX.
+        // Source: https://github.com/osmlab/maproulette3
+        let safariWindowReference = null;
+        if (window.safari) {
+            return new Promise((resolve) => {
+                if (safariWindowReference && !safariWindowReference.closed) {
+                    safariWindowReference.close();
+                }
+
+                safariWindowReference = window.open(uri);
+
+                // Close the window after 1 second and resolve the promise
+                setTimeout(() => {
+                    if (safariWindowReference && !safariWindowReference.closed) {
+                        safariWindowReference.close();
+                    }
+                    resolve(true);
+                }, 1000);
+            });
+        }
+        return fetch(uri)
+            .then(response => {
+                let message = goodMessage;
+                Hoot.message.alert({
+                    message: message,
+                    type: 'success'
+                });
+                return response.status === 200;
+            })
+            .catch(() => {
+                let message = badMessage;
+                Hoot.message.alert({
+                    message: message,
+                    type: 'error'
+                });
+                return false;
+            });
+    }
+
+    openDataInJosm(translations, d, type) {
+
+        function getOutputName(type, input) {
+            let output;
+            switch (type) {
+                case 'Datasets': {
+                    output = 'hoot_export_datasets';
+                    break;
+                }
+                default: {
+                    output = input;
+                    break;
+                }
+            }
+            return output;
+        }
+
+        function getInputType(type) {
+            switch (type) {
+                case 'Dataset': {
+                    type = 'db';
+                    break;
+                }
+                case 'Datasets': {
+                    type = 'dbs';
+                    break;
+                }
+                default: break;
+            }
+            return type;
+        }
+
+        function getTranslationPath(translations) {
+            let selectedTranslation = 'OSM';
+            const translation = translations.find(t => t.name === selectedTranslation);
+            return !translation.hasOwnProperty('path') ? translation.exportPath : translation.path;
+        }
+
+        // Check that JOSM is available for loading the data
+        let checkJosmUrl = new URL('http://127.0.0.1:8111/version?jsonp=test');
+        this.callJosmRemoteControl(checkJosmUrl, 'JOSM is up and running!', 'Make sure that JOSM is already open.').then(value => {
+
+            // Proceed if JOSM is already open
+            if (value) {
+
+                const isDatasets = type === 'Datasets';
+                let id = isDatasets ? d.map(n => n.id).join(',') : d.data.id,
+                    input = isDatasets ? d.map(n => n.name).join(',') : d.data.name,
+                    initialName = getOutputName(type, input),
+                    finalName = initialName.replace(/\s/g, '');
+
+                let data = {
+                    input: id,
+                    inputtype: getInputType(type),
+                    includehoottags: true,
+                    outputname: finalName,
+                    outputtype: 'osm',
+                    translation: getTranslationPath(translations)
+                };
+
+                this.exportDataset(data)
+                    .then(resp => {
+                        this.jobId = resp.data.jobid;
+
+                        return this.statusInterval(this.jobId);
+                    })
+                    .then(async resp => {
+
+                        if (resp.data && !this.isCancelled) {
+                            await this.openDatasetInJosm(this.jobId, data.outputname, data.outputtype);
+                        }
+                        return resp;
+                    })
+                    .then(resp => {
+                        Hoot.events.emit('modal-closed');
+                        return resp;
+                    })
+                    .then(resp => {
+                        let message;
+                        if (resp.data && this.isCancelled) {
+                            message = 'Open data in JOSM cancelled.';
+                            Hoot.message.alert({
+                                message: message,
+                                type: 'warn'
+                            });
+                        }
+                        return resp;
+                    })
+                    .catch((err) => {
+                        let message = 'Error opening data in JOSM.',
+                            type = err.type,
+                            keepOpen = true;
+
+                        if (err.data.commandDetail && err.data.commandDetail.length > 0 && err.data.commandDetail[0].stderr !== '') {
+                            message = err.data.commandDetail[0].stderr;
+                        }
+
+                        Hoot.message.alert({ message, type, keepOpen });
+                    })
+                    .finally(() => {
+                        Hoot.events.emit('modal-closed');
+                    });
+            } else {
+                let message = 'Dataset(s) could not be loaded into JOSM.';
+                Hoot.message.alert({
+                    message: message,
+                    type: 'error'
+                });
+            }
+        });
+    }
+    /******************************************************************************************************/
 
     updateFolder( { folderId, parentId } ) {
         const params = {
