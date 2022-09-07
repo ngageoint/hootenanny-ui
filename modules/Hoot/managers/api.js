@@ -1049,8 +1049,8 @@ export default class API {
 
     /****************** OPEN DATA IN JOSM FROM INITIAL CONFLATE OR MANAGE PANEL/DATASETS*******************/
     /**
-     * Call JOSM remote control to alert JOSM that there is a file to load.
-     * @param uri {String} The URI used to alert JOSM via remote control.
+     * Call JOSM remote control.
+     * @param uri {String} The URI used to ping JOSM via remote control.
      * @param goodMessage {String} Message for a successful connection.
      * @param badMessage {String} Message for an unsuccessful connection.
      */
