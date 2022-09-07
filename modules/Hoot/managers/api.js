@@ -2038,7 +2038,7 @@ export default class API {
     getTM4Projects( pageNumber ) {
         const page = pageNumber || 1;
         const params = {
-            url: '/tm4api/v2/projects/',
+            url: `${this.config.tm4ApiUrl}/v2/projects/`,
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
@@ -2068,7 +2068,7 @@ export default class API {
     getTM4Tasks( projectId ) {
         let authToken = this.getTM4AuthToken();
         const params = {
-            url: `/tm4api/v2/projects/${ projectId }/`,
+            url: `${this.config.tm4ApiUrl}/v2/projects/${ projectId }/`,
             method: 'GET',
             headers: {
               'Authorization': authToken
@@ -2095,7 +2095,7 @@ export default class API {
         let authToken = this.getTM4AuthToken();
 
         const params = {
-            url: `/tm4api/v2/projects/${ projectId }/tasks/actions/${ lockParam }/${ taskId }/`,
+            url: `${this.config.tm4ApiUrl}/v2/projects/${ projectId }/tasks/actions/${ lockParam }/${ taskId }/`,
             method: 'POST',
             headers: {
                 'Accept': '*/*',
@@ -2140,7 +2140,7 @@ export default class API {
         let authToken = this.getTM4AuthToken();
 
         const params = {
-            url: `/tm4api/v2/projects/${ projectId }/tasks/actions/unlock-after-mapping/${ taskId }/`,
+            url: `${this.config.tm4ApiUrl}/v2/projects/${ projectId }/tasks/actions/unlock-after-mapping/${ taskId }/`,
             method: 'POST',
             headers: {
                 'Accept': '*/*',

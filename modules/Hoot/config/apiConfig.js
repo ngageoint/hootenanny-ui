@@ -20,8 +20,9 @@ export const apiConfig = {
     host: window.location.protocol + '//' + window.location.host, // just host name without port
     port: window.location.port,
     path: relativePath(),
-    translationServerPort: '8094',
-    mergeServerPort: '8096',
+    tm4ApiUrl: tm4ApiUrl || '/tm4api',
+    translationServerPort: translationServerPort || '8094',
+    mergeServerPort: mergeServerPort || '8096',
     queryInterval: 2000,
     runTasksInterval: 90000,
     rateLimit: 20 //supports 20 concurrent file uploads or deletes
