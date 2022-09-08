@@ -111,6 +111,7 @@ module.exports = function( config ) {
             // { pattern: 'dist/**/*', included: false },
             // 'test/spec/spec_helpers.js',
             // 'test/spec/*/!(localized|wikipedia).js',
+            'dist/globals',
             'test/hoot/index.js'
         ],
 
