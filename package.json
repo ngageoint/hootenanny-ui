@@ -14,7 +14,7 @@
     "build": "webpack --env NODE_ENV=production",
     "build:analyze": "webpack --env NODE_ENV=analyze",
     "build:development": "webpack --env NODE_ENV=development",
-    "clean": "shx rm -rf dist/*.js dist/*.map dist/*.css dist/img dist/mapillary-js dist/pannellum-streetside dist/*.LICENSE.txt",
+    "clean": "shx rm -rf dist/*.min.js dist/*.map dist/*.css dist/img dist/mapillary-js dist/pannellum-streetside dist/*.LICENSE.txt",
     "dist": "npm-run-all -p dist:**",
     "dist:mapillary": "shx mkdir -p dist/mapillary-js && shx cp -R node_modules/mapillary-js/dist/* dist/mapillary-js/",
     "dist:pannellum": "shx mkdir -p dist/pannellum-streetside && shx cp -R node_modules/pannellum/build/* dist/pannellum-streetside/",
