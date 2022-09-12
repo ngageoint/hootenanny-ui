@@ -341,6 +341,13 @@ export default class FolderTree extends EventEmitter {
                 // use self as context but still pass in the clicked element
                 self.click.call( self, this, d );
             } )
+            .on( 'dblclick', d => {
+                d3.event.preventDefault();
+                // if this is an add dataset table, add layer to map on double click
+                if ( this.isAddDatasetTable ) {
+                    this.doubleClickHandler.call(this.doubleClickRef, d, false);
+                }
+            } )
             .on( 'mousedown', () => {
                 d3.event.preventDefault();
             } )
@@ -908,5 +915,10 @@ export default class FolderTree extends EventEmitter {
         }
 
         this.update( d );
+    }
+
+    setDoubleClickHandler(ref, handler) {
+        this.doubleClickRef = ref;
+        this.doubleClickHandler = handler;
     }
 }
