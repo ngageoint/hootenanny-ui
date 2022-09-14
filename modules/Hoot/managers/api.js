@@ -993,7 +993,7 @@ export default class API {
                     + `headers=Cookie,SESSION=${resp.data}`
                     + '&new_layer=true'
                     + `&layer_name=${name}`
-                    + `&url=${this.detect.origin}${this.baseUrl}/job/export/${id}?outputname=${name}.${ext}.zip`
+                    + `&url=${this.detect.host}${this.baseUrl}/job/export/${id}?outputname=${name}.${ext}.zip`
                     , '_blank');
                 // Close the window after 1 second
                 setTimeout(() => {
