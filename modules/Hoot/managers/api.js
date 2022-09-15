@@ -989,22 +989,21 @@ export default class API {
         };
 
         let absUrl = this.detect.absolute(this.detect.host, `${this.baseUrl}/job/export/${id}?outputname=${name}.${ext}.zip`);
-        console.log(absUrl);
-        // return this.request( params )
-        //     .then( resp => {
-        //         let rc = window.open('http://127.0.0.1:8111/import?'
-        //             + `headers=Cookie,SESSION=${resp.data}`
-        //             + '&new_layer=true'
-        //             + `&layer_name=${name}`
-        //             + `&url=${absUrl}`
-        //             , '_blank');
-        //         // Close the window after 1 second
-        //         setTimeout(() => {
-        //             if (rc && !rc.closed) {
-        //                 rc.close();
-        //             }
-        //         }, 1000);
-        // });
+        return this.request( params )
+            .then( resp => {
+                let rc = window.open('http://127.0.0.1:8111/import?'
+                    + `headers=Cookie,SESSION=${resp.data}`
+                    + '&new_layer=true'
+                    + `&layer_name=${name}`
+                    + `&url=${absUrl}`
+                    , '_blank');
+                // Close the window after 1 second
+                setTimeout(() => {
+                    if (rc && !rc.closed) {
+                        rc.close();
+                    }
+                }, 1000);
+        });
      }
 
     saveChangeset( id, name ) {
