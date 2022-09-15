@@ -13,7 +13,7 @@ module.exports = merge( CommonConfig, {
     devtool: 'cheap-module-source-map',
     devServer: {
         compress: true,
-        https: true,
+        server: 'https',
         port: 8080,
         static: {
             directory: path.join(__dirname, '../dist'),
