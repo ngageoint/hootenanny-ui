@@ -115,6 +115,25 @@ export function utilDetect(force) {
 
     detected.cssfilters = !(detected.ie || detected.browser.toLowerCase() === 'edge');
 
+    // source https://www.geeksforgeeks.org/convert-relative-path-url-to-absolute-path-url-using-javascript/
+    function absolute(base, rel) {
+        var st = base.split('/');
+        var arr = rel.split('/');
+        st.pop(); // ignore the current file name (or no string)
+       // (ignore if 'base' is the current folder without having slash in trail)
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] === '.')
+                continue;
+            if (arr[i] === '..')
+                st.pop();
+            else
+                st.push(arr[i]);
+        }
+        return st.join('/');
+    }
+
+    detected.absolute = absolute;
+
     function nav(x) {
         return navigator.userAgent.indexOf(x) !== -1;
     }
