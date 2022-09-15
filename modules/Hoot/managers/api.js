@@ -987,21 +987,39 @@ export default class API {
             path: '/osm/api/0.6/user/session',
             method: 'GET'
         };
-        return this.request( params )
-            .then( resp => {
-                let rc = window.open('http://127.0.0.1:8111/import?'
-                    + `headers=Cookie,SESSION=${resp.data}`
-                    + '&new_layer=true'
-                    + `&layer_name=${name}`
-                    + `&url=${this.detect.host}${this.baseUrl}/job/export/${id}?outputname=${name}.${ext}.zip`
-                    , '_blank');
-                // Close the window after 1 second
-                setTimeout(() => {
-                    if (rc && !rc.closed) {
-                        rc.close();
-                    }
-                }, 1000);
-        });
+        function absolute(base, rel) {
+            var st = base.split("/");
+            var arr = rel.split("/");
+            st.pop(); // ignore the current file name (or no string)
+           // (ignore if "base" is the current folder without having slash in trail)
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i] == ".")
+                    continue;
+                if (arr[i] == "..")
+                    st.pop();
+                else
+                    st.push(arr[i]);
+            }
+            return st.join("/");
+        }
+
+        let absUrl = absolute(this.detect.host, `${this.baseUrl}/job/export/${id}?outputname=${name}.${ext}.zip`);
+        console.log(absUrl);
+        // return this.request( params )
+        //     .then( resp => {
+        //         let rc = window.open('http://127.0.0.1:8111/import?'
+        //             + `headers=Cookie,SESSION=${resp.data}`
+        //             + '&new_layer=true'
+        //             + `&layer_name=${name}`
+        //             + `&url=${absUrl}`
+        //             , '_blank');
+        //         // Close the window after 1 second
+        //         setTimeout(() => {
+        //             if (rc && !rc.closed) {
+        //                 rc.close();
+        //             }
+        //         }, 1000);
+        // });
      }
 
     saveChangeset( id, name ) {
