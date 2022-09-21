@@ -991,18 +991,13 @@ export default class API {
         let absUrl = this.detect.absolute(this.detect.host, `${this.baseUrl}/job/export/${id}?outputname=${name}.${ext}.zip`);
         return this.request( params )
             .then( resp => {
-                let rc = window.open('http://127.0.0.1:8111/import?'
-                    + `headers=Cookie,SESSION=${resp.data}`
-                    + '&new_layer=true'
-                    + `&layer_name=${name}`
-                    + `&url=${absUrl}`
-                    , '_blank');
-                // Close the window after 1 second
-                setTimeout(() => {
-                    if (rc && !rc.closed) {
-                        rc.close();
-                    }
-                }, 1000);
+                let openInJosmUrl = new URL('http://127.0.0.1:8111/import?'
+                + `headers=Cookie,SESSION=${resp.data}`
+                + '&new_layer=true'
+                + `&layer_name=${name}`
+                + `&url=${absUrl}`);
+
+                this.callJosmRemoteControl(openInJosmUrl);
         });
      }
 
@@ -1083,17 +1078,11 @@ export default class API {
         }
         return fetch(uri)
             .then(response => {
-                let message = goodMessage;
-                Hoot.message.alert({
-                    message: message,
-                    type: 'success'
-                });
                 return response.status === 200;
             })
             .catch(() => {
-                let message = badMessage;
                 Hoot.message.alert({
-                    message: message,
+                    message: 'Make sure that JOSM is already open.',
                     type: 'error'
                 });
                 return false;
@@ -1140,7 +1129,7 @@ export default class API {
 
         // Check that JOSM is available for loading the data
         let checkJosmUrl = new URL('http://127.0.0.1:8111/version?jsonp=test');
-        this.callJosmRemoteControl(checkJosmUrl, 'JOSM is up and running!', 'Make sure that JOSM is already open.').then(value => {
+        this.callJosmRemoteControl(checkJosmUrl).then(value => {
 
             // Proceed if JOSM is already open
             if (value) {
@@ -1202,12 +1191,6 @@ export default class API {
                     .finally(() => {
                         Hoot.events.emit('modal-closed');
                     });
-            } else {
-                let message = 'Dataset(s) could not be loaded into JOSM.';
-                Hoot.message.alert({
-                    message: message,
-                    type: 'error'
-                });
             }
         });
     }
