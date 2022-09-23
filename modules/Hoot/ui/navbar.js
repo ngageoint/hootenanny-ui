@@ -123,7 +123,6 @@ export default class Navbar {
                 .on( 'click', () => {
                     Hoot.api.logout()
                         .then( () => {
-                            localStorage.removeItem( 'user' );
                             localStorage.removeItem( 'bounds_history' );
                             window.location.replace( 'login.html' );
                         } );
