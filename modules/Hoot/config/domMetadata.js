@@ -387,6 +387,7 @@ export function exportDataForm( zipOutput ) {
           exportFormatId = 'exportFormatCombo',
           exportNameId = 'dataExportNameTextInput',
           exportFgdbId = 'exportAppendFgdb',
+          exportThematic = 'exportThematic',
           exportHootTags = 'exportHootTags',
           that = this;
 
@@ -396,6 +397,12 @@ export function exportDataForm( zipOutput ) {
 
         d3.select( `#${exportFgdbId}_container` )
             .classed( 'hidden', !showFgdbTemplate );
+
+        const showThematic = d3.select( `#${exportFormatId}` ).property( 'value' ).indexOf('OpenStreetMap') === -1
+                        && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('OSM') === -1;
+
+        d3.select( `#${exportThematic}_container` )
+            .classed( 'hidden', !showThematic );
 
         const showHootTags = d3.select( `#${exportFormatId}` ).property( 'value' ).indexOf('OpenStreetMap') === 0
                         && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('OSM') === 0;
@@ -430,6 +437,13 @@ export function exportDataForm( zipOutput ) {
             id: exportFgdbId,
             inputType: 'checkbox',
             checked: false,
+            hidden: true
+        },
+        {
+            label: 'Export data in thematic groups?',
+            id: exportThematic,
+            inputType: 'checkbox',
+            checked: true,
             hidden: true
         },
         {
