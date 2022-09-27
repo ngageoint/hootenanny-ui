@@ -120,6 +120,7 @@ export default class TaskingManagerPanel extends Tab {
 
         if ( this.projectList.status === 400 ) {
             Hoot.message.alert( this.projectList );
+            this.loadingState( this.projectsTable, false );
         } else if ( this.projectList ) {
             // this seems to happen if there are no visible conflation projects
             if ( !this.projectList.features ) {
