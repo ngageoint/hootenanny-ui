@@ -41,6 +41,7 @@ export default class ExportData {
         this.translationSchemaCombo = this.container.select( '#exportTranslationCombo' );
         this.exportFormatCombo = this.container.select( '#exportFormatCombo' );
         this.appendToFgdbCheckbox = this.container.select( '#exportAppendFgdb' );
+        this.exportThematicGroups = this.container.select( '#exportThematic' );
         this.includeHootTagsCheckbox = this.container.select( '#exportHootTags' );
         this.dataExportNameTextInput = this.container.select( '#dataExportNameTextInput' );
         this.submitButton = this.container.select( '#exportDatasetBtn' );
@@ -219,6 +220,7 @@ export default class ExportData {
                 input: self.id,
                 inputtype: self.getInputType(),
                 append: self.appendToFgdbCheckbox.property( 'checked' ),
+                thematic: self.exportThematicGroups.property( 'checked' ),
                 includehoottags: self.includeHootTagsCheckbox.property( 'checked' ),
                 outputname: self.getOutputName(),
                 outputtype: self.getOutputType(),
@@ -240,8 +242,6 @@ export default class ExportData {
             .then( async resp => {
                 if (resp.data && resp.data.status !== 'cancelled') {
                     await Hoot.api.saveDataset( this.jobId, data.outputname + '.' + data.outputtype + '.zip' );
-                    // or open in josm remote control
-                    //Hoot.api.openDatasetInJosm( this.jobId, data.outputname + '.' + data.outputtype );
                 }
                 return resp;
             } )

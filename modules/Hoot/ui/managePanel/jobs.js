@@ -986,7 +986,7 @@ export default class Jobs extends Tab {
                         title: 'open in josm',
                         icon: 'map',
                         action: async () => {
-                            Hoot.api.openDatasetInJosm( d.jobId, d.tags.outputname + '.' + d.tags.outputtype )
+                            Hoot.api.openDatasetInJosm( d.jobId, d.tags.outputname, d.tags.outputtype )
                                 .catch( err => {
                                     console.error(err);
                                     Hoot.message.alert( err );

@@ -11,8 +11,7 @@
 function relativePath() {
     let path = window.location.pathname;
     let pathWithoutFile = path.substr(0, path.lastIndexOf('/'));
-    let pathRelative = ( (pathWithoutFile === '') ? '' : '..' ) + '/hoot-services';
-
+    let pathRelative = ( (pathWithoutFile === '') ? '' : '../' ) + 'hoot-services';
     return pathRelative;
 }
 
@@ -20,8 +19,11 @@ export const apiConfig = {
     host: window.location.protocol + '//' + window.location.host, // just host name without port
     port: window.location.port,
     path: relativePath(),
-    translationServerPort: '8094',
-    mergeServerPort: '8096',
+    /* eslint-disable no-undef */
+    tm4ApiUrl: tm4ApiUrl || '/tm4api',
+    translationServerPort: translationServerPort || '8094',
+    mergeServerPort: mergeServerPort || '8096',
+    /* eslint-enable no-undef */
     queryInterval: 2000,
     runTasksInterval: 90000,
     rateLimit: 20 //supports 20 concurrent file uploads or deletes

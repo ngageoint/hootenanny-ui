@@ -29,6 +29,7 @@ module.exports = function (config) {
         'node_modules/sinon-chai/lib/sinon-chai.js',
         'node_modules/happen/happen.js',
         // 'node_modules/fetch-mock/es5/client-bundle.js',
+        'dist/globals.js',
         { pattern: 'dist/iD.min.js', included: true },
         { pattern: 'dist/iD.css', included: true },
         { pattern: 'dist/**/*', included: false },

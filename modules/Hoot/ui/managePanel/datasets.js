@@ -2,6 +2,9 @@
  * File: navbar.js
  * Project: hootenanny-ui
  * @author Matt Putipong on 2/27/18
+ * @apiNote Changelog: <br>
+ *      Milla Zagorski 8-10-2022: Added code to allow for opening layer(s) in JOSM. <br>
+ *
  *******************************************************************************************************/
 
 import _map from 'lodash-es/map';
@@ -14,10 +17,10 @@ import ImportMultiDataset from '../modals/ImportMultiDatasets';
 import AddFolder          from '../modals/addFolder';
 import ModifyDataset      from '../modals/modifyDataset';
 import ModifyFolder       from '../modals/modifyFolder';
-import ExportData from '../modals/exportData';
-import ExportAlphaShape from '../modals/exportAlphaShape';
-import ExportTaskGrid from '../modals/exportTaskGrid';
-import { rateLimit } from '../../config/apiConfig';
+import ExportData         from '../modals/exportData';
+import ExportAlphaShape   from '../modals/exportAlphaShape';
+import ExportTaskGrid     from '../modals/exportTaskGrid';
+import { rateLimit }      from '../../config/apiConfig';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -250,6 +253,7 @@ export default class Datasets extends Tab {
     }
 
     async handleContextMenuClick( [ tree, d, item ] ) {
+
         switch ( item.click ) {
             case 'delete': {
                 let warningMsg = d.data.type === 'folder' ? 'folder and all data?' : 'datasets?',
@@ -305,6 +309,17 @@ export default class Datasets extends Tab {
                 let datasets = this.folderTree.selectedNodes;
                 this.exportDatasetModal = new ExportData ( translations, datasets, 'Datasets' ).render();
                 Hoot.events.once( 'modal-closed', () => delete this.exportDatasetModal);
+                break;
+            }
+            case 'openInJosm': {
+                let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
+                Hoot.api.openDataInJosm(translations, d, 'Dataset');
+                break;
+            }
+            case 'openMultiInJosm': {
+                let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
+                let datasets = this.folderTree.selectedNodes;
+                Hoot.api.openDataInJosm(translations, datasets, 'Datasets');
                 break;
             }
             case 'exportFolder': {

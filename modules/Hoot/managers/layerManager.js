@@ -2,6 +2,9 @@
  * File: layerManager.js
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 3/22/18
+ * @apiNote Changelog: <br>
+ *      Milla Zagorski 8-10-2022: Added code to allow for opening the initial review layer in JOSM. <br>
+ *
  *******************************************************************************************************/
 
 import _intersection   from 'lodash-es/intersection';
@@ -355,7 +358,10 @@ export default class Layers {
         let message, confirm;
         if (mergedLayer.hasReviews) {
             message = 'The layer contains unreviewed items. Do you want to go into review mode?';
-            confirm = await Hoot.message.confirm( message );
+            confirm = await Hoot.message.confirmEditor( message, mergedLayer );
+
+            if (confirm === 'josm') return mergedLayer;
+
         } else {
             message = 'The layer has been conflated. Do you want to view it as a merged layer?';
             confirm = await Hoot.message.confirm( message );
