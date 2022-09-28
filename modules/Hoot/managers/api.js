@@ -1685,7 +1685,7 @@ export default class API {
             } )
             .catch( err => {
                 return {
-                    message : err.data || `${ paramData.deriveType } changeset failed`,
+                    message : err.data.message || `${ paramData.deriveType } changeset failed`,
                     status  : err.status,
                     type    : err.type
                 };
