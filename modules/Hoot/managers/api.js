@@ -988,6 +988,7 @@ export default class API {
             method: 'GET'
         };
 
+        //Open in JOSM needs url to end in .zip
         let absUrl = this.detect.absolute(this.detect.host, `${this.baseUrl}/job/export/${id}?outputname=${name}.${ext}.zip`);
         return this.request( params )
             .then( resp => {
@@ -1001,9 +1002,9 @@ export default class API {
         });
      }
 
-    saveChangeset( id, name ) {
+    saveChangeset( id, name, ext ) {
         const params = {
-            path: `/job/export/${id}?outputname=${name || 'diff'}&ext=osc`,
+            path: `/job/export/${id}?outputname=${name || 'diff'}&ext=${ext || 'osc'}`,
             responseType: 'arraybuffer',
             method: 'GET'
         };
