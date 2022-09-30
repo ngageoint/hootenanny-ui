@@ -953,7 +953,7 @@ export default class Jobs extends Tab {
                             });
                         }
 
-                        //download osc
+                        //download changeset
                         actions.push({
                             title: 'download changeset',
                             icon: 'archive',
@@ -969,19 +969,21 @@ export default class Jobs extends Tab {
                         });
 
                         //open in josm
-                        actions.push({
-                            title: 'open in josm',
-                            icon: 'map',
-                            action: async () => {
-                                Hoot.api.openDatasetInJosm( d.jobId, 'diff',
-                                    (d.tags.deriveType === this.josmOsm) ? 'osm' : 'osc')
-                                    .catch( err => {
-                                        console.error(err);
-                                        Hoot.message.alert( err );
-                                        return false;
-                                    } );
-                            }
-                        });
+                        if (d.tags.deriveType === this.josmOsm) {
+                            actions.push({
+                                title: 'open in josm',
+                                icon: 'map',
+                                action: async () => {
+                                    Hoot.api.openDatasetInJosm( d.jobId, 'diff',
+                                        (d.tags.deriveType === this.josmOsm) ? 'osm' : 'osc')
+                                        .catch( err => {
+                                            console.error(err);
+                                            Hoot.message.alert( err );
+                                            return false;
+                                        } );
+                                }
+                            });
+                        }
                     }
 
                 }
