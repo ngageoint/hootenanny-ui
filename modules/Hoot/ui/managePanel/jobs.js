@@ -808,7 +808,7 @@ export default class Jobs extends Tab {
 
                         // Add action for upload of changeset
                         if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET'
-                            && d.tags.deriveType != this.josmOsm) {//can't upload JOSM osm xml
+                            && d.tags.deriveType !== this.josmOsm) {//can't upload JOSM osm xml
                             actions.push({
                                 title: 'upload changeset',
                                 icon: 'cloud_upload',

@@ -1121,9 +1121,9 @@ export default class API {
                             outputtype: 'osm'
                         };
 
-                        return this.exportDataset(data)
+                        return this.exportDataset(data);
                     }
-                }
+                };
 
                 getJosmJob()
                     .then(resp => {
