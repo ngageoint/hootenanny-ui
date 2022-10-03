@@ -844,6 +844,7 @@ export default class Jobs extends Tab {
                                         data.input1 = parseInt(tagsInfo.input1, 10);
                                         data.input2 = d.mapId;
                                         data.parentId = d.jobId;
+                                        data.output = tagsInfo.params.OUTPUT_NAME;
 
                                         if (currentLayer.bounds) { data.bounds = currentLayer.bounds; }
                                         if ( d.tags && d.tags.taskInfo ) { data.taskInfo = d.tags.taskInfo; }
@@ -974,7 +975,8 @@ export default class Jobs extends Tab {
                                 title: 'open in josm',
                                 icon: 'map',
                                 action: async () => {
-                                    Hoot.api.openDatasetInJosm( d.jobId, 'diff',
+                                    Hoot.api.openExportInJosm( d.jobId,
+                                        (d.tags.deriveType === this.josmOsm) ? d.tags.output : 'diff',
                                         (d.tags.deriveType === this.josmOsm) ? 'osm' : 'osc')
                                         .catch( err => {
                                             console.error(err);
@@ -1007,7 +1009,7 @@ export default class Jobs extends Tab {
                         title: 'open in josm',
                         icon: 'map',
                         action: async () => {
-                            Hoot.api.openDatasetInJosm( d.jobId, d.tags.outputname, d.tags.outputtype )
+                            Hoot.api.openExportInJosm( d.jobId, d.tags.outputname, d.tags.outputtype )
                                 .catch( err => {
                                     console.error(err);
                                     Hoot.message.alert( err );
