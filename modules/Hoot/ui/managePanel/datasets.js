@@ -316,12 +316,6 @@ export default class Datasets extends Tab {
                 Hoot.api.openDataInJosm(translations, d, 'Dataset');
                 break;
             }
-            case 'openMultiInJosm': {
-                let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
-                let datasets = this.folderTree.selectedNodes;
-                Hoot.api.openDataInJosm(translations, datasets, 'Datasets');
-                break;
-            }
             case 'exportFolder': {
                 //probably don't need to get translations but once on init
                 let translations = (await Hoot.api.getTranslations()).filter( t => t.canExport);
