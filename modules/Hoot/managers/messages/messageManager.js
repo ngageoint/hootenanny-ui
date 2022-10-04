@@ -169,7 +169,12 @@ export default class MessageManager {
                     overlay.remove();
                     res('josm');
 
-                    Hoot.api.openDataInJosm(mergedLayer);
+                    Hoot.api.openDataInJosm({
+                        id: mergedLayer.id,
+                        name: mergedLayer.name,
+                        grailMerged: mergedLayer.tags.grailMerged,
+                        bounds: mergedLayer.tags.bounds,
+                    });
                 });
         });
     }
