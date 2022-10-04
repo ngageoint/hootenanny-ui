@@ -1088,7 +1088,7 @@ export default class API {
             });
     }
 
-    openDataInJosm(translations, d, type) {
+    openDataInJosm(d) {
         // Check that JOSM is available for loading the data
         let checkJosmUrl = new URL('http://127.0.0.1:8111/version?jsonp=test');
         this.callJosmRemoteControl(checkJosmUrl).then(value => {

@@ -169,8 +169,7 @@ export default class MessageManager {
                     overlay.remove();
                     res('josm');
 
-                    let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
-                    Hoot.api.openDataInJosm(translations, { data: mergedLayer }, 'Dataset');
+                    Hoot.api.openDataInJosm(mergedLayer);
                 });
         });
     }

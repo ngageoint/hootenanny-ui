@@ -312,8 +312,7 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'openInJosm': {
-                let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
-                Hoot.api.openDataInJosm(translations, d, 'Dataset');
+                Hoot.api.openDataInJosm(d);
                 break;
             }
             case 'exportFolder': {
