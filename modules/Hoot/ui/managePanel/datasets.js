@@ -312,14 +312,7 @@ export default class Datasets extends Tab {
                 break;
             }
             case 'openInJosm': {
-                let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
-                Hoot.api.openDataInJosm(translations, d, 'Dataset');
-                break;
-            }
-            case 'openMultiInJosm': {
-                let translations = (await Hoot.api.getTranslations()).filter(t => t.canExport);
-                let datasets = this.folderTree.selectedNodes;
-                Hoot.api.openDataInJosm(translations, datasets, 'Datasets');
+                Hoot.api.openDataInJosm(d);
                 break;
             }
             case 'exportFolder': {

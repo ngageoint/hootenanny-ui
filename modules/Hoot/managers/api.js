@@ -982,12 +982,13 @@ export default class API {
             });
     }
 
-    openDatasetInJosm( id, name, ext ) {
+    openExportInJosm( id, name, ext ) {
         const params = {
             path: '/osm/api/0.6/user/session',
             method: 'GET'
         };
 
+        //Open in JOSM needs url to end in .zip
         let absUrl = this.detect.absolute(this.detect.host, `${this.baseUrl}/job/export/${id}?outputname=${name}.${ext}.zip`);
         return this.request( params )
             .then( resp => {
@@ -1001,9 +1002,9 @@ export default class API {
         });
      }
 
-    saveChangeset( id, name ) {
+    saveChangeset( id, name, ext ) {
         const params = {
-            path: `/job/export/${id}?outputname=${name || 'diff'}&ext=osc`,
+            path: `/job/export/${id}?outputname=${name || 'diff'}&ext=${ext || 'osc'}`,
             responseType: 'arraybuffer',
             method: 'GET'
         };
@@ -1048,10 +1049,8 @@ export default class API {
     /**
      * Call JOSM remote control.
      * @param uri {String} The URI used to ping JOSM via remote control.
-     * @param goodMessage {String} Message for a successful connection.
-     * @param badMessage {String} Message for an unsuccessful connection.
      */
-    callJosmRemoteControl(uri, goodMessage, badMessage) {
+    callJosmRemoteControl(uri) {
         // Safari won't send AJAX commands to the default (insecure) JOSM port when
         // on a secure site, and the secure JOSM port uses a self-signed certificate
         // that requires the user to jump through a bunch of hoops to trust before
@@ -1089,76 +1088,50 @@ export default class API {
             });
     }
 
-    openDataInJosm(translations, d, type) {
-
-        function getOutputName(type, input) {
-            let output;
-            switch (type) {
-                case 'Datasets': {
-                    output = 'hoot_export_datasets';
-                    break;
-                }
-                default: {
-                    output = input;
-                    break;
-                }
-            }
-            return output;
-        }
-
-        function getInputType(type) {
-            switch (type) {
-                case 'Dataset': {
-                    type = 'db';
-                    break;
-                }
-                case 'Datasets': {
-                    type = 'dbs';
-                    break;
-                }
-                default: break;
-            }
-            return type;
-        }
-
-        function getTranslationPath(translations) {
-            let selectedTranslation = 'OSM';
-            const translation = translations.find(t => t.name === selectedTranslation);
-            return !translation.hasOwnProperty('path') ? translation.exportPath : translation.path;
-        }
-
+    openDataInJosm(d) {
         // Check that JOSM is available for loading the data
         let checkJosmUrl = new URL('http://127.0.0.1:8111/version?jsonp=test');
         this.callJosmRemoteControl(checkJosmUrl).then(value => {
-
             // Proceed if JOSM is already open
             if (value) {
+                let getJosmJob = async () => {
+                    //if it's a merged grail dataset, do derive changeset to JOSM .osm
+                    if (d.grailMerged) {
+                        const tagsInfo = await this.getMapTags(d.id);
+                        const data  = {
+                            input1: parseInt(tagsInfo.input1, 10),
+                            input2: d.id,
+                            output: d.name
+                        };
+                        if (d.bounds) { data.bounds = d.bounds; }
 
-                const isDatasets = type === 'Datasets';
-                let id = isDatasets ? d.map(n => n.id).join(',') : d.data.id,
-                    input = isDatasets ? d.map(n => n.name).join(',') : d.data.name,
-                    initialName = getOutputName(type, input),
-                    finalName = initialName.replace(/\s/g, '');
+                        const params = {
+                            deriveType : 'JOSM .osm'
+                        };
 
-                let data = {
-                    input: id,
-                    inputtype: getInputType(type),
-                    includehoottags: true,
-                    outputname: finalName,
-                    outputtype: 'osm',
-                    translation: getTranslationPath(translations)
+                        return this.createChangeset( data, params );
+
+                    } else { //else do an export before opening in JOSM
+
+                        const data = {
+                            input: d.id,
+                            inputtype: 'db',
+                            includehoottags: true,
+                            outputname: d.name,
+                            outputtype: 'osm'
+                        };
+
+                        return this.exportDataset(data);
+                    }
                 };
 
-                this.exportDataset(data)
+                getJosmJob()
                     .then(resp => {
-                        this.jobId = resp.data.jobid;
-
-                        return this.statusInterval(this.jobId);
+                        return this.statusInterval(resp.data.jobid);
                     })
                     .then(async resp => {
-
                         if (resp.data && !this.isCancelled) {
-                            await this.openDatasetInJosm(this.jobId, data.outputname, data.outputtype);
+                            await this.openExportInJosm(resp.data.jobId, d.name, 'osm');
                         }
                         return resp;
                     })
@@ -1178,6 +1151,7 @@ export default class API {
                         return resp;
                     })
                     .catch((err) => {
+                        console.error(err);
                         let message = 'Error opening data in JOSM.',
                             type = err.type,
                             keepOpen = true;
@@ -1655,7 +1629,7 @@ export default class API {
             } );
     }
 
-    deriveChangeset( data, paramData ) {
+    createChangeset( data, paramData ) {
         const params = {
             path: '/grail/createchangeset',
             method: 'POST',
@@ -1663,7 +1637,11 @@ export default class API {
             data
         };
 
-        return this.request( params )
+        return this.request( params );
+    }
+
+    deriveChangeset( data, paramData ) {
+        return this.createChangeset(data, paramData)
             .then( resp => this.statusInterval( resp.data.jobid ) )
             .then( resp => {
                 const responseData = resp.data;
@@ -1685,7 +1663,7 @@ export default class API {
             } )
             .catch( err => {
                 return {
-                    message : err.data || `${ paramData.deriveType } changeset failed`,
+                    message : err.data.message || `${ paramData.deriveType } changeset failed`,
                     status  : err.status,
                     type    : err.type
                 };

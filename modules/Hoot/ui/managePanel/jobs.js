@@ -25,6 +25,8 @@ export default class Jobs extends Tab {
         this.name = 'Jobs';
         this.id   = 'util-jobs';
 
+        this.josmOsm = 'JOSM .osm';
+
         this.privileges = Hoot.user().privileges;
 
         this.params = {
@@ -805,8 +807,8 @@ export default class Jobs extends Tab {
                     if (d.statusDetail.toUpperCase() !== 'STALE') {
 
                         // Add action for upload of changeset
-                        if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET') {
-                            //Get info for the derive
+                        if (d.jobType.toUpperCase() === 'DERIVE_CHANGESET'
+                            && d.tags.deriveType !== this.josmOsm) {//can't upload JOSM osm xml
                             actions.push({
                                 title: 'upload changeset',
                                 icon: 'cloud_upload',
@@ -831,7 +833,31 @@ export default class Jobs extends Tab {
                             let currentLayer = Hoot.layers.findBy( 'id', d.mapId );
 
                             if (currentLayer && currentLayer.grailMerged) {
-                                //Get info for the derive
+                                //Derive a changeset as JOSM osm xml with action attibutes
+                                actions.push({
+                                    title: `derive ${this.josmOsm.toLowerCase()}`,
+                                    icon: 'edit_location_alt',
+                                    action: async () => {
+                                        const tagsInfo = await Hoot.api.getMapTags(currentLayer.id);
+
+                                        const data  = {};
+                                        data.input1 = parseInt(tagsInfo.input1, 10);
+                                        data.input2 = d.mapId;
+                                        data.parentId = d.jobId;
+                                        data.output = tagsInfo.params.OUTPUT_NAME;
+
+                                        if (currentLayer.bounds) { data.bounds = currentLayer.bounds; }
+                                        if ( d.tags && d.tags.taskInfo ) { data.taskInfo = d.tags.taskInfo; }
+
+                                        const params = {
+                                            deriveType : this.josmOsm
+                                        };
+
+                                        Hoot.api.deriveChangeset( data, params )
+                                            .then( resp => Hoot.message.alert( resp ) );
+                                    }
+                                });
+                                //Derive a changeset as osmChange .osc
                                 actions.push({
                                     title: 'derive changeset',
                                     icon: 'change_history',
@@ -928,11 +954,13 @@ export default class Jobs extends Tab {
                             });
                         }
 
+                        //download changeset
                         actions.push({
                             title: 'download changeset',
                             icon: 'archive',
                             action: async () => {
-                                Hoot.api.saveChangeset( d.jobId )
+                                Hoot.api.saveChangeset( d.jobId, null/*name*/,
+                                    (d.tags.deriveType === this.josmOsm) ? 'osm' : 'osc')
                                     .catch( err => {
                                         console.error(err);
                                         Hoot.message.alert( err );
@@ -940,6 +968,24 @@ export default class Jobs extends Tab {
                                     } );
                             }
                         });
+
+                        //open in josm
+                        if (d.tags.deriveType === this.josmOsm) {
+                            actions.push({
+                                title: 'open in josm',
+                                icon: 'map',
+                                action: async () => {
+                                    Hoot.api.openExportInJosm( d.jobId,
+                                        (d.tags.deriveType === this.josmOsm) ? d.tags.output : 'diff',
+                                        (d.tags.deriveType === this.josmOsm) ? 'osm' : 'osc')
+                                        .catch( err => {
+                                            console.error(err);
+                                            Hoot.message.alert( err );
+                                            return false;
+                                        } );
+                                }
+                            });
+                        }
                     }
 
                 }
@@ -963,7 +1009,7 @@ export default class Jobs extends Tab {
                         title: 'open in josm',
                         icon: 'map',
                         action: async () => {
-                            Hoot.api.openDatasetInJosm( d.jobId, d.tags.outputname, d.tags.outputtype )
+                            Hoot.api.openExportInJosm( d.jobId, d.tags.outputname, d.tags.outputtype )
                                 .catch( err => {
                                     console.error(err);
                                     Hoot.message.alert( err );
