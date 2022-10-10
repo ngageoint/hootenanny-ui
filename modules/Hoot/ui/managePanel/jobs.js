@@ -959,7 +959,8 @@ export default class Jobs extends Tab {
                             title: 'download changeset',
                             icon: 'archive',
                             action: async () => {
-                                Hoot.api.saveChangeset( d.jobId, null/*name*/,
+                                Hoot.api.saveChangeset( d.jobId,
+                                    (d.tags.deriveType === this.josmOsm) ? d.tags.output : 'diff',
                                     (d.tags.deriveType === this.josmOsm) ? 'osm' : 'osc')
                                     .catch( err => {
                                         console.error(err);
