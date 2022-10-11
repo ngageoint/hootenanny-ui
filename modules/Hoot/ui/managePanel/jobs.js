@@ -1000,7 +1000,10 @@ export default class Jobs extends Tab {
                         action: async () => {
                             Hoot.api.saveDataset( d.jobId, d.tags.outputname + '.' + d.tags.outputtype )
                                 .catch( err => {
-                                    console.error(err);
+                                    // console.error(err);
+                                    if (!err.message) {
+                                        err.message = 'Export file not found.';
+                                    }
                                     Hoot.message.alert( err );
                                     return false;
                                 } );
