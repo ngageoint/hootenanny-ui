@@ -978,7 +978,7 @@ export default class API {
         return this.request( params )
             .then( resp => {
                 let fileBlob = new Blob( [ resp.data ], { type: 'application/zip' } );
-                saveAs( fileBlob, name );
+                saveAs( fileBlob, name + '.zip' );
             });
     }
 
