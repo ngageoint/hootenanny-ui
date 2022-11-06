@@ -241,7 +241,7 @@ export default class ExportData {
             } )
             .then( async resp => {
                 if (resp.data && resp.data.status !== 'cancelled') {
-                    await Hoot.api.saveDataset( this.jobId, data.outputname + '.' + data.outputtype + '.zip' );
+                    await Hoot.api.saveDataset( this.jobId, data.outputname + '.' + data.outputtype );
                 }
                 return resp;
             } )
