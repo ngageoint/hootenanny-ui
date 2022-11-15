@@ -26,10 +26,12 @@ export const apiConfig = {
     /* eslint-enable no-undef */
     queryInterval: 2000,
     runTasksInterval: 90000,
-    rateLimit: 20 //supports 20 concurrent file uploads or deletes
+    rateLimit: 20, //supports 20 concurrent file uploads or deletes
+    maxNodeCount: globalMaxNodeCount || 20000
 };
 
 export default apiConfig;
 
 export let baseUrl = `${apiConfig.path}`;
 export let rateLimit = apiConfig.rateLimit;
+export let maxNodeCount = apiConfig.maxNodeCount;
