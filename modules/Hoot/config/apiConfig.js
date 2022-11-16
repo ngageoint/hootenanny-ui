@@ -23,11 +23,11 @@ export const apiConfig = {
     tm4ApiUrl: tm4ApiUrl || '/tm4api',
     translationServerPort: translationServerPort || '8094',
     mergeServerPort: mergeServerPort || '8096',
+    maxNodeCount: globalMaxNodeCount || 20000,
     /* eslint-enable no-undef */
     queryInterval: 2000,
     runTasksInterval: 90000,
-    rateLimit: 20, //supports 20 concurrent file uploads or deletes
-    maxNodeCount: globalMaxNodeCount || 20000
+    rateLimit: 20 //supports 20 concurrent file uploads or deletes
 };
 
 export default apiConfig;
