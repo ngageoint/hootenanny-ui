@@ -38,7 +38,8 @@ export function uiNotice(context) {
             var tooManyNodes = context.map().tooManyNodes();
             var canEdit = !tooHigh && !tooManyNodes && !noLayers;
             div.style('display', canEdit ? 'none' : 'block');
-            button.text(noLayers ? t('add_dataset_edit') : t('zoom_in_edit'))
+            button.select('span')
+                .text(noLayers ? t('add_dataset_edit') : t('zoom_in_edit'));
         }
 
         context.map()
