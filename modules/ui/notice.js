@@ -1,6 +1,7 @@
 import _debounce from 'lodash-es/debounce';
 
 import { event as d3_event } from 'd3-selection';
+import _isEmpty from 'lodash-es/isEmpty';
 
 import { t } from '../util/locale';
 import { svgIcon } from '../svg/index';
@@ -32,9 +33,12 @@ export function uiNotice(context) {
 
 
         function disableTooHigh() {
-            var canEdit = context.map().zoom() >= context.minEditableZoom()
-                && !context.map().tooManyNodes();
+            var noLayers = _isEmpty(Hoot.layers.loadedLayers);
+            var tooHigh = context.map().zoom() < context.minEditableZoom();
+            var tooManyNodes = context.map().tooManyNodes();
+            var canEdit = !tooHigh && !tooManyNodes && !noLayers;
             div.style('display', canEdit ? 'none' : 'block');
+            button.text(noLayers ? t('add_dataset_edit') : t('zoom_in_edit'))
         }
 
         context.map()
