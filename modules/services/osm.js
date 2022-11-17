@@ -38,7 +38,7 @@ import {
     utilQsString
 } from '../util';
 
-import { baseUrl as hootBaseUrl } from '../Hoot/config/apiConfig';
+import { baseUrl as hootBaseUrl, maxNodeCount } from '../Hoot/config/apiConfig';
 
 var tiler = utilTiler();
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded', 'loadedNotes');
@@ -77,7 +77,7 @@ var _rateLimitError;
 var _userChangesets;
 var _userDetails;
 var _off;
-var _maxNodeCount = 10000;
+var _maxNodeCount = maxNodeCount;
 
 
 function authLoading() {
@@ -1007,14 +1007,14 @@ export default {
         //console.debug(tiles.length + " vs " + tilesToBeLoaded.length);
 
         if ( tilesToBeLoaded.length > 0 ) {
-            // abort inflight nodecount requests that are no longer needed
-            if (_nodeCountCache.inflight) {
-                console.debug(_nodeCountCache.inflight);
-                console.debug('cancel from getNodesCount');
-                _nodeCountCache.inflight.cancel();
-                delete _nodeCountCache.inflight;
-                // dispatch.call('loaded');    // stop the spinner
-            }
+        // abort inflight nodecount requests that are no longer needed
+        if (_nodeCountCache.inflight) {
+            console.debug(_nodeCountCache.inflight);
+            console.debug('cancel from getNodesCount');
+            _nodeCountCache.inflight.cancel();
+            delete _nodeCountCache.inflight;
+            // dispatch.call('loaded');    // stop the spinner
+        }
 
             tilesToBeLoaded.forEach((tile) => {
                 _nodeCountCache.loading[tile.id] = true;
@@ -1033,6 +1033,7 @@ export default {
             });
         }
 
+        //add up all tile counts
         const count = tiles.reduce((total, tile) => {
             if (!isNaN(_nodeCountCache.loaded[tile.id])) {
                 return total += _nodeCountCache.loaded[tile.id];
@@ -1040,16 +1041,7 @@ export default {
                 return total;
             }
         }, 0);
-
         console.debug('total view tile nodes = ' + count);
-
-        //sometimes tiles are empty when app first opens and we don't want to treat as a zero node count
-        //but as over the max count
-         if (count === 0 && tiles.length === 0) {
-            console.debug('zero tiles');
-            return _maxNodeCount + 1;
-        }
-
         return count;
     },
 
@@ -1128,7 +1120,8 @@ export default {
             console.debug('getNodesCount canceled');
         }
         // console.debug('nodesCount ->' + tileZ + ': ' + count);
-        if (isNaN(count) || count > _maxNodeCount) {
+        if (isNaN(count) || count > _maxNodeCount || count === 0) {
+            //Hoot.context.flush();
             callback('Too many features to load->' + count);//call editOff
             dispatch.call('loaded');     // stop the spinner
             var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
