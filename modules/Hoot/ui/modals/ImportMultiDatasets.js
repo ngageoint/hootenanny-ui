@@ -262,15 +262,16 @@ export default class ImportMultiDatasets {
             }
         }
 
-        if ( totalFileSize > ingestThreshold ) {
-            let thresholdInMb = Math.floor( ingestThreshold / 1000000 );
+        // Disable warning about import file size
+        // if ( totalFileSize > ingestThreshold ) {
+        //     let thresholdInMb = Math.floor( ingestThreshold / 1000000 );
 
-            let message = `The total size of ingested files are greater than ingest threshold size of ${ thresholdInMb } MB and it may have problem. Do you wish to continue?`;
+        //     let message = `The total size of ingested files are greater than ingest threshold size of ${ thresholdInMb } MB and it may have problem. Do you wish to continue?`;
 
-            return Hoot.message.confirm( message );
-        } else {
-            return true;
-        }
+        //     return Hoot.message.confirm( message );
+        // } else {
+        //     return true;
+        // }
     }
 
     /**

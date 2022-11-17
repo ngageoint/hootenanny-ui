@@ -38,7 +38,7 @@ import {
     utilQsString
 } from '../util';
 
-import { baseUrl as hootBaseUrl } from '../Hoot/config/apiConfig';
+import { baseUrl as hootBaseUrl, maxNodeCount } from '../Hoot/config/apiConfig';
 
 var tiler = utilTiler();
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded', 'loadedNotes');
@@ -77,7 +77,7 @@ var _rateLimitError;
 var _userChangesets;
 var _userDetails;
 var _off;
-var _maxNodeCount = 50000;
+var _maxNodeCount = maxNodeCount;
 
 
 function authLoading() {
