@@ -642,6 +642,12 @@ export function rendererMap(context) {
         return map;
     }
 
+    map.addDataset = function() {
+        d3_select('form#reference')
+            .select('a.toggle-button')
+            .node().click();
+    }
+
     map.tooManyNodes = function() {
         return _tooManyNodes;
     };

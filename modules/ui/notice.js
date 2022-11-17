@@ -17,9 +17,6 @@ export function uiNotice(context) {
         var button = div
             .append('button')
             .attr('class', 'zoom-to notice fillD')
-            .on('click', function() {
-                context.map().zoomEase(context.minEditableZoom());
-            })
             .on('wheel', function() {   // let wheel events pass through #4482
                 var e2 = new WheelEvent(d3_event.type, d3_event);
                 context.surface().node().dispatchEvent(e2);
@@ -38,6 +35,10 @@ export function uiNotice(context) {
             var tooManyNodes = context.map().tooManyNodes();
             var canEdit = !tooHigh && !tooManyNodes && !noLayers;
             div.style('display', canEdit ? 'none' : 'block');
+            button.on('click', function() {
+                noLayers ? context.map().addDataset()
+                    : context.map().zoomEase(16) //upstream min editable zoom;
+            })
             button.select('span')
                 .text(noLayers ? t('add_dataset_edit') : t('zoom_in_edit'));
         }
@@ -47,6 +48,9 @@ export function uiNotice(context) {
 
         context.map()
             .on('toomanynodes', _debounce(disableTooHigh, 500));
+
+        Hoot.events.listen( 'notice', 'loaded-layer-removed', disableTooHigh );
+
 
         disableTooHigh();
     };
