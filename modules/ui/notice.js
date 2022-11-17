@@ -36,9 +36,12 @@ export function uiNotice(context) {
             var canEdit = !tooHigh && !tooManyNodes && !noLayers;
             div.style('display', canEdit ? 'none' : 'block');
             button.on('click', function() {
-                noLayers ? context.map().addDataset()
-                    : context.map().zoomEase(16) //upstream min editable zoom;
-            })
+                if (noLayers) {
+                    context.map().addDataset();
+                } else {
+                    context.map().zoomEase(16); //upstream min editable zoom
+                }
+            });
             button.select('span')
                 .text(noLayers ? t('add_dataset_edit') : t('zoom_in_edit'));
         }

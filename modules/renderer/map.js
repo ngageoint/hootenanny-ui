@@ -646,7 +646,7 @@ export function rendererMap(context) {
         d3_select('form#reference')
             .select('a.toggle-button')
             .node().click();
-    }
+    };
 
     map.tooManyNodes = function() {
         return _tooManyNodes;
