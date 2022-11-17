@@ -1034,6 +1034,10 @@ export default {
         }
 
         //add up all tile counts
+        if (tiles.length === 0) {
+            console.debug("zero tiles");
+            return -999;
+        }
         const count = tiles.reduce((total, tile) => {
             if (!isNaN(_nodeCountCache.loaded[tile.id])) {
                 return total += _nodeCountCache.loaded[tile.id];
@@ -1120,8 +1124,7 @@ export default {
             console.debug('getNodesCount canceled');
         }
         // console.debug('nodesCount ->' + tileZ + ': ' + count);
-        if (isNaN(count) || count > _maxNodeCount || count === 0) {
-            //Hoot.context.flush();
+        if (isNaN(count) || count > _maxNodeCount) {
             callback('Too many features to load->' + count);//call editOff
             dispatch.call('loaded');     // stop the spinner
             var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
