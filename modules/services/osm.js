@@ -1035,7 +1035,7 @@ export default {
 
         //add up all tile counts
         if (tiles.length === 0) {
-            console.debug("zero tiles");
+            console.debug('zero tiles');
             return -999;
         }
         const count = tiles.reduce((total, tile) => {
