@@ -407,6 +407,7 @@
             "localized_translation_name": "Name"
         },
         "zoom_in_edit": "Zoom in to edit",
+        "add_dataset_edit": "Add dataset to edit",
         "login": "Log In",
         "logout": "Log Out",
         "loading_auth": "Connecting to OpenStreetMap...",
