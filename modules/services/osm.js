@@ -1128,6 +1128,7 @@ export default {
         // console.debug('nodesCount ->' + tileZ + ': ' + count);
         if (isNaN(count) || count > _maxNodeCount) {
             callback('Too many features to load->' + count);//call editOff
+            _forEach(_tileCache.inflight, abortRequest);
             dispatch.call('loaded');     // stop the spinner
             var visLayers = _filter( _values( Hoot.layers.loadedLayers ), layer => layer.visible );
             visLayers.forEach(layer => Hoot.events.emit( 'layer-loaded', layer.name ));
