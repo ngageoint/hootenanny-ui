@@ -334,7 +334,7 @@ export default class ImportDataset {
 
         //     return Hoot.message.confirm( message );
         // } else {
-        //     return true;
+            return true;
         // }
     }
 
