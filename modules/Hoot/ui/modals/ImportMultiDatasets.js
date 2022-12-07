@@ -270,7 +270,7 @@ export default class ImportMultiDatasets {
 
         //     return Hoot.message.confirm( message );
         // } else {
-        //     return true;
+            return true;
         // }
     }
 
