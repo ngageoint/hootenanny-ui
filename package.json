@@ -73,7 +73,7 @@
     "@fortawesome/free-regular-svg-icons": "~5.15.4",
     "@fortawesome/free-solid-svg-icons": "~5.15.4",
     "@mapbox/maki": "^6.2.0",
-    "babel-loader": "^8.2.3",
+    "babel-loader": "^8.3.0",
     "chai": "^4.3.4",
     "colors": "^1.4.0",
     "concat-files": "^0.1.1",
