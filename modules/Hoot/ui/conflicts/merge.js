@@ -336,13 +336,15 @@ export default class Merge {
             fromFeature = features[1] ? Hoot.context.hasEntity( features[1].id ) : null;
 
         if ( toFeature && fromFeature) {
-            this.isPoiPoly = (toFeature.type === 'node' && fromFeature.type === 'way')
-                || (toFeature.type === 'way' && fromFeature.type === 'node');
+            let isPoly = (f) => (f.type === 'way' && f.isClosed())
+                || (f.type === 'relation' && f.isMultipolygon());
+            this.isPoiPoly = (toFeature.type === 'node' && isPoly(fromFeature))
+                || (isPoly(toFeature) && fromFeature.type === 'node');
 
             let isPoiPoi = (toFeature.type === 'node' && fromFeature.type === 'node');
 
-            let isPolyPoly = (toFeature.type === 'way' && toFeature.isClosed()
-                && fromFeature.type === 'way' && fromFeature.isClosed());
+            let isPolyPoly = isPoly(toFeature)
+                && isPoly(fromFeature);
 
             let isRailWay = (toFeature.type === 'way' && !toFeature.isClosed() && toFeature.tags.railway
                 && fromFeature.type === 'way' && !fromFeature.isClosed() && fromFeature.tags.railway);
@@ -351,7 +353,7 @@ export default class Merge {
                 this.toggleMergeButton( false );
                 if (this.isPoiPoly) {
                     let poi = (toFeature.type === 'node') ? toFeature : fromFeature;
-                    let poly = (toFeature.type === 'way') ? toFeature : fromFeature;
+                    let poly = isPoly(toFeature) ? toFeature : fromFeature;
                     this.activateMergeArrow( poi, poly ); //always merge poi->poly
                 } else {
                     this.activateMergeArrow( fromFeature, toFeature );
