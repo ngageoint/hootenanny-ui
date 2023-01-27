@@ -44,6 +44,25 @@ export default class TranslationManager {
         }
     }
 
+    async getFieldMappings(schema) {
+        try {
+            let fieldMappings = await this.hoot.api.getFieldMappings( schema );
+            return fieldMappings
+        } catch ( e ) {
+            console.error( e )
+        }
+    }
+
+    async getColumns(tagKey, schema) {
+        try {
+            let columns = await this.hoot.api.getColumns( tagKey, schema );
+            return columns
+        } catch ( e ) {
+            console.error( e )
+        }
+
+    }
+
     async translateToOsm( entityTags, translatedEntity ) {
         //Turn translated tag xml into a osm tags
         let xml           = `<osm version="0.6" upload="true" generator="hootenanny">${JXON.stringify( translatedEntity.asJXON() )}</osm>`,
