@@ -37,6 +37,8 @@ export default class TagMapWidget {
             .on('input', () => this.change.call(this))
             .on('keyup', () => that.keyup())
             .on('keydown', () => that.keydown(this));
+
+
         this.resultsList = this.tagLookup
             .append( 'div' )
             .classed( 'results-list', true );
