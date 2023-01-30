@@ -182,7 +182,7 @@ export default class TagMapWidget {
         this.tagLookup.remove();
     }
 
-    selectTag(d) {
+    selectTag( d ) {
         let that = this;
         let tagKey = d;
         Hoot.translations.getColumns( tagKey.split('::')[0], this.schemaOption )
@@ -202,13 +202,13 @@ export default class TagMapWidget {
                     .on( 'click', function () {
                         let icon = d3.select( this );
 
-                        if (icon.classed( 'remove-map-tag' ) ) {
+                        if ( icon.classed( 'remove-map-tag' ) ) {
                             icon.classed( 'remove-map-tag', false );
                             icon.classed( 'link-tag', true );
 
                             that.tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
                             that.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
-                        } else if (icon.classed( 'link-tag' ) ) {
+                        } else if ( icon.classed( 'link-tag' ) ) {
                             icon.classed( 'link-tag', false );
                             icon.classed( 'map-tag', true );
 
@@ -221,7 +221,7 @@ export default class TagMapWidget {
                             that.tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
                             that.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
                         }
-                    });
+                    } );
 
                 this.tagLookup
                     .append( 'label' )
@@ -235,14 +235,14 @@ export default class TagMapWidget {
                     .append( 'input' )
                     .attr( 'id', () => 'preset-input-' + this.hashCode(tagKey ) )
                     .attr( 'type', 'text' )
-                    .select(function () {
+                    .select( function () {
                         let combobox = d3combobox()
                             .data( values.map( obj => {
                                 return { title: obj.replace( '_', ' ' ), value: obj };
                             } ) );
 
                         d3.select( this ).call( combobox );
-                    });
+                    } );
 
                 // list
                 let attrMapList = this.tagLookup
@@ -266,16 +266,16 @@ export default class TagMapWidget {
                 attrMapListRows
                     .append( 'div' )
                     .append( 'input' )
-                    .attr( 'id', d => 'preset-input-' + this.hashCode(tagKey + d) )
+                    .attr( 'id', d => 'preset-input-' + this.hashCode( tagKey + d ) )
                     .attr( 'type', 'text' )
-                    .select(function () {
+                    .select( function () {
                         let combobox = d3combobox()
                             .data( values.map( obj => {
-                                return { title: obj.replace('_', ' '), value: obj };
+                                return { title: obj.replace( '_', ' ' ), value: obj };
                             } ) );
 
                         d3.select( this ).call( combobox );
-                    });
+                    } );
 
                 let tagJson = this.instance.jsonMapping[ this.instance.layer ][ this.instance.currentAttribute.key ];
 
@@ -294,7 +294,7 @@ export default class TagMapWidget {
                                 .classed( 'remove-map-tag', false )
                                 .classed( 'link-tag', true );
 
-                            this.tagLookup.select( '#preset-input-' + this.hashCode(tagKey) ).property( 'value', entry.value );
+                            this.tagLookup.select( '#preset-input-' + this.hashCode( tagKey ) ).property( 'value', entry.value );
                         } else { //entry is map of attr:tag values
                             this.tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
 
@@ -302,12 +302,12 @@ export default class TagMapWidget {
                                 .classed( 'remove-map-tag', false )
                                 .classed( 'map-tag', true );
 
-                            d3.map( entry.value ).entries().forEach(e => {
+                            d3.map( entry.value ).entries().forEach( e => {
                                 d3.select( '#preset-input-' + this.hashCode( tagKey + e.key ) ).property( 'value', e.value );
-                            });
+                            } );
                         }
-                    });
-                }})
+                    } );
+                } } )
     }
 
     hashCode( input ) {
