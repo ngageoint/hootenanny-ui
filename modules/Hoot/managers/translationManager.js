@@ -47,18 +47,18 @@ export default class TranslationManager {
     async getFieldMappings(schema) {
         try {
             let fieldMappings = await this.hoot.api.getFieldMappings( schema );
-            return fieldMappings
+            return fieldMappings;
         } catch ( e ) {
-            console.error( e )
+            console.error( e );
         }
     }
 
     async getColumns(tagKey, schema) {
         try {
             let columns = await this.hoot.api.getColumns( tagKey, schema );
-            return columns
+            return columns;
         } catch ( e ) {
-            console.error( e )
+            console.error( e );
         }
 
     }

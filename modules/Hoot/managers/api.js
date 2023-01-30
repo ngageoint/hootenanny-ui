@@ -499,22 +499,22 @@ export default class API {
         const params = {
             url: `${ this.translationUrl }fieldMappings?translation=${ schema }`,
             method: 'GET'
-        }
+        };
         return this.request( params )
             .then( resp => {
                 return resp.data;
-            })
+            });
     }
 
     getColumns(tagKey, schema) {
         const params = {
             url: `${ this.translationUrl }columns?translation=${ schema }&column=${ tagKey }`,
             method: 'GET'
-        }
+        };
         return this.request( params )
             .then( resp => {
-                return resp.data
-            })
+                return resp.data;
+            });
     }
 
     getTranslation( name ) {

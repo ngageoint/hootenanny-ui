@@ -4,7 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
 
-import { tagInfo }    from 'data/index';
 import { d3combobox } from 'lib/hoot/d3.combobox';
 
 export default class TagMapWidget {
@@ -51,7 +50,7 @@ export default class TagMapWidget {
         if (this.fieldMappings[this.schemaOption].length === 0) {
             Hoot.translations.getFieldMappings(this.schemaOption)
             .then(resp => {
-                this.fieldMappings[this.schemaOption] = resp
+                this.fieldMappings[this.schemaOption] = resp;
             });
         }
     }
@@ -307,7 +306,7 @@ export default class TagMapWidget {
                             } );
                         }
                     } );
-                } } )
+                } } );
     }
 
     hashCode( input ) {
