@@ -29,6 +29,7 @@ export default class TagMapWidget {
         this.inputWrapper
             .append( 'div' )
             .classed( 'pad1 thumbnail searchtag _icon big blank search-icon keyline-right', true );
+
         this.searchTag = this.inputWrapper.append('input')
             .attr('type', 'text')
             .attr('placeholder', 'Search Tag')
