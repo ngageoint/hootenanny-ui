@@ -198,6 +198,8 @@ export default class LayerAdd extends SidebarForm {
     async submitLayer( d, skipCheckForReview = false ) {
         let color = this.form.select( '.palette .active' ).attr( 'data-color' );
 
+        if (d && d.id === undefined) return;
+
         let params = {
             name: d ? d.name : this.selectedLayer.name,
             id: d ? d.id : this.selectedLayer.id,
