@@ -255,7 +255,10 @@ export function uiRawTagEditor(context) {
                             if (!err) callback(sort(value, data));
                         });
                     } else {
-                        var data = Hoot.translations.filterSchemaKeys(value);
+                        var keys = Object.keys(_tags);
+                        var data = Hoot.translations.filterSchemaKeys(value).filter((d) =>
+                            keys.indexOf(d.value) === -1
+                        );
                         callback(sort(value, data));
                     }
                 }));
