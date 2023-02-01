@@ -53,7 +53,7 @@ export function uiPresetEditor(context) {
                 );
             }
 
-            if (Hoot.translations.activeTranslation == 'OSM') {
+            if (Hoot.translations.activeTranslation === 'OSM') {
                 presets.universal().forEach(function(field) {
                     if (_preset.fields.indexOf(field) === -1) {
                         _fieldsArr.push(
