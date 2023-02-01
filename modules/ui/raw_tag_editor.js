@@ -206,12 +206,17 @@ export function uiRawTagEditor(context) {
             });
 
         items.selectAll('input.key')
-            .attr('title', function(d) { return d.key; })
+            .attr('title', function(d) { return Hoot.translations.decodeSchemaKey(d.key); })
             .call(utilGetSetValue, function(d) { return d.key; })
             .property('disabled', isReadOnly);
 
         items.selectAll('input.value')
-            .attr('title', function(d) { return d.value; })
+            .attr('title', function(d) {
+                // when multi-value, show new line delimited so you can see each value
+                // when translated w/enumerated value, get title of enumerated value
+                // all other cases what's in the input has all the info user needs.
+                return Array.isArray(d.value) ? d.value.filter(Boolean).join('\n') : Hoot.translations.decodeSchemaValue(d);
+            })
             .call(utilGetSetValue, function(d) { return d.value; })
             .property('disabled', isReadOnly);
 
