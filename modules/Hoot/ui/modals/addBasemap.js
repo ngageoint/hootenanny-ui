@@ -76,7 +76,21 @@ export default class AddBasemap {
             .then( () => {
                 this.container.remove();
                 this.instance.loadBasemaps();
-            } );
+            } )
+            .catch( (err) => {
+                console.error(err);
+                let message = 'Error adding basemap',
+                    type = err.type;
+
+                Hoot.message.alert( { message, type } );
+
+                this.submitButton.select('#importSpin').remove()
+                this.submitButton.text('Publish')
+                this.container.selectAll( 'input' )
+                    .each( function() {
+                        d3.select( this ).node().disabled = false;
+                    } );
+            });
     }
 
     getFormData( files ) {
