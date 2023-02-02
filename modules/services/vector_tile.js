@@ -1,14 +1,9 @@
-import _clone from 'lodash-es/clone';
-import _find from 'lodash-es/find';
-import _isEqual from 'lodash-es/isEqual';
-import _forEach from 'lodash-es/forEach';
-
 import { dispatch as d3_dispatch } from 'd3-dispatch';
-import { request as d3_request } from 'd3-request';
 
+import deepEqual from 'fast-deep-equal';
 import turf_bboxClip from '@turf/bbox-clip';
 import stringify from 'fast-json-stable-stringify';
-import martinez from 'martinez-polygon-clipping';
+import polygonClipping from 'polygon-clipping';
 
 import Protobuf from 'pbf';
 import vt from '@mapbox/vector-tile';
@@ -21,13 +16,13 @@ var dispatch = d3_dispatch('loadedData');
 var _vtCache;
 
 
-function abortRequest(i) {
-    i.abort();
+function abortRequest(controller) {
+    controller.abort();
 }
 
 
 function vtToGeoJSON(data, tile, mergeCache) {
-    var vectorTile = new vt.VectorTile(new Protobuf(data.response));
+    var vectorTile = new vt.VectorTile(new Protobuf(data));
     var layers = Object.keys(vectorTile.layers);
     if (!Array.isArray(layers)) { layers = [layers]; }
 
@@ -45,11 +40,12 @@ function vtToGeoJSON(data, tile, mergeCache) {
                     geometry.coordinates = [geometry.coordinates];
                 }
 
+                var isClipped = false;
+
                 // Clip to tile bounds
                 if (geometry.type === 'MultiPolygon') {
-                    var isClipped = false;
                     var featureClip = turf_bboxClip(feature, tile.extent.rectangle());
-                    if (!_isEqual(feature.geometry, featureClip.geometry)) {
+                    if (!deepEqual(feature.geometry, featureClip.geometry)) {
                         // feature = featureClip;
                         isClipped = true;
                     }
@@ -70,12 +66,13 @@ function vtToGeoJSON(data, tile, mergeCache) {
                     var merged = mergeCache[propertyhash];
                     if (merged && merged.length) {
                         var other = merged[0];
-                        var coords = martinez.union(
-                            feature.geometry.coordinates, other.geometry.coordinates
+                        var coords = polygonClipping.union(
+                            feature.geometry.coordinates,
+                            other.geometry.coordinates
                         );
 
                         if (!coords || !coords.length) {
-                            continue;  // something failed in martinez union
+                            continue;  // something failed in polygon union
                         }
 
                         merged.push(feature);
@@ -109,12 +106,23 @@ function loadTile(source, tile) {
             return subdomains[(tile.xyz[0] + tile.xyz[1]) % subdomains.length];
         });
 
-    source.inflight[tile.id] = d3_request(url)
-        .responseType('arraybuffer')
-        .get(function(err, data) {
+
+    var controller = new AbortController();
+    source.inflight[tile.id] = controller;
+
+    fetch(url, { signal: controller.signal })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error(response.status + ' ' + response.statusText);
+            }
             source.loaded[tile.id] = [];
             delete source.inflight[tile.id];
-            if (err || !data) return;
+            return response.arrayBuffer();
+        })
+        .then(function(data) {
+            if (!data) {
+                throw new Error('No Data');
+            }
 
             var z = tile.xyz[2];
             if (!source.canMerge[z]) {
@@ -123,6 +131,10 @@ function loadTile(source, tile) {
 
             source.loaded[tile.id] = vtToGeoJSON(data, tile, source.canMerge[z]);
             dispatch.call('loadedData');
+        })
+        .catch(function() {
+            source.loaded[tile.id] = [];
+            delete source.inflight[tile.id];
         });
 }
 
@@ -142,7 +154,7 @@ export default {
         for (var sourceID in _vtCache) {
             var source = _vtCache[sourceID];
             if (source && source.inflight) {
-                _forEach(source.inflight, abortRequest);
+                Object.values(source.inflight).forEach(abortRequest);
             }
         }
 
@@ -174,9 +186,9 @@ export default {
                 if (seen[hash]) continue;
                 seen[hash] = true;
 
-                // return a shallow clone, because the hash may change
+                // return a shallow copy, because the hash may change
                 // later if this feature gets merged with another
-                results.push(_clone(feature));
+                results.push(Object.assign({}, feature));  // shallow copy
             }
         }
 
@@ -193,11 +205,10 @@ export default {
         var tiles = tiler.getTiles(projection);
 
         // abort inflight requests that are no longer needed
-        _forEach(source.inflight, function(v, k) {
-            var wanted = _find(tiles, function(tile) { return k === tile.id; });
-
+        Object.keys(source.inflight).forEach(function(k) {
+            var wanted = tiles.find(function(tile) { return k === tile.id; });
             if (!wanted) {
-                abortRequest(v);
+                abortRequest(source.inflight[k]);
                 delete source.inflight[k];
             }
         });
