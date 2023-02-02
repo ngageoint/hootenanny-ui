@@ -5,7 +5,6 @@ import { ascending as d3_ascending } from 'd3-array';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -230,7 +229,7 @@ export function uiRawTagEditor(context) {
         }
 
 
-        function pushMore() {
+        function pushMore(d3_event) {
             if (d3_event.keyCode === 9 && !d3_event.shiftKey &&
                 list.selectAll('li:last-child input.value').node() === this) {
                 addTag();

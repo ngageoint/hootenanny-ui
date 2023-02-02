@@ -1,5 +1,4 @@
 import { interpolateRgb as d3_interpolateRgb } from 'd3-interpolate';
-import { event as d3_event } from 'd3-selection';
 
 import { t } from '../util/locale';
 import { modeSave } from '../modes';
@@ -20,7 +19,7 @@ export function uiSave(context) {
     }
 
 
-    function save() {
+    function save(d3_event) {
         d3_event.preventDefault();
         if (!context.inIntro() && !saving() && history.hasChanges()) {
             context.enter(modeSave(context));

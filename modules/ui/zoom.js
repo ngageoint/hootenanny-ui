@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -26,25 +25,25 @@ export function uiZoom(context) {
     }];
 
 
-    function zoomIn() {
+    function zoomIn(d3_event) {
         d3_event.preventDefault();
         context.zoomIn();
     }
 
 
-    function zoomOut() {
+    function zoomOut(d3_event) {
         d3_event.preventDefault();
         context.zoomOut();
     }
 
 
-    function zoomInFurther() {
+    function zoomInFurther(d3_event) {
         d3_event.preventDefault();
         context.zoomInFurther();
     }
 
 
-    function zoomOutFurther() {
+    function zoomOutFurther(d3_event) {
         d3_event.preventDefault();
         context.zoomOutFurther();
     }

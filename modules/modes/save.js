@@ -7,7 +7,6 @@ import _uniq from 'lodash-es/uniq';
 import _without from 'lodash-es/without';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -432,7 +431,7 @@ export function modeSave(context) {
             .attr('href', '#')
             .classed('hide-toggle', true)
             .text(function(d) { return d.msg || t('save.unknown_error_details'); })
-            .on('click', function() {
+            .on('click', function(d3_event) {
                 d3_event.preventDefault();
 
                 var error = d3_select(this);

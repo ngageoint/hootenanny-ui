@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -68,7 +67,7 @@ export function uiFeatureList(context) {
             .on(uiCmd('⌘F'), focusSearch);
 
 
-        function focusSearch() {
+        function focusSearch(d3_event) {
             var mode = context.mode() && context.mode().id;
             if (mode !== 'browse') return;
 

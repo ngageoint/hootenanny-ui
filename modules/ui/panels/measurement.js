@@ -1,7 +1,5 @@
 import _filter from 'lodash-es/filter';
 
-import { event as d3_event } from 'd3-selection';
-
 import {
     geoLength as d3_geoLength,
     geoCentroid as d3_geoCentroid
@@ -159,7 +157,7 @@ export function uiPanelMeasurement(context) {
                 .text(t('info_panels.measurement.' + toggle))
                 .attr('href', '#')
                 .attr('class', 'button button-toggle-units')
-                .on('click', function() {
+                .on('click', function(d3_event) {
                     d3_event.preventDefault();
                     isImperial = !isImperial;
                     selection.call(redraw);

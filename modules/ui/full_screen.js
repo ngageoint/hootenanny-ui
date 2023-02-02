@@ -1,5 +1,3 @@
-import { event as d3_event } from 'd3-selection';
-
 import { uiCmd } from './cmd';
 import { utilDetect } from '../util/detect';
 
@@ -48,7 +46,7 @@ export function uiFullScreen(context) {
     }
 
 
-    function fullScreen() {
+    function fullScreen(d3_event) {
         d3_event.preventDefault();
         if (!isFullScreen()) {
             // button.classed('active', true);

@@ -3,7 +3,6 @@ import _map from 'lodash-es/map';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -63,7 +62,7 @@ export function uiPresetList(context) {
                 .call(svgIcon('#iD-icon-close'));
         }
 
-        function initialKeydown() {
+        function initialKeydown(d3_event) {
             // hack to let delete shortcut work when search is autofocused
             if (search.property('value').length === 0 &&
                 (d3_event.keyCode === utilKeybinding.keyCodes['⌫'] ||
@@ -86,7 +85,7 @@ export function uiPresetList(context) {
             }
         }
 
-        function keydown() {
+        function keydown(d3_event) {
             // down arrow
             if (d3_event.keyCode === utilKeybinding.keyCodes['↓'] &&
                 // if insertion point is at the end of the string
@@ -98,7 +97,7 @@ export function uiPresetList(context) {
             }
         }
 
-        function keypress() {
+        function keypress(d3_event) {
             // enter
             var value = search.property('value');
             if (d3_event.keyCode === 13 && value.length) {
@@ -218,7 +217,7 @@ export function uiPresetList(context) {
             .style('opacity', 1);
     }
 
-    function itemKeydown(){
+    function itemKeydown(d3_event){
         // the actively focused item
         var item = d3_select(this.closest('.preset-list-item'));
         var parentItem = d3_select(item.node().parentElement.closest('.preset-list-item'));
@@ -320,7 +319,7 @@ export function uiPresetList(context) {
                     .geometry(context.geometry(_entityID))
                     .preset(preset))
                 .on('click', click)
-                .on('keydown', function() {
+                .on('keydown', function(d3_event) {
                     // right arrow, expand the focused item
                     if (d3_event.keyCode === utilKeybinding.keyCodes[(textDirection === 'rtl') ? '←' : '→']) {
                         d3_event.preventDefault();
@@ -436,7 +435,7 @@ export function uiPresetList(context) {
             dispatch.call('choose', this, preset);
         };
 
-        item.help = function() {
+        item.help = function(d3_event) {
             d3_event.stopPropagation();
             item.reference.toggle();
         };

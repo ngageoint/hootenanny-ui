@@ -10,7 +10,6 @@ import _uniq from 'lodash-es/uniq';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -270,7 +269,7 @@ export function uiFieldCombo(field, context) {
     }
 
 
-    function removeMultikey(d) {
+    function removeMultikey(d3_event, d) {
         d3_event.stopPropagation();
         var t = {};
         if (isMulti) {

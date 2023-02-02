@@ -5,7 +5,6 @@ import { interpolateNumber as d3_interpolateNumber } from 'd3-interpolate';
 
 import {
     select as d3_select,
-    event as d3_event,
     selectAll as d3_selectAll
 } from 'd3-selection';
 
@@ -52,7 +51,7 @@ export function uiSidebar(context) {
 
         resizer.call(d3_drag()
             .container(container.node())
-            .on('start', function() {
+            .on('start', function(d3_event) {
                 // offset from edge of sidebar-resizer
                 dragOffset = d3_event.sourceEvent.offsetX - 1;
 
@@ -65,7 +64,7 @@ export function uiSidebar(context) {
 
                 resizer.classed('dragging', true);
             })
-            .on('drag', function() {
+            .on('drag', function(d3_event) {
                 var isRTL = (textDirection === 'rtl');
                 var xMarginProperty = isRTL ? 'margin-right' : 'margin-left';
 
@@ -266,7 +265,7 @@ export function uiSidebar(context) {
         };
 
 
-        sidebar.toggle = function(moveMap) {
+        sidebar.toggle = function(d3_event, moveMap) {
             var e = d3_event;
             if (e && e.sourceEvent) {
                 e.sourceEvent.preventDefault();

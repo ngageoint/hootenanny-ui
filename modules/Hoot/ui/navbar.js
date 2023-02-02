@@ -5,7 +5,6 @@
  *******************************************************************************************************/
 
 import About from './about';
-import { event as d3_event } from 'd3-selection';
 
 /**
  * Creates the navigation bar

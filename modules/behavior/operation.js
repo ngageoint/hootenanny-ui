@@ -1,4 +1,3 @@
-import { event as d3_event } from 'd3-selection';
 import { uiFlash } from '../ui';
 
 
@@ -6,7 +5,7 @@ import { uiFlash } from '../ui';
 export function behaviorOperation(context) {
     var _operation;
 
-    function keypress() {
+    function keypress(d3_event) {
         d3_event.preventDefault();
         var disabled = _operation.disabled();
         var flash;

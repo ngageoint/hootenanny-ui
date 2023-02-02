@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -54,7 +53,7 @@ export function modeDragNote(context) {
     }
 
 
-    function move(note) {
+    function move(d3_event, note) {
         d3_event.sourceEvent.stopPropagation();
         _lastLoc = context.projection.invert(d3_event.point);
 
@@ -68,7 +67,7 @@ export function modeDragNote(context) {
     }
 
 
-    function doMove(note, nudge) {
+    function doMove(d3_event, note, nudge) {
         nudge = nudge || [0, 0];
 
         var currPoint = (d3_event && d3_event.point) || context.projection(_lastLoc);

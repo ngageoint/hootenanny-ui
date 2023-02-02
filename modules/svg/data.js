@@ -9,10 +9,9 @@ import {
     geoPath as d3_geoPath
 } from 'd3-geo';
 
-import { text as d3_text } from 'd3-request';
+import { text as d3_text } from 'd3-fetch';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -49,7 +48,7 @@ export function svgData(projection, context, dispatch) {
         _geojson = {};
         _enabled = true;
 
-        function over() {
+        function over(d3_event) {
             d3_event.stopPropagation();
             d3_event.preventDefault();
             d3_event.dataTransfer.dropEffect = 'copy';
@@ -57,7 +56,7 @@ export function svgData(projection, context, dispatch) {
 
         d3_select('body')
             .attr('dropzone', 'copy')
-            .on('drop.svgData', function() {
+            .on('drop.svgData', function(d3_event) {
                 d3_event.stopPropagation();
                 d3_event.preventDefault();
                 if (!detected.filedrop) return;

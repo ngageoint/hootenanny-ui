@@ -1,7 +1,7 @@
 import _assign from 'lodash-es/assign';
 import _forEach from 'lodash-es/forEach';
 
-import { json as d3_json } from 'd3-request';
+import { json as d3_json } from 'd3-fetch';
 
 import RBush from 'rbush';
 import { geoExtent } from '../geo';

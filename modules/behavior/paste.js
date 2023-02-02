@@ -1,8 +1,6 @@
 import _invert from 'lodash-es/invert';
 import _mapValues from 'lodash-es/mapValues';
 
-import { event as d3_event } from 'd3-selection';
-
 import { actionCopyEntities, actionMove } from '../actions';
 import { geoExtent, geoPointInPolygon, geoVecSubtract } from '../geo';
 import { modeMove } from '../modes';
@@ -11,7 +9,7 @@ import { uiCmd } from '../ui';
 
 export function behaviorPaste(context) {
 
-    function doPaste() {
+    function doPaste(d3_event) {
         d3_event.preventDefault();
 
         var baseGraph = context.graph();

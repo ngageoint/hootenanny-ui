@@ -1,7 +1,6 @@
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import {
     select as d3_select,
-    event as d3_event
 } from 'd3-selection';
 
 import { t, textDirection } from '../../util/locale';
@@ -96,7 +95,7 @@ export function uiFieldText(field, context) {
                     return 'form-field-button ' + which;
                 })
                 .merge(buttons)
-                .on('click', function(d) {
+                .on('click', function(d3_event, d) {
                     d3_event.preventDefault();
                     input.node().value = parsed(input.node().value) + d;
                     change()();

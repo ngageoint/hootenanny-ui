@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select,
     selectAll as d3_selectAll
 } from 'd3-selection';
@@ -19,7 +18,7 @@ export function uiBackgroundOffset(context) {
     ];
 
 
-    function d3_eventCancel() {
+    function d3_eventCancel(d3_event) {
         d3_event.stopPropagation();
         d3_event.preventDefault();
     }
@@ -97,7 +96,7 @@ export function uiBackgroundOffset(context) {
     }
 
 
-    function dragOffset() {
+    function dragOffset(d3_event) {
         d3_event.preventDefault();
         if (d3_event.button !== 0) return;
 
@@ -108,7 +107,7 @@ export function uiBackgroundOffset(context) {
             .attr('class', 'nudge-surface');
 
         d3_select(window)
-            .on('mousemove.offset', function() {
+            .on('mousemove.offset', function(d3_event) {
                 var latest = [d3_event.clientX, d3_event.clientY];
                 var d = [
                     -(origin[0] - latest[0]) / 4,
@@ -118,7 +117,7 @@ export function uiBackgroundOffset(context) {
                 origin = latest;
                 nudge(d);
             })
-            .on('mouseup.offset', function() {
+            .on('mouseup.offset', function(d3_event) {
                 if (d3_event.button !== 0) return;
                 d3_selectAll('.nudge-surface')
                     .remove();
@@ -161,7 +160,7 @@ export function uiBackgroundOffset(context) {
             .append('button')
             .attr('class', function(d) { return d[0] + ' nudge'; })
             .on('contextmenu', d3_eventCancel)
-            .on('mousedown', function(d) {
+            .on('mousedown', function(d3_event, d) {
                 if (d3_event.button !== 0) return;
                 clickNudgeButton(d[1]);
             });
@@ -171,7 +170,7 @@ export function uiBackgroundOffset(context) {
             .attr('title', t('background.reset'))
             .attr('class', 'nudge-reset disabled')
             .on('contextmenu', d3_eventCancel)
-            .on('click', function() {
+            .on('click', function(d3_event) {
                 if (d3_event.button !== 0) return;
                 resetOffset();
             })

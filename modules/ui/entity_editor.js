@@ -8,7 +8,6 @@ import _isEqual from 'lodash-es/isEqual';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
-    event as d3_event,
     selectAll as d3_selectAll
 } from 'd3-selection';
 
@@ -218,7 +217,7 @@ export function uiEntityEditor(context) {
             );
 
         body.select('.key-trap')
-            .on('keydown.key-trap', function() {
+            .on('keydown.key-trap', function(d3_event) {
                 // On tabbing, send focus back to the first field on the inspector-body
                 // (probably the `name` field) #4159
                 if (d3_event.keyCode === 9 && !d3_event.shiftKey) {

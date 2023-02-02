@@ -4,12 +4,10 @@ import _throttle from 'lodash-es/throttle';
 import _values from 'lodash-es/values';
 import _debounce from 'lodash-es/debounce';
 
-import { set as d3_set } from 'd3-collection';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { interpolate as d3_interpolate } from 'd3-interpolate';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -187,7 +185,7 @@ export function rendererMap(context) {
                 _gestureTransformStart = projection.transform();
             })
             .on('gesturechange.surface', gestureChange)
-            .on('mousedown.zoom', function() {
+            .on('mousedown.zoom', function(d3_event) {
                 if (d3_event.button === 2) {
                     d3_event.stopPropagation();
                 }
@@ -197,17 +195,17 @@ export function rendererMap(context) {
                     immediateRedraw();
                 }
             })
-            .on('mousemove.map', function() {
+            .on('mousemove.map', function(d3_event) {
                 mousemove = d3_event;
             })
-            .on('mouseover.vertices', function() {
+            .on('mouseover.vertices', function(d3_event) {
                 if (map.editable() && !_transformed) {
                     var hover = d3_event.target.__data__;
                     surface.call(drawVertices.drawHover, context.graph(), hover, map.extent());
                     dispatch.call('drawn', this, { full: false });
                 }
             })
-            .on('mouseout.vertices', function() {
+            .on('mouseout.vertices', function(d3_event) {
                 if (map.editable() && !_transformed) {
                     var hover = d3_event.relatedTarget && d3_event.relatedTarget.__data__;
                     surface.call(drawVertices.drawHover, context.graph(), hover, map.extent());
@@ -260,7 +258,7 @@ export function rendererMap(context) {
     }
 
 
-    function zoomEventFilter() {
+    function zoomEventFilter(d3_event) {
         // Fix for #2151, (see also d3/d3-zoom#60, d3/d3-brush#18)
         // Intercept `mousedown` and check if there is an orphaned zoom gesture.
         // This can happen if a previous `mousedown` occurred without a `mouseup`.
@@ -323,7 +321,7 @@ export function rendererMap(context) {
 
             if (extent) {
                 data = context.intersects(map.extent().intersection(extent));
-                var set = d3_set(_map(data, 'id'));
+                var set = new Set(_map(data, 'id'));
                 filter = function(d) { return set.has(d.id); };
 
             } else {
@@ -367,7 +365,7 @@ export function rendererMap(context) {
     }
 
 
-    function dblClick() {
+    function dblClick(d3_event) {
         if (!_dblClickEnabled) {
             d3_event.preventDefault();
             d3_event.stopImmediatePropagation();
@@ -375,7 +373,7 @@ export function rendererMap(context) {
     }
 
 
-    function gestureChange() {
+    function gestureChange(d3_event) {
         // Remap Safari gesture events to wheel events - #5492
         // We want these disabled most places, but enabled for zoom/unzoom on map surface
         // https://developer.mozilla.org/en-US/docs/Web/API/GestureEvent
@@ -401,7 +399,7 @@ export function rendererMap(context) {
     }
 
 
-    function zoomPan(manualEvent) {
+    function zoomPan(d3_event, manualEvent) {
         var event = (manualEvent || d3_event);
         var source = event.sourceEvent;
         var eventTransform = event.transform;
@@ -659,7 +657,7 @@ export function rendererMap(context) {
     };
 
 
-    map.mouse = function() {
+    map.mouse = function(d3_event) {
         var event = mousemove || d3_event;
         if (event) {
             var s;

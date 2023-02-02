@@ -2,7 +2,6 @@ import _debounce from 'lodash-es/debounce';
 import _without from 'lodash-es/without';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -61,7 +60,7 @@ export function uiPanelBackground(context) {
             .text(t('info_panels.background.' + toggleTiles))
             .attr('href', '#')
             .attr('class', 'button button-toggle-tiles')
-            .on('click', function() {
+            .on('click', function(d3_event) {
                 d3_event.preventDefault();
                 context.setDebug('tile', !context.getDebug('tile'));
                 selection.call(redraw);
@@ -77,7 +76,7 @@ export function uiPanelBackground(context) {
                 .text(t('info_panels.background.' + toggleVintage))
                 .attr('href', '#')
                 .attr('class', 'button button-toggle-vintage')
-                .on('click', function() {
+                .on('click', function(d3_event) {
                     d3_event.preventDefault();
                     context.background().toggleOverlayLayer(sourceVintage);
                     selection.call(redraw);

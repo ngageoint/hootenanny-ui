@@ -5,7 +5,6 @@ import _some from 'lodash-es/some';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -64,7 +63,7 @@ export function uiField(context, presetField, entity, options) {
     }
 
 
-    function revert(d) {
+    function revert(d3_event, d) {
         d3_event.stopPropagation();
         d3_event.preventDefault();
         if (!entity) return false;
@@ -79,7 +78,7 @@ export function uiField(context, presetField, entity, options) {
     }
 
 
-    function remove(d) {
+    function remove(d3_event, d) {
         d3_event.stopPropagation();
         d3_event.preventDefault();
 

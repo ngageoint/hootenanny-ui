@@ -1,7 +1,6 @@
 import _isFunction from 'lodash-es/isFunction';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -43,7 +42,7 @@ export function utilKeybinding(namespace) {
         }
 
 
-        function matches(binding, testShift) {
+        function matches(d3_event, binding, testShift) {
             var event = d3_event;
             var isMatch = false;
             var tryKeyCode = true;
@@ -91,7 +90,7 @@ export function utilKeybinding(namespace) {
     }
 
 
-    function bubble() {
+    function bubble(d3_event) {
         var tagName = d3_select(d3_event.target).node().tagName;
         if (tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA') {
             return;

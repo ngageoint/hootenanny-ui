@@ -1,12 +1,12 @@
 import _without from 'lodash-es/without';
 
 import {
-    event as d3_event,
-    mouse as d3_mouse,
     select as d3_select
 } from 'd3-selection';
 
 import { geoVecLength } from '../geo';
+
+import { utilFastMouse } from '../util';
 
 import {
     modeBrowse,
@@ -29,11 +29,11 @@ export function behaviorSelect(context) {
 
 
     function point() {
-        return d3_mouse(context.container().node());
+        return utilFastMouse(context.container().node());
     }
 
 
-    function keydown() {
+    function keydown(d3_event) {
         var e = d3_event;
         if (e && e.shiftKey) {
             context.surface()
@@ -47,7 +47,7 @@ export function behaviorSelect(context) {
     }
 
 
-    function keyup() {
+    function keyup(d3_event) {
         var e = d3_event;
         if (!e || !e.shiftKey) {
             context.surface()
@@ -73,7 +73,7 @@ export function behaviorSelect(context) {
     }
 
 
-    function mousemove() {
+    function mousemove(d3_event) {
         if (d3_event) lastMouse = d3_event;
     }
 
@@ -83,7 +83,7 @@ export function behaviorSelect(context) {
     }
 
 
-    function contextmenu() {
+    function contextmenu(d3_event) {
         var e = d3_event;
         e.preventDefault();
         e.stopPropagation();
@@ -102,7 +102,7 @@ export function behaviorSelect(context) {
     }
 
 
-    function click() {
+    function click(d3_event) {
         d3_select(window)
             .on('mouseup.select', null, true);
 
@@ -188,7 +188,7 @@ export function behaviorSelect(context) {
         d3_select(window)
             .on('keydown.select', keydown)
             .on('keyup.select', keyup)
-            .on('contextmenu.select-window', function() {
+            .on('contextmenu.select-window', function(d3_event) {
                 // Edge and IE really like to show the contextmenu on the
                 // menubar when user presses a keyboard menu button
                 // even after we've already preventdefaulted the key event.
@@ -204,10 +204,10 @@ export function behaviorSelect(context) {
             .on('mousemove.select', mousemove)
             .on('contextmenu.select', contextmenu);
 
-        if (d3_event && d3_event.shiftKey) {
+        /*if (d3_event && d3_event.shiftKey) {
             context.surface()
                 .classed('behavior-multiselect', true);
-        }
+        }*/
     }
 
 

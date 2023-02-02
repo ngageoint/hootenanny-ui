@@ -1,7 +1,6 @@
 import { geoPath as d3_geoPath } from 'd3-geo';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -58,7 +57,7 @@ export function uiMapInMap(context) {
         }
 
 
-        function zoomed() {
+        function zoomed(d3_event) {
             if (skipEvents) return;
 
             var x = d3_event.transform.x;
@@ -277,7 +276,7 @@ export function uiMapInMap(context) {
         }
 
 
-        function toggle() {
+        function toggle(d3_event) {
             if (d3_event) d3_event.preventDefault();
 
             isHidden = !isHidden;

@@ -1,7 +1,6 @@
 import { t } from '../util/locale';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -40,7 +39,7 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
     _tempEdits++;
 
 
-    function keydown() {
+    function keydown(d3_event) {
         if (d3_event.keyCode === utilKeybinding.modifierCodes.alt) {
             if (context.surface().classed('nope')) {
                 context.surface()
@@ -53,7 +52,7 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
     }
 
 
-    function keyup() {
+    function keyup(d3_event) {
         if (d3_event.keyCode === utilKeybinding.modifierCodes.alt) {
             if (context.surface().classed('nope-suppressed')) {
                 context.surface()
@@ -70,7 +69,7 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
     // - `mode/drag_node.js`     `doMode()`
     // - `behavior/draw.js`      `click()`
     // - `behavior/draw_way.js`  `move()`
-    function move(datum) {
+    function move(d3_event, datum) {
         context.surface().classed('nope-disabled', d3_event.altKey);
 
         var targetLoc = datum && datum.properties && datum.properties.entity && datum.properties.entity.loc;

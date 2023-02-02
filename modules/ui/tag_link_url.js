@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 import { svgIcon } from '../svg';
@@ -38,7 +37,7 @@ export function uiTagLinkUrl(tag) {
         _button
             .attr('title', t('icons.open_link'))
             .call(svgIcon('#iD-icon-out-link', 'smaller'))
-            .on('click', function () {
+            .on('click', function (d3_event) {
                 d3_event.stopPropagation();
                 d3_event.preventDefault();
 

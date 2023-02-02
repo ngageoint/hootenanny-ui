@@ -1,8 +1,7 @@
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
-    select as d3_select,
-    event as d3_event
+    select as d3_select
 } from 'd3-selection';
 
 import { utilRebind } from '../../util/rebind';
@@ -124,7 +123,7 @@ export function uiFieldCheck(field, context) {
         text = label.selectAll('span.value');
 
         input
-            .on('click', function() {
+            .on('click', function(d3_event) {
                 d3_event.stopPropagation();
                 var t = {};
                 t[field.key] = values[(values.indexOf(_value) + 1) % values.length];
@@ -143,7 +142,7 @@ export function uiFieldCheck(field, context) {
 
             reverser
                 .call(reverserSetText)
-                .on('click', function() {
+                .on('click', function(d3_event) {
                     d3_event.preventDefault();
                     d3_event.stopPropagation();
                     context.perform(

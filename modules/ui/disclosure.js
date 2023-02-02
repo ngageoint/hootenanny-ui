@@ -1,5 +1,4 @@
 import { dispatch as d3_dispatch } from 'd3-dispatch';
-import { event as d3_event } from 'd3-selection';
 
 import { svgIcon } from '../svg';
 import { utilRebind } from '../util/rebind';
@@ -61,7 +60,7 @@ export function uiDisclosure(context, key, expandedDefault) {
             .call(_content);
 
 
-        function toggle() {
+        function toggle(d3_event) {
             d3_event.preventDefault();
 
             _expanded = !_expanded;

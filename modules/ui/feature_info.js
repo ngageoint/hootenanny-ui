@@ -1,8 +1,6 @@
 import _compact from 'lodash-es/compact';
 import _map from 'lodash-es/map';
 
-import { event as d3_event } from 'd3-selection';
-
 import { t } from '../util/locale';
 import { uiTooltipHtml } from './tooltipHtml';
 import { tooltip } from '../util/tooltip';
@@ -35,7 +33,7 @@ export function uiFeatureInfo(context) {
                 .attr('tabindex', -1)
                 .html(t('feature_info.hidden_warning', { count: count }))
                 .call(tooltipBehavior)
-                .on('click', function() {
+                .on('click', function(d3_event) {
                     tooltipBehavior.hide(warning);
                     // open map data panel?
                     d3_event.preventDefault();

@@ -2,7 +2,6 @@ import _extend from 'lodash-es/extend';
 import _groupBy from 'lodash-es/groupBy';
 import _map from 'lodash-es/map';
 
-import { event as d3_event } from 'd3-selection';
 import { uiCmd } from '../ui';
 
 
@@ -45,7 +44,7 @@ export function behaviorCopy(context) {
     }
 
 
-    function doCopy() {
+    function doCopy(d3_event) {
         if (!getSelectionText()) {
             d3_event.preventDefault();
         }

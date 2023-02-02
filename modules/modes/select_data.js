@@ -2,7 +2,6 @@
 import { geoBounds as d3_geoBounds } from 'd3-geo';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -39,7 +38,7 @@ export function modeSelectData(context, selectedDatum) {
 
 
     // class the data as selected, or return to browse mode if the data is gone
-    function selectData(drawn) {
+    function selectData(d3_event, drawn) {
         var selection = context.surface().selectAll('.layer-mapdata .data' + selectedDatum.__featurehash__);
 
         if (selection.empty()) {

@@ -17,7 +17,7 @@ import _includes from 'lodash-es/includes';
 import RBush from 'rbush';
 
 import { dispatch as d3_dispatch } from 'd3-dispatch';
-import { xml as d3_xml } from 'd3-request';
+import { xml as d3_xml } from 'd3-fetch';
 import axios from 'axios/dist/axios';
 
 import osmAuth from 'osm-auth';

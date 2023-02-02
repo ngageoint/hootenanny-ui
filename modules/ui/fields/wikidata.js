@@ -1,8 +1,7 @@
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
-    select as d3_select,
-    event as d3_event
+    select as d3_select
 } from 'd3-selection';
 
 import { services } from '../../services/index';
@@ -93,7 +92,7 @@ export function uiFieldWikidata(field) {
             .merge(link);
 
         link
-            .on('click', function() {
+            .on('click', function(d3_event) {
                 d3_event.preventDefault();
                 if (_wikiURL) window.open(_wikiURL, '_blank');
             });
@@ -112,7 +111,7 @@ export function uiFieldWikidata(field) {
             .attr('title', t('icons.copy'))
             .attr('tabindex', -1)
             .call(svgIcon('#iD-operation-copy'))
-            .on('click', function() {
+            .on('click', function(d3_event) {
                 d3_event.preventDefault();
                 d3_select(this.parentNode)
                     .select('input')

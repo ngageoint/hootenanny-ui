@@ -3,7 +3,7 @@ import _extend from 'lodash-es/extend';
 import _forEach from 'lodash-es/forEach';
 import _omit from 'lodash-es/omit';
 
-import { json as d3_json } from 'd3-request';
+import { json as d3_json } from 'd3-fetch';
 
 import { utilQsString } from '../util';
 import { currentLocale } from '../util/locale';

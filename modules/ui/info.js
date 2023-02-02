@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -80,7 +79,7 @@ export function uiInfo(context) {
         }
 
 
-        function toggle(which) {
+        function toggle(d3_event, which) {
             if (d3_event) {
                 d3_event.stopImmediatePropagation();
                 d3_event.preventDefault();

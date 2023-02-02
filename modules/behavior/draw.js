@@ -1,17 +1,14 @@
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
-    event as d3_event,
-    mouse as d3_mouse,
     select as d3_select,
-    touches as d3_touches
 } from 'd3-selection';
 
 import { behaviorEdit } from './edit';
 import { behaviorHover } from './hover';
 import { behaviorTail } from './tail';
 import { geoChooseEdge, geoVecLength } from '../geo';
-import { utilKeybinding, utilRebind } from '../util';
+import { utilFastMouse, utilKeybinding, utilRebind } from '../util';
 
 
 var _usedTails = {};
@@ -39,7 +36,7 @@ export function behaviorDraw(context) {
 
     // related code
     // - `mode/drag_node.js` `datum()`
-    function datum() {
+    function datum(d3_event) {
         var mode = context.mode();
         var isNote = mode && (mode.id.indexOf('note') !== -1);
         if (d3_event.altKey || isNote) return {};
@@ -58,13 +55,10 @@ export function behaviorDraw(context) {
     }
 
 
-    function mousedown() {
+    function mousedown(d3_event) {
 
         function point() {
-            var p = context.container().node();
-            return touchId !== null ? d3_touches(p).filter(function(p) {
-                return p.identifier === touchId;
-            })[0] : d3_mouse(p);
+            return utilFastMouse(_surface || _targetNode.parentNode);
         }
 
         var element = d3_select(this);
@@ -101,7 +95,7 @@ export function behaviorDraw(context) {
     }
 
 
-    function mousemove() {
+    function mousemove(d3_event) {
         _lastMouse = d3_event;
         dispatch.call('move', this, datum());
     }
@@ -143,7 +137,7 @@ export function behaviorDraw(context) {
     }
 
 
-    function space() {
+    function space(d3_event) {
         d3_event.preventDefault();
         d3_event.stopPropagation();
 
@@ -172,19 +166,19 @@ export function behaviorDraw(context) {
     }
 
 
-    function backspace() {
+    function backspace(d3_event) {
         d3_event.preventDefault();
         dispatch.call('undo');
     }
 
 
-    function del() {
+    function del(d3_event) {
         d3_event.preventDefault();
         dispatch.call('cancel');
     }
 
 
-    function ret() {
+    function ret(d3_event) {
         d3_event.preventDefault();
         dispatch.call('finish');
     }

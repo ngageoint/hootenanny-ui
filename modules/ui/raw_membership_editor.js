@@ -3,7 +3,6 @@ import _filter from 'lodash-es/filter';
 import _groupBy from 'lodash-es/groupBy';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -32,7 +31,7 @@ export function uiRawMembershipEditor(context) {
     var _showBlank;
 
 
-    function selectRelation(d) {
+    function selectRelation(d3_event, d) {
         d3_event.preventDefault();
 
         // remove the hover-highlight styling

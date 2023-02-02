@@ -3,8 +3,7 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
-    select as d3_select,
-    event as d3_event
+    select as d3_select
 } from 'd3-selection';
 
 import { t } from '../../util/locale';
@@ -338,7 +337,7 @@ export function uiFieldRestrictions(field, context) {
         updateHints(null);
 
 
-        function click() {
+        function click(d3_event) {
             surface
                 .call(breathe.off)
                 .call(breathe);
@@ -430,7 +429,7 @@ export function uiFieldRestrictions(field, context) {
         }
 
 
-        function mouseover() {
+        function mouseover(d3_event) {
             var datum = d3_event.target.__data__;
             updateHints(datum);
         }

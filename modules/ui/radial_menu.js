@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -18,7 +17,7 @@ export function uiRadialMenu(context, operations) {
 
         selection.node().parentNode.focus();
 
-        function click(operation) {
+        function click(d3_event, operation) {
             d3_event.stopPropagation();
             if (operation.disabled()) return;
             operation();
@@ -82,7 +81,7 @@ export function uiRadialMenu(context, operations) {
             .append('div')
             .attr('class', 'tooltip-inner radial-menu-tooltip');
 
-        function mousedown() {
+        function mousedown(d3_event) {
             d3_event.stopPropagation(); // https://github.com/openstreetmap/iD/issues/1869
         }
 

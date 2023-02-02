@@ -6,7 +6,7 @@ import {
   geoMercatorRaw as d3_geoMercatorRaw
 } from 'd3-geo';
 
-import { json as d3_json } from 'd3-request';
+import { json as d3_json } from 'd3-fetch';
 
 import { t } from '../util/locale';
 import { geoExtent, geoSphericalDistance } from '../geo';

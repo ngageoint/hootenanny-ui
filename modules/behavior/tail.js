@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -47,7 +46,7 @@ export function behaviorTail() {
         }
 
 
-        function mousemove() {
+        function mousemove(d3_event) {
             if (container.style('display') === 'none') show();
             var xoffset = ((d3_event.clientX + tooltipSize[0] + xmargin) > selectionSize[0]) ?
                 -tooltipSize[0] - xmargin : xmargin;
@@ -56,14 +55,14 @@ export function behaviorTail() {
         }
 
 
-        function mouseleave() {
+        function mouseleave(d3_event) {
             if (d3_event.relatedTarget !== container.node()) {
                 container.style('display', 'none');
             }
         }
 
 
-        function mouseenter() {
+        function mouseenter(d3_event) {
             if (d3_event.relatedTarget !== container.node()) {
                 show();
             }

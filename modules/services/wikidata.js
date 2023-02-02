@@ -1,4 +1,4 @@
-import { json as d3_json } from 'd3-request';
+import { json as d3_json } from 'd3-fetch';
 
 import { utilQsString } from '../util';
 import { currentLocale } from '../util/locale';

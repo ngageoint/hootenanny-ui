@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -34,7 +33,7 @@ export function uiBackgroundDisplayOptions(context) {
     }
 
 
-    function updateValue(d, val) {
+    function updateValue(d3_event, d, val) {
         if (!val && d3_event && d3_event.target) {
             val = d3_event.target.value;
         }
@@ -90,7 +89,7 @@ export function uiBackgroundDisplayOptions(context) {
             .append('button')
             .attr('title', t('background.reset'))
             .attr('class', function(d) { return 'display-option-reset display-option-reset-' + d; })
-            .on('click', function(d) {
+            .on('click', function(d3_event, d) {
                 if (d3_event.button !== 0) return;
                 updateValue(d, 1);
             })

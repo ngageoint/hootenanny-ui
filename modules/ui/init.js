@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -314,7 +313,7 @@ export function uiInit(context) {
 
 
         var panPixels = 80;
-        context.keybinding()
+        context.keybinding(d3_event)
             .on('⌫', function() { d3_event.preventDefault(); })
             .on(t('sidebar.key'), ui.sidebar.toggle)
             .on('←', pan([panPixels, 0]))
@@ -361,7 +360,7 @@ export function uiInit(context) {
         }
 
 
-        function pan(d) {
+        function pan(d3_event, d) {
             return function() {
                 if (d3_select('.combobox').size()) return;
                 d3_event.preventDefault();
@@ -369,7 +368,7 @@ export function uiInit(context) {
             };
         }
 
-        function eventCancel() {
+        function eventCancel(d3_event) {
             d3_event.preventDefault();
         }
     }

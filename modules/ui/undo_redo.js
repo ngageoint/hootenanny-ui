@@ -1,7 +1,6 @@
 import _debounce from 'lodash-es/debounce';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -64,8 +63,8 @@ export function uiUndoRedo(context) {
         });
 
         context.keybinding()
-            .on(commands[0].cmd, function() { d3_event.preventDefault(); commands[0].action(); })
-            .on(commands[1].cmd, function() { d3_event.preventDefault(); commands[1].action(); });
+            .on(commands[0].cmd, function(d3_event) { d3_event.preventDefault(); commands[0].action(); })
+            .on(commands[1].cmd, function(d3_event) { d3_event.preventDefault(); commands[1].action(); });
 
 
         var debouncedUpdate = _debounce(update, 500, { leading: true, trailing: true });

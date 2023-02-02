@@ -5,7 +5,6 @@ import _values from 'lodash-es/values';
 import _without from 'lodash-es/without';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -236,7 +235,7 @@ export function modeSelect(context, selectedIDs) {
         }
 
 
-        function dblclick() {
+        function dblclick(d3_event) {
             var target = d3_select(d3_event.target);
 
             var datum = target.datum();
@@ -267,7 +266,7 @@ export function modeSelect(context, selectedIDs) {
         }
 
 
-        function selectElements(drawn) {
+        function selectElements(d3_event, drawn) {
             if (!checkSelectedIDs()) return;
 
             var surface = context.surface();
@@ -309,7 +308,7 @@ export function modeSelect(context, selectedIDs) {
         }
 
 
-        function firstVertex() {
+        function firstVertex(d3_event) {
             d3_event.preventDefault();
             var entity = singular();
             var parent = singularParent();
@@ -329,7 +328,7 @@ export function modeSelect(context, selectedIDs) {
         }
 
 
-        function lastVertex() {
+        function lastVertex(d3_event) {
             d3_event.preventDefault();
             var entity = singular();
             var parent = singularParent();
@@ -349,7 +348,7 @@ export function modeSelect(context, selectedIDs) {
         }
 
 
-        function previousVertex() {
+        function previousVertex(d3_event) {
             d3_event.preventDefault();
             var parent = singularParent();
             if (!parent) return;
@@ -373,7 +372,7 @@ export function modeSelect(context, selectedIDs) {
         }
 
 
-        function nextVertex() {
+        function nextVertex(d3_event) {
             d3_event.preventDefault();
             var parent = singularParent();
             if (!parent) return;
@@ -397,7 +396,7 @@ export function modeSelect(context, selectedIDs) {
         }
 
 
-        function nextParent() {
+        function nextParent(d3_event) {
             d3_event.preventDefault();
             var parents = _uniq(commonParents());
             if (!parents || parents.length < 2) return;

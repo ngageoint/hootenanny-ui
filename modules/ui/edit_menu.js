@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -109,14 +108,14 @@ export function uiEditMenu(context, operations) {
             .attr('class', 'tooltip-inner edit-menu-tooltip');
 
 
-        function click(operation) {
+        function click(d3_event, operation) {
             d3_event.stopPropagation();
             if (operation.disabled()) return;
             operation();
             editMenu.close();
         }
 
-        function mousedown() {
+        function mousedown(d3_event) {
             d3_event.stopPropagation();  // https://github.com/openstreetmap/iD/issues/1869
         }
 

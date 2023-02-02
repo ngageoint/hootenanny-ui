@@ -1,6 +1,5 @@
 import _debounce from 'lodash-es/debounce';
 
-import { event as d3_event } from 'd3-selection';
 import _isEmpty from 'lodash-es/isEmpty';
 
 import { t } from '../util/locale';
@@ -17,7 +16,7 @@ export function uiNotice(context) {
         var button = div
             .append('button')
             .attr('class', 'zoom-to notice fillD')
-            .on('wheel', function() {   // let wheel events pass through #4482
+            .on('wheel', function(d3_event) {   // let wheel events pass through #4482
                 var e2 = new WheelEvent(d3_event.type, d3_event);
                 context.surface().node().dispatchEvent(e2);
             });

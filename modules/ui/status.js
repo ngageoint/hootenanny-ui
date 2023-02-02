@@ -1,5 +1,3 @@
-import { event as d3_event } from 'd3-selection';
-
 import { t } from '../util/locale';
 import { svgIcon } from '../svg';
 
@@ -30,7 +28,7 @@ export function uiStatus(context) {
                             .call(svgIcon('#iD-icon-out-link', 'inline'))
                             .append('span')
                             .text(t('login'))
-                            .on('click.login', function() {
+                            .on('click.login', function(d3_event) {
                                 d3_event.preventDefault();
                                 osm.authenticate();
                             });

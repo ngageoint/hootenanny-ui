@@ -6,7 +6,6 @@ import {
 } from 'd3-array';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -90,7 +89,7 @@ export function uiBackground(context) {
     }
 
 
-    async function chooseBackground(d) {
+    async function chooseBackground(d3_event, d) {
         if (d.id === 'custom' && !d.template()) {
             return editCustom();
         }
@@ -126,14 +125,14 @@ export function uiBackground(context) {
     }
 
 
-    function editCustom() {
+    function editCustom(d3_event) {
         d3_event.preventDefault();
         context.container()
             .call(settingsCustomBackground);
     }
 
 
-    function chooseOverlay(d) {
+    function chooseOverlay(d3_event, d) {
         d3_event.preventDefault();
         context.background().toggleOverlayLayer(d);
         _overlayList.call(updateLayerSelections);
@@ -259,7 +258,7 @@ export function uiBackground(context) {
         minimapLabelEnter
             .append('input')
             .attr('type', 'checkbox')
-            .on('change', function() {
+            .on('change', function(d3_event) {
                 d3_event.preventDefault();
                 uiMapInMap.toggle();
             });
@@ -316,7 +315,7 @@ export function uiBackground(context) {
     }
 
 
-    function quickSwitch() {
+    function quickSwitch(d3_event) {
         if (d3_event) {
             d3_event.stopImmediatePropagation();
             d3_event.preventDefault();
@@ -333,7 +332,7 @@ export function uiBackground(context) {
             setVisible(false);
         }
 
-        function togglePane() {
+        function togglePane(d3_event) {
             if (d3_event) d3_event.preventDefault();
             paneTooltip.hide(button);
             setVisible(!button.classed('active'));

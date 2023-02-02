@@ -1,7 +1,6 @@
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -27,7 +26,7 @@ export function behaviorHover(context) {
     var _target;
 
 
-    function keydown() {
+    function keydown(d3_event) {
         if (_altDisables && d3_event.keyCode === utilKeybinding.modifierCodes.alt) {
             _selection.selectAll('.hover')
                 .classed('hover-suppressed', true)
@@ -41,7 +40,7 @@ export function behaviorHover(context) {
     }
 
 
-    function keyup() {
+    function keyup(d3_event) {
         if (_altDisables && d3_event.keyCode === utilKeybinding.modifierCodes.alt) {
             _selection.selectAll('.hover-suppressed')
                 .classed('hover-suppressed', false)
@@ -69,14 +68,14 @@ export function behaviorHover(context) {
             .on('keyup.hover', keyup);
 
 
-        function mouseover() {
+        function mouseover(d3_event) {
             if (_buttonDown) return;
             var target = d3_event.target;
             enter(target ? target.__data__ : null);
         }
 
 
-        function mouseout() {
+        function mouseout(d3_event) {
             if (_buttonDown) return;
             var target = d3_event.relatedTarget;
             enter(target ? target.__data__ : null);
@@ -97,7 +96,7 @@ export function behaviorHover(context) {
         }
 
 
-        function enter(datum) {
+        function enter(d3_event, datum) {
             if (datum === _target) return;
             _target = datum;
 

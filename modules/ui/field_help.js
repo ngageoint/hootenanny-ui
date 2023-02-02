@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -152,7 +151,7 @@ export function uiFieldHelp(context, fieldName) {
             .attr('tabindex', -1)
             .call(svgIcon('#iD-icon-help'))
             .merge(button)
-            .on('click', function () {
+            .on('click', function (d3_event) {
                 d3_event.stopPropagation();
                 d3_event.preventDefault();
                 if (_body.classed('hide')) {
@@ -203,7 +202,7 @@ export function uiFieldHelp(context, fieldName) {
         titleEnter
             .append('button')
             .attr('class', 'fr close')
-            .on('click', function() {
+            .on('click', function(d3_event) {
                 d3_event.stopPropagation();
                 d3_event.preventDefault();
                 hide();
@@ -221,7 +220,7 @@ export function uiFieldHelp(context, fieldName) {
             .append('div')
             .attr('class', 'field-help-nav-item')
             .text(function(d) { return d; })
-            .on('click', function(d, i) {
+            .on('click', function(d3_event, d, i) {
                 d3_event.stopPropagation();
                 d3_event.preventDefault();
                 clickHelp(i);

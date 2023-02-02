@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -44,7 +43,7 @@ export function uiModal(selection, blocking) {
         .attr('class', 'modal fillL col6');
 
     if (!blocking) {
-        shaded.on('click.remove-modal', function() {
+        shaded.on('click.remove-modal', function(d3_event) {
             if (d3_event.target === this) {
                 shaded.close();
             }

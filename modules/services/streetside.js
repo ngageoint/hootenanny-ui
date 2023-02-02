@@ -7,7 +7,6 @@ import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { timer as d3_timer } from 'd3-timer';
 
 import {
-    event as d3_event,
     select as d3_select,
     selectAll as d3_selectAll
 } from 'd3-selection';
@@ -792,7 +791,7 @@ export default {
             .attr('type', 'checkbox')
             .attr('id', 'streetside-hires-input')
             .property('checked', _hires)
-            .on('click', function() {
+            .on('click', function(d3_event) {
                 d3_event.stopPropagation();
 
                 _hires = !_hires;

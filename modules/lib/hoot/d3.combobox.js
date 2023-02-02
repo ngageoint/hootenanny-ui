@@ -9,7 +9,6 @@ import {
 } from 'd3-dispatch';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -73,7 +72,7 @@ export function d3combobox() {
                     .merge( caret );
 
                 caret
-                    .on( 'mousedown', function() {
+                    .on( 'mousedown', function(d3_event) {
                         // prevent the form element from blurring. it blurs
                         // on mousedown
                         d3_event.stopPropagation();
@@ -108,7 +107,7 @@ export function d3combobox() {
                     .style( 'position', 'absolute' )
                     .style( 'display', 'block' )
                     .style( 'left', '0px' )
-                    .on( 'mousedown', function() {
+                    .on( 'mousedown', function(d3_event) {
                         // prevent moving focus out of the text field
                         d3_event.preventDefault();
                     } );
@@ -132,7 +131,7 @@ export function d3combobox() {
             }
         }
 
-        function keydown() {
+        function keydown(d3_event) {
             switch ( d3_event.keyCode ) {
                 // backspace, delete
                 case 8:
@@ -170,7 +169,7 @@ export function d3combobox() {
             d3_event.stopPropagation();
         }
 
-        function keyup() {
+        function keyup(d3_event) {
             switch ( d3_event.keyCode ) {
                 // escape
                 case 27:

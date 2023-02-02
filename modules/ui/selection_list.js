@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -17,7 +16,7 @@ export function uiSelectionList(context, selectedIDs) {
     }
 
 
-    function deselectEntity(entity) {
+    function deselectEntity(d3_event, entity) {
         d3_event.stopPropagation();
         var index = selectedIDs.indexOf(entity.id);
         if (index > -1) {

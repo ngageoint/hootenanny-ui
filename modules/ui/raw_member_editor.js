@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -24,7 +23,7 @@ export function uiRawMemberEditor(context) {
     var taginfo = services.taginfo;
     var _entityID;
 
-    function downloadMember(d) {
+    function downloadMember(d3_event, d) {
         d3_event.preventDefault();
 
         // display the loading indicator
@@ -32,7 +31,7 @@ export function uiRawMemberEditor(context) {
         context.loadEntity(d.id);
     }
 
-    function zoomToMember(d) {
+    function zoomToMember(d3_event, d) {
         d3_event.preventDefault();
 
         var entity = context.entity(d.id);
@@ -43,7 +42,7 @@ export function uiRawMemberEditor(context) {
     }
 
 
-    function selectMember(d) {
+    function selectMember(d3_event, d) {
         d3_event.preventDefault();
 
         // remove the hover-highlight styling

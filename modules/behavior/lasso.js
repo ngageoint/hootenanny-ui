@@ -1,7 +1,6 @@
 import _map from 'lodash-es/map';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -20,7 +19,7 @@ export function behaviorLasso(context) {
         var lasso;
 
 
-        function mousedown() {
+        function mousedown(d3_event) {
             var button = 0;  // left
             if (d3_event.button === button && d3_event.shiftKey === true) {
                 lasso = null;

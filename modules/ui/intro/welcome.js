@@ -1,6 +1,5 @@
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -173,7 +172,7 @@ function clickListener() {
     // Unsetting a property in `down` is delayed because
     //   on Windows a contextmenu event happens after keyup/mouseup
 
-    function keydown() {
+    function keydown(d3_event) {
         if (d3_event.keyCode === 93)  {   // context menu
             d3_event.preventDefault();
             d3_event.stopPropagation();
@@ -183,7 +182,7 @@ function clickListener() {
     }
 
 
-    function keyup() {
+    function keyup(d3_event) {
         if (d3_event.keyCode === 93)  {   // context menu
             d3_event.preventDefault();
             d3_event.stopPropagation();
@@ -201,7 +200,7 @@ function clickListener() {
     }
 
 
-    function mousedown() {
+    function mousedown(d3_event) {
         var button = d3_event.button;
         if (button === 0 && !d3_event.ctrlKey) {
             tooltip.classed('leftclick', true);
@@ -212,7 +211,7 @@ function clickListener() {
     }
 
 
-    function mouseup() {
+    function mouseup(d3_event) {
         var button = d3_event.button;
         var endTime = d3_event.timeStamp;
         var startTime = down[button] || endTime;
@@ -242,7 +241,7 @@ function clickListener() {
     }
 
 
-    function contextmenu() {
+    function contextmenu(d3_event) {
         d3_event.preventDefault();
         d3_event.stopPropagation();
         if (!down[2] && !down.menu) {

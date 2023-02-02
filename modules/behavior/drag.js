@@ -1,17 +1,13 @@
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import {
-    customEvent as d3_customEvent,
-    event as d3_event,
-    mouse as d3_mouse,
     select as d3_select,
-    selection as d3_selection,
-    touches as d3_touches
+    selection as d3_selection
 } from 'd3-selection';
 
 import { osmNote } from '../osm';
 import { utilRebind } from '../util/rebind';
-import { utilPrefixCSSProperty, utilPrefixDOMProperty } from '../util';
+import { utilFastMouse, utilPrefixCSSProperty, utilPrefixDOMProperty } from '../util';
 
 
 /*
@@ -39,7 +35,7 @@ export function behaviorDrag() {
 
 
     var d3_event_userSelectProperty = utilPrefixCSSProperty('UserSelect');
-    var d3_event_userSelectSuppress = function() {
+    var d3_event_userSelectSuppress = function(d3_event) {
             var selection = d3_selection();
             var select = selection.style(d3_event_userSelectProperty);
             selection.style(d3_event_userSelectProperty, 'none');
@@ -49,7 +45,7 @@ export function behaviorDrag() {
         };
 
 
-    function d3_eventCancel() {
+    function d3_eventCancel(d3_event) {
         d3_event.stopPropagation();
         d3_event.preventDefault();
     }
@@ -58,12 +54,12 @@ export function behaviorDrag() {
     function eventOf(thiz, argumentz) {
         return function(e1) {
             e1.target = behavior;
-            d3_customEvent(e1, dispatch.apply, dispatch, [e1.type, thiz, argumentz]);
+            window.CustomEvent(e1, dispatch.apply, dispatch, [e1.type, thiz, argumentz]);
         };
     }
 
 
-    function dragstart() {
+    function dragstart(d3_event) {
         _target = this;
         _event = eventOf(_target, arguments);
 
@@ -91,14 +87,11 @@ export function behaviorDrag() {
 
 
         function point() {
-            var p = _surface || _target.parentNode;
-            return touchId !== null ? d3_touches(p).filter(function(p) {
-                return p.identifier === touchId;
-            })[0] : d3_mouse(p);
+            return utilFastMouse(_surface || _targetNode.parentNode);
         }
 
 
-        function dragmove() {
+        function dragmove(d3_event) {
             var p = point();
             var dx = p[0] - startOrigin[0];
             var dy = p[1] - startOrigin[1];
@@ -107,7 +100,7 @@ export function behaviorDrag() {
                 return;
 
             startOrigin = p;
-            d3_eventCancel();
+            d3_eventCancel(d3_event);
 
             if (!started) {
                 started = true;
@@ -122,11 +115,11 @@ export function behaviorDrag() {
         }
 
 
-        function dragend() {
+        function dragend(d3_event) {
             if (started) {
                 _event({ type: 'end' });
 
-                d3_eventCancel();
+                d3_eventCancel(d3_event);
                 if (d3_event.target === eventTarget) {
                     d3_select(window)
                         .on('click.drag', click, true);
@@ -141,8 +134,8 @@ export function behaviorDrag() {
         }
 
 
-        function click() {
-            d3_eventCancel();
+        function click(d3_event) {
+            d3_eventCancel(d3_event);
             d3_select(window)
                 .on('click.drag', null);
         }
@@ -154,7 +147,7 @@ export function behaviorDrag() {
         var delegate = dragstart;
 
         if (_selector) {
-            delegate = function() {
+            delegate = function(d3_event) {
                 var root = this;
                 var target = d3_event.target;
                 for (; target && target !== root; target = target.parentNode) {

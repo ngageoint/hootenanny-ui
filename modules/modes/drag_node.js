@@ -2,7 +2,6 @@ import _find from 'lodash-es/find';
 import _intersection from 'lodash-es/intersection';
 
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -101,7 +100,7 @@ export function modeDragNode(context) {
     }
 
 
-    function keydown() {
+    function keydown(d3_event) {
         if (d3_event.keyCode === utilKeybinding.modifierCodes.alt) {
             if (context.surface().classed('nope')) {
                 context.surface()
@@ -114,7 +113,7 @@ export function modeDragNode(context) {
     }
 
 
-    function keyup() {
+    function keyup(d3_event) {
         if (d3_event.keyCode === utilKeybinding.modifierCodes.alt) {
             if (context.surface().classed('nope-suppressed')) {
                 context.surface()
@@ -127,7 +126,7 @@ export function modeDragNode(context) {
     }
 
 
-    function start(entity) {
+    function start(d3_event, entity) {
         _wasMidpoint = entity.type === 'midpoint';
         var hasHidden = context.features().hasHiddenConnections(entity, context.graph());
         _isCancelled = d3_event.sourceEvent.shiftKey || hasHidden;
@@ -167,7 +166,7 @@ export function modeDragNode(context) {
 
     // related code
     // - `behavior/draw.js` `datum()`
-    function datum() {
+    function datum(d3_event) {
         var event = d3_event && d3_event.sourceEvent;
         if (!event || event.altKey) {
             return {};
@@ -180,7 +179,7 @@ export function modeDragNode(context) {
     }
 
 
-    function doMove(entity, nudge) {
+    function doMove(d3_event, entity, nudge) {
         nudge = nudge || [0, 0];
 
         var currPoint = (d3_event && d3_event.point) || context.projection(_lastLoc);
@@ -338,7 +337,7 @@ export function modeDragNode(context) {
     }
 
 
-    function move(entity) {
+    function move(d3_event, entity) {
         if (_isCancelled) return;
         d3_event.sourceEvent.stopPropagation();
 

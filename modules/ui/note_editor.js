@@ -1,6 +1,5 @@
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -172,7 +171,7 @@ export function uiNoteEditor(context) {
 
 
         // fast submit if user presses cmd+enter
-        function keydown() {
+        function keydown(d3_event) {
             if (!(d3_event.keyCode === 13 && d3_event.metaKey)) return;
 
             var osm = services.osm;
@@ -260,7 +259,7 @@ export function uiNoteEditor(context) {
             .call(svgIcon('#iD-icon-out-link', 'inline'))
             .append('span')
             .text(t('login'))
-            .on('click.note-login', function() {
+            .on('click.note-login', function(d3_event) {
                 d3_event.preventDefault();
                 osm.authenticate();
             });
