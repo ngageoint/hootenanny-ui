@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -95,7 +94,7 @@ export function uiMapData(context) {
 
 
     function drawPhotoItems(selection) {
-        var photoKeys = ['streetside', 'mapillary-images', 'mapillary-signs', 'openstreetcam-images'];
+        var photoKeys = ['streetside', 'mapillary-images', 'mapillary-signs'];
         var photoLayers = layers.all().filter(function(obj) { return photoKeys.indexOf(obj.id) !== -1; });
         var data = photoLayers.filter(function(obj) { return obj.layer.supported(); });
 
@@ -267,7 +266,7 @@ export function uiMapData(context) {
                 .title(t('map_data.layers.custom.zoom'))
                 .placement((textDirection === 'rtl') ? 'right' : 'left')
             )
-            .on('click', function() {
+            .on('click', function(d3_event) {
                 d3_event.preventDefault();
                 d3_event.stopPropagation();
                 dataLayer.fitZoom();
@@ -304,7 +303,7 @@ export function uiMapData(context) {
     }
 
 
-    function editCustom() {
+    function editCustom(d3_event) {
         d3_event.preventDefault();
         context.container()
             .call(settingsCustomData);
@@ -423,7 +422,7 @@ export function uiMapData(context) {
     }
 
 
-    function toggleWireframe() {
+    function toggleWireframe(d3_event) {
         if (d3_event) {
             d3_event.preventDefault();
             d3_event.stopPropagation();
@@ -446,7 +445,7 @@ export function uiMapData(context) {
             setVisible(false);
         }
 
-        function togglePane() {
+        function togglePane(d3_event) {
             if (d3_event) d3_event.preventDefault();
             paneTooltip.hide(button);
             setVisible(!button.classed('active'));

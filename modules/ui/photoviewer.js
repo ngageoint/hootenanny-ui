@@ -1,5 +1,4 @@
 import {
-    event as d3_event,
     select as d3_select
 } from 'd3-selection';
 
@@ -20,7 +19,6 @@ export function uiPhotoviewer(context) {
             .on('click', function () {
                 if (services.streetside) { services.streetside.hideViewer(); }
                 if (services.mapillary) { services.mapillary.hideViewer(); }
-                if (services.openstreetcam) { services.openstreetcam.hideViewer(); }
             })
             .append('div')
             .call(svgIcon('#iD-icon-close'));
@@ -60,7 +58,7 @@ export function uiPhotoviewer(context) {
             var startWidth;
             var startHeight;
 
-            function startResize() {
+            function startResize(d3_event) {
                 var mapSize = context.map().dimensions();
 
                 if (resizeOnX) {
@@ -87,7 +85,7 @@ export function uiPhotoviewer(context) {
                     .on('.' + eventName, null);
             }
 
-            return function initResize() {
+            return function initResize(d3_event) {
                 startX = d3_event.clientX;
                 startY = d3_event.clientY;
                 startWidth = target.node().getBoundingClientRect().width;
