@@ -47,8 +47,8 @@ export default class TagMapWidget {
             Hoot.config.tagInfo[this.schemaOption] = [];
         }
         if (Hoot.config.tagInfo[this.schemaOption].length === 0) {
-            (this.schemaOption === 'OSM' 
-                ? Hoot.api.getPopularOsmTags() 
+            (this.schemaOption === 'OSM'
+                ? Hoot.api.getPopularOsmTags()
                 : Hoot.translations.getFieldMappings(this.schemaOption)
             )
             .then(resp => {

@@ -11,12 +11,12 @@ export default class Upload {
             let option = {
                 name: v,
                 enabled: true
-            }
+            };
             if (v === 'OSM') {
-                option.checked = true
+                option.checked = true;
             }
             return option;
-        })
+        });
 
         this.uploadButtons = [
             {
