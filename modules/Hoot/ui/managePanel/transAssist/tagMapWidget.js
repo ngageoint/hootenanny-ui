@@ -9,7 +9,6 @@ import { d3combobox } from 'lib/hoot/d3.combobox';
 export default class TagMapWidget {
     constructor( instance ) {
         this.instance = instance;
-        this.fieldMappings = {};
     }
 
     createTagLookup() {
@@ -44,13 +43,16 @@ export default class TagMapWidget {
 
         this.searchTag.node().focus();
 
-        if (!this.fieldMappings[this.schemaOption]) {
-            this.fieldMappings[this.schemaOption] = [];
+        if (!Hoot.config.tagInfo[this.schemaOption]) {
+            Hoot.config.tagInfo[this.schemaOption] = [];
         }
-        if (this.fieldMappings[this.schemaOption].length === 0) {
-            Hoot.translations.getFieldMappings(this.schemaOption)
+        if (Hoot.config.tagInfo[this.schemaOption].length === 0) {
+            (this.schemaOption === 'OSM' 
+                ? Hoot.api.getPopularOsmTags() 
+                : Hoot.translations.getFieldMappings(this.schemaOption)
+            )
             .then(resp => {
-                this.fieldMappings[this.schemaOption] = resp;
+                Hoot.config.tagInfo[this.schemaOption] = resp;
             });
         }
     }
@@ -129,7 +131,7 @@ export default class TagMapWidget {
             results;
 
         if ( value.length ) {
-            results = this.fieldMappings[this.schemaOption].filter( val => val.toLowerCase().indexOf( value.toLowerCase() ) > -1 )
+            results = Hoot.config.tagInfo[this.schemaOption].filter( val => val.toLowerCase().indexOf( value.toLowerCase() ) > -1 )
                 .sort( ( a, b ) => {
                     if ( a > b ) {
                         return 1;
@@ -184,129 +186,132 @@ export default class TagMapWidget {
     selectTag( d ) {
         let that = this;
         let tagKey = d;
-        Hoot.translations.getColumns( tagKey.split('::')[0], this.schemaOption )
-            .then((values) => {
-                this.instance.toggleNextButton( false );
+        ( this.schemaOption === 'OSM'
+            ? Hoot.api.getOsmTagValues( tagKey )
+            : Hoot.translations.getColumns( tagKey.split('::')[0], this.schemaOption )
+        )
+        .then((values) => {
+            this.instance.toggleNextButton( false );
 
-                this.tagLookup.html( null );
+            this.tagLookup.html( null );
 
-                this.tagLookup
-                    .append( 'div' )
-                    .classed( 'translate-icon remove-tag inline thumbnail big _icon blank keyline-left', true )
-                    .on( 'click', () => this.tagLookup.remove() );
+            this.tagLookup
+                .append( 'div' )
+                .classed( 'translate-icon remove-tag inline thumbnail big _icon blank keyline-left', true )
+                .on( 'click', () => this.tagLookup.remove() );
 
-                this.tagLookup
-                    .append( 'div' )
-                    .classed( 'translate-icon map-type-icon remove-map-tag inline thumbnail big _icon blank keyline-left', true )
-                    .on( 'click', function () {
-                        let icon = d3.select( this );
+            this.tagLookup
+                .append( 'div' )
+                .classed( 'translate-icon map-type-icon remove-map-tag inline thumbnail big _icon blank keyline-left', true )
+                .on( 'click', function () {
+                    let icon = d3.select( this );
 
-                        if ( icon.classed( 'remove-map-tag' ) ) {
-                            icon.classed( 'remove-map-tag', false );
-                            icon.classed( 'link-tag', true );
+                    if ( icon.classed( 'remove-map-tag' ) ) {
+                        icon.classed( 'remove-map-tag', false );
+                        icon.classed( 'link-tag', true );
 
-                            that.tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
-                            that.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
-                        } else if ( icon.classed( 'link-tag' ) ) {
-                            icon.classed( 'link-tag', false );
-                            icon.classed( 'map-tag', true );
+                        that.tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
+                        that.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
+                    } else if ( icon.classed( 'link-tag' ) ) {
+                        icon.classed( 'link-tag', false );
+                        icon.classed( 'map-tag', true );
 
-                            that.tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
-                            that.tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
-                        } else {
-                            icon.classed( 'map-tag', false );
-                            icon.classed( 'remove-map-tag', true );
+                        that.tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
+                        that.tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
+                    } else {
+                        icon.classed( 'map-tag', false );
+                        icon.classed( 'remove-map-tag', true );
 
-                            that.tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
-                            that.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
-                        }
-                    } );
+                        that.tagLookup.select( '.mapping-single' ).classed( 'hidden', true );
+                        that.tagLookup.select( '.mapping-list' ).classed( 'hidden', true );
+                    }
+                } );
 
-                this.tagLookup
-                    .append( 'label' )
-                    .classed( 'tag-key pad1 space-bottom0 center bigger', true )
-                    .text( tagKey );
+            this.tagLookup
+                .append( 'label' )
+                .classed( 'tag-key pad1 space-bottom0 center bigger', true )
+                .text( tagKey );
 
-                // single
-                this.tagLookup
-                    .append( 'div' )
-                    .classed( 'mapping-wrapper mapping-single keyline-top hidden', true )
-                    .append( 'input' )
-                    .attr( 'id', () => 'preset-input-' + this.hashCode(tagKey ) )
-                    .attr( 'type', 'text' )
-                    .select( function () {
-                        let combobox = d3combobox()
-                            .data( values.map( obj => {
-                                return { title: obj.replace( '_', ' ' ), value: obj };
-                            } ) );
+            // single
+            this.tagLookup
+                .append( 'div' )
+                .classed( 'mapping-wrapper mapping-single keyline-top hidden', true )
+                .append( 'input' )
+                .attr( 'id', () => 'preset-input-' + this.hashCode(tagKey ) )
+                .attr( 'type', 'text' )
+                .select( function () {
+                    let combobox = d3combobox()
+                        .data( values.map( obj => {
+                            return { title: obj.replace( '_', ' ' ), value: obj };
+                        } ) );
 
-                        d3.select( this ).call( combobox );
-                    } );
+                    d3.select( this ).call( combobox );
+                } );
 
-                // list
-                let attrMapList = this.tagLookup
-                    .append( 'div' )
-                    .classed( 'mapping-wrapper mapping-list keyline-top hidden', true )
-                    .append( 'ul' );
+            // list
+            let attrMapList = this.tagLookup
+                .append( 'div' )
+                .classed( 'mapping-wrapper mapping-list keyline-top hidden', true )
+                .append( 'ul' );
 
-                let attrMapListRows = attrMapList
-                    .selectAll( 'li' )
-                    .data( this.instance.currentAttribute.value.values() )
-                    .enter()
-                    .append( 'li' )
-                    .classed( 'preset-row', true );
+            let attrMapListRows = attrMapList
+                .selectAll( 'li' )
+                .data( this.instance.currentAttribute.value.values() )
+                .enter()
+                .append( 'li' )
+                .classed( 'preset-row', true );
 
-                attrMapListRows
-                    .append( 'div' )
-                    .classed( 'preset-key-wrap keyline-right', true )
-                    .append( 'span' )
-                    .text( d => d );
+            attrMapListRows
+                .append( 'div' )
+                .classed( 'preset-key-wrap keyline-right', true )
+                .append( 'span' )
+                .text( d => d );
 
-                attrMapListRows
-                    .append( 'div' )
-                    .append( 'input' )
-                    .attr( 'id', d => 'preset-input-' + this.hashCode( tagKey + d ) )
-                    .attr( 'type', 'text' )
-                    .select( function () {
-                        let combobox = d3combobox()
-                            .data( values.map( obj => {
-                                return { title: obj.replace( '_', ' ' ), value: obj };
-                            } ) );
+            attrMapListRows
+                .append( 'div' )
+                .append( 'input' )
+                .attr( 'id', d => 'preset-input-' + this.hashCode( tagKey + d ) )
+                .attr( 'type', 'text' )
+                .select( function () {
+                    let combobox = d3combobox()
+                        .data( values.map( obj => {
+                            return { title: obj.replace( '_', ' ' ), value: obj };
+                        } ) );
 
-                        d3.select( this ).call( combobox );
-                    } );
+                    d3.select( this ).call( combobox );
+                } );
 
-                let tagJson = this.instance.jsonMapping[ this.instance.layer ][ this.instance.currentAttribute.key ];
+            let tagJson = this.instance.jsonMapping[ this.instance.layer ][ this.instance.currentAttribute.key ];
 
-                if ( tagJson ) {
-                    let mapping = d3.map( tagJson );
+            if ( tagJson ) {
+                let mapping = d3.map( tagJson );
 
-                    let isCustomized = mapping
-                        .entries()
-                        .filter( entry => d.key === entry.key && entry.value !== this.instance.currentAttribute.key );
+                let isCustomized = mapping
+                    .entries()
+                    .filter( entry => d.key === entry.key && entry.value !== this.instance.currentAttribute.key );
 
-                    isCustomized.forEach( entry => {
-                        if ( typeof entry.value === 'string' ) { //entry is a single tag value
-                            this.tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
+                isCustomized.forEach( entry => {
+                    if ( typeof entry.value === 'string' ) { //entry is a single tag value
+                        this.tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
 
-                            this.tagLookup.select( '.map-type-icon' )
-                                .classed( 'remove-map-tag', false )
-                                .classed( 'link-tag', true );
+                        this.tagLookup.select( '.map-type-icon' )
+                            .classed( 'remove-map-tag', false )
+                            .classed( 'link-tag', true );
 
-                            this.tagLookup.select( '#preset-input-' + this.hashCode( tagKey ) ).property( 'value', entry.value );
-                        } else { //entry is map of attr:tag values
-                            this.tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
+                        this.tagLookup.select( '#preset-input-' + this.hashCode( tagKey ) ).property( 'value', entry.value );
+                    } else { //entry is map of attr:tag values
+                        this.tagLookup.select( '.mapping-list' ).classed( 'hidden', false );
 
-                            this.tagLookup.select( '.map-type-icon' )
-                                .classed( 'remove-map-tag', false )
-                                .classed( 'map-tag', true );
+                        this.tagLookup.select( '.map-type-icon' )
+                            .classed( 'remove-map-tag', false )
+                            .classed( 'map-tag', true );
 
-                            d3.map( entry.value ).entries().forEach( e => {
-                                d3.select( '#preset-input-' + this.hashCode( tagKey + e.key ) ).property( 'value', e.value );
-                            } );
-                        }
-                    } );
-                } } );
+                        d3.map( entry.value ).entries().forEach( e => {
+                            d3.select( '#preset-input-' + this.hashCode( tagKey + e.key ) ).property( 'value', e.value );
+                        } );
+                    }
+                } );
+            } } );
     }
 
     hashCode( input ) {

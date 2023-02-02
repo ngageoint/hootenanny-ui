@@ -7,26 +7,16 @@
 export default class Upload {
     constructor( instance ) {
         this.instance = instance;
-
-        this.schemaOptions = [
-            {
-                name: 'OSM',
-                enabled: true,
-                checked: true
-            },
-            {
-                name: 'TDSv70',
-                enabled: true
-            },
-            {
-                name: 'TDSv61',
-                enabled: true
-            },
-            {
-                name: 'MGCP',
+        this.schemaOptions = Hoot.translations.availableTranslations.map(v => {
+            let option = {
+                name: v,
                 enabled: true
             }
-        ];
+            if (v === 'OSM') {
+                option.checked = true
+            }
+            return option;
+        })
 
         this.uploadButtons = [
             {

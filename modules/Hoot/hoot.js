@@ -16,7 +16,6 @@ import TranslationManager from './managers/translationManager';
 import UserManager        from './managers/userManager';
 import EventManager       from './managers/eventManager';
 import UI                 from './ui/init';
-import { tagInfo }        from '../../data/index';
 import buildInfo          from './config/buildInfo.json';
 import { duration }       from './tools/utilities';
 import { utilStringQs }   from '../util';
@@ -33,7 +32,7 @@ class Hoot {
         this.duration     = duration;
         // this.user
         this.config = {
-            tagInfo,
+            tagInfo: {},
             appInfo: [],
             users: [],
             exportSizeThreshold: null,
