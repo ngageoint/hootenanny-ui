@@ -165,9 +165,9 @@ class SidebarController {
         this.deleteButton = this.controller
             .append( 'button' )
             .classed( 'delete-button icon-button keyline-left round-right inline', true )
-            .on( 'click', async d => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
+            .on( 'click', async (d3_event, d) => {
+                d3_event.stopPropagation();
+                d3_event.preventDefault();
 
                 let message = 'Are you sure you want to remove?',
                     confirm = await Hoot.message.confirm( message );
@@ -190,9 +190,9 @@ class SidebarController {
         this.showButton = this.controller
             .append('button')
             .classed('showlayers icon-button keyline-left inline unround', true)
-            .on('click', async function () {
+            .on('click', async function (d3_event) {
                 try {
-                    d3.event.preventDefault();
+                    d3_event.preventDefault();
                     if (!sources) {
                         sources = Object.values(Hoot.layers.loadedLayers).reduce((sources, l) => {
                             let key = l.isMerged ? 'merged' : 'original';
@@ -239,9 +239,9 @@ class SidebarController {
         this.cancelButton = this.controller
             .append( 'button' )
             .classed( 'cancel-button icon-button keyline-left round-right inline', true )
-            .on( 'click', async d => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
+            .on( 'click', async(d3_event, d) => {
+                d3_event.stopPropagation();
+                dd3_event.preventDefault();
 
                 let message = 'Are you sure you want to cancel?',
                     confirm = await Hoot.message.confirm( message );
@@ -294,8 +294,8 @@ class SidebarController {
         this.contextLayer = this.controller
             .append( 'div' )
             .classed( 'context-menu-layer', true )
-            .on( 'contextmenu', () => {
-                d3.event.preventDefault();
+            .on( 'contextmenu', (d3_event) => {
+                d3_event.preventDefault();
 
                 // create the div element that will hold the context menu
                 d3.selectAll( '.context-menu' )
@@ -315,8 +315,8 @@ class SidebarController {
 
                 // show the context menu
                 d3.select( '.context-menu' )
-                    .style( 'left', (d3.event.pageX - 2) + 'px' )
-                    .style( 'top', (d3.event.pageY - 2) + 'px' )
+                    .style( 'left', (d3_event.pageX - 2) + 'px' )
+                    .style( 'top', (d3_event.pageY - 2) + 'px' )
                     .style( 'display', 'block' );
 
                 // close menu

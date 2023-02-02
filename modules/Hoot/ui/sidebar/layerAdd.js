@@ -148,9 +148,9 @@ export default class LayerAdd extends SidebarForm {
             .classed( 'add-layer dark text-light small strong round', true )
             .property( 'disabled', true )
             .text( 'Add Layer' )
-            .on( 'click', () => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
+            .on( 'click', (d3_event) => {
+                d3_event.stopPropagation();
+                d3_event.preventDefault();
 
                 this.submitLayer();
             } );

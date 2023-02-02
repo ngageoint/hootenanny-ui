@@ -10,9 +10,9 @@ import { currentLocale } from '../util/locale';
 
 
 var apibase = 'https://taginfo.openstreetmap.org/api/4/',
-    inflight = {},
-    popularKeys = {},
-    taginfoCache = {},
+    _inflight = {},
+    _popularKeys = {},
+    _taginfoCache = {},
     tag_sorts = {
         point: 'count_nodes',
         vertex: 'count_nodes',
@@ -140,14 +140,23 @@ function sortKeys(a, b) {
 var debouncedRequest = _debounce(request, 500, { leading: false });
 
 function request(url, params, exactMatch, callback, loaded) {
-    if (inflight[url]) return;
+    if (_inflight[url]) return;
 
     if (checkCache(url, params, exactMatch, callback)) return;
 
-    inflight[url] = d3_json(url, function (err, data) {
-        delete inflight[url];
-        loaded(err, data);
-    });
+    var controller = new AbortController();
+    _inflight[url] = controller;
+
+    d3_json(url, { signal: controller.signal })
+        .then(function(result) {
+            delete _inflight[url];
+            if (loaded) loaded(null, result);
+        })
+        .catch(function(err) {
+            delete _inflight[url];
+            if (err.name === 'AbortError') return;
+            if (loaded) loaded(err.message);
+        });
 }
 
 
@@ -157,7 +166,7 @@ function checkCache(url, params, exactMatch, callback) {
         testUrl = url;
 
     do {
-        var hit = taginfoCache[testUrl];
+        var hit = _taginfoCache[testUrl];
 
         // exact match, or shorter match yielding fewer than max results (rp)
         if (hit && (url === testUrl || hit.length < rp)) {
@@ -181,9 +190,9 @@ function checkCache(url, params, exactMatch, callback) {
 export default {
 
     init: function() {
-        inflight = {};
-        taginfoCache = {};
-        popularKeys = {
+        _inflight = {};
+        _taginfoCache = {};
+        _popularKeys = {
             postal_code: true   // #5377
         };
 
@@ -195,15 +204,15 @@ export default {
             if (err) return;
             data.forEach(function(d) {
                 if (d.value === 'opening_hours') return;  // exception
-                popularKeys[d.value] = true;
+                _popularKeys[d.value] = true;
             });
         });
     },
 
 
     reset: function() {
-        _forEach(inflight, function(req) { req.abort(); });
-        inflight = {};
+        Object.values(_inflight).forEach(function(controller) { controller.abort(); });
+        _inflight = {};
     },
 
 
@@ -219,7 +228,7 @@ export default {
             } else {
                 var f = filterKeys(params.filter);
                 var result = d.data.filter(f).sort(sortKeys).map(valKey);
-                taginfoCache[url] = result;
+                _taginfoCache[url] = result;
                 callback(null, result);
             }
         });
@@ -239,7 +248,7 @@ export default {
             } else {
                 var f = filterMultikeys(prefix);
                 var result = d.data.filter(f).map(valKey);
-                taginfoCache[url] = result;
+                _taginfoCache[url] = result;
                 callback(null, result);
             }
         });
@@ -249,7 +258,7 @@ export default {
     values: function(params, callback) {
         // Exclude popular keys from values lookups.. see #3955
         var key = params.key;
-        if (key && popularKeys[key]) {
+        if (key && _popularKeys[key]) {
             callback(null, []);
             return;
         }
@@ -272,7 +281,7 @@ export default {
                 var f = filterValues(allowUpperCase);
 
                 var result = d.data.filter(f).map(valKeyDescription);
-                taginfoCache[url] = result;
+                _taginfoCache[url] = result;
                 callback(null, result);
             }
         });
@@ -292,7 +301,7 @@ export default {
             } else {
                 var f = filterRoles(geometry);
                 var result = d.data.filter(f).map(roleKey);
-                taginfoCache[url] = result;
+                _taginfoCache[url] = result;
                 callback(null, result);
             }
         });
@@ -312,7 +321,7 @@ export default {
             if (err) {
                 callback(err);
             } else {
-                taginfoCache[url] = d.data;
+                _taginfoCache[url] = d.data;
                 callback(null, d.data);
             }
         });

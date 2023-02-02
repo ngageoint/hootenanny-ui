@@ -332,25 +332,25 @@ export default class FolderTree extends EventEmitter {
             .attr( 'transform', `translate( 0, ${ source.x0 } )` )
             .classed( 'node', true )
             .style( 'opacity', 0 )
-            .on( 'click', function( d ) {
+            .on( 'click', function( d3_event, d ) {
                 // use self as context but still pass in the clicked element
-                self.click.call( self, this, d );
+                self.click.call( self, d3_event, this, d );//pass event
             } )
-            .on( 'dblclick', d => {
+            .on( 'dblclick', (d3_event, d) => {
                 d3.event.preventDefault();
                 // if this is an add dataset table, add layer to map on double click
                 if ( this.isAddDatasetTable ) {
-                    this.doubleClickHandler.call(this.doubleClickRef, d, false);
+                    this.doubleClickHandler.call(this.doubleClickRef, d3_event, d, false);
                 }
             } )
-            .on( 'mousedown', () => {
-                d3.event.preventDefault();
+            .on( 'mousedown', (d3_event) => {
+                d3_event.preventDefault();
             } )
-            .on( 'contextmenu', d => {
-                d3.event.preventDefault();
+            .on( 'contextmenu', (d3_event, d) => {
+                d3_event.preventDefault();
 
                 if ( this.isDatasetTable || this.isTranslationTable ) {
-                    this.bindContextMenu( d );
+                    this.bindContextMenu( d3_event, d );
                 }
             } );
 
@@ -515,10 +515,10 @@ export default class FolderTree extends EventEmitter {
 
         row
             .classed( 'expiring', true )
-            .on( 'mousemove', () => {
+            .on( 'mousemove', (d3_event) => {
                 this.expiringTooltip
-                    .style( 'left', Math.max( 0, d3.event.pageX - 200 ) + 'px' )
-                    .style( 'top', ( d3.event.pageY - 50 ) + 'px' )
+                    .style( 'left', Math.max( 0, d3_event.pageX - 200 ) + 'px' )
+                    .style( 'top', ( d3_event.pageY - 50 ) + 'px' )
                     .style( 'opacity', '0.9' );
             } )
             .on( 'mouseout', () => {
@@ -586,9 +586,10 @@ export default class FolderTree extends EventEmitter {
     /**
      * Logic for right-click and ctrl+click
      *
+     * @param d3_event - window event
      * @param d - tree node
      */
-    bindContextMenu( d ) {
+    bindContextMenu( d3_event, d ) {
         let { data } = d,
             selected = d.data.selected || false;
 
@@ -609,7 +610,7 @@ export default class FolderTree extends EventEmitter {
             this.contextMenu.remove();
         }
 
-        this.openContextMenu( d );
+        this.openContextMenu( d3_event, d );
 
         this.update( d );
     }
@@ -619,7 +620,7 @@ export default class FolderTree extends EventEmitter {
      *
      * @param d - tree node
      */
-    openContextMenu( d ) {
+    openContextMenu( d3_event, d ) {
         let { data } = d,
             opts;
 
@@ -774,9 +775,9 @@ export default class FolderTree extends EventEmitter {
 
         // Make sure the context menu does not dip below the screen horizon
         let windowHeight = window.innerHeight;
-        let yCoord = d3.event.pageY - 2;
+        let yCoord = d3_event.pageY - 2;
         this.contextMenu
-            .style( 'left', `${ d3.event.pageX - 2 }px` )
+            .style( 'left', `${ d3_event.pageX - 2 }px` )
             .style( 'top', `${ yCoord }px` )
             .style( 'display', 'block' );
         let menuHeight = this.contextMenu.node().offsetHeight;
@@ -794,12 +795,12 @@ export default class FolderTree extends EventEmitter {
      * @param elem - clicked DOM element
      * @param d - tree node
      */
-    click( elem, d ) {
+    click( d3_event, elem, d ) {
         let { data } = d,
             selected = data.selected || false,
             isOpen   = data.state === 'open';
 
-        if ( d3.event.shiftKey && this.lastSelectedNode && this.isDatasetTable ) {
+        if ( d3_event.shiftKey && this.lastSelectedNode && this.isDatasetTable ) {
             let nodes        = _drop( this.nodes, 1 ),
                 basePosition = _findIndex( nodes, node => node.data.id === this.lastSelectedNode ),
                 position     = _findIndex( nodes, node => node.data.id === data.id ),
@@ -837,7 +838,7 @@ export default class FolderTree extends EventEmitter {
 
             this.selectedNodes    = _uniq( this.selectedNodes );
             this.lastBasePosition = basePosition;
-        } else if ( d3.event.ctrlKey && this.isDatasetTable ) {
+        } else if ( d3_event.ctrlKey && this.isDatasetTable ) {
             data.selected = !data.selected;
             if (data.selected) {
                 this.selectedNodes.push( data );
@@ -901,7 +902,7 @@ export default class FolderTree extends EventEmitter {
                     d.children     = data._children || null;
                 }
 
-                if ( this.isDatasetTable && !d3.event.ctrlKey ) {
+                if ( this.isDatasetTable && !d3_event.ctrlKey ) {
                     Hoot.folders.setOpenFolders( data.id, !isOpen );
                 } else if ( this.isTranslationTable ) {
                     Hoot.folders.setOpenTranslationFolders( data.id, !isOpen );

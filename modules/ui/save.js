@@ -79,8 +79,8 @@ export function uiSave(context) {
             .call(tooltipBehavior);
 
         // added in HootOld to recalculate position of tooltip that is too close to edge of screen
-        button.on( 'mouseover', function() {
-            let tagName = d3.event.target.tagName;
+        button.on( 'mouseover', function(d3_event) {
+            let tagName = d3_event.target.tagName;
 
             if ( tagName !== 'BUTTON' || this.tooltipVisible ) return;
 
