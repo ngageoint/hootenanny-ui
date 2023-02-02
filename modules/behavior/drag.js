@@ -87,7 +87,7 @@ export function behaviorDrag() {
 
 
         function point() {
-            return utilFastMouse(_surface || _targetNode.parentNode);
+            return utilFastMouse(_surface || _target.parentNode);
         }
 
 

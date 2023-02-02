@@ -78,8 +78,8 @@ export function behaviorSelect(context) {
     }
 
 
-    function mouseup() {
-        click();
+    function mouseup(d3_event) {
+        click(d3_event);
     }
 
 
@@ -98,7 +98,7 @@ export function behaviorSelect(context) {
 
         if (!p1) p1 = point();
         suppressMenu = false;
-        click();
+        click(d3_event);
     }
 
 

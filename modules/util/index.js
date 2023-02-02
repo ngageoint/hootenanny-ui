@@ -1,3 +1,4 @@
+export { utilArrayUniq } from './array';
 export { utilAsyncMap } from './util';
 export { utilCallWhenIdle } from './call_when_idle';
 export { utilCleanTags } from './clean_tags';

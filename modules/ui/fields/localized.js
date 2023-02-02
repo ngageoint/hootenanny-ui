@@ -240,7 +240,7 @@ export function uiFieldLocalized(field, context) {
         }
 
 
-        function addNew() {
+        function addNew(d3_event) {
             d3_event.preventDefault();
             if (_isLocked) return;
 
@@ -257,7 +257,7 @@ export function uiFieldLocalized(field, context) {
         }
 
 
-        function change(onInput) {
+        function change(d3_event, onInput) {
             return function() {
                 if (_isLocked) {
                     d3_event.preventDefault();
@@ -361,7 +361,7 @@ export function uiFieldLocalized(field, context) {
                 label
                     .append('button')
                     .attr('class', 'remove-icon-multilingual')
-                    .on('click', function(d){
+                    .on('click', function(d3_event, d){
                         if (_isLocked) return;
                         d3_event.preventDefault();
                         var t = {};

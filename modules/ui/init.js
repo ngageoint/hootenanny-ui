@@ -313,8 +313,8 @@ export function uiInit(context) {
 
 
         var panPixels = 80;
-        context.keybinding(d3_event)
-            .on('⌫', function() { d3_event.preventDefault(); })
+        context.keybinding()
+            .on('⌫', function(d3_event) { d3_event.preventDefault(); })
             .on(t('sidebar.key'), ui.sidebar.toggle)
             .on('←', pan([panPixels, 0]))
             .on('↑', pan([0, panPixels]))

@@ -1,7 +1,7 @@
-import _uniq from 'lodash-es/uniq';
-
 import { svg as d3_svg } from 'd3-fetch';
 import { select as d3_select } from 'd3-selection';
+
+import { utilArrayUniq } from '../util';
 
 
 /*
@@ -10,13 +10,19 @@ import { select as d3_select } from 'd3-selection';
 */
 export function svgDefs(context) {
 
+    var _defsSelection = d3_select(null);
+
+    var _spritesheetIds = [
+        'iD-sprite', 'maki-sprite', 'temaki-sprite', 'fa-sprite', 'fas-premise-sprite', 'community-sprite'
+    ];
+
     function drawDefs(selection) {
-        var defs = selection.append('defs');
+        _defsSelection = selection.append('defs');
 
         // add markers
-        defs
+        _defsSelection
             .append('marker')
-            .attr('id', 'oneway-marker')
+            .attr('id', 'ideditor-oneway-marker')
             .attr('viewBox', '0 0 10 5')
             .attr('refX', 2.5)
             .attr('refY', 2.5)
@@ -37,9 +43,9 @@ export function svgDefs(context) {
         // (also, it's slightly nicer if we can control the
         // positioning for different tags)
         function addSidedMarker(name, color, offset) {
-            defs
+            _defsSelection
                 .append('marker')
-                .attr('id', 'sided-marker-' + name)
+                .attr('id', 'ideditor-sided-marker-' + name)
                 .attr('viewBox', '0 0 2 2')
                 .attr('refX', 1)
                 .attr('refY', -offset)
@@ -53,19 +59,20 @@ export function svgDefs(context) {
                 .attr('stroke', 'none')
                 .attr('fill', color);
         }
-        addSidedMarker('natural', 'rgb(140, 208, 95)', 0);
+        addSidedMarker('natural', 'rgb(170, 170, 170)', 0);
         // for a coastline, the arrows are (somewhat unintuitively) on
         // the water side, so let's color them blue (with a gap) to
         // give a stronger indication
         addSidedMarker('coastline', '#77dede', 1);
+        addSidedMarker('waterway', '#77dede', 1);
         // barriers have a dashed line, and separating the triangle
         // from the line visually suits that
         addSidedMarker('barrier', '#ddd', 1);
         addSidedMarker('man_made', '#fff', 0);
 
-        defs
+        _defsSelection
             .append('marker')
-            .attr('id', 'viewfield-marker')
+            .attr('id', 'ideditor-viewfield-marker')
             .attr('viewBox', '0 0 16 16')
             .attr('refX', 8)
             .attr('refY', 16)
@@ -82,9 +89,9 @@ export function svgDefs(context) {
             .attr('stroke-width', '0.5px')
             .attr('stroke-opacity', '0.75');
 
-        defs
+        _defsSelection
             .append('marker')
-            .attr('id', 'viewfield-marker-wireframe')
+            .attr('id', 'ideditor-viewfield-marker-wireframe')
             .attr('viewBox', '0 0 16 16')
             .attr('refX', 8)
             .attr('refY', 16)
@@ -101,7 +108,7 @@ export function svgDefs(context) {
             .attr('stroke-opacity', '0.75');
 
         // add patterns
-        var patterns = defs.selectAll('pattern')
+        var patterns = _defsSelection.selectAll('pattern')
             .data([
                 // pattern name, pattern image name
                 ['beach', 'dots'],
@@ -117,6 +124,7 @@ export function svgDefs(context) {
                 ['forest_broadleaved', 'forest_broadleaved'],
                 ['forest_needleleaved', 'forest_needleleaved'],
                 ['forest_leafless', 'forest_leafless'],
+                ['golf_green', 'grass'],
                 ['grass', 'grass'],
                 ['landfill', 'landfill'],
                 ['meadow', 'grass'],
@@ -125,6 +133,7 @@ export function svgDefs(context) {
                 ['quarry', 'quarry'],
                 ['scrub', 'bushes'],
                 ['vineyard', 'vineyard'],
+                ['water_standing', 'lines'],
                 ['waves', 'waves'],
                 ['wetland', 'wetland'],
                 ['wetland_marsh', 'wetland_marsh'],
@@ -134,7 +143,7 @@ export function svgDefs(context) {
             ])
             .enter()
             .append('pattern')
-            .attr('id', function (d) { return 'pattern-' + d[0]; })
+            .attr('id', function (d) { return 'ideditor-pattern-' + d[0]; })
             .attr('width', 32)
             .attr('height', 32)
             .attr('patternUnits', 'userSpaceOnUse');
@@ -158,11 +167,11 @@ export function svgDefs(context) {
             });
 
         // add clip paths
-        defs.selectAll('clipPath')
+        _defsSelection.selectAll('clipPath')
             .data([12, 18, 20, 32, 45])
             .enter()
             .append('clipPath')
-            .attr('id', function (d) { return 'clip-square-' + d; })
+            .attr('id', function (d) { return 'ideditor-clip-square-' + d; })
             .append('rect')
             .attr('x', 0)
             .attr('y', 0)
@@ -170,38 +179,45 @@ export function svgDefs(context) {
             .attr('height', function (d) { return d; });
 
         // add symbol spritesheets
-        defs
-            .call(drawDefs.addSprites, [
-                'iD-sprite', 'maki-sprite', 'temaki-sprite', 'fa-sprite', 'community-sprite'
-            ]);
+        addSprites(_spritesheetIds, true);
     }
 
+    function addSprites(ids, overrideColors) {
+        _spritesheetIds = utilArrayUniq(_spritesheetIds.concat(ids));
 
-    drawDefs.addSprites = function(selection, ids) {
-        var spritesheets = selection.selectAll('.spritesheet');
-        var currData = spritesheets.data();
-        var data = _uniq(currData.concat(ids));
+        var spritesheets = _defsSelection
+            .selectAll('.spritesheet')
+            .data(_spritesheetIds);
 
         spritesheets
-            .data(data)
             .enter()
             .append('g')
             .attr('class', function(d) { return 'spritesheet spritesheet-' + d; })
             .each(function(d) {
                 var url = context.imagePath(d + '.svg');
                 var node = d3_select(this).node();
+
                 d3_svg(url)
-                    .mimeType('image/svg+xml')
-                    .response(function(xhr) { return xhr.responseXML; })
-                    .get(function(err, svg) {
-                        if (err) return;
+                    .then(function(svg) {
                         node.appendChild(
-                            d3_select(svg.documentElement).attr('id', d).node()
+                            d3_select(svg.documentElement).attr('id', 'ideditor-' + d).node()
                         );
+                        if (overrideColors && d !== 'iD-sprite') {   // allow icon colors to be overridden..
+                            d3_select(node).selectAll('path')
+                                .attr('fill', 'currentColor');
+                        }
+                    })
+                    .catch(function() {
+                        /* ignore */
                     });
             });
-    };
 
+        spritesheets
+            .exit()
+            .remove();
+    }
+
+    drawDefs.addSprites = addSprites;
 
     return drawDefs;
 }

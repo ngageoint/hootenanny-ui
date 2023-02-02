@@ -58,7 +58,8 @@ export function behaviorDraw(context) {
     function mousedown(d3_event) {
 
         function point() {
-            return utilFastMouse(_surface || _targetNode.parentNode);
+            var p = context.container().node();
+            return utilFastMouse(p);
         }
 
         var element = d3_select(this);

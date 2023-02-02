@@ -71,7 +71,7 @@ export function rendererArrowLayer() {
 
         paths.attr( 'd', path );
 
-        if ( d3.map( gj ).size() > 0 ) {
+        if ( Object.keys( gj ).length > 0 ) {
             d3.select( '.arrow-background' ).raise();
         } else {
             d3.select( '.arrow-background' ).lower();
