@@ -517,29 +517,6 @@ export default class API {
                 return resp.data;
             });
     }
-    getPopularOsmTags() {
-        let osmTagUrl = `${ this.tagInfoUrl }/api/4/keys/all?sortname=count_all&sortorder=desc&page=1&rp=18&qtype=key`;
-        const params = {
-            url: osmTagUrl,
-            method: 'GET'
-        };
-        return this.request( params )
-            .then( resp => {
-                return resp.data.data.map(d => d.key);
-        });
-    }
-
-    getOsmTagValues( key ) {
-        let osmTagUrl = `${this.tagInfoUrl}/api/4/key/values?key=${key}&filter=all&lang=en&sortname=count&sortorder=desc&page=1&rp=16&qtype=value`;
-        const params = {
-            url: osmTagUrl,
-            method: 'GET'
-        };
-        return this.request( params )
-            .then( resp => {
-                return resp.data.data.map(d => d.value);
-            });
-    }
 
     getTranslation( name ) {
         const params = {

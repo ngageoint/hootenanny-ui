@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import { d3combobox } from 'lib/hoot/d3.combobox';
+import { services } from '../../../../services';
 
 export default class TagMapWidget {
     constructor( instance ) {
@@ -48,7 +49,12 @@ export default class TagMapWidget {
         }
         if (Hoot.config.tagInfo[this.schemaOption].length === 0) {
             (this.schemaOption === 'OSM'
-                ? Hoot.api.getPopularOsmTags()
+                ?  new Promise(function(resolve, reject) {
+                    services.taginfo.keys({}, function(err, data) {
+                        if (!err) {resolve(data.map(v => { return v.value }));}
+                        else { reject(err);};
+                    })
+                })
                 : Hoot.translations.getFieldMappings(this.schemaOption)
             )
             .then(resp => {
@@ -187,8 +193,16 @@ export default class TagMapWidget {
         let that = this;
         let tagKey = d;
         ( this.schemaOption === 'OSM'
-            ? Hoot.api.getOsmTagValues( tagKey )
-            : Hoot.translations.getColumns( tagKey.split('::')[0], this.schemaOption )
+            ? new Promise(function (resolve, reject) {
+                services.taginfo.values({
+                    key: tagKey,
+                }, function (err, data) {
+                    data = data.length === 0 ? [{value: 'Value'}] : data;
+                    if (!err) { resolve(data.map(v => { return v.value })); }
+                    else { reject(err); };
+                })
+            })
+            : Hoot.translations.getColumns(tagKey.split('::')[0], this.schemaOption)
         )
         .then((values) => {
             this.instance.toggleNextButton( false );
