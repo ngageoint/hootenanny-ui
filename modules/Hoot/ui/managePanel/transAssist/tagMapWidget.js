@@ -51,9 +51,9 @@ export default class TagMapWidget {
             (this.schemaOption === 'OSM'
                 ?  new Promise(function(resolve, reject) {
                     services.taginfo.keys({}, function(err, data) {
-                        if (!err) {resolve(data.map(v => { return v.value }));}
-                        else { reject(err);};
-                    })
+                        if (!err) {resolve(data.map(v => { return v.value; }));}
+                        else { reject(err);}
+                    });
                 })
                 : Hoot.translations.getFieldMappings(this.schemaOption)
             )
@@ -198,9 +198,9 @@ export default class TagMapWidget {
                     key: tagKey,
                 }, function (err, data) {
                     data = data.length === 0 ? [{value: 'Value'}] : data;
-                    if (!err) { resolve(data.map(v => { return v.value })); }
-                    else { reject(err); };
-                })
+                    if (!err) { resolve(data.map(v => { return v.value; })); }
+                    else { reject(err); }
+                });
             })
             : Hoot.translations.getColumns(tagKey.split('::')[0], this.schemaOption)
         )
