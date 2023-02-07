@@ -229,11 +229,33 @@ path.line {
 
 .data-layer.hoot {
     .layer-hoot {
-        fill-opacity: 0;
         pointer-events: none;
     }
 
+    .datagroup {
+        stroke-width:2px;
+    }
+
+    .datagroup-Point {
+        circle {
+            fill: green;
+            stroke: white;
+        }
+
+        text {
+            fill: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+    }
+
+    .datagroup-LineString {
+        stroke: green;
+    }
+
     .bbox {
+        fill-opacity: 0;
         opacity: 0;
 
         .high-zoom & {

@@ -2,7 +2,9 @@ import _isArray from 'lodash-es/isArray';
 import _filter from 'lodash-es/filter';
 
 import { geoPath as d3_geoPath } from 'd3-geo';
+import { select as d3_select } from 'd3-selection';
 import _isEmpty from 'lodash-es/isEmpty';
+import { utilHashcode } from '../util';
 
 
 export function svgHoot(projection, context, dispatch) {
@@ -13,7 +15,11 @@ export function svgHoot(projection, context, dispatch) {
     function init() {
         if (svgHoot.initialized) return;  // run once
 
-        svgHoot.geojson = [];
+        svgHoot.geojson = {
+            type: 'FeatureCollection',
+            features: [],
+            properties: {}
+        };
         svgHoot.enabled = true;
 
         svgHoot.initialized = true;
@@ -23,6 +29,26 @@ export function svgHoot(projection, context, dispatch) {
     function drawHoot(selection) {
         var geojson = svgHoot.geojson,
             enabled = svgHoot.enabled;
+
+        var features = {
+            Bbox: [],
+            LineString: [],
+            Point: []
+        };
+
+        var pathDataClasses = {
+            Bbox: 'bbox way line stroke',
+        };
+
+        geojson.features.forEach(feat => {
+            feat.__featurehash__ = utilHashcode(JSON.stringify(feat));
+
+            if (feat.properties && feat.properties.reviewLabel) {
+                features[feat.geometry.type].push(feat);
+            } else {
+                features.Bbox.push(feat);
+            }
+        });
 
         layer = selection.selectAll('.layer-hoot')
             .data(enabled ? [0] : []);
@@ -35,9 +61,22 @@ export function svgHoot(projection, context, dispatch) {
             .attr('class', 'layer-hoot')
             .merge(layer);
 
-        var paths = layer
+        var datagroups = layer
+            .selectAll('g.datagroup')
+            .data(Object.keys(features));
+
+        datagroups = datagroups.enter()
+            .append('g')
+            .attr('class', function(d) { return 'datagroup datagroup-' + d; })
+            .merge(datagroups);
+
+
+        var pathDataGroups = datagroups.filter(d => d === 'BBox' || d === 'LineString');
+        var circleDataGroups = datagroups.filter(d => d === 'Point');
+
+        var paths = pathDataGroups
             .selectAll('path')
-            .data(geojson);
+            .data(function(layer) { return features[layer]; }, d => d.__featurehash__);
 
         paths.exit()
             .remove();
@@ -46,14 +85,64 @@ export function svgHoot(projection, context, dispatch) {
             .append('path')
             .merge(paths)
             .attr('class', function(d) {
-                if (!(_isEmpty(d))) {
-                    return 'bbox way line stroke tag-hoot-' + d.properties.mapId;
+                const datagroup = this.parentNode.__data__;
+                const pathDataClass = pathDataClasses[datagroup] || '';
+
+                let pathClass = 'pathdata ' + datagroup + ' ' + pathDataClass;
+
+                if (d.properties.mapId && datagroup === 'Bbox') {
+                    pathClass += ' tag-hoot-' + d.properties.mapId;
                 }
+
+                return pathClass;
             });
+
+        var circles = circleDataGroups
+            .selectAll('g')
+            .data(function(layer) { return features[layer]; }, d => d.__featurehash__);
+
+        circles.exit()
+            .remove();
+
+        circles = circles.enter()
+            .append('g')
+            .attr('class', 'pointgroup')
+            .attr('id', (d,i) => String.fromCharCode(65 + i))
+            .merge(circles)
+            .attr('transform', function(feature) {
+                const pt = projection(feature.geometry.coordinates);
+                return `translate(${pt[0]},${pt[1]-50})`;
+            });
+
+
+        var circle = circles.selectAll('circle')
+            .data([0]);
+
+        circle.exit().remove();
+
+        circle.enter()
+            .append('circle')
+            .merge(circle)
+            .attr('dx', '0')
+            .attr('dy', '0')
+            .attr('r', '15');
+
+        var circleText = circles.selectAll('text')
+            .data([0]);
+
+        circleText.exit().remove();
+
+        circleText.enter()
+            .append('text')
+            .merge(circleText)
+            .attr('x', -5)
+            .attr('y', 5)
+            .text(function(d) { return d3_select(this.parentNode).attr('id'); });
 
         var path = d3_geoPath(projection);
 
         paths.attr('d', path);
+        circles.attr('d', path);
     }
 
 
@@ -81,11 +170,7 @@ export function svgHoot(projection, context, dispatch) {
     drawHoot.geojson = function(gj) {
         if (!arguments.length) return svgHoot.geojson;
 
-        if ( _isArray( gj ) ) {
-            svgHoot.geojson = svgHoot.geojson.concat( gj );
-        } else {
-            svgHoot.geojson.push( gj );
-        }
+        svgHoot.geojson = gj;
 
         dispatch.call('change');
 
@@ -102,7 +187,7 @@ export function svgHoot(projection, context, dispatch) {
     };
 
     drawHoot.removeGeojson = function( mapId ) {
-        svgHoot.geojson = _filter( svgHoot.geojson, gj => gj.properties.mapId !== mapId );
+        svgHoot.geojson.features = _filter( svgHoot.geojson.features, f => f.properties.mapId !== mapId );
 
         dispatch.call( 'change' );
         return this;

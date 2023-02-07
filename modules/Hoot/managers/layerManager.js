@@ -322,6 +322,10 @@ export default class Layers {
             let featuresList = coordsList.map( coords => {
                 return {
                     type: 'Feature',
+                    properties: {
+                        name: layer.name,
+                        mapId: layer.id
+                    },
                     geometry: {
                         type: 'LineString',
                         coordinates: coords
@@ -332,10 +336,6 @@ export default class Layers {
             this.hootOverlay.geojson( {
                 type: 'FeatureCollection',
                 features: featuresList,
-                properties: {
-                    name: layer.name,
-                    mapId: layer.id
-                }
             } );
 
             this.setLayerColor( mapId, layer.color );
