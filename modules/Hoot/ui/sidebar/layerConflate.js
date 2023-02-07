@@ -67,6 +67,7 @@ class LayerConflate extends SidebarForm {
     }
 
     createFieldset() {
+        console.log('create fieldset');
         this.fieldset = new FormFactory().createFieldSets( this.innerWrapper, this.formData );
     }
 
@@ -134,7 +135,7 @@ class LayerConflate extends SidebarForm {
         this.submitButton = actions.append( 'button' )
             .classed( 'button dark text-light round small strong', true )
             .text( 'Conflate' )
-            .on( 'click', () => this.handleSubmit() );
+            .on( 'click', (d3_event) => this.handleSubmit(d3_event) );
     }
 
     async createAdvancedOptions() {
@@ -290,9 +291,9 @@ class LayerConflate extends SidebarForm {
         Hoot.layers.loadLayer( params );
     }
 
-    handleSubmit() {
-        d3.event.stopPropagation();
-        d3.event.preventDefault();
+    handleSubmit(d3_event) {
+        d3_event.stopPropagation();
+        d3_event.preventDefault();
 
         let data   = this.preConflation(),
             layerParams = {

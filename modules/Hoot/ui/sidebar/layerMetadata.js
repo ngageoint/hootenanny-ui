@@ -70,9 +70,9 @@ export default class LayerMetadata {
             .append( 'button' )
             .attr( 'tabindex', -1 )
             .classed( 'metadata-button icon-button keyline-left unround inline', true )
-            .on( 'click', () => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
+            .on( 'click', (d3_event) => {
+                d3_event.stopPropagation();
+                d3_event.preventDefault();
 
                 this.togglePanel();
             } )
@@ -141,14 +141,14 @@ export default class LayerMetadata {
             .attr('class', function (d) { return `metadata-table round ${d.key}`; });
 
         let rows = table.selectAll('tr')
-            .data(function (d) { return d3.entries(d.value); })
+            .data(function ([key, value]) { return Object.entries(value); })
             .enter().append('tr')
             .classed('metadata-row', true);
 
         rows.selectAll('td')
-            .data(function (d) {
-                let dv = d3.entries(d.value);
-                return [d.key].concat(dv.map((v) => v.value));
+            .data(function ([key, value]) {
+                let dv = Object.entries(value);
+                return [key].concat(dv.map((v) => value));
             })
             .enter().append('td')
             .classed('metadata', true)
@@ -172,10 +172,10 @@ export default class LayerMetadata {
             .text('Download')
             .attr('href', '#')
             .classed('hide-toggle-button expand-title', true)
-            .on('click', function() {
+            .on('click', function(d3_event) {
                 var blob = new Blob([download], {type: 'text/tab-separated-values;charset=utf-8'});
                 window.saveAs(blob, `${name.replace(/\s/g, '_')}-stats.tsv`);
-                d3.event.preventDefault();
+                d3_event.preventDefault();
             });
     }
 
@@ -195,23 +195,23 @@ export default class LayerMetadata {
                 'Conflated Layer': ConflatedLayer
             },
             formatPercent = this.formatPercent,
-            paramData = d3.entries(params);
+            paramData = Object.entries(params);
 
         if (paramData.length) {
             this.download = 'Parameters:\n';
 
-            paramData.forEach((p) => {
-                this.download += `${p.key}\t${p.value}\n`;
+            paramData.forEach(([key, value]) => {
+                this.download += `${key}\t${value}\n`;
             });
 
             this.createExpandList( paramData, 'Parameters' );
         }
 
-        let optData = d3.entries( this.tags.params.HOOT2_ADV_OPTIONS ).sort( ( a, b ) => {
-            if ( a.key < b.key ) {
+        let optData = Object.entries( this.tags.params.HOOT2_ADV_OPTIONS ).sort( ( [a_key, a_value], [b_key, b_value] ) => {
+            if ( a_key < b_key ) {
                 return -1;
             }
-            if ( a.key > b.key ) {
+            if ( a_key > b_key ) {
                 return 1;
             }
             // a must be equal to b
@@ -220,8 +220,8 @@ export default class LayerMetadata {
 
         if (optData.length) {
             this.download += '\nOptions:\n';
-            optData.forEach((o) => {
-                this.download += `${o.key}\t${o.value}\n`;
+            optData.forEach(([key, value]) => {
+                this.download += `${key}\t${value}\n`;
             });
             this.createExpandList( optData, 'Options' );
         }
@@ -379,8 +379,8 @@ export default class LayerMetadata {
             this.download += '\nStatistics (Raw):\n';
             this.download += this.tags.stats;
 
-            this.createExpandTables(d3.entries(tableConfig), 'Statistics');
-            this.createExpandList(d3.entries(stats), 'Statistics (Raw)');
+            this.createExpandTables(Object.entries(tableConfig), 'Statistics');
+            this.createExpandList(Object.entries(stats), 'Statistics (Raw)');
 
             this.addDownloadLink(ConflatedLayer);
         }

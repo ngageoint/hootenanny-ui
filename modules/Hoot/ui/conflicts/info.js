@@ -160,8 +160,8 @@ export default class ConflictMetadata {
      * @returns {object} - filtered tags
      */
     filterTags( tags ) {
-        return _filter( d3.entries( tags ), tag => {
-            return _every( this.tagBlacklist, t => !tag.key.match( t ) );
+        return _filter( Object.entries( tags ), ([key, value]) => {
+            return _every( this.tagBlacklist, t => !key.match( t ) );
         } );
     }
 

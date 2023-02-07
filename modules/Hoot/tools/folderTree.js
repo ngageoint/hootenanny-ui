@@ -337,7 +337,7 @@ export default class FolderTree extends EventEmitter {
                 self.click.call( self, d3_event, this, d );//pass event
             } )
             .on( 'dblclick', (d3_event, d) => {
-                d3.event.preventDefault();
+                d3_event.preventDefault();
                 // if this is an add dataset table, add layer to map on double click
                 if ( this.isAddDatasetTable ) {
                     this.doubleClickHandler.call(this.doubleClickRef, d3_event, d, false);

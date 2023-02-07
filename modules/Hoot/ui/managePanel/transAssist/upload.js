@@ -196,14 +196,14 @@ export default class Upload {
     convertUniqueValues( json ) {
         let obj = {};
 
-        d3.values( json ).forEach( v => {
-            d3.entries( v ).forEach( e => {
-                let map = d3.map();
+        Object.values( json ).forEach( v => {
+            Object.entries( v ).forEach( ([key, value]) => {
+                let map = new Map();
 
-                d3.entries( e.value ).forEach( a => {
+                Object.entries( value ).forEach( ([subKey, subValue]) => {
                     // Omit empty fields
-                    if ( a.value.length ) {
-                        map.set( a.key, d3.set( a.value ) );
+                    if ( subValue.length ) {
+                        map.set( subKey, d3.set( subValue ) );
                     }
                 } );
 

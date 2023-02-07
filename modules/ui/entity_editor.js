@@ -338,20 +338,20 @@ export function uiEntityEditor(context) {
             // wait til the field loses focus
             if ( !onInput ) {
                 // some changeTags events fire even when tag hasn't changed
-                if ( d3.entries( changed ).every( c => {
-                    return d3.entries( translatedTags ).some( d => {
-                        return c.key === d.key && c.value === d.value;
+                if ( Object.entries( changed ).every( ([key, value]) => {
+                    return Object.entries( translatedTags ).some( ([subKey, subValue]) => {
+                        return key === subKey && value === subValue;
                     } );
                 } ) ) return; //return if no real change
 
-                if ( d3.entries( changed ).every( c => {
+                if ( Object.entries( changed ).every( c => {
                     return !translatedTags[ c.key ] && (c.value === undefined || c.value === '');
                 } ) ) return; //return if empty change
 
                 var translatedEntity = entity.copy( context.graph(), [] );
 
-                translatedEntity.tags = d3.entries( _assign( translatedTags, changed ) ).reduce( ( tags, tag ) => {
-                    if ( tag.value !== undefined ) tags[ tag.key ] = tag.value;
+                translatedEntity.tags = Object.entries( _assign( translatedTags, changed ) ).reduce( ( tags, [key, value] ) => {
+                    if ( value !== undefined ) tags[ key ] = value;
                     return tags;
                 }, {} );
 

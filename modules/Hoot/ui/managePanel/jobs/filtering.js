@@ -17,8 +17,8 @@ export default class Filtering {
 
         function updateFilter() {
             let filterValues = filter.selectAll('input[type=checkbox]:checked').nodes()
-                .map(function(d) {
-                    return d.value;
+                .map(function([key, value]) {
+                    return value;
                 }).join(',');
 
             that.container.setFilter(data.column, filterValues);
@@ -46,17 +46,17 @@ export default class Filtering {
             .classed('filter-value', true);
         vals.append('input')
             .attr('type', 'checkbox')
-            .attr('id', d => d.key)
-            .property('checked', d => data.selected && data.selected.includes(d.key))
-            .property('value', d => d.key) //.key is the enum string, .value is the icon
+            .attr('id', ([key, value]) => key)
+            .property('checked', ([key, value]) => data.selected && data.selected.includes(d.key))
+            .property('value', ([key, value]) => key) //key is the enum string, value is the icon
             .on('click', updateFilter);
         let labs = vals.append('label')
-            .attr('for', d => d.key );
+            .attr('for', ([key, value]) => key );
         labs.append('i')
             .classed('material-icons', true)
-            .text(d => d.value);
+            .text(([key, value]) => value);
         labs.append('span')
-            .text(d => d.key.toUpperCase());
+            .text(([key, value]) => key.toUpperCase());
 
     }
 

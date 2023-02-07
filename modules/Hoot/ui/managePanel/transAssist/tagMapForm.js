@@ -260,7 +260,7 @@ export default class TagMapForm {
             } );
         }
 
-        if ( d3.entries( this.jsonMapping[ this.layer ] ).some( d => d.value !== 'IGNORED' ) ) {
+        if ( Object.entries( this.jsonMapping[ this.layer ] ).some( ([key, value]) => value !== 'IGNORED' ) ) {
             this.enableTranslateButton();
         }
     }
@@ -449,21 +449,21 @@ export default class TagMapForm {
         var lyrs = [];
 
         // this is taken from the Hoot UI 1.x code
-        var rule1 = d3.entries(jsonMapping).every(function(e) {
-                var valid = d3.entries(e.value).some(function(d) {
-                    return typeof d.value === 'object' && d3.keys(d.value).find(function(f) {
+        var rule1 = Object.entries(jsonMapping).every(function([key, value]) {
+                var valid = Object.entries(value).some(function([subKey, subValue]) {
+                    return typeof subValue === 'object' && d3.keys(subValue).find(function(f) {
                         return f.indexOf('Feature Code') > -1;
                         });
-                    }) || d3.entries(e.value).every(function(d) {
-                    return typeof d.value === 'string' && d.value.indexOf('IGNORED') > -1;
+                    }) || Object.entries(value).every(function(d) {
+                    return typeof subValue === 'string' && subValue.indexOf('IGNORED') > -1;
                 });
-                if (!valid) lyrs.push(e.key);
+                if (!valid) lyrs.push(key);
                 return valid;
             });
 
-        var rule2 = d3.entries(jsonMapping).some(function(e) {
-                var valid = d3.entries(e.value).some(function(d) {
-                    return typeof d.value === 'object' && d3.keys(d.value).find(function(f) {
+        var rule2 = Object.entries(jsonMapping).some(function([key, value]) {
+                var valid = Object.entries(value).some(function([subKey, subValue]) {
+                    return typeof subValue === 'object' && d3.keys(subValue).find(function(f) {
                         return f.indexOf('Feature Code') > -1;
                         });
                 });

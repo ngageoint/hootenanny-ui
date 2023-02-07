@@ -142,7 +142,7 @@ class SidebarController {
 
                 self.layerColor = p.name;
                 Hoot.layers.setLayerColor( self.layerId, self.layerColor );
-                Hoot.ui.sidebar.forms.conflate.updateLayerColors( self.layerColor, self.refType );
+                //Hoot.ui.sidebar.forms.conflate.updateLayerColors( self.layerColor, self.refType );
             } );
     }
 

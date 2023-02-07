@@ -24,8 +24,8 @@ export function uiDgcarousel( context ) {
             setVisible( false );
         }
 
-        function toggle() {
-            if ( d3.event ) d3.event.preventDefault();
+        function toggle(d3_event) {
+            if ( d3_event ) d3_event.preventDefault();
 
             ttp.hide( button );
 
@@ -118,9 +118,9 @@ export function uiDgcarousel( context ) {
                                 .append( 'li' )
                                 .classed( 'carousel-zoom-warn', false )
                                 .html( d => formatImageMetadata( d ) )
-                                .on( 'mouseenter', d => loadFootprint( d ) )
-                                .on( 'mouseleave', d => loadFootprint( d ) )
-                                .on( 'dblclick', d => loadMetadataPopup( d ) )
+                                .on( 'mouseenter', d => loadFootprint( d3_event, d ) )
+                                .on( 'mouseleave', d => loadFootprint( d3_event, d ) )
+                                .on( 'dblclick', d => loadMetadataPopup( d3_event, d ) )
                                 .on( 'click', function( d ) {
                                     let active = !d3.select( this ).classed( 'active' );
 
@@ -233,7 +233,7 @@ export function uiDgcarousel( context ) {
 
             let metarows = metatable
                 .selectAll( 'tr' )
-                .data( d3.entries( data.properties ) );
+                .data( Object.entries( data.properties ) );
 
             metarows
                 .enter()
@@ -246,7 +246,7 @@ export function uiDgcarousel( context ) {
 
             let metacells = metarows
                 .selectAll( 'td' )
-                .data( d => d3.values( d ) );
+                .data( ([key, value]) => Object.values( value ) );
 
             metacells
                 .enter()
@@ -261,10 +261,10 @@ export function uiDgcarousel( context ) {
                 .remove();
         }
 
-        function loadFootprint( d ) {
-            if ( d3.event ) d3.event.preventDefault();
+        function loadFootprint( d3_event, d ) {
+            if ( d3_event ) d3_event.preventDefault();
 
-            if ( d3.event.type === 'mouseover' || d3.event.type === 'mouseenter' ) {
+            if ( d3_event.type === 'mouseover' || d3_event.type === 'mouseenter' ) {
                 context.background().updateFootprintLayer( d.geometry );
             } else {
                 context.background().updateFootprintLayer( {} );
@@ -360,9 +360,9 @@ export function uiDgcarousel( context ) {
             .append( 'button' )
             .attr( 'class', 'icon close dark' )
             .on( 'click', () => popup.classed( 'hide', true ) )
-            .on( 'mousedown', () => {
-                d3.event.preventDefault();
-                d3.event.stopPropagation();
+            .on( 'mousedown', (d3_event) => {
+                d3_event.preventDefault();
+                d3_event.stopPropagation();
             } );
 
         let metatable = popup

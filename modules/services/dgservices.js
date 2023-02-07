@@ -96,8 +96,8 @@ export default function() {
     function getWfsFeature( connectId, profile, extent, size, callback, addlParam ) {
         var url = getUrl( connectId, profile, wfs_template, false );
         if ( addlParam ) {
-            url += '&' + d3.entries( addlParam ).map( function( d ) {
-                return d.key + '=' + d.value;
+            url += '&' + Object.entries( addlParam ).map( function( [key, value] ) {
+                return key + '=' + value;
             } ).join( '&' );
         }
         url = url.replace( /\{switch:([^}]+)\}/, function( s, r ) {

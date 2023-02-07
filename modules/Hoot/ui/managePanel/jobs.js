@@ -490,7 +490,7 @@ export default class Jobs extends Tab {
                     label: d.column[0].toUpperCase() + d.column.slice(1).split(/(?=[A-Z])/).join(' '),
                     column: d.column,
                     selected: that.params[d.column],
-                    values: d3.entries(that.columnFilters[d.column])
+                    values: Object.entries(that.columnFilters[d.column])
                 };
 
                 that.filtering.render(filterData);

@@ -208,7 +208,7 @@ export default class AdminPanel extends Tab {
                     label: d.name[0].toUpperCase() + d.name.slice(1).split(/(?=[A-Z])/).join(' '),
                     column: d.name,
                     selected: self.params[d.name],
-                    values: d3.entries( self.columnFilters[d.name] )
+                    values: Object.entries( self.columnFilters[d.name] )
                 };
 
                 self.filtering.render(filterData);
