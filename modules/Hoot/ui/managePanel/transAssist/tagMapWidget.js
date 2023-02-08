@@ -45,32 +45,32 @@ export default class TagMapWidget {
         this.searchTag.node().focus();
     }
 
-    keydown() {
-        switch ( d3.event.keyCode ) {
+    keydown(d3_event) {
+        switch ( d3_event.keyCode ) {
             // tab
             case 9:
                 this.accept();
                 break;
             // return
             case 13:
-                d3.event.preventDefault();
+                d3_event.preventDefault();
                 break;
             // up arrow
             case 38:
                 this.scroll( 'up' );
-                d3.event.preventDefault();
+                d3_event.preventDefault();
                 break;
             // down arrow
             case 40:
                 this.scroll( 'down' );
-                d3.event.preventDefault();
+                d3_event.preventDefault();
                 break;
         }
-        d3.event.stopPropagation();
+        d3_event.stopPropagation();
     }
 
-    keyup() {
-        switch ( d3.event.keyCode ) {
+    keyup(d3_event) {
+        switch ( d3_event.keyCode ) {
             // escape
             case 27:
                 this.remove();
@@ -270,11 +270,10 @@ export default class TagMapWidget {
         let tagJson = this.instance.jsonMapping[ this.instance.layer ][ this.instance.currentAttribute.key ];
 
         if ( tagJson ) {
-            let mapping = d3.map( tagJson );
+            let mapping =new Map( tagJson );
 
-            let isCustomized = mapping
-                .entries()
-                .filter( entry => d.key === entry.key && entry.value !== this.instance.currentAttribute.key );
+            let isCustomized = Object.entries(mapping)
+                .filter( ([key, value]) => d.key === key && value !== this.instance.currentAttribute.key );
 
             isCustomized.forEach( entry => {
                 if ( typeof entry.value === 'string' ) { //entry is a single tag value
@@ -292,8 +291,8 @@ export default class TagMapWidget {
                         .classed( 'remove-map-tag', false )
                         .classed( 'map-tag', true );
 
-                    d3.map( entry.value ).entries().forEach( e => {
-                        d3.select( '#preset-input-' + this.hashCode( tagKey + e.key ) ).property( 'value', e.value );
+                    Object.entries(new Map( entry.value )).forEach( ([key, value]) => {
+                        d3.select( '#preset-input-' + this.hashCode( tagKey + key ) ).property( 'value', value );
                     } );
                 }
             } );

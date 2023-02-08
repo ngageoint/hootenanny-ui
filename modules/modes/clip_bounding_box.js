@@ -17,8 +17,8 @@ export function modeDrawBoundingBox( instance, context ) {
     let behavior = clip( context, svg )
         .on( 'finish', finish );
 
-    function finish( extent ) {
-        d3.event.stopPropagation();
+    function finish( d3_event, extent ) {
+        d3_event.stopPropagation();
         context.enter( modeBrowse( context ) );
 
         instance.handleBounds( extent );

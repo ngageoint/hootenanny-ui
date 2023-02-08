@@ -466,7 +466,7 @@ export default class ImportMultiDatasets {
                 await upload(item);
             }
         }
-        const iterator = fileNames.entries();
+        const iterator = Object.entries(fileNames);
         const workers = new Array(rateLimit).fill(iterator).map(doWork);
 
         this.processRequest = Promise.allSettled(workers)

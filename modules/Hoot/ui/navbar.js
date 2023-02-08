@@ -130,9 +130,9 @@ export default class Navbar {
                 // .attr( 'href', '#!' )
                 .text( 'Logout' );
 
-            d3.select('body').on('click.navbar', () => {
-                if (d3.event && d3.event.target) {
-                    if (!dropdownToggle.node().contains(d3.event.target) && dropdownContent.classed('visible')) {
+            d3.select('body').on('click.navbar', (d3_event) => {
+                if (d3_event && d3_event.target) {
+                    if (!dropdownToggle.node().contains(d3_event.target) && dropdownContent.classed('visible')) {
                         showDropdown(dropdownContent);
                     }
                 }

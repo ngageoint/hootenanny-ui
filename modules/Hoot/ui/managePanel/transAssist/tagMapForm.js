@@ -20,7 +20,7 @@ export default class TagMapForm {
     }
 
     render( valuesMap ) {
-        this.layers = d3.keys( valuesMap );
+        this.layers = Object.keys( valuesMap );
 
         this.currentIndex = {};
         this.valuesMap    = valuesMap;
@@ -80,8 +80,8 @@ export default class TagMapForm {
                 .on( 'change', function() {
                     that.changeLayer( this.value );
                 } )
-                .on( 'keydown', function() {
-                    if ( d3.event.keyCode === 13 ) {
+                .on( 'keydown', function(d3_event) {
+                    if ( d3_event.keyCode === 13 ) {
                         d3.select( this ).dispatch( 'change' );
                     }
                 } )
@@ -147,8 +147,8 @@ export default class TagMapForm {
         this.tagMapContainer
             .append( 'button' )
             .classed( 'add-mapping-button round _icon big plus', true )
-            .on( 'click', () => {
-                d3.event.preventDefault();
+            .on( 'click', (d3_event) => {
+                d3_event.preventDefault();
                 new TagMapWidget( this ).createTagLookup();
             } );
     }
@@ -167,8 +167,8 @@ export default class TagMapForm {
             .attr( 'type', 'button' )
             .classed( 'ignore-button secondary big round', true )
             .text( 'Ignore' )
-            .on( 'click', () => {
-                d3.event.preventDefault();
+            .on( 'click', (d3_event) => {
+                d3_event.preventDefault();
 
                 let originalKey = this.attributesContainer.datum().keys()[ this.currentIndex[ this.layer ] ],
                     mapping     = 'IGNORED';
@@ -182,8 +182,8 @@ export default class TagMapForm {
             .attr( 'disabled', true )
             .classed( 'next-button dark text-light big round', true )
             .text( 'Next' )
-            .on( 'click', () => {
-                d3.event.preventDefault();
+            .on( 'click', (d3_event) => {
+                d3_event.preventDefault();
 
                 let originalKey = this.attributesContainer.datum().keys()[ this.currentIndex[ this.layer ] ],
                     mapping     = this.buildAttributeMappingJson( originalKey );
@@ -193,7 +193,7 @@ export default class TagMapForm {
     }
 
     updateAttributes() {
-        let allAttributes    = this.attributeValues.entries(),
+        let allAttributes    = Object.entries(this.attributeValues),
             currentAttribute = allAttributes[ this.currentIndex[ this.layer ] ],
             attributeList    = _filter( allAttributes, attribute => attribute.key !== currentAttribute.key );
 
@@ -213,7 +213,7 @@ export default class TagMapForm {
             .merge( list )
             .html( d => this.getAttributeStatus( d.key ) )
             .on( 'click', d => {
-                this.currentIndex[ this.layer ] = _findIndex( allAttributes, attr => attr.key === d.key );
+                this.currentIndex[ this.layer ] = _findIndex( allAttributes, ([key, value]) => key === d.key );
 
                 this.updateAttributes();
                 this.toggleAttributeList();
@@ -244,10 +244,10 @@ export default class TagMapForm {
         let tagJson = this.jsonMapping[ this.layer ][ currentAttribute.key ];
 
         if ( tagJson && tagJson !== 'IGNORED' ) {
-            let mapping = d3.map( tagJson );
+            let mapping = new Map( tagJson );
 
-            mapping.entries().forEach( d => {
-                let tagKey       = d.key,
+            Object.entries(mapping).forEach( ([key, value]) => {
+                let tagKey       = key,
                     schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
 
                 let values = Hoot.config.tagInfo[ schemaOption ]
@@ -286,7 +286,7 @@ export default class TagMapForm {
                         values[ k ] = row.select( 'input' ).property( 'value' );
                     } );
 
-                    let attrMap = d3.map( values );
+                    let attrMap = new Map( values );
 
                     if ( attrMap.values().some( obj => obj.length > 0 ) ) {
                         json[ tagKey ] = values;

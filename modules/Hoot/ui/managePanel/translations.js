@@ -80,8 +80,8 @@ export default class Translations extends Tab {
         let buttons = buttonContainer.enter()
             .append( 'button' )
             .classed( 'translation-action-button primary text-light flex align-center', true )
-            .on( 'click', async item => {
-                d3.event.preventDefault();
+            .on( 'click', async (d3_event, item) => {
+                d3_event.preventDefault();
 
                 switch ( item.onClick ) {
                     case 'import-translation': {

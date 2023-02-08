@@ -18,8 +18,8 @@ export function behaviorDrawMeasureLine( context, svg ) {
         line,
         label;
 
-    function mousedown() {
-        d3.event.stopPropagation();
+    function mousedown(d3_event) {
+        d3_event.stopPropagation();
 
         function point() {
             let p = element.node().parentNode;
@@ -30,7 +30,7 @@ export function behaviorDrawMeasureLine( context, svg ) {
         }
 
         let element = d3.select( this ),
-            touchId = d3.event.touches ? d3.event.changedTouches[ 0 ].identifier : null,
+            touchId = d3_event.touches ? d3_event.changedTouches[ 0 ].identifier : null,
             time    = +new Date(),
             pos     = point();
 
@@ -45,8 +45,8 @@ export function behaviorDrawMeasureLine( context, svg ) {
                     (+new Date() - time) < 500) ) {
 
                 // Prevent a quick second click
-                d3.select( window ).on( 'click.drawline-block', () => {
-                    d3.event.stopPropagation();
+                d3.select( window ).on( 'click.drawline-block', (d3_event) => {
+                    d3_event.stopPropagation();
                 }, true );
 
                 context.map().dblclickEnable( false );
@@ -153,20 +153,20 @@ export function behaviorDrawMeasureLine( context, svg ) {
         return r * 6371007.1809;
     }
 
-    function backspace() {
-        d3.event.preventDefault();
+    function backspace(d3_event) {
+        d3_event.preventDefault();
         dispatch.call( 'undo' );
     }
 
-    function del() {
-        d3.event.preventDefault();
+    function del(d3_event) {
+        d3_event.preventDefault();
         dispatch.call( 'cancel' );
     }
 
-    function ret() {
+    function ret(d3_event) {
         let prevNodeId = nodeId - 1;
 
-        d3.event.preventDefault();
+        d3_event.preventDefault();
         dispatch.call( 'finish', this, prevNodeId );
     }
 

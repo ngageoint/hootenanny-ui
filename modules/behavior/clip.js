@@ -15,8 +15,8 @@ export function clip( context, svg ) {
         rect,
         anchorPt;
 
-    function mousedown() {
-        d3.event.stopPropagation();
+    function mousedown(d3_event) {
+        d3_event.stopPropagation();
 
         function point() {
             let p = element.node().parentNode;
@@ -27,22 +27,22 @@ export function clip( context, svg ) {
         }
 
         let element = d3.select( this ),
-            touchId = d3.event.touches ? d3.event.changedTouches[ 0 ].identifier : null,
+            touchId = d3_event.touches ? d3_event.changedTouches[ 0 ].identifier : null,
             time    = +new Date(),
             pos     = point();
 
         element.on( 'dblclick', () => ret( element ) );
         element.on( 'mousemove.cliparea', null );
 
-        d3.select( window ).on( 'mouseup.cliparea', () => {
+        d3.select( window ).on( 'mouseup.cliparea', (d3_event) => {
             element.on( 'mousemove.cliparea', mousemove );
             if ( geoEuclideanDistance( pos, point() ) < closeTolerance ||
                 (geoEuclideanDistance( pos, point() ) < tolerance &&
                     (+new Date() - time) < 500) ) {
 
                 // Prevent a quick second click
-                d3.select( window ).on( 'click.cliparea-block', () => {
-                    d3.event.stopPropagation();
+                d3.select( window ).on( 'click.cliparea-block', (d3_event) => {
+                    d3_event.stopPropagation();
                 }, true );
 
                 context.map().dblclickEnable( false );
@@ -52,7 +52,7 @@ export function clip( context, svg ) {
                     d3.select( window ).on( 'click.cliparea-block', null );
                 }, 500 );
 
-                click();
+                click(d3_event);
             }
         } );
     }
@@ -82,7 +82,7 @@ export function clip( context, svg ) {
         }
     }
 
-    function click() {
+    function click(d3_event) {
         let c = context.projection( context.map().mouseCoordinates() );
 
         if ( nodeId === 0 ) {
@@ -107,14 +107,14 @@ export function clip( context, svg ) {
 
             d3.select( '#surface' ).on( 'dblclick', null );
 
-            ret( [ minCoords, maxCoords ] );
+            ret( d3_event, [ minCoords, maxCoords ] );
 
             nodeId = 0;
         }
     }
 
-    function ret( extent ) {
-        d3.event.preventDefault();
+    function ret( d3_event, extent ) {
+        d3_event.preventDefault();
         dispatch.call( 'finish', this, extent );
     }
 

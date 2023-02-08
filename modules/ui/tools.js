@@ -140,8 +140,8 @@ export function uiTools( context ) {
             .enter()
             .append( 'li' )
             .attr( 'class', d => `menu-item tools-${ d.group }` )
-            .on( 'click', () => d3.event.stopPropagation() )
-            .on( 'mouseenter', function( d ) {
+            .on( 'click', (d3_event) => d3_event.stopPropagation() )
+            .on( 'mouseenter', function( d3_event, d ) {
                 renderSubMenu( this, d.items );
             } );
 
@@ -185,7 +185,7 @@ export function uiTools( context ) {
             .append( 'li' )
             .attr( 'class', d => `${ d.icon } tools-${ d.group }` )
             .style( 'height', selected.node().getBoundingClientRect().height + 'px' )
-            .on( 'click', d => {
+            .on( 'click', (d3_event, d) => {
                 if ( d.mode ) {
                     context.enter( d.mode );
                 } else if ( d.action === 'clipData' ) {

@@ -22,8 +22,8 @@ export function behaviorDrawMeasureArea( context, svg ) {
         points, loc,
         nodeId;
 
-    function mousedown() {
-        d3.event.stopPropagation();
+    function mousedown(d3_event) {
+        d3_event.stopPropagation();
 
         function point() {
             let p = element.node().parentNode;
@@ -34,18 +34,18 @@ export function behaviorDrawMeasureArea( context, svg ) {
         }
 
         let element = d3.select( this ),
-            touchId = d3.event.touches ? d3.event.changedTouches[ 0 ].identifier : null,
+            touchId = d3_event.touches ? d3_event.changedTouches[ 0 ].identifier : null,
             time    = +new Date(),
             pos     = point();
 
-        element.on( 'dblclick', () => {
+        element.on( 'dblclick', (d3_event) => {
             polygon.classed( 'measure-complete', true );
-            ret( element );
+            ret( d3_event, element );
         } );
 
         element.on( 'mousemove.drawarea', null );
 
-        d3.select( window ).on( 'mouseup.drawarea', () => {
+        d3.select( window ).on( 'mouseup.drawarea', (d3_event) => {
             element.on( 'mousemove.drawarea', mousemove );
             if ( geoEuclideanDistance( pos, point() ) < closeTolerance ||
                 (geoEuclideanDistance( pos, point() ) < tolerance &&
@@ -53,7 +53,7 @@ export function behaviorDrawMeasureArea( context, svg ) {
 
                 // Prevent a quick second click
                 d3.select( window ).on( 'click.drawarea-block', () => {
-                    d3.event.stopPropagation();
+                    d3_event.stopPropagation();
                 }, true );
 
                 context.map().dblclickEnable( false );
@@ -113,8 +113,8 @@ export function behaviorDrawMeasureArea( context, svg ) {
         }
     }
 
-    function click() {
-        if ( d3.event.which !== 1 ) return false;
+    function click(d3_event) {
+        if ( d3_event.which !== 1 ) return false;
 
         if ( polygon.classed( 'updated' ) ) {
             points = polygon.attr( 'points' );
@@ -271,17 +271,17 @@ export function behaviorDrawMeasureArea( context, svg ) {
         return r / 12.56637 * 510065621724000;
     }
 
-    function backspace() {
-        d3.event.preventDefault();
+    function backspace(d3_event) {
+        d3_event.preventDefault();
         dispatch.call( 'undo' );
     }
 
-    function del() {
-        d3.event.preventDefault();
+    function del(d3_event) {
+        d3_event.preventDefault();
         dispatch.call( 'cancel' );
     }
 
-    function ret() {
+    function ret(d3_event) {
         let prevNodeId = nodeId - 1,
             c          = context.projection( lastPoint );
 
@@ -300,7 +300,7 @@ export function behaviorDrawMeasureArea( context, svg ) {
             .attr( 'y', c[ 1 ] + 25 )
             .text( () => lastArea );
 
-        d3.event.preventDefault();
+            d3_event.preventDefault();
         dispatch.call( 'finish', this, prevNodeId, ptArr );
     }
 

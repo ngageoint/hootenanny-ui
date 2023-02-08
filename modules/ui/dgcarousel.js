@@ -38,7 +38,7 @@ export function uiDgcarousel( context ) {
                 shown = show;
 
                 if ( show ) {
-                    selection.on( 'mousedown.carousel-inside', () => d3.event.stopPropagation() );
+                    selection.on( 'mousedown.carousel-inside', (d3_event) => d3_event.stopPropagation() );
 
                     pane
                         .style( 'display', 'block' )
@@ -226,8 +226,8 @@ export function uiDgcarousel( context ) {
             }
         }
 
-        function loadMetadataPopup( data ) {
-            if ( d3.event ) d3.event.preventDefault();
+        function loadMetadataPopup( d3_event, data ) {
+            if ( d3_event ) d3_event.preventDefault();
 
             popup.classed( 'hide', false );
 

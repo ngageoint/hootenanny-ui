@@ -4,7 +4,7 @@ export default class Filtering {
 
     }
 
-    render(data) {
+    render(d3_event, data) {
         let that = this;
 
         function bindSingleBodyClick() {
@@ -29,10 +29,10 @@ export default class Filtering {
         let filter = d3.select('body')
             .append('div')
             .classed('filter-column', true)
-            .style('top', d3.event.pageY + 'px')
-            .style('left', d3.event.pageX + 'px')
-            .on('click', () => {
-                d3.event.stopPropagation();
+            .style('top', d3_event.pageY + 'px')
+            .style('left', d3_event.pageX + 'px')
+            .on('click', (d3_event) => {
+                d3_event.stopPropagation();
             });
 
         filter.append('h3')

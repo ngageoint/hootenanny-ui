@@ -89,19 +89,19 @@ export default class ConflictMetadata {
                 .html( navHtml );
         }
 
-        _forEach( tagsMerged, tag => {
+        _forEach( tagsMerged, ([key, value]) => {
             let row = this.poiTable.append( 'tr' );
 
             row.append( 'td' )
                 .classed( 'fillD', true )
-                .text( tag.key );
+                .text( key );
 
             row.selectAll( 'td.feature1' )
                 .data( [ { k: 1 } ] ).enter()
                 .append( 'td' )
-                .attr('title', tag.value[0])
+                .attr('title', value[0])
                 .classed( 'value-col feature1', true )
-                .text( tag.value[ 0 ] );
+                .text( value[0] );
 
             row.selectAll( 'td.value-col.feature1' )
                 .on('click', () => {
@@ -114,7 +114,7 @@ export default class ConflictMetadata {
                 .append( 'td' )
                 .attr('title', tag.value[1])
                 .classed( 'value-col feature2', true )
-                .text( tag.value[ 1 ] );
+                .text( value[1] );
 
             row.selectAll( 'td.value-col.feature2' )
                 .on('click', () => {
@@ -172,14 +172,14 @@ export default class ConflictMetadata {
      * @returns {IterableIterator} - map of unique tags
      */
     mergeTags( tags ) {
-        let tagKeys   = d3.set( _map( _flatten( tags ), 'key' ) ),
-            mergedMap = d3.map();
+        let tagKeys   = new Set( _map( _flatten( tags ), 'key' ) ),
+            mergedMap = new Map();
 
         _forEach( tagKeys.values().sort(), key => {
             mergedMap.set( key, [] );
 
             _forEach( tags, tag => {
-                let tagMap = d3.map();
+                let tagMap = new Map();
 
                 _forEach( tag, t => {
                     tagMap.set( t.key, t.value );
@@ -189,7 +189,7 @@ export default class ConflictMetadata {
             } );
         } );
 
-        return mergedMap.entries();
+        return Object.entries(mergedMap);
     }
 
     /**

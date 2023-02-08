@@ -151,8 +151,8 @@ export function uiBackground(context) {
     //     //collections.classed('hide', true);
     // }
     //
-    // function addOrUpdateOverlay( d ) {
-    //     d3.event.preventDefault();
+    // function addOrUpdateOverlay( d3_event, d ) {
+    //     d3_event.preventDefault();
     //     context.background().addOrUpdateOverlayLayer( d );
     //     selectLayer();
     // }
@@ -462,8 +462,8 @@ export function uiBackground(context) {
                     .title(t( 'background.dgcl_button'))
                     .placement('left')
                 )
-                .on('click', () => {
-                    d3.event.preventDefault();
+                .on('click', (d3_event) => {
+                    d3_event.preventDefault();
                     collections.classed('hide', () => !collections.classed('hide'));
                 })
                 .call(svgIcon( '#iD-icon-layers'));
@@ -504,12 +504,12 @@ export function uiBackground(context) {
                 .attr( 'class', d => dgServices.defaultCollection === d.value ? 'dgprofile active' : 'dgprofile' )
                 .text( d => d.text )
                 .attr( 'value', d => d.value)
-                .on( 'click', d => {
+                .on( 'click', (d3_event, d) => {
                     function active( d ) {
                         return context.background().showsLayer( d );
                     }
 
-                    d3.event.preventDefault();
+                    d3_event.preventDefault();
 
                     let source = rendererBackgroundSource( dgServices.collectionSource( null, 'Default_Profile', d.value ) );
 

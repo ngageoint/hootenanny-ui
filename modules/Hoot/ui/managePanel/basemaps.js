@@ -89,11 +89,11 @@ export default class Basemaps extends Tab {
         buttonContainer
             .append( 'button' )
             .classed( 'keyline-left _icon', true )
-            .on( 'click', function( d ) {
+            .on( 'click', function( d3_event, d ) {
                 let button = d3.select( this );
 
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
+                d3_event.stopPropagation();
+                d3_event.preventDefault();
 
                 if ( d.status === 'disabled' ) {
                     Hoot.api.enableBasemap( d ).then( () => {
@@ -140,9 +140,9 @@ export default class Basemaps extends Tab {
         buttonContainer
         .append( 'button' )
         .classed( 'keyline-left _icon trash', true )
-        .on( 'click', function( d ) {
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
+        .on( 'click', function( d3_event, d ) {
+            d3_event.stopPropagation();
+            d3_event.preventDefault();
 
             let r = confirm( `Are you sure you want to delete: ${ d.name }?` );
             if ( !r ) return;

@@ -337,9 +337,9 @@ export default class AdvancedOpts {
         caretWrap.merge(caretWrapEnter);
     }
 
-    showBody(d) {
-        if (d3.event.target.classList.contains( 'conflate-type-toggle' ) ||
-            d3.event.target.classList.contains( 'adv-opts-group-title' )) {
+    showBody(d3_event, d) {
+        if (d3_event.target.classList.contains( 'conflate-type-toggle' ) ||
+            d3_event.target.classList.contains( 'adv-opts-group-title' )) {
             return;
         }
         if (d.members.length) {
@@ -668,7 +668,7 @@ export default class AdvancedOpts {
 
             groupToggle = groupToggle
                 .merge(groupToggleEnter)
-                .on('click', () => instance.showBody(d));
+                .on('click', (d3_event) => instance.showBody(d3_event, d));
 
             let toggleWrap = groupToggle.selectAll( '.inner-wrapper' )
                 .data( [ d ] );

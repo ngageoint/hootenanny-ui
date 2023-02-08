@@ -387,9 +387,9 @@ export function uiRawTagEditor(context) {
         }
 
 
-        function selectAllTags() {
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
+        function selectAllTags(d3_event) {
+            d3_event.stopPropagation();
+            d3_event.preventDefault();
 
             var buttons = d3.selectAll('.tag-row .tag-select-button svg');
 

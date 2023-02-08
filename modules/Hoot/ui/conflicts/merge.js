@@ -51,8 +51,8 @@ export default class Merge {
      *
      * @returns {Promise<void>}
      */
-    async mergeFeatures() {
-        let reverse  = (d3.event.ctrlKey || d3.event.metaKey) && !this.isPoiPoly,
+    async mergeFeatures(d3_event) {
+        let reverse  = (d3_event.ctrlKey || d3_event.metaKey) && !this.isPoiPoly,
             featureUpdate = _cloneDeep((reverse) ? this.mergeArrow.from : this.mergeArrow.to),
             featureDelete = _cloneDeep((reverse) ? this.mergeArrow.to : this.mergeArrow.from),
             features = [featureUpdate, featureDelete],
@@ -269,10 +269,10 @@ export default class Merge {
         this.mergeArrow.to   = againstFeature;
 
         d3.select( '.action-buttons .merge' )
-            .on( 'mouseenter', function() {
+            .on( 'mouseenter', function(d3_event) {
                 this.focus();
 
-                if ( d3.event.ctrlKey || d3.event.metaKey ) {
+                if ( d3_event.ctrlKey || d3_event.metaKey ) {
                     that.updateMergeArrow( 'reverse' );
                 } else {
                     that.updateMergeArrow();
@@ -280,7 +280,7 @@ export default class Merge {
 
                 d3.select( this )
                     .on( 'keydown', () => {
-                        if ( d3.event.ctrlKey || d3.event.metaKey ) {
+                        if ( d3_event.ctrlKey || d3_event.metaKey ) {
                             that.updateMergeArrow( 'reverse' );
                         }
                     } )

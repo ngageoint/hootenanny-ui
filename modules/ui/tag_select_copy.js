@@ -20,9 +20,9 @@ export function uiTagSelectCopy( context ) {
             .call( svgIcon( '#iD-icon-apply', 'checked' ) );
 
         button
-            .on( 'click', () => {
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
+            .on( 'click', (d3_event) => {
+                d3_event.stopPropagation();
+                d3_event.preventDefault();
 
                 let icon = button.select( 'svg' );
 

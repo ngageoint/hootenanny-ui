@@ -6,16 +6,16 @@ export default class Paging {
 
     }
 
-    forwardPage(that) {
-        d3.event.stopPropagation();
-        d3.event.preventDefault();
+    forwardPage(d3_event, that) {
+        d3_event.stopPropagation();
+        d3_event.preventDefault();
 
         that.setPage(+that.pageElement.text() + 1);
     }
 
-    backPage(that) {
-        d3.event.stopPropagation();
-        d3.event.preventDefault();
+    backPage(d3_event, that) {
+        d3_event.stopPropagation();
+        d3_event.preventDefault();
 
         that.setPage(+that.pageElement.text() - 1);
     }
@@ -49,9 +49,9 @@ export default class Paging {
             .text('arrow_right')
             .on('click', () => this.forwardPage(that));
 
-        function contextMenu() {
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
+        function contextMenu(d3_event) {
+            d3_event.stopPropagation();
+            d3_event.preventDefault();
 
             function bindSingleBodyClick() {
                 d3.select( 'body' ).on( 'click', () => {
@@ -71,10 +71,10 @@ export default class Paging {
             let filter = d3.select('body')
                 .append('div')
                 .classed('limit-value', true)
-                .style('top', d3.event.pageY + 'px')
-                .style('right', (window.innerWidth - d3.event.pageX) + 'px')
-                .on('click', () => {
-                    d3.event.stopPropagation();
+                .style('top', d3_event.pageY + 'px')
+                .style('right', (window.innerWidth - d3_event.pageX) + 'px')
+                .on('click', (d3_event) => {
+                    d3_event.stopPropagation();
                 });
 
             filter.append('h3')

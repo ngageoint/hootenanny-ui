@@ -45,8 +45,8 @@ export function uiPasteTags( context ) {
         );
     }
 
-    function doPasteTags( overwrite ) {
-        d3.event.preventDefault();
+    function doPasteTags( d3_event, overwrite ) {
+        d3_event.preventDefault();
 
         let copyTags    = context.copyTags(),
             oldIDs      = context.copyIDs(),
@@ -59,12 +59,12 @@ export function uiPasteTags( context ) {
             let selectEntity = oldGraph.entity( eid );
 
             if ( Object.keys( copyTags ).length > 0 ) { //use copied tags
-                selectEntity = selectEntity.mergeTags( _omit( copyTags, omitTag ), d3.event.shiftKey || overwrite );
+                selectEntity = selectEntity.mergeTags( _omit( copyTags, omitTag ), d3_event.shiftKey || overwrite );
             } else { //use copied features
                 for ( let i = 0; i < oldIDs.length; i++ ) {
                     let oldEntity = oldGraph.entity( oldIDs[ i ] );
 
-                    selectEntity = selectEntity.mergeTags( _omit( oldEntity.tags, omitTag ), d3.event.shiftKey || overwrite );
+                    selectEntity = selectEntity.mergeTags( _omit( oldEntity.tags, omitTag ), d3_event.shiftKey || overwrite );
                 }
             }
 
@@ -93,12 +93,12 @@ export function uiPasteTags( context ) {
         } );
 
         let keybinding = utilKeybinding( 'paste_tags' )
-            .on( commands[ 0 ].cmd, function() {
-                d3.event.preventDefault();
+            .on( commands[ 0 ].cmd, function(d3_event) {
+                d3_event.preventDefault();
                 commands[ 0 ].action();
             } )
-            .on( commands[ 1 ].cmd, function() {
-                d3.event.preventDefault();
+            .on( commands[ 1 ].cmd, function(d3_event) {
+                d3_event.preventDefault();
                 commands[ 1 ].action();
             } );
 

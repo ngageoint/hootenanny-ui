@@ -106,8 +106,8 @@ export default class AdminPanel extends Tab {
         let buttons = buttonContainer.enter()
             .append( 'button' )
             .classed( 'admin-action-button primary text-light flex align-center disabled', true )
-            .on( 'click', () => {
-                d3.event.preventDefault();
+            .on( 'click', (d3_event) => {
+                d3_event.preventDefault();
                 let m = months.attr('_value');
                 this.deleteStale = new deleteStaleMaps(m);
                 this.deleteStale.render();
@@ -143,8 +143,8 @@ export default class AdminPanel extends Tab {
         let buttons = buttonContainer.enter()
             .append( 'button' )
             .classed( 'admin-action-button primary text-light flex align-center', true )
-            .on( 'click', async button => {
-                d3.event.preventDefault();
+            .on( 'click', async (d3_event, button) => {
+                d3_event.preventDefault();
 
                 if ( button.title === 'Save' ) {
                     this.submitPrivileges();
@@ -199,9 +199,9 @@ export default class AdminPanel extends Tab {
             })
             .on('contextmenu', openFilter);
 
-        function openFilter(d) {
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
+        function openFilter(d3_event, d) {
+            d3_event.stopPropagation();
+            d3_event.preventDefault();
 
             if (d.filter) {
                 let filterData = {
@@ -211,7 +211,7 @@ export default class AdminPanel extends Tab {
                     values: Object.entries( self.columnFilters[d.name] )
                 };
 
-                self.filtering.render(filterData);
+                self.filtering.render(d3_event, filterData);
             }
         }
 

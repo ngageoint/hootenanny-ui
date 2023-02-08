@@ -43,9 +43,9 @@ export default class LayerReview extends SidebarForm {
                 .append( 'a' )
                 // .attr( 'href', '!#' )
                 .text( 'Resolve all remaining reviews' )
-                .on( 'click', () => {
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
+                .on( 'click', (d3_event) => {
+                    d3_event.stopPropagation();
+                    d3_event.preventDefault();
 
                     this.conflicts.resolve.acceptAll( this.layer );
                 } );

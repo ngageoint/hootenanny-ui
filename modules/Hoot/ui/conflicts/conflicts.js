@@ -152,8 +152,8 @@ export default class Conflicts {
         let keybinding = utilKeybinding( 'conflicts' );
 
         _forEach( this.buttonMeta, bt => {
-            keybinding.on( bt.cmd, () => {
-                d3.event.preventDefault();
+            keybinding.on( bt.cmd, (d3_event) => {
+                d3_event.preventDefault();
 
                 if ( Hoot.context.selectedIDs().length > 0 ) {
                     return;

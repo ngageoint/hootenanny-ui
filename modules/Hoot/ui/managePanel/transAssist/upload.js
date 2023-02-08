@@ -120,7 +120,7 @@ export default class Upload {
             .attr( 'webkitdirectory', d => d.webkitdirectory && d.webkitdirectory )
             .attr( 'directory', d => d.directory && d.directory )
             .classed( 'hidden', true )
-            .on( 'click', () => d3.event.stopPropagation() )
+            .on( 'click', (d3_event) => d3_event.stopPropagation() )
             .on( 'change', function( d ) {
                 that.processSchemaData( d3.select( this ).node(), d.uploadType );
             } );

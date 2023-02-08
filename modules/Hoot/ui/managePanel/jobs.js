@@ -160,8 +160,8 @@ export default class Jobs extends Tab {
 
         let that = this;
         this.keybinding
-            .on('⌫', () => this.deleteJobs(that))
-            .on('⌦', () => this.deleteJobs(that));
+            .on('⌫', (d3_event) => this.deleteJobs(d3_event, that))
+            .on('⌦', (d3_event) => this.deleteJobs(d3_event, that));
         d3.select(document)
             .call(this.keybinding);
     }
@@ -205,7 +205,7 @@ export default class Jobs extends Tab {
             .classed( 'jobs-table jobs-history keyline-all fill-white', true );
     }
 
-    async deleteJobs(self) {
+    async deleteJobs(d3_event, self) {
         function deleteJobs() {
             d3.select('#util-jobs').classed('wait', true);
             Promise.all( delIds.map( id => Hoot.api.deleteJobStatus(id)) )//rate limit?
@@ -219,7 +219,7 @@ export default class Jobs extends Tab {
         let delIds = self.jobsHistoryTable.selectAll('tr.jobs-item.selected')
             .data().map(d => d.jobId);
 
-        if (d3.event.shiftKey) { //omit confirm prompt
+        if (d3_event.shiftKey) { //omit confirm prompt
             deleteJobs();
         } else {
             let message = `Are you sure you want to clear the ${delIds.length} selected job records?`,
@@ -481,9 +481,9 @@ export default class Jobs extends Tab {
             })
             .on('contextmenu', openFilter);
 
-        function openFilter(d) {
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
+        function openFilter(d3_event, d) {
+            d3_event.stopPropagation();
+            d3_event.preventDefault();
 
             if (that.columnFilters[d.column]) {
                 let filterData = {
@@ -493,7 +493,7 @@ export default class Jobs extends Tab {
                     values: Object.entries(that.columnFilters[d.column])
                 };
 
-                that.filtering.render(filterData);
+                that.filtering.render(d3_event, filterData);
             }
         }
 
@@ -544,13 +544,13 @@ export default class Jobs extends Tab {
             .enter()
             .append( 'tr' )
             .classed( 'jobs-item keyline-bottom', true )
-            .on('click', function(d, i) {
+            .on('click', function(d3_event, d, i) {
                 let r = d3.select(this);
-                if (d3.event.ctrlKey || d3.event.metaKey) {
+                if (d3_event.ctrlKey || d3_event.metaKey) {
                     //Toggle current row
                     r.classed('selected', !r.classed('selected'));
                     that.lastClick = i;
-                } else if (d3.event.shiftKey) {
+                } else if (d3_event.shiftKey) {
                     //Unselect everything
                     tbody.selectAll('tr').classed('selected', false);
 

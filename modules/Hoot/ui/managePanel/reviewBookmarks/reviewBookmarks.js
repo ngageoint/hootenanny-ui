@@ -425,9 +425,9 @@ export default class ReviewBookmarks extends Tab {
         this.populateBookmarks( this.bookmarks, true );
     }
 
-    async deleteBookmark( d ) {
-        d3.event.stopPropagation();
-        d3.event.preventDefault();
+    async deleteBookmark( d3_event, d ) {
+        d3_event.stopPropagation();
+        d3_event.preventDefault();
 
         let message = 'Are you sure you want to delete selected bookmark?',
             confirm = await Hoot.message.confirm( message );
