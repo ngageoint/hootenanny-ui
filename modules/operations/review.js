@@ -59,7 +59,7 @@ export function operationReview(selectedIDs, context) {
         // if we are clicking the review button on the same feature, turn it off
         // when we are not, then build the features for the selected
         if (lastEntity && lastEntity.properties.entityId === entityId) {
-            hootGeoJson.features = hootGeoJson.features.filter(f => f.properties.mapId);
+            hootGeoJson.features = hootGeoJson.features.filter(f => !f.properties.reviewLabel);
             context.layers().layer('hoot').geojson(hootGeoJson);
             return;
         }
