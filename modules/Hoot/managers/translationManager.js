@@ -264,38 +264,6 @@ export default class TranslationManager {
 
         if (preset) {
             id = preset.id;
-
-            (preset['maprules:fields'] || []).forEach(function (fieldId) {
-                var field = presets.field(fieldId);
-                field['hoot:tagschema'] = activeTranslation;
-                if (!field.hasOwnProperty('strings')) {
-                    /* eslint-disable */
-                    var column = schema.columns.find(function (c) { return c.name === field.key; });
-                    if (column.type === 'enumeration') { // if enumerated, but no options specified, build up options from schema column...
-                        field.type = 'combo'
-                        field.strings = {
-                            options: column.enumerations.reduce(function (prev, curr) {
-                                prev[curr.value] = curr.name;
-                                return prev;
-                            }, {})
-                        };
-                    }
-                }
-
-                // remove any duplicate fields from maprules fields and
-                // those that live in the translation server schema
-                for (var i = 0; i < fields.length; i++) {
-                    var f = fields[i];
-                    if (f.indexOf(field.key) !== -1) {
-                        delete fieldsMap[f];
-                        fields.splice(i, 1);
-                        break;
-                    }
-                }
-
-                fieldsMap[fieldId] = field;
-                fields.unshift(field.id)
-            });
         } else {
             id = that.activeTranslation + '/' + schema.fcode;
         }
