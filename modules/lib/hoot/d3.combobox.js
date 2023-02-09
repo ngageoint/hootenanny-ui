@@ -322,7 +322,7 @@ export function d3combobox() {
             if ( node ) node.scrollIntoView();
         }
 
-        function accept( d ) {
+        function accept( d3_event, d ) {
             if ( !shown ) return;
             input.attr( '_value', d._value );
             input.property( 'value', d.value );

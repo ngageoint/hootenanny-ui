@@ -279,8 +279,8 @@ export default class FormFactory {
             .attr( 'disabled', d => d.disabled )
             .attr( 'readonly', d => d.readonly )
             .call(d3combobox().data(comboData))
-            .on( 'change', d => d.onChange && d.onChange(d) )
-            .on( 'keyup', d => d.onChange && d.onChange(d) );
+            .on( 'change', (d3_event, d) => d.onChange && d.onChange(d) )
+            .on( 'keyup', (d3_event, d) => d.onChange && d.onChange(d) );
     }
 
     /**
@@ -331,7 +331,7 @@ export default class FormFactory {
             .attr( 'disabled', d => d.disabled )
             .attr( 'readonly', d => d.readonly )
             .call( combobox )
-            .on( 'change', d => {
+            .on( 'change', (d3_event, d) => {
                 let tagsContainer = container.select( '.selectedTags' );
 
                 const tagItem = container.select( `#${ d.id }` ),
@@ -351,7 +351,7 @@ export default class FormFactory {
 
                 if ( afterChangeCallback ) afterChangeCallback();
             } )
-            .on( 'keyup', d => d.onChange && d.onChange(d) );
+            .on( 'keyup', (d3_event, d) => d.onChange && d.onChange(d) );
 
         return combobox;
     }
@@ -419,12 +419,12 @@ export default class FormFactory {
             .attr( 'readonly', d => d.readOnly )
             .attr( 'disabled', d => d.disabled )
             .classed( 'text-input', true )
-            .on( 'keyup', function( d ) {
+            .on( 'keyup', function( d3_event, d ) {
                 if ( d.onChange ) {
                     d.onChange( d, this );
                 }
             } )
-            .on( 'blur', function( d ) {
+            .on( 'blur', function( d3_event, d ) {
                 if ( d.onBlur ) {
                     d.onBlur( d, this );
                 }
@@ -447,12 +447,12 @@ export default class FormFactory {
             .attr( 'readonly', d => d.readOnly )
             .attr( 'disabled', d => d.disabled )
             .classed( 'text-input', true )
-            .on( 'keyup', function( d ) {
+            .on( 'keyup', function( d3_event, d ) {
                 if ( d.onChange ) {
                     d.onChange( d, this );
                 }
             } )
-            .on( 'blur', function( d ) {
+            .on( 'blur', function(d3_event, d ) {
                 if ( d.onBlur ) {
                     d.onBlur( d, this );
                 }
@@ -472,7 +472,7 @@ export default class FormFactory {
             .attr( 'type', 'checkbox' )
             .attr( 'id', d => d.id )
             .property( 'checked', d => d.checked )
-            .on( 'change', d => d.onChange && d.onChange(d) );
+            .on( 'change', (d3_event, d) => d.onChange && d.onChange(d) );
     }
 
     /**
@@ -487,8 +487,8 @@ export default class FormFactory {
             .attr( 'class', d => d.class )
             .attr( 'readonly', d => d.readOnly )
             .text( d => d.data || '' )
-            .on( 'keyup', d => d.onChange && d.onChange( d ) )
-            .on( 'drop', d => d.onDrop && d.onDrop() );
+            .on( 'keyup', (d3_event, d) => d.onChange && d.onChange( d ) )
+            .on( 'drop', (d3_event, d) => d.onDrop && d.onDrop() );
     }
 
     createListbox( field ) {
@@ -541,7 +541,7 @@ export default class FormFactory {
             .property( 'multiple', false )
             .attr( 'accept', d => d.accept || null )
             .classed( 'pointer pin-top datasets-file-upload', true )
-            .on( 'change', d => d.onChange() );
+            .on( 'change', (d3_event, d) => d.onChange() );
     }
 
     /**

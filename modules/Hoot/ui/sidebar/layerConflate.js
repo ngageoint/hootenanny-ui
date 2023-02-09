@@ -67,7 +67,6 @@ class LayerConflate extends SidebarForm {
     }
 
     createFieldset() {
-        console.log('create fieldset');
         this.fieldset = new FormFactory().createFieldSets( this.innerWrapper, this.formData );
     }
 
