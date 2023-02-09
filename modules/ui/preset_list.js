@@ -443,19 +443,7 @@ export function uiPresetList(context) {
             if (Hoot.translations.activeTranslation === 'OSM') {
                 choosePreset(preset);
             } else {
-                function entityGeometries() {
-
-                    var counts = {};
-                    var geometry = context.geometry(_entityID);
-                    if (!counts[geometry]) counts[geometry] = 0;
-                    counts[geometry] += 1;
-            
-                    return Object.keys(counts).sort(function(geom1, geom2) {
-                        return counts[geom2] - counts[geom1];
-                    });
-                }
-
-                Hoot.translations.addTagsForFcode(entityGeometries()[0], preset, context, _entityID, function(p) {
+                Hoot.translations.addTagsForFcode(context.geometry(_entityID), preset, context, _entityID, function(p) {
                     p.icon = preset.icon;
                     context.presets().replace(p);
                     choosePreset(p);
