@@ -296,6 +296,44 @@ export default class TranslationManager {
         return tags;
     }
 
+    decodeSchemaKey( key ) {
+        let decodeKey = key;
+        if (this.activeSchema) {
+            const keys = this.activeSchema.columns.filter(function(d) {
+                return d.name === key.toUpperCase();
+            }).map(function(d) {
+                return d.desc;
+            });
+            if (keys.length) {
+                decodeKey = keys[0];
+            }
+        }
+        return decodeKey;
+    }
+
+    decodeSchemaValue( tag ) {
+        let decodeValue;
+        if (this.activeSchema) {
+            let values = [];
+            let columns = this.activeSchema.columns.filter(function(d) {
+                return d.name === tag.key.toUpperCase();
+            });
+            if (columns.length === 1) {
+                if (columns[0].enumerations) {
+                    values = columns[0].enumerations.filter(function(d) {
+                        return d.value === tag.value;
+                    }).map(function(d) {
+                        return d.name;
+                    });
+                }
+            }
+            if (values.length) {
+                decodeValue = values[0];
+            }
+        }
+        return decodeValue;
+    }
+
     filterSchemaKeys( value ) {
         return _map( _filter( this.activeSchema.columns, d => {
             return d.name.startsWith( value.toUpperCase() );
