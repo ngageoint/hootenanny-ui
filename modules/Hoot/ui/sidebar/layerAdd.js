@@ -78,7 +78,7 @@ export default class LayerAdd extends SidebarForm {
     renderFolderTree() {
         if ( !this.folderTree ) {
             this.folderTree = new FolderTree( this.table );
-            this.folderTree.setDoubleClickHandler(this, this.submitLayer);
+            this.folderTree.setDoubleClickHandler(this, () => this.submitLayer());
         }
 
         this.folderTree.render();
