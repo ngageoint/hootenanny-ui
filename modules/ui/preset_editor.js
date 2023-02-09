@@ -53,13 +53,15 @@ export function uiPresetEditor(context) {
                 );
             }
 
-            presets.universal().forEach(function(field) {
-                if (_preset.fields.indexOf(field) === -1) {
-                    _fieldsArr.push(
-                        uiField(context, field, entity, { show: false })
-                    );
-                }
-            });
+            if (Hoot.translations.activeTranslation === 'OSM') {
+                presets.universal().forEach(function(field) {
+                    if (_preset.fields.indexOf(field) === -1) {
+                        _fieldsArr.push(
+                            uiField(context, field, entity, { show: false })
+                        );
+                    }
+                });
+            }
 
             _fieldsArr.forEach(function(field) {
                 field
