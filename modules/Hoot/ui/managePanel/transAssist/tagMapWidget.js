@@ -150,7 +150,7 @@ export default class TagMapWidget {
             .html( d => {
                 return !d || d.key.replace( value, '<span class="match">' + value + '</span>' );
             } )
-            .on( 'click', d => this.selectTag( d ) );
+            .on( 'click', (d3_event, d) => this.selectTag( d ) );
 
         searchResult.exit().remove();
     }

@@ -246,7 +246,7 @@ export default class Datasets extends Tab {
                 await deleteItem(item);
             }
         }
-        const iterator = toDelete.entries();
+        const iterator = Object.entries(toDelete);
         const workers = new Array(rateLimit).fill(iterator).map(doWork);
 
         return Promise.allSettled( workers );

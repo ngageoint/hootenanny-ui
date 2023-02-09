@@ -85,7 +85,7 @@ export function uiPasteTags( context ) {
             .data( commands )
             .enter().append( 'button' )
             .attr( 'class', 'col6 disabled' )
-            .on( 'click', d => d.action() )
+            .on( 'click', (d3_event, d) => d.action() )
             .call( buttonTooltip );
 
         buttons.each( function( d ) {

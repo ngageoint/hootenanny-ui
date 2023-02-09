@@ -764,7 +764,7 @@ export default class FolderTree extends EventEmitter {
                     .call(svgIcon(`#iD-icon-${ item.icon }`));
                 }
             })
-            .on( 'click', item => {
+            .on( 'click', (d3_event, item) => {
                 if (this.isTranslationTable) {
                     return Hoot.events.emit( 'translation-context-menu', this, d, item );
                 } else {

@@ -254,7 +254,7 @@ export default class TaskingManagerPanel extends Tab {
             .classed( 'taskingManager-title', true )
             .append( 'a' )
             .text( project => `#${project.id} ${project.properties.name}` )
-            .on( 'click', project => {
+            .on( 'click', (d3_event, project) => {
                 this.loadTaskTable( project );
             } );
 
@@ -502,7 +502,7 @@ export default class TaskingManagerPanel extends Tab {
         container.append( 'button' )
             .classed( 'primary text-light', true )
             .text( 'Unlock' )
-            .on( 'click', task => this.setLockState( task, false ) );
+            .on( 'click', (d3_event, task) => this.setLockState( task, false ) );
 
         container.append( 'button' )
             .classed( 'primary text-light', true )
@@ -528,7 +528,7 @@ export default class TaskingManagerPanel extends Tab {
         container.append( 'button' )
             .classed( 'primary text-light', true )
             .text( 'Lock' )
-            .on( 'click', task => this.setLockState( task, true ) );
+            .on( 'click', (d3_event, task) => this.setLockState( task, true ) );
     }
 
     setLockState( task, lockStatus ) {

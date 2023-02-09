@@ -334,7 +334,7 @@ export default class ReviewBookmarks extends Tab {
 
                 return `${ title } - ${ layerName }`;
             } )
-            .on( 'click', d => this.openBookmarkNotes( d ) );
+            .on( 'click', (d3_event, d) => this.openBookmarkNotes( d ) );
 
         let details = header
             .append( 'div' )
@@ -359,7 +359,7 @@ export default class ReviewBookmarks extends Tab {
             .classed( 'delete-bookmark', true )
             .append( 'button' )
             .classed( '_icon trash', true )
-            .on( 'click', d => this.deleteBookmark( d ) );
+            .on( 'click', (d3_event, d) => this.deleteBookmark( d ) );
     }
 
     clearFilter() {
@@ -402,7 +402,7 @@ export default class ReviewBookmarks extends Tab {
             .classed( 'page', true )
             .attr( 'data-index', d => d )
             .text( d => d + 1 )
-            .on( 'click', d => {
+            .on( 'click', (d3_event, d) => {
                 this.currentPageIdx = d;
                 this.loadBookmarks();
             } );

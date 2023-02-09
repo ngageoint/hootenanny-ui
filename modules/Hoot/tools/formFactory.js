@@ -369,7 +369,7 @@ export default class FormFactory {
         listItem.append( 'a' )
             .classed( 'remove', true)
             .text( 'x' )
-            .on( 'click', function(d) {
+            .on( 'click', function(d3_event, d) {
                 listItem.remove();
 
                 if ( onDelete ) {

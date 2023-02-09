@@ -212,7 +212,7 @@ export default class TagMapForm {
             .classed( 'list-option strong center', true )
             .merge( list )
             .html( d => this.getAttributeStatus( d.key ) )
-            .on( 'click', d => {
+            .on( 'click', (d3_event, d) => {
                 this.currentIndex[ this.layer ] = _findIndex( allAttributes, ([key, value]) => key === d.key );
 
                 this.updateAttributes();

@@ -121,7 +121,7 @@ export function uiDgcarousel( context ) {
                                 .on( 'mouseenter', d => loadFootprint( d3_event, d ) )
                                 .on( 'mouseleave', d => loadFootprint( d3_event, d ) )
                                 .on( 'dblclick', d => loadMetadataPopup( d3_event, d ) )
-                                .on( 'click', function( d ) {
+                                .on( 'click', function( d3_event, d ) {
                                     let active = !d3.select( this ).classed( 'active' );
 
                                     d3.select( this ).classed( 'active', active );

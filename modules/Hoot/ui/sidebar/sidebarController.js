@@ -127,7 +127,7 @@ class SidebarController {
             // .attr( 'href', '#' )
             .attr( 'data-color', p => p.name )
             .style( 'background', p => p.hex )
-            .on( 'click', function( p ) {
+            .on( 'click', function( d3_event, p ) {
                 d3.select( this.parentNode )
                     .selectAll( 'a' )
 

@@ -463,7 +463,7 @@ export default class AdvancedOpts {
         if ( type === 'checkbox' ) {
             fieldInput
                 .property( 'checked', d => d.default.toString() === 'true' )
-                .on( 'click', function(d) {
+                .on( 'click', function(d3_event, d) {
                     d.send = JSON.parse( d.default ) !== d3.select( this ).property( 'checked' );
                     if ( d3.select(`#${d.id}`).property('checked') !== d.default && d3.select('#updateFav').classed('hidden') ) {
                         //make save favorite opt button visible

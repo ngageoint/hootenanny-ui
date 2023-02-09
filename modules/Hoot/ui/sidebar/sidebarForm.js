@@ -98,7 +98,7 @@ export default class SidebarForm {
 
                 return `toggle-button button _icon big light text-light strong block round ${ iconClass }`;
             } )
-            .on( 'click', d => this.toggle( d.id ) );
+            .on( 'click', (d3_event, d) => this.toggle( d.id ) );
 
         this.button.append( 'span' )
             .classed( 'strong', true )

@@ -132,7 +132,7 @@ export default class Conflicts {
             .append( 'button' )
             .attr( 'class', d => d.class )
             .text( d => d.text )
-            .on( 'click', d => {
+            .on( 'click', (d3_event, d) => {
                 setTimeout( () => this.buttonEnabled = true, 500 );
 
                 if ( this.buttonEnabled ) {
