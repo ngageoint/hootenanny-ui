@@ -427,6 +427,41 @@ export function uiPresetList(context) {
         }
 
         item.choose = function() {
+            function choosePreset(p) {
+                context.perform(
+                    function(graph) {
+                        var oldPreset = context.presets().match(graph.entity(_entityID), graph);
+                        graph = actionChangePreset(_entityID, oldPreset, p)(graph);
+                        return graph;
+                    },
+                    t('operations.change_tags.annotation')
+                );
+
+                dispatch.call('choose', this, p);
+            };
+            if (d3_select(this).classed('disabled')) return;
+            if (Hoot.translations.activeTranslation === 'OSM') {
+                choosePreset(preset);
+            } else {
+                function entityGeometries() {
+
+                    var counts = {};
+                    var geometry = context.geometry(_entityID);
+                    if (!counts[geometry]) counts[geometry] = 0;
+                    counts[geometry] += 1;
+            
+                    return Object.keys(counts).sort(function(geom1, geom2) {
+                        return counts[geom2] - counts[geom1];
+                    });
+                }
+
+                Hoot.translations.addTagsForFcode(entityGeometries()[0], preset, context, _entityID, function(p) {
+                    p.icon = preset.icon;
+                    context.presets().replace(p);
+                    choosePreset(p);
+                });
+            }
+
             context.presets().choose(preset);
             context.perform(
                 actionChangePreset(_entityID, _currentPreset, preset),

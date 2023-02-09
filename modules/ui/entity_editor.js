@@ -4,6 +4,8 @@ import _clone from 'lodash-es/clone';
 import _debounce from 'lodash-es/debounce';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
+import _forEach from 'lodash-es/forEach';
+import _some from 'lodash-es/some';
 
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
@@ -41,14 +43,62 @@ export function uiEntityEditor(context) {
     var rawTagEditor = uiRawTagEditor(context)
         .on('change', changeTags);
 
-    var debouncedTranslate = _debounce( ( entity, updateTags ) => {
-        Hoot.translations.translateEntity( entity )
-            .then( data => updateTags( data.preset, data.tags ) )
-            .catch( err => {
-                console.error(err);
-                Hoot.message.alert( err );
-            } );
-    }, 500 );
+    var debouncedTranslateTo = _debounce(function( entity, hoot, updateTags) {
+            d3_selectAll('.tag-schema').append('div').attr('class', 'schema-loading');
+            hoot.translations.translateEntity(entity)
+            .then(data => updateTags(data.preset, data.tags));
+        }, 500);
+    var debouncedTranslateFrom = _debounce(function(osmTags, entity, onInput, updateTags){
+            d3_selectAll('.tag-schema').append('div').attr('class', 'schema-loading');
+            Hoot.translations.translateToOsm(osmTags, entity, onInput)
+            .then(osmTags => updateTags(osmTags, onInput))
+        }, 500);
+
+    // var debouncedTranslate = _debounce( ( entity, updateTags ) => {
+    //     Hoot.translations.translateEntity( entity )
+    //         .then( data => updateTags( data.preset, data.tags ) )
+    //         .catch( err => {
+    //             console.error(err);
+    //             Hoot.message.alert( err );
+    //         } );
+    // }, 500 );
+
+    function clean(o) {
+
+        function cleanVal(k, v) {
+            function keepSpaces(k) {
+                return k.match(/_hours|_times/) !== null;
+            }
+
+            var blacklist = ['description', 'note', 'fixme'];
+            if (_some(blacklist, function(s) { return k.indexOf(s) !== -1; })) return v;
+
+            var cleaned = v.split(';')
+                .map(function(s) { return s.trim(); })
+                .join(keepSpaces(k) ? '; ' : ';');
+
+            // The code below is not intended to validate websites and emails.
+            // It is only intended to prevent obvious copy-paste errors. (#2323)
+            // clean website- and email-like tags
+            if (k.indexOf('website') !== -1 ||
+                k.indexOf('email') !== -1 ||
+                cleaned.indexOf('http') === 0) {
+                cleaned = cleaned
+                    .replace(/[\u200B-\u200F\uFEFF]/g, '');  // strip LRM and other zero width chars
+
+            }
+
+            return cleaned;
+        }
+
+        var out = {}, k, v;
+        for (k in o) {
+            if (k && (v = o[k]) !== undefined) {
+                out[k] = cleanVal(k, v);
+            }
+        }
+        return out;
+    }
 
     function entityEditor(selection) {
         var entity = context.entity(_entityID);
@@ -103,10 +153,11 @@ export function uiEntityEditor(context) {
             .append('div')
             .call(schemaSwitcher, function() {
                 entity = context.entity(context.selectedIDs()[0]);
-
+                //let entity = context.entity(_entityIDs[0]), numTags = Object.keys(entity.tags).length;
                 //Do we need to translate tags?
                 if (Hoot.translations.activeTranslation !== 'OSM') {
-                    debouncedTranslate( entity, updateTags );
+                    d3_selectAll('.tag-schema').append('div').attr('class', 'schema-loading');
+                    debouncedTranslateTo(entity, Hoot, updateTags);
                 } else {
                     updateTags(context.presets().match(entity, context.graph()), entity.tags);
                 }
@@ -231,9 +282,16 @@ export function uiEntityEditor(context) {
             .on('change.entity-editor', historyChanged);
 
         //Do we need to translate tags?
-        if (Hoot.translations.activeTranslation !== 'OSM' && !_isEmpty(entity.tags)) {
-            debouncedTranslate(entity, updateTags);
+        let entityCheck = context.entity(_entityID);
+        let numTags = Object.keys(entity.tags).length;
+        if (Hoot.translations.activeTranslation !== 'OSM' && 0 < numTags
+            && !(numTags === 1 && entity.tags.area === 'yes')
+        ) {
+            debouncedTranslateTo(entityCheck, Hoot, updateTags)
         } else {
+            var preset = _activePreset !== (Hoot.translations.activeTranslation + '/' + context.entity(_entityID).geometry(context.graph()))
+            ? context.presets().match(entityCheck, context.graph())
+            : _activePreset;
             updateTags(_activePreset, tags);
         }
 
@@ -300,24 +358,21 @@ export function uiEntityEditor(context) {
 
     // Tag changes that fire on input can all get coalesced into a single
     // history operation when the user leaves the field.  #2342
-    function changeTagsCallback( changed, onInput ) {
-        var entity = context.entity(_entityID);
-        var annotation = t('operations.change_tags.annotation');
-        var tags = _assignIn({}, entity.tags, changed);
+    function changeTagsCallback(changed, onInput) {
+        var entity = context.entity(_entityID),
+            annotation = t('operations.change_tags.annotation'),
+            tags = _clone(entity.tags);
 
-        for (var k in changed) {
-            if (!k) continue;
-            var v = changed[k];
+        _forEach(changed, function(v, k) {
             if (v !== undefined || tags.hasOwnProperty(k)) {
                 tags[k] = v;
             }
-        }
+        });
 
         if (!onInput) {
-            tags = utilCleanTags(tags);
+            tags = clean(tags);
         }
 
-        //TODO: check if review exists
         if (!_isEqual(entity.tags, tags)) {
             if (_coalesceChanges) {
                 context.overwrite(actionChangeTags(_entityID, tags), annotation);
@@ -332,37 +387,39 @@ export function uiEntityEditor(context) {
     function changeTags(changed, onInput) {
         var translatedTags = rawTagEditor.tags();
         var entity = context.entity(_entityID);
+        //Do we need to translate tags?
+        if (Hoot.translations.activeTranslation !== 'OSM' && !_isEmpty(entity.tags)) {
+            //Don't call translate on input events like keypress
+            //wait til the field loses focus
+            if (!onInput) {
+                //bug https://github.com/DigitalGlobe/mapedit-id/issues/210
+                //tags are osm so there is no FCODE
+                if (!(translatedTags.FCODE || translatedTags.F_CODE)) return;
 
-        // do we need to translate tags?
-        if ( Hoot.translations.activeTranslation !== 'OSM' && !_isEmpty( entity.tags ) ) {
-            // don't call translate on input events like keypress
-            // wait til the field loses focus
-            if ( !onInput ) {
-                // some changeTags events fire even when tag hasn't changed
-                if ( d3.entries( changed ).every( c => {
-                    return d3.entries( translatedTags ).some( d => {
-                        return c.key === d.key && c.value === d.value;
-                    } );
-                } ) ) return; //return if no real change
+                //some change events fire even when tag hasn't changed
+                if (d3.entries(changed).every(function(c) {
+                    return d3.entries(translatedTags).some(function(d) {
+                        return (c.key === d.key && c.value === d.value);
+                    });
+                })) {
+                    return;
+                }
 
-                if ( d3.entries( changed ).every( c => {
-                    return !translatedTags[ c.key ] && (c.value === undefined || c.value === '');
-                } ) ) return; //return if empty change
+                //if the key is changed, but the change tag doesn't exist
+                if (d3.entries(changed).every(function(c) {
+                    return !translatedTags[c.key] && (c.value === undefined || c.value === '');
+                })) {
+                    return;
+                }
 
-                var translatedEntity = entity.copy( context.graph(), [] );
-
-                translatedEntity.tags = d3.entries( _assign( translatedTags, changed ) ).reduce( ( tags, tag ) => {
-                    if ( tag.value !== undefined ) tags[ tag.key ] = tag.value;
+                //deleted tags are represented as undefined
+                //remove these before translating
+                var translatedEntity = entity.copy(context.graph(), []);
+                translatedEntity.tags = d3.entries(_assign(translatedTags, changed)).reduce(function(tags, tag) {
+                    if (tag.value !== undefined) tags[tag.key] = tag.value;
                     return tags;
-                }, {} );
-
-                Hoot.translations.translateToOsm( entity.tags, translatedEntity )
-                    .then( changed => changeTagsCallback( changed, onInput ) )
-                    .catch( err => {
-                        console.error(err);
-                        Hoot.message.alert( err );
-                    } );
-
+                }, {});
+                debouncedTranslateFrom(entity.tags, translatedEntity, onInput, changeTagsCallback);
             }
         } else {
             changeTagsCallback(changed, onInput);
