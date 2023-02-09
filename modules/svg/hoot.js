@@ -125,7 +125,7 @@ export function svgHoot(projection, context, dispatch) {
             .attr('y', 5)
             .text(function(d) { return d3_select(this.parentNode).attr('id'); });
 
-        circles = circles.merge(circlesEnter)
+        circles = circles.merge(circlesEnter);
 
         var path = d3_geoPath(projection);
 
