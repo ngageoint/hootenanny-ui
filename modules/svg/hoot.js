@@ -104,40 +104,28 @@ export function svgHoot(projection, context, dispatch) {
         circles.exit()
             .remove();
 
-        circles = circles.enter()
+        var circlesEnter = circles.enter()
             .append('g')
             .attr('class', 'pointgroup')
             .attr('id', (d,i) => String.fromCharCode(65 + i))
-            .merge(circles)
             .attr('transform', function(feature) {
                 const pt = projection(feature.geometry.coordinates);
                 return `translate(${pt[0]},${pt[1]-50})`;
             });
 
 
-        var circle = circles.selectAll('circle')
-            .data([0]);
-
-        circle.exit().remove();
-
-        circle.enter()
+        circlesEnter
             .append('circle')
-            .merge(circle)
             .attr('dx', '0')
             .attr('dy', '0')
             .attr('r', '15');
 
-        var circleText = circles.selectAll('text')
-            .data([0]);
-
-        circleText.exit().remove();
-
-        circleText.enter()
-            .append('text')
-            .merge(circleText)
+        circlesEnter.append('text')
             .attr('x', -5)
             .attr('y', 5)
             .text(function(d) { return d3_select(this.parentNode).attr('id'); });
+
+        circles = circles.merge(circlesEnter)
 
         var path = d3_geoPath(projection);
 
