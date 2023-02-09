@@ -45,6 +45,7 @@ export function rendererBackgroundSource(data) {
     source.tileSize = data.tileSize || 256;
     source.zoomExtent = data.zoomExtent || [0, 22];
     source.overzoom = data.overzoom !== false;
+    source.slider = data.slider || false;
 
     source.offset = function(_) {
         if (!arguments.length) return offset;
@@ -61,16 +62,12 @@ export function rendererBackgroundSource(data) {
 
 
     source.name = function() {
-        // TODO: investigate why i did this
-        return name;
         var id_safe = source.id.replace('.', '<TX_DOT>');
         return t('imagery.' + id_safe + '.name', { default: name });
     };
 
 
     source.description = function() {
-        // TODO: investigate why i did this
-        return description;
         var id_safe = source.id.replace('.', '<TX_DOT>');
         return t('imagery.' + id_safe + '.description', { default: description });
     };

@@ -76,6 +76,10 @@ div.carousel-popup {
     left: 50%;
     margin: -200px 0 0 -200px;
     background: rgba(255,255,255,1.0);
+    div {
+        display: flex;
+        justify-content: space-between;
+    }
 }
 
 label.carousel-popup {
@@ -166,4 +170,35 @@ div.dgprofile {
 
 .dgprofile li {
     padding: 5px 10px;
+}
+
+div[id*="transparency-slider"] {
+    width: 100%;
+    height: 30px;
+    padding-left: 30px;
+    margin-bottom: 10px;
+}
+
+div[id*="transparency-slider"] svg {
+    height: 60px;
+    width: 75%;
+    vertical-align: -45px;
+}
+
+div[id*="transparency-slider"] circle {
+    cursor: move;
+}
+
+#transparency-slider-imagery svg {
+    height: 60px;
+    width: 150px;
+    vertical-align: middle;
+}
+
+.perc-opacity {
+    font-size: 10px;
+}
+
+.layer-overlay-list li.active button.layer-meta {
+    border-bottom: 1px solid #ccc;
 }

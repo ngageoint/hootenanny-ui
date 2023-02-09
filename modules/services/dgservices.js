@@ -4,6 +4,7 @@
  * @author Matt Putipong on 10/9/18
  *******************************************************************************************************/
 
+import { rendererBackgroundSource } from '../renderer';
 import { t } from '../util/locale';
 
 export default function() {
@@ -48,6 +49,8 @@ export default function() {
         { value: 'Color_Infrared_Profile', text: t( 'background.dgbg_profiles.Color_Infrared_Profile' ) }
     ];
 
+    dg.defaultCollection = defaultCollection;
+    dg.defaultConnectId = default_connectId;
     dg.defaultProfile = defaultProfile;
 
     dg.getProfile = function( value ) {
@@ -56,6 +59,7 @@ export default function() {
         } );
         return (p.length > 0) ? p[ 0 ].text : null;
     };
+
 
     dg.collections = [
         { value: '24h', text: t( 'background.dgcl_collections.24h' ) },
@@ -175,12 +179,12 @@ export default function() {
         let template = this.wmts.getTile( connectId, profile ),
             terms    = this.terms();
 
-        return {
+        return rendererBackgroundSource({
             'name': function() {
-                return 'DigitalGlobe Imagery';
+                return 'Maxar Imagery';
             },
             'type': 'wmts',
-            'description': 'Satellite imagery from EV-WHS',
+            'description': 'Satellite imagery from EVWHS',
             'template': template,
             'scaleExtent': [
                 0,
@@ -211,22 +215,22 @@ export default function() {
                 ]
             ],
             'terms_url': terms,
-            'terms_text': '© DigitalGlobe',
-            'id': 'DigitalGlobe EV-WHS - ' + (dg.getProfile( profile ) || dg.getProfile( defaultProfile )),
+            'terms_text': '© Maxar',
+            'id': 'Maxar EVWHS - ' + (dg.getProfile( profile ) || dg.getProfile( defaultProfile )),
             'overlay': false
-        };
+        });
     };
 
     dg.collectionSource = function( connectId, profile, freshness ) {
         let template = this.collection.getMap( connectId, profile, freshness ),
             terms    = this.terms();
 
-        return {
+        return rendererBackgroundSource({
             'name': function() {
-                return 'DigitalGlobe Imagery Collection';
+                return 'Maxar Imagery Collection';
             },
             'type': 'wms',
-            'description': 'Satellite imagery collection from EV-WHS',
+            'description': 'Satellite imagery collection from EVWHS',
             'template': template,
             'scaleExtent': [
                 0,
@@ -257,10 +261,10 @@ export default function() {
                 ]
             ],
             'terms_url': terms,
-            'terms_text': '© DigitalGlobe',
+            'terms_text': '© Maxar',
             'id': 'dgCollection',
             'overlay': true
-        };
+        });
     };
 
     return dg;
