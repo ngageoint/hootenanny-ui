@@ -203,11 +203,11 @@ export default class Upload {
                 Object.entries( value ).forEach( ([subKey, subValue]) => {
                     // Omit empty fields
                     if ( subValue.length ) {
-                        map.set( subKey, d3.set( subValue ) );
+                        map.set( subKey, new Set( subValue ) );
                     }
                 } );
 
-                obj[ e.key ] = map;
+                obj[ key ] = map;
             } );
         } );
 

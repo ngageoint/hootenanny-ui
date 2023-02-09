@@ -118,9 +118,9 @@ export function uiDgcarousel( context ) {
                                 .append( 'li' )
                                 .classed( 'carousel-zoom-warn', false )
                                 .html( d => formatImageMetadata( d ) )
-                                .on( 'mouseenter', d => loadFootprint( d3_event, d ) )
-                                .on( 'mouseleave', d => loadFootprint( d3_event, d ) )
-                                .on( 'dblclick', d => loadMetadataPopup( d3_event, d ) )
+                                .on( 'mouseenter', (d3_event, d) => loadFootprint( d3_event, d ) )
+                                .on( 'mouseleave', (d3_event, d) => loadFootprint( d3_event, d ) )
+                                .on( 'dblclick', (d3_event, d) => loadMetadataPopup( d3_event, d ) )
                                 .on( 'click', function( d3_event, d ) {
                                     let active = !d3.select( this ).classed( 'active' );
 

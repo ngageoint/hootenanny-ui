@@ -241,7 +241,7 @@ class SidebarController {
             .classed( 'cancel-button icon-button keyline-left round-right inline', true )
             .on( 'click', async(d3_event, d) => {
                 d3_event.stopPropagation();
-                dd3_event.preventDefault();
+                d3_event.preventDefault();
 
                 let message = 'Are you sure you want to cancel?',
                     confirm = await Hoot.message.confirm( message );

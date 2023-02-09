@@ -47,7 +47,7 @@ export default class Filtering {
         vals.append('input')
             .attr('type', 'checkbox')
             .attr('id', ([key, value]) => key)
-            .property('checked', ([key, value]) => data.selected && data.selected.includes(d.key))
+            .property('checked', ([key, value]) => data.selected && data.selected.includes(key))
             .property('value', ([key, value]) => key) //key is the enum string, value is the icon
             .on('click', updateFilter);
         let labs = vals.append('label')

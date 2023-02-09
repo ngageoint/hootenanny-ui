@@ -451,10 +451,10 @@ export default class TagMapForm {
         // this is taken from the Hoot UI 1.x code
         var rule1 = Object.entries(jsonMapping).every(function([key, value]) {
                 var valid = Object.entries(value).some(function([subKey, subValue]) {
-                    return typeof subValue === 'object' && d3.keys(subValue).find(function(f) {
+                    return typeof subValue === 'object' && Object.keys(subValue).find(function(f) {
                         return f.indexOf('Feature Code') > -1;
                         });
-                    }) || Object.entries(value).every(function(d) {
+                    }) || Object.entries(value).every(function([subKey, subValue]) {
                     return typeof subValue === 'string' && subValue.indexOf('IGNORED') > -1;
                 });
                 if (!valid) lyrs.push(key);
@@ -463,7 +463,7 @@ export default class TagMapForm {
 
         var rule2 = Object.entries(jsonMapping).some(function([key, value]) {
                 var valid = Object.entries(value).some(function([subKey, subValue]) {
-                    return typeof subValue === 'object' && d3.keys(subValue).find(function(f) {
+                    return typeof subValue === 'object' && Object.keys(subValue).find(function(f) {
                         return f.indexOf('Feature Code') > -1;
                         });
                 });

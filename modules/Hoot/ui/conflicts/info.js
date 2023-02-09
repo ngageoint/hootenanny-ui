@@ -112,7 +112,7 @@ export default class ConflictMetadata {
             row.selectAll( 'td.feature2' )
                 .data( [ { k: 2 } ] ).enter()
                 .append( 'td' )
-                .attr('title', tag.value[1])
+                .attr('title', value[1])
                 .classed( 'value-col feature2', true )
                 .text( value[1] );
 
