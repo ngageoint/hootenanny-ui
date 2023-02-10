@@ -35,7 +35,7 @@ export function uiUndoRedo(context) {
         var tooltipBehavior = tooltip()
             .placement('bottom')
             .html(true)
-            .title(function (d3_event, d) {
+            .title(function (d) {
                 return uiTooltipHtml(d.annotation() ?
                     t(d.id + '.tooltip', {action: d.annotation()}) :
                     t(d.id + '.nothing'), d.cmd);

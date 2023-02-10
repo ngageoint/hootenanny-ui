@@ -115,42 +115,44 @@ export function d3combobox() {
 
         function keydown(d3_event) {
            switch (d3_event.keyCode) {
-               // backspace, delete
-               case 8:
-               case 46:
-                   input.on('input.typeahead', function() {
-                       idx = -1;
-                       render();
-                       var start = input.property('selectionStart');
-                       input.node().setSelectionRange(start, start);
-                       input.on('input.typeahead', change);
-                   });
-                   break;
-               // tab
-               case 9:
-                   wrapper.selectAll('a.selected').each(function (d) {
-                       dispatch.call('accept', this, d);
-                   });
-                   hide();
-                   break;
-               // return
-               case 13:
-                   d3_event.preventDefault();
-                   break;
-               // up arrow
-               case 38:
-                   if (tagName === 'textarea' && !shown) return;
-                   nav(-1);
-                   d3_event.preventDefault();
-                   break;
-               // down arrow
-               case 40:
-                   if (tagName === 'textarea' && !shown) return;
-                   nav(+1);
-                   d3_event.preventDefault();
-                   break;
-           }
-           d3_event.stopPropagation();
+                // backspace, delete
+                case 8:
+                case 46:
+                    d3_event.stopPropagation();
+                    idx = -1;
+                    render();
+                    input.on('input.typeahead', function(d3_event) {
+                        var start = input.property('selectionStart');
+                        input.node().setSelectionRange(start, start);
+                        input.on('input.typeahead', change);
+                    });
+                    break;
+                // tab
+                case 9:
+                    wrapper.selectAll('a.selected').each(function (d) {
+                        dispatch.call('accept', this, d3_event, d);
+                    });
+                    hide();
+                    break;
+                 // return
+                case 13:
+                    d3_event.preventDefault();
+                    d3_event.stopPropagation();
+                    break;
+                // up arrow
+                case 38:
+                    if (tagName === 'textarea' && !shown) return;
+                    nav(-1);
+                    d3_event.preventDefault();
+                    break;
+                // down arrow
+                case 40:
+                    if (tagName === 'textarea' && !shown) return;
+                    nav(+1);
+                    d3_event.preventDefault();
+                    break;
+            }
+            d3_event.stopPropagation();
         }
 
         function keyup(d3_event) {
@@ -162,7 +164,7 @@ export function d3combobox() {
                 // return
                 case 13:
                     wrapper.selectAll('a.selected').each(function (d) {
-                       dispatch.call('accept', this, d);
+                       dispatch.call('accept', this, d3_event, d);
                     });
                     hide();
                     break;
@@ -285,7 +287,7 @@ export function d3combobox() {
             }
         }
 
-        function select(d, i) {
+        function select(d3_event, d, i) {
             idx = i;
             render();
         }
@@ -299,7 +301,7 @@ export function d3combobox() {
             if (!shown) return;
             input.property('value', d.value);
             utilTriggerEvent(input, 'change');
-            dispatch.call('accept', this, d);
+            dispatch.call('accept', this, d3_event, d);
             hide();
         }
     };
