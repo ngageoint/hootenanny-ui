@@ -10,9 +10,10 @@ import _map     from 'lodash-es/map';
 import _reduce  from 'lodash-es/reduce';
 
 import { JXON } from '../../util/jxon';
-import { 
-    json as d3_json, 
-    xml as d3_xml } from 'd3-request';
+import {
+    json as d3_json,
+    xml as d3_xml
+} from 'd3-request';
 
 import {
     presetPreset,
@@ -192,8 +193,8 @@ export default class TranslationManager {
                             callback(json);
                         }
                     });
-        }
-    };
+        };
+    }
 
     tagsToFCodeUrl(option) {
         return function(callback) {
@@ -213,8 +214,8 @@ export default class TranslationManager {
                     callback(osmXml);
                 }
             });
-        }
-    };
+        };
+    }
 
     addTagsForFcode (geom, preset, context, id, callback) {
         // when no default tags present, do fcode translation.
@@ -252,7 +253,7 @@ export default class TranslationManager {
                 }
             );
         });
-    };
+    }
 
     schemaToPreset(presets, schema, preset) {
         var id, fields = [], fieldsMap = {};
