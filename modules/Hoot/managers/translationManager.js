@@ -8,10 +8,11 @@ import _filter  from 'lodash-es/filter';
 import _forEach from 'lodash-es/forEach';
 import _map     from 'lodash-es/map';
 import _reduce  from 'lodash-es/reduce';
-import _some    from 'lodash-es/some';
 
 import { JXON } from '../../util/jxon';
-import { json as d3_json } from 'd3-request';
+import { 
+    json as d3_json, 
+    xml as d3_xml } from 'd3-request';
 
 import {
     presetPreset,
@@ -137,7 +138,7 @@ export default class TranslationManager {
                 placeholder: placeholder,
                 show: false
             };
-    
+
             if (d.type === 'String') {
                 f.type = 'text';
             } else if (d.type === 'enumeration') {
@@ -158,8 +159,9 @@ export default class TranslationManager {
     }
 
     generateFields(presets, schema, preset) {
+        let that = this;
         //create a new preset with fields from the schema
-        var presetWithFields = schemaToPreset(presets, schema, preset);
+        var presetWithFields = that.schemaToPreset(presets, schema, preset);
         //copy tags from incoming preset
         presetWithFields.tags = preset.tags;
         //show hoot fields in the new preset
@@ -178,10 +180,10 @@ export default class TranslationManager {
 
 
     translateFcodeRequest (fcode, geom) {
-        let that = this
+        let that = this;
         return function(callback) {
-            d3_json(Hoot.api.translationUrl + '/translateFrom?translation=' + that.activeTranslation 
-                + '&fcode=' + fcode  
+            d3_json(Hoot.api.translationUrl + '/translateFrom?translation=' + that.activeTranslation
+                + '&fcode=' + fcode
                 + '&geom=' + that.properCase(geom)
                 , function(error, json) {
                         if (error) {
@@ -190,13 +192,13 @@ export default class TranslationManager {
                             callback(json);
                         }
                     });
-        };
+        }
     };
 
     tagsToFCodeUrl(option) {
         return function(callback) {
-            callback(d3_json(option))
-        }
+            callback(d3_json(option));
+        };
     }
 
     translateFromRequest (translatedEntity) {
@@ -211,7 +213,7 @@ export default class TranslationManager {
                     callback(osmXml);
                 }
             });
-        };
+        }
     };
 
     addTagsForFcode (geom, preset, context, id, callback) {
@@ -222,7 +224,7 @@ export default class TranslationManager {
         if (preset['hoot:defaultTags']) {
             var translatedEntity = context.entity(id).copy(context.graph(), []);
             translatedEntity.tags = preset['hoot:defaultTags'];
-            translatedEntity.tags[fcode()] = preset['hoot:fcode'];
+            translatedEntity.tags[that.fcode()] = preset['hoot:fcode'];
             hootCall = this.translateFromRequest(translatedEntity);
         } else {
             hootCall = this.translateFcodeRequest(preset['hoot:fcode']);
@@ -277,10 +279,10 @@ export default class TranslationManager {
             schema: schema,
             name: preset ? preset.name() : schema.desc + ((schema.fcode) ? ' (' + schema.fcode + ')' : ''),
             fields: fields
-        }
+        };
 
         if (preset && preset.hasOwnProperty('hoot:defaultTags')) {
-            newPreset['hoot:defaultTags'] = preset['hoot:defaultTags']
+            newPreset['hoot:defaultTags'] = preset['hoot:defaultTags'];
         }
 
         return presetPreset(id, newPreset, fieldsMap);
