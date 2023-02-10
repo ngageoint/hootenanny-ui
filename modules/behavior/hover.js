@@ -71,14 +71,14 @@ export function behaviorHover(context) {
         function mouseover(d3_event) {
             if (_buttonDown) return;
             var target = d3_event.target;
-            enter(target ? target.__data__ : null);
+            enter(d3_event, target ? target.__data__ : null);
         }
 
 
         function mouseout(d3_event) {
             if (_buttonDown) return;
             var target = d3_event.relatedTarget;
-            enter(target ? target.__data__ : null);
+            enter(d3_event, target ? target.__data__ : null);
         }
 
 
