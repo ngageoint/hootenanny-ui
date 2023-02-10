@@ -275,7 +275,7 @@ export function rendererMap(context) {
                 }
             }
             if (hasOrphan) {
-                var event = window.CustomEvent;
+                var event = new window.CustomEvent;
                 if (event) {
                     event = new event('mouseup');
                 } else {

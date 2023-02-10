@@ -54,7 +54,7 @@ export function behaviorDrag() {
     function eventOf(thiz, argumentz) {
         return function(e1) {
             e1.target = behavior;
-            window.CustomEvent(e1, dispatch.apply, dispatch, [e1.type, thiz, argumentz]);
+            new window.CustomEvent(e1, dispatch.apply, dispatch, [e1.type, thiz, argumentz]);
         };
     }
 
