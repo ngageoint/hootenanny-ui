@@ -438,7 +438,7 @@ export function uiPresetList(context) {
                 );
 
                 dispatch.call('choose', this, p);
-            };
+            }
             if (d3_select(this).classed('disabled')) return;
             if (Hoot.translations.activeTranslation === 'OSM') {
                 choosePreset(preset);

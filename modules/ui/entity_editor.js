@@ -51,7 +51,7 @@ export function uiEntityEditor(context) {
     var debouncedTranslateFrom = _debounce(function(osmTags, entity, onInput, updateTags){
             d3_selectAll('.tag-schema').append('div').attr('class', 'schema-loading');
             Hoot.translations.translateToOsm(osmTags, entity, onInput)
-            .then(osmTags => updateTags(osmTags, onInput))
+            .then(osmTags => updateTags(osmTags, onInput));
         }, 500);
 
 
@@ -242,7 +242,7 @@ export function uiEntityEditor(context) {
         if (Hoot.translations.activeTranslation !== 'OSM' && 0 < numTags
             && !(numTags === 1 && entity.tags.area === 'yes')
         ) {
-            debouncedTranslateTo(entityCheck, Hoot, updateTags)
+            debouncedTranslateTo(entityCheck, Hoot, updateTags);
         } else {
             var preset = _activePreset !== (Hoot.translations.activeTranslation + '/' + context.entity(_entityID).geometry(context.graph()))
             ? context.presets().match(entityCheck, context.graph())
