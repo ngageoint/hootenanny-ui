@@ -3,6 +3,10 @@
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
+import { d3combobox } from '../../../../lib/hoot/d3.combobox';
+import _find from 'lodash-es/find';
+import _forEach from 'lodash-es/forEach';
+import _map from 'lodash-es/map';
 
 export default class Upload {
     constructor( instance ) {
@@ -17,6 +21,16 @@ export default class Upload {
             }
             return option;
         });
+        this.taSchemaOptions = [
+            {
+                label: 'Tag Schema',
+                name: 'tagSchema',
+                readonly: 'readonly',
+                options: [
+                    this.schemaOptions
+                ]
+            }
+        ];
 
         this.uploadButtons = [
             {
@@ -41,6 +55,7 @@ export default class Upload {
         this.createUploadForm();
         this.createSchemaSelector();
         this.createUploadButtons();
+        this.loadSchemas();
     }
 
     createUploadForm() {
@@ -48,39 +63,67 @@ export default class Upload {
             .append( 'form' )
             .classed( 'ta-upload-form round keyline-all fill-white', true );
     }
+    async loadSchemas() {
+        try {
+            this.schemaList = this.schemaOptions;
+        } catch ( err ) {
+            err.message = err.data;
+            Hoot.message.alert( err );
+        } finally {
+            this.populateFilterCombos();
+        }
+    }
+
+    populateFilterCombos() {
+        _find( this.taSchemaOptions, { name: 'tagSchema' } ).options = this.schemaList;
+
+
+        _forEach( this.taSchemaOptions, d => {
+            let combobox = d3combobox()
+                .data( _map( d.options, n => {
+                    return {
+                        value: n.name,
+                        key: n.name
+                    };
+                } ) )
+                .on( 'accept', () => {
+                    this.loadSchemas();
+                } );
+
+            d3.select( '#' + d.name )
+                .call( combobox );
+        } );
+    }
 
     createSchemaSelector() {
-        let schema = this.uploadForm
+        let filtersContainer = this.uploadForm
             .append( 'div' )
-            .classed( 'ta-schema-select fill-dark0 keyline-bottom', true );
+            .classed( 'ta-filter-container ta-schema-select fill-dark0 keyline-bottom', true )
+            .classed( 'inline schema-option', true );
 
-        schema
+        let controls = filtersContainer
+            .selectAll( '.ta-filter-control' )
+            .data( this.taSchemaOptions )
+            .classed( 'inline pad0', true )
+            .enter();
+
+        let control = controls
+            .append( 'div' )
+            .classed( 'ta-filter-control', true );
+
+        control
             .append( 'label' )
-            .classed( 'inline', true )
-            .html( 'Tag Schema' );
+            .text( d => d.label );
 
-        let schemaOpts = schema
-            .selectAll( 'span' )
-            .data( this.schemaOptions )
-            .enter()
-            .append( 'span' )
-            .classed( 'inline pad0', true );
-
-        schemaOpts
+        control
             .append( 'input' )
-            .classed( 'inline schema-option', true )
-            .attr( 'type', 'radio' )
-            .attr( 'name', 'schema' )
+            .classed('inline schema-option', true)
+            .attr( 'type', 'text' )
             .attr( 'id', d => d.name )
-            .attr( 'value', d => d.name )
-            .property( 'disabled', d => !d.enabled )
+            .attr( 'name', d => d.name )
+            .attr( 'readonly', d => d.readonly )
             .property( 'checked', d => d.checked );
 
-        schemaOpts
-            .append( 'label' )
-            .classed( 'inline', true )
-            .attr( 'for', d => d.name )
-            .html( d => d.name );
     }
 
     createUploadButtons() {

@@ -15,7 +15,7 @@ export default class TagMapWidget {
     createTagLookup() {
         let that = this;
 
-        this.schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
+        this.schemaOption = d3.select('#tagSchema').node().value;
 
         this.tagLookup = this.instance.tagMapContainer
             .insert( 'div', '.add-mapping-button' )
