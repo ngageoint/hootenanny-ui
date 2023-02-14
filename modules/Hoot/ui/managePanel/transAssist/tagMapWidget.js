@@ -4,6 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
 
+import { sort } from 'd3';
 import { d3combobox } from 'lib/hoot/d3.combobox';
 import { services } from '../../../../services';
 
@@ -132,25 +133,38 @@ export default class TagMapWidget {
         }
     }
 
-    change() {
+    async change() {
         let value = this.searchTag.property( 'value' ),
             results;
-
         if ( value.length ) {
-            results = Hoot.config.tagInfo[this.schemaOption].filter( val => val.toLowerCase().indexOf( value.toLowerCase() ) > -1 )
-                .sort( ( a, b ) => {
-                    if ( a > b ) {
-                        return 1;
-                    }
-                    if ( a < b ) {
-                        return -1;
-                    }
-                    // a is equal to b
-                    return 0;
-                } );
+            if (this.schemaOption === 'OSM') {
+                results = await new Promise(function(resolve, reject) {
+                    services.taginfo.keys({
+                        debounce: true,
+                        query: value
+                    }, function(err, data) {
+                        if (!err) {resolve(data.map(v => { return v.value; }));}
+                        else { reject(err);}
+                    });
+                })
+                .then(data => data)
+                .catch(() => []);
+            } else {
+                results = Hoot.config.tagInfo[this.schemaOption].filter( val => val.toLowerCase().indexOf( value.toLowerCase() ) > -1 )
+            }
         } else {
             results = [];
         }
+        results.sort( ( a, b ) => {
+            if ( a > b ) {
+                return 1;
+            }
+            if ( a < b ) {
+                return -1;
+            }
+            // a is equal to b
+            return 0;
+        } );
 
         this.updateTagResults( results, value );
     }
