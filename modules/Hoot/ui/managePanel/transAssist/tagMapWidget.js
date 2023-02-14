@@ -150,7 +150,7 @@ export default class TagMapWidget {
                 .then(data => data)
                 .catch(() => []);
             } else {
-                results = Hoot.config.tagInfo[this.schemaOption].filter( val => val.toLowerCase().indexOf( value.toLowerCase() ) > -1 )
+                results = Hoot.config.tagInfo[this.schemaOption].filter( val => val.toLowerCase().indexOf( value.toLowerCase() ) > -1 );
             }
         } else {
             results = [];
