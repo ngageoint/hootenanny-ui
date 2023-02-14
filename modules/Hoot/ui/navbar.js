@@ -77,7 +77,7 @@ export default class Navbar {
                 dropdownContentNode.style.height = '0px';
                 this.toggleVisible = false;
              }
-        }
+        };
 
         if ( this.isLoggedIn ) {
             let user = JSON.parse( localStorage.getItem( 'user' ) );
