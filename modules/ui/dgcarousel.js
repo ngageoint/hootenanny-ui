@@ -243,7 +243,7 @@ export function uiDgcarousel( context ) {
 
             var metadata = d3.entries(data.properties);
 
-            metadata.forEach(d => d.__hashcode__ = utilHashcode(JSON.stringify(d)))
+            metadata.forEach(d => d.__hashcode__ = utilHashcode(JSON.stringify(d)));
 
             popup.classed( 'hide', false );
             popup.metadataId = data.properties.featureId;
@@ -259,17 +259,17 @@ export function uiDgcarousel( context ) {
             var metarowsEnter = metarows
                 .enter()
                 .append( 'tr' )
-                .attr( 'class', 'carousel-metadata-table' )
+                .attr( 'class', 'carousel-metadata-table' );
 
             metarowsEnter.append('td')
                 .attr('class', 'carousel-metadata-table' )
-                .text(d => d.key)
+                .text(d => d.key);
 
             metarowsEnter.append('td')
                 .attr('class', 'carousel-metadata-table' )
-                .text(d => d.value)
+                .text(d => d.value);
 
-            metarowsEnter.merge(metarows)
+            metarowsEnter.merge(metarows);
         }
 
         function loadFootprint( d ) {

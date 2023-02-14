@@ -373,7 +373,7 @@ export function uiBackground(context) {
                 .attr('class', function(d) {
                     return (dgServices.defaultProfile === d.value) ? 'dgprofile active' : 'dgprofile';
                 })
-                .text(function(d) { return d.text })
+                .text(function(d) { return d.text; })
                 .attr('value', function(d) { return d.value; })
                 .on('click', function(d) {
                     d3_event.preventDefault();
