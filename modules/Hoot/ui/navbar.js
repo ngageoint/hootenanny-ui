@@ -5,7 +5,6 @@
  *******************************************************************************************************/
 
 import About from './about';
-import { event as d3_event } from 'd3-selection';
 
 /**
  * Creates the navigation bar
@@ -18,6 +17,9 @@ export default class Navbar {
         this.container  = d3.select( 'body' );
         this.isLoggedIn = isLoggedIn;
         this.login = login;
+        this.toggleHeight = 100;
+        this.toggleSetInterval = null;
+        this.toggleVisible = false;
     }
 
     /**
@@ -65,9 +67,16 @@ export default class Navbar {
             .append( 'div' )
             .classed( 'nav-item', true);
 
-        function showDropdown(dropdownContent) {
-            const isVisible = dropdownContent.classed('visible');
-            dropdownContent.classed('visible', !isVisible);
+        // https://stackoverflow.com/a/29950973
+        const showDropdown = (dropdownContent) => {
+            const dropdownContentNode = dropdownContent.node();
+            if (!this.toggleVisible) {
+                dropdownContentNode.style.height = `${this.toggleHeight}px`;
+                this.toggleVisible = true;
+            } else {
+                dropdownContentNode.style.height = '0px';
+                this.toggleVisible = false;
+             }
         }
 
         if ( this.isLoggedIn ) {
@@ -107,7 +116,8 @@ export default class Navbar {
 
             let dropdownContent = rightContainer
                 .append( 'ul' )
-                .classed( 'dropdown-content fill-white', true );
+                .classed( 'dropdown-content fill-white', true )
+                .attr('style', 'height:0');
 
             dropdownContent
                 .append( 'li' )
@@ -133,7 +143,7 @@ export default class Navbar {
 
             d3.select('body').on('click.navbar', () => {
                 if (d3.event && d3.event.target) {
-                    if (!dropdownToggle.node().contains(d3.event.target) && dropdownContent.classed('visible')) {
+                    if (!dropdownToggle.node().contains(d3.event.target) && this.toggleVisible) {
                         showDropdown(dropdownContent);
                     }
                 }
@@ -176,32 +186,6 @@ export default class Navbar {
         d3.selectAll( '.context-menu' ).remove();
 
         managePanel.isOpen = !managePanel.isOpen;
-    }
-
-    initDropdown() {
-        let that = this;
-
-        // bind single click listener to open dropdown
-        d3.select( 'nav .dropdown-toggle' ).on( 'click', () => toggleDropdown() );
-
-        // toggle the dropdown
-        function toggleDropdown( cb ) {
-            d3.select( 'nav .dropdown-content' ).slideToggle( 50, () => {
-                if ( cb ) {
-                    cb();
-                    return;
-                }
-
-                if ( !d3.select( 'nav .dropdown-content' ).is( ':visible' ) ) return;
-
-                bindBodyClick();
-            } );
-        }
-
-        // bind single click listener to body after dropdown is visible to close dropdown
-        function bindBodyClick() {
-            d3.select( 'body' ).on( 'click.navbar', () => toggleDropdown( () => that.initDropdown() ) );
-        }
     }
 
     openAboutModal() {

@@ -60,16 +60,14 @@
     }
 
     .dropdown-content {
-        display: none;
         position: absolute;
         width: auto;
         min-width: 80px;
         top: 60px;
         right: 35px;
-
-        &.visible {
-            display: block;
-        }
+        overflow-y:hidden;
+        -webkit-transition: all 500ms ease-in-out;
+        transition: all 500ms ease-in-out;
     }
 
     .dropdown-item {
