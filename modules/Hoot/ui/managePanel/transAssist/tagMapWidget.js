@@ -4,7 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
 
-import { sort } from 'd3';
 import { d3combobox } from 'lib/hoot/d3.combobox';
 import { services } from '../../../../services';
 
@@ -48,16 +47,8 @@ export default class TagMapWidget {
         if (!Hoot.config.tagInfo[this.schemaOption]) {
             Hoot.config.tagInfo[this.schemaOption] = [];
         }
-        if (Hoot.config.tagInfo[this.schemaOption].length === 0) {
-            (this.schemaOption === 'OSM'
-                ?  new Promise(function(resolve, reject) {
-                    services.taginfo.keys({}, function(err, data) {
-                        if (!err) {resolve(data.map(v => { return v.value; }));}
-                        else { reject(err);}
-                    });
-                })
-                : Hoot.translations.getFieldMappings(this.schemaOption)
-            )
+        if (Hoot.config.tagInfo[this.schemaOption].length === 0 && this.schemaOption !== 'OSM') {
+            Hoot.translations.getFieldMappings(this.schemaOption)
             .then(resp => {
                 Hoot.config.tagInfo[this.schemaOption] = resp;
             });
