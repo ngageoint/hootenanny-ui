@@ -205,6 +205,9 @@ export default class LayerAdd extends SidebarForm {
             color
         };
 
+        //exits for folder double-click
+        if (!params.id) return;
+
         this.loadingState( params );
 
         await Hoot.layers.loadLayer( params, skipCheckForReview );
