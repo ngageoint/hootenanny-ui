@@ -84,16 +84,16 @@ export default class TranslationManager {
         let tags = this.tagXmlToJson( document );
 
         if ( !tags.FCODE && !tags.F_CODE ) {
-            let message = 'Feature out of spec. Unable to translate',
-                type    = 'warn';
+            const preset = this.schemaToPreset(this.hoot.context.presets(), {
+                columns: [],
+                desc: tags.error || 'Feature out of spec, unable to translate',
+                geom: entity.geometry(this.hoot.context.graph()),
+                name: 'invalid fcode'
+                });
+                tags = {};
 
-            d3.select( '.tag-schema' )
-                .select( 'input' )
-                .property( 'value', this.previousTranslation );
+                return { preset, tags};
 
-            this.setActiveTranslation( this.previousTranslation );
-
-            return Promise.reject( { message, type } );
         }
 
         let preset = this.hoot.context.presets().item( `${ this.activeTranslation }/${ tags.FCODE || tags.F_CODE }` );

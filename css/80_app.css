@@ -1039,6 +1039,7 @@ a.hide-toggle {
     left: 60px;
     border-left: 1px solid rgba(0, 0, 0, .1);
     border-radius: 0 3px 3px 0;
+    width: 75%;
 }
 [dir='rtl'] .preset-list-button .label {
     text-align: right;
