@@ -4,9 +4,6 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
 import { d3combobox } from '../../../../lib/hoot/d3.combobox';
-import _find from 'lodash-es/find';
-import _forEach from 'lodash-es/forEach';
-import _map from 'lodash-es/map';
 
 export default class Upload {
     constructor( instance ) {
