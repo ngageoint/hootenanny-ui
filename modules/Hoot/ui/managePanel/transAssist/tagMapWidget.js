@@ -184,7 +184,7 @@ export default class TagMapWidget {
             let el = this.resultsList.select( '.search-result:first-child' );
 
             //If selection is empty, use the user specified value as the tag key
-            let d = (!el.empty() && el.text() === value) ? el.datum() : { key: value, value: [] };
+            let d = (!el.empty() && el.text() === value) ? el.datum() : value;
 
             this.selectTag( d );
         }
