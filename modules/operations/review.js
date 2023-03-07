@@ -53,7 +53,8 @@ export function operationReview(selectedIDs, context) {
             return;
         }
 
-        const hootGeoJson = context.layers().layer('hoot').geojson(),
+        const hootGeoJson = context.layers().layer('hoot').geojson().find(f => f.properties.review)
+            || {type: 'FeatureCollection', properties: {review: true}, features: []},
               lastEntity = hootGeoJson.features.find(f => f.properties.entityId);
 
         // if we are clicking the review button on the same feature, turn it off

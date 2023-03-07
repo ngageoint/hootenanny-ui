@@ -15,11 +15,7 @@ export function svgHoot(projection, context, dispatch) {
     function init() {
         if (svgHoot.initialized) return;  // run once
 
-        svgHoot.geojson = {
-            type: 'FeatureCollection',
-            features: [],
-            properties: {}
-        };
+        svgHoot.geojson = [];
         svgHoot.enabled = true;
 
         svgHoot.initialized = true;
@@ -40,13 +36,13 @@ export function svgHoot(projection, context, dispatch) {
             Bbox: 'bbox way line stroke',
         };
 
-        geojson.features.forEach(feat => {
-            feat.__featurehash__ = utilHashcode(JSON.stringify(feat));
+        geojson.forEach(gj => {
+            gj.__featurehash__ = utilHashcode(JSON.stringify(gj));
 
-            if (feat.properties && feat.properties.reviewLabel) {
-                features[feat.geometry.type].push(feat);
+            if (gj.properties && gj.properties.review) {
+                gj.features.forEach(feat => features[feat.geometry.type].push(feat));
             } else {
-                features.Bbox.push(feat);
+                features.Bbox.push(gj);
             }
         });
 
@@ -71,7 +67,7 @@ export function svgHoot(projection, context, dispatch) {
             .merge(datagroups);
 
 
-        var pathDataGroups = datagroups.filter(d => d === 'BBox' || d === 'LineString');
+        var pathDataGroups = datagroups.filter(d => d === 'Bbox' || d === 'LineString');
         var circleDataGroups = datagroups.filter(d => d === 'Point');
 
         var paths = pathDataGroups
@@ -158,7 +154,11 @@ export function svgHoot(projection, context, dispatch) {
     drawHoot.geojson = function(gj) {
         if (!arguments.length) return svgHoot.geojson;
 
-        svgHoot.geojson = gj;
+        if ( _isArray( gj ) ) {
+            svgHoot.geojson = svgHoot.geojson.concat( gj );
+        } else {
+            svgHoot.geojson.push( gj );
+        }
 
         dispatch.call('change');
 
@@ -175,7 +175,7 @@ export function svgHoot(projection, context, dispatch) {
     };
 
     drawHoot.removeGeojson = function( mapId ) {
-        svgHoot.geojson.features = _filter( svgHoot.geojson.features, f => f.properties.mapId !== mapId );
+        svgHoot.geojson = _filter( svgHoot.geojson, gj => gj.properties.mapId !== mapId );
 
         dispatch.call( 'change' );
         return this;
