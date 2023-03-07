@@ -31,7 +31,6 @@ export default class API {
         this.detect = utilDetect();
         this.mergeUrl       = Object.assign( new URL( this.host ), mergePortOrPath( this.config.mergeServerPort ) );
         this.translationUrl = Object.assign( new URL( this.host ), mergePortOrPath( this.config.translationServerPort ) );
-        this.tagInfoUrl     = this.config.tagInfoUrl;
 
         this.queryInterval = this.config.queryInterval;
         this.runTasksInterval = this.config.runTasksInterval;

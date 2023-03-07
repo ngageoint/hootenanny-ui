@@ -22,7 +22,7 @@ export const apiConfig = {
     /* eslint-disable no-undef */
     tm4ApiUrl: tm4ApiUrl || '/tm4api',
     translationServerPort: translationServerPort || '8094',
-    tagInfoUrl: tagInfoUrl || 'https://taginfo.openstreetmap.org',
+    tagInfoUrl: tagInfoUrl || 'https://taginfo.openstreetmap.org/api/4/',
     mergeServerPort: mergeServerPort || '8096',
     maxNodeCount: globalMaxNodeCount || 20000,
     /* eslint-enable no-undef */
