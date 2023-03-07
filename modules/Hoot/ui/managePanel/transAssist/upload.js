@@ -35,18 +35,12 @@ export default class Upload {
         this.createUploadForm();
         this.createSchemaSelector();
         this.createUploadButtons();
-        this.populateFilterCombos();
     }
 
     createUploadForm() {
         this.uploadForm = this.instance.panelWrapper
             .append( 'form' )
             .classed( 'ta-upload-form round keyline-all fill-white', true );
-    }
-    populateFilterCombos() {
-        let combobox = d3combobox().data(this.schemaOpts);
-        d3.select( '#tagSchema' )
-            .call( combobox );
     }
 
     createSchemaSelector() {
@@ -63,13 +57,16 @@ export default class Upload {
             .append( 'label' )
             .text( 'Tag Schema' );
 
+        let combobox = d3combobox().data(this.schemaOpts);
+
         control
             .append( 'input' )
             .classed('inline schema-option', true)
             .attr( 'type', 'text' )
             .attr( 'id', 'tagSchema' )
             .attr( 'value', 'OSM' )
-            .attr( 'readonly', true );
+            .attr( 'readonly', true )
+            .call(combobox);
 
     }
 
