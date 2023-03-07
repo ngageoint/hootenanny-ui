@@ -279,6 +279,11 @@
         justify-content: space-between;
     }
 
+    .hoot-field-button-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
     .hoot-field-control {
         input[type="text"] {
             align-self: center;

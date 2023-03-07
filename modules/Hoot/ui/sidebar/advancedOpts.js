@@ -26,6 +26,7 @@ export default class AdvancedOpts {
         this.conflationOptions      = {};
         this.favoriteOptions        = {};
         this.favoritesOptionsSource = [];
+        this.favOptToRemove         = [];
         this.showing                = false;
         this.formFactory            = new FormFactory();
     }
@@ -118,6 +119,12 @@ export default class AdvancedOpts {
                             showingOpts.push(a.name);
                         }
                     } );
+                let optsToRemove = instance.favOptToRemove;
+                if (optsToRemove.length > 0) {
+                    optsToRemove.forEach(o => {
+                        d3.select(`.opt-${o.id}`).style('fill', '#000000');
+                    });
+                }
                 // hide all fav opt buttons
                 d3.select('#saveFav').classed('hidden', true);
                 d3.select('#updateFav').classed('hidden', true);
@@ -410,7 +417,18 @@ export default class AdvancedOpts {
         fieldLabel.merge(fieldLabelEnter)
             .text( d => d.label );
 
-        let fieldLabelButton = fieldLabelWrap.selectAll( '.hoot-field-label-button' )
+        let fieldLabelButtonContainer = fieldLabelWrap.selectAll( '.hoot-field-button-container' )
+            .data( [d] );
+
+        fieldLabelButtonContainer.exit().remove();
+
+        let fieldLabelButtonContainerEnter = fieldLabelButtonContainer.enter()
+            .append('div')
+            .classed( 'hoot-field-button-container', true );
+
+        fieldLabelButtonContainer = fieldLabelButtonContainer.merge(fieldLabelButtonContainerEnter);
+
+        let fieldLabelButton = fieldLabelButtonContainer.selectAll( '.hoot-field-label-button' )
             .data( [d] );
 
         fieldLabelButton.exit().remove();
@@ -421,6 +439,24 @@ export default class AdvancedOpts {
             .call(svgIcon('#iD-icon-inspect', 'adv-opt-icon', ''));
 
         fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
+
+        let fieldLabelDeleteButton = fieldLabelButtonContainer.selectAll( '.hoot-field-label-delete-button' )
+        .data( [d] );
+
+        fieldLabelDeleteButton.exit().remove();
+
+        let fieldDeleteButtonEnter = fieldLabelDeleteButton.enter()
+            .append('button')
+            .classed('hoot-field-label-delete-button delete-button icon-button keyline-left round-right inline', true)
+            .call(svgIcon('#iD-operation-delete', `remove-opt-icon opt-${d.id}`, ''))
+            .on( 'click', function(d) {
+                if (!AdvancedOpts.getInstance().favOptToRemove.includes(d)) {
+                    d3.select(`.opt-${d.id}`).style('fill', '#E34234');
+                    AdvancedOpts.getInstance().favOptToRemove.push(d);
+                }
+            });
+
+        fieldLabelDeleteButton = fieldLabelDeleteButton.merge(fieldDeleteButtonEnter);
     }
 
     fieldInput(fieldContainer, isCleaning, isFavorites) {
@@ -876,10 +912,20 @@ export default class AdvancedOpts {
     updateFavoriteOpt( toUpdate ) {
 
         let getMem = [];
+        let optToRemve = instance.favOptToRemove;
 
         toUpdate[0].members.forEach( function(m) {
             getMem.push( m );
         } );
+
+        if ( optToRemve.length > 0 ) {
+            getMem = getMem.filter(function(o1){
+                return !optToRemve.some(function(o2){
+                    return o1.id === o2.id;
+                });
+            });
+            instance.favOptToRemove = [];
+        }
 
         let updateOpts = [];
 
@@ -945,7 +991,7 @@ export default class AdvancedOpts {
                 checkVal = defaultValue;
             }
 
-            if ( member.default !== checkVal  ) {
+            if ( member.default !== checkVal ) {
                 let selectedOpt = {
                     input: member.input,
                     default: defaultValue,
