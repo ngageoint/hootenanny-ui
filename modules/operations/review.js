@@ -53,15 +53,23 @@ export function operationReview(selectedIDs, context) {
             return;
         }
 
-        const hootGeoJson = context.layers().layer('hoot').geojson().find(f => f.properties.review)
-            || {type: 'FeatureCollection', properties: {review: true}, features: []},
-              lastEntity = hootGeoJson.features.find(f => f.properties.entityId);
+
+        let hootGeoJson = context.layers().layer('hoot').geojson();
+        let reviewIndex = hootGeoJson.findIndex(f => f.properties.review);
+        let reviewGeoJson = hootGeoJson.find(f => f.properties.review);
+        if (reviewIndex > -1) {
+            hootGeoJson.splice(reviewIndex, 1);
+        }
+        if (!reviewGeoJson) {
+            reviewGeoJson = {type: 'FeatureCollection', properties: {review: true}, features: []};
+        }
+        const lastEntity = reviewGeoJson.features.find(f => f.properties.entityId);
 
         // if we are clicking the review button on the same feature, turn it off
         // when we are not, then build the features for the selected
         if (lastEntity && lastEntity.properties.entityId === entityId) {
-            hootGeoJson.features = hootGeoJson.features.filter(f => !f.properties.reviewLabel);
-            context.layers().layer('hoot').geojson(hootGeoJson);
+            reviewGeoJson.features = reviewGeoJson.features.filter(f => !f.properties.reviewLabel);
+            context.layers().layer('hoot').geojson(reviewGeoJson);
             return;
         }
 
@@ -86,11 +94,11 @@ export function operationReview(selectedIDs, context) {
         });
 
         if (reviewLocations.length > 0) {
-            hootGeoJson.features = reviewLocations.concat(hootGeoJson.features.filter(f => {
+            reviewGeoJson.features = reviewLocations.concat(reviewGeoJson.features.filter(f => {
                 return !f.properties || !f.properties.reviewLabel;
             }));
 
-            context.layers().layer('hoot').geojson(hootGeoJson);
+            context.layers().layer('hoot').geojson(reviewGeoJson);
         }
     };
 

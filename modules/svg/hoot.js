@@ -103,10 +103,8 @@ export function svgHoot(projection, context, dispatch) {
         var circlesEnter = circles.enter()
             .append('g')
             .attr('class', 'pointgroup')
-            .attr('id', (d,i) => String.fromCharCode(65 + i))
-            .attr('transform', function(feature) {
-                const pt = projection(feature.geometry.coordinates);
-                return `translate(${pt[0]},${pt[1]-50})`;
+            .attr('id', (d,i) => {
+                return String.fromCharCode(65 + i);
             });
 
 
@@ -121,7 +119,11 @@ export function svgHoot(projection, context, dispatch) {
             .attr('y', 5)
             .text(function(d) { return d3_select(this.parentNode).attr('id'); });
 
-        circles = circles.merge(circlesEnter);
+        circles = circles.merge(circlesEnter)
+            .attr('transform', function(feature) {
+                const pt = projection(feature.geometry.coordinates);
+                return `translate(${pt[0]},${pt[1]-50})`;
+            });
 
         var path = d3_geoPath(projection);
 
