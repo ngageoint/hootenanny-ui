@@ -187,6 +187,24 @@ export default class AdvancedOpts {
                     message: 'Fav. Opts Updated Successfully',
                     type: 'success'
                 } );
+
+                if (instance.favOptToRemove.length > 0) {
+                    let showingOpts = [];
+                    d3.selectAll('.group-body.fill-white')
+                        .each(function(a) {
+                            if ( !this.classList.contains('hidden') ) {
+                                showingOpts.push(a.name);
+                            }
+                    } );
+
+                    d3.selectAll('.remove-opt-icon').style('fill', '#000000');
+
+                    let getFavorites = Hoot.config.users[Hoot.user().id].members;
+                    let favoritesUpdate = [JSON.parse(getFavorites[d3.select( '#conflateType' ).property( 'value' )])];
+
+                    instance.createGroups(favoritesUpdate, showingOpts);
+                    instance.favOptToRemove = [];
+                }
             } );
 
         favoritesBar
@@ -440,23 +458,23 @@ export default class AdvancedOpts {
 
         fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
 
-        let fieldLabelDeleteButton = fieldLabelButtonContainer.selectAll( '.hoot-field-label-delete-button' )
-        .data( [d] );
+        if (instance.checkFavOptSend()) {
+            let fieldLabelDeleteButton = fieldLabelButtonContainer.selectAll( '.hoot-field-label-delete-button' )
+            .data( [d] );
+            fieldLabelDeleteButton.exit().remove();
+            let fieldDeleteButtonEnter = fieldLabelDeleteButton.enter()
+                .append('button')
+                .classed(`hoot-field-label-delete-button delete-button icon-button keyline-left round-right inline opt-${d.id}`, true)
+                .call(svgIcon('#iD-operation-delete', 'remove-opt-icon', ''))
+                .on( 'click', function(d) {
+                    if (!AdvancedOpts.getInstance().favOptToRemove.includes(d)) {
+                        d3.select(`.opt-${d.id}`).style('fill', '#8B0000');
+                        AdvancedOpts.getInstance().favOptToRemove.push(d);
+                    }
+                });
 
-        fieldLabelDeleteButton.exit().remove();
-
-        let fieldDeleteButtonEnter = fieldLabelDeleteButton.enter()
-            .append('button')
-            .classed('hoot-field-label-delete-button delete-button icon-button keyline-left round-right inline', true)
-            .call(svgIcon('#iD-operation-delete', `remove-opt-icon opt-${d.id}`, ''))
-            .on( 'click', function(d) {
-                if (!AdvancedOpts.getInstance().favOptToRemove.includes(d)) {
-                    d3.select(`.opt-${d.id}`).style('fill', '#E34234');
-                    AdvancedOpts.getInstance().favOptToRemove.push(d);
-                }
-            });
-
-        fieldLabelDeleteButton = fieldLabelDeleteButton.merge(fieldDeleteButtonEnter);
+            fieldLabelDeleteButton = fieldLabelDeleteButton.merge(fieldDeleteButtonEnter);
+        }
     }
 
     fieldInput(fieldContainer, isCleaning, isFavorites) {
@@ -912,19 +930,18 @@ export default class AdvancedOpts {
     updateFavoriteOpt( toUpdate ) {
 
         let getMem = [];
-        let optToRemve = instance.favOptToRemove;
+        let optToRemove = instance.favOptToRemove;
 
         toUpdate[0].members.forEach( function(m) {
             getMem.push( m );
         } );
 
-        if ( optToRemve.length > 0 ) {
+        if ( optToRemove.length > 0 ) {
             getMem = getMem.filter(function(o1){
-                return !optToRemve.some(function(o2){
+                return !optToRemove.some(function(o2){
                     return o1.id === o2.id;
                 });
             });
-            instance.favOptToRemove = [];
         }
 
         let updateOpts = [];
