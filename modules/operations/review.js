@@ -1,7 +1,7 @@
 
 import { t } from '../util/locale';
 import nearestPointOnLine from '@turf/nearest-point-on-line';
-import { point, lineString } from '@turf/helpers';
+import { point as turfPoint, lineString as turfLineString } from '@turf/helpers';
 import {
     // behaviorDrag,
     behaviorOperation
@@ -13,11 +13,11 @@ export function operationReview(selectedIDs, context) {
 
     function getLocation(entity) {
         if (entity.type === 'node') {
-            return entity.loc;
+            return turfPoint(entity.loc);
         }
 
-        const line = lineString(entity.nodes.map(n => n.loc));
-        const point = point(entity.extent(context.graph()).center());
+        const line = turfLineString(entity.nodes.map(n => context.entity(n).loc));
+        const point = turfPoint(entity.extent(context.graph()).center());
 
         return nearestPointOnLine(line, point);
     }
@@ -30,12 +30,12 @@ export function operationReview(selectedIDs, context) {
 
             if (memLoc) {
                 const mapId = Number(entityId.split('_')[1]);
-                locations.push(point(memLoc, {
+                locations.push(turfPoint(memLoc.geometry.coordinates, {
                     mapId: mapId,
                     entityId: entityId,
                     reviewLabel: true
                 }));
-                locations.push(lineString([entityLoc, memLoc], {
+                locations.push(turfLineString([entityLoc.geometry.coordinates, memLoc.geometry.coordinates], {
                     mapId: mapId,
                     entityId: entityId,
                     reviewLabel: true
@@ -48,6 +48,7 @@ export function operationReview(selectedIDs, context) {
 
     var operation = function() {
         const entity = context.hasEntity(entityId);
+        const mapId = Number(entityId.split('_')[1]);
 
         if (!entity) {
             return;
@@ -61,7 +62,7 @@ export function operationReview(selectedIDs, context) {
             hootGeoJson.splice(reviewIndex, 1);
         }
         if (!reviewGeoJson) {
-            reviewGeoJson = {type: 'FeatureCollection', properties: {review: true}, features: []};
+            reviewGeoJson = {type: 'FeatureCollection', properties: {mapId: mapId, review: true}, features: []};
         }
         const lastEntity = reviewGeoJson.features.find(f => f.properties.entityId);
 
