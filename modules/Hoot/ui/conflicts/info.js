@@ -89,7 +89,28 @@ export default class ConflictMetadata {
                 .html( navHtml );
         }
 
-        _forEach( tagsMerged, tag => {
+        _forEach( tagsMerged, (tag, index) => {
+            if (index === 0) {
+                let firstRow = this.poiTable.append( 'tr' );
+
+                firstRow.append( 'td' )
+                    .classed( 'fillD', true )
+                    .text( 'LAYER' );
+
+                firstRow.selectAll( 'td.feature1' )
+                    .data( [ { k: 1 } ] ).enter()
+                    .append( 'td' )
+                    .attr( 'title', tag.value[0] )
+                    .classed( 'value-col feature1', true )
+                    .text( 'Reference' );
+
+                firstRow.selectAll( 'td.feature2' )
+                    .data( [{ k: 2 }] ).enter()
+                    .append( 'td' )
+                    .attr( 'title', tag.value[1] )
+                    .classed( 'value-col feature2', true )
+                    .text( 'Secondary' );
+            }
             let row = this.poiTable.append( 'tr' );
 
             row.append( 'td' )
