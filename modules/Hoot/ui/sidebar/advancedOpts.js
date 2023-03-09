@@ -202,8 +202,11 @@ export default class AdvancedOpts {
                     let getFavorites = Hoot.config.users[Hoot.user().id].members;
                     let favoritesUpdate = [JSON.parse(getFavorites[d3.select( '#conflateType' ).property( 'value' )])];
 
-                    instance.createGroups(favoritesUpdate, showingOpts);
                     instance.favOptToRemove = [];
+                    if (favoritesUpdate[0].members.length === 0) {
+                        new DeleteFavoriteOpt().handleSubmit();
+                    }
+                    instance.createGroups(favoritesUpdate, showingOpts);
                 }
             } );
 
