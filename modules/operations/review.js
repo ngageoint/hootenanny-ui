@@ -103,6 +103,10 @@ export function operationReview(selectedIDs, context) {
         }
     };
 
+    operation.annotation = function() {
+        return t('operations.review.annotation');
+    };
+
     operation.available = function() {
         return context.graph().parentRelations(context.hasEntity(entityId)).filter(item => item.tags['hoot:review:needs']).length > 0;
     };
