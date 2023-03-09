@@ -7,9 +7,10 @@ import { json as d3_json } from 'd3-request';
 
 import { utilQsString } from '../util';
 import { currentLocale } from '../util/locale';
+import { apiConfig } from '../Hoot/config/apiConfig';
 
 
-var apibase = 'https://taginfo.openstreetmap.org/api/4/',
+var apibase = apiConfig.tagInfoUrl,
     inflight = {},
     popularKeys = {},
     taginfoCache = {},
