@@ -89,25 +89,8 @@ export default class ConflictMetadata {
                 .html( navHtml );
         }
 
-        let firstRow = this.poiTable.append( 'tr' );
-
-        firstRow.append( 'td' )
-            .classed( 'fillD', true )
-            .text( 'LAYER' );
-
-        firstRow.selectAll( 'td.feature1' )
-            .data( [ { k: 1 } ] ).enter()
-            .append( 'td' )
-            .attr( 'title', 'Reference' )
-            .classed( 'value-col feature1', true )
-            .text( 'Reference' );
-
-        firstRow.selectAll( 'td.feature2' )
-            .data( [{ k: 2 }] ).enter()
-            .append( 'td' )
-            .attr( 'title', 'Secondary' )
-            .classed( 'value-col feature2', true )
-            .text( 'Secondary' );
+        // add reference and secondary layer title row
+        tagsMerged.unshift({key: '', value: ['Reference', 'Secondary']});
 
         _forEach( tagsMerged, tag => {
             let row = this.poiTable.append( 'tr' );
