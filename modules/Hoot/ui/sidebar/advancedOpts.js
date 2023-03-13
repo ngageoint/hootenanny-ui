@@ -471,8 +471,11 @@ export default class AdvancedOpts {
                 .call(svgIcon('#iD-operation-delete', 'remove-opt-icon', ''))
                 .on( 'click', function(d) {
                     if (!AdvancedOpts.getInstance().favOptToRemove.includes(d)) {
-                        d3.select(`.opt-${d.id}`).style('fill', '#8B0000');
+                        this.childNodes[0].style.fill = '#8B0000';
                         AdvancedOpts.getInstance().favOptToRemove.push(d);
+                    } else {
+                        this.childNodes[0].style.fill = '#000000';
+                        AdvancedOpts.getInstance().favOptToRemove.splice( AdvancedOpts.getInstance().favOptToRemove.findIndex(o => o.id === d.id) , 1);
                     }
                 });
 
