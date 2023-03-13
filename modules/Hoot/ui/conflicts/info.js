@@ -181,7 +181,7 @@ export default class ConflictMetadata {
         else if (tag.value === 'Input2') {
             tag.value = 'Secondary';
         }
-        else if (tag.value === 'Input3') {
+        else if (tag.value === 'Conflated') {
             tag.value = 'Merged';
         }
         return tag;
