@@ -1047,15 +1047,14 @@ export default class AdvancedOpts {
         return currentFavorites;
     }
 
-    updateFavoriteOptRemove(d, element) {
+    removeFavoriteOpt(d, element) {
         if (!instance.favOptToRemove.includes(d)) {
-            element.childNodes[0].style.fill = '#8B0000';
+            d3.select(element).style('fill', '#8B0000');
             AdvancedOpts.getInstance().favOptToRemove.push(d);
         } else {
-            element.childNodes[0].style.fill = '#000000';
+            d3.select(element).style('fill', '#000000');
             AdvancedOpts.getInstance().favOptToRemove.splice( AdvancedOpts.getInstance().favOptToRemove.findIndex(o => o.id === d.id) , 1);
         }
-
     }
 
     checkFavOptSend() {
