@@ -1049,10 +1049,10 @@ export default class AdvancedOpts {
 
     removeFavoriteOpt(d, element) {
         if (!instance.favOptToRemove.includes(d)) {
-            d3.select(element).style('fill', '#8B0000');
+            element.childNodes[0].style.fill = '#8B0000';
             AdvancedOpts.getInstance().favOptToRemove.push(d);
         } else {
-            d3.select(element).style('fill', '#000000');
+            element.childNodes[0].style.fill  = '#000000';
             AdvancedOpts.getInstance().favOptToRemove.splice( AdvancedOpts.getInstance().favOptToRemove.findIndex(o => o.id === d.id) , 1);
         }
     }
