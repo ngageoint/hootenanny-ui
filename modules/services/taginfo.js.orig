@@ -9,10 +9,18 @@ import { utilQsString } from '../util';
 import { currentLocale } from '../util/locale';
 import { apiConfig } from '../Hoot/config/apiConfig';
 
-var apibase = apiConfig.tagInfoUrl,
+
+<<<<<<< HEAD
+var apibase = 'https://taginfo.openstreetmap.org/api/4/',
     _inflight = {},
     _popularKeys = {},
     _taginfoCache = {},
+=======
+var apibase = apiConfig.tagInfoUrl,
+    inflight = {},
+    popularKeys = {},
+    taginfoCache = {},
+>>>>>>> origin/hoot2x
     tag_sorts = {
         point: 'count_nodes',
         vertex: 'count_nodes',

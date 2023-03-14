@@ -29,13 +29,13 @@ export default class TagMapWidget {
             .append( 'div' )
             .classed( 'pad1 thumbnail searchtag _icon big blank search-icon keyline-right', true );
 
-        this.searchTag = this.inputWrapper.append( 'input' )
+        this.searchTag = this.inputWrapper.append('input')
             .attr( 'type', 'text' )
             .attr( 'placeholder', 'Search Tag' )
             .classed( 'strong bigger pad1x pad2y reset', true )
-            .on( 'input', () => this.change.call( this ) )
+            .on( 'input', () => this.change.call(this) )
             .on( 'keyup', () => that.keyup() )
-            .on( 'keydown', () => that.keydown( this ) );
+            .on( 'keydown', () => that.keydown(this) );
 
 
         this.resultsList = this.tagLookup
@@ -127,7 +127,6 @@ export default class TagMapWidget {
     async change() {
         let value = this.searchTag.property( 'value' ),
             results;
-
         if ( value.length ) {
             if (this.schemaOption === 'OSM') {
                 results = await new Promise(function(resolve, reject) {
@@ -171,7 +170,7 @@ export default class TagMapWidget {
             .classed( 'search-result pad1x pad1y keyline-left keyline-top', true )
             .merge( searchResult )
             .html( d => {
-                return !d || d.key.replace( value, '<span class="match">' + value + '</span>' );
+                return !d || d.replace( value, '<span class="match">' + value + '</span>' );
             } )
             .on( 'click', (d3_event, d) => this.selectTag( d ) );
 
@@ -185,7 +184,7 @@ export default class TagMapWidget {
             let el = this.resultsList.select( '.search-result:first-child' );
 
             //If selection is empty, use the user specified value as the tag key
-            let d = (!el.empty() && el.text() === value) ? el.datum() : { key: value, value: [] };
+            let d = (!el.empty() && el.text() === value) ? el.datum() : value;
 
             this.selectTag( d );
         }
@@ -306,6 +305,13 @@ export default class TagMapWidget {
             if ( tagJson ) {
                 let mapping = d3.map( tagJson );
 
+<<<<<<< HEAD
+        if ( tagJson ) {
+            let mapping =new Map( tagJson );
+
+            let isCustomized = Object.entries(mapping)
+                .filter( ([key, value]) => d.key === key && value !== this.instance.currentAttribute.key );
+=======
                 let isCustomized = mapping
                     .entries()
                     .filter( entry => d.key === entry.key && entry.value !== this.instance.currentAttribute.key );
@@ -313,6 +319,7 @@ export default class TagMapWidget {
                 isCustomized.forEach( entry => {
                     if ( typeof entry.value === 'string' ) { //entry is a single tag value
                         this.tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
+>>>>>>> origin/hoot2x
 
                         this.tagLookup.select( '.map-type-icon' )
                             .classed( 'remove-map-tag', false )
@@ -326,13 +333,25 @@ export default class TagMapWidget {
                             .classed( 'remove-map-tag', false )
                             .classed( 'map-tag', true );
 
+<<<<<<< HEAD
+                    this.tagLookup.select( '.map-type-icon' )
+                        .classed( 'remove-map-tag', false )
+                        .classed( 'map-tag', true );
+
+                    Object.entries(new Map( entry.value )).forEach( ([key, value]) => {
+                        d3.select( '#preset-input-' + this.hashCode( tagKey + key ) ).property( 'value', value );
+                    } );
+                }
+            } );
+        }
+=======
                         d3.map( entry.value ).entries().forEach( e => {
                             d3.select( '#preset-input-' + this.hashCode( tagKey + e.key ) ).property( 'value', e.value );
                         } );
                     }
                 } );
-            } 
-        } );
+            } } );
+>>>>>>> origin/hoot2x
     }
 
     hashCode( input ) {

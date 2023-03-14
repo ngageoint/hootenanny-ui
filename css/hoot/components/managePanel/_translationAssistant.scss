@@ -9,6 +9,33 @@
     padding: 10px 20px;
 }
 
+.ta-filter-container {
+    white-space: nowrap;
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 15px;
+
+    .ta-filter-control {
+        margin-right: 20px;
+    }
+
+    .bookmark-action-button {
+        position: relative;
+        width: 85px;
+        height: 30px;
+        margin: 0 3px;
+    }
+
+    .showTaggedBtn {
+        padding-bottom: 5px;
+        margin-right: 30px;
+
+        label {
+            cursor: pointer;
+        }
+    }
+}
+
 .ta-attribute-mapping {
     box-shadow: 0 3px 10px $dark-opacity10;
 

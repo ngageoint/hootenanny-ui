@@ -3,30 +3,14 @@
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
+import { d3combobox } from '../../../../lib/hoot/d3.combobox';
 
 export default class Upload {
     constructor( instance ) {
         this.instance = instance;
-
-        this.schemaOptions = [
-            {
-                name: 'OSM',
-                enabled: true,
-                checked: true
-            },
-            {
-                name: 'TDSv70',
-                enabled: true
-            },
-            {
-                name: 'TDSv61',
-                enabled: true
-            },
-            {
-                name: 'MGCP',
-                enabled: true
-            }
-        ];
+        this.schemaOpts = Hoot.translations.availableTranslations.map(v => {
+            return { key: v, value: v };
+        });
 
         this.uploadButtons = [
             {
@@ -60,37 +44,30 @@ export default class Upload {
     }
 
     createSchemaSelector() {
-        let schema = this.uploadForm
+        let schemaListContainer = this.uploadForm
             .append( 'div' )
-            .classed( 'ta-schema-select fill-dark0 keyline-bottom', true );
+            .classed( 'ta-filter-container ta-schema-select fill-dark0 keyline-bottom', true )
+            .classed( 'inline schema-option', true );
 
-        schema
+        let control = schemaListContainer
+            .append( 'div' )
+            .classed( 'ta-filter-control', true );
+
+        control
             .append( 'label' )
-            .classed( 'inline', true )
-            .html( 'Tag Schema' );
+            .text( 'Tag Schema' );
 
-        let schemaOpts = schema
-            .selectAll( 'span' )
-            .data( this.schemaOptions )
-            .enter()
-            .append( 'span' )
-            .classed( 'inline pad0', true );
+        let combobox = d3combobox().data(this.schemaOpts);
 
-        schemaOpts
+        control
             .append( 'input' )
-            .classed( 'inline schema-option', true )
-            .attr( 'type', 'radio' )
-            .attr( 'name', 'schema' )
-            .attr( 'id', d => d.name )
-            .attr( 'value', d => d.name )
-            .property( 'disabled', d => !d.enabled )
-            .property( 'checked', d => d.checked );
+            .classed('inline schema-option', true)
+            .attr( 'type', 'text' )
+            .attr( 'id', 'tagSchema' )
+            .attr( 'value', 'OSM' )
+            .attr( 'readonly', true )
+            .call(combobox);
 
-        schemaOpts
-            .append( 'label' )
-            .classed( 'inline', true )
-            .attr( 'for', d => d.name )
-            .html( d => d.name );
     }
 
     createUploadButtons() {

@@ -21,7 +21,7 @@ describe( 'Translation Assistant Component', () => {
     it( 'Component contains Tag Schema, and buttons', done => {
         setTimeout(() => {
             var translationAssistantForm = d3.selectAll('#manage-translations-assistant div form div');
-            expect(translationAssistantForm.size() ).to.be.equal( 2 );
+            expect(translationAssistantForm.size() ).to.be.equal( 4 );
             done();
         }, 500);
     } );
