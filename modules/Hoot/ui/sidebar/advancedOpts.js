@@ -470,7 +470,7 @@ export default class AdvancedOpts {
                 .classed(`hoot-field-label-delete-button delete-button icon-button keyline-left round-right inline opt-${d.id}`, true)
                 .call(svgIcon('#iD-operation-delete', 'remove-opt-icon', ''))
                 .on( 'click', function(d) {
-                    instance.updateFavoriteOptRemove(d, this);
+                    instance.removeFavoriteOpt(d, this);
                 });
 
             fieldLabelDeleteButton = fieldLabelDeleteButton.merge(fieldDeleteButtonEnter);
