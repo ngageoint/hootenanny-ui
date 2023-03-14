@@ -470,13 +470,7 @@ export default class AdvancedOpts {
                 .classed(`hoot-field-label-delete-button delete-button icon-button keyline-left round-right inline opt-${d.id}`, true)
                 .call(svgIcon('#iD-operation-delete', 'remove-opt-icon', ''))
                 .on( 'click', function(d) {
-                    if (!AdvancedOpts.getInstance().favOptToRemove.includes(d)) {
-                        this.childNodes[0].style.fill = '#8B0000';
-                        AdvancedOpts.getInstance().favOptToRemove.push(d);
-                    } else {
-                        this.childNodes[0].style.fill = '#000000';
-                        AdvancedOpts.getInstance().favOptToRemove.splice( AdvancedOpts.getInstance().favOptToRemove.findIndex(o => o.id === d.id) , 1);
-                    }
+                    instance.updateFavoriteOptRemove(d, this);
                 });
 
             fieldLabelDeleteButton = fieldLabelDeleteButton.merge(fieldDeleteButtonEnter);
@@ -1051,6 +1045,17 @@ export default class AdvancedOpts {
             } );
 
         return currentFavorites;
+    }
+
+    updateFavoriteOptRemove(d, element) {
+        if (!instance.favOptToRemove.includes(d)) {
+            element.childNodes[0].style.fill = '#8B0000';
+            AdvancedOpts.getInstance().favOptToRemove.push(d);
+        } else {
+            element.childNodes[0].style.fill = '#000000';
+            AdvancedOpts.getInstance().favOptToRemove.splice( AdvancedOpts.getInstance().favOptToRemove.findIndex(o => o.id === d.id) , 1);
+        }
+
     }
 
     checkFavOptSend() {
