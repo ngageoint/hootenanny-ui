@@ -405,7 +405,7 @@ export default class AdvancedOpts {
             });
     }
 
-    fieldLabel(fieldContainer) {
+    fieldLabel(fieldContainer, favOpt) {
         let d = fieldContainer.datum(),
             fieldLabelWrap = fieldContainer
                 .selectAll( '.hoot-field-label-wrap' )
@@ -462,7 +462,7 @@ export default class AdvancedOpts {
         fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
 
         let fieldLabelDeleteButton = fieldLabelButtonContainer.selectAll( '.hoot-field-label-delete-button' )
-            .data( instance.checkFavOptSend() ? [d] : [] );
+            .data( favOpt ? [d] : [] );
 
         fieldLabelDeleteButton.exit().remove();
 
@@ -687,6 +687,8 @@ export default class AdvancedOpts {
 
     createGroups(advOpts, showingOpts = [] ) {
 
+        let favOptCheck = instance.checkFavOptSend();
+
         this.favoritesOptionsSource = advOpts;
 
         let optCheck = advOpts[0];
@@ -788,7 +790,7 @@ export default class AdvancedOpts {
                 let fieldContainer = d3.select(this);
 
                 fieldContainer
-                    .call(instance.fieldLabel)
+                    .call(instance.fieldLabel, favOptCheck)
                     .call(instance.fieldInput, isCleaning, advOpts)
                     .call(instance.fieldDescription);
             });
