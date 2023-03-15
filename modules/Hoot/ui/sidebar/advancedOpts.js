@@ -26,6 +26,7 @@ export default class AdvancedOpts {
         this.conflationOptions      = {};
         this.favoriteOptions        = {};
         this.favoritesOptionsSource = [];
+        this.favOptToRemove         = [];
         this.showing                = false;
         this.formFactory            = new FormFactory();
     }
@@ -118,6 +119,12 @@ export default class AdvancedOpts {
                             showingOpts.push(a.name);
                         }
                     } );
+                let optsToRemove = instance.favOptToRemove;
+                if (optsToRemove.length > 0) {
+                    optsToRemove.forEach(o => {
+                        d3.select(`.opt-${o.id}`).style('fill', '#000000');
+                    });
+                }
                 // hide all fav opt buttons
                 d3.select('#saveFav').classed('hidden', true);
                 d3.select('#updateFav').classed('hidden', true);
@@ -180,6 +187,27 @@ export default class AdvancedOpts {
                     message: 'Fav. Opts Updated Successfully',
                     type: 'success'
                 } );
+
+                if (instance.favOptToRemove.length > 0) {
+                    let showingOpts = [];
+                    d3.selectAll('.group-body.fill-white')
+                        .each(function(a) {
+                            if ( !this.classList.contains('hidden') ) {
+                                showingOpts.push(a.name);
+                            }
+                    } );
+
+                    d3.selectAll('.remove-opt-icon').style('fill', '#000000');
+
+                    let getFavorites = Hoot.config.users[Hoot.user().id].members;
+                    let favoritesUpdate = [JSON.parse(getFavorites[d3.select( '#conflateType' ).property( 'value' )])];
+
+                    instance.favOptToRemove = [];
+                    if (favoritesUpdate[0].members.length === 0) {
+                        new DeleteFavoriteOpt().handleSubmit();
+                    }
+                    instance.createGroups(favoritesUpdate, showingOpts);
+                }
             } );
 
         favoritesBar
@@ -377,7 +405,7 @@ export default class AdvancedOpts {
             });
     }
 
-    fieldLabel(fieldContainer) {
+    fieldLabel(fieldContainer, favOpt) {
         let d = fieldContainer.datum(),
             fieldLabelWrap = fieldContainer
                 .selectAll( '.hoot-field-label-wrap' )
@@ -410,7 +438,18 @@ export default class AdvancedOpts {
         fieldLabel.merge(fieldLabelEnter)
             .text( d => d.label );
 
-        let fieldLabelButton = fieldLabelWrap.selectAll( '.hoot-field-label-button' )
+        let fieldLabelButtonContainer = fieldLabelWrap.selectAll( '.hoot-field-button-container' )
+            .data( [d] );
+
+        fieldLabelButtonContainer.exit().remove();
+
+        let fieldLabelButtonContainerEnter = fieldLabelButtonContainer.enter()
+            .append('div')
+            .classed( 'hoot-field-button-container', true );
+
+        fieldLabelButtonContainer = fieldLabelButtonContainer.merge(fieldLabelButtonContainerEnter);
+
+        let fieldLabelButton = fieldLabelButtonContainer.selectAll( '.hoot-field-label-button' )
             .data( [d] );
 
         fieldLabelButton.exit().remove();
@@ -421,6 +460,21 @@ export default class AdvancedOpts {
             .call(svgIcon('#iD-icon-inspect', 'adv-opt-icon', ''));
 
         fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
+
+        let fieldLabelDeleteButton = fieldLabelButtonContainer.selectAll( '.hoot-field-label-delete-button' )
+            .data( favOpt ? [d] : [] );
+
+        fieldLabelDeleteButton.exit().remove();
+
+        let fieldDeleteButtonEnter = fieldLabelDeleteButton.enter()
+            .append('button')
+            .classed(`hoot-field-label-delete-button delete-button icon-button keyline-left round-right inline opt-${d.id}`, true)
+            .call(svgIcon('#iD-operation-delete', 'remove-opt-icon', ''))
+            .on( 'click', function(d) {
+                instance.removeFavoriteOpt(d, this);
+            });
+
+        fieldLabelDeleteButton = fieldLabelDeleteButton.merge(fieldDeleteButtonEnter);
     }
 
     fieldInput(fieldContainer, isCleaning, isFavorites) {
@@ -633,6 +687,8 @@ export default class AdvancedOpts {
 
     createGroups(advOpts, showingOpts = [] ) {
 
+        let favOptCheck = instance.checkFavOptSend();
+
         this.favoritesOptionsSource = advOpts;
 
         let optCheck = advOpts[0];
@@ -734,7 +790,7 @@ export default class AdvancedOpts {
                 let fieldContainer = d3.select(this);
 
                 fieldContainer
-                    .call(instance.fieldLabel)
+                    .call(instance.fieldLabel, favOptCheck)
                     .call(instance.fieldInput, isCleaning, advOpts)
                     .call(instance.fieldDescription);
             });
@@ -876,10 +932,19 @@ export default class AdvancedOpts {
     updateFavoriteOpt( toUpdate ) {
 
         let getMem = [];
+        let optToRemove = instance.favOptToRemove;
 
         toUpdate[0].members.forEach( function(m) {
             getMem.push( m );
         } );
+
+        if ( optToRemove.length > 0 ) {
+            getMem = getMem.filter(function(o1){
+                return !optToRemove.some(function(o2){
+                    return o1.id === o2.id;
+                });
+            });
+        }
 
         let updateOpts = [];
 
@@ -945,7 +1010,7 @@ export default class AdvancedOpts {
                 checkVal = defaultValue;
             }
 
-            if ( member.default !== checkVal  ) {
+            if ( member.default !== checkVal ) {
                 let selectedOpt = {
                     input: member.input,
                     default: defaultValue,
@@ -982,6 +1047,16 @@ export default class AdvancedOpts {
             } );
 
         return currentFavorites;
+    }
+
+    removeFavoriteOpt(d, element) {
+        if (!instance.favOptToRemove.includes(d)) {
+            element.childNodes[0].style.fill = '#8B0000';
+            AdvancedOpts.getInstance().favOptToRemove.push(d);
+        } else {
+            element.childNodes[0].style.fill  = '#000000';
+            AdvancedOpts.getInstance().favOptToRemove.splice( AdvancedOpts.getInstance().favOptToRemove.findIndex(o => o.id === d.id) , 1);
+        }
     }
 
     checkFavOptSend() {
