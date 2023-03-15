@@ -53,7 +53,7 @@ export function uiCommitWarnings(context) {
 
         itemsEnter.filter(function(d) { return d.tooltip; })
             .call(tooltip()
-                .title(function(d) { return d.tooltip; })
+                .title(function(d3_event, d) { return d.tooltip; })
                 .placement('top')
             );
 

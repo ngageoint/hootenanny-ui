@@ -11,7 +11,7 @@ import _flatten   from 'lodash-es/flatten';
 import _forEach   from 'lodash-es/forEach';
 import _map       from 'lodash-es/map';
 import { modeSelect } from '../../../modes';
-import Map  from './map';
+import HootMap from './map';
 
 export default class ConflictMetadata {
     constructor( instance ) {
@@ -138,7 +138,7 @@ export default class ConflictMetadata {
 
     panToEntity(feature) {
         let extent = feature.extent(Hoot.context.graph());
-        Hoot.context.map().centerZoom(extent.center(), Map.getZoomFromExtent(extent));
+        Hoot.context.map().centerZoom(extent.center(), HootMap.getZoomFromExtent(extent));
     }
 
     /**
@@ -172,24 +172,24 @@ export default class ConflictMetadata {
      * @returns {IterableIterator} - map of unique tags
      */
     mergeTags( tags ) {
-        let tagKeys   = new Set( _map( _flatten( tags ), 'key' ) ),
+        let tagKeys   = new Set( _map( _flatten( tags ), t => t[0]).sort() ),
             mergedMap = new Map();
 
-        _forEach( tagKeys.values().sort(), key => {
+        tagKeys.forEach(key => {
             mergedMap.set( key, [] );
 
             _forEach( tags, tag => {
                 let tagMap = new Map();
 
                 _forEach( tag, t => {
-                    tagMap.set( t.key, t.value );
+                    tagMap.set( t[0], t[1] );
                 } );
 
                 mergedMap.get( key ).push( tagMap.has( key ) ? tagMap.get( key ) : null );
             } );
         } );
 
-        return Object.entries(mergedMap);
+        return mergedMap.entries();
     }
 
     /**

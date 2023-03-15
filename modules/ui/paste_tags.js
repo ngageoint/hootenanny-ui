@@ -79,7 +79,7 @@ export function uiPasteTags( context ) {
         let buttonTooltip = tooltip()
             .placement( 'bottom' )
             .html( true )
-            .title( d => tooltipHtml( t( d.id + '.tooltip' ), d.cmd ) );
+            .title( (d3_event, d) => tooltipHtml( t( d.id + '.tooltip' ), d.cmd ) );
 
         let buttons = selection.selectAll( 'button' )
             .data( commands )

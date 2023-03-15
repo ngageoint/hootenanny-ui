@@ -119,7 +119,7 @@ export function uiModes(context) {
                 .call(tooltip()
                     .placement('bottom')
                     .html(true)
-                    .title(function(mode) {
+                    .title(function(d3_event, mode) {
                         return uiTooltipHtml(mode.description, mode.key);
                     })
                 );

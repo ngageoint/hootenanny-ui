@@ -649,7 +649,7 @@ export function conflictActions() {
             color: '',
             class: '_icon plus merge pad1x small strong',
             cmd: this.cmd( 'm' ),
-            action: () => this.merge.mergeFeatures()
+            action: (d3_event) => this.merge.mergeFeatures(d3_event)
         },
         {
             id: 'previous',

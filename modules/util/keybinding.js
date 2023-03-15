@@ -9,7 +9,7 @@ export function utilKeybinding(namespace) {
     var _keybindings = {};
 
 
-    function testBindings(isCapturing) {
+    function testBindings(isCapturing, d3_event) {
         var didMatch = false;
         var bindings = Object.keys(_keybindings).map(function(id) { return _keybindings[id]; });
         var i, binding;
@@ -24,7 +24,7 @@ export function utilKeybinding(namespace) {
             binding = bindings[i];
             if (!binding.event.modifiers.shiftKey) continue;  // no shift
             if (!!binding.capture !== isCapturing) continue;
-            if (matches(binding, true)) {
+            if (matches(d3_event, binding, true)) {
                 binding.callback();
                 didMatch = true;
             }
@@ -36,7 +36,7 @@ export function utilKeybinding(namespace) {
             binding = bindings[i];
             if (binding.event.modifiers.shiftKey) continue;   // shift
             if (!!binding.capture !== isCapturing) continue;
-            if (matches(binding, false)) {
+            if (matches(d3_event, binding, false)) {
                 binding.callback();
             }
         }
@@ -85,8 +85,8 @@ export function utilKeybinding(namespace) {
     }
 
 
-    function capture() {
-        testBindings(true);
+    function capture(d3_event) {
+        testBindings(true, d3_event);
     }
 
 
@@ -95,7 +95,7 @@ export function utilKeybinding(namespace) {
         if (tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA') {
             return;
         }
-        testBindings(false);
+        testBindings(false, d3_event);
     }
 
 

@@ -119,7 +119,7 @@ export function uiEditMenu(context, operations) {
             d3_event.stopPropagation();  // https://github.com/openstreetmap/iD/issues/1869
         }
 
-        function mouseover(d, i) {
+        function mouseover(d3_event, d, i) {
             var tipX, tipY;
 
             if (!isRTL) {

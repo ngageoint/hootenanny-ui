@@ -335,7 +335,7 @@ export function uiMapData(context) {
             .attr('class', 'layer')
             .call(tooltip()
                 .html(true)
-                .title(function(d) {
+                .title(function(d3_event, d) {
                     var tip = t(name + '.' + d + '.tooltip'),
                         key = (d === 'wireframe' ? t('area_fill.wireframe.key') : null);
 

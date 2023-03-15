@@ -122,7 +122,7 @@ export default class Conflicts {
         this.tooltip = tooltip()
             .placement( 'top' )
             .html( true )
-            .title( d => tooltipHtml( t( `review.${ d.id }.description` ), d.cmd ) );
+            .title( (d3_event, d) => tooltipHtml( t( `review.${ d.id }.description` ), d.cmd ) );
 
         // create buttons
         this.leftContainer.append( 'div' )
@@ -137,7 +137,7 @@ export default class Conflicts {
 
                 if ( this.buttonEnabled ) {
                     this.buttonEnabled = false;
-                    d.action();
+                    d.action(d3_event);
                 }
             } )
             .call( this.tooltip );

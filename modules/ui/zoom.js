@@ -60,7 +60,7 @@ export function uiZoom(context) {
             .call(tooltip()
                 .placement((textDirection === 'rtl') ? 'right' : 'left')
                 .html(true)
-                .title(function(d) {
+                .title(function(d3_event, d) {
                     return uiTooltipHtml(d.title, d.key);
                 })
             );
