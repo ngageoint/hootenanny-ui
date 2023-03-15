@@ -461,20 +461,20 @@ export default class AdvancedOpts {
 
         fieldLabelButton = fieldLabelButton.merge(fieldButtonEnter);
 
-        if (instance.checkFavOptSend()) {
-            let fieldLabelDeleteButton = fieldLabelButtonContainer.selectAll( '.hoot-field-label-delete-button' )
-            .data( [d] );
-            fieldLabelDeleteButton.exit().remove();
-            let fieldDeleteButtonEnter = fieldLabelDeleteButton.enter()
-                .append('button')
-                .classed(`hoot-field-label-delete-button delete-button icon-button keyline-left round-right inline opt-${d.id}`, true)
-                .call(svgIcon('#iD-operation-delete', 'remove-opt-icon', ''))
-                .on( 'click', function(d) {
-                    instance.removeFavoriteOpt(d, this);
-                });
+        let fieldLabelDeleteButton = fieldLabelButtonContainer.selectAll( '.hoot-field-label-delete-button' )
+            .data( instance.checkFavOptSend() ? [d] : [] );
 
-            fieldLabelDeleteButton = fieldLabelDeleteButton.merge(fieldDeleteButtonEnter);
-        }
+        fieldLabelDeleteButton.exit().remove();
+
+        let fieldDeleteButtonEnter = fieldLabelDeleteButton.enter()
+            .append('button')
+            .classed(`hoot-field-label-delete-button delete-button icon-button keyline-left round-right inline opt-${d.id}`, true)
+            .call(svgIcon('#iD-operation-delete', 'remove-opt-icon', ''))
+            .on( 'click', function(d) {
+                instance.removeFavoriteOpt(d, this);
+            });
+
+        fieldLabelDeleteButton = fieldLabelDeleteButton.merge(fieldDeleteButtonEnter);
     }
 
     fieldInput(fieldContainer, isCleaning, isFavorites) {
