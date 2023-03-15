@@ -410,12 +410,9 @@ export default class TagMapForm {
 
                 switch (schema) {
                     case 'OSM':
-                    default:
                         break;
 
-                    case 'MGCP':
-                    case 'TDSv61':
-                    case 'TDSv70': {
+                    default: {
                         let isValid = this.validateMapping(this.jsonMapping);
 
                         if ( !isValid.state ) {
