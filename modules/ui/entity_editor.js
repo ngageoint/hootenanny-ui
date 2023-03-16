@@ -108,7 +108,6 @@ export function uiEntityEditor(context) {
             .append('div')
             .call(schemaSwitcher, function() {
                 entity = context.entity(context.selectedIDs()[0]);
-                //let entity = context.entity(_entityIDs[0]), numTags = Object.keys(entity.tags).length;
                 //Do we need to translate tags?
                 if (Hoot.translations.activeTranslation !== 'OSM') {
                     d3_selectAll('.tag-schema').append('div').attr('class', 'schema-loading');
