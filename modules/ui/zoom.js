@@ -56,7 +56,7 @@ export function uiZoom(context) {
             .append('button')
             .attr('tabindex', -1)
             .attr('class', function(d) { return d.id; })
-            .on('click.editor', function(d) { d.action(); })
+            .on('click.editor', function(d3_event, d) { d.action(); })
             .call(tooltip()
                 .placement((textDirection === 'rtl') ? 'right' : 'left')
                 .html(true)

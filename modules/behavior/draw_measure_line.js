@@ -4,8 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/23/18
  *******************************************************************************************************/
 
-import { utilRebind }           from '../util/rebind';
-import { geoEuclideanDistance } from '../geo';
+import { utilRebind }            from '../util/rebind';
+import { pointer as d3_pointer } from 'd3-selection';
+import { geoEuclideanDistance }  from '../geo';
 
 export function behaviorDrawMeasureLine( context, svg ) {
     let dispatch       = d3.dispatch( 'move', 'click', 'undo', 'cancel', 'finish', 'dblclick' ),
@@ -23,21 +24,17 @@ export function behaviorDrawMeasureLine( context, svg ) {
 
         function point() {
             let p = element.node().parentNode;
-
-            return touchId !== null
-                ? d3.touches( p ).filter( p => p.identifier === touchId )[ 0 ]
-                : d3.mouse( p );
+            return d3_pointer( d3_event, p );
         }
 
         let element = d3.select( this ),
-            touchId = d3_event.touches ? d3_event.changedTouches[ 0 ].identifier : null,
             time    = +new Date(),
             pos     = point();
 
-        element.on( 'dblclick', () => ret( element ) );
+        element.on( 'dblclick', (d3_event) => ret( d3_event, element ) );
         element.on( 'mousemove.drawline', null );
 
-        d3.select( window ).on( 'mouseup.drawline', () => {
+        d3.select( window ).on( 'mouseup.drawline', (d3_event) => {
             element.on( 'mousemove.drawline', mousemove );
 
             if ( geoEuclideanDistance( pos, point() ) < closeTolerance ||
@@ -56,7 +53,7 @@ export function behaviorDrawMeasureLine( context, svg ) {
                     d3.select( window ).on( 'click.drawline-block', null );
                 }, 500 );
 
-                click();
+                click(d3_event);
             }
         } );
     }
@@ -84,7 +81,7 @@ export function behaviorDrawMeasureLine( context, svg ) {
         }
     }
 
-    function click() {
+    function click( ) {
         let c = context.projection( context.map().mouseCoordinates() );
 
         totDist     = totDist + segmentDist;

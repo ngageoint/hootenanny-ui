@@ -105,7 +105,7 @@ export function uiModes(context) {
                 .append('button')
                 .attr('tabindex', -1)
                 .attr('class', function(d) { return d.id + ' add-button'; })
-                .on('click.mode-buttons', function(mode) {
+                .on('click.mode-buttons', function(d3_event, mode) {
                     // When drawing, ignore accidental clicks on mode buttons - #4042
                     var currMode = context.mode().id;
                     if (currMode.match(/^draw/) !== null) return;

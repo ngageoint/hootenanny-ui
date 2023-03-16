@@ -69,7 +69,7 @@ export function behaviorDraw(context) {
 
         element.on('mousemove.draw', null);
 
-        d3_select(window).on('mouseup.draw', function() {
+        d3_select(window).on('mouseup.draw', function(d3_event) {
             var t2 = +new Date();
             var p2 = point();
             var dist = geoVecLength(p1, p2);
@@ -79,7 +79,7 @@ export function behaviorDraw(context) {
 
             if (dist < closeTolerance || (dist < tolerance && (t2 - t1) < 500)) {
                 // Prevent a quick second click
-                d3_select(window).on('click.draw-block', function() {
+                d3_select(window).on('click.draw-block', function(d3_event) {
                     d3_event.stopPropagation();
                 }, true);
 
@@ -90,7 +90,7 @@ export function behaviorDraw(context) {
                     d3_select(window).on('click.draw-block', null);
                 }, 500);
 
-                click();
+                click(d3_event);
             }
         }, true);
     }
@@ -98,7 +98,7 @@ export function behaviorDraw(context) {
 
     function mousemove(d3_event) {
         _lastMouse = d3_event;
-        dispatch.call('move', this, datum());
+        dispatch.call('move', this, datum(d3_event));
     }
 
 
@@ -116,8 +116,8 @@ export function behaviorDraw(context) {
     // - `mode/drag_node.js`     `doMode()`
     // - `behavior/draw.js`      `click()`
     // - `behavior/draw_way.js`  `move()`
-    function click() {
-        var d = datum();
+    function click(d3_event) {
+        var d = datum(d3_event);
         var target = d && d.properties && d.properties.entity;
 
         if (target && target.type === 'node') {   // Snap to a node
@@ -163,7 +163,7 @@ export function behaviorDraw(context) {
             d3_select(window).on('keyup.space-block', null);
         });
 
-        click();
+        click(d3_event);
     }
 
 

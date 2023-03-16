@@ -373,14 +373,14 @@ export function uiNoteEditor(context) {
             .on('click.comment', clickComment);
 
 
-        function isSaveDisabled(d) {
+        function isSaveDisabled(d3_event, d) {
             return (hasAuth && d.status === 'open' && d.newComment) ? null : true;
         }
     }
 
 
 
-    function clickCancel(d) {
+    function clickCancel(d3_event, d) {
         this.blur();    // avoid keeping focus on the button - #4641
         var osm = services.osm;
         if (osm) {
@@ -391,7 +391,7 @@ export function uiNoteEditor(context) {
     }
 
 
-    function clickSave(d) {
+    function clickSave(d3_event, d) {
         this.blur();    // avoid keeping focus on the button - #4641
         var osm = services.osm;
         if (osm) {
@@ -402,7 +402,7 @@ export function uiNoteEditor(context) {
     }
 
 
-    function clickStatus(d) {
+    function clickStatus(d3_event, d) {
         this.blur();    // avoid keeping focus on the button - #4641
         var osm = services.osm;
         if (osm) {
@@ -413,7 +413,7 @@ export function uiNoteEditor(context) {
         }
     }
 
-    function clickComment(d) {
+    function clickComment(d3_event, d) {
         this.blur();    // avoid keeping focus on the button - #4641
         var osm = services.osm;
         if (osm) {

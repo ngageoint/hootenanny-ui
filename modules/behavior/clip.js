@@ -23,7 +23,7 @@ export function clip( context, svg ) {
 
             return touchId !== null
                 ? d3.touches( p ).filter( p => p.identifier === touchId )[ 0 ]
-                : d3.mouse( p );
+                : d3.pointer( p );
         }
 
         let element = d3.select( this ),

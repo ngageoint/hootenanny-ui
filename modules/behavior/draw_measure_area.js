@@ -4,8 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/24/18
  *******************************************************************************************************/
 
-import { utilRebind }           from '../util/rebind';
-import { geoEuclideanDistance } from '../geo';
+import { utilRebind }            from '../util/rebind';
+import { pointer as d3_pointer } from 'd3-selection';
+import { geoEuclideanDistance }  from '../geo';
 
 export function behaviorDrawMeasureArea( context, svg ) {
     let dispatch        = d3.dispatch( 'move', 'click', 'undo', 'cancel', 'finish', 'dblclick' ),
@@ -27,14 +28,10 @@ export function behaviorDrawMeasureArea( context, svg ) {
 
         function point() {
             let p = element.node().parentNode;
-
-            return touchId !== null
-                ? d3.touches( p ).filter( p => p.identifier === touchId )[ 0 ]
-                : d3.mouse( p );
+            return d3_pointer(d3_event, p);
         }
 
         let element = d3.select( this ),
-            touchId = d3_event.touches ? d3_event.changedTouches[ 0 ].identifier : null,
             time    = +new Date(),
             pos     = point();
 
@@ -63,7 +60,7 @@ export function behaviorDrawMeasureArea( context, svg ) {
                     d3.select( window ).on( 'click.drawarea-block', null );
                 }, 500 );
 
-                click();
+                click(d3_event);
             }
         } );
     }
