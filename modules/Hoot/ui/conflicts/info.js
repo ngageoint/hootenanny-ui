@@ -89,8 +89,6 @@ export default class ConflictMetadata {
                 .html( navHtml );
         }
 
-        // add reference and secondary layer title row
-        tagsMerged.unshift({key: '', value: ['Reference', 'Secondary']});
 
         _forEach( tagsMerged, tag => {
             let row = this.poiTable.append( 'tr' );
