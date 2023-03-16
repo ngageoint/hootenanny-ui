@@ -70,7 +70,7 @@ export default class Merge {
         try {
             let mergedElement = await this.getMergedElement( features );
 
-            mergedElement.tags[ 'hoot:status' ] = 3;
+            mergedElement.tags[ 'hoot:status' ] = 'Conflated';
 
             Hoot.context.perform(
                 actionChangeTags( featureUpdate.id, mergedElement.tags ),
