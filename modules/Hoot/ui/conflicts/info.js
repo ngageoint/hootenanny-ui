@@ -89,6 +89,7 @@ export default class ConflictMetadata {
                 .html( navHtml );
         }
 
+
         _forEach( tagsMerged, tag => {
             let row = this.poiTable.append( 'tr' );
 
@@ -161,8 +162,27 @@ export default class ConflictMetadata {
      */
     filterTags( tags ) {
         return _filter( d3.entries( tags ), tag => {
+            if (tag.key === 'hoot:status') this.filterHootStatus(tag);
             return _every( this.tagBlacklist, t => !tag.key.match( t ) );
         } );
+    }
+
+     /**
+     * Update hoot:status tag to later add primary/reference
+     * row in conflicts container table
+    */
+   filterHootStatus( tag ) {
+        tag.key = '';
+        if (tag.value === 'Input1') {
+            tag.value = 'Reference';
+        }
+        else if (tag.value === 'Input2') {
+            tag.value = 'Secondary';
+        }
+        else if (tag.value === 'Conflated') {
+            tag.value = 'Merged';
+        }
+        return tag;
     }
 
     /**

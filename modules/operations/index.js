@@ -7,6 +7,7 @@ export { operationMove } from './move';
 export { operationOrthogonalize } from './orthogonalize';
 export { operationReflectShort, operationReflectLong } from './reflect';
 export { operationReverse } from './reverse';
+export { operationReview } from './review';
 export { operationRotate } from './rotate';
 export { operationSplit } from './split';
 export { operationStraighten } from './straighten';

@@ -1,4 +1,5 @@
 var tm4ApiUrl,
     translationServerPort,
     mergeServerPort,
-    globalMaxNodeCount;
+    globalMaxNodeCount,
+    tagInfoUrl;

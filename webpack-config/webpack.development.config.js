@@ -8,6 +8,10 @@ const path         = require( 'path' );
 const { merge }    = require( 'webpack-merge' );
 const CommonConfig = require('./webpack.base.config');
 
+const HOOT_SERVICES_HOST = process.env.HOOT_SERVICES_HOST || '127.0.0.1'
+const HOOT_SERVICES_PORT = process.env.HOOT_SERVICES_PORT || '8888'
+const HOOT_TM_HOST = process.env.HOOT_TM_HOST || '127.0.0.1'
+
 module.exports = merge( CommonConfig, {
     mode: 'development',
     devtool: 'cheap-module-source-map',
@@ -20,23 +24,23 @@ module.exports = merge( CommonConfig, {
             publicPath: '/',
         },
         proxy: {
-            '/hoot-services': 'http://localhost:8888',
-            '/static': 'http://localhost:8888',
-            '/capabilities': 'http://localhost:8094',
+            '/hoot-services': `http://${HOOT_SERVICES_HOST}:${HOOT_SERVICES_PORT}`,
+            '/static': `http://${HOOT_SERVICES_HOST}:${HOOT_SERVICES_PORT}`,
+            '/capabilities': `http:${HOOT_SERVICES_HOST}:8094`,
             '/switcher': {
-                target: 'http://localhost:8094',
+                target: `http://${HOOT_SERVICES_HOST}:8094`,
                 pathRewrite: { '^/switcher': '' }
             },
             '/p2p': {
-                target: 'http://localhost:8096',
+                target: `http://${HOOT_SERVICES_HOST}:8096`,
                 pathRewrite: { '^/p2p': '' }
             },
             '/tasks': {
-                target: 'http://localhost:6543',
+                target: `http://${HOOT_TM_HOST}:6543`,
                 pathRewrite: { '^/tasks': '' }
             },
             '/tm4api': {
-                target: 'http://localhost:5000',
+                target: `http://${HOOT_TM_HOST}:5000`,
                 pathRewrite: { '^/tm4api': '/api' }
             }
         }
