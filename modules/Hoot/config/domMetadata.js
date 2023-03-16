@@ -616,7 +616,7 @@ export function conflictActions() {
             name: 'share_review',
             text: 'Bookmark Review',
             class: '_icon plus fill-grey button round pad0y pad1x small strong',
-            cmd: this.cmd( 'Ctrl+b' ),
+            cmd: this.cmd( '⇧B' ),
             action: async () => {
                 let currentReviewItem = Hoot.ui.conflicts.data.currentReviewItem;
                 const queryParams = {

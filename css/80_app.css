@@ -2226,13 +2226,39 @@ div.combobox {
     opacity: .5;
 }
 
+.remove-opt-icon {
+    opacity: .5;
+}
+
+.adv-opt-delete-icon {
+    opacity: .5;
+}
+
+.hoot-field-button-container {
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.hoot-field-button-container {
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+}
+
 .hoot-field-label-button {
         height: inherit;
-        width: 10%;
+        /*width: 10%; */
         background-color: #f6f6f6 !important;
 }
 
 .hoot-field-label-button:hover {
+    background-color: #ececec !important;
+}
+
+.hoot-field-label-delete-button {
+    height: inherit;
+    text-align: center;
+    background-color: #f6f6f6 !important;
+}
+
+.hoot-field-label-delete-button:hover {
     background-color: #ececec !important;
 }
 
