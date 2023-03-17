@@ -185,13 +185,13 @@ export function uiPresetList(context) {
             .append('div')
             .call(schemaSwitcher, function() {
                 list.selectAll('.preset-list-item').remove();
-                list.call(drawList, context.presets().defaults(geometry, 72).matchSchema(Hoot.translations.activeTranslation));
+                list.call(drawList, context.presets().defaults(geometry, 150).matchSchema(Hoot.translations.activeTranslation));
             });
 
         var list = listWrap
             .append('div')
             .attr('class', 'preset-list fillL cf')
-            .call(drawList, context.presets().defaults(geometry, 72).matchSchema(Hoot.translations.activeTranslation));
+            .call(drawList, context.presets().defaults(geometry, 150).matchSchema(Hoot.translations.activeTranslation));
     }
 
 
@@ -427,13 +427,28 @@ export function uiPresetList(context) {
         }
 
         item.choose = function() {
-            context.presets().choose(preset);
-            context.perform(
-                actionChangePreset(_entityID, _currentPreset, preset),
-                t('operations.change_tags.annotation')
-            );
+            function choosePreset(p) {
+                context.perform(
+                    function(graph) {
+                        var oldPreset = context.presets().match(graph.entity(_entityID), graph);
+                        graph = actionChangePreset(_entityID, oldPreset, p)(graph);
+                        return graph;
+                    },
+                    t('operations.change_tags.annotation')
+                );
 
-            dispatch.call('choose', this, preset);
+                dispatch.call('choose', this, p);
+            }
+            if (d3_select(this).classed('disabled')) return;
+            if (Hoot.translations.activeTranslation === 'OSM') {
+                choosePreset(preset);
+            } else {
+                Hoot.translations.addTagsForFcode(context.geometry(_entityID), preset, context, _entityID, function(p) {
+                    p.icon = preset.icon;
+                    context.presets().replace(p);
+                    choosePreset(p);
+                });
+            }
         };
 
         item.help = function() {

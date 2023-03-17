@@ -1,13 +1,13 @@
 {
-    "icon": "maki-commercial",
- "geometry": [
-     "point",
-     "area"
- ],
- "tags": {
- },
- "hoot:featuretype":"Settlement",
- "hoot:tagschema":"TDSv70",
- "hoot:fcode": "AL105",
- "name": "Settlement (AL105)"
+   	"icon": "maki-commercial",
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Settlement",
+    "hoot:tagschema":"TDSv70",
+    "hoot:fcode": "AL105",
+    "name": "Settlement (AL105)"
 }
