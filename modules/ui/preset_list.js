@@ -450,13 +450,13 @@ export function uiPresetList(context) {
                 });
             }
 
-            context.presets().choose(preset);
-            context.perform(
-                actionChangePreset(_entityID, _currentPreset, preset),
-                t('operations.change_tags.annotation')
-            );
+            // context.presets().choose(preset);
+            // context.perform(
+            //     actionChangePreset(_entityID, _currentPreset, preset),
+            //     t('operations.change_tags.annotation')
+            // );
 
-            dispatch.call('choose', this, preset);
+            // dispatch.call('choose', this, preset);
         };
 
         item.help = function() {
