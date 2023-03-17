@@ -449,14 +449,6 @@ export function uiPresetList(context) {
                     choosePreset(p);
                 });
             }
-
-            // context.presets().choose(preset);
-            // context.perform(
-            //     actionChangePreset(_entityID, _currentPreset, preset),
-            //     t('operations.change_tags.annotation')
-            // );
-
-            // dispatch.call('choose', this, preset);
         };
 
         item.help = function() {
