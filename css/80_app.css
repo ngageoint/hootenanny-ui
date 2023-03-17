@@ -1148,6 +1148,17 @@ img.tag-reference-wiki-image {
 
 /* Entity/Preset Editor
 ------------------------------------------------------- */
+.schema-loading {
+    background-image: url(./img/loading-spin-dark.svg);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    margin-left: 5%;
+}
+
 .preset-editor {
     overflow: hidden;
     padding-bottom: 10px;

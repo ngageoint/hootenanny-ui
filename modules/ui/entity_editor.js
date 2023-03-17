@@ -44,17 +44,24 @@ export function uiEntityEditor(context) {
         .on('change', changeTags);
 
     var debouncedTranslateTo = _debounce(function( entity, hoot, updateTags) {
-            d3_selectAll('.tag-schema').append('div').attr('class', 'schema-loading');
-            hoot.translations.translateEntity(entity)
+        addSchemaLoading();
+        hoot.translations.translateEntity(entity)
             .then(data => updateTags(data.preset, data.tags));
         }, 500);
     var debouncedTranslateFrom = _debounce(function(osmTags, entity, onInput, updateTags){
-            d3_selectAll('.tag-schema').append('div').attr('class', 'schema-loading');
-            Hoot.translations.translateToOsm(osmTags, entity, onInput)
+        addSchemaLoading();
+        Hoot.translations.translateToOsm(osmTags, entity, onInput)
             .then(osmTags => updateTags(osmTags, onInput));
         }, 500);
 
 
+    function addSchemaLoading() {
+        d3_selectAll('.tag-schema').selectAll('div.schema-loading')
+            .data([0])
+            .enter()
+            .append('div')
+            .attr('class', 'schema-loading');
+    }
     function entityEditor(selection) {
         var entity = context.entity(_entityID);
         var tags = _clone(entity.tags);
@@ -110,7 +117,6 @@ export function uiEntityEditor(context) {
                 entity = context.entity(context.selectedIDs()[0]);
                 //Do we need to translate tags?
                 if (Hoot.translations.activeTranslation !== 'OSM') {
-                    d3_selectAll('.tag-schema').append('div').attr('class', 'schema-loading');
                     debouncedTranslateTo(entity, Hoot, updateTags);
                 } else {
                     updateTags(context.presets().match(entity, context.graph()), entity.tags);
@@ -286,6 +292,8 @@ export function uiEntityEditor(context) {
 
             context.history()
                 .on('change.entity-editor', historyChanged);
+
+            d3_selectAll('.schema-loading').remove();
         }
 
         function historyChanged() {
