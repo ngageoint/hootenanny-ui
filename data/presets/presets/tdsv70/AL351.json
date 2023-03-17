@@ -1,13 +1,13 @@
 {
-    "icon": "maki-rocket",
-  "geometry": [
-      "point",
-      "area"
-  ],
-  "tags": {
-  },
-  "hoot:featuretype":"SpaceFacility",
-  "hoot:tagschema":"TDSv70",
-  "hoot:fcode": "AL351",
-  "name": "Space Facility (AL351)"
+  	"icon": "maki-rocket",
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"SpaceFacility",
+    "hoot:tagschema":"TDSv70",
+    "hoot:fcode": "AL351",
+    "name": "Space Facility (AL351)"
 }

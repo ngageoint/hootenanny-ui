@@ -32,6 +32,14 @@ en:
       category-water-line:
         name: Water Features
     fields:
+      FCODE:
+        label#: FCODE=*
+        label: Feature Code
+        options: {}
+      F_CODE:
+        label#: F_CODE=*
+        label: Feature Code
+        options: {}
       access:
         label#: access=*, foot=*, motor_vehicle=*, bicycle=*, horse=*
         label: Allowed Access
@@ -3323,6 +3331,153 @@ en:
         name#: ford=yes
         name: Ford
         terms: <translate with synonyms or related terms for 'Ford', separated by commas>
+      ggdmv30/AH070:
+        name#: ''
+        name: Checkpoint (AH070)
+        terms: <translate with synonyms or related terms for 'Checkpoint (AH070)', separated by commas>
+      ggdmv30/AL010:
+        name#: ''
+        name: Facility (AL010)
+        terms: <translate with synonyms or related terms for 'Facility (AL010)', separated by commas>
+      ggdmv30/AL013:
+        name#: ''
+        name: Building (AL013)
+        terms: <translate with synonyms or related terms for 'Building (AL013)', separated by commas>
+      ggdmv30/AL020:
+        name#: ''
+        name: Built-up Area (AL020)
+        terms: <translate with synonyms or related terms for 'Built-up Area (AL020)', separated by commas>
+      ggdmv30/AL030:
+        name#: ''
+        name: Cemetery (AL030)
+        terms: <translate with synonyms or related terms for 'Cemetery (AL030)', separated by commas>
+      ggdmv30/AL099:
+        name#: ''
+        name: Hut (AL099)
+        terms: <translate with synonyms or related terms for 'Hut (AL099)', separated by commas>
+      ggdmv30/AL105:
+        name#: ''
+        name: Settlement (AL105)
+        terms: <translate with synonyms or related terms for 'Settlement (AL105)', separated by commas>
+      ggdmv30/AL351:
+        name#: ''
+        name: Space Facility (AL351)
+        terms: <translate with synonyms or related terms for 'Space Facility (AL351)', separated by commas>
+      ggdmv30/AN010:
+        name#: ''
+        name: Railway (AN010)
+        terms: <translate with synonyms or related terms for 'Railway (AN010)', separated by commas>
+      ggdmv30/AN050:
+        name#: ''
+        name: Railway Sidetrack (AN050)
+        terms: <translate with synonyms or related terms for 'Railway Sidetrack (AN050)', separated by commas>
+      ggdmv30/AN060:
+        name#: ''
+        name: Railway Yard (AN060)
+        terms: <translate with synonyms or related terms for 'Railway Yard (AN060)', separated by commas>
+      ggdmv30/AP010:
+        name#: ''
+        name: Cart Track (AP010)
+        terms: <translate with synonyms or related terms for 'Cart Track (AP010)', separated by commas>
+      ggdmv30/AP030:
+        name#: ''
+        name: Road (AP030)
+        terms: <translate with synonyms or related terms for 'Road (AP030)', separated by commas>
+      ggdmv30/AP041:
+        name#: ''
+        name: Vehicle Barrier (AP041)
+        terms: <translate with synonyms or related terms for 'Vehicle Barrier (AP041)', separated by commas>
+      ggdmv30/AP050:
+        name#: ''
+        name: Trail (AP050)
+        terms: <translate with synonyms or related terms for 'Trail (AP050)', separated by commas>
+      ggdmv30/AQ040:
+        name#: ''
+        name: Bridge (AQ040)
+        terms: <translate with synonyms or related terms for 'Bridge (AQ040)', separated by commas>
+      ggdmv30/AQ060:
+        name#: ''
+        name: Control Tower (AQ060)
+        terms: <translate with synonyms or related terms for 'Control Tower (AQ060)', separated by commas>
+      ggdmv30/AQ063:
+        name#: ''
+        name: Causeway Structure (AQ063)
+        terms: <translate with synonyms or related terms for 'Causeway Structure (AQ063)', separated by commas>
+      ggdmv30/AQ065:
+        name#: ''
+        name: Culvert (AQ065)
+        terms: <translate with synonyms or related terms for 'Culvert (AQ065)', separated by commas>
+      ggdmv30/AQ070:
+        name#: ''
+        name: Ferry Crossing (AQ070)
+        terms: <translate with synonyms or related terms for 'Ferry Crossing (AQ070)', separated by commas>
+      ggdmv30/AQ080:
+        name#: ''
+        name: Ferry Station (AQ080)
+        terms: <translate with synonyms or related terms for 'Ferry Station (AQ080)', separated by commas>
+      ggdmv30/AQ125:
+        name#: ''
+        name: Transportation Station (AQ125)
+        terms: <translate with synonyms or related terms for 'Transportation Station (AQ125)', separated by commas>
+      ggdmv30/AQ130:
+        name#: ''
+        name: Tunnel (AQ130)
+        terms: <translate with synonyms or related terms for 'Tunnel (AQ130)', separated by commas>
+      ggdmv30/BH030:
+        name#: ''
+        name: Ditch (BH030)
+        terms: <translate with synonyms or related terms for 'Ditch (BH030)', separated by commas>
+      ggdmv30/BH070:
+        name#: ''
+        name: Ford (BH070)
+        terms: <translate with synonyms or related terms for 'Ford (BH070)', separated by commas>
+      ggdmv30/BH140:
+        name#: ''
+        name: River (BH140)
+        terms: <translate with synonyms or related terms for 'River (BH140)', separated by commas>
+      ggdmv30/GB005:
+        name#: ''
+        name: Land Aerodrome (GB005)
+        terms: <translate with synonyms or related terms for 'Land Aerodrome (GB005)', separated by commas>
+      ggdmv30/GB035:
+        name#: ''
+        name: Heliport (GB035)
+        terms: <translate with synonyms or related terms for 'Heliport (GB035)', separated by commas>
+      ggdmv30/GB050:
+        name#: ''
+        name: Aircraft Revetment (GB050)
+        terms: <translate with synonyms or related terms for 'Aircraft Revetment (GB050)', separated by commas>
+      ggdmv30/GB055:
+        name#: ''
+        name: Runway (GB055)
+        terms: <translate with synonyms or related terms for 'Runway (GB055)', separated by commas>
+      ggdmv30/GB065:
+        name#: ''
+        name: Water Aerodrome (GB065)
+        terms: <translate with synonyms or related terms for 'Water Aerodrome (GB065)', separated by commas>
+      ggdmv30/GB075:
+        name#: ''
+        name: Taxiway (GB075)
+        terms: <translate with synonyms or related terms for 'Taxiway (GB075)', separated by commas>
+      ggdmv30/SU001:
+        name#: ''
+        name: Military Installation (SU001)
+        terms: <translate with synonyms or related terms for 'Military Installation (SU001)', separated by commas>
+      ggdmv30/area:
+        name#: area=yes
+        name: Area
+        terms#: 'terms: polygon'
+        terms: <translate with synonyms or related terms for 'Area', separated by commas>
+      ggdmv30/line:
+        name#: ''
+        name: Line
+        terms#: 'terms: polyline'
+        terms: <translate with synonyms or related terms for 'Line', separated by commas>
+      ggdmv30/point:
+        name#: ''
+        name: Point
+        terms#: 'terms: node,other,vertex,vertices'
+        terms: <translate with synonyms or related terms for 'Point', separated by commas>
       golf/bunker:
         name#: golf=bunker, natural=sand
         name: Sand Trap
@@ -4582,6 +4737,21 @@ en:
         name#: ''
         name: Land Aerodrome (GB005)
         terms: <translate with synonyms or related terms for 'Land Aerodrome (GB005)', separated by commas>
+      mgcp/area:
+        name#: area=yes
+        name: Area
+        terms#: 'terms: polygon'
+        terms: <translate with synonyms or related terms for 'Area', separated by commas>
+      mgcp/line:
+        name#: ''
+        name: Line
+        terms#: 'terms: polyline'
+        terms: <translate with synonyms or related terms for 'Line', separated by commas>
+      mgcp/point:
+        name#: ''
+        name: Point
+        terms#: 'terms: node,other,vertex,vertices'
+        terms: <translate with synonyms or related terms for 'Point', separated by commas>
       natural:
         name#: natural=*
         name: Natural
@@ -6222,6 +6392,21 @@ en:
         name#: ''
         name: Military Installation (SU001)
         terms: <translate with synonyms or related terms for 'Military Installation (SU001)', separated by commas>
+      tdsv40/area:
+        name#: area=yes
+        name: Area
+        terms#: 'terms: polygon'
+        terms: <translate with synonyms or related terms for 'Area', separated by commas>
+      tdsv40/line:
+        name#: ''
+        name: Line
+        terms#: 'terms: polyline'
+        terms: <translate with synonyms or related terms for 'Line', separated by commas>
+      tdsv40/point:
+        name#: ''
+        name: Point
+        terms#: 'terms: node,other,vertex,vertices'
+        terms: <translate with synonyms or related terms for 'Point', separated by commas>
       tdsv61/AH070:
         name#: ''
         name: Checkpoint (AH070)
@@ -6314,6 +6499,14 @@ en:
         name#: ''
         name: Tunnel (AQ130)
         terms: <translate with synonyms or related terms for 'Tunnel (AQ130)', separated by commas>
+      tdsv61/AT012:
+        name#: ''
+        name: Aerial Farm (AT012)
+        terms: <translate with synonyms or related terms for 'Aerial Farm (AT012)', separated by commas>
+      tdsv61/BB081:
+        name#: ''
+        name: Shoreline Construction (BB081)
+        terms: <translate with synonyms or related terms for 'Shoreline Construction (BB081)', separated by commas>
       tdsv61/BH030:
         name#: ''
         name: Ditch (BH030)
@@ -6354,6 +6547,21 @@ en:
         name#: ''
         name: Military Installation (SU001)
         terms: <translate with synonyms or related terms for 'Military Installation (SU001)', separated by commas>
+      tdsv61/area:
+        name#: area=yes
+        name: Area
+        terms#: 'terms: polygon'
+        terms: <translate with synonyms or related terms for 'Area', separated by commas>
+      tdsv61/line:
+        name#: ''
+        name: Line
+        terms#: 'terms: polyline'
+        terms: <translate with synonyms or related terms for 'Line', separated by commas>
+      tdsv61/point:
+        name#: ''
+        name: Point
+        terms#: 'terms: node,other,vertex,vertices'
+        terms: <translate with synonyms or related terms for 'Point', separated by commas>
       tdsv70/AH070:
         name#: ''
         name: Checkpoint (AH070)
@@ -6494,6 +6702,176 @@ en:
         name#: ''
         name: Military Installation (SU001)
         terms: <translate with synonyms or related terms for 'Military Installation (SU001)', separated by commas>
+      tdsv70/area:
+        name#: area=yes
+        name: Area
+        terms#: 'terms: polygon'
+        terms: <translate with synonyms or related terms for 'Area', separated by commas>
+      tdsv70/line:
+        name#: ''
+        name: Line
+        terms#: 'terms: polyline'
+        terms: <translate with synonyms or related terms for 'Line', separated by commas>
+      tdsv70/point:
+        name#: ''
+        name: Point
+        terms#: 'terms: node,other,vertex,vertices'
+        terms: <translate with synonyms or related terms for 'Point', separated by commas>
+      tdsv71/AH070:
+        name#: ''
+        name: Checkpoint(AH070)
+        terms: <translate with synonyms or related terms for 'Checkpoint(AH070)', separated by commas>
+      tdsv71/AL010:
+        name#: ''
+        name: Facility(AL010)
+        terms: <translate with synonyms or related terms for 'Facility(AL010)', separated by commas>
+      tdsv71/AL013:
+        name#: ''
+        name: Building(AL013)
+        terms: <translate with synonyms or related terms for 'Building(AL013)', separated by commas>
+      tdsv71/AL020:
+        name#: ''
+        name: Built Up Area(AL020)
+        terms: <translate with synonyms or related terms for 'Built Up Area(AL020)', separated by commas>
+      tdsv71/AL030:
+        name#: ''
+        name: Cemetery(AL030)
+        terms: <translate with synonyms or related terms for 'Cemetery(AL030)', separated by commas>
+      tdsv71/AL099:
+        name#: ''
+        name: Hut(AL099)
+        terms: <translate with synonyms or related terms for 'Hut(AL099)', separated by commas>
+      tdsv71/AL105:
+        name#: ''
+        name: Settlement(AL105)
+        terms: <translate with synonyms or related terms for 'Settlement(AL105)', separated by commas>
+      tdsv71/AL351:
+        name#: ''
+        name: Space Facility(AL351)
+        terms: <translate with synonyms or related terms for 'Space Facility(AL351)', separated by commas>
+      tdsv71/AN010:
+        name#: ''
+        name: Railway(AN010)
+        terms: <translate with synonyms or related terms for 'Railway(AN010)', separated by commas>
+      tdsv71/AN050:
+        name#: ''
+        name: Railway Sidetrack(AN050)
+        terms: <translate with synonyms or related terms for 'Railway Sidetrack(AN050)', separated by commas>
+      tdsv71/AN060:
+        name#: ''
+        name: Railway Yard(AN060)
+        terms: <translate with synonyms or related terms for 'Railway Yard(AN060)', separated by commas>
+      tdsv71/AP010:
+        name#: ''
+        name: Cart Track(AP010)
+        terms: <translate with synonyms or related terms for 'Cart Track(AP010)', separated by commas>
+      tdsv71/AP030:
+        name#: ''
+        name: Road(AP030)
+        terms: <translate with synonyms or related terms for 'Road(AP030)', separated by commas>
+      tdsv71/AP041:
+        name#: ''
+        name: Vehicle Barrier(AP041)
+        terms: <translate with synonyms or related terms for 'Vehicle Barrier(AP041)', separated by commas>
+      tdsv71/AP050:
+        name#: ''
+        name: Trail(AP050)
+        terms: <translate with synonyms or related terms for 'Trail(AP050)', separated by commas>
+      tdsv71/AQ040:
+        name#: ''
+        name: Bridge(AQ040)
+        terms: <translate with synonyms or related terms for 'Bridge(AQ040)', separated by commas>
+      tdsv71/AQ060:
+        name#: ''
+        name: Control Tower(AQ060)
+        terms: <translate with synonyms or related terms for 'Control Tower(AQ060)', separated by commas>
+      tdsv71/AQ063:
+        name#: ''
+        name: Causeway Structure(AQ063)
+        terms: <translate with synonyms or related terms for 'Causeway Structure(AQ063)', separated by commas>
+      tdsv71/AQ065:
+        name#: ''
+        name: Culvert(AQ065)
+        terms: <translate with synonyms or related terms for 'Culvert(AQ065)', separated by commas>
+      tdsv71/AQ070:
+        name#: ''
+        name: Ferry Crossing(AQ070)
+        terms: <translate with synonyms or related terms for 'Ferry Crossing(AQ070)', separated by commas>
+      tdsv71/AQ080:
+        name#: ''
+        name: Ferry Station(AQ080)
+        terms: <translate with synonyms or related terms for 'Ferry Station(AQ080)', separated by commas>
+      tdsv71/AQ125:
+        name#: ''
+        name: Transportation Station(AQ125)
+        terms: <translate with synonyms or related terms for 'Transportation Station(AQ125)', separated by commas>
+      tdsv71/AQ130:
+        name#: ''
+        name: Tunnel(AQ130)
+        terms: <translate with synonyms or related terms for 'Tunnel(AQ130)', separated by commas>
+      tdsv71/AT012:
+        name#: ''
+        name: Aerial Farm(AT012)
+        terms: <translate with synonyms or related terms for 'Aerial Farm(AT012)', separated by commas>
+      tdsv71/BB081:
+        name#: ''
+        name: Shoreline Construction(BB081)
+        terms: <translate with synonyms or related terms for 'Shoreline Construction(BB081)', separated by commas>
+      tdsv71/BH030:
+        name#: ''
+        name: Ditch(BH030)
+        terms: <translate with synonyms or related terms for 'Ditch(BH030)', separated by commas>
+      tdsv71/BH070:
+        name#: ''
+        name: Ford(BH070)
+        terms: <translate with synonyms or related terms for 'Ford(BH070)', separated by commas>
+      tdsv71/BH140:
+        name#: ''
+        name: River(BH140)
+        terms: <translate with synonyms or related terms for 'River(BH140)', separated by commas>
+      tdsv71/GB005:
+        name#: ''
+        name: Land Aerodrome(GB005)
+        terms: <translate with synonyms or related terms for 'Land Aerodrome(GB005)', separated by commas>
+      tdsv71/GB035:
+        name#: ''
+        name: Heliport(GB035)
+        terms: <translate with synonyms or related terms for 'Heliport(GB035)', separated by commas>
+      tdsv71/GB050:
+        name#: ''
+        name: Defensive Revetment(GB050)
+        terms: <translate with synonyms or related terms for 'Defensive Revetment(GB050)', separated by commas>
+      tdsv71/GB055:
+        name#: ''
+        name: Runway(GB055)
+        terms: <translate with synonyms or related terms for 'Runway(GB055)', separated by commas>
+      tdsv71/GB065:
+        name#: ''
+        name: Water Aerodrome(GB065)
+        terms: <translate with synonyms or related terms for 'Water Aerodrome(GB065)', separated by commas>
+      tdsv71/GB075:
+        name#: ''
+        name: Taxiway(GB075)
+        terms: <translate with synonyms or related terms for 'Taxiway(GB075)', separated by commas>
+      tdsv71/SU001:
+        name#: ''
+        name: Military Installation(SU001)
+        terms: <translate with synonyms or related terms for 'Military Installation(SU001)', separated by commas>
+      tdsv71/area:
+        name#: area=yes
+        name: Area
+        terms#: 'terms: polygon'
+        terms: <translate with synonyms or related terms for 'Area', separated by commas>
+      tdsv71/line:
+        name#: ''
+        name: Line
+        terms#: 'terms: polyline'
+        terms: <translate with synonyms or related terms for 'Line', separated by commas>
+      tdsv71/point:
+        name#: ''
+        name: Point
+        terms#: 'terms: node,other,vertex,vertices'
+        terms: <translate with synonyms or related terms for 'Point', separated by commas>
       tourism:
         name#: tourism=*
         name: Tourism

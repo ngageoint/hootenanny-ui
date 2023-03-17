@@ -1,0 +1,9 @@
+{ 
+    "name": "Aerial Farm (AT012)",
+    "geometry": [ "point", "area" ],
+    "tags"  : {},
+    "hoot:featuretype": "Aerial Farm",
+    "hoot:tagschema": "TDSv61",
+    "hoot:fcode": "AT012",
+    "hoot:fields": [ "AOO", "CAA" ] 
+}

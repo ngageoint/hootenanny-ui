@@ -4,5 +4,6 @@
     "hoot:fcode": "BB081",
     "hoot:featuretype": "Shoreline Construction",
     "geometry": ["line"],
-    "tags": {}
+    "tags": {},
+    "hoot:fields": ["CAA","FFN"]
 }
