@@ -585,8 +585,10 @@
             "best_imagery": "Best known imagery source for this location",
             "switch": "Switch back to this background",
             "custom": "Custom",
+            "evwhs_prompt": "Please enter your EVWHS Connect ID.\n\nOnce clicking \"OK\", you'll be prompted for your EVWHS username and password.\n",
             "overlays": "Overlays",
             "imagery_source_faq": "Imagery Info / Report a Problem",
+            "image_metadata": "See metadata for this image",
             "reset": "reset",
             "display_options": "Display Options",
             "brightness": "Brightness",
@@ -600,7 +602,7 @@
             },
             "fix_misalignment": "Adjust imagery offset",
             "offset": "Drag anywhere in the gray area below to adjust the imagery offset, or enter the offset values in meters.",
-            "dgbg": "DigitalGlobe Imagery",
+            "dgbg": "Maxar Imagery",
             "dgbg_button": "Change imagery profile",
             "dgbg_tooltip": "Satellite imagery",
             "dgbg_profiles": {
@@ -610,7 +612,7 @@
                 "Cloud_Cover_Profile": "Least Cloud Cover",
                 "Color_Infrared_Profile": "False Color Only"
             },
-            "dgcl": "DigitalGlobe Collection",
+            "dgcl": "Maxar Collection",
             "dgcl_tooltip": "Imagery footprints",
             "dgcl_button": "Change collection date range",
             "dgcl_collections": {

@@ -7,7 +7,8 @@ import {
 
 import {
     event as d3_event,
-    select as d3_select
+    select as d3_select,
+    selectAll as d3_selectAll
 } from 'd3-selection';
 
 import { t, textDirection } from '../util/locale';
@@ -20,10 +21,10 @@ import { uiHelp } from './help';
 import { uiMapData } from './map_data';
 import { uiMapInMap } from './map_in_map';
 import { uiSettingsCustomBackground } from './settings/custom_background';
+import { uiSlider } from './slider';
 import { uiTooltipHtml } from './tooltipHtml';
 import { utilCallWhenIdle } from '../util';
 import { tooltip } from '../util/tooltip';
-import { rendererBackgroundSource } from '../renderer/background_source';
 
 export function uiBackground(context) {
     var key = t('background.key');
@@ -40,7 +41,7 @@ export function uiBackground(context) {
 
     var backgroundDisplayOptions = uiBackgroundDisplayOptions(context);
     var backgroundOffset = uiBackgroundOffset(context);
-
+    var collections, profiles;
     var settingsCustomBackground = uiSettingsCustomBackground(context)
         .on('change', customChanged);
 
@@ -81,7 +82,7 @@ export function uiBackground(context) {
             return context.background().showsLayer(d);
         }
 
-        selection.selectAll('.layer')
+        selection.selectAll('.layer, .dg_layer')
             .classed('active', active)
             .classed('switch', function(d) { return d === _previousBackground; })
             .call(setTooltips)
@@ -90,12 +91,29 @@ export function uiBackground(context) {
     }
 
 
+    function selectProfile(value) {
+        function active(d) {
+            return d.value === value;
+        }
+        profiles.selectAll('li')
+            .classed('active', active);
+    }
+
+
+    function selectCollection(value) {
+        function active(d) {
+            return d === value;
+        }
+        collections.selectAll('li')
+            .classed('active', active);
+    }
+
+
     async function chooseBackground(d) {
         if (d.id === 'custom' && !d.template()) {
             return editCustom();
         }
 
-        d3_event.preventDefault();
         _previousBackground = context.background().baseLayerSource();
         context.storage('background-last-used-toggle', _previousBackground.id);
         context.storage('background-last-used', d.id);
@@ -138,26 +156,44 @@ export function uiBackground(context) {
         context.background().toggleOverlayLayer(d);
         _overlayList.call(updateLayerSelections);
         document.activeElement.blur();
+        if (d.slider){
+            toggleOverlaySlider(d);
+        }
     }
 
+    function clickAddOrUpdateOverlay(d) {
+        d3_event.preventDefault();
+        context.background().addOrUpdateOverlayLayer(d);
+        _backgroundList.call(updateLayerSelections);
+    }
 
-    // function chooseCollection( value ) {
-    //     function active( d ) {
-    //         return d.value === value;
-    //     }
-    //
-    //     // collections
-    //     //     .selectAll( 'li' )
-    //     //     .classed( 'active', active );
-    //     //collections.classed('hide', true);
-    // }
-    //
-    // function addOrUpdateOverlay( d ) {
-    //     d3.event.preventDefault();
-    //     context.background().addOrUpdateOverlayLayer( d );
-    //     selectLayer();
-    // }
+    function addOverlaySlider(d, element){
+        var transparencySlider = uiSlider(context),
+            tslide = element.append('div').attr('id' , d.id+'-slider-div'),
+            tileOverlay = d3_select('.layer-list li.'+ d.id);
 
+        tslide.call(transparencySlider, changeOpacity, !tileOverlay.classed('active'), d.id, 'Overlay');
+
+        if (!tileOverlay.classed('active')){
+            toggleOverlaySlider(d);
+        }
+
+        function changeOpacity(range) {
+            d3_selectAll('.layer-overlay.'+d.id)
+            .style('opacity', range / 100 );
+        }
+    }
+
+    function toggleOverlaySlider(d){
+        var overlay = context.background().showsLayer(d),
+            transSliderDiv = d3_select('#transparency-slider-'+d.id);
+
+        if (overlay){
+            transSliderDiv.classed('hide', false);
+        } else {
+            transSliderDiv.classed('hide', true);
+        }
+    }
 
     function drawListItems(layerList, type, change, filter) {
         var sources = context.background()
@@ -172,7 +208,9 @@ export function uiBackground(context) {
 
         var enter = layerLinks.enter()
             .insert('li', '.dg_layer')
-            .attr('class', 'layer')
+            .attr('class', function(d){
+                return 'layer ' + d.id;
+            })
             .classed('layer-custom', function(d) { return d.id === 'custom'; })
             .classed('best', function(d) { return d.best(); });
 
@@ -196,6 +234,19 @@ export function uiBackground(context) {
             .append('span')
             .html('&#9733;');
 
+        enter.each(function(d){
+            if (d.imagery_plugin){
+                enter
+                    .append('button')
+                    .attr('class', 'layer-meta')
+                    .attr('style', 'height:31px;')
+                    .call(tooltip()
+                        .title(t('background.image_metadata'))
+                        .placement((textDirection === 'rtl') ? 'right' : 'left'))
+                    .call(svgIcon('#iD-icon-inspect'));
+            }
+        });
+
         var label = enter
             .append('label');
 
@@ -208,6 +259,14 @@ export function uiBackground(context) {
         label
             .append('span')
             .text(function(d) { return d.name(); });
+
+        enter.each(function(d){
+            if (d.slider) {
+                var element = d3_select(this);
+                element.attr('style', 'display:block;height:100%;');
+                addOverlaySlider(d, element);
+            }
+        });
 
 
         layerList.selectAll('li.layer')
@@ -227,7 +286,6 @@ export function uiBackground(context) {
 
 
     function renderBackgroundList(selection) {
-
         // the background list
         var container = selection.selectAll('.layer-background-list')
             .data([0]);
@@ -237,6 +295,94 @@ export function uiBackground(context) {
             .attr('class', 'layer-list layer-background-list')
             .attr('dir', 'auto')
             .merge(container);
+
+        if (dgServices.enabled) {
+            var dgbackground = _backgroundList.append('li')
+                .attr('class', 'dg_layer')
+                /*.call(tooltip()
+                    .title(t('background.dgbg_tooltip'))
+                    .placement('top'))*/
+                .datum(dgServices.backgroundSource());
+
+            dgbackground.append('button')
+                .attr('class', 'dg-layer-profile')
+                .call(tooltip()
+                    .title(t('background.dgbg_button'))
+                    .placement('left'))
+                .on('click', function () {
+                    d3_event.preventDefault();
+                    profiles.classed('hide', function() { return !profiles.classed('hide'); });
+                })
+                .call(svgIcon('#iD-icon-layers'));
+
+            var label = dgbackground.append('label');
+
+            label.append('input')
+                .attr('type', 'radio')
+                .attr('name', 'layers')
+                .on('change', function(d) {
+                    d3_event.preventDefault();
+                    chooseBackground(d);
+                });
+
+            label.append('span')
+                .text(t('background.dgbg'));
+
+            profiles = selection.append('div')
+            .attr('id', 'dgProfiles')
+            .attr('class', 'dgprofile hide'); //fillL map-overlay col3 content
+
+
+            profiles
+                .append('div')
+                .attr('class', 'imagery-faq')
+                .append('a')
+                .attr('target', '_blank')
+                .attr('tabindex', -1)
+                .call(svgIcon('#iD-icon-out-link', 'inline'))
+                .append('span')
+                .text('Use my EVWHS Connect ID')
+                .on('click', function() {
+                    var cid = window.prompt(t('background.evwhs_prompt'));
+                    if (!cid) { return; }
+
+                    var extent = context.map().extent();
+                    var size = context.map().dimensions();
+                    var activeProfile = d3_select('.dgprofile.active').datum().value;
+
+                    dgServices.wfs.getFeatureInRaster(cid/*connectId*/, activeProfile/*profile*/, extent, size, function(error, data) {
+                        if (error) {
+                            console.error(error);
+                            alert('The Connect Id and User Name/Password combination could not be verified with EVWHS.  Please try again.');
+                        } else {
+                            if (data) console.log('Verifed EVWHS Connect Id and User Name/Password.');
+                            dgServices.evwhs.connectId(cid);
+                            var bsource = dgServices.backgroundSource(cid/*connectId*/, activeProfile/*profile*/);
+                            chooseBackground(bsource);
+                        }
+                    });
+                });
+
+            var profileList = profiles.append('ul')
+                .attr('class', 'layer-list');
+
+            profileList.selectAll('li')
+                .data(dgServices.profiles).enter()
+                .append('li')
+                .attr('class', function(d) {
+                    return (dgServices.defaultProfile === d.value) ? 'dgprofile active' : 'dgprofile';
+                })
+                .text(function(d) { return d.text; })
+                .attr('value', function(d) { return d.value; })
+                .on('click', function(d) {
+                    d3_event.preventDefault();
+                    selectProfile(d.value);
+                    var bsource = dgServices.backgroundSource(null/*connectId*/, d.value/*profile*/);
+                    chooseBackground(bsource);
+                    //Update radio button datum for dgbackground
+                    dgbackground.selectAll('input').datum(bsource);
+                });
+        }
 
 
         // add minimap toggle below list
@@ -274,18 +420,18 @@ export function uiBackground(context) {
              .attr('class', 'layer-list layer-toggle-list');
 
         // "Info / Report a Problem" link
-        selection.selectAll('.imagery-faq')
-            .data([0])
-            .enter()
-            .append('div')
-            .attr('class', 'imagery-faq')
-            .append('a')
-            .attr('target', '_blank')
-            .attr('tabindex', -1)
-            .call(svgIcon('#iD-icon-out-link', 'inline'))
-            .attr('href', 'https://github.com/openstreetmap/iD/blob/master/FAQ.md#how-can-i-report-an-issue-with-background-imagery')
-            .append('span')
-            .text(t('background.imagery_source_faq'));
+        // selection.selectAll('.imagery-faq')
+        //     .data([0])
+        //     .enter()
+        //     .append('div')
+        //     .attr('class', 'imagery-faq')
+        //     .append('a')
+        //     .attr('target', '_blank')
+        //     .attr('tabindex', -1)
+        //     .call(svgIcon('#icon-out-link', 'inline'))
+        //     .attr('href', 'https://github.com/openstreetmap/iD/blob/master/FAQ.md#how-can-i-report-an-issue-with-background-imagery')
+        //     .append('span')
+        //     .text(t('background.imagery_source_faq'));
     }
 
 
@@ -298,10 +444,60 @@ export function uiBackground(context) {
             .attr('class', 'layer-list layer-overlay-list')
             .attr('dir', 'auto')
             .merge(container);
+
+        if (dgServices.enabled) {
+            var dgcollection = _overlayList.append('li')
+            .attr('class', 'dg_layer')
+            .datum(dgServices.collectionSource());
+
+            dgcollection.append('button')
+                .attr('class', 'dg-layer-profile')
+                .call(tooltip()
+                    .title(t('background.dgcl_button'))
+                    .placement('left'))
+                .on('click', function() {
+                    d3_event.preventDefault();
+                    collections.classed('hide', function() { return !collections.classed('hide'); });
+                })
+                .call(svgIcon('#iD-icon-layers'));
+
+            var label = dgcollection.append('label');
+
+            label.append('input')
+                .attr('type', 'checkbox')
+                .attr('name', 'layers')
+                .on('change', function() {
+                    d3_event.preventDefault();
+                    chooseOverlay(dgServices.collectionSource());
+                });
+
+            label.append('span')
+                .text(t('background.dgcl'));
+
+            collections = selection.append('div')
+            .attr('class', 'dgprofile hide'); //fillL map-overlay col3 content
+
+            var collectionList = collections.append('ul')
+                .attr('class', 'layer-list');
+
+            collectionList.selectAll('li')
+                .data(dgServices.collections).enter()
+                .append('li')
+                .attr('class', function(d) {
+                    return (dgServices.defaultCollection === d.value) ? 'dgprofile active' : 'dgprofile';
+                })
+                .text(function(d) { return d.text; })
+                .attr('value', function(d) { return d.value; })
+                .on('click', function(d) {
+                    d3_event.preventDefault();
+                    selectCollection(d.value);
+                    clickAddOrUpdateOverlay(dgServices.collectionSource(null/*connectId*/, 'Default_Profile'/*profile*/, d.value/*freshness*/));
+                });
+        }
     }
 
-
     function update() {
+
         _backgroundList
             .call(drawListItems, 'radio', chooseBackground, function(d) { return !d.isHidden() && !d.overlay; });
 
@@ -447,89 +643,6 @@ export function uiBackground(context) {
         context.background()
             .on('change.background-update', update);
 
-        if (dgServices.enabled) {
-            let dgCollection = _overlayList
-                .append('li')
-                .attr('class', 'dg_layer')
-                .call(tooltip()
-                    .title(t('background.dgcl_button'))
-                    .placement('left')
-                )
-                .datum(dgServices.collectionSource());
-
-            dgCollection.append('button')
-                .attr('class', 'dg-layer-profile')
-                .call(tooltip()
-                    .title(t( 'background.dgcl_button'))
-                    .placement('left')
-                )
-                .on('click', () => {
-                    d3.event.preventDefault();
-                    collections.classed('hide', () => !collections.classed('hide'));
-                })
-                .call(svgIcon( '#iD-icon-layers'));
-
-            let label = dgCollection.append('label');
-
-            label
-                .append('input')
-                .attr('type', 'checkbox')
-                .attr('name', 'layers')
-                .on('change', d => {
-                    function active( d ) {
-                        return context.background().showsLayer( d );
-                    }
-
-                    context.background().toggleOverlayLayer( rendererBackgroundSource(d) );
-                    document.activeElement.blur();
-
-                    dgCollection
-                        .classed( 'active', active )
-                        .selectAll( 'input' )
-                        .property( 'checked', active );
-                });
-
-            label
-                .append( 'span' )
-                .text( t( 'background.dgcl' ) );
-
-            let collectionList = collections
-                .append( 'ul' )
-                .attr( 'class', 'layer-list' );
-
-            collectionList
-                .selectAll( 'li' )
-                .data( dgServices.collections )
-                .enter()
-                .append( 'li' )
-                .attr( 'class', d => dgServices.defaultCollection === d.value ? 'dgprofile active' : 'dgprofile' )
-                .text( d => d.text )
-                .attr( 'value', d => d.value)
-                .on( 'click', d => {
-                    function active( d ) {
-                        return context.background().showsLayer( d );
-                    }
-
-                    d3.event.preventDefault();
-
-                    let source = rendererBackgroundSource( dgServices.collectionSource( null, 'Default_Profile', d.value ) );
-
-                    collections
-                        .selectAll( 'li' )
-                        .classed( 'active', dd => {
-                            return dd.value === d.value;
-                        } );
-
-                    context
-                        .background()
-                        .addOrUpdateOverlayLayer( source );
-
-                    dgCollection
-                        .classed( 'active', active )
-                        .selectAll( 'input' )
-                        .property( 'checked', active );
-                } );
-        }
 
         update();
 

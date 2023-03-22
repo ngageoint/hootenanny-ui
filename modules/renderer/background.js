@@ -31,6 +31,7 @@ export function rendererBackground(context) {
     var _saturation = 1;
     var _sharpness = 1;
 
+    var serviceDg = context.dgservices();
 
     function background(selection) {
         // If we are displaying an Esri basemap at high zoom,
@@ -145,15 +146,17 @@ export function rendererBackground(context) {
 
         overlays.enter()
             .insert('div', '.layer-data')
-            .attr('class', 'layer layer-overlay')
+            .attr('class', function(d) {
+                return 'layer layer-overlay ' + d.source().id;
+            })
             .merge(overlays)
-            .each(function(layer) { d3_select(this).call(layer); });
+            .each(function(layer) {
+                d3_select(this).call(layer);
+            });
     }
-
 
     background.updateImagery = function() {
         if (context.inIntro()) return;
-
         var b = background.baseLayerSource();
         var o = _overlayLayers
             .filter(function (d) { return !d.source().isLocatorOverlay() && !d.source().isHidden(); })
@@ -272,7 +275,7 @@ export function rendererBackground(context) {
         matchImagery.forEach(function(d) { matchIDs[d.id] = true; });
 
         return _backgroundSources.filter(function(source) {
-            return matchIDs[source.id] || !source.polygon;   // no polygon = worldwide
+            return matchIDs[source.id] || !source.polygon || source.imagery_plugin;   // no polygon = worldwide
         });
     };
 
@@ -341,11 +344,10 @@ export function rendererBackground(context) {
 
     background.showsLayer = function(d) {
         return d.id === baseLayer.source().id ||
-            (d.name() === 'DigitalGlobe Imagery' && (baseLayer.source().id && baseLayer.source().id.indexOf('DigitalGlobe') === 0)) ||
-            (d.name() === 'DigitalGlobe Imagery Collection' && _overlayLayers.some(function(l) { return l.source().id  === 'dgCollection'; })) ||
+            (d.name() === 'Maxar Imagery' && (baseLayer.source().id && baseLayer.source().id.indexOf('Maxar') === 0)) ||
+            (d.name() === 'Maxar Imagery Collection' && _overlayLayers.some(function(l) { return l.source().id  === 'Maxar'; })) ||
             _overlayLayers.some(function(layer) { return d.id === layer.source().id; });
     };
-
 
     background.overlayLayerSources = function() {
         return _overlayLayers.map(function (l) { return l.source(); });
@@ -356,7 +358,7 @@ export function rendererBackground(context) {
         var layer;
         for (var i = 0; i < _overlayLayers.length; i++) {
             layer = _overlayLayers[i];
-            if (layer.source() === d) {
+            if (layer.source() === d || (d.id === 'dgCollection' && d.id === layer.source().id)) {
                 _overlayLayers.splice(i, 1);
                 dispatch.call('change');
                 background.updateImagery();
@@ -471,6 +473,7 @@ export function rendererBackground(context) {
         var extent = parseMap(q.map);
         var first;
         var best;
+        var evwhs = undefined;
 
 
         data.imagery = data.imagery || [];
@@ -516,6 +519,10 @@ export function rendererBackground(context) {
 
         first = _backgroundSources.length && _backgroundSources[0];
 
+        if (serviceDg.enabled) {
+            evwhs = serviceDg.backgroundSource(serviceDg.defaultConnectId, serviceDg.defaultProfile, true);
+        }
+
         // Add 'None'
         _backgroundSources.unshift(rendererBackgroundSource.None());
 
@@ -538,6 +545,7 @@ export function rendererBackground(context) {
                 background.findSource(requested) ||
                 best ||
                 background.findSource(context.storage('background-last-used')) ||
+                evwhs ||
                 background.findSource('Bing') ||
                 first ||
                 background.findSource('none')

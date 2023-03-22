@@ -4,14 +4,17 @@
  * @author Matt Putipong on 10/9/18
  *******************************************************************************************************/
 
+import { rendererBackgroundSource } from '../renderer';
 import { t } from '../util/locale';
+
+//need this up here otherwise it's reset every time context.dgservices() is invoked
+var evwhs_connectId;
 
 export default function() {
     var dg                = {},
-        evwhs_proxy       = '../hoot-services/evwhs',
+        evwhs_proxy       = '/evwhs',
         evwhs_host        = 'https://{switch:a,b,c,d,e}-evwhs.digitalglobe.com',
-        evwhs_connectId,
-        default_connectId = evwhs_connectId = 'REPLACE_ME',
+        default_connectId = 'REPLACE_ME',
         wmts_template       = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0'
             + '&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png'
             + '&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{zoom}&TileRow={y}&TileCol={x}',
@@ -38,7 +41,7 @@ export default function() {
         }
     }
 
-    dg.enabled = isUUID( evwhs_connectId );
+    dg.enabled = isUUID( evwhs_connectId || default_connectId);
 
     dg.profiles = [
         { value: 'Global_Currency_Profile', text: t( 'background.dgbg_profiles.Global_Currency_Profile' ) },
@@ -48,6 +51,8 @@ export default function() {
         { value: 'Color_Infrared_Profile', text: t( 'background.dgbg_profiles.Color_Infrared_Profile' ) }
     ];
 
+    dg.defaultCollection = defaultCollection;
+    dg.defaultConnectId = default_connectId;
     dg.defaultProfile = defaultProfile;
 
     dg.getProfile = function( value ) {
@@ -56,6 +61,7 @@ export default function() {
         } );
         return (p.length > 0) ? p[ 0 ].text : null;
     };
+
 
     dg.collections = [
         { value: '24h', text: t( 'background.dgcl_collections.24h' ) },
@@ -72,7 +78,7 @@ export default function() {
         var host,
             connectid;
 
-        connectid = connectId || evwhs_connectId;
+        connectid = connectId || evwhs_connectId || default_connectId;
 
         //Always use the proxy if we need to authenticate
         //e.g. A user enters their own EVWHS connect id
@@ -112,8 +118,8 @@ export default function() {
     }
 
     dg.evwhs = {
-        connectId: _ => {
-            if ( !arguments.length ) return evwhs_connectId;
+        connectId: function(_) {
+            if ( !arguments.length ) return evwhs_connectId || default_connectId;
             evwhs_connectId = _;
             return dg;
         }
@@ -175,12 +181,12 @@ export default function() {
         let template = this.wmts.getTile( connectId, profile ),
             terms    = this.terms();
 
-        return {
+        return rendererBackgroundSource({
             'name': function() {
-                return 'DigitalGlobe Imagery';
+                return 'Maxar Imagery';
             },
             'type': 'wmts',
-            'description': 'Satellite imagery from EV-WHS',
+            'description': 'Satellite imagery from EVWHS',
             'template': template,
             'scaleExtent': [
                 0,
@@ -211,22 +217,22 @@ export default function() {
                 ]
             ],
             'terms_url': terms,
-            'terms_text': '© DigitalGlobe',
-            'id': 'DigitalGlobe EV-WHS - ' + (dg.getProfile( profile ) || dg.getProfile( defaultProfile )),
+            'terms_text': '© Maxar',
+            'id': 'Maxar EVWHS - ' + (dg.getProfile( profile ) || dg.getProfile( defaultProfile )),
             'overlay': false
-        };
+        });
     };
 
     dg.collectionSource = function( connectId, profile, freshness ) {
         let template = this.collection.getMap( connectId, profile, freshness ),
             terms    = this.terms();
 
-        return {
+        return rendererBackgroundSource({
             'name': function() {
-                return 'DigitalGlobe Imagery Collection';
+                return 'Maxar Imagery Collection';
             },
             'type': 'wms',
-            'description': 'Satellite imagery collection from EV-WHS',
+            'description': 'Satellite imagery collection from EVWHS',
             'template': template,
             'scaleExtent': [
                 0,
@@ -257,10 +263,10 @@ export default function() {
                 ]
             ],
             'terms_url': terms,
-            'terms_text': '© DigitalGlobe',
+            'terms_text': '© Maxar',
             'id': 'dgCollection',
             'overlay': true
-        };
+        });
     };
 
     return dg;

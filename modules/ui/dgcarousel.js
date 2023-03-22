@@ -11,7 +11,8 @@ import { tooltip }     from '../util/tooltip';
 import { tooltipHtml } from '../Hoot/tools/utilities';
 import { svgIcon }     from '../svg';
 
-import { utilKeybinding } from '../util';
+import { utilHashcode, utilKeybinding } from '../util';
+import { selectAll as d3_selectAll } from 'd3-selection';
 
 export function uiDgcarousel( context ) {
     let key = '⌘I',
@@ -94,7 +95,7 @@ export function uiDgcarousel( context ) {
                             //Update dgservices letiables tracking visible image metadata
                             //The first feature in the response is the top (visible) image
                             //in the stacking profile.  Record this metadata.
-                            dg.imagemeta.add( 'DigitalGlobe EV-WHS - ' + dg.getProfile( activeProfile ), data.features );
+                            dg.imagemeta.add( 'Maxar EVWHS - ' + dg.getProfile( activeProfile ), data.features );
                         }
                     } );
 
@@ -129,6 +130,14 @@ export function uiDgcarousel( context ) {
                                 } );
 
                             images.exit().remove();
+
+                            d3_selectAll('.layer-meta').on('click', function(d){
+                                if (popup.classed('hide') || popup.metadataId !== d.feature.properties.featureId){
+                                    loadMetadataPopup(d.feature);
+                                } else {
+                                    popup.classed('hide', true);
+                                }
+                            });
 
                         }
                     } );
@@ -211,12 +220,15 @@ export function uiDgcarousel( context ) {
                 ],
                 'terms_url': terms,
                 'terms_text': d.properties.copyright,
-                'id': 'DigitalGlobe EV-WHS - ' + d.properties.featureId,
-                'overlay': true
+                'id': '_Maxar-EVWHS-' + d.properties.featureId,
+                'overlay': true,
+                'slider': true,
+                'imagery_plugin': true,
+                'feature': d
             };
 
             if ( active ) {
-                context.background().addSource( source );
+                context.background().addSource(source);
                 //Add image to dg.imagemeta
                 dg.imagemeta.add( source.id, [ d ] );
             } else {
@@ -229,36 +241,35 @@ export function uiDgcarousel( context ) {
         function loadMetadataPopup( data ) {
             if ( d3.event ) d3.event.preventDefault();
 
+            var metadata = d3.entries(data.properties);
+
+            metadata.forEach(d => d.__hashcode__ = utilHashcode(JSON.stringify(d)));
+
             popup.classed( 'hide', false );
+            popup.metadataId = data.properties.featureId;
 
             let metarows = metatable
                 .selectAll( 'tr' )
-                .data( d3.entries( data.properties ) );
+                .data( metadata, d => d.__hashcode__);
 
             metarows
+                .exit()
+                .remove();
+
+            var metarowsEnter = metarows
                 .enter()
                 .append( 'tr' )
                 .attr( 'class', 'carousel-metadata-table' );
 
-            metarows
-                .exit()
-                .remove();
+            metarowsEnter.append('td')
+                .attr('class', 'carousel-metadata-table' )
+                .text(d => d.key);
 
-            let metacells = metarows
-                .selectAll( 'td' )
-                .data( d => d3.values( d ) );
+            metarowsEnter.append('td')
+                .attr('class', 'carousel-metadata-table' )
+                .text(d => d.value);
 
-            metacells
-                .enter()
-                .append( 'td' );
-
-            metacells
-                .attr( 'class', 'carousel-metadata-table' )
-                .text( d => d );
-
-            metacells
-                .exit()
-                .remove();
+            metarowsEnter.merge(metarows);
         }
 
         function loadFootprint( d ) {
@@ -332,7 +343,8 @@ export function uiDgcarousel( context ) {
             .on( 'move.carousel-update', _debounce( getImageMetadata, 1000 ) );
 
         context.background()
-            .on( 'baseLayerChange.carousel-update', _debounce( getImageMetadata, 1000 ) );
+            .on( 'baseLayerChange.carousel-update', _debounce( getImageMetadata, 1000 ) )
+            .on( 'change.carousel-update', _debounce( getImageMetadata, 1000) );
 
         let keybinding = utilKeybinding( 'dgcarousel' )
             .on( key, toggle );
@@ -356,9 +368,8 @@ export function uiDgcarousel( context ) {
 
         metaheader
             .append( 'span' )
-            .attr( 'class', 'carousel-close' )
-            .append( 'button' )
-            .attr( 'class', 'icon close dark' )
+            .attr( 'class', 'carousel-close pointer' )
+            .call(svgIcon('#iD-icon-close', 'dark'))
             .on( 'click', () => popup.classed( 'hide', true ) )
             .on( 'mousedown', () => {
                 d3.event.preventDefault();
