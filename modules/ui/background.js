@@ -114,7 +114,6 @@ export function uiBackground(context) {
             return editCustom();
         }
 
-        d3_event.preventDefault();
         _previousBackground = context.background().baseLayerSource();
         context.storage('background-last-used-toggle', _previousBackground.id);
         context.storage('background-last-used', d.id);
@@ -351,14 +350,14 @@ export function uiBackground(context) {
                     var size = context.map().dimensions();
                     var activeProfile = d3_select('.dgprofile.active').datum().value;
 
-                    dgServices.getFeatureInRaster(cid/*connectId*/, activeProfile/*profile*/, extent, size, function(error, data) {
+                    dgServices.wfs.getFeatureInRaster(cid/*connectId*/, activeProfile/*profile*/, extent, size, function(error, data) {
                         if (error) {
                             console.error(error);
                             alert('The Connect Id and User Name/Password combination could not be verified with EVWHS.  Please try again.');
                         } else {
                             if (data) console.log('Verifed EVWHS Connect Id and User Name/Password.');
-                            dgServices.evwhsConnectId(cid);
-                            var bsource = dgServices.backgroundSource(null/*connectId*/, activeProfile/*profile*/);
+                            dgServices.evwhs.connectId(cid);
+                            var bsource = dgServices.backgroundSource(cid/*connectId*/, activeProfile/*profile*/);
                             chooseBackground(bsource);
                         }
                     });

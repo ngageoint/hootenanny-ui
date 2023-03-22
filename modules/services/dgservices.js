@@ -7,12 +7,14 @@
 import { rendererBackgroundSource } from '../renderer';
 import { t } from '../util/locale';
 
+//need this up here otherwise it's reset every time context.dgservices() is invoked
+var evwhs_connectId;
+
 export default function() {
     var dg                = {},
-        evwhs_proxy       = '../hoot-services/evwhs',
+        evwhs_proxy       = '/evwhs',
         evwhs_host        = 'https://{switch:a,b,c,d,e}-evwhs.digitalglobe.com',
-        evwhs_connectId,
-        default_connectId = evwhs_connectId = 'REPLACE_ME',
+        default_connectId = 'REPLACE_ME',
         wmts_template       = '/earthservice/wmtsaccess?CONNECTID={connectId}&request=GetTile&version=1.0.0'
             + '&layer=DigitalGlobe:ImageryTileService&featureProfile={profile}&style=default&format=image/png'
             + '&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:{zoom}&TileRow={y}&TileCol={x}',
@@ -39,7 +41,7 @@ export default function() {
         }
     }
 
-    dg.enabled = isUUID( evwhs_connectId );
+    dg.enabled = isUUID( evwhs_connectId || default_connectId);
 
     dg.profiles = [
         { value: 'Global_Currency_Profile', text: t( 'background.dgbg_profiles.Global_Currency_Profile' ) },
@@ -76,7 +78,7 @@ export default function() {
         var host,
             connectid;
 
-        connectid = connectId || evwhs_connectId;
+        connectid = connectId || evwhs_connectId || default_connectId;
 
         //Always use the proxy if we need to authenticate
         //e.g. A user enters their own EVWHS connect id
@@ -116,8 +118,8 @@ export default function() {
     }
 
     dg.evwhs = {
-        connectId: _ => {
-            if ( !arguments.length ) return evwhs_connectId;
+        connectId: function(_) {
+            if ( !arguments.length ) return evwhs_connectId || default_connectId;
             evwhs_connectId = _;
             return dg;
         }

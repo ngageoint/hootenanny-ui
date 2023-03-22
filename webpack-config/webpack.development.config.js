@@ -42,6 +42,16 @@ module.exports = merge( CommonConfig, {
             '/tm4api': {
                 target: `http://${HOOT_TM_HOST}:5000`,
                 pathRewrite: { '^/tm4api': '/api' }
+            },
+            '/evwhs': {
+                target: 'https://evwhs.digitalglobe.com',
+                pathRewrite: { '^/evwhs': '' },
+                changeOrigin: true
+            },
+            '/securewatch': {
+                target: 'https://securewatch.digitalglobe.com',
+                pathRewrite: { '^/securewatch': '' },
+                changeOrigin: true
             }
         }
     },
