@@ -1,0 +1,6 @@
+{
+    "key": "F_CODE",
+    "label": "Feature Code",
+    "type": "combo",
+    "strings": { "options": {} }
+}

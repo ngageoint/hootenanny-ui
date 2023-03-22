@@ -8,9 +8,12 @@ import _filter  from 'lodash-es/filter';
 import _forEach from 'lodash-es/forEach';
 import _map     from 'lodash-es/map';
 import _reduce  from 'lodash-es/reduce';
-import _some    from 'lodash-es/some';
 
 import { JXON } from '../../util/jxon';
+import {
+    json as d3_json,
+    xml as d3_xml
+} from 'd3-request';
 
 import {
     presetPreset,
@@ -42,6 +45,25 @@ export default class TranslationManager {
         } catch ( e ) {
             // TODO: alert error
         }
+    }
+
+    async getFieldMappings(schema) {
+        try {
+            let fieldMappings = await this.hoot.api.getFieldMappings( schema );
+            return fieldMappings;
+        } catch ( e ) {
+            console.error( e );
+        }
+    }
+
+    async getColumns(tagKey, schema) {
+        try {
+            let columns = await this.hoot.api.getColumns( tagKey, schema );
+            return columns;
+        } catch ( e ) {
+            console.error( e );
+        }
+
     }
 
     async translateToOsm( entityTags, translatedEntity ) {
@@ -81,16 +103,16 @@ export default class TranslationManager {
         let tags = this.tagXmlToJson( document );
 
         if ( !tags.FCODE && !tags.F_CODE ) {
-            let message = 'Feature out of spec. Unable to translate',
-                type    = 'warn';
+            const preset = this.schemaToPreset(this.hoot.context.presets(), {
+                columns: [],
+                desc: tags.error || 'Feature out of spec, unable to translate',
+                geom: entity.geometry(this.hoot.context.graph()),
+                name: 'invalid fcode'
+                });
+                tags = {};
 
-            d3.select( '.tag-schema' )
-                .select( 'input' )
-                .property( 'value', this.previousTranslation );
+                return { preset, tags};
 
-            this.setActiveTranslation( this.previousTranslation );
-
-            return Promise.reject( { message, type } );
         }
 
         let preset = this.hoot.context.presets().item( `${ this.activeTranslation }/${ tags.FCODE || tags.F_CODE }` );
@@ -109,7 +131,7 @@ export default class TranslationManager {
 
             this.activeSchema = await this.hoot.api.translateToJson( params );
 
-            preset = this.schemaToPreset( this.activeSchema );
+            preset = this.schemaToPreset(this.hoot.context.presets(), this.activeSchema);
 
             this.hoot.context.presets().collection.push( preset );
 
@@ -117,70 +139,173 @@ export default class TranslationManager {
         }
     }
 
-    schemaToPreset( schema ) {
-        let id     = this.activeTranslation + '/' + schema.fcode;
-        let fields = _map( schema.columns, column => {
-            let placeholder = column.defValue;
-
-            if ( column.enumerations ) {
-                let defs = _filter( column.enumerations, e => e.value === placeholder );
-
-                if ( defs.length === 1 ) {
-                    placeholder = defs[ 0 ].name;
+    buildFields(schemaColumns) {
+        let that = this;
+        return schemaColumns.map(function(d) {
+            var placeholder = d.defValue;
+            if (d.enumerations) {
+                var defs = d.enumerations.filter(function(e) {
+                    return e.value === d.defValue;
+                });
+                if (defs.length === 1) {
+                    placeholder = defs[0].name;
                 }
             }
-
-            let f = {
-                key: column.name,
-                id: this.activeTranslation + '/' + column.name,
-                overrideLabel: column.desc,
-                show: false,
-                defaultValue: column.defValue,
-                placeholder
+            var f = {
+                key: d.name,
+                id: that.activeTranslation + '/' + d.name,
+                overrideLabel: d.desc,
+                placeholder: placeholder,
+                show: false
             };
 
-            let type = column.type.toLowerCase();
-
-            if ( type === 'string' ) {
+            if (d.type === 'String') {
                 f.type = 'text';
-            } else if ( type === 'enumeration' ) {
-                //check if enumeration should use a checkbox
-                if ( _some( column.enumerations, e => e.value === '1000' && e.name === 'False' ) ) {
-                    f.type = 'check';
-                } else {
-                    f.type = 'combo';
-                }
-
+            } else if (d.type === 'enumeration') {
+                f.type = 'combo';
                 f.strings = {
-                    options: _reduce( column.enumerations, ( obj, e ) => {
-                        obj[ e.value ] = e.name;
-                        return obj;
-                    }, {} )
+                    options: d.enumerations.reduce(function (prev, curr) {
+                        if (curr.value !== d.defValue) {
+                            prev[curr.value] = curr.name;
+                        }
+                        return prev;
+                    }, {})
                 };
             } else {
                 f.type = 'number';
             }
-
             return f;
-        } );
+        });
+    }
 
-        let preset = {
-            geometry: schema.geom.toLowerCase(),
-            tags: {},
+    generateFields(presets, schema, preset) {
+        let that = this;
+        //create a new preset with fields from the schema
+        var presetWithFields = that.schemaToPreset(presets, schema, preset);
+        //copy tags from incoming preset
+        presetWithFields.tags = preset.tags;
+        //show hoot fields in the new preset
+        preset['hoot:fields'].forEach(function(f) {
+            presetWithFields.getFields(preset['hoot:tagschema'] + '/' + f).show = true;
+        });
+
+        return presetWithFields;
+    }
+
+    properCase(input) {
+        return (!input) ? '' : input.replace(/\w\S*/g, function(txt){
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }); //toProperCase
+    }
+
+
+    translateFcodeRequest (fcode, geom) {
+        let that = this;
+        return function(callback) {
+            d3_json(Hoot.api.translationUrl + '/translateFrom?translation=' + that.activeTranslation
+                + '&fcode=' + fcode
+                + '&geom=' + that.properCase(geom)
+                , function(error, json) {
+                        if (error) {
+                            window.console.error(error);
+                        } else {
+                            callback(json);
+                        }
+                    });
+        };
+    }
+
+    tagsToFCodeUrl(option) {
+        return function(callback) {
+            callback(d3_json(option));
+        };
+    }
+
+    translateFromRequest (translatedEntity) {
+        let that = this;
+        var translatedXml = '<osm version="0.6" upload="true" generator="hootenanny">' + JXON.stringify(translatedEntity.asJXON()) + '</osm>';
+        return function(callback) {
+            d3_xml(Hoot.api.translationUrl + '/translateFrom?translation=' + that.activeTranslation)
+            .post(translatedXml, function(error, osmXml) {
+                if (error) {
+                    window.console.error(error);
+                } else {
+                    callback(osmXml);
+                }
+            });
+        };
+    }
+
+    addTagsForFcode (geom, preset, context, id, callback) {
+        // when no default tags present, do fcode translation.
+        // when present, do a full xml translation w/fcode + hoot:defaultTags
+        var hootCall;
+        let that = this;
+        if (preset['hoot:defaultTags']) {
+            var translatedEntity = context.entity(id).copy(context.graph(), []);
+            translatedEntity.tags = preset['hoot:defaultTags'];
+            translatedEntity.tags[that.fcode()] = preset['hoot:fcode'];
+            hootCall = this.translateFromRequest(translatedEntity);
+        } else {
+            hootCall = this.translateFcodeRequest(preset['hoot:fcode']);
+        }
+
+        hootCall(function(response) {
+            preset.tags = preset['hoot:defaultTags'] ? that.tagXmlToJson(response) : response.attrs || response;
+            d3_json(Hoot.api.translationUrl +
+                '/translateTo?idelem=fcode&idval=' + preset['hoot:fcode'] +
+                '&geom=' + that.properCase(geom) + '&translation=' + that.activeTranslation,
+                function(error, schema) {
+                    if (error) {
+                        alert('Unable to get schema. ' + JSON.parse(error.target.response).error);
+                    } else {
+                        that.activeSchema = schema;
+                        // after we are dealing with a hoot preset, we need to build up
+                        // the iD field from the response
+                        if (preset['hoot:fields']) {
+                            callback(that.generateFields(context.presets(), schema, preset));
+                        // otherwise, just build the preset w/the response.
+                        } else {
+                            callback(that.schemaToPreset(context.presets(), schema, preset));
+                        }
+                    }
+                }
+            );
+        });
+    }
+
+    schemaToPreset(presets, schema, preset) {
+        var id, fields = [], fieldsMap = {};
+        let that = this;
+
+        this.buildFields(schema.columns).forEach(function (field) {
+            var f = presetField(field.id, field);
+            fieldsMap[field.id] = f;
+            fields.push(f.id);
+        });
+
+        if (preset) {
+            id = preset.id;
+        } else {
+            id = that.activeTranslation + '/' + schema.fcode;
+        }
+
+        var newPreset = {
+            geometry: preset ? preset.geometry : [schema.geom.toLowerCase()],
+            tags: preset ? preset.tags : {},
             'hoot:featuretype': schema.desc,
-            'hoot:tagschema': this.activeTranslation,
+            'hoot:tagschema': that.activeTranslation,
             'hoot:fcode': schema.fcode,
-            name: `${ schema.desc } (${ schema.fcode })`,
-            fields: _map( fields, f => f.id )
+            schema: schema,
+            name: preset ? preset.name() : schema.desc + ((schema.fcode) ? ' (' + schema.fcode + ')' : ''),
+            fields: fields
         };
 
-        // turn the array of fields into a map
-        let fieldsMap = _reduce( fields, ( obj, field ) => {
-            obj[ field.id ] = presetField( field.id, field );
-            return obj;
-        }, {} );
+        if (preset && preset.hasOwnProperty('hoot:defaultTags')) {
+            newPreset['hoot:defaultTags'] = preset['hoot:defaultTags'];
+        }
 
-        return presetPreset( id, preset, fieldsMap );
+        return presetPreset(id, newPreset, fieldsMap);
     }
 
     tagXmlToJson( xml ) {

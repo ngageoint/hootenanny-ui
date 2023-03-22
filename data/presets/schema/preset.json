@@ -96,6 +96,10 @@
         "hoot:fcode": {
             "description": "The feature code",
             "type": "string"
+        },
+        "hoot:fields": {
+            "description": "The fields for the fcode",
+            "type": "array"
         }
     },
     "additionalProperties": false

@@ -1,0 +1,9 @@
+{
+    "name": "Shoreline Construction (BB081)",
+    "hoot:tagschema": "TDSv61",
+    "hoot:fcode": "BB081",
+    "hoot:featuretype": "Shoreline Construction",
+    "geometry": ["line"],
+    "tags": {},
+    "hoot:fields": ["CAA","FFN"]
+}

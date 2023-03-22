@@ -205,6 +205,11 @@ en:
       connected_to_hidden:
         single: This feature can't be reflected because it is connected to a hidden feature.
         multiple: These features can't be reflected because some are connected to hidden features.
+    review:
+      title: Review
+      description: Show review relations for this feature.
+      key: ⇧S
+      annotation: Show review.
     rotate:
       title: Rotate
       description:

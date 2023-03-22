@@ -40,6 +40,12 @@ export function uiSchemaSwitcher() {
             } ) );
 
         input.call( combobox );
+
+        Hoot.events.listen('schemaSwitcher', 'active-translation-change', function() {
+            d3.selectAll('div.tag-schema').selectAll('input')
+                .each(function() { this.value = Hoot.translations.activeTranslation; });
+        });
+
     }
 
     return utilRebind( schemaSwitcher, dispatch, 'on' );

@@ -1,13 +1,13 @@
 {
-    "icon": "maki-cemetery",
-  "geometry": [
-      "point",
-      "area"
-  ],
-  "tags": {
-  },
-  "hoot:featuretype":"Cemetery",
-  "hoot:tagschema":"TDSv70",
-  "hoot:fcode": "AL030",
-  "name": "Cemetery (AL030)"
+  	"icon": "maki-cemetery",
+    "geometry": [
+        "point",
+        "area"
+    ],
+    "tags": {
+    },
+    "hoot:featuretype":"Cemetery",
+    "hoot:tagschema":"TDSv70",
+    "hoot:fcode": "AL030",
+    "name": "Cemetery (AL030)"
 }

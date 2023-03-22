@@ -1039,6 +1039,7 @@ a.hide-toggle {
     left: 60px;
     border-left: 1px solid rgba(0, 0, 0, .1);
     border-radius: 0 3px 3px 0;
+    width: 75%;
 }
 [dir='rtl'] .preset-list-button .label {
     text-align: right;
@@ -1147,6 +1148,17 @@ img.tag-reference-wiki-image {
 
 /* Entity/Preset Editor
 ------------------------------------------------------- */
+.schema-loading {
+    background-image: url(./img/loading-spin-dark.svg);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    margin-left: 5%;
+}
+
 .preset-editor {
     overflow: hidden;
     padding-bottom: 10px;
@@ -2226,13 +2238,39 @@ div.combobox {
     opacity: .5;
 }
 
+.remove-opt-icon {
+    opacity: .5;
+}
+
+.adv-opt-delete-icon {
+    opacity: .5;
+}
+
+.hoot-field-button-container {
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.hoot-field-button-container {
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+}
+
 .hoot-field-label-button {
         height: inherit;
-        width: 10%;
+        /*width: 10%; */
         background-color: #f6f6f6 !important;
 }
 
 .hoot-field-label-button:hover {
+    background-color: #ececec !important;
+}
+
+.hoot-field-label-delete-button {
+    height: inherit;
+    text-align: center;
+    background-color: #f6f6f6 !important;
+}
+
+.hoot-field-label-delete-button:hover {
     background-color: #ececec !important;
 }
 
