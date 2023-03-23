@@ -48,7 +48,7 @@ export default class About {
             .text( d => {
                 let builtBy = d.builtBy || d.user;
 
-                return `${ d.name } - Version: ${ d.version } - Built By: ${ builtBy }`;
+                return `${ d.name } ${ d.version } (${d.date}) built by ${ builtBy }`;
             } );
     }
 

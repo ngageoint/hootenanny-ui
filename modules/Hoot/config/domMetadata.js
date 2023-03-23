@@ -601,8 +601,8 @@ export function basemapAddForm() {
 export function aboutForm() {
     return [
         {
-            label: 'Main Version',
-            id: 'aboutMainVersion',
+            label: 'Versions',
+            id: 'aboutVersions',
             inputType: 'custom',
             createCustom: field => this.createTableFieldset( field )
         }

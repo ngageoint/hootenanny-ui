@@ -34,7 +34,7 @@
     "testgui:hoot": "karma start karma.conf.js --single-run --browsers Chrome",
     "test:spec": "karma start karma.id.conf.js",
     "translations": "node data/update_locales",
-    "buildinfo": "UI_VERSION=`git describe --tags` && echo '{\"name\": \"Hootenanny iD Editor\", \"version\": \"'$UI_VERSION'\", \"user\": \"webpack\"}' > modules/Hoot/config/buildInfo.json"
+    "buildinfo": "UI_VERSION=`git describe --tags` && UI_VERSION_DATE=`git show -s --format=%cs` && echo '{\"name\": \"UI\", \"version\": \"'$UI_VERSION'\", \"date\": \"'$UI_VERSION_DATE'\", \"user\": \"webpack\"}' > modules/Hoot/config/buildInfo.json"
   },
   "dependencies": {
     "@mapbox/sexagesimal": "1.2.0",
