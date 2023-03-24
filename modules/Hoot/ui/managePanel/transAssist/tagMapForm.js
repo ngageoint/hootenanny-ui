@@ -248,7 +248,7 @@ export default class TagMapForm {
 
             mapping.entries().forEach( d => {
                 let tagKey       = d.key,
-                    schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
+                    schemaOption = d3.selectAll( 'input.schema-option' ).property( 'value' );
 
                 let values = Hoot.config.tagInfo[ schemaOption ]
                     .filter( val => val.key && val.key.toLowerCase() === tagKey.toLowerCase() );
@@ -256,7 +256,7 @@ export default class TagMapForm {
                 let tagMap = new TagMapWidget( this );
 
                 tagMap.createTagLookup();
-                tagMap.selectTag( values.length ? values[ 0 ] : { key: tagKey, value: [] } );
+                tagMap.selectTag( values.length ? values[ 0 ] : tagKey );
             } );
         }
 
@@ -406,7 +406,7 @@ export default class TagMapForm {
                         '    return translation_assistant.translateAttributes(attrs, layerName, attributeMapping, fcode, schema);\n' +
                         '};\n';
 
-                let schema = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
+                let schema = d3.selectAll( 'input.schema-option' ).property( 'value' );
 
                 switch (schema) {
                     case 'OSM':
