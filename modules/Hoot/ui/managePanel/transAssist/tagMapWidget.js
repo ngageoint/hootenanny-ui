@@ -304,11 +304,9 @@ export default class TagMapWidget {
 
             if ( tagJson ) {
                 let mapping = d3.map( tagJson );
-
                 let isCustomized = mapping
                     .entries()
-                    .filter( entry => d.key === entry.key && entry.value !== this.instance.currentAttribute.key );
-
+                    .filter( entry => d === entry.key && entry.value !== this.instance.currentAttribute.key );
                 isCustomized.forEach( entry => {
                     if ( typeof entry.value === 'string' ) { //entry is a single tag value
                         this.tagLookup.select( '.mapping-single' ).classed( 'hidden', false );
