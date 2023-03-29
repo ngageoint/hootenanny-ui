@@ -1,12 +1,12 @@
-import _uniq from 'lodash-es/uniq';
-
 import { actionDeleteNode } from './delete_node';
+import { actionDeleteWay } from './delete_way';
+import { utilArrayUniq, utilOldestID } from '../util';
 
 
 // Connect the ways at the given nodes.
 //
 // First choose a node to be the survivor, with preference given
-// to an existing (not new) node.
+// to the oldest existing (not new) and "interesting" node.
 //
 // Tags and relation memberships of of non-surviving nodes are merged
 // to the survivor.
@@ -24,11 +24,21 @@ export function actionConnect(nodeIDs) {
         var parents;
         var i, j;
 
-        // Choose a survivor node, prefer an existing (not new) node - #4974
+        // Select the node with the ID passed as parameter if it is in the list,
+        // otherwise select the node with the oldest ID as the survivor, or the
+        // last one if there are only new nodes.
+        nodeIDs.reverse();
+
+        var interestingIDs = [];
         for (i = 0; i < nodeIDs.length; i++) {
-            survivor = graph.entity(nodeIDs[i]);
-            if (survivor.version) break;  // found one
+            node = graph.entity(nodeIDs[i]);
+            if (node.hasInterestingTags()) {
+                if (!node.isNew()) {
+                    interestingIDs.push(node.id);
+                }
+            }
         }
+        survivor = graph.entity(utilOldestID(interestingIDs.length > 0 ? interestingIDs : nodeIDs));
 
         // Replace all non-surviving nodes with the survivor and merge tags.
         for (i = 0; i < nodeIDs.length; i++) {
@@ -37,9 +47,7 @@ export function actionConnect(nodeIDs) {
 
             parents = graph.parentWays(node);
             for (j = 0; j < parents.length; j++) {
-                if (!parents[j].areAdjacent(node.id, survivor.id)) {
-                    graph = graph.replace(parents[j].replaceNode(node.id, survivor.id));
-                }
+                graph = graph.replace(parents[j].replaceNode(node.id, survivor.id));
             }
 
             parents = graph.parentRelations(node);
@@ -53,6 +61,14 @@ export function actionConnect(nodeIDs) {
 
         graph = graph.replace(survivor);
 
+        // find and delete any degenerate ways created by connecting adjacent vertices
+        parents = graph.parentWays(survivor);
+        for (i = 0; i < parents.length; i++) {
+            if (parents[i].isDegenerate()) {
+                graph = actionDeleteWay(parents[i].id)(graph);
+            }
+        }
+
         return graph;
     };
 
@@ -65,11 +81,8 @@ export function actionConnect(nodeIDs) {
         var relations, relation, role;
         var i, j, k;
 
-        // Choose a survivor node, prefer an existing (not new) node - #4974
-        for (i = 0; i < nodeIDs.length; i++) {
-            survivor = graph.entity(nodeIDs[i]);
-            if (survivor.version) break;  // found one
-        }
+        // Select the node with the oldest ID as the survivor.
+        survivor = graph.entity(utilOldestID(nodeIDs));
 
         // 1. disable if the nodes being connected have conflicting relation roles
         for (i = 0; i < nodeIDs.length; i++) {
@@ -81,7 +94,7 @@ export function actionConnect(nodeIDs) {
                 role = relation.memberById(node.id).role || '';
 
                 // if this node is a via node in a restriction, remember for later
-                if (relation.isValidRestriction()) {
+                if (relation.hasFromViaTo()) {
                     restrictionIDs.push(relation.id);
                 }
 
@@ -104,7 +117,7 @@ export function actionConnect(nodeIDs) {
 
                 for (k = 0; k < relations.length; k++) {
                     relation = relations[k];
-                    if (relation.isValidRestriction()) {
+                    if (relation.hasFromViaTo()) {
                         restrictionIDs.push(relation.id);
                     }
                 }
@@ -113,7 +126,7 @@ export function actionConnect(nodeIDs) {
 
 
         // test restrictions
-        restrictionIDs = _uniq(restrictionIDs);
+        restrictionIDs = utilArrayUniq(restrictionIDs);
         for (i = 0; i < restrictionIDs.length; i++) {
             relation = graph.entity(restrictionIDs[i]);
             if (!relation.isComplete(graph)) continue;
@@ -122,7 +135,7 @@ export function actionConnect(nodeIDs) {
                 .filter(function(m) { return m.type === 'way'; })
                 .map(function(m) { return graph.entity(m.id); });
 
-            memberWays = _uniq(memberWays);
+            memberWays = utilArrayUniq(memberWays);
             var f = relation.memberByRole('from');
             var t = relation.memberByRole('to');
             var isUturn = (f.id === t.id);
@@ -134,8 +147,8 @@ export function actionConnect(nodeIDs) {
                 collectNodes(relation.members[j], nodes);
             }
 
-            nodes.keyfrom = _uniq(nodes.keyfrom.filter(hasDuplicates));
-            nodes.keyto = _uniq(nodes.keyto.filter(hasDuplicates));
+            nodes.keyfrom = utilArrayUniq(nodes.keyfrom.filter(hasDuplicates));
+            nodes.keyto = utilArrayUniq(nodes.keyto.filter(hasDuplicates));
 
             var filter = keyNodeFilter(nodes.keyfrom, nodes.keyto);
             nodes.from = nodes.from.filter(filter);

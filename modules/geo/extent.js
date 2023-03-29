@@ -1,9 +1,4 @@
-import _extend from 'lodash-es/extend';
-
-import {
-    geoMetersToLat,
-    geoMetersToLon
-} from './index';
+import { geoMetersToLat, geoMetersToLon } from './geo';
 
 
 export function geoExtent(min, max) {
@@ -22,7 +17,7 @@ export function geoExtent(min, max) {
 
 geoExtent.prototype = new Array(2);
 
-_extend(geoExtent.prototype, {
+Object.assign(geoExtent.prototype, {
 
     equals: function (obj) {
         return this[0][0] === obj[0][0] &&
@@ -112,7 +107,12 @@ _extend(geoExtent.prototype, {
         var a1 = this.intersection(obj).area();
         var a2 = this.area();
 
-        if (a1 === Infinity || a2 === Infinity || a1 === 0 || a2 === 0) {
+        if (a1 === Infinity || a2 === Infinity) {
+            return 0;
+        } else if (a1 === 0 || a2 === 0) {
+            if (obj.contains(this)) {
+                return 1;
+            }
             return 0;
         } else {
             return a1 / a2;

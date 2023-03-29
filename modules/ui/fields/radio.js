@@ -1,13 +1,10 @@
-import _clone from 'lodash-es/clone';
-import _pull from 'lodash-es/pull';
-import _union from 'lodash-es/union';
-
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { select as d3_select } from 'd3-selection';
 
-import { t } from '../../util/locale';
+import { presetManager } from '../../presets';
+import { t } from '../../core/localizer';
 import { uiField } from '../field';
-import { utilRebind } from '../../util';
+import { utilArrayUnion, utilRebind } from '../../util';
 
 
 export { uiFieldRadio as uiFieldStructureRadio };
@@ -19,11 +16,11 @@ export function uiFieldRadio(field, context) {
     var wrap = d3_select(null);
     var labels = d3_select(null);
     var radios = d3_select(null);
-    var radioData = _clone(field.options || field.keys);
+    var radioData = (field.options || field.keys).slice();  // shallow copy
     var typeField;
     var layerField;
     var _oldType = {};
-    var _entity;
+    var _entityIDs = [];
 
 
     function selectedKey() {
@@ -58,16 +55,17 @@ export function uiFieldRadio(field, context) {
         enter = labels.enter()
             .append('label');
 
+        var stringsField = field.resolveReference('stringsCrossReference');
         enter
             .append('input')
             .attr('type', 'radio')
             .attr('name', field.id)
-            .attr('value', function(d) { return field.t('options.' + d, { 'default': d }); })
+            .attr('value', function(d) { return stringsField.t('options.' + d, { 'default': d }); })
             .attr('checked', false);
 
         enter
             .append('span')
-            .text(function(d) { return field.t('options.' + d, { 'default': d }); });
+            .each(function(d) { stringsField.t.append('options.' + d, { 'default': d })(d3_select(this)); });
 
         labels = labels
             .merge(enter);
@@ -79,10 +77,10 @@ export function uiFieldRadio(field, context) {
 
 
     function structureExtras(selection, tags) {
-        var selected = selectedKey();
-        var type = context.presets().field(selected);
-        var layer = context.presets().field('layer');
-        var showLayer = (selected === 'bridge' || selected === 'tunnel');
+        var selected = selectedKey() || tags.layer !== undefined;
+        var type = presetManager.field(selected);
+        var layer = presetManager.field('layer');
+        var showLayer = (selected === 'bridge' || selected === 'tunnel' || tags.layer !== undefined);
 
 
         var extrasWrap = selection.selectAll('.structure-extras-wrap')
@@ -101,14 +99,14 @@ export function uiFieldRadio(field, context) {
 
         list = list.enter()
             .append('ul')
-            .attr('class', 'labeled-inputs')
+            .attr('class', 'rows')
             .merge(list);
 
 
         // Type
         if (type) {
             if (!typeField || typeField.id !== selected) {
-                typeField = uiField(context, type, _entity, { wrap: false })
+                typeField = uiField(context, type, _entityIDs, { wrap: false })
                     .on('change', changeType);
             }
             typeField.tags(tags);
@@ -126,13 +124,13 @@ export function uiFieldRadio(field, context) {
         // Enter
         var typeEnter = typeItem.enter()
             .insert('li', ':first-child')
-            .attr('class', 'structure-type-item');
+            .attr('class', 'labeled-input structure-type-item');
 
         typeEnter
             .append('span')
             .attr('class', 'label structure-label-type')
             .attr('for', 'preset-input-' + selected)
-            .text(t('inspector.radio.structure.type'));
+            .call(t.append('inspector.radio.structure.type'));
 
         typeEnter
             .append('div')
@@ -151,14 +149,14 @@ export function uiFieldRadio(field, context) {
         // Layer
         if (layer && showLayer) {
             if (!layerField) {
-                layerField = uiField(context, layer, _entity, { wrap: false })
+                layerField = uiField(context, layer, _entityIDs, { wrap: false })
                     .on('change', changeLayer);
             }
             layerField.tags(tags);
-            field.keys = _union(field.keys, ['layer']);
+            field.keys = utilArrayUnion(field.keys, ['layer']);
         } else {
             layerField = null;
-            _pull(field.keys, 'layer');
+            field.keys = field.keys.filter(function(k) { return k !== 'layer'; });
         }
 
         var layerItem = list.selectAll('.structure-layer-item')
@@ -171,13 +169,13 @@ export function uiFieldRadio(field, context) {
         // Enter
         var layerEnter = layerItem.enter()
             .append('li')
-            .attr('class', 'structure-layer-item');
+            .attr('class', 'labeled-input structure-layer-item');
 
         layerEnter
             .append('span')
             .attr('class', 'label structure-label-layer')
             .attr('for', 'preset-input-layer')
-            .text(t('inspector.radio.structure.layer'));
+            .call(t.append('inspector.radio.structure.layer'));
 
         layerEnter
             .append('div')
@@ -268,21 +266,45 @@ export function uiFieldRadio(field, context) {
 
 
     radio.tags = function(tags) {
-        function checked(d) {
+        function isOptionChecked(d) {
             if (field.key) {
                 return tags[field.key] === d;
-            } else {
-                return !!(tags[d] && tags[d].toLowerCase() !== 'no');
             }
+            return !!(typeof tags[d] === 'string' && tags[d].toLowerCase() !== 'no');
         }
 
-        labels.classed('active', checked);
-        radios.property('checked', checked);
+        function isMixed(d) {
+            if (field.key) {
+                return Array.isArray(tags[field.key]) && tags[field.key].includes(d);
+            }
+            return Array.isArray(tags[d]);
+        }
+
+        radios.property('checked', function(d) {
+            return isOptionChecked(d) &&
+                (field.key || field.options.filter(isOptionChecked).length === 1);
+        });
+
+        labels
+            .classed('active', function(d) {
+                if (field.key) {
+                    return (Array.isArray(tags[field.key]) && tags[field.key].includes(d))
+                        || tags[field.key] === d;
+                }
+                return Array.isArray(tags[d]) && tags[d].some(v => typeof v === 'string' && v.toLowerCase() !== 'no') ||
+                    !!(typeof tags[d] === 'string' && tags[d].toLowerCase() !== 'no');
+            })
+            .classed('mixed', isMixed)
+            .attr('title', function(d) {
+                return isMixed(d) ? t('inspector.unshared_value_tooltip') : null;
+            });
+
 
         var selection = radios.filter(function() { return this.checked; });
 
         if (selection.empty()) {
-            placeholder.text(t('inspector.none'));
+            placeholder.text('');
+            placeholder.call(t.append('inspector.none'));
         } else {
             placeholder.text(selection.attr('value'));
             _oldType[selection.datum()] = tags[selection.datum()];
@@ -305,11 +327,16 @@ export function uiFieldRadio(field, context) {
     };
 
 
-    radio.entity = function(val) {
-        if (!arguments.length) return _entity;
-        _entity = val;
+    radio.entityIDs = function(val) {
+        if (!arguments.length) return _entityIDs;
+        _entityIDs = val;
         _oldType = {};
         return radio;
+    };
+
+
+    radio.isAllowed = function() {
+        return _entityIDs.length === 1;
     };
 
 

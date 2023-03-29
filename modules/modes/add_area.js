@@ -1,31 +1,22 @@
-import { t } from '../util/locale';
-import {
-    actionAddEntity,
-    actionAddMidpoint,
-    actionAddVertex
-} from '../actions';
+import { actionAddEntity } from '../actions/add_entity';
+import { actionAddMidpoint } from '../actions/add_midpoint';
+import { actionAddVertex } from '../actions/add_vertex';
 
-import { behaviorAddWay } from '../behavior';
-import { modeDrawArea } from './index';
+import { behaviorAddWay } from '../behavior/add_way';
+import { modeDrawArea } from './draw_area';
 import { osmNode, osmWay } from '../osm';
 
 
-export function modeAddArea(context) {
-    var mode = {
-        id: 'add-area',
-        button: 'area',
-        title: t('modes.add_area.title'),
-        description: t('modes.add_area.description'),
-        key: '3'
-    };
+export function modeAddArea(context, mode) {
+    mode.id = 'add-area';
 
     var behavior = behaviorAddWay(context)
-        .tail(t('modes.add_area.tail'))
         .on('start', start)
         .on('startFromWay', startFromWay)
         .on('startFromNode', startFromNode);
 
     var defaultTags = { area: 'yes' };
+    if (mode.preset) defaultTags = mode.preset.setTags(defaultTags, 'area');
 
 
     function actionClose(wayId) {
@@ -47,7 +38,7 @@ export function modeAddArea(context) {
             actionClose(way.id)
         );
 
-        context.enter(modeDrawArea(context, way.id, startGraph));
+        context.enter(modeDrawArea(context, way.id, startGraph, mode.button));
     }
 
 
@@ -64,7 +55,7 @@ export function modeAddArea(context) {
             actionAddMidpoint({ loc: loc, edge: edge }, node)
         );
 
-        context.enter(modeDrawArea(context, way.id, startGraph));
+        context.enter(modeDrawArea(context, way.id, startGraph, mode.button));
     }
 
 
@@ -78,7 +69,7 @@ export function modeAddArea(context) {
             actionClose(way.id)
         );
 
-        context.enter(modeDrawArea(context, way.id, startGraph));
+        context.enter(modeDrawArea(context, way.id, startGraph, mode.button));
     }
 
 

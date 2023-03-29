@@ -17,14 +17,20 @@ References:
     http://wiki.openstreetmap.org/wiki/Tag:highway%3Dstop
     http://wiki.openstreetmap.org/wiki/Key:traffic_sign#On_a_way_or_area
 */
-export function actionReverse(wayID, options) {
+export function actionReverse(entityID, options) {
     var ignoreKey = /^.*(_|:)?(description|name|note|website|ref|source|comment|watch|attribution)(_|:)?/;
     var numeric = /^([+\-]?)(?=[\d.])/;
+    var directionKey = /direction$/;
+    var turn_lanes = /^turn:lanes:?/;
     var keyReplacements = [
         [/:right$/, ':left'],
         [/:left$/, ':right'],
         [/:forward$/, ':backward'],
-        [/:backward$/, ':forward']
+        [/:backward$/, ':forward'],
+        [/:right:/, ':left:'],
+        [/:left:/, ':right:'],
+        [/:forward:/, ':backward:'],
+        [/:backward:/, ':forward:']
     ];
     var valueReplacements = {
         left: 'right',
@@ -48,6 +54,25 @@ export function actionReverse(wayID, options) {
         '-1': 'yes'
     };
 
+    var compassReplacements = {
+        N: 'S',
+        NNE: 'SSW',
+        NE: 'SW',
+        ENE: 'WSW',
+        E: 'W',
+        ESE: 'WNW',
+        SE: 'NW',
+        SSE: 'NNW',
+        S: 'N',
+        SSW: 'NNE',
+        SW: 'NE',
+        WSW: 'ENE',
+        W: 'E',
+        WNW: 'ESE',
+        NW: 'SE',
+        NNW: 'SSE'
+    };
+
 
     function reverseKey(key) {
         for (var i = 0; i < keyReplacements.length; ++i) {
@@ -60,16 +85,38 @@ export function actionReverse(wayID, options) {
     }
 
 
-    function reverseValue(key, value) {
+    function reverseValue(key, value, includeAbsolute) {
         if (ignoreKey.test(key)) return value;
 
-        if (key === 'incline' && numeric.test(value)) {
+        // Turn lanes are left/right to key (not way) direction - #5674
+        if (turn_lanes.test(key)) {
+            return value;
+
+        } else if (key === 'incline' && numeric.test(value)) {
             return value.replace(numeric, function(_, sign) { return sign === '-' ? '' : '-'; });
+
         } else if (options && options.reverseOneway && key === 'oneway') {
             return onewayReplacements[value] || value;
-        } else {
-            return valueReplacements[value] || value;
+
+        } else if (includeAbsolute && directionKey.test(key)) {
+            return value.split(';').map(value => {
+                if (compassReplacements[value]) return compassReplacements[value];
+
+                var degrees = Number(value);
+                if (isFinite(degrees)) {
+                    if (degrees < 180) {
+                        degrees += 180;
+                    } else {
+                        degrees -= 180;
+                    }
+                    return degrees.toString();
+                } else {
+                    return valueReplacements[value] || value;
+                }
+            }).join(';');
         }
+
+        return valueReplacements[value] || value;
     }
 
 
@@ -81,7 +128,7 @@ export function actionReverse(wayID, options) {
 
             var tags = {};
             for (var key in node.tags) {
-                tags[reverseKey(key)] = reverseValue(key, node.tags[key]);
+                tags[reverseKey(key)] = reverseValue(key, node.tags[key], node.id === entityID);
             }
             graph = graph.replace(node.update({tags: tags}));
         }
@@ -89,8 +136,7 @@ export function actionReverse(wayID, options) {
     }
 
 
-    return function(graph) {
-        var way = graph.entity(wayID);
+    function reverseWay(graph, way) {
         var nodes = way.nodes.slice().reverse();
         var tags = {};
         var role;
@@ -112,5 +158,33 @@ export function actionReverse(wayID, options) {
         // the way itself with the reversed node ids and updated way tags
         return reverseNodeTags(graph, nodes)
             .replace(way.update({nodes: nodes, tags: tags}));
+    }
+
+
+    var action = function(graph) {
+        var entity = graph.entity(entityID);
+        if (entity.type === 'way') {
+            return reverseWay(graph, entity);
+        }
+        return reverseNodeTags(graph, [entityID]);
     };
+
+    action.disabled = function(graph) {
+        var entity = graph.hasEntity(entityID);
+        if (!entity || entity.type === 'way') return false;
+
+        for (var key in entity.tags) {
+            var value = entity.tags[key];
+            if (reverseKey(key) !== key || reverseValue(key, value, true) !== value) {
+                return false;
+            }
+        }
+        return 'nondirectional_node';
+    };
+
+    action.entityID = function() {
+        return entityID;
+    };
+
+    return action;
 }

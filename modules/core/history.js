@@ -1,42 +1,31 @@
-import _cloneDeep from 'lodash-es/cloneDeep';
-import _cloneDeepWith from 'lodash-es/cloneDeepWith';
-import _difference from 'lodash-es/difference';
-import _filter from 'lodash-es/filter';
-import _flatten from 'lodash-es/flatten';
-import _groupBy from 'lodash-es/groupBy';
-import _isFunction from 'lodash-es/isFunction';
-import _isEmpty from 'lodash-es/isEmpty';
-import _forEach from 'lodash-es/forEach';
-import _map from 'lodash-es/map';
-import _omit from 'lodash-es/omit';
-import _reject from 'lodash-es/reject';
-import _values from 'lodash-es/values';
-import _without from 'lodash-es/without';
-import _uniq from 'lodash-es/uniq';
-
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { easeLinear as d3_easeLinear } from 'd3-ease';
 import { select as d3_select } from 'd3-selection';
 
-import * as Validations from '../validations/index';
+import { prefs } from './preferences';
 import { coreDifference } from './difference';
 import { coreGraph } from './graph';
 import { coreTree } from './tree';
 import { osmEntity } from '../osm/entity';
-import { uiLoading } from '../ui';
-
+import { uiLoading } from '../ui/loading';
 import {
-    utilRebind,
-    utilSessionMutex
+    utilArrayDifference, utilArrayGroupBy, utilArrayUnion,
+    utilObjectOmit, utilRebind, utilSessionMutex
 } from '../util';
 
 
 export function coreHistory(context) {
-    var imageryUsed = ['Bing'];
-    var dispatch = d3_dispatch('change', 'undone', 'redone');
+    var dispatch = d3_dispatch('reset', 'change', 'merge', 'restore', 'undone', 'redone', 'storage_error');
     var lock = utilSessionMutex('lock');
+
+    // restorable if iD not open in another window/tab and a saved history exists in localStorage
+    var _hasUnresolvedRestorableChanges = lock.lock() && !!prefs(getKey('saved_history'));
+
     var duration = 150;
+    var _imageryUsed = [];
+    var _photoOverlaysUsed = [];
     var _checkpoints = {};
+    var _pausedGraph;
     var _stack;
     var _index;
     var _tree;
@@ -47,12 +36,9 @@ export function coreHistory(context) {
         actions = Array.prototype.slice.call(actions);
 
         var annotation;
-        if (!_isFunction(actions[actions.length - 1])) {
+        if (typeof actions[actions.length - 1] !== 'function') {
             annotation = actions.pop();
         }
-
-        _stack[_index].transform = context.projection.transform();
-        _stack[_index].selectedIDs = context.selectedIDs();
 
         var graph = _stack[_index].graph;
         for (var i = 0; i < actions.length; i++) {
@@ -62,7 +48,10 @@ export function coreHistory(context) {
         return {
             graph: graph,
             annotation: annotation,
-            imageryUsed: imageryUsed
+            imageryUsed: _imageryUsed,
+            photoOverlaysUsed: _photoOverlaysUsed,
+            transform: context.projection.transform(),
+            selectedIDs: context.selectedIDs()
         };
     }
 
@@ -71,7 +60,8 @@ export function coreHistory(context) {
     function _perform(args, t) {
         var previous = _stack[_index].graph;
         _stack = _stack.slice(0, _index + 1);
-        _stack.push(_act(args, t));
+        var actionResult = _act(args, t);
+        _stack.push(actionResult);
         _index++;
         return change(previous);
     }
@@ -81,7 +71,8 @@ export function coreHistory(context) {
     function _replace(args, t) {
         var previous = _stack[_index].graph;
         // assert(_index == _stack.length - 1)
-        _stack[_index] = _act(args, t);
+        var actionResult = _act(args, t);
+        _stack[_index] = actionResult;
         return change(previous);
     }
 
@@ -94,16 +85,19 @@ export function coreHistory(context) {
             _stack.pop();
         }
         _stack = _stack.slice(0, _index + 1);
-        _stack.push(_act(args, t));
+        var actionResult = _act(args, t);
+        _stack.push(actionResult);
         _index++;
         return change(previous);
     }
 
 
-    // determine diffrence and dispatch a change event
+    // determine difference and dispatch a change event
     function change(previous) {
         var difference = coreDifference(previous, history.graph());
-        dispatch.call('change', this, difference);
+        if (!_pausedGraph) {
+            dispatch.call('change', this, difference);
+        }
         return difference;
     }
 
@@ -121,16 +115,22 @@ export function coreHistory(context) {
         },
 
 
+        tree: function() {
+            return _tree;
+        },
+
+
         base: function() {
             return _stack[0].graph;
         },
 
 
-        merge: function(entities, extent) {
-            _stack[0].graph.rebase(entities, _map(_stack, 'graph'), false);
+        merge: function(entities/*, extent*/) {
+            var stack = _stack.map(function(state) { return state.graph; });
+            _stack[0].graph.rebase(entities, stack, false);
             _tree.rebase(entities, false);
 
-            dispatch.call('change', this, undefined, extent);
+            dispatch.call('merge', this, entities);
         },
 
 
@@ -142,7 +142,7 @@ export function coreHistory(context) {
             var action0 = arguments[0];
 
             if (arguments.length === 1 ||
-                arguments.length === 2 && !_isFunction(arguments[1])) {
+                (arguments.length === 2 && (typeof arguments[1] !== 'function'))) {
                 transitionable = !!action0.transitionable;
             }
 
@@ -202,13 +202,14 @@ export function coreHistory(context) {
         undo: function() {
             d3_select(document).interrupt('history.perform');
 
-            var previous = _stack[_index].graph;
+            var previousStack = _stack[_index];
+            var previous = previousStack.graph;
             while (_index > 0) {
                 _index--;
                 if (_stack[_index].annotation) break;
             }
 
-            dispatch.call('undone', this, _stack[_index]);
+            dispatch.call('undone', this, _stack[_index], previousStack);
             return change(previous);
         },
 
@@ -217,18 +218,35 @@ export function coreHistory(context) {
         redo: function() {
             d3_select(document).interrupt('history.perform');
 
-            var previous = _stack[_index].graph;
+            var previousStack = _stack[_index];
+            var previous = previousStack.graph;
             var tryIndex = _index;
             while (tryIndex < _stack.length - 1) {
                 tryIndex++;
                 if (_stack[tryIndex].annotation) {
                     _index = tryIndex;
-                    dispatch.call('redone', this, _stack[_index]);
+                    dispatch.call('redone', this, _stack[_index], previousStack);
                     break;
                 }
             }
 
             return change(previous);
+        },
+
+
+        pauseChangeDispatch: function() {
+            if (!_pausedGraph) {
+                _pausedGraph = _stack[_index].graph;
+            }
+        },
+
+
+        resumeChangeDispatch: function() {
+            if (_pausedGraph) {
+                var previous = _pausedGraph;
+                _pausedGraph = null;
+                return change(previous);
+            }
         },
 
 
@@ -250,6 +268,8 @@ export function coreHistory(context) {
         },
 
 
+        // Returns the entities from the active graph with bounding boxes
+        // overlapping the given `extent`.
         intersects: function(extent) {
             return _tree.intersects(extent, _stack[_index].graph);
         },
@@ -280,13 +300,6 @@ export function coreHistory(context) {
         },
 
 
-        validate: function(changes) {
-            return _flatten(
-                _map(Validations, function(fn) { return fn()(changes, _stack[_index].graph); })
-            );
-        },
-
-
         hasChanges: function() {
             return this.difference().length() > 0;
         },
@@ -294,11 +307,36 @@ export function coreHistory(context) {
 
         imageryUsed: function(sources) {
             if (sources) {
-                imageryUsed = sources;
+                _imageryUsed = sources;
                 return history;
             } else {
-                var arr = _map(_stack.slice(1, _index + 1), 'imageryUsed');
-                return _without(_uniq(_flatten(arr)), 'Custom');
+                var s = new Set();
+                _stack.slice(1, _index + 1).forEach(function(state) {
+                    state.imageryUsed.forEach(function(source) {
+                        if (source !== 'Custom') {
+                            s.add(source);
+                        }
+                    });
+                });
+                return Array.from(s);
+            }
+        },
+
+
+        photoOverlaysUsed: function(sources) {
+            if (sources) {
+                _photoOverlaysUsed = sources;
+                return history;
+            } else {
+                var s = new Set();
+                _stack.slice(1, _index + 1).forEach(function(state) {
+                    if (state.photoOverlaysUsed && Array.isArray(state.photoOverlaysUsed)) {
+                        state.photoOverlaysUsed.forEach(function(photoOverlay) {
+                            s.add(photoOverlay);
+                        });
+                    }
+                });
+                return Array.from(s);
             }
         },
 
@@ -306,7 +344,7 @@ export function coreHistory(context) {
         // save the current history state
         checkpoint: function(key) {
             _checkpoints[key] = {
-                stack: _cloneDeep(_stack),
+                stack: _stack,
                 index: _index
             };
             return history;
@@ -316,7 +354,7 @@ export function coreHistory(context) {
         // restore history state to a given checkpoint or reset completely
         reset: function(key) {
             if (key !== undefined && _checkpoints.hasOwnProperty(key)) {
-                _stack = _cloneDeep(_checkpoints[key].stack);
+                _stack = _checkpoints[key].stack;
                 _index = _checkpoints[key].index;
             } else {
                 _stack = [{graph: coreGraph()}];
@@ -324,27 +362,39 @@ export function coreHistory(context) {
                 _tree = coreTree(_stack[0].graph);
                 _checkpoints = {};
             }
+            dispatch.call('reset');
             dispatch.call('change');
             return history;
         },
 
 
+        // `toIntroGraph()` is used to export the intro graph used by the walkthrough.
+        //
+        // To use it:
+        //  1. Start the walkthrough.
+        //  2. Get to a "free editing" tutorial step
+        //  3. Make your edits to the walkthrough map
+        //  4. In your browser dev console run:
+        //        `id.history().toIntroGraph()`
+        //  5. This outputs stringified JSON to the browser console
+        //  6. Copy it to `data/intro_graph.json` and prettify it in your code editor
         toIntroGraph: function() {
-            var nextId = { n: 0, r: 0, w: 0 };
-            var permIds = {};
+            var nextID = { n: 0, r: 0, w: 0 };
+            var permIDs = {};
             var graph = this.graph();
             var baseEntities = {};
 
             // clone base entities..
-            _forEach(graph.base().entities, function(entity) {
-                var copy = _cloneDeepWith(entity, customizer);
+            Object.values(graph.base().entities).forEach(function(entity) {
+                var copy = copyIntroEntity(entity);
                 baseEntities[copy.id] = copy;
             });
 
             // replace base entities with head entities..
-            _forEach(graph.entities, function(entity, id) {
+            Object.keys(graph.entities).forEach(function(id) {
+                var entity = graph.entities[id];
                 if (entity) {
-                    var copy = _cloneDeepWith(entity, customizer);
+                    var copy = copyIntroEntity(entity);
                     baseEntities[copy.id] = copy;
                 } else {
                     delete baseEntities[id];
@@ -352,15 +402,15 @@ export function coreHistory(context) {
             });
 
             // swap temporary for permanent ids..
-            _forEach(baseEntities, function(entity) {
+            Object.values(baseEntities).forEach(function(entity) {
                 if (Array.isArray(entity.nodes)) {
                     entity.nodes = entity.nodes.map(function(node) {
-                        return permIds[node] || node;
+                        return permIDs[node] || node;
                     });
                 }
                 if (Array.isArray(entity.members)) {
                     entity.members = entity.members.map(function(member) {
-                        member.id = permIds[member.id] || member.id;
+                        member.id = permIDs[member.id] || member.id;
                         return member;
                     });
                 }
@@ -369,9 +419,11 @@ export function coreHistory(context) {
             return JSON.stringify({ dataIntroGraph: baseEntities });
 
 
-            function customizer(src) {
-                var copy = _omit(_cloneDeep(src), ['type', 'user', 'v', 'version', 'visible']);
-                if (_isEmpty(copy.tags)) {
+            function copyIntroEntity(source) {
+                var copy = utilObjectOmit(source, ['type', 'user', 'v', 'version', 'visible']);
+
+                // Note: the copy is no longer an osmEntity, so it might not have `tags`
+                if (copy.tags && !Object.keys(copy.tags)) {
                     delete copy.tags;
                 }
 
@@ -380,13 +432,14 @@ export function coreHistory(context) {
                     copy.loc[1] = +copy.loc[1].toFixed(6);
                 }
 
-                var match = src.id.match(/([nrw])-\d*/);  // temporary id
+                var match = source.id.match(/([nrw])-\d*/);  // temporary id
                 if (match !== null) {
-                    var nrw = match[1], permId;
-                    do { permId = nrw + (++nextId[nrw]); }
-                    while (baseEntities.hasOwnProperty(permId));
+                    var nrw = match[1];
+                    var permID;
+                    do { permID = nrw + (++nextID[nrw]); }
+                    while (baseEntities.hasOwnProperty(permID));
 
-                    copy.id = permIds[src.id] = permId;
+                    copy.id = permIDs[source.id] = permID;
                 }
                 return copy;
             }
@@ -401,9 +454,11 @@ export function coreHistory(context) {
             var base = _stack[0];
 
             var s = _stack.map(function(i) {
-                var modified = [], deleted = [];
+                var modified = [];
+                var deleted = [];
 
-                _forEach(i.graph.entities, function(entity, id) {
+                Object.keys(i.graph.entities).forEach(function(id) {
+                    var entity = i.graph.entities[id];
                     if (entity) {
                         var key = osmEntity.key(entity);
                         allEntities[key] = entity;
@@ -417,12 +472,23 @@ export function coreHistory(context) {
                     if (id in base.graph.entities) {
                         baseEntities[id] = base.graph.entities[id];
                     }
+                    if (entity && entity.nodes) {
+                        // get originals of pre-existing child nodes
+                        entity.nodes.forEach(function(nodeID) {
+                            if (nodeID in base.graph.entities) {
+                                baseEntities[nodeID] = base.graph.entities[nodeID];
+                            }
+                        });
+                    }
                     // get originals of parent entities too
-                    _forEach(base.graph._parentWays[id], function(parentId) {
-                        if (parentId in base.graph.entities) {
-                            baseEntities[parentId] = base.graph.entities[parentId];
-                        }
-                    });
+                    var baseParents = base.graph._parentWays[id];
+                    if (baseParents) {
+                        baseParents.forEach(function(parentID) {
+                            if (parentID in base.graph.entities) {
+                                baseEntities[parentID] = base.graph.entities[parentID];
+                            }
+                        });
+                    }
                 });
 
                 var x = {};
@@ -430,18 +496,23 @@ export function coreHistory(context) {
                 if (modified.length) x.modified = modified;
                 if (deleted.length) x.deleted = deleted;
                 if (i.imageryUsed) x.imageryUsed = i.imageryUsed;
+                if (i.photoOverlaysUsed) x.photoOverlaysUsed = i.photoOverlaysUsed;
                 if (i.annotation) x.annotation = i.annotation;
+                if (i.transform) x.transform = i.transform;
+                if (i.selectedIDs) x.selectedIDs = i.selectedIDs;
 
                 return x;
             });
 
             return JSON.stringify({
                 version: 3,
-                entities: _values(allEntities),
-                baseEntities: _values(baseEntities),
+                entities: Object.values(allEntities),
+                baseEntities: Object.values(baseEntities),
                 stack: s,
                 nextIDs: osmEntity.id.next,
-                index: _index
+                index: _index,
+                // note the time the changes were saved
+                timestamp: (new Date()).getTime()
             });
         },
 
@@ -465,42 +536,53 @@ export function coreHistory(context) {
                     // the _stack even if the current _stack doesn't have them (for
                     // example when iD has been restarted in a different region)
                     var baseEntities = h.baseEntities.map(function(d) { return osmEntity(d); });
-                    _stack[0].graph.rebase(baseEntities, _map(_stack, 'graph'), true);
+                    var stack = _stack.map(function(state) { return state.graph; });
+                    _stack[0].graph.rebase(baseEntities, stack, true);
                     _tree.rebase(baseEntities, true);
 
                     // When we restore a modified way, we also need to fetch any missing
                     // childnodes that would normally have been downloaded with it.. #2142
                     if (loadChildNodes) {
                         var osm = context.connection();
-                        var nodes = _flatten(_uniq(_map(_filter(baseEntities, { type: 'way' }), 'nodes')));
-                        var missing = _reject(nodes, function(n) { return _stack[0].graph.hasEntity(n); });
+                        var baseWays = baseEntities
+                            .filter(function(e) { return e.type === 'way'; });
+                        var nodeIDs = baseWays
+                            .reduce(function(acc, way) { return utilArrayUnion(acc, way.nodes); }, []);
+                        var missing = nodeIDs
+                            .filter(function(n) { return !_stack[0].graph.hasEntity(n); });
 
-                        if (!_isEmpty(missing) && osm) {
+                        if (missing.length && osm) {
                             loadComplete = false;
-                            context.redrawEnable(false);
+                            context.map().redrawEnable(false);
 
                             var loading = uiLoading(context).blocking(true);
                             context.container().call(loading);
 
                             var childNodesLoaded = function(err, result) {
                                 if (!err) {
-                                    var visible = _groupBy(result.data, 'visible');
-                                    if (!_isEmpty(visible.true)) {
-                                        missing = _difference(missing, _map(visible.true, 'id'));
-                                        _stack[0].graph.rebase(visible.true, _map(_stack, 'graph'), true);
-                                        _tree.rebase(visible.true, true);
+                                    var visibleGroups = utilArrayGroupBy(result.data, 'visible');
+                                    var visibles = visibleGroups.true || [];      // alive nodes
+                                    var invisibles = visibleGroups.false || [];   // deleted nodes
+
+                                    if (visibles.length) {
+                                        var visibleIDs = visibles.map(function(entity) { return entity.id; });
+                                        var stack = _stack.map(function(state) { return state.graph; });
+                                        missing = utilArrayDifference(missing, visibleIDs);
+                                        _stack[0].graph.rebase(visibles, stack, true);
+                                        _tree.rebase(visibles, true);
                                     }
 
                                     // fetch older versions of nodes that were deleted..
-                                    _forEach(visible.false, function(entity) {
+                                    invisibles.forEach(function(entity) {
                                         osm.loadEntityVersion(entity.id, +entity.version - 1, childNodesLoaded);
                                     });
                                 }
 
-                                if (err || _isEmpty(missing)) {
+                                if (err || !missing.length) {
                                     loading.close();
-                                    context.redrawEnable(true);
+                                    context.map().redrawEnable(true);
                                     dispatch.call('change');
+                                    dispatch.call('restore', this);
                                 }
                             };
 
@@ -528,7 +610,10 @@ export function coreHistory(context) {
                     return {
                         graph: coreGraph(_stack[0].graph).load(entities),
                         annotation: d.annotation,
-                        imageryUsed: d.imageryUsed
+                        imageryUsed: d.imageryUsed,
+                        photoOverlaysUsed: d.photoOverlaysUsed,
+                        transform: d.transform,
+                        selectedIDs: d.selectedIDs
                     };
                 });
 
@@ -546,23 +631,16 @@ export function coreHistory(context) {
                 });
             }
 
-            if (loadComplete) {
-                dispatch.call('change');
+            var transform = _stack[_index].transform;
+            if (transform) {
+                context.map().transformEase(transform, 0);   // 0 = immediate, no easing
             }
 
-            return history;
-        },
+            if (loadComplete) {
+                dispatch.call('change');
+                dispatch.call('restore', this);
+            }
 
-
-        save: function() {
-            if (lock.locked()) context.storage(getKey('saved_history'), history.toJSON() || null);
-            return history;
-        },
-
-
-        clearSaved: function() {
-            context.debouncedSave.cancel();
-            if (lock.locked()) context.storage(getKey('saved_history'), null);
             return history;
         },
 
@@ -577,19 +655,51 @@ export function coreHistory(context) {
         },
 
 
-        // is iD not open in another window and it detects that
-        // there's a history stored in localStorage that's recoverable?
-        restorableChanges: function() {
-            return lock.locked() && !!context.storage(getKey('saved_history'));
+        save: function() {
+            if (lock.locked() &&
+                // don't overwrite existing, unresolved changes
+                !_hasUnresolvedRestorableChanges) {
+                const success = prefs(getKey('saved_history'), history.toJSON() || null);
+
+                if (!success) dispatch.call('storage_error');
+            }
+            return history;
+        },
+
+
+        // delete the history version saved in localStorage
+        clearSaved: function() {
+            context.debouncedSave.cancel();
+            if (lock.locked()) {
+                _hasUnresolvedRestorableChanges = false;
+                prefs(getKey('saved_history'), null);
+
+                // clear the changeset metadata associated with the saved history
+                prefs('comment', null);
+                prefs('hashtags', null);
+                prefs('source', null);
+            }
+            return history;
+        },
+
+
+        savedHistoryJSON: function() {
+            return prefs(getKey('saved_history'));
+        },
+
+
+        hasRestorableChanges: function() {
+            return _hasUnresolvedRestorableChanges;
         },
 
 
         // load history from a version stored in localStorage
         restore: function() {
-            if (!lock.locked()) return;
-
-            var json = context.storage(getKey('saved_history'));
-            if (json) history.fromJSON(json, true);
+            if (lock.locked()) {
+                _hasUnresolvedRestorableChanges = false;
+                var json = this.savedHistoryJSON();
+                if (json) history.fromJSON(json, true);
+            }
         },
 
 

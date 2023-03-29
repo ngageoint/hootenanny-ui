@@ -1,10 +1,3 @@
-import _compact from 'lodash-es/compact';
-import _extend from 'lodash-es/extend';
-import _filter from 'lodash-es/filter';
-import _find from 'lodash-es/find';
-import _map from 'lodash-es/map';
-import _values from 'lodash-es/values';
-
 import { osmEntity } from './entity';
 import { geoExtent } from '../geo';
 
@@ -22,7 +15,7 @@ osmEntity.changeset = osmChangeset;
 
 osmChangeset.prototype = Object.create(osmEntity.prototype);
 
-_extend(osmChangeset.prototype, {
+Object.assign(osmChangeset.prototype, {
 
     type: 'changeset',
 
@@ -41,9 +34,9 @@ _extend(osmChangeset.prototype, {
         return {
             osm: {
                 changeset: {
-                    tag: _map(this.tags, function(value, key) {
-                        return { '@k': key, '@v': value };
-                    }),
+                    tag: Object.keys(this.tags).map(function(k) {
+                        return { '@k': k, '@v': this.tags[k] };
+                    }, this),
                     '@version': 0.6,
                     '@generator': 'iD'
                 }
@@ -77,7 +70,7 @@ _extend(osmChangeset.prototype, {
 
             // find a referenced relation in the current changeset
             function resolve(item) {
-                return _find(relations, function(relation) {
+                return relations.find(function(relation) {
                     return item.keyAttributes.type === 'relation'
                         && item.keyAttributes.ref === relation['@id'];
                 });
@@ -85,14 +78,14 @@ _extend(osmChangeset.prototype, {
 
             // a new item is an item that has not been already processed
             function isNew(item) {
-                return !sorted[ item['@id'] ] && !_find(processing, function(proc) {
+                return !sorted[ item['@id'] ] && !processing.find(function(proc) {
                     return proc['@id'] === item['@id'];
                 });
             }
 
-            var processing = [],
-                sorted = {},
-                relations = changes.relation;
+            var processing = [];
+            var sorted = {};
+            var relations = changes.relation;
 
             if (!relations) return changes;
 
@@ -106,7 +99,7 @@ _extend(osmChangeset.prototype, {
 
                 while (processing.length > 0) {
                     var next = processing[0],
-                    deps = _filter(_compact(next.member.map(resolve)), isNew);
+                    deps = next.member.map(resolve).filter(Boolean).filter(isNew);
                     if (deps.length === 0) {
                         sorted[next['@id']] = next;
                         processing.shift();
@@ -116,7 +109,7 @@ _extend(osmChangeset.prototype, {
                 }
             }
 
-            changes.relation = _values(sorted);
+            changes.relation = Object.values(sorted);
             return changes;
         }
 
@@ -130,7 +123,7 @@ _extend(osmChangeset.prototype, {
                 '@generator': 'iD',
                 'create': sort(nest(changes.created.map(rep), ['node', 'way', 'relation'])),
                 'modify': nest(changes.modified.map(rep), ['node', 'way', 'relation']),
-                'delete': _extend(nest(changes.deleted.map(rep), ['relation', 'way', 'node']), { '@if-unused': true })
+                'delete': Object.assign(nest(changes.deleted.map(rep), ['relation', 'way', 'node']), { '@if-unused': true })
             }
         };
     },

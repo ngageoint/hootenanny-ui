@@ -1,20 +1,21 @@
-import { t } from '../util/locale';
-import { modeBrowse } from '../modes';
-import { svgIcon } from '../svg';
+import { t } from '../core/localizer';
+import { modeBrowse } from '../modes/browse';
+import { svgIcon } from '../svg/icon';
 
-import {
-    uiDataHeader,
-    uiRawTagEditor
-} from './index';
+import { uiDataHeader } from './data_header';
+import { uiSectionRawTagEditor } from './sections/raw_tag_editor';
 
 
 export function uiDataEditor(context) {
     var dataHeader = uiDataHeader();
-    var rawTagEditor = uiRawTagEditor(context);
+    var rawTagEditor = uiSectionRawTagEditor('custom-data-tag-editor', context)
+        .expandedByDefault(true)
+        .readOnlyTags([/./]);
     var _datum;
 
 
     function dataEditor(selection) {
+
         var header = selection.selectAll('.header')
             .data([0]);
 
@@ -24,15 +25,16 @@ export function uiDataEditor(context) {
 
         headerEnter
             .append('button')
-            .attr('class', 'fr data-editor-close')
+            .attr('class', 'close')
+            .attr('title', t('icons.close'))
             .on('click', function() {
                 context.enter(modeBrowse(context));
             })
             .call(svgIcon('#iD-icon-close'));
 
         headerEnter
-            .append('h3')
-            .text(t('map_data.title'));
+            .append('h2')
+            .call(t.append('map_data.title'));
 
 
         var body = selection.selectAll('.body')
@@ -46,6 +48,7 @@ export function uiDataEditor(context) {
         var editor = body.selectAll('.data-editor')
             .data([0]);
 
+        // enter/update
         editor.enter()
             .append('div')
             .attr('class', 'modal-section data-editor')
@@ -55,16 +58,19 @@ export function uiDataEditor(context) {
         var rte = body.selectAll('.raw-tag-editor')
             .data([0]);
 
+        // enter/update
         rte.enter()
             .append('div')
-            .attr('class', 'inspector-border raw-tag-editor inspector-inner data-editor')
+            .attr('class', 'raw-tag-editor data-editor')
             .merge(rte)
             .call(rawTagEditor
-                .expanded(true)
-                .readOnlyTags([/./])
                 .tags((_datum && _datum.properties) || {})
                 .state('hover')
-            );
+                .render
+            )
+            .selectAll('textarea.tag-text')
+            .attr('readonly', true)
+            .classed('readonly', true);
     }
 
 

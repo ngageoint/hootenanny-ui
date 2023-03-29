@@ -1,7 +1,6 @@
 import { uiCmd } from './cmd';
 import { utilDetect } from '../util/detect';
 
-
 export function uiFullScreen(context) {
     var element = context.container().node();
     // var button = d3_select(null);
@@ -63,7 +62,6 @@ export function uiFullScreen(context) {
 
         // button = selection.append('button')
         //     .attr('title', t('full_screen'))
-        //     .attr('tabindex', -1)
         //     .on('click', fullScreen)
         //     .call(tooltip);
 

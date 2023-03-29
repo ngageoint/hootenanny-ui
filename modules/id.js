@@ -1,18 +1,25 @@
-import '@babel/polyfill';
+// polyfill window.fetch and AbortController (not included in core-js)
+import 'whatwg-fetch';
+import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 
-import '../css/00_reset.css';
-import '../css/20_map.css';
-import '../css/25_areas.css';
-import '../css/30_highways.css';
-import '../css/35_aeroways.css';
-import '../css/40_railways.css';
-import '../css/45_waterways.css';
-import '../css/50_misc.css';
-import '../css/55_cursors.css';
-import '../css/60_photos.css';
-import '../css/65_data.css';
-import '../css/70_fills.css';
-import '../css/80_app.css';
+// polyfill idle callback functions (not included in core-js)
+window.requestIdleCallback = window.requestIdleCallback ||
+    function(cb) {
+        var start = Date.now();
+        return window.requestAnimationFrame(function() {
+            cb({
+                didTimeout: false,
+                timeRemaining: function() {
+                    return Math.max(0, 50 - (Date.now() - start));
+                }
+            });
+        });
+    };
+window.cancelIdleCallback = window.cancelIdleCallback ||
+    function(id) {
+        window.cancelAnimationFrame(id);
+    };
+
 
 import * as iD from './index';
 import Hoot from './Hoot/hoot';

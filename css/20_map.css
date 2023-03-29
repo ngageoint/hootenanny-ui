@@ -5,7 +5,7 @@
 
 /* IE/Edge needs these overrides for markers to show up */
 .layer-osm path.oneway-marker-path          { fill: #000; }
-.layer-osm path.sided-marker-natural-path   { fill: rgb(140, 208, 95); }
+.layer-osm path.sided-marker-natural-path   { fill: rgb(170, 170, 170); }
 .layer-osm path.sided-marker-coastline-path { fill: #77dede; }
 .layer-osm path.sided-marker-barrier-path   { fill: #ddd; }
 .layer-osm path.sided-marker-man_made-path  { fill: #fff; }
@@ -31,17 +31,22 @@
 
 
 /* No interactivity except what we specifically allow */
-.layer-osm * {
+.data-layer.osm *,
+.data-layer.notes *,
+.data-layer.keepRight *,
+.data-layer.improveOSM * {
     pointer-events: none;
 }
 
-.lasso #map {
+.lasso .main-map {
     pointer-events: visibleStroke;
 }
 
 
 /* `.target` objects are interactive */
 /* They can be picked up, clicked, hovered, or things can connect to them */
+.qaItem.target,
+.note.target,
 .node.target,
 .turn .target {
     pointer-events: fill;
@@ -60,6 +65,17 @@
     stroke-linejoin: round;
 }
 
+.ideditor[pointer='pen'] .way.target {
+    stroke-width: 18;
+}
+.ideditor[pointer='touch'] .way.target {
+    stroke-width: 32;
+}
+.ideditor[pointer='touch'] .node.vertex.target {
+    pointer-events: painted;
+    stroke: currentColor;
+    stroke-width: 10;
+}
 
 /* `.target-nope` objects are explicitly forbidden to join to */
 .surface:not(.nope-disabled) .node.target.target-nope,
@@ -75,8 +91,10 @@
     pointer-events: none !important;
 }
 
+/* points, notes & QA */
 
-/* points & notes */
+/* points, notes, markers */
+g.qaItem .stroke,
 g.note .stroke {
     stroke: #222;
     stroke-width: 1;
@@ -84,6 +102,7 @@ g.note .stroke {
     opacity: 0.6;
 }
 
+g.qaItem.active .stroke,
 g.note.active .stroke {
     stroke: #222;
     stroke-width: 1;
@@ -97,6 +116,8 @@ g.point .stroke {
     fill: #fff;
 }
 
+
+g.qaItem .shadow,
 g.point .shadow,
 g.note .shadow {
     fill: none;
@@ -105,13 +126,14 @@ g.note .shadow {
     stroke-opacity: 0;
 }
 
-g.note.related:not(.selected) .shadow,
+g.qaItem.hover:not(.selected) .shadow,
 g.note.hover:not(.selected) .shadow,
 g.point.related:not(.selected) .shadow,
 g.point.hover:not(.selected) .shadow {
     stroke-opacity: 0.5;
 }
 
+g.qaItem.selected .shadow,
 g.note.selected .shadow,
 g.point.selected .shadow {
     stroke-opacity: 0.7;
@@ -121,8 +143,8 @@ g.point.selected .shadow {
 g.point ellipse.stroke {
     display: none;
 }
-.mode-drag-note g.note.active ellipse.stroke,
-.mode-drag-node g.point.active ellipse.stroke {
+.ideditor.mode-drag-note g.note.active ellipse.stroke,
+.ideditor.mode-drag-node g.point.active ellipse.stroke {
     display: block;
 }
 
@@ -167,8 +189,10 @@ g.vertex.selected .shadow {
 
 /* lines */
 .preset-icon .icon.iD-other-line {
-    color: #fff;
-    fill: #777;
+    color: #989898;
+}
+.preset-icon-container path.line.casing {
+    stroke: #afafaf;
 }
 
 path.line {
@@ -185,6 +209,8 @@ path.shadow {
     stroke: #f6634f;
     stroke-width: 16;
     stroke-opacity: 0;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 path.shadow.related:not(.selected),
@@ -230,9 +256,7 @@ text.pointlabel {
     font-size: 12px;
     font-weight: bold;
     fill: #333;
-    -webkit-transition: opacity 100ms linear;
     transition: opacity 100ms linear;
-    -moz-transition: opacity 100ms linear;
 }
 
 /* Opera doesn't support dominant-baseline. See #715 */
@@ -266,6 +290,25 @@ text.point {
 .icon.areaicon {
     fill: #222;
     opacity: 0.8;
+}
+
+
+/* Wikidata-tagged */
+g.point.tag-wikidata path.stroke {
+    stroke-width: 2px;
+    stroke: #666;
+    fill: #eee;
+}
+g.point.tag-wikidata .icon {
+    color: #666;
+}
+
+/* Selected Members */
+g.vertex.selected-member .shadow,
+g.point.selected-member .shadow,
+path.shadow.selected-member {
+    stroke-opacity: 0.95;
+    stroke: #FFDE70;
 }
 
 /* Highlighting */
@@ -313,3 +356,87 @@ g.vertex.highlighted .shadow {
     stroke: #68f;
 }
 
+/* Visual Diffs
+------------------
+`highlight-edited` - visual diff activated
+`added` - entity was created by the user
+`moved` - node has different coordinates
+`geometry-edited` - way has different nodes
+`segment-edited` - one or both adjacents nodes moved
+`retagged` - some tagging change has occurred
+*/
+
+/* Vertex visual diffs */
+.highlight-edited g.points g.node.vertex.added > circle.shadow,
+.highlight-edited g.points g.node.vertex.retagged > circle.shadow,
+.highlight-edited g.points g.node.vertex.moved > circle.shadow {
+    fill-opacity: 0.8;
+}
+.highlight-edited g.points g.node.vertex.added > circle.shadow {
+    fill: rgb(133, 255, 103);
+}
+.highlight-edited g.points g.node.vertex.retagged > circle.shadow {
+    fill: #fcde5a;
+}
+.highlight-edited g.points g.node.vertex.moved > circle.shadow {
+    fill: rgb(255, 126, 46);
+}
+
+/* Point visual diffs */
+.highlight-edited g.points g.node.point.added > path.shadow,
+.highlight-edited g.points g.node.point.retagged > path.shadow,
+.highlight-edited g.points g.node.point.moved > path.shadow {
+    stroke-opacity: 0.8;
+    stroke-width: 10;
+}
+.highlight-edited g.points g.node.point.added > path.shadow {
+    stroke: rgb(133, 255, 103);
+}
+.highlight-edited g.points g.node.point.retagged > path.shadow {
+    stroke: #fcde5a;
+}
+.highlight-edited g.points g.node.point.moved > path.shadow {
+    stroke: rgb(255, 126, 46);
+}
+
+/* Line/area segment visual diffs
+- segments are rendered on top of the ways for convenience and to differentiate
+  them from entire line diffs, so make them thin
+*/
+.highlight-edited g.lines > path.line.segment-edited,
+.highlight-edited g.areas > path.area.segment-edited {
+    stroke: rgb(255, 126, 46);
+    stroke-dasharray: 10, 3;
+    stroke-width: 1.5 !important;
+    stroke-opacity: 1;
+}
+
+/* Entire line/area visual diffs */
+.highlight-edited path.line.shadow.added,
+.highlight-edited path.line.shadow.retagged,
+.highlight-edited path.line.shadow.geometry-edited,
+.highlight-edited path.area.shadow.added,
+.highlight-edited path.area.shadow.retagged,
+.highlight-edited path.area.shadow.geometry-edited {
+    stroke-opacity: 0.6;
+}
+.highlight-edited.fill-wireframe path.line.shadow.added,
+.highlight-edited.fill-wireframe path.line.shadow.retagged,
+.highlight-edited.fill-wireframe path.line.shadow.geometry-edited,
+.highlight-edited.fill-wireframe path.area.shadow.added,
+.highlight-edited.fill-wireframe path.area.shadow.retagged,
+.highlight-edited.fill-wireframe path.area.shadow.geometry-edited {
+    stroke-width: 3;
+}
+.highlight-edited path.line.shadow.added,
+.highlight-edited path.area.shadow.added {
+    stroke: rgb(133, 255, 103);
+}
+.highlight-edited path.area.shadow.retagged,
+.highlight-edited path.line.shadow.retagged {
+    stroke: #fcde5a;
+}
+.highlight-edited path.line.shadow.geometry-edited,
+.highlight-edited path.area.shadow.geometry-edited {
+    stroke: rgb(255, 126, 46);
+}

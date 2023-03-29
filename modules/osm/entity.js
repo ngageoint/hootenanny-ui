@@ -1,12 +1,7 @@
-import _clone from 'lodash-es/clone';
-import _keys from 'lodash-es/keys';
-import _toPairs from 'lodash-es/toPairs';
-import _union from 'lodash-es/union';
-import _without from 'lodash-es/without';
-
 import { debug } from '../index';
 import { osmIsInterestingTag } from './tags';
-import { dataDeprecated } from '../../data/index';
+import { utilArrayUnion } from '../util/array';
+import { utilUnicodeCharsTruncated } from '../util/util';
 
 
 export function osmEntity(attrs) {
@@ -43,15 +38,11 @@ osmEntity.id.fromOSM = function(type, id, mapId) {
 
 //This method is called when formatting iD entities to OSM xml
 osmEntity.id.toOSM = function(id) {
-    //Strip off the _mapid added by HootOld
-    var arr = id.match(/[^_]*/i);
-    //Then strip off the element type indicator
-    return arr[0].slice(1);
-};
-
-//This method is called when map id of an entity is needed
-osmEntity.id.toHootMapId = function(id) {
-    return id.split('_')[1];
+    var match = id.match(/^[cnwr](-?\d+)$/);
+    if (match) {
+        return match[1];
+    }
+    return '';
 };
 
 
@@ -63,6 +54,29 @@ osmEntity.id.type = function(id) {
 // A function suitable for use as the second argument to d3.selection#data().
 osmEntity.key = function(entity) {
     return entity.id + 'v' + (entity.v || 0);
+};
+
+var _deprecatedTagValuesByKey;
+
+osmEntity.deprecatedTagValuesByKey = function(dataDeprecated) {
+    if (!_deprecatedTagValuesByKey) {
+        _deprecatedTagValuesByKey = {};
+        dataDeprecated.forEach(function(d) {
+            var oldKeys = Object.keys(d.old);
+            if (oldKeys.length === 1) {
+                var oldKey = oldKeys[0];
+                var oldValue = d.old[oldKey];
+                if (oldValue !== '*') {
+                    if (!_deprecatedTagValuesByKey[oldKey]) {
+                        _deprecatedTagValuesByKey[oldKey] = [oldValue];
+                    } else {
+                        _deprecatedTagValuesByKey[oldKey].push(oldValue);
+                    }
+                }
+            }
+        });
+    }
+    return _deprecatedTagValuesByKey;
 };
 
 
@@ -106,10 +120,9 @@ osmEntity.prototype = {
 
 
     copy: function(resolver, copies) {
-        if (copies[this.id])
-            return copies[this.id];
+        if (copies[this.id]) return copies[this.id];
 
-        var copy = osmEntity(this, {id: undefined, user: undefined, version: undefined});
+        var copy = osmEntity(this, { id: undefined, user: undefined, version: undefined });
         copies[this.id] = copy;
 
         return copy;
@@ -122,33 +135,34 @@ osmEntity.prototype = {
 
 
     isNew: function() {
-        return this.osmId() < 0;
+        var osmId = osmEntity.id.toOSM(this.id);
+        return osmId.length === 0 || osmId[0] === '-';
     },
 
 
     update: function(attrs) {
-        return osmEntity(this, attrs, {v: 1 + (this.v || 0)});
+        return osmEntity(this, attrs, { v: 1 + (this.v || 0) });
     },
 
 
-    mergeTags: function(tags, overwrite) {
-        var merged = _clone(this.tags), changed = false;
+    mergeTags: function(tags) {
+        var merged = Object.assign({}, this.tags);   // shallow copy
+        var changed = false;
         for (var k in tags) {
-            var t1 = merged[k],
-                t2 = tags[k];
+            var t1 = merged[k];
+            var t2 = tags[k];
             if (!t1) {
                 changed = true;
                 merged[k] = t2;
             } else if (t1 !== t2) {
                 changed = true;
-                if (overwrite) {
-                    merged[k] = t2;
-                } else {
-                    merged[k] = _union(t1.split(/;\s*/), t2.split(/;\s*/)).join(';');
-                }
+                merged[k] = utilUnicodeCharsTruncated(
+                    utilArrayUnion(t1.split(/;\s*/), t2.split(/;\s*/)).join(';'),
+                    255 // avoid exceeding character limit; see also context.maxCharsForTagValue()
+                );
             }
         }
-        return changed ? this.update({tags: merged}) : this;
+        return changed ? this.update({ tags: merged }) : this;
     },
 
 
@@ -157,16 +171,17 @@ osmEntity.prototype = {
     },
 
 
-    isUsed: function(resolver) {
-        return _without(Object.keys(this.tags), 'area').length > 0 ||
-            resolver.parentRelations(this).length > 0;
+    hasNonGeometryTags: function() {
+        return Object.keys(this.tags).some(function(k) { return k !== 'area'; });
     },
 
+    hasParentRelations: function(resolver) {
+        return resolver.parentRelations(this).length > 0;
+    },
 
     hasInterestingTags: function() {
-        return _keys(this.tags).some(osmIsInterestingTag);
+        return Object.keys(this.tags).some(osmIsInterestingTag);
     },
-
 
     isHighwayIntersection: function() {
         return false;
@@ -176,18 +191,53 @@ osmEntity.prototype = {
         return true;
     },
 
-    deprecatedTags: function() {
-        var tags = _toPairs(this.tags);
-        var deprecated = {};
+    deprecatedTags: function(dataDeprecated) {
+        var tags = this.tags;
 
+        // if there are no tags, none can be deprecated
+        if (Object.keys(tags).length === 0) return [];
+
+        var deprecated = [];
         dataDeprecated.forEach(function(d) {
-            var match = _toPairs(d.old)[0];
-            tags.forEach(function(t) {
-                if (t[0] === match[0] &&
-                    (t[1] === match[1] || match[1] === '*')) {
-                    deprecated[t[0]] = t[1];
+            var oldKeys = Object.keys(d.old);
+            if (d.replace) {
+                var hasExistingValues = Object.keys(d.replace).some(function(replaceKey) {
+                    if (!tags[replaceKey] || d.old[replaceKey]) return false;
+                    var replaceValue = d.replace[replaceKey];
+                    if (replaceValue === '*') return false;
+                    if (replaceValue === tags[replaceKey]) return false;
+                    return true;
+                });
+                // don't flag deprecated tags if the upgrade path would overwrite existing data - #7843
+                if (hasExistingValues) return;
+            }
+            var matchesDeprecatedTags = oldKeys.every(function(oldKey) {
+                if (!tags[oldKey]) return false;
+                if (d.old[oldKey] === '*') return true;
+                if (d.old[oldKey] === tags[oldKey]) return true;
+
+                var vals = tags[oldKey].split(';').filter(Boolean);
+                if (vals.length === 0) {
+                    return false;
+                } else if (vals.length > 1) {
+                    return vals.indexOf(d.old[oldKey]) !== -1;
+                } else {
+                    if (tags[oldKey] === d.old[oldKey]) {
+                        if (d.replace && d.old[oldKey] === d.replace[oldKey]) {
+                            var replaceKeys = Object.keys(d.replace);
+                            return !replaceKeys.every(function(replaceKey) {
+                                return tags[replaceKey] === d.replace[replaceKey];
+                            });
+                        } else {
+                            return true;
+                        }
+                    }
                 }
+                return false;
             });
+            if (matchesDeprecatedTags) {
+                deprecated.push(d);
+            }
         });
 
         return deprecated;

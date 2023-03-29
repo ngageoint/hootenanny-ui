@@ -1,16 +1,10 @@
-import _extend from 'lodash-es/extend';
-
 import {
     geoIdentity as d3_geoIdentity,
     geoPath as d3_geoPath,
     geoStream as d3_geoStream
 } from 'd3-geo';
 
-import {
-    geoVecAdd,
-    geoVecAngle,
-    geoVecLength
-} from '../geo';
+import { geoVecAdd, geoVecAngle, geoVecLength } from '../geo';
 
 
 // Touch targets control which other vertices we can drag a vertex onto.
@@ -32,18 +26,20 @@ export function svgPassiveVertex(node, graph, activeID) {
 
     var parents = graph.parentWays(node);
 
-    for (var i = 0; i < parents.length; i++) {
-        var nodes = parents[i].nodes;
-        var isClosed = parents[i].isClosed();
-        for (var j = 0; j < nodes.length; j++) {   // find this vertex, look nearby
+    var i, j, nodes, isClosed, ix1, ix2, ix3, ix4, max;
+
+    for (i = 0; i < parents.length; i++) {
+        nodes = parents[i].nodes;
+        isClosed = parents[i].isClosed();
+        for (j = 0; j < nodes.length; j++) {   // find this vertex, look nearby
             if (nodes[j] === node.id) {
-                var ix1 = j - 2;
-                var ix2 = j - 1;
-                var ix3 = j + 1;
-                var ix4 = j + 2;
+                ix1 = j - 2;
+                ix2 = j - 1;
+                ix3 = j + 1;
+                ix4 = j + 2;
 
                 if (isClosed) {  // wraparound if needed
-                    var max = nodes.length - 1;
+                    max = nodes.length - 1;
                     if (ix1 < 0)   ix1 = max + ix1;
                     if (ix2 < 0)   ix2 = max + ix2;
                     if (ix3 > max) ix3 = ix3 - max;
@@ -202,10 +198,11 @@ export function svgPointTransform(projection) {
 export function svgRelationMemberTags(graph) {
     return function(entity) {
         var tags = entity.tags;
+        var shouldCopyMultipolygonTags = !entity.hasInterestingTags();
         graph.parentRelations(entity).forEach(function(relation) {
             var type = relation.tags.type;
-            if (type === 'multipolygon' || type === 'boundary') {
-                tags = _extend({}, relation.tags, tags);
+            if ((type === 'multipolygon' && shouldCopyMultipolygonTags) || type === 'boundary') {
+                tags = Object.assign({}, relation.tags, tags);
             }
         });
         return tags;

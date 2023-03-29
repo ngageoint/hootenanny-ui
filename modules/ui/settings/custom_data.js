@@ -2,7 +2,8 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
-import { t } from '../../util/locale';
+import { prefs } from '../../core/preferences';
+import { t } from '../../core/localizer';
 import { uiConfirm } from '../confirm';
 import { utilNoAuto, utilRebind } from '../../util';
 
@@ -12,11 +13,16 @@ export function uiSettingsCustomData(context) {
 
     function render(selection) {
         var dataLayer = context.layers().layer('data');
+
+        // keep separate copies of original and current settings
         var _origSettings = {
             fileList: (dataLayer && dataLayer.fileList()) || null,
-            url: context.storage('settings-custom-data-url')
+            url: prefs('settings-custom-data-url')
         };
-        var _currSettings = _cloneDeep(_origSettings);
+        var _currSettings = {
+            fileList: (dataLayer && dataLayer.fileList()) || null,
+            url: prefs('settings-custom-data-url')
+        };
 
         // var example = 'https://{switch:a,b,c}.tile.openstreetmap.org/{zoom}/{x}/{y}.png';
         var modal = uiConfirm(selection).okButton();
@@ -26,7 +32,7 @@ export function uiSettingsCustomData(context) {
 
         modal.select('.modal-section.header')
             .append('h3')
-            .text(t('settings.custom_data.header'));
+            .call(t.append('settings.custom_data.header'));
 
 
         var textSection = modal.select('.modal-section.message-text');
@@ -34,13 +40,14 @@ export function uiSettingsCustomData(context) {
         textSection
             .append('pre')
             .attr('class', 'instructions-file')
-            .text(t('settings.custom_data.file.instructions'));
+            .call(t.append('settings.custom_data.file.instructions'));
 
         textSection
             .append('input')
             .attr('class', 'field-file')
             .attr('type', 'file')
-            .property('files', _currSettings.fileList)  // works for all except IE11
+            .attr('accept', '.gpx,.kml,.geojson,.json,application/gpx+xml,application/vnd.google-earth.kml+xml,application/geo+json,application/json')
+            .property('files', _currSettings.fileList)
             .on('change', function(d3_event) {
                 var files = d3_event.target.files;
                 if (files && files.length) {
@@ -54,12 +61,12 @@ export function uiSettingsCustomData(context) {
 
         textSection
             .append('h4')
-            .text(t('settings.custom_data.or'));
+            .call(t.append('settings.custom_data.or'));
 
         textSection
             .append('pre')
             .attr('class', 'instructions-url')
-            .text(t('settings.custom_data.url.instructions'));
+            .call(t.append('settings.custom_data.url.instructions'));
 
         textSection
             .append('textarea')
@@ -75,7 +82,7 @@ export function uiSettingsCustomData(context) {
         buttonSection
             .insert('button', '.ok-button')
             .attr('class', 'button cancel-button secondary-action')
-            .text(t('confirm.cancel'));
+            .call(t.append('confirm.cancel'));
 
 
         buttonSection.select('.cancel-button')
@@ -94,7 +101,7 @@ export function uiSettingsCustomData(context) {
         // restore the original url
         function clickCancel() {
             textSection.select('.field-url').property('value', _origSettings.url);
-            context.storage('settings-custom-data-url', _origSettings.url);
+            prefs('settings-custom-data-url', _origSettings.url);
             this.blur();
             modal.close();
         }
@@ -107,7 +114,7 @@ export function uiSettingsCustomData(context) {
             if (_currSettings.url) { _currSettings.fileList = null; }
             if (_currSettings.fileList) { _currSettings.url = ''; }
 
-            context.storage('settings-custom-data-url', _currSettings.url);
+            prefs('settings-custom-data-url', _currSettings.url);
             this.blur();
             modal.close();
             dispatch.call('change', this, _currSettings);

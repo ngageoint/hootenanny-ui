@@ -1,83 +1,102 @@
-import { t } from '../util/locale';
-import { modeSelect } from '../modes';
-import { svgIcon } from '../svg';
-import { tooltip } from '../util/tooltip';
+import { select as d3_select } from 'd3-selection';
+
+import { t } from '../core/localizer';
+import { svgIcon } from '../svg/icon';
+import { uiTooltip } from './tooltip';
 import { utilEntityOrMemberSelector } from '../util';
 
 
 export function uiCommitWarnings(context) {
 
     function commitWarnings(selection) {
+        var issuesBySeverity = context.validator()
+            .getIssuesBySeverity({ what: 'edited', where: 'all', includeDisabledRules: true });
 
-        var changes = context.history().changes();
-        var warnings = context.history().validate(changes);
+        for (var severity in issuesBySeverity) {
+            var issues = issuesBySeverity[severity];
 
-        var container = selection.selectAll('.warning-section')
-            .data(warnings.length ? [0] : []);
+            if (severity !== 'error') {      // exclude 'fixme' and similar - #8603
+                issues = issues.filter(function(issue) { return issue.type !== 'help_request'; });
+            }
 
-        container.exit()
-            .remove();
+            var section = severity + '-section';
+            var issueItem = severity + '-item';
 
-        var containerEnter = container.enter()
-            .append('div')
-            .attr('class', 'modal-section warning-section fillL2');
+            var container = selection.selectAll('.' + section)
+                .data(issues.length ? [0] : []);
 
-        containerEnter
-            .append('h3')
-            .text(t('commit.warnings'));
+            container.exit()
+                .remove();
 
-        containerEnter
-            .append('ul')
-            .attr('class', 'changeset-list');
+            var containerEnter = container.enter()
+                .append('div')
+                .attr('class', 'modal-section ' + section + ' fillL2');
 
-        container = containerEnter
-            .merge(container);
+            containerEnter
+                .append('h3')
+                .call(severity === 'warning' ? t.append('commit.warnings') : t.append('commit.errors'));
 
+            containerEnter
+                .append('ul')
+                .attr('class', 'changeset-list');
 
-        var items = container.select('ul').selectAll('li')
-            .data(warnings);
+            container = containerEnter
+                .merge(container);
 
         items.exit()
             .remove();
 
-        var itemsEnter = items.enter()
-            .append('li')
-            .attr('class', 'warning-item');
+            var items = container.select('ul').selectAll('li')
+                .data(issues, function(d) { return d.key; });
 
-        itemsEnter
-            .call(svgIcon('#iD-icon-alert', 'pre-text'));
+            items.exit()
+                .remove();
 
-        itemsEnter
-            .append('strong')
-            .text(function(d) { return d.message; });
+            var itemsEnter = items.enter()
+                .append('li')
+                .attr('class', issueItem);
 
-        itemsEnter.filter(function(d) { return d.tooltip; })
-            .call(tooltip()
-                .title(function(d3_event, d) { return d.tooltip; })
-                .placement('top')
-            );
+            var buttons = itemsEnter
+                .append('button')
+                .on('mouseover', function(d3_event, d) {
+                    if (d.entityIds) {
+                        context.surface().selectAll(
+                            utilEntityOrMemberSelector(
+                                d.entityIds,
+                                context.graph()
+                            )
+                        ).classed('hover', true);
+                    }
+                })
+                .on('mouseout', function() {
+                    context.surface().selectAll('.hover')
+                        .classed('hover', false);
+                })
+                .on('click', function(d3_event, d) {
+                    context.validator().focusIssue(d);
+                });
 
-        items = itemsEnter
-            .merge(items);
+            buttons
+                .call(svgIcon('#iD-icon-alert', 'pre-text'));
 
-        items
-            .on('mouseover', mouseover)
-            .on('mouseout', mouseout)
-            .on('click', warningClick);
+            buttons
+                .append('strong')
+                .attr('class', 'issue-message');
 
+            buttons.filter(function(d) { return d.tooltip; })
+                .call(uiTooltip()
+                    .title(function(d) { return d.tooltip; })
+                    .placement('top')
+                );
 
-        function mouseover(d) {
-            if (d.entity) {
-                context.surface().selectAll(
-                    utilEntityOrMemberSelector([d.entity.id], context.graph())
-                ).classed('hover', true);
-            }
-        }
+            items = itemsEnter
+                .merge(items);
 
-
-        function mouseout() {
-            context.surface().selectAll('.hover')
-                .classed('hover', false);
+            items.selectAll('.issue-message')
+                .text('')
+                .each(function(d) {
+                    return d.message(context)(d3_select(this));
+                });
         }
 
 

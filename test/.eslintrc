@@ -6,9 +6,11 @@
     "globals": {
         "_": false,
         "expect": true,
+        "fakeFetch": true,
         "happen": false,
         "iD": false,
         "sinon": false,
+        "fetchMock": true,
         "Hoot": false,
         "__COMMIT_HASH__": false
     },

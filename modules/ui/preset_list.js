@@ -1,66 +1,51 @@
-import _map from 'lodash-es/map';
-
 import { dispatch as d3_dispatch } from 'd3-dispatch';
+import { select as d3_select } from 'd3-selection';
+import _debounce from 'lodash-es/debounce';
 
-import {
-    select as d3_select
-} from 'd3-selection';
-
-import { t, textDirection } from '../util/locale';
-import { actionChangePreset } from '../actions/index';
-import { operationDelete } from '../operations/index';
-import { modeBrowse } from '../modes/index';
+import { presetManager } from '../presets';
+import { t, localizer } from '../core/localizer';
+import { actionChangePreset } from '../actions/change_preset';
+import { operationDelete } from '../operations/delete';
 import { svgIcon } from '../svg/index';
+import { uiTooltip } from './tooltip';
+import { geoExtent } from '../geo/extent';
 import { uiPresetIcon } from './preset_icon';
+import { uiSchemaSwitcher } from './schema_switcher';
 import { uiTagReference } from './tag_reference';
 import { utilKeybinding, utilNoAuto, utilRebind } from '../util';
-import { presetCollection }       from '../presets';
-import { presetPreset }           from '../presets';
-import { uiSchemaSwitcher }       from './schema_switcher';
+
 
 export function uiPresetList(context) {
-    var dispatch = d3_dispatch('choose');
-    var _entityID;
-    var _currentPreset;
+    var dispatch = d3_dispatch('cancel', 'choose');
+    var _entityIDs;
+    var _currLoc;
+    var _currentPresets;
     var _autofocus = false;
 
 
     function presetList(selection) {
-        var entity = context.entity(_entityID);
-        var geometry = context.geometry(_entityID);
+        if (!_entityIDs) return;
 
-        // Treat entities on addr:interpolation lines as points, not vertices (#3241)
-        if (geometry === 'vertex' && entity.isOnAddressLine(context.graph())) {
-            geometry = 'point';
-        }
-
-        var presets = context.presets().matchGeometry(geometry);
+        var presets = presetManager.matchAllSchemaGeometries(entityGeometries(), Hoot.translationManager.activeTranslation);
 
         selection.html('');
 
         var messagewrap = selection
             .append('div')
-            .attr('class', 'header fillL cf');
+            .attr('class', 'header fillL');
 
         var message = messagewrap
-            .append('h3')
-            .text(t('inspector.choose'));
+            .append('h2')
+            .call(t.append('inspector.choose'));
 
-        if (context.entity(_entityID).isUsed(context.graph())) {
-            messagewrap
-                .append('button')
-                .attr('class', 'preset-choose')
-                .on('click', function() { dispatch.call('choose', this, _currentPreset); })
-                .call(svgIcon((textDirection === 'rtl') ? '#iD-icon-backward' : '#iD-icon-forward'));
-        } else {
-            messagewrap
-                .append('button')
-                .attr('class', 'close')
-                .on('click', function() {
-                    context.enter(modeBrowse(context));
-                })
-                .call(svgIcon('#iD-icon-close'));
-        }
+        var direction = (localizer.textDirection() === 'rtl') ? 'backward' : 'forward';
+
+        messagewrap
+            .append('button')
+            .attr('class', 'preset-choose')
+            .attr('title', _entityIDs.length === 1 ? t('inspector.edit') : t('inspector.edit_features'))
+            .on('click', function() { dispatch.call('cancel', this); })
+            .call(svgIcon(`#iD-icon-${direction}`));
 
         function initialKeydown(d3_event) {
             // hack to let delete shortcut work when search is autofocused
@@ -69,7 +54,7 @@ export function uiPresetList(context) {
                  d3_event.keyCode === utilKeybinding.keyCodes['⌦'])) {
                 d3_event.preventDefault();
                 d3_event.stopPropagation();
-                operationDelete([_entityID], context)();
+                operationDelete(context, _entityIDs)();
 
             // hack to let undo work when search is autofocused
             } else if (search.property('value').length === 0 &&
@@ -81,7 +66,7 @@ export function uiPresetList(context) {
             } else if (!d3_event.ctrlKey && !d3_event.metaKey) {
                 // don't check for delete/undo hack on future keydown events
                 d3_select(this).on('keydown', keydown);
-                keydown.call(this);
+                keydown.call(this, d3_event);
             }
         }
 
@@ -93,67 +78,85 @@ export function uiPresetList(context) {
                 d3_event.preventDefault();
                 d3_event.stopPropagation();
                 // move focus to the first item in the preset list
-                list.select('.preset-list-button').node().focus();
+                var buttons = list.selectAll('.preset-list-button');
+                if (!buttons.empty()) buttons.nodes()[0].focus();
             }
         }
 
         function keypress(d3_event) {
             // enter
             var value = search.property('value');
-            if (d3_event.keyCode === 13 && value.length) {
-                list.selectAll('.preset-list-item:first-child').datum().choose();
+            if (d3_event.keyCode === 13 && // ↩ Return
+                value.length) {
+                list.selectAll('.preset-list-item:first-child')
+                    .each(function(d) { d.choose.call(this); });
             }
         }
 
-        async function inputevent() {
+        var debouncedSearch = _debounce(function(value, geometry, tagSchema) {
+            Hoot.translationManager.searchTranslatedSchema(value, geometry, function(data){
+                var translatedPresets = data.map(function(d) {
+                    return presetPreset(tagSchema + '/' + d.fcode,
+                        {
+                            geometry: [geometry],
+                            tags: {},
+                            'hoot:featuretype': d.desc,
+                            'hoot:tagschema': tagSchema,
+                            'hoot:fcode': d.fcode,
+                            name: d.desc + ' (' + d.fcode + ')'
+                        }, true, {});
+                });
+                searchHandler(value, presetCollection(translatedPresets));
+            });
+        }, 200);
+
+        function searchHandler(value, results) {
+            message.html(t('inspector.results', {
+                n: results.collection.length,
+                search: value
+            }));
+            list.call(drawList, results);
+        }
+
+        var debouncedInput = _debounce(inputevent, 200);
+
+        function inputevent() {
             var value = search.property('value');
             list.classed('filtered', value.length);
 
-            if (value.length) {
-                var tagSchema = Hoot.translations.activeTranslation;
-                var results = presets.search(value, geometry).matchSchema(tagSchema);
-
-                if (tagSchema === Hoot.translations.defaultTranslation) {
-                    searchHandler(value, results);
+            var results, messageText;
+            if (Hoot.translationManager.activeTranslation === Hoot.translationManager.defaultTranslation) {
+                if (value.length) {
+                    results = presets.search(value, entityGeometries()[0], _currLoc);
+                    messageText = t('inspector.results', {
+                        n: results.collection.length,
+                        search: value
+                    });
                 } else {
-                    let params = {
-                        geometry,
-                        translation: tagSchema,
-                        searchstr: value,
-                        limit: Hoot.config.presetMaxDisplayNum
-                    };
-
-                    let schemas = await Hoot.api.searchTranslatedSchema( params );
-                    let translatedPresets = _map( schemas, schema => {
-                        return presetPreset( `${tagSchema}/${schema.fcode}`, {
-                            geometry,
-                            tags: {},
-                            name: `${schema.desc} (${schema.fcode})`,
-                            'hoot:tagschema': tagSchema,
-                            'hoot:featuretype': schema.desc,
-                            'hoot:fcode': schema.fcode
-                        }, {} );
-                    } );
-
-                    searchHandler( value, presetCollection( results.collection.concat( translatedPresets ) ) );
+                    results = presetManager.defaults(entityGeometries()[0], 36, !context.inIntro(), _currLoc);
+                    messageText = t('inspector.choose');
                 }
             } else {
-                list.call(drawList, context.presets().defaults(geometry, 36));
-                message.text(t('inspector.choose'));
+                if (value.length && entity) {
+                    //Add translation server search for translated tag schemas
+                    debouncedSearch(value, geometry, tagSchema);
+                } else {
+                    results = presetManager.defaultsSchemaGeometry(geometry, Hoot.translationManager.activeTranslation, 36);
+                    messageText = t('inspector.choose');
+                }
             }
-
-            function searchHandler(value, results) {
-                message.text(t('inspector.results', {
-                    n: results.collection.length,
-                    search: value
-                }));
+            if (messageText && results) {
                 list.call(drawList, results);
+                message.html(messageText);
             }
         }
 
         var searchWrap = selection
             .append('div')
             .attr('class', 'search-header');
+
+        searchWrap
+            .call(svgIcon('#iD-icon-search', 'pre-text'));
 
         var search = searchWrap
             .append('input')
@@ -163,41 +166,52 @@ export function uiPresetList(context) {
             .call(utilNoAuto)
             .on('keydown', initialKeydown)
             .on('keypress', keypress)
-            .on('input', inputevent);
-
-        searchWrap
-            .call(svgIcon('#iD-icon-search', 'pre-text'));
+            .on('input', debouncedInput);
 
         if (_autofocus) {
             search.node().focus();
+
+            // Safari 14 doesn't always like to focus immediately,
+            // so try again on the next pass
+            setTimeout(function() {
+                search.node().focus();
+            }, 0);
         }
 
         var listWrap = selection
             .append('div')
             .attr('class', 'inspector-body');
 
-        var schemaSwitcher = uiSchemaSwitcher();
-
-        listWrap
-            .append('div')
-            .classed('fillL', true)
-            .append('div')
-            .call(schemaSwitcher, function() {
+        var schemaSwitcher = uiSchemaSwitcher(context);
+        listWrap.call(schemaSwitcher, function() {
                 list.selectAll('.preset-list-item').remove();
-                list.call(drawList, context.presets().defaults(geometry, 72).matchSchema(Hoot.translations.activeTranslation));
+                list.call(drawList, presetManager.defaultsSchemaGeometry(entityGeometries()[0], Hoot.translationManager.activeTranslation, 72));
             });
-
         var list = listWrap
             .append('div')
-            .attr('class', 'preset-list fillL cf')
-            .call(drawList, context.presets().defaults(geometry, 72).matchSchema(Hoot.translations.activeTranslation));
+            .attr('class', 'preset-list')
+            .call(drawList, presetManager.defaultsSchemaGeometry(entityGeometries()[0], Hoot.translationManager.activeTranslation, 36, !context.inIntro()));
+
+        context.features().on('change.preset-list', updateForFeatureHiddenState);
     }
 
 
     function drawList(list, presets) {
-        var collection = presets.collection.map(function(preset) {
-            return preset.members ? CategoryItem(preset) : PresetItem(preset);
-        });
+        presets = presets.matchAllSchemaGeometries(entityGeometries(), Hoot.translationManager.activeTranslation);
+        var collection = presets.collection.reduce(function(collection, preset) {
+            if (!preset) return collection;
+
+            if (preset.members) {
+                if (preset.members.collection.filter(function(preset) {
+                    return preset.addable();
+                }).length > 1) {
+                    collection.push(CategoryItem(preset));
+                }
+            } else if (preset.addable()) {
+                collection.push(PresetItem(preset));
+            }
+            return collection;
+        }, []);
 
         var items = list.selectAll('.preset-list-item')
             .data(collection, function(d) { return d.preset.id; });
@@ -210,17 +224,19 @@ export function uiPresetList(context) {
         items.enter()
             .append('div')
             .attr('class', function(item) { return 'preset-list-item preset-' + item.preset.id.replace('/', '-'); })
-            .classed('current', function(item) { return item.preset === _currentPreset; })
+            .classed('current', function(item) { return _currentPresets.indexOf(item.preset) !== -1; })
             .each(function(item) { d3_select(this).call(item); })
             .style('opacity', 0)
             .transition()
             .style('opacity', 1);
+
+        updateForFeatureHiddenState();
     }
 
-    function itemKeydown(d3_event){
+    function itemKeydown(d3_event) {
         // the actively focused item
         var item = d3_select(this.closest('.preset-list-item'));
-        var parentItem = d3_select(item.node().parentElement.closest('.preset-list-item'));
+        var parentItem = d3_select(item.node().parentNode.closest('.preset-list-item'));
 
         // arrow down, move focus to the next, lower item
         if (d3_event.keyCode === utilKeybinding.keyCodes['↓']) {
@@ -276,7 +292,7 @@ export function uiPresetList(context) {
             }
 
         // arrow left, move focus to the parent item if there is one
-        } else if (d3_event.keyCode === utilKeybinding.keyCodes[(textDirection === 'rtl') ? '→' : '←']) {
+        } else if (d3_event.keyCode === utilKeybinding.keyCodes[(localizer.textDirection() === 'rtl') ? '→' : '←']) {
             d3_event.preventDefault();
             d3_event.stopPropagation();
             // if there is a parent item, focus on the parent item
@@ -285,10 +301,10 @@ export function uiPresetList(context) {
             }
 
         // arrow right, choose this item
-        } else if (d3_event.keyCode === utilKeybinding.keyCodes[(textDirection === 'rtl') ? '←' : '→']) {
+        } else if (d3_event.keyCode === utilKeybinding.keyCodes[(localizer.textDirection() === 'rtl') ? '←' : '→']) {
             d3_event.preventDefault();
             d3_event.stopPropagation();
-            item.datum().choose();
+            item.datum().choose.call(d3_select(this).node());
         }
     }
 
@@ -298,48 +314,52 @@ export function uiPresetList(context) {
 
         function item(selection) {
             var wrap = selection.append('div')
-                .attr('class', 'preset-list-button-wrap category col12');
+                .attr('class', 'preset-list-button-wrap category');
 
             function click() {
                 var isExpanded = d3_select(this).classed('expanded');
                 var iconName = isExpanded ?
-                    (textDirection === 'rtl' ? '#iD-icon-backward' : '#iD-icon-forward') : '#iD-icon-down';
+                    (localizer.textDirection() === 'rtl' ? '#iD-icon-backward' : '#iD-icon-forward') : '#iD-icon-down';
                 d3_select(this)
-                    .classed('expanded', !isExpanded);
+                    .classed('expanded', !isExpanded)
+                    .attr('title', !isExpanded ? t('icons.collapse') : t('icons.expand'));
                 d3_select(this).selectAll('div.label-inner svg.icon use')
                     .attr('href', iconName);
                 item.choose();
             }
 
+            var geometries = entityGeometries();
+
             var button = wrap
                 .append('button')
                 .attr('class', 'preset-list-button')
+                .attr('title', t('icons.expand'))
                 .classed('expanded', false)
                 .call(uiPresetIcon()
-                    .geometry(context.geometry(_entityID))
+                    .geometry(geometries.length === 1 && geometries[0])
                     .preset(preset))
                 .on('click', click)
                 .on('keydown', function(d3_event) {
                     // right arrow, expand the focused item
-                    if (d3_event.keyCode === utilKeybinding.keyCodes[(textDirection === 'rtl') ? '←' : '→']) {
+                    if (d3_event.keyCode === utilKeybinding.keyCodes[(localizer.textDirection() === 'rtl') ? '←' : '→']) {
                         d3_event.preventDefault();
                         d3_event.stopPropagation();
                         // if the item isn't expanded
                         if (!d3_select(this).classed('expanded')) {
                             // toggle expansion (expand the item)
-                            click.call(this);
+                            click.call(this, d3_event);
                         }
                     // left arrow, collapse the focused item
-                    } else if (d3_event.keyCode === utilKeybinding.keyCodes[(textDirection === 'rtl') ? '→' : '←']) {
+                    } else if (d3_event.keyCode === utilKeybinding.keyCodes[(localizer.textDirection() === 'rtl') ? '→' : '←']) {
                         d3_event.preventDefault();
                         d3_event.stopPropagation();
                         // if the item is expanded
                         if (d3_select(this).classed('expanded')) {
                             // toggle expansion (collapse the item)
-                            click.call(this);
+                            click.call(this, d3_event);
                         }
                     } else {
-                        itemKeydown.call(this);
+                        itemKeydown.call(this, d3_event);
                     }
                 });
 
@@ -352,12 +372,13 @@ export function uiPresetList(context) {
             label
                 .append('div')
                 .attr('class', 'namepart')
-                .call(svgIcon((textDirection === 'rtl' ? '#iD-icon-backward' : '#iD-icon-forward'), 'inline'))
+                .call(svgIcon((localizer.textDirection() === 'rtl' ? '#iD-icon-backward' : '#iD-icon-forward'), 'inline'))
                 .append('span')
-                .html(function() { return preset.name() + '&hellip;'; });
+                .call(preset.nameLabel())
+                .append('span').text('…');
 
             box = selection.append('div')
-                .attr('class', 'subgrid col12')
+                .attr('class', 'subgrid')
                 .style('max-height', '0px')
                 .style('opacity', 0);
 
@@ -365,7 +386,7 @@ export function uiPresetList(context) {
                 .attr('class', 'arrow');
 
             sublist = box.append('div')
-                .attr('class', 'preset-list fillL3 cf fl');
+                .attr('class', 'preset-list fillL3');
         }
 
 
@@ -381,12 +402,13 @@ export function uiPresetList(context) {
                     .style('padding-bottom', '0px');
             } else {
                 shown = true;
-                sublist.call(drawList, preset.members);
+                var members = preset.members.matchAllGeometry(entityGeometries());
+                sublist.call(drawList, members);
                 box.transition()
                     .duration(200)
                     .style('opacity', '1')
-                    .style('max-height', 200 + preset.members.collection.length * 190 + 'px')
-                    .style('padding-bottom', '20px');
+                    .style('max-height', 200 + members.collection.length * 190 + 'px')
+                    .style('padding-bottom', '10px');
             }
         };
 
@@ -398,12 +420,14 @@ export function uiPresetList(context) {
     function PresetItem(preset) {
         function item(selection) {
             var wrap = selection.append('div')
-                .attr('class', 'preset-list-button-wrap col12');
+                .attr('class', 'preset-list-button-wrap');
+
+            var geometries = entityGeometries();
 
             var button = wrap.append('button')
                 .attr('class', 'preset-list-button')
                 .call(uiPresetIcon()
-                    .geometry(context.geometry(_entityID))
+                    .geometry(geometries.length === 1 && geometries[0])
                     .preset(preset))
                 .on('click', item.choose)
                 .on('keydown', itemKeydown);
@@ -414,25 +438,58 @@ export function uiPresetList(context) {
                 .append('div')
                 .attr('class', 'label-inner');
 
+            var nameparts = [
+                preset.nameLabel(),
+                preset.subtitleLabel()
+            ].filter(Boolean);
+
             label.selectAll('.namepart')
-                .data(preset.name().split(' - '))
+                .data(nameparts, d => d.stringId)
                 .enter()
                 .append('div')
                 .attr('class', 'namepart')
-                .text(function(d) { return d; });
+                .text('')
+                .each(function(d) { d(d3_select(this)); });
 
             wrap.call(item.reference.button);
             selection.call(item.reference.body);
         }
 
         item.choose = function() {
-            context.presets().choose(preset);
+          function choosePreset(p) {
             context.perform(
-                actionChangePreset(_entityID, _currentPreset, preset),
-                t('operations.change_tags.annotation')
+              function(graph) {
+                  for (var i in _entityIDs) {
+                      var entityID = _entityIDs[i];
+                      var oldPreset = presetManager.match(graph.entity(entityID), graph);
+                      graph = actionChangePreset(entityID, oldPreset, p)(graph);
+                  }
+                  return graph;
+              },
+              t('operations.change_tags.annotation')
             );
+            dispatch.call('choose', this, p);
+          }
 
-            dispatch.call('choose', this, preset);
+          if (d3_select(this).classed('disabled')) return;
+          if (!context.inIntro()) {
+              presetManager.setMostRecent(preset, entityGeometries()[0]);
+          }
+
+          if (Hoot.translationManager.activeTranslation === 'OSM') {
+            choosePreset(preset);
+          } else {
+            var fullPreset = presetManager.item(preset.id);
+            if (fullPreset && fullPreset.geometry.includes(entityGeometries()[0]) && fullPreset.fields() && fullPreset.fields().length > 0) {
+              choosePreset(fullPreset);
+            } else {
+              Hoot.translationServer.addTagsForFcode(entityGeometries()[0], preset, context, _entityIDs[0], function (p) {
+                p.icon = preset.icon;
+                presetManager.replace(p);
+                choosePreset(p);
+              });
+            }
+          }
         };
 
         item.help = function(d3_event) {
@@ -441,11 +498,45 @@ export function uiPresetList(context) {
         };
 
         item.preset = preset;
-        item.reference = uiTagReference(preset.reference(context.geometry(_entityID)), context);
+        item.reference = uiTagReference(preset.reference(), context);
 
         return item;
     }
 
+
+    function updateForFeatureHiddenState() {
+        if (!_entityIDs.every(context.hasEntity)) return;
+
+        var geometries = entityGeometries();
+        var button = context.container().selectAll('.preset-list .preset-list-button');
+
+        // remove existing tooltips
+        button.call(uiTooltip().destroyAny);
+
+        button.each(function(item, index) {
+            var hiddenPresetFeaturesId;
+            for (var i in geometries) {
+                hiddenPresetFeaturesId = context.features().isHiddenPreset(item.preset, geometries[i]);
+                if (hiddenPresetFeaturesId) break;
+            }
+            var isHiddenPreset = !context.inIntro() &&
+                !!hiddenPresetFeaturesId &&
+                (_currentPresets.length !== 1 || item.preset !== _currentPresets[0]);
+
+            d3_select(this)
+                .classed('disabled', isHiddenPreset);
+
+            if (isHiddenPreset) {
+                var isAutoHidden = context.features().autoHidden(hiddenPresetFeaturesId);
+                d3_select(this).call(uiTooltip()
+                    .title(() => t.append('inspector.hidden_preset.' + (isAutoHidden ? 'zoom' : 'manual'), {
+                        features: t('feature.' + hiddenPresetFeaturesId + '.description')
+                    }))
+                    .placement(index < 2 ? 'bottom' : 'top')
+                );
+            }
+        });
+    }
 
     presetList.autofocus = function(val) {
         if (!arguments.length) return _autofocus;
@@ -453,21 +544,58 @@ export function uiPresetList(context) {
         return presetList;
     };
 
+    presetList.entityIDs = function(val) {
+        if (!arguments.length) return _entityIDs;
 
-    presetList.entityID = function(val) {
-        if (!arguments.length) return _entityID;
-        _entityID = val;
-        presetList.preset(context.presets().match(context.entity(_entityID), context.graph()));
+        _entityIDs = val;
+        _currLoc = null;
+
+        if (_entityIDs && _entityIDs.length) {
+            // calculate current location
+            const extent = _entityIDs.reduce(function(extent, entityID) {
+                var entity = context.graph().entity(entityID);
+                return extent.extend(entity.extent(context.graph()));
+            }, geoExtent());
+            _currLoc = extent.center();
+
+            // match presets
+            var presets = _entityIDs.map(function(entityID) {
+                return presetManager.match(context.entity(entityID), context.graph());
+            });
+            presetList.presets(presets);
+        }
+
         return presetList;
     };
 
-
-    presetList.preset = function(val) {
-        if (!arguments.length) return _currentPreset;
-        _currentPreset = val;
+    presetList.presets = function(val) {
+        if (!arguments.length) return _currentPresets;
+        _currentPresets = val;
         return presetList;
     };
 
+    function entityGeometries() {
+
+        var counts = {};
+
+        for (var i in _entityIDs) {
+            var entityID = _entityIDs[i];
+            var entity = context.entity(entityID);
+            var geometry = entity.geometry(context.graph());
+
+            // Treat entities on addr:interpolation lines as points, not vertices (#3241)
+            if (geometry === 'vertex' && entity.isOnAddressLine(context.graph())) {
+                geometry = 'point';
+            }
+
+            if (!counts[geometry]) counts[geometry] = 0;
+            counts[geometry] += 1;
+        }
+
+        return Object.keys(counts).sort(function(geom1, geom2) {
+            return counts[geom2] - counts[geom1];
+        });
+    }
 
     return utilRebind(presetList, dispatch, 'on');
 }

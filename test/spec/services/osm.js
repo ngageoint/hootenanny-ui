@@ -1,19 +1,17 @@
 describe('iD.serviceOsm', function () {
-    var context, connection, server, spy;
+    var context, connection, spy;
+    var serverXHR;
 
     function login() {
-        if (!connection) return;
         connection.switch({
-            urlroot: 'http://www.openstreetmap.org',
-            oauth_consumer_key: '5A043yRSEugj4DJ5TljuapfnrflWDte8jTOcWLlT',
-            oauth_secret: 'aB3jKq1TRsCOUrfOIZ6oQMEDmv2ptV76PA54NGLL',
-            oauth_token: 'foo',
-            oauth_token_secret: 'foo'
+            url: 'https://www.openstreetmap.org',
+            client_id: '0tmNTmd0Jo1dQp4AUmMBLtGiD9YpMuXzHefitcuVStc',
+            client_secret: 'BTlNrNxIPitHdL4sP2clHw5KLoee9aKkA7dQbc0Bj7Q',
+            access_token: 'foo'  // preauth
         });
     }
 
     function logout() {
-        if (!connection) return;
         connection.logout();
     }
 
@@ -26,17 +24,19 @@ describe('iD.serviceOsm', function () {
     });
 
     beforeEach(function () {
-        server = sinon.fakeServer.create();
-        context = iD.Context();
+        serverXHR = sinon.fakeServer.create();      // authenticated calls use XHR via osm-auth
+        context = iD.coreContext().assetPath('../dist/').init();
         connection = context.connection();
-        connection.switch({ urlroot: 'http://www.openstreetmap.org' });
+        connection.switch({ url: 'https://www.openstreetmap.org' });
         connection.reset();
         spy = sinon.spy();
     });
 
     afterEach(function() {
-        server.restore();
+        fetchMock.reset();
+        serverXHR.restore();
     });
+
 
     it('is instantiated', function () {
         expect(connection).to.be.ok;
@@ -58,9 +58,10 @@ describe('iD.serviceOsm', function () {
             var cid2 = connection.getConnectionId();
             expect(cid2).to.be.above(cid1);
         });
-        it('changes the connection id every time connection is switched', function() {
+
+        it('changes the connection id every time connection is switched', function () {
             var cid1 = connection.getConnectionId();
-            connection.switch({ urlroot: 'https://api06.dev.openstreetmap.org' });
+            connection.switch({ url: 'https://api06.dev.openstreetmap.org' });
             var cid2 = connection.getConnectionId();
             expect(cid2).to.be.above(cid1);
         });
@@ -68,7 +69,12 @@ describe('iD.serviceOsm', function () {
 
     describe('#changesetURL', function() {
         it('provides a changeset url', function() {
-            expect(connection.changesetURL(2)).to.eql('http://www.openstreetmap.org/changeset/2');
+            expect(connection.changesetURL(2)).to.eql('https://www.openstreetmap.org/changeset/2');
+        });
+
+        it('allows secure connections', function() {
+            connection.switch({ url: 'https://www.openstreetmap.org' });
+            expect(connection.changesetURL(2)).to.eql('https://www.openstreetmap.org/changeset/2');
         });
     });
 
@@ -76,43 +82,47 @@ describe('iD.serviceOsm', function () {
         it('provides a local changesets url', function() {
             var center = [-74.65, 40.65];
             var zoom = 17;
-            expect(connection.changesetsURL(center, zoom)).to.eql('http://www.openstreetmap.org/history#map=17/40.65000/-74.65000');
+            expect(connection.changesetsURL(center, zoom)).to.eql('https://www.openstreetmap.org/history#map=17/40.65000/-74.65000');
         });
     });
 
     describe('#entityURL', function() {
         it('provides an entity url for a node', function() {
-            var e = iD.Node({id: 'n1'});
-            expect(connection.entityURL(e)).to.eql('http://www.openstreetmap.org/node/1');
+            var e = iD.osmNode({id: 'n1'});
+            expect(connection.entityURL(e)).to.eql('https://www.openstreetmap.org/node/1');
         });
+
         it('provides an entity url for a way', function() {
-            var e = iD.Way({id: 'w1'});
-            expect(connection.entityURL(e)).to.eql('http://www.openstreetmap.org/way/1');
+            var e = iD.osmWay({id: 'w1'});
+            expect(connection.entityURL(e)).to.eql('https://www.openstreetmap.org/way/1');
         });
+
         it('provides an entity url for a relation', function() {
-            var e = iD.Relation({id: 'r1'});
-            expect(connection.entityURL(e)).to.eql('http://www.openstreetmap.org/relation/1');
+            var e = iD.osmRelation({id: 'r1'});
+            expect(connection.entityURL(e)).to.eql('https://www.openstreetmap.org/relation/1');
         });
     });
 
     describe('#historyURL', function() {
         it('provides a history url for a node', function() {
-            var e = iD.Node({id: 'n1'});
-            expect(connection.historyURL(e)).to.eql('http://www.openstreetmap.org/node/1/history');
+            var e = iD.osmNode({id: 'n1'});
+            expect(connection.historyURL(e)).to.eql('https://www.openstreetmap.org/node/1/history');
         });
+
         it('provides a history url for a way', function() {
-            var e = iD.Way({id: 'w1'});
-            expect(connection.historyURL(e)).to.eql('http://www.openstreetmap.org/way/1/history');
+            var e = iD.osmWay({id: 'w1'});
+            expect(connection.historyURL(e)).to.eql('https://www.openstreetmap.org/way/1/history');
         });
+
         it('provides a history url for a relation', function() {
-            var e = iD.Relation({id: 'r1'});
-            expect(connection.historyURL(e)).to.eql('http://www.openstreetmap.org/relation/1/history');
+            var e = iD.osmRelation({id: 'r1'});
+            expect(connection.historyURL(e)).to.eql('https://www.openstreetmap.org/relation/1/history');
         });
     });
 
     describe('#userURL', function() {
         it('provides a user url', function() {
-            expect(connection.userURL('bob')).to.eql('http://www.openstreetmap.org/user/bob');
+            expect(connection.userURL('bob')).to.eql('https://www.openstreetmap.org/user/bob');
         });
     });
 
@@ -124,123 +134,119 @@ describe('iD.serviceOsm', function () {
 
     describe('#switch', function() {
         it('changes the URL', function() {
-            connection.switch({ urlroot: 'http://example.com' });
-            expect(connection.changesetURL(1)).to.equal('http://example.com/changeset/1');
+            connection.switch({ url: 'https://example.com' });
+            expect(connection.changesetURL(1)).to.equal('https://example.com/changeset/1');
         });
 
         it('emits a change event', function() {
             connection.on('change', spy);
-            connection.switch({ urlroot: 'http://example.com' });
+            connection.switch({ url: 'https://example.com' });
             expect(spy).to.have.been.calledOnce;
         });
     });
 
     describe('#loadFromAPI', function () {
-        var path = '/api/0.6/map?bbox=-74.542,40.655,-74.541,40.656';
-        var response = '<?xml version="1.0" encoding="UTF-8"?>' +
-                '<osm version="0.6">' +
-                '  <bounds minlat="40.655" minlon="-74.542" maxlat="40.656" maxlon="-74.541"/>' +
-                '  <node id="105340439" visible="true" version="2" changeset="2880013" timestamp="2009-10-18T07:47:39Z" user="woodpeck_fixbot" uid="147510" lat="40.6555" lon="-74.5415"/>' +
-                '  <node id="105340442" visible="true" version="2" changeset="2880013" timestamp="2009-10-18T07:47:39Z" user="woodpeck_fixbot" uid="147510" lat="40.6556" lon="-74.5416"/>' +
-                '  <way id="40376199" visible="true" version="1" changeset="2403012" timestamp="2009-09-07T16:01:13Z" user="NJDataUploads" uid="148169">' +
-                '    <nd ref="105340439"/>' +
-                '    <nd ref="105340442"/>' +
-                '    <tag k="highway" v="residential"/>' +
-                '    <tag k="name" v="Potomac Drive"/>' +
-                '  </way>' +
-                '</osm>';
+        var path = '/api/0.6/map.json?bbox=-74.542,40.655,-74.541,40.656';
+        var response =
+            '{' +
+            '    "version":"0.6",' +
+            '    "bounds":{"minlat":40.6550000,"minlon":-74.5420000,"maxlat":40.6560000,"maxlon":-74.5410000},' +
+            '    "elements":[' +
+            '        {"type":"node","id":"105340439","visible":true,"version":2,"changeset":2880013,"timestamp":"2009-10-18T07:47:39Z","user":"woodpeck_fixbot","uid":147510,"lat":40.6555,"lon":-74.5415},' +
+            '        {"type":"node","id":"105340442","visible":true,"version":2,"changeset":2880013,"timestamp":"2009-10-18T07:47:39Z","user":"woodpeck_fixbot","uid":147510,"lat":40.6556,"lon":-74.5416},' +
+            '        {"type":"way","id":"40376199","visible":true,"version":1,"changeset":2403012,"timestamp":"2009-09-07T16:01:13Z","user":"NJDataUploads","uid":148169,"nodes":[105340439,105340442],"tags":{"highway":"residential","name":"Potomac Drive"}}' +
+            '    ]' +
+            '}';
 
-        beforeEach(function() {
-            connection.reset();
-            server = sinon.fakeServer.create();
-            spy = sinon.spy();
-        });
-
-        afterEach(function() {
-            server.restore();
-        });
-
-
-        it('returns an object', function (done) {
-            connection.loadFromAPI(path, function (err, xml) {
-                expect(err).to.not.be.ok;
-                expect(typeof xml).to.eql('object');
-                done();
+        it('returns an object', function(done) {
+            fetchMock.mock('https://www.openstreetmap.org' + path, {
+                body: response,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
             });
 
-            server.respondWith('GET', 'http://www.openstreetmap.org' + path,
-                [200, { 'Content-Type': 'text/xml' }, response]);
-            server.respond();
+            connection.loadFromAPI(path, function (err, payload) {
+                expect(err).to.not.be.ok;
+                expect(typeof payload).to.eql('object');
+                done();
+            });
         });
 
         it('retries an authenticated call unauthenticated if 400 Bad Request', function (done) {
+            fetchMock.mock('https://www.openstreetmap.org' + path, {
+                body: response,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+            serverXHR.respondWith('GET', 'https://www.openstreetmap.org' + path,
+                [400, { 'Content-Type': 'text/plain' }, 'Bad Request']);
+
             login();
+
             connection.loadFromAPI(path, function (err, xml) {
                 expect(err).to.be.not.ok;
                 expect(typeof xml).to.eql('object');
                 expect(connection.authenticated()).to.be.not.ok;
+                expect(fetchMock.called()).to.be.true;
+
                 done();
             });
 
-            server.respondWith('GET', 'http://www.openstreetmap.org' + path,
-                function(request) {
-                    if (connection.authenticated()) {
-                        return request.respond(400, {});
-                    } else {
-                        return request.respond(200, { 'Content-Type': 'text/xml' }, response);
-                    }
-                }
-            );
-            server.respond();
-            server.respond();
+            serverXHR.respond();
         });
 
         it('retries an authenticated call unauthenticated if 401 Unauthorized', function (done) {
+            fetchMock.mock('https://www.openstreetmap.org' + path, {
+                body: response,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+            serverXHR.respondWith('GET', 'https://www.openstreetmap.org' + path,
+                [401, { 'Content-Type': 'text/plain' }, 'Unauthorized']);
+
             login();
             connection.loadFromAPI(path, function (err, xml) {
                 expect(err).to.be.not.ok;
                 expect(typeof xml).to.eql('object');
                 expect(connection.authenticated()).to.be.not.ok;
+                expect(fetchMock.called()).to.be.true;
+
                 done();
             });
 
-            server.respondWith('GET', 'http://www.openstreetmap.org' + path,
-                function(request) {
-                    if (connection.authenticated()) {
-                        return request.respond(401, {});
-                    } else {
-                        return request.respond(200, { 'Content-Type': 'text/xml' }, response);
-                    }
-                }
-            );
-            server.respond();
-            server.respond();
+            serverXHR.respond();
         });
 
         it('retries an authenticated call unauthenticated if 403 Forbidden', function (done) {
+            fetchMock.mock('https://www.openstreetmap.org' + path, {
+                body: response,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+            serverXHR.respondWith('GET', 'https://www.openstreetmap.org' + path,
+                [403, { 'Content-Type': 'text/plain' }, 'Forbidden']);
+
             login();
             connection.loadFromAPI(path, function (err, xml) {
                 expect(err).to.be.not.ok;
                 expect(typeof xml).to.eql('object');
                 expect(connection.authenticated()).to.be.not.ok;
+                expect(fetchMock.called()).to.be.true;
+
                 done();
             });
 
-            server.respondWith('GET', 'http://www.openstreetmap.org' + path,
-                function(request) {
-                    if (connection.authenticated()) {
-                        return request.respond(403, {});
-                    } else {
-                        return request.respond(200, { 'Content-Type': 'text/xml' }, response);
-                    }
-                }
-            );
-            server.respond();
-            server.respond();
+            serverXHR.respond();
         });
 
 
         it('dispatches change event if 509 Bandwidth Limit Exceeded', function (done) {
+            fetchMock.mock('https://www.openstreetmap.org' + path, {
+                body: 'Bandwidth Limit Exceeded',
+                status: 509,
+                headers: { 'Content-Type': 'text/plain' }
+            });
+
             logout();
             connection.on('change', spy);
             connection.loadFromAPI(path, function (err) {
@@ -266,6 +272,12 @@ describe('iD.serviceOsm', function () {
         });
 
         it('dispatches change event if 429 Too Many Requests', function (done) {
+            fetchMock.mock('https://www.openstreetmap.org' + path, {
+                body: '429 Too Many Requests',
+                status: 429,
+                headers: { 'Content-Type': 'text/plain' }
+            });
+
             logout();
             connection.on('change', spy);
             connection.loadFromAPI(path, function (err) {
@@ -292,28 +304,96 @@ describe('iD.serviceOsm', function () {
     });
 
 
-    describe('#loadEntity', function () {
-        var nodeXML = '<?xml version="1.0" encoding="UTF-8"?><osm>' +
-            '<node id="1" version="1" changeset="1" lat="0" lon="0" visible="true" timestamp="2009-03-07T03:26:33Z"></node>' +
-            '</osm>';
-        var wayXML = '<?xml version="1.0" encoding="UTF-8"?><osm>' +
-            '<node id="1" version="1" changeset="2817006" lat="0" lon="0" visible="true" timestamp="2009-10-11T18:03:23Z"/>' +
-            '<way id="1" visible="true" timestamp="2008-01-03T05:24:43Z" version="1" changeset="522559"><nd ref="1"/></way>' +
-            '</osm>';
+    describe('#loadTiles', function() {
+        var tileResponse =
+            '{' +
+            '    "version":"0.6",' +
+            '    "bounds":{"minlat":40.6681396,"minlon":-74.0478516,"maxlat":40.6723060,"maxlon":-74.0423584},' +
+            '    "elements":[' +
+            '        {"type":"node","id":"368395606","visible":true,"version":3,"changeset":28924294,"timestamp":"2015-02-18T04:25:04Z","user":"peace2","uid":119748,"lat":40.6694299,"lon":-74.0444216,"tags":{"addr:state":"NJ","ele":"0","gnis:county_name":"Hudson","gnis:feature_id":"881377","gnis:feature_type":"Bay","name":"Upper Bay","natural":"bay"}}' +
+            '    ]' +
+            '}';
 
         beforeEach(function() {
-            server = sinon.fakeServer.create();
+            var dimensions = [64, 64];
+            context.projection
+                .scale(iD.geoZoomToScale(20))
+                .translate([55212042.434589595, 33248879.510193843])  // -74.0444216, 40.6694299
+                .clipExtent([[0,0], dimensions]);
         });
 
-        afterEach(function() {
-            server.restore();
+        it('calls callback when data tiles are loaded', function(done) {
+            fetchMock.mock(/map.json\?bbox/, {
+                body: tileResponse,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            var spy = sinon.spy();
+            connection.loadTiles(context.projection, spy);
+
+            window.setTimeout(function() {
+                expect(spy).to.have.been.calledOnce;
+                done();
+            }, 500);
         });
+
+        it('#isDataLoaded', function(done) {
+            fetchMock.mock(/map.json\?bbox/, {
+                body: tileResponse,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            // resetting the cache
+            const caches = connection.caches('get');
+            caches.tile.toLoad = {};
+            caches.tile.loaded = {};
+            caches.tile.inflight = {};
+            caches.tile.seen = {};
+            caches.tile.rtree.clear();
+
+            expect(connection.isDataLoaded([-74.0444216, 40.6694299])).to.be.false;
+
+            connection.loadTiles(context.projection);
+
+            window.setTimeout(function() {
+                expect(fetchMock.called()).to.be.true;
+                expect(connection.isDataLoaded([-74.0444216, 40.6694299])).to.be.true;
+                done();
+            }, 500);
+        });
+    });
+
+    describe('#loadEntity', function () {
+        var nodeResponse =
+            '{' +
+            '    "version":"0.6",' +
+            '    "elements":[' +
+            '        {"type":"node","id":1,"visible":true,"version":1,"changeset":28924294,"timestamp":"2009-03-07T03:26:33Z","user":"peace2","uid":119748,"lat":0,"lon":0}' +
+            '    ]' +
+            '}';
+
+        var wayResponse =
+            '{' +
+            '    "version":"0.6",' +
+            '    "elements":[' +
+            '        {"type":"node","id":1,"visible":true,"version":1,"changeset":2817006,"timestamp":"2009-10-11T18:03:23Z","user":"peace2","uid":119748,"lat":0,"lon":0},' +
+            '        {"type":"way","id":1,"visible":true,"version":1,"changeset":522559,"timestamp":"2008-01-03T05:24:43Z","user":"peace2","uid":119748,"nodes":[1]}' +
+            '    ]' +
+            '}';
 
         it('loads a node', function(done) {
+            fetchMock.mock('https://www.openstreetmap.org/api/0.6/node/1.json', {
+                body: nodeResponse,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+
             var id = 'n1';
             connection.loadEntity(id, function(err, result) {
                 var entity = result.data.find(function(e) { return e.id === id; });
-                expect(entity).to.be.an.instanceOf(iD.Node);
+                expect(entity).to.be.an.instanceOf(iD.osmNode);
                 done();
             });
 
@@ -323,10 +403,16 @@ describe('iD.serviceOsm', function () {
         });
 
         it('loads a way', function(done) {
+            fetchMock.mock('https://www.openstreetmap.org/api/0.6/way/1/full.json', {
+                body: wayResponse,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+
             var id = 'w1';
             connection.loadEntity(id, function(err, result) {
                 var entity = result.data.find(function(e) { return e.id === id; });
-                expect(entity).to.be.an.instanceOf(iD.Way);
+                expect(entity).to.be.an.instanceOf(iD.osmWay);
                 done();
             });
 
@@ -336,13 +422,20 @@ describe('iD.serviceOsm', function () {
         });
 
         it('does not ignore repeat requests', function(done) {
+            fetchMock.mock('https://www.openstreetmap.org/api/0.6/node/1.json', {
+                body: wayResponse,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+
             var id = 'n1';
             connection.loadEntity(id, function(err1, result1) {
                 var entity1 = result1.data.find(function(e1) { return e1.id === id; });
-                expect(entity1).to.be.an.instanceOf(iD.Node);
+                expect(entity1).to.be.an.instanceOf(iD.osmNode);
+
                 connection.loadEntity(id, function(err2, result2) {
                     var entity2 = result2.data.find(function(e2) { return e2.id === id; });
-                    expect(entity2).to.be.an.instanceOf(iD.Node);
+                    expect(entity2).to.be.an.instanceOf(iD.osmNode);
                     done();
                 });
                 server.respond();
@@ -356,16 +449,28 @@ describe('iD.serviceOsm', function () {
 
 
     describe('#loadEntityVersion', function () {
-        var nodeXML = '<?xml version="1.0" encoding="UTF-8"?><osm>' +
-                '<node id="1" version="1" changeset="1" lat="0" lon="0" visible="true" timestamp="2009-03-07T03:26:33Z"></node>' +
-                '</osm>';
-        var wayXML = '<?xml version="1.0" encoding="UTF-8"?><osm>' +
-                '<way id="1" visible="true" timestamp="2008-01-03T05:24:43Z" version="1" changeset="522559"><nd ref="1"/></way>' +
-                '</osm>';
+        var nodeResponse =
+            '{' +
+            '    "version":"0.6",' +
+            '    "elements":[' +
+            '        {"type":"node","id":1,"visible":true,"version":1,"changeset":28924294,"timestamp":"2009-03-07T03:26:33Z","user":"peace2","uid":119748,"lat":0,"lon":0}' +
+            '    ]' +
+            '}';
+        var wayResponse =
+            '{' +
+            '    "version":"0.6",' +
+            '    "elements":[' +
+            '        {"type":"node","id":1,"visible":true,"version":1,"changeset":2817006,"timestamp":"2009-10-11T18:03:23Z","user":"peace2","uid":119748,"lat":0,"lon":0},' +
+            '        {"type":"way","id":1,"visible":true,"version":1,"changeset":522559,"timestamp":"2008-01-03T05:24:43Z","user":"peace2","uid":119748,"nodes":[1]}' +
+            '    ]' +
+            '}';
 
-        beforeEach(function() {
-            server = sinon.fakeServer.create();
-        });
+        it('loads a node', function(done) {
+            fetchMock.mock('https://www.openstreetmap.org/api/0.6/node/1/1.json', {
+                body: nodeResponse,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
 
         afterEach(function() {
             server.restore();
@@ -375,7 +480,7 @@ describe('iD.serviceOsm', function () {
             var id = 'n1';
             connection.loadEntityVersion(id, 1, function(err, result) {
                 var entity = result.data.find(function(e) { return e.id === id; });
-                expect(entity).to.be.an.instanceOf(iD.Node);
+                expect(entity).to.be.an.instanceOf(iD.osmNode);
                 done();
             });
 
@@ -385,10 +490,16 @@ describe('iD.serviceOsm', function () {
         });
 
         it('loads a way', function(done) {
+            fetchMock.mock('https://www.openstreetmap.org/api/0.6/way/1/1.json', {
+                body: wayResponse,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+
             var id = 'w1';
             connection.loadEntityVersion(id, 1, function(err, result) {
                 var entity = result.data.find(function(e) { return e.id === id; });
-                expect(entity).to.be.an.instanceOf(iD.Way);
+                expect(entity).to.be.an.instanceOf(iD.osmWay);
                 done();
             });
 
@@ -398,13 +509,20 @@ describe('iD.serviceOsm', function () {
         });
 
         it('does not ignore repeat requests', function(done) {
+            fetchMock.mock('https://www.openstreetmap.org/api/0.6/node/1/1.json', {
+                body: nodeResponse,
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+
             var id = 'n1';
             connection.loadEntityVersion(id, 1, function(err1, result1) {
                 var entity1 = result1.data.find(function(e1) { return e1.id === id; });
-                expect(entity1).to.be.an.instanceOf(iD.Node);
+                expect(entity1).to.be.an.instanceOf(iD.osmNode);
+
                 connection.loadEntityVersion(id, 1, function(err2, result2) {
                     var entity2 = result2.data.find(function(e2) { return e2.id === id; });
-                    expect(entity2).to.be.an.instanceOf(iD.Node);
+                    expect(entity2).to.be.an.instanceOf(iD.osmNode);
                     done();
                 });
                 server.respond();
@@ -470,9 +588,9 @@ describe('iD.serviceOsm', function () {
                 done();
             });
 
-            server.respondWith('GET', 'http://www.openstreetmap.org/api/0.6/changesets?user=1',
+            serverXHR.respondWith('GET', 'https://www.openstreetmap.org/api/0.6/changesets?user=1',
                 [200, { 'Content-Type': 'text/xml' }, changesetsXML]);
-            server.respond();
+            serverXHR.respond();
         });
 
         it('excludes changesets without comment tag', function(done) {
@@ -499,9 +617,9 @@ describe('iD.serviceOsm', function () {
                 done();
             });
 
-            server.respondWith('GET', 'http://www.openstreetmap.org/api/0.6/changesets?user=1',
+            serverXHR.respondWith('GET', 'https://www.openstreetmap.org/api/0.6/changesets?user=1',
                 [200, { 'Content-Type': 'text/xml' }, changesetsXML]);
-            server.respond();
+            serverXHR.respond();
         });
 
         it('excludes changesets with empty comment', function(done) {
@@ -529,35 +647,22 @@ describe('iD.serviceOsm', function () {
                 done();
             });
 
-            server.respondWith('GET', 'http://www.openstreetmap.org/api/0.6/changesets?user=1',
+            serverXHR.respondWith('GET', 'https://www.openstreetmap.org/api/0.6/changesets?user=1',
                 [200, { 'Content-Type': 'text/xml' }, changesetsXML]);
-            server.respond();
+            serverXHR.respond();
         });
-
     });
 
     describe('#caches', function() {
-        it('loads reset caches', function (done) {
-            var resetCaches = {
-                tile: {
-                    inflight: {}, loaded: {}, seen: {}
-                },
-                note: {
-                    loaded: {}, inflight: {}, inflightPost: {}, note: {} // not including rtree
-                },
-                user: {
-                    toLoad: {}, user: {}
-                }
-            };
+        it('loads reset caches', function () {
             var caches = connection.caches();
-            expect(caches.tile).to.eql(resetCaches.tile);
-            expect(caches.note.loaded).to.eql(resetCaches.note.loaded);
-            expect(caches.user).to.eql(resetCaches.user);
-            done();
+            expect(caches.tile).to.have.all.keys(['toLoad','loaded','inflight','seen','rtree']);
+            expect(caches.note).to.have.all.keys(['toLoad','loaded','inflight','inflightPost','note','closed','rtree']);
+            expect(caches.user).to.have.all.keys(['toLoad','user']);
         });
 
         describe('sets/gets caches', function() {
-            it('sets/gets a tile', function (done) {
+            it('sets/gets a tile', function () {
                 var obj = {
                     tile: { loaded: { '1,2,16': true, '3,4,16': true } }
                 };
@@ -567,7 +672,7 @@ describe('iD.serviceOsm', function () {
                 done();
             });
 
-            it('sets/gets a note', function (done) {
+            it('sets/gets a note', function () {
                 var note = iD.osmNote({ id: 1, loc: [0, 0] });
                 var note2 = iD.osmNote({ id: 2, loc: [0, 0] });
                 var obj = {
@@ -579,7 +684,7 @@ describe('iD.serviceOsm', function () {
                 done();
             });
 
-            it('sets/gets a user', function (done) {
+            it('sets/gets a user', function () {
                 var user = { id: 1, display_name: 'Name' };
                 var user2 = { id: 2, display_name: 'Name' };
                 var obj = {
@@ -595,25 +700,51 @@ describe('iD.serviceOsm', function () {
     });
 
     describe('#loadNotes', function() {
+        var notesXML = '<?xml version="1.0" encoding="UTF-8"?>' +
+            '<osm>' +
+            '<note lon="10" lat="0">' +
+            '  <id>1</id>' +
+            '  <url>https://www.openstreetmap.org/api/0.6/notes/1</url>' +
+            '  <comment_url>https://www.openstreetmap.org/api/0.6/notes/1/comment</comment_url>' +
+            '  <close_url>https://www.openstreetmap.org/api/0.6/notes/1/close</close_url>' +
+            '  <date_created>2019-01-01 00:00:00 UTC</date_created>' +
+            '  <status>open</status>' +
+            '  <comments>' +
+            '    <comment>' +
+            '      <date>2019-01-01 00:00:00 UTC</date>' +
+            '      <uid>1</uid>' +
+            '      <user>Steve</user>' +
+            '      <user_url>https://www.openstreetmap.org/user/Steve</user_url>' +
+            '      <action>opened</action>' +
+            '      <text>This is a note</text>' +
+            '      <html>&lt;p&gt;This is a note&lt;/p&gt;</html>' +
+            '    </comment>' +
+            '  </comments>' +
+            '</note>' +
+            '</osm>';
+
         beforeEach(function() {
+            var dimensions = [64, 64];
             context.projection
-                .scale(116722210.56960216)
-                .translate([244505613.61327893, 74865520.92230521])
-                .clipExtent([[0,0], [609.34375, 826]]);
+                .scale(iD.geoZoomToScale(14))
+                .translate([-116508, 0])  // 10,0
+                .clipExtent([[0,0], dimensions]);
         });
 
-        it('fires loadedNotes when notes are loaded', function() {
+        it('fires loadedNotes when notes are loaded', function(done) {
+            fetchMock.mock(/notes\?/, {
+                body: notesXML,
+                status: 200,
+                headers: { 'Content-Type': 'text/xml' }
+            });
+
             connection.on('loadedNotes', spy);
-            connection.loadNotes(context.projection, [64, 64], {});
+            connection.loadNotes(context.projection, {});
 
-            var url = 'http://www.openstreetmap.org/api/0.6/notes?limit=10000&closed=7&bbox=-120.05859375,34.45221847282654,-119.970703125,34.52466147177173';
-            var notesXML = ''; // TODO: determine output even though this test note is closed and will be gone soon
-
-            server.respondWith('GET', url,
-                [200, { 'Content-Type': 'text/xml' }, notesXML ]);
-            server.respond();
-
-            expect(spy).to.have.been.calledOnce;
+            window.setTimeout(function() {
+                expect(spy).to.have.been.calledOnce;
+                done();
+            }, 500);
         });
     });
 
@@ -622,10 +753,11 @@ describe('iD.serviceOsm', function () {
         beforeEach(function() {
             var dimensions = [64, 64];
             context.projection
-                .scale(667544.214430109)  // z14
+                .scale(iD.geoZoomToScale(14))
                 .translate([-116508, 0])  // 10,0
                 .clipExtent([[0,0], dimensions]);
         });
+
         it('returns notes in the visible map area', function() {
             var notes = [
                 { minX: 10, minY: 0, maxX: 10, maxY: 0, data: { key: '0', loc: [10,0] } },
@@ -645,32 +777,30 @@ describe('iD.serviceOsm', function () {
 
 
     describe('#getNote', function() {
-            it('returns a note', function (done) {
-                var note = iD.osmNote({ id: 1, loc: [0, 0], });
-                var obj = {
-                    note: { note: { 1: note } }
-                };
-                connection.caches(obj);
-                var result = connection.getNote(1);
-                expect(result).to.deep.equal(note);
-                done();
-            });
+        it('returns a note', function () {
+            var note = iD.osmNote({ id: 1, loc: [0, 0], });
+            var obj = {
+                note: { note: { 1: note } }
+            };
+            connection.caches(obj);
+            var result = connection.getNote(1);
+            expect(result).to.deep.equal(note);
         });
+    });
 
     describe('#removeNote', function() {
-        it('removes a note that is new', function(done) {
+        it('removes a note that is new', function() {
             var note = iD.osmNote({ id: -1, loc: [0, 0], });
             connection.replaceNote(note);
             connection.removeNote(note);
             var result = connection.getNote(-1);
             expect(result).to.eql(undefined);
-            done();
         });
     });
 
 
     describe('#replaceNote', function() {
-        it('returns a new note', function (done) {
+        it('returns a new note', function () {
             var note = iD.osmNote({ id: 2, loc: [0, 0], });
             var result = connection.replaceNote(note);
             expect(result.id).to.eql(2);
@@ -679,10 +809,9 @@ describe('iD.serviceOsm', function () {
             var result_rtree = rtree.search({ 'minX': -1, 'minY': -1, 'maxX': 1, 'maxY': 1 });
             expect(result_rtree.length).to.eql(1);
             expect(result_rtree[0].data).to.eql(note);
-            done();
         });
 
-        it('replaces a note', function (done) {
+        it('replaces a note', function () {
             var note = iD.osmNote({ id: 2, loc: [0, 0], });
             connection.replaceNote(note);
             note.status = 'closed';
@@ -693,41 +822,42 @@ describe('iD.serviceOsm', function () {
             var result_rtree = rtree.search({ 'minX': -1, 'minY': -1, 'maxX': 1, 'maxY': 1 });
             expect(result_rtree.length).to.eql(1);
             expect(result_rtree[0].data.status).to.eql('closed');
-
-            done();
         });
     });
 
 
     describe('API capabilities', function() {
-        var capabilitiesXML = '<?xml version="1.0" encoding="UTF-8"?><osm>' +
-            '<api>' +
-            '<version minimum="0.6" maximum="0.6"/>' +
-            '<area maximum="0.25"/>' +
-            '<tracepoints per_page="5000"/>' +
-            '<waynodes maximum="2000"/>' +
-            '<changesets maximum_elements="50000"/>' +
-            '<timeout seconds="300"/>' +
-            '<status database="online" api="online" gpx="online"/>' +
-            '</api>' +
-            '<policy><imagery>' +
-            '<blacklist regex="\.foo\.com"/>' +
-            '<blacklist regex="\.bar\.org"/>' +
-            '</imagery></policy>' +
-            '</osm>';
-
-
-        beforeEach(function() {
-            server = sinon.fakeServer.create();
-        });
-
-        afterEach(function() {
-            server.restore();
-        });
+        var capabilitiesXML = `<?xml version="1.0" encoding="UTF-8"?>
+        <osm version="0.6" generator="OpenStreetMap server" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+            <api>
+                <version minimum="0.6" maximum="0.6"/>
+                <area maximum="0.25"/>
+                <note_area maximum="25"/>
+                <tracepoints per_page="5000"/>
+                <waynodes maximum="2000"/>
+                <changesets maximum_elements="50000"/>
+                <timeout seconds="300"/>
+                <status database="online" api="online" gpx="online"/>
+            </api>
+            <policy>
+                <imagery>
+                    <blacklist regex="\.foo\.com"/>
+                    <blacklist regex="\.bar\.org"/>
+                </imagery>
+            </policy>
+        </osm>`;
 
         describe('#status', function() {
             it('gets API status', function(done) {
-                connection.status(function(err, val) {
+                fetchMock.mock('https://www.openstreetmap.org/api/capabilities', {
+                    body: capabilitiesXML,
+                    status: 200,
+                    headers: { 'Content-Type': 'text/xml' }
+                }, {
+                    overwriteRoutes: true
+                });
+
+                connection.status(function (err, val) {
                     expect(val).to.eql('online');
                     done();
                 });
@@ -738,11 +868,19 @@ describe('iD.serviceOsm', function () {
             });
         });
 
-        describe('#imageryBlacklists', function() {
-            it('updates imagery blacklists', function(done) {
+        describe('#imageryBlocklists', function() {
+            it('updates imagery blocklists', function(done) {
+                fetchMock.mock('https://www.openstreetmap.org/api/capabilities', {
+                    body: capabilitiesXML,
+                    status: 200,
+                    headers: { 'Content-Type': 'text/xml' }
+                }, {
+                    overwriteRoutes: true
+                });
+
                 connection.status(function() {
-                    var blacklists = connection.imageryBlacklists();
-                    expect(blacklists).to.deep.equal(['\.foo\.com','\.bar\.org']);
+                    var blocklists = connection.imageryBlocklists();
+                    expect(blocklists).to.deep.equal([new RegExp('\.foo\.com'), new RegExp('\.bar\.org')]);
                     done();
                 });
 

@@ -1,15 +1,18 @@
-import { t } from '../util/locale';
-import { svgIcon } from '../svg';
-import {
-    osmNote
-} from '../osm';
+import { t } from '../core/localizer';
+import { osmNote } from '../osm';
+import { services } from '../services';
+import { svgIcon } from '../svg/icon';
 
 
 export function uiNoteReport() {
     var _note;
-    var url = 'https://fo.ob.ar/reports/new?reportable_id=';
+    var url = 'https://www.openstreetmap.org/reports/new?reportable_id=';
 
     function noteReport(selection) {
+        var url;
+        if (services.osm && (_note instanceof osmNote) && (!_note.isNew())) {
+            url = services.osm.noteReportURL(_note);
+        }
 
         if (!(_note instanceof osmNote)) return;
 
@@ -17,7 +20,7 @@ export function uiNoteReport() {
 
         var data = ((!_note || _note.isNew()) ? [] : [_note]);
         var link = selection.selectAll('.note-report')
-            .data(data, function(d) { return d.id; });
+            .data(url ? [url] : []);
 
         // exit
         link.exit()
@@ -28,18 +31,18 @@ export function uiNoteReport() {
             .append('a')
             .attr('class', 'note-report')
             .attr('target', '_blank')
-            .attr('href', url)
+            .attr('href', function(d) { return d; })
             .call(svgIcon('#iD-icon-out-link', 'inline'));
 
         linkEnter
             .append('span')
-            .text(t('note.report'));
+            .call(t.append('note.report'));
     }
 
 
-    noteReport.note = function(_) {
+    noteReport.note = function(val) {
         if (!arguments.length) return _note;
-        _note = _;
+        _note = val;
         return noteReport;
     };
 

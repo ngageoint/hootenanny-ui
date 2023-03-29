@@ -7,25 +7,28 @@ import {
     polygonCentroid as d3_polygonCentroid
 } from 'd3-polygon';
 
-import { t } from '../util/locale';
-import { actionRotate } from '../actions';
-import { behaviorEdit } from '../behavior';
-import { geoVecInterp } from '../geo';
-import { modeBrowse, modeSelect } from './index';
+import { t } from '../core/localizer';
+import { actionRotate } from '../actions/rotate';
+import { actionNoop } from '../actions/noop';
+import { behaviorEdit } from '../behavior/edit';
+import { geoVecInterp, geoVecLength } from '../geo/vector';
+import { modeBrowse } from './browse';
+import { modeSelect } from './select';
 
-import {
-    operationCircularize,
-    operationDelete,
-    operationMove,
-    operationOrthogonalize,
-    operationReflectLong,
-    operationReflectShort
-} from '../operations';
+import { operationCircularize } from '../operations/circularize';
+import { operationDelete } from '../operations/delete';
+import { operationMove } from '../operations/move';
+import { operationOrthogonalize } from '../operations/orthogonalize';
+import { operationReflectLong, operationReflectShort } from '../operations/reflect';
 
-import { utilGetAllNodes, utilKeybinding } from '../util';
+import { utilKeybinding } from '../util/keybinding';
+import { utilFastMouse, utilGetAllNodes } from '../util/util';
 
 
 export function modeRotate(context, entityIDs) {
+
+    var _tolerancePx = 4; // see also behaviorDrag, behaviorSelect, modeMove
+
     var mode = {
         id: 'rotate',
         button: 'browse'
@@ -34,24 +37,27 @@ export function modeRotate(context, entityIDs) {
     var keybinding = utilKeybinding('rotate');
     var behaviors = [
         behaviorEdit(context),
-        operationCircularize(entityIDs, context).behavior,
-        operationDelete(entityIDs, context).behavior,
-        operationMove(entityIDs, context).behavior,
-        operationOrthogonalize(entityIDs, context).behavior,
-        operationReflectLong(entityIDs, context).behavior,
-        operationReflectShort(entityIDs, context).behavior
+        operationCircularize(context, entityIDs).behavior,
+        operationDelete(context, entityIDs).behavior,
+        operationMove(context, entityIDs).behavior,
+        operationOrthogonalize(context, entityIDs).behavior,
+        operationReflectLong(context, entityIDs).behavior,
+        operationReflectShort(context, entityIDs).behavior
     ];
     var annotation = entityIDs.length === 1 ?
-        t('operations.rotate.annotation.' + context.geometry(entityIDs[0])) :
-        t('operations.rotate.annotation.multiple');
+        t('operations.rotate.annotation.' + context.graph().geometry(entityIDs[0])) :
+        t('operations.rotate.annotation.feature', { n: entityIDs.length });
 
     var _prevGraph;
     var _prevAngle;
     var _prevTransform;
     var _pivot;
 
+    // use pointer events on supported platforms; fallback to mouse events
+    var _pointerPrefix = 'PointerEvent' in window ? 'pointer' : 'mouse';
 
-    function doRotate() {
+
+    function doRotate(d3_event) {
         var fn;
         if (context.graph() !== _prevGraph) {
             fn = context.perform;
@@ -69,40 +75,51 @@ export function modeRotate(context, entityIDs) {
 
             var nodes = utilGetAllNodes(entityIDs, context.graph());
             var points = nodes.map(function(n) { return projection(n.loc); });
-
-            if (points.length === 1) {  // degenerate case
-                _pivot = points[0];
-            } else if (points.length === 2) {
-                _pivot = geoVecInterp(points[0], points[1], 0.5);
-            } else {
-                _pivot = d3_polygonCentroid(d3_polygonHull(points));
-            }
+            _pivot = getPivot(points);
             _prevAngle = undefined;
         }
 
 
-        var currMouse = context.mouse();
+        var currMouse = context.map().mouse(d3_event);
         var currAngle = Math.atan2(currMouse[1] - _pivot[1], currMouse[0] - _pivot[0]);
 
         if (typeof _prevAngle === 'undefined') _prevAngle = currAngle;
         var delta = currAngle - _prevAngle;
 
-        fn(actionRotate(entityIDs, _pivot, delta, projection), annotation);
+        fn(actionRotate(entityIDs, _pivot, delta, projection));
 
         _prevTransform = currTransform;
         _prevAngle = currAngle;
         _prevGraph = context.graph();
     }
 
+    function getPivot(points) {
+        var _pivot;
+        if (points.length === 1) {
+            _pivot = points[0];
+        } else if (points.length === 2) {
+            _pivot = geoVecInterp(points[0], points[1], 0.5);
+        } else {
+            var polygonHull = d3_polygonHull(points);
+            if (polygonHull.length === 2) {
+                _pivot = geoVecInterp(points[0], points[1], 0.5);
+            } else {
+                _pivot = d3_polygonCentroid(d3_polygonHull(points));
+            }
+        }
+        return _pivot;
+    }
+
 
     function finish(d3_event) {
         d3_event.stopPropagation();
+        context.replace(actionNoop(), annotation);
         context.enter(modeSelect(context, entityIDs));
     }
 
 
     function cancel() {
-        context.pop();
+        if (_prevGraph) context.pop();   // remove the rotate
         context.enter(modeSelect(context, entityIDs));
     }
 
@@ -113,14 +130,34 @@ export function modeRotate(context, entityIDs) {
 
 
     mode.enter = function() {
+        _prevGraph = null;
+        context.features().forceVisible(entityIDs);
+
         behaviors.forEach(context.install);
 
+        var downEvent;
+
         context.surface()
-            .on('mousemove.rotate', doRotate)
-            .on('click.rotate', finish);
+            .on(_pointerPrefix + 'down.modeRotate', function(d3_event) {
+                downEvent = d3_event;
+            });
+
+        d3_select(window)
+            .on(_pointerPrefix + 'move.modeRotate', doRotate, true)
+            .on(_pointerPrefix + 'up.modeRotate', function(d3_event) {
+                if (!downEvent) return;
+                var mapNode = context.container().select('.main-map').node();
+                var pointGetter = utilFastMouse(mapNode);
+                var p1 = pointGetter(downEvent);
+                var p2 = pointGetter(d3_event);
+                var dist = geoVecLength(p1, p2);
+
+                if (dist <= _tolerancePx) finish(d3_event);
+                downEvent = null;
+            }, true);
 
         context.history()
-            .on('undone.rotate', undone);
+            .on('undone.modeRotate', undone);
 
         keybinding
             .on('⎋', cancel)
@@ -135,14 +172,19 @@ export function modeRotate(context, entityIDs) {
         behaviors.forEach(context.uninstall);
 
         context.surface()
-            .on('mousemove.rotate', null)
-            .on('click.rotate', null);
+            .on(_pointerPrefix + 'down.modeRotate', null);
+
+        d3_select(window)
+            .on(_pointerPrefix + 'move.modeRotate', null, true)
+            .on(_pointerPrefix + 'up.modeRotate', null, true);
 
         context.history()
-            .on('undone.rotate', null);
+            .on('undone.modeRotate', null);
 
         d3_select(document)
             .call(keybinding.unbind);
+
+        context.features().forceVisible([]);
     };
 
 

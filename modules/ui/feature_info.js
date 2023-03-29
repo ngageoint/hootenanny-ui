@@ -1,42 +1,45 @@
-import _compact from 'lodash-es/compact';
-import _map from 'lodash-es/map';
-
-import { t } from '../util/locale';
-import { uiTooltipHtml } from './tooltipHtml';
-import { tooltip } from '../util/tooltip';
-
+import { t } from '../core/localizer';
+import { uiTooltip } from './tooltip';
 
 export function uiFeatureInfo(context) {
     function update(selection) {
-        var features = context.features(),
-            stats = features.stats(),
-            count = 0,
-            hiddenList = _compact(_map(features.hidden(), function(k) {
-                if (stats[k]) {
-                    count += stats[k];
-                    return String(stats[k]) + ' ' + t('feature.' + k + '.description');
-                }
-            }));
+        var features = context.features();
+        var stats = features.stats();
+        var count = 0;
+        var hiddenList = features.hidden().map(function(k) {
+            if (stats[k]) {
+                count += stats[k];
+                return t.append('inspector.title_count', {
+                    title: t('feature.' + k + '.description'),
+                    count: stats[k]
+                });
+            }
+            return null;
+        }).filter(Boolean);
 
-        selection.html('');
+        selection.text('');
 
         if (hiddenList.length) {
-            var tooltipBehavior = tooltip()
+            var tooltipBehavior = uiTooltip()
                 .placement('top')
-                .html(true)
                 .title(function() {
-                    return uiTooltipHtml(hiddenList.join('<br/>'));
+                    return selection => {
+                        hiddenList.forEach(hiddenFeature => {
+                            selection.append('div').call(hiddenFeature);
+                        });
+                    };
                 });
 
-            var warning = selection.append('a')
+            selection.append('a')
+                .attr('class', 'chip')
                 .attr('href', '#')
-                .attr('tabindex', -1)
-                .html(t('feature_info.hidden_warning', { count: count }))
+                .call(t.append('feature_info.hidden_warning', { count: count }))
                 .call(tooltipBehavior)
                 .on('click', function(d3_event) {
-                    tooltipBehavior.hide(warning);
-                    // open map data panel?
+                    tooltipBehavior.hide();
                     d3_event.preventDefault();
+                    // open the Map Data pane
+                    context.ui().togglePanes(context.container().select('.map-panes .map-data-pane'));
                 });
         }
 

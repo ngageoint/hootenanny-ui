@@ -2,16 +2,18 @@ import {
     select as d3_select
 } from 'd3-selection';
 
-import {
-    behaviorBreathe,
-    behaviorHover,
-    behaviorLasso,
-    behaviorSelect
-} from '../behavior';
+import { behaviorBreathe } from '../behavior/breathe';
+import { behaviorHover } from '../behavior/hover';
+import { behaviorLasso } from '../behavior/lasso';
+import { behaviorSelect } from '../behavior/select';
 
-import { modeBrowse, modeDragNode, modeDragNote } from '../modes';
+import { t } from '../core/localizer';
+
+import { modeBrowse } from './browse';
+import { modeDragNode } from './drag_node';
+import { modeDragNote } from './drag_note';
 import { services } from '../services';
-import { uiNoteEditor } from '../ui';
+import { uiNoteEditor } from '../ui/note_editor';
 import { utilKeybinding } from '../util';
 
 
@@ -21,18 +23,17 @@ export function modeSelectNote(context, selectedNoteID) {
         button: 'browse'
     };
 
-    var osm = services.osm;
-    var keybinding = utilKeybinding('select-note');
-    var noteEditor = uiNoteEditor(context)
+    var _keybinding = utilKeybinding('select-note');
+    var _noteEditor = uiNoteEditor(context)
         .on('change', function() {
             context.map().pan([0,0]);  // trigger a redraw
             var note = checkSelectedID();
             if (!note) return;
             context.ui().sidebar
-                .show(noteEditor.note(note));
+                .show(_noteEditor.note(note));
         });
 
-    var behaviors = [
+    var _behaviors = [
         behaviorBreathe(context),
         behaviorHover(context),
         behaviorSelect(context),
@@ -41,12 +42,12 @@ export function modeSelectNote(context, selectedNoteID) {
         modeDragNote(context).behavior
     ];
 
-    var newFeature = false;
+    var _newFeature = false;
 
 
     function checkSelectedID() {
-        if (!osm) return;
-        var note = osm.getNote(selectedNoteID);
+        if (!services.osm) return;
+        var note = services.osm.getNote(selectedNoteID);
         if (!note) {
             context.enter(modeBrowse(context));
         }
@@ -64,26 +65,37 @@ export function modeSelectNote(context, selectedNoteID) {
             // Return to browse mode if selected DOM elements have
             // disappeared because the user moved them out of view..
             var source = d3_event && d3_event.type === 'zoom' && d3_event.sourceEvent;
-            if (drawn && source && (source.type === 'mousemove' || source.type === 'touchmove')) {
+            if (drawn && source && (source.type === 'pointermove' || source.type === 'mousemove' || source.type === 'touchmove')) {
                 context.enter(modeBrowse(context));
             }
 
         } else {
             selection
                 .classed('selected', true);
+
             context.selectedNoteID(selectedNoteID);
         }
     }
 
 
     function esc() {
+        if (context.container().select('.combobox').size()) return;
         context.enter(modeBrowse(context));
     }
 
 
-    mode.newFeature = function(_) {
-        if (!arguments.length) return newFeature;
-        newFeature = _;
+    mode.zoomToSelected = function() {
+        if (!services.osm) return;
+        var note = services.osm.getNote(selectedNoteID);
+        if (note) {
+            context.map().centerZoomEase(note.loc, 20);
+        }
+    };
+
+
+    mode.newFeature = function(val) {
+        if (!arguments.length) return _newFeature;
+        _newFeature = val;
         return mode;
     };
 
@@ -92,16 +104,19 @@ export function modeSelectNote(context, selectedNoteID) {
         var note = checkSelectedID();
         if (!note) return;
 
-        behaviors.forEach(context.install);
-        keybinding.on('⎋', esc, true);
+        _behaviors.forEach(context.install);
+
+        _keybinding
+            .on(t('inspector.zoom_to.key'), mode.zoomToSelected)
+            .on('⎋', esc, true);
 
         d3_select(document)
-            .call(keybinding);
+            .call(_keybinding);
 
         selectNote();
 
         var sidebar = context.ui().sidebar;
-        sidebar.show(noteEditor.note(note));
+        sidebar.show(_noteEditor.note(note).newNote(_newFeature));
 
         // expand the sidebar, avoid obscuring the note if needed
         sidebar.expand(sidebar.intersects(note.extent()));
@@ -112,10 +127,10 @@ export function modeSelectNote(context, selectedNoteID) {
 
 
     mode.exit = function() {
-        behaviors.forEach(context.uninstall);
+        _behaviors.forEach(context.uninstall);
 
         d3_select(document)
-            .call(keybinding.unbind);
+            .call(_keybinding.unbind);
 
         context.surface()
             .selectAll('.layer-notes .selected')

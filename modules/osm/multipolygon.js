@@ -3,61 +3,102 @@ import { osmIsInterestingTag } from './tags';
 import { osmWay } from './way';
 
 
+// "Old" multipolyons, previously known as "simple" multipolygons, are as follows:
+//
+// 1. Relation tagged with `type=multipolygon` and no interesting tags.
+// 2. One and only one member with the `outer` role. Must be a way with interesting tags.
+// 3. No members without a role.
+//
+// Old multipolygons are no longer recommended but are still rendered as areas by iD.
+
+export function osmOldMultipolygonOuterMemberOfRelation(entity, graph) {
+    if (entity.type !== 'relation' ||
+        !entity.isMultipolygon()
+        || Object.keys(entity.tags).filter(osmIsInterestingTag).length > 1) {
+        return false;
+    }
+
+    var outerMember;
+    for (var memberIndex in entity.members) {
+        var member = entity.members[memberIndex];
+        if (!member.role || member.role === 'outer') {
+            if (outerMember) return false;
+            if (member.type !== 'way') return false;
+            if (!graph.hasEntity(member.id)) return false;
+
+            outerMember = graph.entity(member.id);
+
+            if (Object.keys(outerMember.tags).filter(osmIsInterestingTag).length === 0) {
+                return false;
+            }
+        }
+    }
+
+    return outerMember;
+}
+
 // For fixing up rendering of multipolygons with tags on the outer member.
 // https://github.com/openstreetmap/iD/issues/613
-export function osmIsSimpleMultipolygonOuterMember(entity, graph) {
-    if (entity.type !== 'way' || Object.keys(entity.tags).filter(osmIsInterestingTag).length === 0)
+export function osmIsOldMultipolygonOuterMember(entity, graph) {
+    if (entity.type !== 'way' ||
+        Object.keys(entity.tags).filter(osmIsInterestingTag).length === 0) {
         return false;
+    }
 
     var parents = graph.parentRelations(entity);
-    if (parents.length !== 1)
-        return false;
+    if (parents.length !== 1) return false;
 
     var parent = parents[0];
-    if (!parent.isMultipolygon() || Object.keys(parent.tags).filter(osmIsInterestingTag).length > 1)
+    if (!parent.isMultipolygon() ||
+        Object.keys(parent.tags).filter(osmIsInterestingTag).length > 1) {
         return false;
+    }
 
     var members = parent.members, member;
     for (var i = 0; i < members.length; i++) {
         member = members[i];
-        if (member.id === entity.id && member.role && member.role !== 'outer')
-            return false; // Not outer member
-        if (member.id !== entity.id && (!member.role || member.role === 'outer'))
-            return false; // Not a simple multipolygon
+        if (member.id === entity.id && member.role && member.role !== 'outer') {
+            // Not outer member
+            return false;
+        }
+        if (member.id !== entity.id && (!member.role || member.role === 'outer')) {
+            // Not a simple multipolygon
+            return false;
+        }
     }
 
     return parent;
 }
 
 
-export function osmSimpleMultipolygonOuterMember(entity, graph) {
-    if (entity.type !== 'way')
-        return false;
+export function osmOldMultipolygonOuterMember(entity, graph) {
+    if (entity.type !== 'way') return false;
 
     var parents = graph.parentRelations(entity);
-    if (parents.length !== 1)
-        return false;
+    if (parents.length !== 1) return false;
 
     var parent = parents[0];
-    if (!parent.isMultipolygon() || Object.keys(parent.tags).filter(osmIsInterestingTag).length > 1)
+    if (!parent.isMultipolygon() ||
+        Object.keys(parent.tags).filter(osmIsInterestingTag).length > 1) {
         return false;
+    }
 
     var members = parent.members, member, outerMember;
     for (var i = 0; i < members.length; i++) {
         member = members[i];
         if (!member.role || member.role === 'outer') {
-            if (outerMember)
-                return false; // Not a simple multipolygon
+            if (outerMember) return false; // Not a simple multipolygon
             outerMember = member;
         }
     }
 
-    if (!outerMember)
-        return false;
+    if (!outerMember) return false;
 
     var outerEntity = graph.hasEntity(outerMember.id);
-    if (!outerEntity || !Object.keys(outerEntity.tags).filter(osmIsInterestingTag).length)
+    if (!outerEntity ||
+        !Object.keys(outerEntity.tags).filter(osmIsInterestingTag).length) {
         return false;
+    }
 
     return outerEntity;
 }
@@ -123,10 +164,9 @@ export function osmJoinWays(toJoin, graph) {
         var item = toJoin.shift();
         var currWays = [item];
         var currNodes = resolve(item).slice();
-        var doneSequence = false;
 
         // add to it
-        while (toJoin.length && !doneSequence) {
+        while (toJoin.length) {
             var start = currNodes[0];
             var end = currNodes[currNodes.length - 1];
             var fn = null;
@@ -176,7 +216,6 @@ export function osmJoinWays(toJoin, graph) {
             }
 
             if (!nodes) {     // couldn't find a joinable way/member
-                doneSequence = true;
                 break;
             }
 

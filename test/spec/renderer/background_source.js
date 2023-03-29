@@ -16,11 +16,13 @@ describe('iD.rendererBackgroundSource', function() {
         var source = iD.rendererBackgroundSource({
             type: 'wms',
             projection: 'EPSG:3857',
-            template: 'SRS={proj}&FORMAT=image/jpeg&WIDTH={width}&HEIGHT={height}&BBOX={bbox}'
+            template: 'SRS={proj}&imageSR={wkid}&bboxSR={wkid}&FORMAT=image/jpeg&WIDTH={width}&HEIGHT={height}&BBOX={bbox}'
         });
 
         var result = iD.utilStringQs(source.url([0,1,2]));
         expect(result.SRS).to.equal('EPSG:3857');
+        expect(result.imageSR).to.equal('3857');
+        expect(result.bboxSR).to.equal('3857');
         expect(result.FORMAT).to.equal('image/jpeg');
         expect(result.WIDTH).to.equal('256');
         expect(result.HEIGHT).to.equal('256');
@@ -70,4 +72,34 @@ describe('iD.rendererBackgroundSource', function() {
         expect(source.validZoom(3)).to.be.false;
         expect(source.validZoom(17)).to.be.false;
     });
+});
+
+describe('iD.rendererBackgroundSource.Custom', function() {
+    describe('#imageryUsed', function() {
+        it('returns an imagery_used string', function() {
+            var source = iD.rendererBackgroundSource.Custom('http://example.com');
+            expect(source.imageryUsed()).to.eql('Custom (http://example.com )');  // note ' )' space
+        });
+        it('sanitizes `access_token`', function() {
+            var source = iD.rendererBackgroundSource.Custom('http://example.com?access_token=MYTOKEN');
+            expect(source.imageryUsed()).to.eql('Custom (http://example.com?access_token={apikey} )');
+        });
+        it('sanitizes `connectId`', function() {
+            var source = iD.rendererBackgroundSource.Custom('http://example.com?connectId=MYTOKEN');
+            expect(source.imageryUsed()).to.eql('Custom (http://example.com?connectId={apikey} )');
+        });
+        it('sanitizes `token`', function() {
+            var source = iD.rendererBackgroundSource.Custom('http://example.com?token=MYTOKEN');
+            expect(source.imageryUsed()).to.eql('Custom (http://example.com?token={apikey} )');
+        });
+        it('sanitizes wms path `token`', function() {
+            var source = iD.rendererBackgroundSource.Custom('http://example.com/wms/v1/token/MYTOKEN/1.0.0/layer');
+            expect(source.imageryUsed()).to.eql('Custom (http://example.com/wms/v1/token/{apikey}/1.0.0/layer )');
+        });
+        it('sanitizes `key` in the URL path', function() {
+            var source = iD.rendererBackgroundSource.Custom('http://example.com/services;key=MYTOKEN/layer');
+            expect(source.imageryUsed()).to.eql('Custom (http://example.com/services;key={apikey}/layer )');
+        });
+    });
+
 });

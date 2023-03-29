@@ -1,548 +1,599 @@
-import _cloneDeep from 'lodash-es/cloneDeep';
 import _debounce from 'lodash-es/debounce';
-import _each from 'lodash-es/each';
-import _find from 'lodash-es/find';
-import _forOwn from 'lodash-es/forOwn';
-import _isEmpty from 'lodash-es/isEmpty';
-import _isObject from 'lodash-es/isObject';
-import _isString from 'lodash-es/isString';
 
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { json as d3_json } from 'd3-fetch';
 import { select as d3_select } from 'd3-selection';
 
-import { t, currentLocale, addTranslation, setLocale } from '../util/locale';
+import packageJSON from '../../package.json';
 
+import { t } from '../core/localizer';
+
+import { fileFetcher } from './file_fetcher';
+import { localizer } from './localizer';
 import { coreHistory } from './history';
-import { dataLocales } from '../../data';
-import { dataEn } from '../../data';
+import { coreValidator } from './validator';
+import { coreUploader } from './uploader';
 import { geoRawMercator } from '../geo/raw_mercator';
 import { modeSelect } from '../modes/select';
-import { presetIndex } from '../presets';
-import { rendererBackground, rendererFeatures, rendererMap } from '../renderer';
+import { presetManager } from '../presets';
+import { rendererBackground, rendererFeatures, rendererMap, rendererPhotos } from '../renderer';
 import { services } from '../services';
 import { uiInit } from '../ui/init';
-import { utilDetect } from '../util/detect';
-import { utilCallWhenIdle, utilKeybinding, utilRebind } from '../util';
-
-import DGServcies from '../services/dgservices';
-
-export var areaKeys = {};
-
-export function setAreaKeys(value) {
-    areaKeys = value;
-}
+import { utilKeybinding, utilRebind, utilStringQs, utilCleanOsmString } from '../util';
 
 
 export function coreContext() {
-    var context = {};
-    context.version = '2.12.1';
+  const dispatch = d3_dispatch('enter', 'exit', 'change');
+  let context = utilRebind({}, dispatch, 'on');
+  let _deferred = new Set();
 
-    // create a special translation that contains the keys in place of the strings
-    var tkeys = _cloneDeep(dataEn.en);
-    var parents = [];
+  context.version = packageJSON.version;
+  context.privacyVersion = '20201202';
 
-    function traverser(v, k, obj) {
-        parents.push(k);
-        if (_isObject(v)) {
-            _forOwn(v, traverser);
-        } else if (_isString(v)) {
-            obj[k] = parents.join('.');
-        }
-        parents.pop();
+  // iD will alter the hash so cache the parameters intended to setup the session
+  context.initialHashParams = window.location.hash ? utilStringQs(window.location.hash) : {};
+
+  /* Changeset */
+  // An osmChangeset object. Not loaded until needed.
+  context.changeset = null;
+
+  let _defaultChangesetComment = context.initialHashParams.comment;
+  let _defaultChangesetSource = context.initialHashParams.source;
+  let _defaultChangesetHashtags = context.initialHashParams.hashtags;
+  context.defaultChangesetComment = function(val) {
+    if (!arguments.length) return _defaultChangesetComment;
+    _defaultChangesetComment = val;
+    return context;
+  };
+  context.defaultChangesetSource = function(val) {
+    if (!arguments.length) return _defaultChangesetSource;
+    _defaultChangesetSource = val;
+    return context;
+  };
+  context.defaultChangesetHashtags = function(val) {
+    if (!arguments.length) return _defaultChangesetHashtags;
+    _defaultChangesetHashtags = val;
+    return context;
+  };
+
+  /* Document title */
+  /* (typically shown as the label for the browser window/tab) */
+
+  // If true, iD will update the title based on what the user is doing
+  let _setsDocumentTitle = true;
+  context.setsDocumentTitle = function(val) {
+    if (!arguments.length) return _setsDocumentTitle;
+    _setsDocumentTitle = val;
+    return context;
+  };
+  // The part of the title that is always the same
+  let _documentTitleBase = document.title;
+  context.documentTitleBase = function(val) {
+    if (!arguments.length) return _documentTitleBase;
+    _documentTitleBase = val;
+    return context;
+  };
+
+
+  /* User interface and keybinding */
+  let _ui;
+  context.ui = () => _ui;
+  context.lastPointerType = () => _ui.lastPointerType();
+
+  let _keybinding = utilKeybinding('context');
+  context.keybinding = () => _keybinding;
+  d3_select(document).call(_keybinding);
+
+
+  /* Straight accessors. Avoid using these if you can. */
+  // Instantiate the connection here because it doesn't require passing in
+  // `context` and it's needed for pre-init calls like `preauth`
+  let _connection = services.osm;
+  let _history;
+  let _validator;
+  let _uploader;
+  context.connection = () => _connection;
+  context.history = () => _history;
+  context.validator = () => _validator;
+  context.uploader = () => _uploader;
+
+  /* Connection */
+  context.preauth = (options) => {
+    if (_connection) {
+      _connection.switch(options);
     }
+    return context;
+  };
 
-    _forOwn(tkeys, traverser);
-    addTranslation('_tkeys_', tkeys);
 
-    addTranslation('en', dataEn.en);
-    setLocale('en');
+  // A string or array or locale codes to prefer over the browser's settings
+  context.locale = function(locale) {
+    if (!arguments.length) return localizer.localeCode();
+    localizer.preferredLocaleCodes(locale);
+    return context;
+  };
 
-    var dispatch = d3_dispatch('enter', 'exit', 'change');
 
-    // https://github.com/openstreetmap/iD/issues/772
-    // http://mathiasbynens.be/notes/localstorage-pattern#comment-9
-    var storage;
-    try { storage = localStorage; } catch (e) {}  // eslint-disable-line no-empty
-    storage = storage || (function() {
-        var s = {};
-        return {
-            getItem: function(k) { return s[k]; },
-            setItem: function(k, v) { s[k] = v; },
-            removeItem: function(k) { delete s[k]; }
-        };
-    })();
-
-    context.storage = function(k, v) {
-        try {
-            if (arguments.length === 1) return storage.getItem(k);
-            else if (v === null) storage.removeItem(k);
-            else storage.setItem(k, v);
-        } catch (e) {
-            // localstorage quota exceeded
-            /* eslint-disable no-console */
-            if (typeof console !== 'undefined') window.console.error('localStorage quota exceeded');
-            /* eslint-enable no-console */
+  function afterLoad(cid, callback) {
+    return (err, result) => {
+      if (err) {
+        // 400 Bad Request, 401 Unauthorized, 403 Forbidden..
+        if (err.status === 400 || err.status === 401 || err.status === 403) {
+          if (_connection) {
+            _connection.logout();
+          }
         }
+        if (typeof callback === 'function') {
+          callback(err);
+        }
+        return;
+
+      } else if (_connection && _connection.getConnectionId() !== cid) {
+        if (typeof callback === 'function') {
+          callback({ message: 'Connection Switched', status: -1 });
+        }
+        return;
+
+      } else {
+        _history.merge(result.data, result.extent);
+        if (typeof callback === 'function') {
+          callback(err, result);
+        }
+        return;
+      }
     };
+  }
 
 
-    /* User interface and keybinding */
-    var ui;
-    context.ui = function() { return ui; };
+  context.loadTiles = (projection, callback) => {
+    const handle = window.requestIdleCallback(() => {
+      _deferred.delete(handle);
+      if (_connection && context.editableDataEnabled()) {
+        const cid = _connection.getConnectionId();
+        _connection.loadTiles(projection, _map.zoom(), afterLoad(cid, callback));
+      }
+    });
+    _deferred.add(handle);
+  };
 
-    var keybinding = utilKeybinding('context');
-    context.keybinding = function() { return keybinding; };
-    d3_select(document).call(keybinding);
+  context.loadTileAtLoc = (loc, callback) => {
+    const handle = window.requestIdleCallback(() => {
+      _deferred.delete(handle);
+      if (_connection && context.editableDataEnabled()) {
+        const cid = _connection.getConnectionId();
+        _connection.loadTileAtLoc(loc, afterLoad(cid, callback));
+      }
+    });
+    _deferred.add(handle);
+  };
 
+  // Download the full entity and its parent relations. The callback may be called multiple times.
+  context.loadEntity = (entityID, callback) => {
+    if (_connection) {
+      const cid = _connection.getConnectionId();
+      _connection.loadEntity(entityID, afterLoad(cid, callback));
+      // We need to fetch the parent relations separately.
+      _connection.loadEntityRelations(entityID, afterLoad(cid, callback));
+    }
+  };
 
-    /* Straight accessors. Avoid using these if you can. */
-    var connection, history;
-    context.connection = function() { return connection; };
-    context.history = function() { return history; };
+  context.zoomToEntity = (entityID, zoomTo) => {
 
-
-    /* Connection */
-    context.preauth = function(options) {
-        if (connection) {
-            connection.switch(options);
-        }
-        return context;
-    };
-
-    context.loadTiles = utilCallWhenIdle(function(projection, callback) {
-        var cid;
-        function done(err, result) {
-            if (connection.getConnectionId() !== cid) {
-                if (callback) callback({ message: 'Connection Switched', status: -1 });
-                return;
-            }
-            if (!err) history.merge(result.data, result.extent);
-            if (callback) callback(err, result);
-        }
-        if (connection) {
-            cid = connection.getConnectionId();
-            connection.loadTiles(projection, map.zoom(), done);
-        }
+    // be sure to load the entity even if we're not going to zoom to it
+    context.loadEntity(entityID, (err, result) => {
+      if (err) return;
+      if (zoomTo !== false) {
+          const entity = result.data.find(e => e.id === entityID);
+          if (entity) {
+            _map.zoomTo(entity);
+          }
+      }
     });
 
-    context.loadEntity = function(entityID, callback) {
-        var cid;
-        function done(err, result) {
-            if (connection.getConnectionId() !== cid) {
-                if (callback) callback({ message: 'Connection Switched', status: -1 });
-                return;
-            }
-            if (!err) history.merge(result.data, result.extent);
-            if (callback) callback(err, result);
-        }
-        if (connection) {
-            cid = connection.getConnectionId();
-            connection.loadEntity(entityID, done);
-        }
-    };
+    _map.on('drawn.zoomToEntity', () => {
+      if (!context.hasEntity(entityID)) return;
+      _map.on('drawn.zoomToEntity', null);
+      context.on('enter.zoomToEntity', null);
+      context.enter(modeSelect(context, [entityID]));
+    });
 
-    context.loadMissing = function(ids, layerName, callback) {
-        function done(err, result) {
-            if (!err) history.merge(result.data, result.extent);
-            if (callback) callback(err, result);
-        }
+    context.on('enter.zoomToEntity', () => {
+      if (_mode.id !== 'browse') {
+        _map.on('drawn.zoomToEntity', null);
+        context.on('enter.zoomToEntity', null);
+      }
+    });
+  };
 
-        connection.loadMissing(ids, layerName, done);
-    };
+  let _minEditableZoom = 9;
+  context.minEditableZoom = function(val) {
+    if (!arguments.length) return _minEditableZoom;
+    _minEditableZoom = val;
+    if (_connection) {
+      _connection.tileZoom(val);
+    }
+    return context;
+  };
 
-    context.zoomToEntity = function(entityId, zoomTo) {
-        if (zoomTo !== false) {
-            this.loadEntity(entityId, function(err, result) {
-                if (err) return;
-                var entity = _find(result.data, function(e) { return e.id === entityId; });
-                if (entity) { map.zoomTo(entity); }
-            });
-        }
+  // String length limits in Unicode characters, not JavaScript UTF-16 code units
+  context.maxCharsForTagKey = () => 255;
+  context.maxCharsForTagValue = () => 255;
+  context.maxCharsForRelationRole = () => 255;
 
-        map.on('drawn.zoomToEntity', function() {
-            if (!context.hasEntity(entityId)) return;
-            map.on('drawn.zoomToEntity', null);
-            context.on('enter.zoomToEntity', null);
-            context.enter(modeSelect(context, [entityId]));
-        });
-
-        context.on('enter.zoomToEntity', function() {
-            if (mode.id !== 'browse') {
-                map.on('drawn.zoomToEntity', null);
-                context.on('enter.zoomToEntity', null);
-            }
-        });
-    };
-
-    var minEditableZoom = 9;
-    context.minEditableZoom = function(_) {
-        if (!arguments.length) return minEditableZoom;
-        minEditableZoom = _;
-        if (connection) {
-            connection.tileZoom(_);
-        }
-        return context;
-    };
+  context.cleanTagKey = (val) => utilCleanOsmString(val, context.maxCharsForTagKey());
+  context.cleanTagValue = (val) => utilCleanOsmString(val, context.maxCharsForTagValue());
+  context.cleanRelationRole = (val) => utilCleanOsmString(val, context.maxCharsForRelationRole());
 
 
-    /* History */
-    var inIntro = false;
-    context.inIntro = function(_) {
-        if (!arguments.length) return inIntro;
-        inIntro = _;
-        return context;
-    };
+  /* History */
+  let _inIntro = false;
+  context.inIntro = function(val) {
+    if (!arguments.length) return _inIntro;
+    _inIntro = val;
+    return context;
+  };
 
-    context.save = function() {
-        // no history save, no message onbeforeunload
-        if (inIntro || d3_select('.modal').size()) return;
+  // Immediately save the user's history to localstorage, if possible
+  // This is called someteimes, but also on the `window.onbeforeunload` handler
+  context.save = () => {
+    // no history save, no message onbeforeunload
+    if (_inIntro || context.container().select('.modal').size()) return;
 
-        var canSave;
-        if (mode && mode.id === 'save') {
-            canSave = false;
+    let canSave;
+    if (_mode && _mode.id === 'save') {
+      canSave = false;
 
-            // Attempt to prevent user from creating duplicate changes - see #5200
-            if (services.osm && services.osm.isChangesetInflight()) {
-                history.clearSaved();
-                return;
-            }
+      // Attempt to prevent user from creating duplicate changes - see #5200
+      if (services.osm && services.osm.isChangesetInflight()) {
+        _history.clearSaved();
+        return;
+      }
 
-        } else {
-            canSave = context.selectedIDs().every(function(id) {
-                var entity = context.hasEntity(id);
-                return entity && !entity.isDegenerate();
-            });
-        }
-
-        if (canSave) {
-            history.save();
-        }
-        if (history.hasChanges()) {
-            return t('save.unsaved_changes');
-        }
-    };
-
-
-    /* Graph */
-    context.hasEntity = function(id) {
-        return history.graph().hasEntity(id);
-    };
-    context.entity = function(id) {
-        return history.graph().entity(id);
-    };
-    context.childNodes = function(way) {
-        return history.graph().childNodes(way);
-    };
-    context.geometry = function(id) {
-        return context.entity(id).geometry(history.graph());
-    };
-
-
-    /* Modes */
-    var mode;
-    context.mode = function() {
-        return mode;
-    };
-    context.enter = function(newMode) {
-        if (mode) {
-            mode.exit();
-            dispatch.call('exit', this, mode);
-        }
-
-        mode = newMode;
-        mode.enter();
-        dispatch.call('enter', this, mode);
-    };
-    context.change = function() {
-        dispatch.call( 'change', this );
-    };
-
-    context.selectedIDs = function() {
-        if (mode && mode.selectedIDs) {
-            return mode.selectedIDs();
-        } else {
-            return [];
-        }
-    };
-
-    context.activeID = function() {
-        return mode && mode.activeID && mode.activeID();
-    };
-
-    var _selectedNoteID;
-    context.selectedNoteID = function(noteID) {
-        if (!arguments.length) return _selectedNoteID;
-        _selectedNoteID = noteID;
-        return context;
-    };
-
-
-    /* Behaviors */
-    context.install = function(behavior) {
-        context.surface().call(behavior);
-    };
-    context.uninstall = function(behavior) {
-        context.surface().call(behavior.off);
-    };
-
-
-    /* Copy/Paste */
-    var copyIDs = [], copyTags = {}, copyGraph;
-    context.copyGraph = function() { return copyGraph; };
-    context.copyIDs = function(_) {
-        if (!arguments.length) return copyIDs;
-        copyIDs = _;
-        copyGraph = history.graph();
-        return context;
-    };
-    context.copyTags = function(_) {
-        if (!arguments.length) return copyTags;
-        copyIDs = [];
-        copyTags = _;
-        copyGraph = history.graph();
-        translateCopyTags(copyTags);
-        return context;
-    };
-
-    var changeTagsCallback = function(tcTags) {
-        Object.keys(tcTags).forEach(function(key) {
-            if (tcTags[key] === undefined) {
-                delete tcTags[key];
-            }
-        });
-
-        copyTags = tcTags;
-    };
-
-    var translateCopyTags = function(tcTags) {
-        var entity = context.entity(context.selectedIDs()[0]);
-        if (Hoot.translations.activeTranslation !== 'OSM' && !_isEmpty(tcTags)) {
-            Hoot.translations.translateToOsm(tcTags, entity)
-                .then(resp => changeTagsCallback(resp));
-        } else {
-            changeTagsCallback(tcTags);
-        }
-    };
-
-
-    /* Background */
-    var background;
-    context.background = function() { return background; };
-
-
-    /* Features */
-    var features;
-    context.features = function() { return features; };
-    context.hasHiddenConnections = function(id) {
-        var graph = history.graph(),
-            entity = graph.entity(id);
-        return features.hasHiddenConnections(entity, graph);
-    };
-
-
-    /* Presets */
-    var presets;
-    context.presets = function() { return presets; };
-
-
-    /* Map */
-    var map;
-    context.map = function() { return map; };
-    context.layers = function() { return map.layers; };
-    context.surface = function() { return map.surface; };
-    context.editable = function() { return map.editable(); };
-    context.surfaceRect = function() {
-        return map.surface.node().getBoundingClientRect();
-    };
-
-
-    /* Debug */
-    var debugFlags = {
-        tile: false,        // tile boundaries
-        collision: false,   // label collision bounding boxes
-        imagery: false,     // imagery bounding polygons
-        community: false,   // community bounding polygons
-        imperial: false,    // imperial (not metric) bounding polygons
-        driveLeft: false,   // driveLeft bounding polygons
-        target: false       // touch targets
-    };
-    context.debugFlags = function() {
-        return debugFlags;
-    };
-    context.setDebug = function(flag, val) {
-        if (arguments.length === 1) val = true;
-        debugFlags[flag] = val;
-        dispatch.call('change');
-        return context;
-    };
-    context.getDebug = function(flag) {
-        return flag && debugFlags[flag];
-    };
-
-
-    /* Container */
-    var container = d3_select(document.body);
-    context.container = function(_) {
-        if (!arguments.length) return container;
-        container = _;
-        return context;
-    };
-    var embed;
-    context.embed = function(_) {
-        if (!arguments.length) return embed;
-        embed = _;
-        return context;
-    };
-
-
-    /* Assets */
-    var assetPath = '';
-    context.assetPath = function(_) {
-        if (!arguments.length) return assetPath;
-        assetPath = _;
-        return context;
-    };
-
-    var assetMap = {};
-    context.assetMap = function(_) {
-        if (!arguments.length) return assetMap;
-        assetMap = _;
-        return context;
-    };
-
-    context.asset = function(_) {
-        var filename = assetPath + _;
-        return assetMap[filename] || filename;
-    };
-
-    context.imagePath = function(_) {
-        return context.asset('img/' + _);
-    };
-
-    var imperial =  (utilDetect().locale.toLowerCase() === 'en-us');
-    context.imperial = function(_) {
-        if (!arguments.length) return imperial;
-        imperial = _;
-        return imperial;
-    };
-
-
-    /* locales */
-    // `locale` variable contains a "requested locale".
-    // It won't become the `currentLocale` until after loadLocale() is called.
-    var locale, localePath;
-
-    context.locale = function(loc, path) {
-        if (!arguments.length) return currentLocale;
-        locale = loc;
-        localePath = path;
-        return context;
-    };
-
-    context.loadLocale = function(callback) {
-        if (locale && locale !== 'en' && dataLocales.hasOwnProperty(locale)) {
-            localePath = localePath || context.asset('locales/' + locale + '.json');
-            d3_json(localePath, function(err, result) {
-                if (!err) {
-                    addTranslation(locale, result[locale]);
-                    setLocale(locale);
-                    utilDetect(true);
-                }
-                if (callback) {
-                    callback(err);
-                }
-            });
-        } else {
-            if (locale) {
-                setLocale(locale);
-                utilDetect(true);
-            }
-            if (callback) {
-                callback();
-            }
-        }
-    };
-
-
-    /* reset (aka flush) */
-    context.reset = context.flush = function() {
-        context.debouncedSave.cancel();
-        _each(services, function(service) {
-            if (service && typeof service.reset === 'function') {
-                service.reset(context);
-            }
-        });
-        features.reset();
-        history.reset();
-        return context;
-    };
-
-
-    /* Init */
-
-    // context.hoot = Hoot;
-    context.dgservices = DGServcies;
-
-    context.projection = geoRawMercator();
-    context.curtainProjection = geoRawMercator();
-
-    locale = utilDetect().locale;
-    if (locale && !dataLocales.hasOwnProperty(locale)) {
-        locale = locale.split('-')[0];
+    } else {
+      canSave = context.selectedIDs().every(id => {
+        const entity = context.hasEntity(id);
+        return entity && !entity.isDegenerate();
+      });
     }
 
-    history = coreHistory(context);
-    context.graph = history.graph;
-    context.changes = history.changes;
-    context.intersects = history.intersects;
+    if (canSave) {
+      _history.save();
+    }
+    if (_history.hasChanges()) {
+      return t('save.unsaved_changes');
+    }
+  };
 
-    // Debounce save, since it's a synchronous localStorage write,
-    // and history changes can happen frequently (e.g. when dragging).
-    context.debouncedSave = _debounce(context.save, 350);
-    function withDebouncedSave(fn) {
-        return function() {
-            var result = fn.apply(history, arguments);
-            context.debouncedSave();
-            return result;
-        };
+  // Debounce save, since it's a synchronous localStorage write,
+  // and history changes can happen frequently (e.g. when dragging).
+  context.debouncedSave = _debounce(context.save, 350);
+
+  function withDebouncedSave(fn) {
+    return function() {
+      const result = fn.apply(_history, arguments);
+      context.debouncedSave();
+      return result;
+    };
+  }
+
+
+  /* Graph */
+  context.hasEntity = (id) => _history.graph().hasEntity(id);
+  context.entity = (id) => _history.graph().entity(id);
+
+
+  /* Modes */
+  let _mode;
+  context.mode = () => _mode;
+  context.enter = (newMode) => {
+    if (_mode) {
+      _mode.exit();
+      dispatch.call('exit', this, _mode);
     }
 
-    context.perform = withDebouncedSave(history.perform);
-    context.replace = withDebouncedSave(history.replace);
-    context.pop = withDebouncedSave(history.pop);
-    context.overwrite = withDebouncedSave(history.overwrite);
-    context.undo = withDebouncedSave(history.undo);
-    context.redo = withDebouncedSave(history.redo);
+    _mode = newMode;
+    _mode.enter();
+    dispatch.call('enter', this, _mode);
+  };
 
-    ui = uiInit(context);
+  context.selectedIDs = () => (_mode && _mode.selectedIDs && _mode.selectedIDs()) || [];
+  context.activeID = () => _mode && _mode.activeID && _mode.activeID();
 
-    connection = services.osm;
-    background = rendererBackground(context);
-    features = rendererFeatures(context);
-    presets = presetIndex();
+  let _selectedNoteID;
+  context.selectedNoteID = function(noteID) {
+    if (!arguments.length) return _selectedNoteID;
+    _selectedNoteID = noteID;
+    return context;
+  };
 
-    map = rendererMap(context);
-    context.mouse = map.mouse;
-    context.extent = map.extent;
-    context.pan = map.pan;
-    context.zoomIn = map.zoomIn;
-    context.zoomOut = map.zoomOut;
-    context.zoomInFurther = map.zoomInFurther;
-    context.zoomOutFurther = map.zoomOutFurther;
-    context.redrawEnable = map.redrawEnable;
-    context.redraw = map.immediateRedraw;
+  // NOTE: Don't change the name of this until UI v3 is merged
+  let _selectedErrorID;
+  context.selectedErrorID = function(errorID) {
+    if (!arguments.length) return _selectedErrorID;
+    _selectedErrorID = errorID;
+    return context;
+  };
 
-    _each(services, function(service) {
+
+  /* Behaviors */
+  context.install = (behavior) => context.surface().call(behavior);
+  context.uninstall = (behavior) => context.surface().call(behavior.off);
+
+
+  /* Copy/Paste */
+  let _copyGraph;
+  context.copyGraph = () => _copyGraph;
+
+  let _copyIDs = [];
+  context.copyIDs = function(val) {
+    if (!arguments.length) return _copyIDs;
+    _copyIDs = val;
+    _copyGraph = _history.graph();
+    return context;
+  };
+
+  let _copyLonLat;
+  context.copyLonLat = function(val) {
+    if (!arguments.length) return _copyLonLat;
+    _copyLonLat = val;
+    return context;
+  };
+
+  let _copyTags = {}
+  context.copyTags = function(_) {
+    if (!arguments.length) return _copyTags;
+    _copyIDs = [];
+    _copyTags = _;
+    _copyGraph = history.graph();
+    translateCopyTags(_copyTags);
+    return context;
+  };
+
+  let changeTagsCallback = function(tcTags) {
+      Object.keys(tcTags).forEach(function(key) {
+          if (tcTags[key] === undefined) {
+              delete tcTags[key];
+          }
+      });
+
+      _copyTags = tcTags;
+  };
+
+  let translateCopyTags = function(tcTags) {
+      var entity = context.entity(context.selectedIDs()[0]);
+      if (Hoot.translations.activeTranslation !== 'OSM' && !_isEmpty(tcTags)) {
+          Hoot.translations.translateToOsm(tcTags, entity)
+              .then(resp => changeTagsCallback(resp));
+      } else {
+          changeTagsCallback(tcTags);
+      }
+  };
+
+
+  /* Background */
+  let _background;
+  context.background = () => _background;
+
+
+  /* Features */
+  let _features;
+  context.features = () => _features;
+  context.hasHiddenConnections = (id) => {
+    const graph = _history.graph();
+    const entity = graph.entity(id);
+    return _features.hasHiddenConnections(entity, graph);
+  };
+
+
+  /* Photos */
+  let _photos;
+  context.photos = () => _photos;
+
+
+  /* Map */
+  let _map;
+  context.map = () => _map;
+  context.layers = () => _map.layers();
+  context.surface = () => _map.surface;
+  context.editableDataEnabled = () => _map.editableDataEnabled();
+  context.surfaceRect = () => _map.surface.node().getBoundingClientRect();
+  context.editable = () => {
+    // don't allow editing during save
+    const mode = context.mode();
+    if (!mode || mode.id === 'save') return false;
+    return _map.editableDataEnabled();
+  };
+  
+
+  /* Debug */
+  let _debugFlags = {
+    tile: false,        // tile boundaries
+    collision: false,   // label collision bounding boxes
+    imagery: false,     // imagery bounding polygons
+    target: false,      // touch targets
+    downloaded: false   // downloaded data from osm
+  };
+  context.debugFlags = () => _debugFlags;
+  context.getDebug = (flag) => flag && _debugFlags[flag];
+  context.setDebug = function(flag, val) {
+    if (arguments.length === 1) val = true;
+    _debugFlags[flag] = val;
+    dispatch.call('change');
+    return context;
+  };
+
+
+  /* Container */
+  let _container = d3_select(null);
+  context.container = function(val) {
+    if (!arguments.length) return _container;
+    _container = val;
+    _container.classed('ideditor', true);
+    return context;
+  };
+  context.containerNode = function(val) {
+    if (!arguments.length) return context.container().node();
+    context.container(d3_select(val));
+    return context;
+  };
+
+  let _embed;
+  context.embed = function(val) {
+    if (!arguments.length) return _embed;
+    _embed = val;
+    return context;
+  };
+
+
+  /* Assets */
+  let _assetPath = '';
+  context.assetPath = function(val) {
+    if (!arguments.length) return _assetPath;
+    _assetPath = val;
+    fileFetcher.assetPath(val);
+    return context;
+  };
+
+  let _assetMap = {};
+  context.assetMap = function(val) {
+    if (!arguments.length) return _assetMap;
+    _assetMap = val;
+    fileFetcher.assetMap(val);
+    return context;
+  };
+
+  context.asset = (val) => {
+    if (/^http(s)?:\/\//i.test(val)) return val;
+    const filename = _assetPath + val;
+    return _assetMap[filename] || filename;
+  };
+
+  context.imagePath = (val) => context.asset(`img/${val}`);
+
+
+  let _imperial =  (utilDetect().locale.toLowerCase() === 'en-us');
+  context.imperial = (val) => {
+      if (!arguments.length) return _imperial;
+      _imperial = val;
+      return _imperial;
+  };
+
+  /* reset (aka flush) */
+  context.reset = context.flush = () => {
+    context.debouncedSave.cancel();
+
+    Array.from(_deferred).forEach(handle => {
+      window.cancelIdleCallback(handle);
+      _deferred.delete(handle);
+    });
+
+    Object.values(services).forEach(service => {
+      if (service && typeof service.reset === 'function') {
+        service.reset(context);
+      }
+    });
+
+    context.changeset = null;
+
+    _validator.reset();
+    _features.reset();
+    _history.reset();
+    _uploader.reset();
+
+    // don't leave stale state in the inspector
+    context.container().select('.inspector-wrap *').remove();
+
+    return context;
+  };
+
+
+  /* Projections */
+  context.projection = geoRawMercator();
+  context.curtainProjection = geoRawMercator();
+
+
+  /* Init */
+  context.init = () => {
+
+    instantiateInternal();
+
+    initializeDependents();
+
+    return context;
+
+    // Load variables and properties. No property of `context` should be accessed
+    // until this is complete since load statuses are indeterminate. The order
+    // of instantiation shouldn't matter.
+    function instantiateInternal() {
+
+      _history = coreHistory(context);
+      context.graph = _history.graph;
+      context.pauseChangeDispatch = _history.pauseChangeDispatch;
+      context.resumeChangeDispatch = _history.resumeChangeDispatch;
+      context.perform = withDebouncedSave(_history.perform);
+      context.replace = withDebouncedSave(_history.replace);
+      context.pop = withDebouncedSave(_history.pop);
+      context.overwrite = withDebouncedSave(_history.overwrite);
+      context.undo = withDebouncedSave(_history.undo);
+      context.redo = withDebouncedSave(_history.redo);
+
+      _validator = coreValidator(context);
+      _uploader = coreUploader(context);
+
+      _background = rendererBackground(context);
+      _features = rendererFeatures(context);
+      _map = rendererMap(context);
+      _photos = rendererPhotos(context);
+
+      _ui = uiInit(context);
+    }
+
+    // Set up objects that might need to access properties of `context`. The order
+    // might matter if dependents make calls to each other. Be wary of async calls.
+    function initializeDependents() {
+
+      if (context.initialHashParams.presets) {
+        presetManager.addablePresetIDs(new Set(context.initialHashParams.presets.split(',')));
+      }
+
+      if (context.initialHashParams.locale) {
+        localizer.preferredLocaleCodes(context.initialHashParams.locale);
+      }
+
+      // kick off some async work
+      localizer.ensureLoaded();
+      presetManager.ensureLoaded();
+      _background.ensureLoaded();
+
+      Object.values(services).forEach(service => {
         if (service && typeof service.init === 'function') {
-            service.init(context);
+          service.init();
         }
-    });
+      });
 
-    background.init();
-    features.init();
-    presets.init();
-    areaKeys = presets.areaKeys();
+      _map.init();
+      _validator.init();
+      _features.init();
 
-    return utilRebind(context, dispatch, 'on');
+      if (services.maprules && context.initialHashParams.maprules) {
+        d3_json(context.initialHashParams.maprules)
+          .then(mapcss => {
+            services.maprules.init();
+            mapcss.forEach(mapcssSelector => services.maprules.addRule(mapcssSelector));
+          })
+          .catch(() => { /* ignore */ });
+      }
+
+      // if the container isn't available, e.g. when testing, don't load the UI
+      if (!context.container().empty()) {
+        _ui.ensureLoaded()
+          .then(() => {
+            _background.init();
+            _photos.init();
+          });
+      }
+    }
+  };
+
+  return context;
 }
