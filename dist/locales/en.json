@@ -8317,6 +8317,12 @@
                 },
                 "name": "AIV Digitaal Hoogtemodel Vlaanderen II, Skyview factor 0,25 m"
             },
+            "AIV_Wegenregister": {
+                "attribution": {
+                    "text": "© Agentschap Informatie Vlaanderen"
+                },
+                "name": "AIV Wegenregister"
+            },
             "Bedzin-PL-aerial_image": {
                 "attribution": {
                     "text": "Starostwo Powiatowe w Będzinie"
@@ -8344,6 +8350,24 @@
                     "text": "Urząd Miasta Bytomia"
                 },
                 "name": "Bytom: Fotoplan 2014 (aerial image)"
+            },
+            "Bytom-2016": {
+                "attribution": {
+                    "text": "Urząd Miasta Bytomia"
+                },
+                "name": "Bytom: Orthophotomap 2016 (aerial image)"
+            },
+            "Bytom-2018": {
+                "attribution": {
+                    "text": "Urząd Miasta Bytomia"
+                },
+                "name": "Bytom: Orthophotomap 2018 (aerial image)"
+            },
+            "Bytom-2021": {
+                "attribution": {
+                    "text": "Urząd Miasta Bytomia"
+                },
+                "name": "Bytom: Orthophotomap 2021 (aerial image)"
             },
             "Bytom-buildings": {
                 "attribution": {
@@ -8411,7 +8435,7 @@
                 "attribution": {
                     "text": "Terms & Feedback"
                 },
-                "description": "Esri world imagery.",
+                "description": "Esri World Imagery",
                 "name": "Esri World Imagery"
             },
             "EsriWorldImageryClarity": {
@@ -8427,6 +8451,20 @@
                 },
                 "description": "Aerial imagery of Frankfurt am Main, photographed on 16 April 2019",
                 "name": "Frankfurt am Main Luftbild 2019"
+            },
+            "Geoportal2-PL-City-boundaries_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa WMS publikująca jednostki podziału terytorialnego Polski w tym jednostki administracyjne",
+                "name": "Geoportal 2: City boundaries WMS"
+            },
+            "Geoportal2-PL-HighResolution-aerial_archival_image_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Ortofotomapa o rozdzielczości 10 cm lub większej. Dane posortowane są wg rozdzielczości a następnie wg aktualności, np. arkusz z 2012 roku o rozdzielczości 8 cm przysłania arkusz z 2019 roku o rozdzielczości 10 cm.",
+                "name": "Geoportal 2: High Resolution Orthophotomap (archival imagery) (WMS)"
             },
             "Geoportal2-PL-HighResolution-aerial_image_WMS": {
                 "attribution": {
@@ -8449,6 +8487,13 @@
                 "description": "Usługa przeglądania WMS Krajowa Integracja Numeracji Adresowej umożliwiająca pobieranie obrazów mapowych utworzonych na podstawie danych przestrzennych z Państwowego Rejestru Granic w zakresie ewidencji ulic i adresów.",
                 "name": "Geoportal 2: Punkty adresowe"
             },
+            "Geoportal2-PL-aerial_archival_image_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa przeglądania (Web Map Service,WMS) umożliwiająca przeglądanie ortofotomap archiwalnych dla obszaru Polski. Dane udostępniane za pomocą tej usługi stanowią ortofotomapę wykonaną ze zdjęć lotniczych. Usługa oferuje wsparcie dla interfejsu WMS 1.3.0.",
+                "name": "Geoportal 2: Orthophotomap (archival imagery) (WMS)"
+            },
             "Geoportal2-PL-aerial_image_WMS": {
                 "attribution": {
                     "text": "Główny Urząd Geodezji i Kartografii"
@@ -8463,12 +8508,47 @@
                 "description": "Usługa przeglądania (Web Map Tile Service,WMTS) umożliwiająca przeglądanie ortofotomap dla obszaru Polski. Dane udostępniane za pomocą tej usługi stanowią ortofotomapę wykonaną ze zdjęć lotniczych.",
                 "name": "Geoportal 2: Orthophotomap (latest aerial imagery) (WMTS)"
             },
+            "Geoportal2-PL-boundaries-of-communes_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa WMS publikująca jednostki podziału terytorialnego Polski w tym jednostki administracyjne",
+                "name": "Geoportal 2: Borders of communes WMS"
+            },
+            "Geoportal2-PL-boundaries-of-counties_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa WMS publikująca jednostki podziału terytorialnego Polski w tym jednostki administracyjne",
+                "name": "Geoportal 2: Borders of counties WMS"
+            },
+            "Geoportal2-PL-boundaries-of-provinces_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa WMS publikująca jednostki podziału terytorialnego Polski w tym jednostki administracyjne",
+                "name": "Geoportal 2: Borders of provinces WMS"
+            },
             "Geoportal2-PL-buildings_WMS": {
                 "attribution": {
                     "text": "Główny Urząd Geodezji i Kartografii"
                 },
                 "description": "Usługa Krajowa Integracja Ewidencji Gruntów jest usługą zbiorczą prezentacji danych ewidencyjnych pochodzących bezpośrednio z jednostek szczebla powiatowego. Usługa zawiera jedynie dane tych jednostek, które dysponują usługą WMS o odpowiednich parametrach i zdecydowały się włączyć swoją usługę WMS do usługi zbiorczej KrajowaIntegracjaEwidencjiGruntow.",
                 "name": "Geoportal 2: Ewidencja budynków WMS"
+            },
+            "Geoportal2-PL-gas-pipe_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa Krajowa Integracja Uzbrojenia Terenu jest usługą zbiorczą prezentacji danych uzbrojenia terenu pochodzących bezpośrednio z jednostek szczebla powiatowego. Usługa zawiera jedynie dane tych jednostek, które dysponują usługą WMS o odpowiednich parametrach i zdecydowały się włączyć swoją usługę WMS do usługi zbiorczej KrajowaIntegracjaUzbrojeniaTerenu.",
+                "name": "Geoportal 2: gas pipes WMS"
+            },
+            "Geoportal2-PL-heat-pipe_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa Krajowa Integracja Uzbrojenia Terenu jest usługą zbiorczą prezentacji danych uzbrojenia terenu pochodzących bezpośrednio z jednostek szczebla powiatowego. Usługa zawiera jedynie dane tych jednostek, które dysponują usługą WMS o odpowiednich parametrach i zdecydowały się włączyć swoją usługę WMS do usługi zbiorczej KrajowaIntegracjaUzbrojeniaTerenu.",
+                "name": "Geoportal 2: heat pipes WMS"
             },
             "Geoportal2-PL-plot_boundaries_WMS": {
                 "attribution": {
@@ -8477,11 +8557,72 @@
                 "description": "Usługa Krajowa Integracja Ewidencji Gruntów jest usługą zbiorczą prezentacji danych ewidencyjnych pochodzących bezpośrednio z jednostek szczebla powiatowego. Usługa zawiera jedynie dane tych jednostek, które dysponują usługą WMS o odpowiednich parametrach i zdecydowały się włączyć swoją usługę WMS do usługi zbiorczej KrajowaIntegracjaEwidencjiGruntow.",
                 "name": "Geoportal 2: Granice działek"
             },
+            "Geoportal2-PL-power-cord_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa Krajowa Integracja Uzbrojenia Terenu jest usługą zbiorczą prezentacji danych uzbrojenia terenu pochodzących bezpośrednio z jednostek szczebla powiatowego. Usługa zawiera jedynie dane tych jednostek, które dysponują usługą WMS o odpowiednich parametrach i zdecydowały się włączyć swoją usługę WMS do usługi zbiorczej KrajowaIntegracjaUzbrojeniaTerenu.",
+                "name": "Geoportal 2: power cord WMS"
+            },
             "Geoportal2-PL-prng": {
                 "attribution": {
                     "text": "Centralny Ośrodek Dokumentacji Geodezyjnej i Kartograficznej"
                 },
                 "name": "Geoportal 2: PRNG (geo names)"
+            },
+            "Geoportal2-PL-sewer-pipe_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa Krajowa Integracja Uzbrojenia Terenu jest usługą zbiorczą prezentacji danych uzbrojenia terenu pochodzących bezpośrednio z jednostek szczebla powiatowego. Usługa zawiera jedynie dane tych jednostek, które dysponują usługą WMS o odpowiednich parametrach i zdecydowały się włączyć swoją usługę WMS do usługi zbiorczej KrajowaIntegracjaUzbrojeniaTerenu.",
+                "name": "Geoportal 2: sewer pipes WMS"
+            },
+            "Geoportal2-PL-shaded_relief_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa przeglądania (Web Map Service,WMS) umożliwiająca przeglądanie cieniowania NMT w siatce 1m x 1m. Usługa oferuje wsparcie dla interfejsu WMS 1.3.0.",
+                "name": "Geoportal 2: Shaded relief (WMS)"
+            },
+            "Geoportal2-PL-squares-and-housing-estates_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa przeglądania WMS Krajowa Integracja Numeracji Adresowej umożliwiająca pobieranie obrazów mapowych utworzonych na podstawie danych przestrzennych z Państwowego Rejestru Granic w zakresie ewidencji ulic i adresów.",
+                "name": "Geoportal 2: Squares and housing estates"
+            },
+            "Geoportal2-PL-state-borders_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa WMS publikująca jednostki podziału terytorialnego Polski w tym jednostki administracyjne",
+                "name": "Geoportal 2: State borders WMS"
+            },
+            "Geoportal2-PL-telecommunications-cable_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa Krajowa Integracja Uzbrojenia Terenu jest usługą zbiorczą prezentacji danych uzbrojenia terenu pochodzących bezpośrednio z jednostek szczebla powiatowego. Usługa zawiera jedynie dane tych jednostek, które dysponują usługą WMS o odpowiednich parametrach i zdecydowały się włączyć swoją usługę WMS do usługi zbiorczej KrajowaIntegracjaUzbrojeniaTerenu.",
+                "name": "Geoportal 2: telecommunications cables WMS"
+            },
+            "Geoportal2-PL-water-pipe_WMS": {
+                "attribution": {
+                    "text": "Główny Urząd Geodezji i Kartografii"
+                },
+                "description": "Usługa Krajowa Integracja Uzbrojenia Terenu jest usługą zbiorczą prezentacji danych uzbrojenia terenu pochodzących bezpośrednio z jednostek szczebla powiatowego. Usługa zawiera jedynie dane tych jednostek, które dysponują usługą WMS o odpowiednich parametrach i zdecydowały się włączyć swoją usługę WMS do usługi zbiorczej KrajowaIntegracjaUzbrojeniaTerenu.",
+                "name": "Geoportal 2: water pipes WMS"
+            },
+            "Gliwice-2003": {
+                "attribution": {
+                    "text": "Urząd Miasta Gliwice"
+                },
+                "name": "Gliwice: Orthophotomap 2003 (aerial image)"
+            },
+            "Gliwice-2009": {
+                "attribution": {
+                    "text": "Urząd Miasta Gliwice"
+                },
+                "name": "Gliwice: Orthophotomap 2009 (aerial image)"
             },
             "Gliwice-2013": {
                 "attribution": {
@@ -8506,6 +8647,12 @@
                     "text": "Urząd Miasta Gliwice"
                 },
                 "name": "Gliwice: Orthophotomap 2020 (aerial image)"
+            },
+            "Gliwice-2021": {
+                "attribution": {
+                    "text": "Urząd Miasta Gliwice"
+                },
+                "name": "Gliwice: Orthophotomap 2021 (aerial image)"
             },
             "Gliwice-buildings": {
                 "attribution": {
@@ -8561,17 +8708,43 @@
             },
             "MAPNIK": {
                 "attribution": {
-                    "text": "© OpenStreetMap contributors, CC-BY-SA 2.0"
+                    "text": "© OpenStreetMap contributors, ODbL 1.0"
                 },
                 "description": "The default OpenStreetMap layer.",
                 "name": "OpenStreetMap (Standard)"
+            },
+            "Maaamet-Estonia_Cadastre": {
+                "attribution": {
+                    "text": "Maa-ameti katastrikaart ortofoto alusel"
+                },
+                "name": "Maa-amet Cadastral Map"
+            },
+            "Maaamet-Estonia_Ortho": {
+                "attribution": {
+                    "text": "Maa-ameti ortofoto"
+                },
+                "name": "Maa-amet Ortho (WMS)"
             },
             "Mapbox": {
                 "attribution": {
                     "text": "Terms & Feedback"
                 },
-                "description": "Satellite and aerial imagery.",
+                "description": "Mapbox-provided raster tileset that includes a global basemap of high resolution satellite and aerial imagery",
                 "name": "Mapbox Satellite"
+            },
+            "Naturvardsverket-protected": {
+                "attribution": {
+                    "text": "© Naturvårdsverket, CC0"
+                },
+                "description": "Swedish national parks, nature reserves and other protected areas and objects",
+                "name": "Environmental Protection Agency - Protected Areas"
+            },
+            "Naturvardsverket-trails": {
+                "attribution": {
+                    "text": "© Naturvårdsverket, CC0"
+                },
+                "description": "Daily updated trails in or around nature reserves as recorded by Swedish Environmental Protection Agency",
+                "name": "Environmental Protection Agency - Trails"
             },
             "OSIPIII_6in": {
                 "attribution": {
@@ -8643,11 +8816,37 @@
                 },
                 "name": "OSM Inspector: Tagging"
             },
-            "Ruda_Slaska-aerial_image": {
+            "OpenAerialMapMosaic": {
+                "description": "All OpenAerialMap images in one mosaic layer, by Kontur.io",
+                "name": "OpenAerialMap Mosaic, by Kontur.io"
+            },
+            "Riksantikvariambetet-archaeological": {
                 "attribution": {
-                    "text": "Urząd Miasta Ruda Śląska"
+                    "text": "© Riksantikvarieämbetet, CC0"
                 },
-                "name": "Ruda Śląska: Orthophotomap (aerial image)"
+                "description": "Ancient and historical remains and monuments",
+                "name": "Riksantikvarieämbetet - Archaeological Sites and Monuments"
+            },
+            "Riksantikvariambetet-heritage": {
+                "attribution": {
+                    "text": "© Riksantikvarieämbetet, CC0"
+                },
+                "description": "Heritage buildings and churches",
+                "name": "Riksantikvarieämbetet - Heritage buildings"
+            },
+            "Riksantikvariambetet-protected": {
+                "attribution": {
+                    "text": "© Riksantikvarieämbetet, CC0"
+                },
+                "description": "Protected areas for heritage buildings and religious heritage sites",
+                "name": "Riksantikvarieämbetet - Protected Heritage Areas"
+            },
+            "Riksantikvariambetet-ruins": {
+                "attribution": {
+                    "text": "© Riksantikvarieämbetet, CC0"
+                },
+                "description": "Ruins of cultural-historical interest",
+                "name": "Riksantikvarieämbetet - Ruins"
             },
             "SPW_ORTHO_LAST": {
                 "name": "SPW(allonie) most recent aerial imagery"
@@ -8687,11 +8886,15 @@
                 "description": "Yellow = Public domain map data from the US Census. Red = Data not found in OpenStreetMap",
                 "name": "TIGER Roads 2021"
             },
+            "US-TIGER-Roads-2022": {
+                "description": "Yellow = Public domain map data from the US Census. Red = Data not found in OpenStreetMap",
+                "name": "TIGER Roads 2022"
+            },
             "USDA-NAIP": {
                 "attribution": {
                     "text": "U.S. Department of Agriculture"
                 },
-                "description": "The most recent year of 60cm 4-band DOQQs from the National Agriculture Imagery Program (NAIP) for each state in the contiguous United States.",
+                "description": "The most recent year of 30/60cm 4-band DOQQs from the National Agriculture Imagery Program (NAIP) for each state in the contiguous United States.",
                 "name": "National Agriculture Imagery Program"
             },
             "US_Forest_Service_roads_overlay": {
@@ -8871,6 +9074,20 @@
                 "description": "Orthophoto for Gothenburg municipality",
                 "name": "Gothenburg Orthophoto 2019"
             },
+            "gothenburg-ortho_2021": {
+                "attribution": {
+                    "text": "© Gothenburg municipality, CC0"
+                },
+                "description": "Orthophoto for Gothenburg municipality",
+                "name": "Gothenburg Orthophoto 2021"
+            },
+            "gothenburg-ortho_latest": {
+                "attribution": {
+                    "text": "© Gothenburg municipality, CC0"
+                },
+                "description": "Orthophoto for Gothenburg municipality",
+                "name": "Gothenburg Orthophoto latest"
+            },
             "gsi.go.jp_airphoto": {
                 "attribution": {
                     "text": "GSI Japan"
@@ -8974,6 +9191,24 @@
                 },
                 "name": "Powiat lubaczowski: Buildings"
             },
+            "maaamet.ee-cir_ngr": {
+                "attribution": {
+                    "text": "Maa-ameti metsanduslik ortofoto"
+                },
+                "name": "Maa-amet Forestry"
+            },
+            "maaamet.ee-orto": {
+                "attribution": {
+                    "text": "Maa-ameti ortofoto"
+                },
+                "name": "Maa-amet Ortho (TMS)"
+            },
+            "maaamet.ee-pohi_vr2": {
+                "attribution": {
+                    "text": "Maa-ameti põhikaart"
+                },
+                "name": "Maa-amet Basic Map"
+            },
             "mapbox_locator_overlay": {
                 "attribution": {
                     "text": "Terms & Feedback"
@@ -9014,12 +9249,6 @@
                 },
                 "description": "Public GPS traces uploaded to OpenStreetMap.",
                 "name": "OpenStreetMap GPS traces"
-            },
-            "osm-mapnik-black_and_white": {
-                "attribution": {
-                    "text": "© OpenStreetMap contributors, CC-BY-SA"
-                },
-                "name": "OpenStreetMap (Standard Black & White)"
             },
             "osm-mapnik-german_style": {
                 "attribution": {
@@ -9075,11 +9304,46 @@
                 },
                 "name": "Powiat rzeszowski: Buildings"
             },
+            "scb-industrial": {
+                "attribution": {
+                    "text": "© Statistiska Centralbyrån, CC0"
+                },
+                "description": "Geographically delimited areas which are characterized by large-scale and industrial land use",
+                "name": "SCB - Industrial zones"
+            },
+            "scb-settlements": {
+                "attribution": {
+                    "text": "© Statistiska Centralbyrån, CC0"
+                },
+                "description": "Contiguous areas of buildings with 50-199 inhabitants and no more than 150 metres between houses",
+                "name": "SCB - Small Settlements"
+            },
+            "scb-urban": {
+                "attribution": {
+                    "text": "© Statistiska Centralbyrån, CC0"
+                },
+                "description": "Human settlements of at least 200 people with less than 500 meters between households",
+                "name": "SCB - Urban Areas"
+            },
+            "scb-vacation": {
+                "attribution": {
+                    "text": "© Statistiska Centralbyrån, CC0"
+                },
+                "description": "Contiguous areas that consist mainly of holiday homes; a collection of at least 50 holiday homes, where the distance between them does not exceed 150 metres",
+                "name": "SCB - Vacation Home Areas"
+            },
             "skobbler": {
                 "attribution": {
                     "text": "© Tiles: skobbler Map data: OpenStreetMap contributors"
                 },
                 "name": "skobbler"
+            },
+            "skolverket-schools": {
+                "attribution": {
+                    "text": "© Skolverket"
+                },
+                "description": "Swedish schools.",
+                "name": "Skolverket - Schools"
             },
             "skoterleder": {
                 "attribution": {
@@ -9119,6 +9383,13 @@
                 },
                 "description": "The aerial photos released by Susono City as open data.",
                 "name": "Susono city orthophoto"
+            },
+            "svk-electricity-network": {
+                "attribution": {
+                    "text": "© Svenska kraftnät"
+                },
+                "description": "Swedish transmission network for electricity.",
+                "name": "SVK - Electricity Network"
             },
             "tf-cycle": {
                 "attribution": {
