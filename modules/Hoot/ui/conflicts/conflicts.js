@@ -13,8 +13,8 @@ import GraphSync           from './graphSync';
 import Merge               from './merge';
 import Resolve             from './resolve';
 import { conflictActions } from '../../config/domMetadata';
-import { utilKeybinding }    from '../../../util/keybinding';
-import { t }               from '../../../util/locale';
+import { utilKeybinding }  from '../../../util/keybinding';
+import { t }               from '../../../core/localizer';
 import { tooltip }         from '../../../util/tooltip';
 
 import {

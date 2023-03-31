@@ -6,7 +6,7 @@
 
 import _debounce from 'lodash-es/debounce';
 
-import { t }           from '../util/locale';
+import { t }           from '../core/localizer';
 import { tooltip }     from '../util/tooltip';
 import { tooltipHtml } from '../Hoot/tools/utilities';
 import { svgIcon }     from '../svg';

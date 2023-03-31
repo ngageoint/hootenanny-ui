@@ -12,7 +12,7 @@ import _reduce  from 'lodash-es/reduce';
 import _uniq    from 'lodash-es/uniq';
 
 import { JXON }             from '../../../util/jxon';
-import { t }                from '../../../util/locale';
+import { t }                from '../../../core/localizer';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions/index';
 import { uiFlash } from '../../../ui';

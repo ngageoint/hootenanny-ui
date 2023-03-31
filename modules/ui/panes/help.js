@@ -6,8 +6,6 @@ import { uiPane } from '../pane';
 import { t, localizer } from '../../core/localizer';
 import { uiTooltip } from '../tooltip';
 import { helpHtml } from '../intro/helper';
-
-import { t, textDirection } from '../util/locale';
 import { tooltip } from '../util/tooltip';
 import { icon } from './intro/helper';
 

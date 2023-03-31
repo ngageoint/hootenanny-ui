@@ -4,7 +4,7 @@
  * @author Matt Putipong on 10/9/18
  *******************************************************************************************************/
 
-import { t } from '../util/locale';
+import { t } from '../core/localizer';
 
 export default function() {
     var dg                = {},

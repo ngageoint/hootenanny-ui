@@ -8,7 +8,7 @@ import _forEach from 'lodash-es/forEach';
 import _omit    from 'lodash-es/omit';
 
 import { utilKeybinding }   from '../util/keybinding';
-import { t }                from '../util/locale';
+import { t }                from '../core/localizer';
 import { tooltip }          from '../util/tooltip';
 import { tooltipHtml }      from '../Hoot/tools/utilities';
 import { svgIcon }          from '../svg';

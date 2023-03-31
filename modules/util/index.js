@@ -12,7 +12,6 @@ export { utilArrayUniq } from './array';
 export { utilArrayUniqBy } from './array';
 
 export { utilAsyncMap } from './util';
-export { utilCallWhenIdle } from './call_when_idle';
 export { utilCleanTags } from './clean_tags';
 export { utilCombinedTags } from './util';
 export { utilDeepMemberSelector } from './util';

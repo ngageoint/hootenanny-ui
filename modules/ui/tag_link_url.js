@@ -3,7 +3,7 @@ import {
     select as d3_select
 } from 'd3-selection';
 import { svgIcon } from '../svg';
-import { t } from '../util/locale';
+import { t } from '../core/localizer';
 
 export function uiTagLinkUrl(tag) {
     var tagLinkUrl = {};

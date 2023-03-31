@@ -886,3 +886,4 @@ export function uiFieldCombo(field, context) {
 
         return utilRebind(combo, dispatch, 'on');
     }
+}

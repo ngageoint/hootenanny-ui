@@ -28,12 +28,6 @@ export function uiFieldWikipedia(field, context) {
     })
     .catch(() => { /* ignore */ });
 
-    function wiki(selection) {
-        var langcombo = d3_combobox()
-            .container(context.container())
-            .fetcher(function(value, cb) {
-                var v = value.toLowerCase();
-
   const langCombo = uiCombobox(context, 'wikipedia-lang')
     .fetcher((value, callback) => {
       const v = value.toLowerCase();

@@ -656,6 +656,20 @@
     stroke: rgba(140, 208, 95, 0.3);
     fill: rgba(140, 208, 95, 0.3);
 }
+.ideditor .preset-icon-fill-area.tag-landuse,
+.ideditor .preset-icon-fill-area.tag-natural,
+.ideditor .preset-icon-fill-area.tag-leisure-nature_reserve,
+.ideditor .preset-icon-fill-area.tag-leisure-pitch,
+.ideditor .preset-icon-fill-area.tag-leisure-track,
+.ideditor .preset-icon-fill-area.tag-leisure-golf_course,
+.ideditor .preset-icon-fill-area.tag-leisure-garden,
+.ideditor .preset-icon-fill-area.tag-leisure-park,
+.ideditor .preset-icon-fill-area.tag-landuse-forest,
+.ideditor .preset-icon-fill-area.tag-natural-wood,
+.ideditor .preset-icon-fill-area.tag-landuse-grass {
+    border-color: rgb(140, 208, 95);
+    background-color: rgba(140, 208, 95, 0.3);
+}
 .ideditor .pattern-color-forest,
 .ideditor .pattern-color-forest_broadleaved,
 .ideditor .pattern-color-forest_needleleaved,
@@ -682,6 +696,16 @@
     stroke: rgba(119, 211, 222, 0.3);
     fill: rgba(119, 211, 222, 0.3);
 }
+.ideditor .preset-icon-fill-area.tag-amenity-swimming_pool,
+.ideditor .preset-icon-fill-area.tag-leisure-swimming_pool,
+.ideditor .preset-icon-fill-area.tag-landuse-aquaculture,
+.ideditor .preset-icon-fill-area.tag-landuse-basin,
+.ideditor .preset-icon-fill-area.tag-landuse-harbour,
+.ideditor .preset-icon-fill-area.tag-landuse-reservoir,
+.ideditor .preset-icon-fill-area.tag-natural-water {
+    border-color: rgb(119, 211, 222);
+    background-color: rgba(119, 211, 222, 0.3);
+}
 .ideditor .pattern-color-waves,
 .ideditor .pattern-color-water_standing,
 .ideditor .pattern-color-pond {
@@ -690,6 +714,11 @@
 
 
 /* Yellow things */
+.ideditor .pattern-color-beach,
+.ideditor .pattern-color-sand,
+.ideditor .pattern-color-scrub {
+    fill: rgba(255, 255, 148, 0.2);
+}
 .ideditor path.stroke.tag-leisure-pitch.tag-sport-beachvolleyball,
 .ideditor path.stroke.tag-leisure-pitch.tag-sport-baseball,
 .ideditor path.stroke.tag-leisure-pitch.tag-sport-softball,
@@ -744,6 +773,9 @@
 
 
 /* Gold things */
+.ideditor .pattern-color-construction {
+    fill: rgba(196, 189, 25, 0.3);
+}
 .ideditor path.stroke.tag-landuse-residential,
 .ideditor path.stroke.tag-status-construction {
     stroke: rgb(196, 189, 25);
@@ -2328,7 +2360,7 @@
 .ideditor .map-in-map,
 .ideditor .main-map {
     cursor: auto; /* Opera */
-    cursor: url(img/cursor-grab.png) 9 9, auto; /* FF */
+    cursor: url(./img/cursor-grab.png) 9 9, auto; /* FF */
 }
 
 .ideditor.mode-browse .point,
@@ -2337,7 +2369,7 @@
 .ideditor.mode-select-error .point,
 .ideditor.mode-select-note .point {
     cursor: pointer; /* Opera */
-    cursor: url(img/cursor-select-point.png), pointer; /* FF */
+    cursor: url(./img/cursor-select-point.png), pointer; /* FF */
 }
 
 .ideditor.mode-browse .vertex,
@@ -2346,7 +2378,7 @@
 .ideditor.mode-select-error .vertex,
 .ideditor.mode-select-note .vertex {
     cursor: pointer; /* Opera */
-    cursor: url(img/cursor-select-vertex.png), pointer; /* FF */
+    cursor: url(./img/cursor-select-vertex.png), pointer; /* FF */
 }
 
 .ideditor.mode-browse .line,
@@ -2355,7 +2387,7 @@
 .ideditor.mode-select-error .line,
 .ideditor.mode-select-note .line {
     cursor: pointer; /* Opera */
-    cursor: url(img/cursor-select-line.png), pointer; /* FF */
+    cursor: url(./img/cursor-select-line.png), pointer; /* FF */
 }
 
 .ideditor.mode-browse .area,
@@ -2364,7 +2396,7 @@
 .ideditor.mode-select-error .area,
 .ideditor.mode-select-note .area {
     cursor: pointer; /* Opera */
-    cursor: url(img/cursor-select-area.png), pointer; /* FF */
+    cursor: url(./img/cursor-select-area.png), pointer; /* FF */
 }
 
 .ideditor.mode-browse .midpoint,
@@ -2373,7 +2405,7 @@
 .ideditor.mode-select-error .midpoint,
 .ideditor.mode-select-note .midpoint {
     cursor: pointer; /* Opera */
-    cursor: url(img/cursor-select-split.png), pointer; /* FF */
+    cursor: url(./img/cursor-select-split.png), pointer; /* FF */
 }
 
 .ideditor.mode-select .behavior-multiselect .point,
@@ -2381,12 +2413,12 @@
 .ideditor.mode-select .behavior-multiselect .line,
 .ideditor.mode-select .behavior-multiselect .area {
     cursor: pointer; /* Opera */
-    cursor: url(img/cursor-select-add.png), pointer; /* FF */
+    cursor: url(./img/cursor-select-add.png), pointer; /* FF */
 }
 
 .ideditor.mode-select .behavior-multiselect .selected {
     cursor: pointer; /* Opera */
-    cursor: url(img/cursor-select-remove.png), pointer; /* FF */
+    cursor: url(./img/cursor-select-remove.png), pointer; /* FF */
 }
 
 .ideditor.mode-add-preset .main-map,
@@ -2397,7 +2429,7 @@
 .ideditor.mode-drag-node .main-map,
 .ideditor.mode-drag-note .main-map {
     cursor: crosshair; /* Opera */
-    cursor: url(img/cursor-draw.png) 9 9, crosshair; /* FF */
+    cursor: url(./img/cursor-draw.png) 9 9, crosshair; /* FF */
 }
 
 .ideditor.mode-draw-line .way.target,
@@ -2406,7 +2438,7 @@
 .ideditor.mode-add-area  .way.target,
 .ideditor.mode-drag-node .way.target {
     cursor: crosshair; /* Opera */
-    cursor: url(img/cursor-draw-connect-line.png) 9 9, crosshair; /* FF */
+    cursor: url(./img/cursor-draw-connect-line.png) 9 9, crosshair; /* FF */
 }
 
 .ideditor.mode-draw-line .vertex.target,
@@ -2415,7 +2447,7 @@
 .ideditor.mode-add-area  .vertex.target,
 .ideditor.mode-drag-node .vertex.target {
     cursor: crosshair; /* Opera */
-    cursor: url(img/cursor-draw-connect-vertex.png) 9 9, crosshair; /* FF */
+    cursor: url(./img/cursor-draw-connect-vertex.png) 9 9, crosshair; /* FF */
 }
 
 .ideditor.mode-add-point .main-map,
@@ -2429,7 +2461,7 @@
 .ideditor.mode-select.lasso .vertex,
 .ideditor.mode-select.lasso .midpoint {
     cursor: crosshair; /* Opera */
-    cursor: url(img/cursor-draw.png) 9 9, crosshair; /* FF */
+    cursor: url(./img/cursor-draw.png) 9 9, crosshair; /* FF */
 }
 
 .ideditor.mode-browse .note,
@@ -2803,7 +2835,7 @@
 .ideditor .kartaview-wrapper {
     position: relative;
     background-color: #000;
-    background-image: url(img/loader-black.gif);
+    background-image: url(./img/loader-black.gif);
     background-position: center;
     background-repeat: no-repeat;
 }
@@ -2877,6 +2909,10 @@
     stroke-width: 1.3px;  /* NOTE: likely a better way to scale the icon stroke */
 }
 
+.ideditor .note-header-icon .note-shadow,
+.ideditor .layer-notes .note .note-shadow {
+    color: #000;
+}
 .ideditor .note-header-icon .note-fill,
 .ideditor .layer-notes .note .note-fill {
     color: #f30;
@@ -3026,6 +3062,7 @@
 }
 
 /* Custom Map Data (geojson, gpx, kml, vector tile) */
+
 .ideditor .layer-mapdata {
     pointer-events: none;
 }
@@ -3214,6 +3251,8 @@
         "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
         "Fira Sans", "Droid Sans", "Helvetica Neue", "Arial",
         sans-serif;
+    margin: 0;
+    padding: 0;
     color: #333;
 
     -ms-touch-action: none;
@@ -3246,6 +3285,7 @@
 .ideditor .main-content.active {
     -webkit-filter: none !important;
             filter: none !important;
+    -webkit-duration: 200ms;
     -webkit-transition-duration: 200ms;
          -o-transition-duration: 200ms;
             transition-duration: 200ms;
@@ -3254,6 +3294,7 @@
 .ideditor .main-content.inactive {
     -webkit-filter: grayscale(80%) brightness(80%);
             filter: grayscale(80%) brightness(80%);
+    -webkit-duration: 200ms;
     -webkit-transition-duration: 200ms;
          -o-transition-duration: 200ms;
             transition-duration: 200ms;
@@ -3268,7 +3309,7 @@
 
 .ideditor div, .ideditor textarea, .ideditor label, .ideditor input, .ideditor form, .ideditor span, .ideditor ul, .ideditor li, .ideditor ol, .ideditor a, .ideditor button, .ideditor h1, .ideditor h2, .ideditor h3, .ideditor h4, .ideditor h5, .ideditor p, .ideditor img {
     -webkit-box-sizing: border-box;
-            box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .ideditor a, .ideditor button, .ideditor input, .ideditor textarea {
@@ -3299,6 +3340,7 @@
 }
 
 .ideditor h3:last-child,
+.ideditor h2:last-child,
 .ideditor h4:last-child { margin-bottom: 0;}
 
 .ideditor h3 {
@@ -3349,6 +3391,12 @@
 .ideditor ::placeholder {
     color: #aaa;
     opacity: 1; /* Firefox */
+}
+.ideditor :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #aaa;
+}
+.ideditor ::-ms-input-placeholder { /* Microsoft Edge */
+    color: #aaa;
 }
 
 .ideditor p {
@@ -3403,6 +3451,14 @@
 
 /* Forms
 ------------------------------------------------------- */
+.ideditor textarea  {
+    resize: vertical;
+    font:normal 12px/20px "-apple-system", BlinkMacSystemFont,
+        "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+        "Fira Sans", "Droid Sans", "Helvetica Neue", "Arial",
+        sans-serif;
+}
+
 .ideditor textarea,
 .ideditor input[type=text],
 .ideditor input[type=search],
@@ -3458,6 +3514,7 @@
 
 .ideditor input[type="checkbox"],
 .ideditor input[type="radio"] {
+    float: left;
     width: 14px;
     height: 14px;
     margin-right: 6px;
@@ -3522,6 +3579,7 @@
 /* Grid
 ------------------------------------------------------- */
 .ideditor .col6  { float: left; width: 50.0000%; max-width: 600px; }
+.ideditor .col8  { float: left; width: 66.6666%; }
 .ideditor .col12 { float: left; width: 100.0000%; }
 
 
@@ -3581,11 +3639,14 @@
 ------------------------------------------------------- */
 .ideditor button {
     text-align: center;
+    line-height: 20px;
     border: 0;
     background: #fff;
+    font-weight: bold;
     color: #333;
     font-size: 12px;
     display: inline-block;
+    height: 40px;
     border-radius: 4px;
 }
 
@@ -3900,9 +3961,21 @@
 }
 
 .ideditor button.save .count {
+    visibility: hidden;
     display: inline-block;
+    border: 0px solid #ccc;
+    border-left-width: 1px;
+    padding: 0px 0px 0px 8px;
     min-width: 32px;
     text-align: center;
+}
+.ideditor [dir='rtl'] button.save .count {
+    border-left-width: 0px;
+    border-right-width: 1px;
+    padding: 0px 8px 0px 0px;
+}
+.ideditor button.save.has-count .count {
+    visibility: visible;
 }
 
 .ideditor .help-pane svg.icon.inline.add-note,
@@ -3990,6 +4063,7 @@
 .ideditor .header h3 {
     text-align: center;
     margin-bottom: 0;
+    white-space: nowrap;
     -o-text-overflow: ellipsis;
        text-overflow: ellipsis;
     overflow: hidden;
@@ -4123,6 +4197,7 @@
     right: -10px;
     width: 10px;
     height: 100%;
+    width: 6px;
     cursor: col-resize;
     /* disable drag-to-select */
     -webkit-user-select: none;
@@ -4279,6 +4354,7 @@
     width: 100%;
 }
 .ideditor .no-results-item,
+.ideditor .geocode-item,
 .ideditor .feature-list-item {
     width: 100%;
     position: relative;
@@ -4321,6 +4397,7 @@
     opacity: .5;
 }
 .ideditor .feature-list-item .close {
+    float: right;
     padding: 10px;
 
 }
@@ -4341,6 +4418,7 @@
     }
 }
 .ideditor .feature-list-item .entity-name {
+    font-weight: normal;
     color: #666;
     padding-left: 10px;
 }
@@ -4379,6 +4457,7 @@
 .ideditor .preset-list  {
     width: 100%;
     padding: 20px 20px 10px 20px;
+    border-bottom: 1px solid #ccc;
 }
 
 .ideditor .preset-list-item {
@@ -4593,7 +4672,12 @@
             align-items: center;
     background: #f6f6f6;
     text-align: left;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
     padding: 5px 10px;
+    left: 60px;
     border-left: 1px solid rgba(0, 0, 0, .1);
     -webkit-box-flex: 1;
         -ms-flex: 1 1 100%;
@@ -4603,6 +4687,8 @@
 }
 .ideditor[dir='rtl'] .preset-list-button .label {
     text-align: right;
+    left: 0;
+    right: 60px;
     border-left: none;
     border-right: 1px solid rgba(0, 0, 0, .1);
 }
@@ -4630,8 +4716,12 @@
     line-height: 1.35em;
 }
 .ideditor .preset-list-button .label-inner .namepart {
+    height: 17px;
+    white-space: nowrap;
     -o-text-overflow: ellipsis;
        text-overflow: ellipsis;
+    overflow: hidden;
+    padding-right: 30px;
 }
 .ideditor .preset-list-button .label-inner .namepart:nth-child(1) {
     font-weight: bold;
@@ -4754,6 +4844,9 @@
 .ideditor .section .grouped-items-area:empty {
     display: none;
 }
+.ideditor .entity-editor-pane .preset-list-item .preset-list-button-wrap {
+    margin-bottom: 0;
+}
 
 /*
     The parts of a field:
@@ -4808,6 +4901,7 @@
     -webkit-box-flex: 1;
         -ms-flex: 1 1 100%;
             flex: 1 1 100%;
+    height: 30px;
     position: relative;
     font-weight: bold;
     color: #333;
@@ -4847,7 +4941,9 @@
             flex: 0 0 auto;
     border-left: 1px solid #ccc;
     width: 32px;
+    height: 100%;
     border-radius: 0;
+    background: #f6f6f6;
 }
 .ideditor[dir='rtl'] .field-label button {
     border-left: none;
@@ -4900,9 +4996,11 @@
     -webkit-box-flex: 1;
         -ms-flex: 1 1 auto;
             flex: 1 1 auto;
+    min-height: 30px;
     border: 1px solid #ccc;
     border-top: 0;
     border-radius: 0;
+    overflow: hidden;
     position: relative;
 }
 .ideditor .form-field-input-wrap > textarea {
@@ -5394,6 +5492,7 @@
             align-items: center;
     width: 100%;
     padding: 5px 10px;
+    height: 30px;
     background-color: #fff;
     color: #7092ff;
     cursor: pointer;
@@ -5423,6 +5522,7 @@
     -webkit-box-flex: 0;
         -ms-flex: 0 1 auto;
             flex: 0 1 auto;
+    width: 20px;
 }
 .ideditor .form-field-input-radio > label > span {
     -webkit-box-flex: 1;
@@ -5573,6 +5673,7 @@
     display: -ms-flexbox;
     display: flex;
     width: 100%;
+    min-height: 30px;
 }
 
 .ideditor .addr-row > input {
@@ -5684,10 +5785,10 @@
 
 .ideditor .restriction-controls-container .restriction-controls {
     display: table;
+    -moz-user-select: none;
     -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .ideditor .restriction-controls .restriction-control {
@@ -5739,10 +5840,11 @@
     color: #888;
     text-align: center;
     pointer-events: none;
+
+    -moz-user-select: none;
     -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .ideditor .restriction-help span {
@@ -6015,6 +6117,9 @@
     margin-top: 10px;
     font-weight: bold;
 }
+.ideditor .changeset-editor .more-fields {
+    padding: 15px 20px 0 20px;
+}
 
 .ideditor .more-fields label {
     display: -webkit-box;
@@ -6044,6 +6149,7 @@
 }
 
 .ideditor .form-field-input-wrap .label {
+    height: 30px;
     background: #f6f6f6;
     padding: 5px 10px;
 }
@@ -6148,6 +6254,7 @@
 }
 
 .ideditor .tag-row input {
+    height: 31px;
     border: 0;
     border-radius: 0;
     border-bottom: 1px solid #ccc;
@@ -6236,6 +6343,21 @@
 .ideditor[dir='rtl'] .tag-row .tag-reference-button {
     border-left-width: 1px;
     border-right-width: 0;
+}
+
+/* Adding form fields to tag editor */
+.ideditor .raw-tag-editor .add-tag {
+    width: 40%;
+    height: 30px;
+    border-top: 0;
+    background: rgba(0,0,0,.5);
+    border-radius: 0 0 4px 4px;
+}
+.ideditor .raw-tag-editor .add-tag:hover {
+    background: rgba(0,0,0,.8);
+}
+.ideditor .raw-tag-editor .add-tag .label {
+    display: none;
 }
 
 /* Tag reference */
@@ -6330,6 +6452,10 @@
 
 .ideditor .form-field-input-member > input.member-role {
     border-radius: 0 0 4px 4px;
+}
+
+.ideditor .member-incomplete .member-delete {
+    display: none;
 }
 
 .ideditor .member-row-new .member-entity-input {
@@ -6763,6 +6889,7 @@
 .ideditor .map-control > button:not(.disabled):active {
     background: rgba(0, 0, 0, .8);
 }
+
 .ideditor .map-control > button.active,
 .ideditor .map-control > button.active:active {
     background: #7092ff;
@@ -6855,9 +6982,25 @@
     border-radius: 0 0 4px 0;
 }
 
+.ideditor .map-data-control button {
+    border-radius: 0;
+}
+
+.ideditor .background-control > button {
+    border-radius: 4px 0 0 0;
+}
+.ideditor [dir='rtl'] .background-control > button {
+    border-radius: 0 4px 0 0;
+}
+
 
 /* Background / Map Data Settings
 ------------------------------------------------------- */
+.ideditor .map-data-control,
+.ideditor .background-control {
+    position: relative;
+}
+
 .ideditor .imagery-faq {
     margin-bottom: 10px;
     white-space: nowrap;
@@ -6911,6 +7054,7 @@
 }
 
 .ideditor .layer-list li.best > div.best {
+    display: inline-block;
     padding: 5px;
     -webkit-box-flex: 0;
         -ms-flex: 0 0 auto;
@@ -6931,6 +7075,7 @@
 }
 
 .ideditor .layer-list label {
+    display: block;
     padding: 5px 10px;
     cursor: pointer;
     -webkit-box-flex: 1;
@@ -7484,6 +7629,7 @@
     border: 1px solid #ccc;
     border-radius: 2px;
     padding: 20px 0;
+    width: 70%;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -7537,6 +7683,10 @@
     background: #ffb;
 }
 
+.ideditor .nudge-container input:focus {
+    background-color: transparent;
+}
+
 .ideditor .nudge-container button {
     position: absolute;
     height: 40px;
@@ -7553,6 +7703,7 @@
 .ideditor .nudge-container button.right {
     right: 0;
 }
+
 .ideditor .nudge-container button.left {
     left: 0;
 }
@@ -7566,6 +7717,7 @@
 .ideditor .nudge-container button.top {
     top: 0;
 }
+
 .ideditor .nudge-container button.bottom {
     bottom: 0;
 }
@@ -7664,6 +7816,7 @@
 
 .ideditor .pane-heading button {
     width: 40px;
+    height: 61px;
     border-radius: 0;
 }
 
@@ -7933,17 +8086,16 @@
 ------------------------------------------------------- */
 .ideditor img.tile {
     position: absolute;
+    transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
     -webkit-transform-origin: 0 0;
-        -ms-transform-origin: 0 0;
-            transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
 
+    -moz-user-select: none;
     -webkit-user-select: none;
-
-       -moz-user-select: none;
-
-        -ms-user-select: none;
-
-            user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 
     pointer-events: none;
 
@@ -7952,9 +8104,7 @@
     opacity: 0;
 
     -webkit-transition: opacity 200ms linear;
-
     -o-transition: opacity 200ms linear;
-
     transition: opacity 200ms linear;
 }
 
@@ -7978,19 +8128,16 @@
     margin-left: -70px;
     margin-top: -20px;
 
+    transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
     -webkit-transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
 
-        -ms-transform-origin: 0 0;
-
-            transform-origin: 0 0;
-
+    -moz-user-select: none;
     -webkit-user-select: none;
-
-       -moz-user-select: none;
-
-        -ms-user-select: none;
-
-            user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .ideditor img.tile-debug {
@@ -8010,10 +8157,10 @@
     height: 100%;
     width: 100%;
     background: #000;
+    -moz-user-select: none;
     -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     -ms-touch-action: none;
         touch-action: none;
     -webkit-touch-callout: none;
@@ -8024,9 +8171,11 @@
 }
 
 .ideditor .supersurface {
+    transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
     -webkit-transform-origin: 0 0;
-        -ms-transform-origin: 0 0;
-            transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
 }
 
 .ideditor .supersurface, .ideditor .layer {
@@ -8060,13 +8209,16 @@
 }
 
 .ideditor .map-in-map-tiles {
+    transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
     -webkit-transform-origin: 0 0;
-        -ms-transform-origin: 0 0;
-            transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+
+    -moz-user-select: none;
     -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .ideditor .map-in-map-viewport,
@@ -8154,6 +8306,8 @@
             justify-content: flex-end;
     width: 100%;
     z-index: 1;
+    right: 0;
+    bottom: 30px;
     -ms-user-select: element;
     pointer-events: none;
     overflow: hidden;
@@ -8262,6 +8416,7 @@
 .ideditor .panel-content-history h4 {
     padding-bottom: 0;
 }
+
 .ideditor .panel-content-location .location-info {
     margin-top: 10px;
 }
@@ -8391,9 +8546,35 @@
     margin: 0 3px;
 }
 
+.ideditor #footer {
+    pointer-events: all;
+    display: block;
+    height: 30px;
+}
+
 
 /* Footer - Flash messages
 ------------------------------------------------------- */
+.ideditor #flash-wrap {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 0;
+        -ms-flex: 0 0 100%;
+            flex: 0 0 100%;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-flow: row nowrap;
+            flex-flow: row nowrap;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    max-height: 30px;
+    position: absolute;
+    right: 0;
+    left: 0;
+}
+
 .ideditor .flash-content {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -8409,6 +8590,7 @@
         -ms-flex-align: center;
             align-items: center;
     padding: 2px;
+    height: 30px;
 }
 
 .ideditor .flash-icon {
@@ -8522,29 +8704,22 @@
 }
 .ideditor[dir='ltr'] .map-footer-list li:not(:last-child) {
     border-right: 1px solid rgba(255,255,255,.5);
+    margin-left: 0;
+    margin-right: 5px;
+    padding: 5px 5px 5px 0;
 }
 .ideditor[dir='rtl'] .map-footer-list li:not(:last-child) {
     border-left: 1px solid rgba(255,255,255,.5);
 }
-.ideditor .map-footer-list li:empty {
-    display: none;
+.ideditor [dir='rtl'] #about-list li:last-child {
+    border-right: none;
 }
 
-.ideditor .map-footer-list a.chip {
-    padding: 1px 4px 1px 4px;
+.ideditor .source-switch a {
+    padding: 2px 4px 4px 4px;
     border-radius: 2px;
-    color: #eee;
 }
-.ideditor .map-footer-list a.chip .icon {
-    width: 14px;
-    height: 14px;
-    margin-top: -2px;
-}
-.ideditor .map-footer-list a.chip span.count {
-    margin: 0 3px;
-}
-
-.ideditor .source-switch a.chip.live {
+.ideditor .source-switch a.live {
     background: #d32232;
     color: #fff;
 }
@@ -8635,6 +8810,13 @@
 .ideditor[dir='rtl'] .badge {
     margin-right: 6px;
 }
+.ideditor .badge a {
+    margin-right: 5px;
+}
+.ideditor [dir='rtl'] .badge a {
+    margin-right: 0;
+    margin-left: 5px;
+}
 .ideditor .badge .icon {
     vertical-align: baseline;
     width: 11px;
@@ -8672,6 +8854,8 @@
     position: relative;
     border-radius: 3px;
     overflow: hidden;
+    left: 0;
+    right: 0;
     margin: auto;
     z-index: 50;
     width: 80%;
@@ -8735,6 +8919,8 @@
 .ideditor .modal-section.buttons .action {
     display: inline-block;
     margin: 0 10px;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .ideditor .save-section .buttons {
@@ -8745,6 +8931,7 @@
         flex-wrap: wrap;
     -ms-flex-pack: distribute;
         justify-content: space-around;
+    margin-bottom: 30px;
 }
 
 .ideditor .save-section .buttons .action,
@@ -8764,6 +8951,7 @@
     display: flex;
 }
 .ideditor .modal-actions button {
+    font-weight: normal;
     color: #7092ff;
     border-bottom: 1px solid #ccc;
     border-radius: 0;
@@ -8930,6 +9118,9 @@
 .ideditor .modal-shortcuts .tabs-bar {
     padding-bottom: 5px;
     text-align: center;
+    padding-bottom: 5px;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .ideditor .modal-shortcuts a.tab {
@@ -8999,7 +9190,30 @@
 }
 
 .ideditor .modal-shortcuts .shortcut-keys kbd {
+    display: inline-block;
+    text-align: center;
+    padding: 3px 5px;
+    font-size: 11px;
+    line-height: 12px;
+    min-width: 12px;
     color: #555;
+    vertical-align: baseline;
+    background-color: #fcfcfc;
+    border: solid 1px #ccc;
+    margin: 0 2px;
+    border-bottom-color: #bbb;
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 -1px 0 #bbb;
+            box-shadow: inset 0 -1px 0 #bbb;
+}
+
+.ideditor svg.mouseclick use.left {
+    fill: rgba(112, 146, 255, 1);
+    color: rgba(112, 146, 255, 0);
+}
+.ideditor svg.mouseclick use.right {
+    fill: rgba(112, 146, 255, 0);
+    color: rgba(112, 146, 255, 1);
 }
 
 .ideditor .modal-shortcuts .shortcut-keys .gesture {
@@ -9052,6 +9266,20 @@
     float: left;
 }
 
+.ideditor .mode-save h3 small.count {
+    margin-right: 10px;
+    text-align: center;
+    float: left;
+    height: 12px;
+    min-width: 12px;
+    font-size: 12px;
+    line-height: 12px;
+    border-radius: 24px;
+    padding: 5px;
+    background: #7092ff;
+    color: #fff;
+}
+
 .ideditor .note-save .field-warning,
 .ideditor .field-warning {
     background: #ffb;
@@ -9095,6 +9323,8 @@
 }
 .ideditor .changeset-list li {
     border-top: 1px solid #ccc;
+    padding: 5px 10px;
+    cursor: pointer;
 }
 .ideditor .changeset-list li:first-child {
     border-top: 0;
@@ -9102,6 +9332,21 @@
 .ideditor .changeset-list .alert {
     opacity: 0.5;
 }
+
+.ideditor .changeset-list li span.count {
+    font-size: 10px;
+    color: #555;
+}
+
+.ideditor .mode-save .commit-section .changeset-list button {
+    border-left: 1px solid #ccc;
+}
+
+.ideditor .changeset-list li span.count:before { content: '('; }
+
+.ideditor .changeset-list li span.count:after { content: ')'; }
+
+.ideditor .changeset-list li:first-child { border-top: 0;}
 
 
 /* Conflict resolution
@@ -9245,15 +9490,22 @@
     margin-top: 20px;
 }
 .ideditor .tooltip.top {
+    margin-top: -20px;
     text-align: center;
 }
+
 .ideditor .tooltip.right {
+    margin-left: 20px;
     text-align: left;
 }
+
 .ideditor .tooltip.bottom {
+    margin-top: 20px;
     text-align: center;
 }
+
 .ideditor .tooltip.left {
+    margin-left: -20px;
     text-align: right;
 }
 
@@ -9276,6 +9528,11 @@
     height: 0;
     border-color: transparent;
     border-style: solid;
+    top: 50%;
+    right: -5px;
+    margin-top: -5px;
+    border-left-color: #fff;
+    border-width: 5px 0 5px 5px;
 }
 .ideditor .popover.top .popover-arrow {
     bottom: -5px;
@@ -9390,6 +9647,23 @@
     margin-top: -5px;
 }
 
+/* Uncramp map-control tooltips */
+.ideditor .map-control .tooltip {
+    min-width: 160px;
+}
+.ideditor .map-control .shortcuts .tooltip {
+    max-width: 160px;
+}
+
+/* Move over tooltips that are near the edge of screen */
+.ideditor button.sidebar-toggle .tooltip .tooltip-arrow {
+    left: 32px;
+}
+.ideditor [dir='rtl'] button.sidebar-toggle .tooltip .tooltip-arrow {
+    left: auto;
+    right: 32px;
+}
+
 .ideditor li:first-of-type .badge .tooltip,
 .ideditor li.hide + li.version .badge .tooltip {
     left: auto !important;
@@ -9409,6 +9683,46 @@
 .ideditor[dir='rtl'] li.hide + li.version .badge .tooltip .popover-arrow {
     left: 15px !important;
     right: auto !important;
+}
+
+
+/* Contextual Radial Menu (deprecated)
+------------------------------------------------------- */
+.ideditor .radial-menu-tooltip {
+    opacity: 0.8;
+    display: none;
+    position: absolute;
+    width: 200px;
+}
+
+.ideditor .radial-menu-background {
+    fill: none;
+    stroke: black;
+    stroke-opacity: 0.5;
+}
+
+.ideditor .radial-menu-item circle {
+    fill: #eee;
+}
+
+.ideditor .radial-menu-item circle:active,
+.ideditor .radial-menu-item circle:hover {
+    fill: #fff;
+}
+
+.ideditor .radial-menu-item.disabled circle {
+    cursor: auto;
+    fill: rgba(255,255,255,.5);
+}
+
+.ideditor .radial-menu-item use {
+    fill: #222;
+    color: #79f;
+}
+
+.ideditor .radial-menu-item.disabled use {
+    fill: rgba(32,32,32,.5);
+    color: rgba(40,40,40,.5);
 }
 
 
@@ -9457,8 +9771,15 @@
 }
 
 .ideditor .edit-menu-item use {
+    fill: #222;
+    color: #79f;
     pointer-events: none;
 }
+.ideditor .edit-menu-item.disabled use {
+    fill: rgba(32,32,32,.2);
+    color: rgba(40,40,40,.2);
+}
+
 
 /* Lasso
 ------------------------------------------------------- */
@@ -9477,6 +9798,7 @@
     height: 20px;
     overflow: visible;
     width: 10px;
+    background: #fff;
     border-left: 1px solid #DDD;
 }
 
@@ -9493,6 +9815,7 @@
     border-width: 3px 3px 3px 4px;
     border-radius: 6px;
 }
+.ideditor ::-webkit-scrollbar-track:hover,
 .ideditor ::-webkit-scrollbar-track:active {
     background-color: rgba(0,0,0,.05);
 }
@@ -9662,10 +9985,10 @@
 }
 
 .ideditor .curtain-tooltip.intro-mouse {
+    -moz-user-select: none;
     -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .ideditor .curtain-tooltip.intro-mouse .counter {
@@ -9692,6 +10015,7 @@
 
 .ideditor .huge-modal-button {
     width: 100%;
+    height: auto;
     padding: 20px;
 }
 

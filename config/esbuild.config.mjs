@@ -2,6 +2,7 @@ import esbuild from 'esbuild';
 import fs from 'node:fs';
 import parse from 'minimist';
 import envs from './envs.mjs';
+import { sassPlugin } from 'esbuild-sass-plugin';
 
 let args = parse(process.argv.slice(2), {boolean: true});
 delete args._;
@@ -10,10 +11,15 @@ const context = await esbuild.context({
   define: envs,
   bundle: true,
   sourcemap: true,
-  entryPoints: ['./modules/id.js'],
+  entryPoints: [
+    './modules/id.js'
+  ],
   legalComments: 'none',
   logLevel: 'info',
   metafile: true,
+  plugins: [sassPlugin({
+    loadPaths:['./modules','./node-modules']
+  })],
   outfile: 'dist/iD.js'
 });
 

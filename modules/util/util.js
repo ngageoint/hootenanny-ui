@@ -1,7 +1,5 @@
 import _map from 'lodash-es/map';
 
-import { t, textDirection } from './locale';
-import { utilDetect } from './detect';
 import { remove as removeDiacritics } from 'diacritics';
 import { fixRTLTextForSvg, rtlRegex } from './svg_paths_rtl_fix';
 

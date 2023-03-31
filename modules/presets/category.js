@@ -35,19 +35,8 @@ export function presetCategory(categoryID, category, allPresets) {
 
   _this.matchScore = () => -1;
 
-<<<<<<< HEAD
-    category.matchSchema = function(schema) {
-        return category['hoot:tagschema'] === schema || (schema === 'OSM' && category['hoot:tagschema'] === undefined);
-    };
-
-
-    category.matchScore = function() {
-        return -1;
-    };
-=======
   _this.name = () => t(`_tagging.presets.categories.${categoryID}.name`, { 'default': categoryID });
   _this.nameLabel = () => t.append(`_tagging.presets.categories.${categoryID}.name`, { 'default': categoryID });
->>>>>>> v2.25.1
 
   _this.terms = () => [];
 

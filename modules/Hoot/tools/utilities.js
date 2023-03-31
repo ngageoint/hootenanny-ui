@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 
 import _forEach from 'lodash-es/forEach';
-import { t } from '../../util/locale';
+import { t } from '../../core/localizer';
 
 export const getBrowserInfo = () => {
     let browserInfo = {},

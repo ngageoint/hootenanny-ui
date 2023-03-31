@@ -114,7 +114,7 @@ export function modeDragNode(context) {
     }
 
 
-    function keyup(d3_eventd3_event) {
+    function keyup(d3_event) {
         if (d3_event.keyCode === utilKeybinding.modifierCodes.alt) {
             if (context.surface().classed('nope-suppressed')) {
                 context.surface()
@@ -127,7 +127,7 @@ export function modeDragNode(context) {
     }
 
 
-    function start(d3_event, d3_event, entity) {
+    function start(d3_event, entity) {
         _wasMidpoint = entity.type === 'midpoint';
         var hasHidden = context.features().hasHiddenConnections(entity, context.graph());
         _isCancelled = !context.editable() || d3_event.shiftKey || hasHidden;
@@ -183,7 +183,7 @@ export function modeDragNode(context) {
     }
 
 
-    function doMove(d3_event, d3_event, entity, nudge) {
+    function doMove(d3_event, entity, nudge) {
         nudge = nudge || [0, 0];
 
         var currPoint = (d3_event && d3_event.point) || context.projection(_lastLoc);
@@ -350,7 +350,7 @@ export function modeDragNode(context) {
     }
 
 
-    function move(d3_event, d3_event, entity, point) {
+    function move(d3_event, entity, point) {
         if (_isCancelled) return;
         d3_event.stopPropagation();
 
