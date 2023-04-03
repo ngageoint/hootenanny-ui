@@ -8,7 +8,7 @@ import _filter    from 'lodash-es/filter';
 import _findIndex from 'lodash-es/findIndex';
 import _reduce    from 'lodash-es/reduce';
 
-import { d3combobox } from '../../../../lib/hoot/d3.combobox';
+import { d3combobox } from '../../d3.combobox';
 
 import TagMapWidget from './tagMapWidget';
 

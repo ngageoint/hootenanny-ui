@@ -254,7 +254,6 @@ export function uiEditMenu(context) {
                 return true;
             }
         }
-    };
 
         function tooltipPosition(viewport, menuLeft) {
             if (localizer.textDirection() === 'ltr') {

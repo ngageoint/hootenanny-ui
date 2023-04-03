@@ -1,8 +1,3 @@
-import _clone from 'lodash-es/clone';
-import _forEach from 'lodash-es/forEach';
-import _isEqual from 'lodash-es/isEqual';
-import _unionBy from 'lodash-es/unionBy';
-
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { select as d3_select } from 'd3-selection';
 import deepEqual from 'fast-deep-equal';
@@ -19,10 +14,8 @@ import { uiCommitWarnings } from './commit_warnings';
 import { uiSectionRawTagEditor } from './sections/raw_tag_editor';
 import { utilArrayGroupBy, utilRebind, utilUniqueDomId } from '../util';
 import { utilDetect } from '../util/detect';
-import { utilRebind } from '../util';
 
 
-var _changeset;
 var readOnlyTags = [
     /^changesets_count$/,
     /^created_by$/,
@@ -250,7 +243,7 @@ export function uiCommit(context) {
 
         // Changeset Section
         //var changesetSection = body.selectAll('.changeset-editor')
-            .data([0]);
+        //    .data([0]);
 
         //changesetSection = changesetSection.enter()
         //    .append('div')

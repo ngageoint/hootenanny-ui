@@ -10,7 +10,7 @@ import _map     from 'lodash-es/map';
 import FormFactory from './formFactory';
 
 import { checkForUnallowedChar } from './utilities';
-import { d3combobox }            from '../../lib/hoot/d3.combobox';
+import { d3combobox }            from '../ui/d3.combobox';
 
 export default class ClipDataset {
     constructor( instance ) {

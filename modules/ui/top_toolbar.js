@@ -3,12 +3,14 @@ import {
 } from 'd3-selection';
 
 import _debounce from 'lodash-es/debounce';
-import { uiToolDrawModes, uiToolNotes, uiToolSave, uiToolSidebarToggle, uiToolUndoRedo } from './tools';
+import { uiPasteTags, uiTools, uiToolDrawModes, uiToolNotes, uiToolSave, uiToolSidebarToggle, uiToolUndoRedo } from './tools';
 
 
 export function uiTopToolbar(context) {
 
     var sidebarToggle = uiToolSidebarToggle(context),
+        pasteTags = uiPasteTags(context),
+        hootTools = uiTools(context),
         modes = uiToolDrawModes(context),
         notes = uiToolNotes(context),
         undoRedo = uiToolUndoRedo(context),
@@ -40,7 +42,12 @@ export function uiTopToolbar(context) {
             var tools = [
                 sidebarToggle,
                 'spacer',
-                modes
+                pasteTags,
+                'spacer',
+                hootTools,
+                'spacer',
+                modes,
+                'spacer',
             ];
 
             tools.push('spacer');

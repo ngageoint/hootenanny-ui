@@ -12,7 +12,7 @@ import _map       from 'lodash-es/map';
 
 import Tab  from '../tab';
 
-import { d3combobox } from '../../../../lib/hoot/d3.combobox';
+import { d3combobox } from '../../d3.combobox';
 
 /**
  * Creates the review-bookmarks tab in the settings panel

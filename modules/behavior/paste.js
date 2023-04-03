@@ -1,7 +1,4 @@
-import _invert from 'lodash-es/invert';
-import _mapValues from 'lodash-es/mapValues';
-
-import { actionCopyEntities, actionMove } from '../actions';
+import { actionCopyEntities } from '../actions/copy_entities';
 import { actionMove } from '../actions/move';
 import { geoExtent, geoPointInPolygon, geoVecSubtract } from '../geo';
 import { modeMove } from '../modes/move';

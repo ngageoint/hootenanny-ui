@@ -8,13 +8,6 @@ import { utilGetSetValue, utilNoAuto, utilRebind } from '../../util';
 import { uiCombobox } from '../combobox';
 import { t } from '../../core/localizer';
 
-import { svgIcon } from '../../svg/index';
-import {
-    utilGetSetValue,
-    utilNoAuto,
-    utilRebind
-} from '../../util';
-
 export function uiFieldWikidata(field, context) {
     var wikidata = services.wikidata;
     var dispatch = d3_dispatch('change');

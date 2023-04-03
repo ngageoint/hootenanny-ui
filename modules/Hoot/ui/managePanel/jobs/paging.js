@@ -1,4 +1,4 @@
-import { d3combobox } from '../../../../lib/hoot/d3.combobox';
+import { d3combobox } from '../../d3.combobox';
 
 export default class Paging {
     constructor(container) {

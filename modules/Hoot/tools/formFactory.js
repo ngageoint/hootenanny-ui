@@ -6,7 +6,7 @@
 
 import _map from 'lodash-es/map';
 
-import { d3combobox } from '../../lib/hoot/d3.combobox';
+import { d3combobox } from '../ui/d3.combobox';
 
 /**
  * Create a form contained within a modal

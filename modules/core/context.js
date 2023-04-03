@@ -21,6 +21,7 @@ import { services } from '../services';
 import { uiInit } from '../ui/init';
 import { utilKeybinding, utilRebind, utilStringQs, utilCleanOsmString } from '../util';
 
+import DGServcies from '../services/dgservices';
 
 export function coreContext() {
   const dispatch = d3_dispatch('enter', 'exit', 'change');
@@ -511,7 +512,8 @@ export function coreContext() {
   context.projection = geoRawMercator();
   context.curtainProjection = geoRawMercator();
 
-
+  context.dgservices = DGServcies;
+  
   /* Init */
   context.init = () => {
 

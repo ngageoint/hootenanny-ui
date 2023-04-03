@@ -1,7 +1,4 @@
 import _debounce from 'lodash-es/debounce';
-import _extend from 'lodash-es/extend';
-import _forEach from 'lodash-es/forEach';
-import _omit from 'lodash-es/omit';
 
 import { json as d3_json } from 'd3-fetch';
 
@@ -10,7 +7,7 @@ import { localizer } from '../core/localizer';
 
 import { taginfoApiUrl } from '../../config/id.js';
 
-var apibase = apiConfig.tagInfoUrl || taginfoApiUrl;
+var apibase = taginfoApiUrl;
 var _inflight = {};
 var _popularKeys = {};
 var _taginfoCache = {};

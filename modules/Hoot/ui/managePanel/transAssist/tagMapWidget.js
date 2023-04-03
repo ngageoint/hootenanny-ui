@@ -4,7 +4,7 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
 
-import { d3combobox } from 'lib/hoot/d3.combobox';
+import { d3combobox } from '../../d3.combobox';
 import { services } from '../../../../services';
 
 export default class TagMapWidget {

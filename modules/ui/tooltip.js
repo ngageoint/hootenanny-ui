@@ -21,6 +21,7 @@ export function uiTooltip(klass) {
 
     var _heading = utilFunctor(null);
     var _keys = utilFunctor(null);
+    var _html = utilFunctor(false);
 
     tooltip.title = function(val) {
         if (!arguments.length) return _title;
@@ -40,10 +41,17 @@ export function uiTooltip(klass) {
         return tooltip;
     };
 
+    tooltip.html = function(val) {
+        if (!arguments.length) return _html;
+        _html = utilFunctor(val)
+        return _html;
+    }
+
     tooltip.content(function() {
         var heading = _heading.apply(this, arguments);
         var text = _title.apply(this, arguments);
         var keys = _keys.apply(this, arguments);
+        var markup = _html.apply(this, arguments);
 
         var headingCallback = typeof heading === 'function' ? heading : s => s.text(heading);
         var textCallback = typeof text === 'function' ? text : s => s.text(text);
@@ -100,9 +108,12 @@ export function uiTooltip(klass) {
                 .enter()
                 .append('kbd')
                 .attr('class', 'shortcut')
-                .text(function(d) {
+                [markup ? 'html' : text](function(d) { 
                     return d;
                 });
+                // .text(function(d) {
+                //     return d;
+                // });
         };
     });
 

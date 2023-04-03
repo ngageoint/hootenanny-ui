@@ -15,7 +15,7 @@ import Resolve             from './resolve';
 import { conflictActions } from '../../config/domMetadata';
 import { utilKeybinding }  from '../../../util/keybinding';
 import { t }               from '../../../core/localizer';
-import { tooltip }         from '../../../util/tooltip';
+import { uiTooltip } from '../../../ui';
 
 import {
     getOS,
@@ -119,10 +119,10 @@ export default class Conflicts {
             .classed( '_icon info light', true )
             .html( '<strong class="review-note">Initializing...</strong>' );
 
-        this.tooltip = tooltip()
-            .placement( 'top' )
-            .html( true )
-            .title( (d3_event, d) => tooltipHtml( t( `review.${ d.id }.description` ), d.cmd ) );
+        this.tooltip = uiTooltip()
+            .title((d3_event, d) => (selection) => selection.html(tooltipHtml(
+                t( `review.${ d.id }.description` ), d.cmd
+            )));
 
         // create buttons
         this.leftContainer.append( 'div' )

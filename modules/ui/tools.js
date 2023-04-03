@@ -11,7 +11,7 @@ import {
 
 import { svgIcon }  from '../svg';
 import selectBounds from '../Hoot/tools/selectBounds';
-import { tooltip }  from '../util/tooltip';
+import { uiTooltip }  from '../ui/tooltip';
 
 export function uiTools( context ) {
     let menuItemMeta = [
@@ -209,9 +209,7 @@ export function uiTools( context ) {
         item.each( function( d ) {
             d3.select( this )
                 .call( svgIcon( `#${ d.icon }`, 'pre-text' ) )
-                .call( tooltip()
-                    .title( d.tooltip )
-                    .placement( d.placement || 'right' ) );
+                .call( uiTooltip().title( d.tooltip ) );
         } );
 
         item.append( 'span' )

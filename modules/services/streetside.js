@@ -1,8 +1,3 @@
-import _extend from 'lodash-es/extend';
-import _find from 'lodash-es/find';
-import _forEach from 'lodash-es/forEach';
-import _union from 'lodash-es/union';
-
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { timer as d3_timer } from 'd3-timer';
 

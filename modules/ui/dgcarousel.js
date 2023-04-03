@@ -7,7 +7,7 @@
 import _debounce from 'lodash-es/debounce';
 
 import { t }           from '../core/localizer';
-import { tooltip }     from '../util/tooltip';
+import { uiTooltip }     from '../ui/tooltip';
 import { tooltipHtml } from '../Hoot/tools/utilities';
 import { svgIcon }     from '../svg';
 
@@ -312,10 +312,9 @@ export function uiDgcarousel( context ) {
             .append( 'ul' )
             .attr( 'class', 'carousel-metadata-list' );
 
-        let ttp = tooltip()
-            .placement( 'left' )
-            .html( true )
-            .title( tooltipHtml( t( 'dgcarousel.title' ), key ) );
+        let ttp = uiTooltip()
+            .title(() => (selection) => 
+                selection.html(tooltipHtml( t( 'dgcarousel.title' ), key ) ));
 
         let button = selection
             .append( 'button' )

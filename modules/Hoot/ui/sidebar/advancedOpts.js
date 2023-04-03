@@ -10,9 +10,9 @@ import _isEmpty   from 'lodash-es/isEmpty';
 import _isBoolean from 'lodash-es/isBoolean';
 import _forEach   from 'lodash-es/forEach';
 
-import { d3combobox } from '../../../lib/hoot/d3.combobox';
+import { d3combobox } from '../d3.combobox';
 import { svgIcon }    from '../../../svg';
-import { tooltip }    from '../../../util/tooltip';
+import { uiTooltip } from '../../../ui';
 import SaveFavoriteOpt from '../modals/saveFavoriteOpt';
 import DeleteFavoriteOpt from '../modals/deleteFavoriteOpt';
 import FormFactory from '../../tools/formFactory';
@@ -617,7 +617,7 @@ export default class AdvancedOpts {
         if ( notNumber.selectAll( '.tooltip' ).empty() ) {
             notNumber
                 .call(svgIcon('#iD-icon-alert', 'deleted'))
-                .call(tooltip().title('this option must be a number!'));
+                .call(uiTooltip().title('this option must be a number!'));
 
             notNumber.selectAll( '.tooltip-arrow' )
                 .classed( 'hidden', true );

@@ -10,7 +10,7 @@ import FormFactory  from './formFactory';
 import { modeBrowse, modeDrawBoundingBox } from '../../modes';
 import ClipDataset                         from './clipDataset';
 import OverpassQueryPanel                  from './overpassQueryPanel';
-import { d3combobox }                      from '../../lib/hoot/d3.combobox';
+import { d3combobox }                      from '../ui/d3.combobox';
 import { geoExtent as GeoExtent }          from '../../geo';
 
 export default class SelectBounds extends EventEmitter {

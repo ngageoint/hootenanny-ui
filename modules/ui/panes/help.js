@@ -6,8 +6,6 @@ import { uiPane } from '../pane';
 import { t, localizer } from '../../core/localizer';
 import { uiTooltip } from '../tooltip';
 import { helpHtml } from '../intro/helper';
-import { tooltip } from '../util/tooltip';
-import { icon } from './intro/helper';
 
 export function uiPaneHelp(context) {
 
@@ -325,42 +323,6 @@ export function uiPaneHelp(context) {
             context.container().call(context.ui().shortcuts, true);
         }
 
-
-        var pane = selection.append('div')
-            .attr('class', 'help-wrap map-pane fillL hide');
-
-        var tooltipBehavior = tooltip()
-            .placement((textDirection === 'rtl') ? 'right' : 'left')
-            .html(true)
-            .title(uiTooltipHtml(t('help.title'), key));
-
-        var button = selection.append('button')
-            .attr('tabindex', -1)
-            .on('click', togglePane)
-            .call(svgIcon('#iD-icon-help', 'light'))
-            .call(tooltipBehavior);
-
-        var shown = false;
-
-
-        var heading = pane
-            .append('div')
-            .attr('class', 'pane-heading');
-
-        var doctitle = heading
-            .append('h2')
-            .text(t('help.title'));
-
-        heading
-            .append('button')
-            .on('click', function() { uiHelp.hidePane(); })
-            .call(svgIcon('#iD-icon-close'));
-
-
-        var content = pane
-            .append('div')
-            .attr('class', 'pane-content');
-
         var toc = content
             .append('ul')
             .attr('class', 'toc');
@@ -370,6 +332,8 @@ export function uiPaneHelp(context) {
             .enter()
             .append('li')
             .append('a')
+            .attr('role', 'button')
+            .attr('href', '#')
             .html(function(d) { return d.title; })
             .on('click', function(d3_event, d) {
                 d3_event.preventDefault();

@@ -9,7 +9,7 @@ import _omit    from 'lodash-es/omit';
 
 import { utilKeybinding }   from '../util/keybinding';
 import { t }                from '../core/localizer';
-import { tooltip }          from '../util/tooltip';
+import { uiTooltip } from './tooltip';
 import { tooltipHtml }      from '../Hoot/tools/utilities';
 import { svgIcon }          from '../svg';
 import { modeSelect }       from '../modes';
@@ -76,10 +76,11 @@ export function uiPasteTags( context ) {
     }
 
     return function( selection ) {
-        let buttonTooltip = tooltip()
+        let buttonTooltip = uiTooltip()
             .placement( 'bottom' )
-            .html( true )
-            .title( (d3_event, d) => tooltipHtml( t( d.id + '.tooltip' ), d.cmd ) );
+            .title((d3_event, d) => selection => {
+                selection.html(tooltipHtml( t( d.id + '.tooltip' ), d.cmd ))
+            });
 
         let buttons = selection.selectAll( 'button' )
             .data( commands )

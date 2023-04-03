@@ -13,25 +13,22 @@ import { utilGetDimensions } from '../util/dimensions';
 
 import { uiAccount } from './account';
 import { uiAttribution } from './attribution';
+import { uiContributors } from './contributors';
 import { uiEditMenu } from './edit_menu';
 import { uiCoordinates } from './coordinates';
 import { uiDgcarousel } from './dgcarousel';
 import { uiFeatureInfo } from './feature_info';
+import { uiFlash } from './flash';
 import { uiFullScreen } from './full_screen';
 import { uiGeolocate } from './geolocate';
-import { uiHelp } from './help';
 import { uiInfo } from './info';
 import { uiIntro } from './intro';
 import { uiIssuesInfo } from './issues_info';
 import { uiLoading } from './loading';
-import { uiMapData } from './map_data';
 import { uiMapInMap } from './map_in_map';
-import { uiModes } from './modes';
 import { uiNotice } from './notice';
-import { uiPasteTags } from './paste_tags';
 import { uiPhotoviewer } from './photoviewer';
 import { uiRestore } from './restore';
-import { uiSave } from './save';
 import { uiScale } from './scale';
 import { uiShortcuts } from './shortcuts';
 import { uiSidebar } from './sidebar';
@@ -54,7 +51,6 @@ import { uiPanePreferences } from './panes/preferences';
 
 export function uiInit(context) {
     var _initCounter = 0;
-    var _initCallback;
     var _needWidth = {};
 
     var _lastPointerType;
@@ -223,8 +219,16 @@ export function uiInit(context) {
             .append('div')
             .attr('class', 'map-panes');
 
+        renderPane(uiPaneBackground(context))
+
+        renderPane(uiDgcarousel(context), 'dgcarousel');
+        if (!context.dgservices().enabled) {
+            d3_select('.dgcarousel-control')
+                .classed('hide', true);
+        }
+
+
         var uiPanes = [
-            uiPaneBackground(context),
             uiPaneMapData(context),
             uiPaneIssues(context),
             uiPanePreferences(context),
