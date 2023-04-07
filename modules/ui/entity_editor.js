@@ -454,10 +454,6 @@ export function uiEntityEditor(context) {
                     tags[k] = v;
                 }
             }
-            entityEditor.modified(_base !== graph);
-            entityEditor(selection);
-        }
-    }
 
 
             tags = utilCleanTags(tags);
@@ -465,10 +461,7 @@ export function uiEntityEditor(context) {
             if (!deepEqual(entity.tags, tags)) {
                 actions.push(actionChangeTags(entityID, tags));
             }
-        }
 
-        if (!onInput) {
-            tags = utilCleanTags(tags);
         }
 
         if (actions.length) {
@@ -522,7 +515,6 @@ export function uiEntityEditor(context) {
         loadActivePresets(true);
 
         return entityEditor
-            .preset(presetMatch)
             .modified(false);
     };
 
