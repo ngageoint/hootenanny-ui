@@ -1,5 +1,6 @@
 import FormFactory from '../../tools/formFactory';
 import { uiChangesetEditor } from '../../../ui/changeset_editor';
+import { prefs } from '../../../core';
 
 export default class ChangesetStats {
     constructor( job, data, viewOnly ) {
@@ -15,23 +16,23 @@ export default class ChangesetStats {
                     changed.comment = '';
                 }
                 if (!onInput) {
-                    Hoot.context.storage('comment', changed.comment);
-                    Hoot.context.storage('commentDate', Date.now());
+                    prefs('comment', changed.comment);
+                    prefs('commentDate', Date.now());
                 } else {
                     that.updateSubmitButton();
                 }
             }
             if (changed.hasOwnProperty('source')) {
                 if (changed.source === undefined) {
-                    Hoot.context.storage('source', null);
+                    prefs('source', null);
                 } else if (!onInput) {
-                    Hoot.context.storage('source', changed.source);
-                    Hoot.context.storage('commentDate', Date.now());
+                    prefs('source', changed.source);
+                    prefs('commentDate', Date.now());
                 }
             }
             if (changed.hasOwnProperty('hashtags')) {
                 if (changed.hashtags === undefined) {
-                    Hoot.context.storage('hashtags', null);
+                    prefs('hashtags', null);
                 } else if (!onInput) {
                     // format hashtags so there is # in front of each one
                     changed.hashtags = changed.hashtags.split(/[,;\s]+/)
@@ -41,8 +42,8 @@ export default class ChangesetStats {
                         })
                         .join(';');
 
-                    Hoot.context.storage('hashtags', changed.hashtags);
-                    Hoot.context.storage('commentDate', Date.now());
+                    prefs('hashtags', changed.hashtags);
+                    prefs('commentDate', Date.now());
                 }
             }
 
@@ -132,13 +133,13 @@ export default class ChangesetStats {
     createComment() {
 
         // expire stored comment, hashtags, source after cutoff datetime - #3947 #4899
-        const commentDate = +Hoot.context.storage('commentDate') || 0;
+        const commentDate = +prefs('commentDate') || 0;
         const currDate = Date.now();
         const cutoff = 2 * 86400 * 1000;   // 2 days
         if (commentDate > currDate || currDate - commentDate > cutoff) {
-            Hoot.context.storage('comment', null);
-            Hoot.context.storage('hashtags', null);
-            Hoot.context.storage('source', null);
+            prefs('comment', null);
+            prefs('hashtags', null);
+            prefs('source', null);
         }
 
         // Changeset Section
@@ -155,17 +156,17 @@ export default class ChangesetStats {
         let secondaryName;
         if (this.job.tags && this.job.tags.input2) {
             secondaryName = Hoot.layers.findBy('id', Number(this.job.tags.input2)).name;
-            Hoot.context.storage('source', secondaryName);
+            prefs('source', secondaryName);
         }
 
-        if (!Hoot.context.storage('hashtags')) {
-            Hoot.context.storage('hashtags', '#hootenanny');
+        if (!prefs('hashtags')) {
+            prefs('hashtags', '#hootenanny');
         }
 
         this.tags = {
-            comment: Hoot.context.storage('comment') || '',
-            hashtags: Hoot.context.storage('hashtags') || '',
-            source: Hoot.context.storage('source') || ''
+            comment: prefs('comment') || '',
+            hashtags: prefs('hashtags') || '',
+            source: prefs('source') || ''
         };
 
         this.changesetSection
@@ -207,9 +208,9 @@ export default class ChangesetStats {
         params.parentId   = this.job.jobId;
 
         //Changeset tags
-        params.comment = Hoot.context.storage('comment') || '';
-        params.hashtags = Hoot.context.storage('hashtags') || '';
-        params.source = Hoot.context.storage('source') || '';
+        params.comment = prefs('comment') || '';
+        params.hashtags = prefs('hashtags') || '';
+        params.source = prefs('source') || '';
 
         if ( this.job.tags && this.job.tags.taskInfo ) {
             params.taskInfo = this.job.tags.taskInfo;

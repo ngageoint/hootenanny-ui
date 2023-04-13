@@ -10,13 +10,11 @@ import _forEach from 'lodash-es/forEach';
 import LayerAdd      from './layerAdd';
 import LayerConflate from './layerConflate';
 import LayerReview   from './layerReview';
-import FormFactory   from '../../tools/formFactory';
 
 import {
     utilQsString,
     utilStringQs
 }                       from '../../../util';
-import { uiBackground } from '../../../ui';
 
 /**
  * Create the sidebar

@@ -1,7 +1,3 @@
-import {
-    event as d3_event,
-    select as d3_select
-} from 'd3-selection';
 
 import { services } from '../services';
 import { actionNoop } from '../actions/noop';
@@ -64,9 +60,9 @@ export function modeDragNote(context) {
     }
 
 
-    function move(note) {
-        d3_event.sourceEvent.stopPropagation();
-        _lastLoc = context.projection.invert(d3_event.point);
+    function move(d3_event, entity, point) {
+        d3_event.stopPropagation();
+        _lastLoc = context.projection.invert(point);
 
         doMove(d3_event);
         var nudge = geoViewportEdge(point, context.map().dimensions());
@@ -78,7 +74,7 @@ export function modeDragNote(context) {
     }
 
 
-    function doMove(note, nudge) {
+    function doMove(d3_event, nudge) {
         nudge = nudge || [0, 0];
 
         var currPoint = (d3_event && d3_event.point) || context.projection(_lastLoc);

@@ -19,7 +19,7 @@ import { presetManager } from '../presets';
 import { rendererBackground, rendererFeatures, rendererMap, rendererPhotos } from '../renderer';
 import { services } from '../services';
 import { uiInit } from '../ui/init';
-import { utilKeybinding, utilRebind, utilStringQs, utilCleanOsmString } from '../util';
+import { utilDetect, utilKeybinding, utilRebind, utilStringQs, utilCleanOsmString } from '../util';
 
 import DGServcies from '../services/dgservices';
 
@@ -471,8 +471,8 @@ export function coreContext() {
 
   context.imagePath = (val) => context.asset(`img/${val}`);
 
-
-  let _imperial =  (utilDetect().locale.toLowerCase() === 'en-us');
+  
+  let _imperial =  (utilDetect().browserLocales[0] === 'en-us');
   context.imperial = (val) => {
       if (!arguments.length) return _imperial;
       _imperial = val;

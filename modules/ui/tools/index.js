@@ -3,3 +3,5 @@ export * from './notes';
 export * from './save';
 export * from './sidebar_toggle';
 export * from './undo_redo';
+export * from './paste_tags';
+export * from './tools';

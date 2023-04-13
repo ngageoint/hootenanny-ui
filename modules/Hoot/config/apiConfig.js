@@ -1,9 +1,9 @@
-
 /** ****************************************************************************************************
  * File: apiConfig.js
  * Project: hootenanny-ui
  * @author Matt Putipong on 3/2/18
  *******************************************************************************************************/
+import { tagInfoUrl, tm4ApiUrl, mergeServerPort, globalMaxNodeCount, translationServerPort } from '../../../config/id'
 
 // strip any filename at end of path and make relative to ../
 // unless we are at the root

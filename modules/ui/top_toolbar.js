@@ -3,7 +3,9 @@ import {
 } from 'd3-selection';
 
 import _debounce from 'lodash-es/debounce';
+// import { uiPasteTags } from './tools/index';
 import { uiPasteTags, uiTools, uiToolDrawModes, uiToolNotes, uiToolSave, uiToolSidebarToggle, uiToolUndoRedo } from './tools';
+//import { uiPasteTags, uiTools, uiToolDrawModes, uiToolNotes, uiToolSave, uiToolSidebarToggle, uiToolUndoRedo } from './tools';
 
 
 export function uiTopToolbar(context) {

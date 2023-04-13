@@ -9,7 +9,7 @@ let iD        = require( '../../modules/index' ),
     _         = require( 'lodash-es' ),
     chai      = require( 'chai' );
 
-let id = iD.Context();
+let id = iD.coreContext();
 
 global.Hoot   = Hoot;
 global.d3     = iD.d3;

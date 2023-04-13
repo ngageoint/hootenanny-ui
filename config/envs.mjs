@@ -14,6 +14,11 @@ const envs = {
 
   ENV__ID_TAGINFO_API_URL: JSON.stringify(process.env.ENV__ID_TAGINFO_API_URL || null),
   ENV__ID_NOMINATIM_API_URL: JSON.stringify(process.env.ENV__ID_NOMINATIM_API_URL || null),
+  ENV__ID_TM4_AP_URL: JSON.stringify(process.env.ENV__ID_TM4_AP_URL || null),
+  ENV__ID_TRANSLATION_SERVER_PORT: JSON.stringify(process.env.ENV__ID_TRANSLATION_SERVER_PORT || null),
+  ENV__ID_MERGE_SERVER_PORT: JSON.stringify(process.env.ENV__ID_MERGE_SERVER_PORT || null),
+  ENV__GLOBAL_MAX_NODE_COUNT: JSON.stringify(process.env.ENV__GLOBAL_MAX_NODE_COUNT || null),
+  ENV__TAG_INFO_URL: JSON.stringify(process.env.ENV__TAG_INFO_URL || null)
 }
 
 export default envs;

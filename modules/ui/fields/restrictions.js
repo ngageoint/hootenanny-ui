@@ -19,8 +19,8 @@ import { utilGetDimensions, utilSetDimensions } from '../../util/dimensions';
 export function uiFieldRestrictions(field, context) {
     var dispatch = d3_dispatch('change');
     var breathe = behaviorBreathe(context);
-    var storedViaWay = context.storage('turn-restriction-via-way');
-    var storedDistance = context.storage('turn-restriction-distance');
+    var storedViaWay = prefs('turn-restriction-via-way');
+    var storedDistance = prefs('turn-restriction-distance');
 
     prefs('turn-restriction-via-way', null);                 // remove old key
     var storedViaWay = prefs('turn-restriction-via-way0');   // use new key #6922

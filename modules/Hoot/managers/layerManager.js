@@ -41,6 +41,7 @@ import {
     polyStringToCoords, polyStringToCoordsList
 } from '../tools/utilities';
 import _cloneDeep from 'lodash-es/cloneDeep';
+import { prefs } from '../../core';
 
 export default class Layers {
     constructor( hoot ) {
@@ -62,7 +63,7 @@ export default class Layers {
     async refreshLayers() {
         try {
             this.allLayers          = await this.hoot.api.getLayers();
-            this.recentlyUsedLayers = JSON.parse( this.hoot.context.storage( 'recentlyUsedLayers' ) ) || [];
+            this.recentlyUsedLayers = JSON.parse( prefs( 'recentlyUsedLayers' ) ) || [];
 
             this.syncRecentlyUsedLayers();
             this.hoot.events.emit( 'recent-layers-retrieved' );
@@ -636,7 +637,7 @@ export default class Layers {
 
         this.syncRecentlyUsedLayers();
 
-        this.hoot.context.storage( 'recentlyUsedLayers', JSON.stringify( this.recentlyUsedLayers ) );
+        prefs( 'recentlyUsedLayers', JSON.stringify( this.recentlyUsedLayers ) );
     }
 
     syncRecentlyUsedLayers() {

@@ -7,11 +7,11 @@
 import {
     modeAddMeasureArea,
     modeAddMeasureLine
-} from '../modes';
+} from '../../modes';
 
-import { svgIcon }  from '../svg';
-import selectBounds from '../Hoot/tools/selectBounds';
-import { uiTooltip }  from '../ui/tooltip';
+import { svgIcon }  from '../../svg';
+import selectBounds from '../../Hoot/tools/selectBounds';
+import { uiTooltip }  from '../../ui/tooltip';
 
 export function uiTools( context ) {
     let menuItemMeta = [

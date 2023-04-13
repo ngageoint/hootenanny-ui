@@ -1,15 +1,15 @@
 import esbuild from 'esbuild';
 import envs from './envs.mjs';
+import sharedConfig from './shared.confi.mjs';
 
 esbuild
-  .build({
+  .build(Object.assign({
     define: envs,
     minify: true,
     bundle: true,
+    entryNames: '[name].min',
     sourcemap: true,
-    entryPoints: ['./modules/id.js'],
     legalComments: 'none',
     logLevel: 'info',
-    outfile: 'dist/iD.min.js'
-  })
+  }, sharedConfig))
   .catch(() => process.exit(1));

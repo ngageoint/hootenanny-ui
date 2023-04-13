@@ -4,6 +4,7 @@ import { checkForUnallowedChar, uuidv4 } from './utilities';
 import _find                                         from 'lodash-es/find';
 import OverpassQueryPanel                            from './overpassQueryPanel';
 import _get                                          from 'lodash-es/get';
+import { prefs } from '../../core';
 
 export default class GrailPull {
     constructor( instance ) {
@@ -328,13 +329,13 @@ export default class GrailPull {
             .then( () => this.form.remove() );
 
 
-        let boundsHistory = JSON.parse( Hoot.context.storage('bounds_history') );
+        let boundsHistory = JSON.parse( prefs('bounds_history') );
         if ( boundsHistory.boundsHistory.length >= 5 ) {
             // Removes oldest (last in list) bounds
             boundsHistory.boundsHistory = boundsHistory.boundsHistory.slice( 0, 4 );
         }
         boundsHistory.boundsHistory.unshift( bounds );
-        Hoot.context.storage( 'bounds_history', JSON.stringify( boundsHistory ) );
+        prefs( 'bounds_history', JSON.stringify( boundsHistory ) );
 
     }
 

@@ -1,7 +1,5 @@
 import _filter from 'lodash-es/filter';
 
-import { event as d3_event } from 'd3-selection';
-
 import {
     geoLength as d3_geoLength,
     geoPath as d3_geoPath
@@ -11,7 +9,7 @@ import { t, localizer } from '../../core/localizer';
 import { displayArea, displayLength, decimalCoordinatePair, dmsCoordinatePair } from '../../util/units';
 import { geoExtent, geoSphericalDistance } from '../../geo';
 import { services } from '../../services';
-import { utilGetAllNodes } from '../../util';
+import { utilDetect, utilGetAllNodes } from '../../util';
 
 export function uiPanelMeasurement(context) {
     var locale = utilDetect().locale,

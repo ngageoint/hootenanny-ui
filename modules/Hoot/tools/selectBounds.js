@@ -12,6 +12,7 @@ import ClipDataset                         from './clipDataset';
 import OverpassQueryPanel                  from './overpassQueryPanel';
 import { d3combobox }                      from '../ui/d3.combobox';
 import { geoExtent as GeoExtent }          from '../../geo';
+import { prefs } from '../../core';
 
 export default class SelectBounds extends EventEmitter {
     constructor( context, predefinedData ) {
@@ -152,7 +153,7 @@ export default class SelectBounds extends EventEmitter {
             .append( 'input' )
             .attr('placeholder', 'Select a bounds from...');
 
-        let { boundsHistory } = JSON.parse( Hoot.context.storage('bounds_history') );
+        let { boundsHistory } = JSON.parse( prefs('bounds_history') );
 
         const dropdownOptions = boundOptionsList.concat( boundsHistory );
         const historyOptions = dropdownOptions.map( option => { return { value: option }; } );

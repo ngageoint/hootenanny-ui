@@ -49,6 +49,13 @@ const taginfoApiUrl = ENV__ID_TAGINFO_API_URL
 const nominatimApiUrl = ENV__ID_NOMINATIM_API_URL
   || 'https://nominatim.openstreetmap.org/';
 
+
+const tm4ApiUrl = ENV__ID_TM4_AP_URL || '';
+const translationServerPort = ENV__ID_TRANSLATION_SERVER_PORT || '';
+const mergeServerPort = ENV__ID_MERGE_SERVER_PORT || '';
+const globalMaxNodeCount = ENV__GLOBAL_MAX_NODE_COUNT || 0;
+const tagInfoUrl = ENV__TAG_INFO_URL || '';
+
 export {
   presetsCdnUrl,
   ociCdnUrl,
@@ -57,4 +64,9 @@ export {
   osmApiConnections,
   taginfoApiUrl,
   nominatimApiUrl,
+  tm4ApiUrl,
+  translationServerPort,
+  mergeServerPort,
+  globalMaxNodeCount,
+  tagInfoUrl
 };
