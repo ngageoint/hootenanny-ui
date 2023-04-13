@@ -26,7 +26,7 @@
     align-items: center;
 
     .button {
-        @extend button.dark !optional;
+        // @extend button.dark !optional;
         border: none;
     }
 
