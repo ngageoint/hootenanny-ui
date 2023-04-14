@@ -34,7 +34,8 @@ export function rendererMap(context) {
     var dispatch = d3_dispatch(
         'move', 'drawn',
         'crossEditableZoom', 'hitMinZoom',
-        'changeHighlighting', 'changeAreaFill'
+        'changeHighlighting', 'changeAreaFill',
+        'toomanynodes'
     );
     var projection = context.projection;
     var curtainProjection = context.curtainProjection;
@@ -68,6 +69,8 @@ export function rendererMap(context) {
 
     // use pointer events on supported platforms; fallback to mouse events
     var _pointerPrefix = 'PointerEvent' in window ? 'pointer' : 'mouse';
+
+    var _tooManyNodes = false;
 
     // use pointer event interaction if supported; fallback to touch/mouse events in d3-zoom
     var _zoomerPannerFunction = 'PointerEvent' in window ? utilZoomPan : d3_zoom;

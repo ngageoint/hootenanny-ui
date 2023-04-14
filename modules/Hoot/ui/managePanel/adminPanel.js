@@ -3,6 +3,7 @@ import { duration } from '../../tools/utilities';
 import Filtering from './jobs/filtering';
 import { d3combobox } from '../d3.combobox';
 import deleteStaleMaps from '../modals/deleteStaleMaps';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * Creates the admin tab in the settings panel
@@ -217,7 +218,7 @@ export default class AdminPanel extends Tab {
 
         head.each(function(d) {
             if ( d.filter ) {
-                d3.select(this).append('i')
+                d3_select(this).append('i')
                     .classed( 'filter material-icons', true )
                     .text('menu_open')
                     .on('click', openFilter);
@@ -274,7 +275,7 @@ export default class AdminPanel extends Tab {
                 switch (i) {
                     case 0:
                     default:
-                        content = d3.select(this).selectAll('span')
+                        content = d3_select(this).selectAll('span')
                             .data(d => [d]);
                         content.exit().remove();
                         content.enter().append('span')
@@ -282,7 +283,7 @@ export default class AdminPanel extends Tab {
                             .text(d => d);
                         break;
                     case 1:
-                        content = d3.select(this).selectAll('span')
+                        content = d3_select(this).selectAll('span')
                             .data(d => [d]);
                         content.exit().remove();
                         content.enter().append('span')
@@ -292,10 +293,10 @@ export default class AdminPanel extends Tab {
                             });
                         break;
                     case 2:
-                        d3.select(this).classed( 'privileges', true )
+                        d3_select(this).classed( 'privileges', true )
                             .style( 'display', 'inline-flex' );
 
-                        content = d3.select(this).selectAll('label')
+                        content = d3_select(this).selectAll('label')
                             .data( Object.keys( Hoot.config.privilegeIcons ) );
                         content.exit().remove();
                         labelEnter = content.enter().append( 'label' )
@@ -308,7 +309,7 @@ export default class AdminPanel extends Tab {
                             .property( 'checked', d => datum[d] === 'true' )
                             .on('click', () => {
                                 //mark the user row as modified
-                                d3.select( this.parentElement ).classed('modified', true);
+                                d3_select( this.parentElement ).classed('modified', true);
                             });
                         break;
                 }
@@ -324,10 +325,10 @@ export default class AdminPanel extends Tab {
                 privileges: {}
             };
 
-            d3.select( this ).select( '.privileges' )
+            d3_select( this ).select( '.privileges' )
                 .selectAll( 'input' )
                 .each( function() {
-                    const currentElement = d3.select( this );
+                    const currentElement = d3_select( this );
                     user.privileges[ currentElement.attr('id') ] = currentElement.property( 'checked');
                 });
 

@@ -16,7 +16,7 @@ import { uiAttribution } from './attribution';
 import { uiContributors } from './contributors';
 import { uiEditMenu } from './edit_menu';
 import { uiCoordinates } from './coordinates';
-import { uiDgcarousel } from './dgcarousel';
+import { uiDgCarousel } from './dgcarousel';
 import { uiFeatureInfo } from './feature_info';
 import { uiFlash } from './flash';
 import { uiFullScreen } from './full_screen';
@@ -219,14 +219,24 @@ export function uiInit(context) {
             .append('div')
             .attr('class', 'map-panes');
 
-        renderPane(uiPaneBackground(context))
+        function renderPane(pane, id) {
+            controls
+                .append('div')
+                .attr('class', 'map-control map-pane-control ' + (pane.id || id) + '-control')
+                .call(pane.renderToggleButton);
+    
+            panes
+                .call(pane.renderPane);
+        }
+      
 
-        renderPane(uiDgcarousel(context), 'dgcarousel');
+        renderPane(uiPaneBackground(context))
+        renderPane(uiDgCarousel(context))
+
         if (!context.dgservices().enabled) {
             d3_select('.dgcarousel-control')
                 .classed('hide', true);
         }
-
 
         var uiPanes = [
             uiPaneMapData(context),
@@ -235,15 +245,7 @@ export function uiInit(context) {
             uiPaneHelp(context)
         ];
 
-        uiPanes.forEach(function(pane) {
-            controls
-                .append('div')
-                .attr('class', 'map-control map-pane-control ' + pane.id + '-control')
-                .call(pane.renderToggleButton);
-
-            panes
-                .call(pane.renderPane);
-        });
+        uiPanes.forEach(renderPane)
 
         ui.info = uiInfo(context);
 
@@ -296,7 +298,7 @@ export function uiInit(context) {
             .append('div')
             .attr('id', 'coord-block')
             .call(uiCoordinates(context))
-            .call(tooltip().title('Click to change format').placement('top'));
+            .call(uiTooltip().title('Click to change format').placement('top'));
 
         var aboutList = footerWrap
             .append('div')

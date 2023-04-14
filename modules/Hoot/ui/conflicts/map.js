@@ -8,6 +8,10 @@ import _forEach from 'lodash-es/forEach';
 
 // import { isValidCoords } from '../../tools/utilities';
 import { geoExtent } from '../../../geo';
+import {
+    select as d3_select,
+    selectAll as d3_selectAll
+} from 'd3-selection';
 
 /**
  * @class Map
@@ -65,11 +69,11 @@ export default class Map {
                 idx2 = relation.members.findIndex( d => d.id === item2.id ),
                 len  = relation.members.length;
 
-            d3.select( 'td.feature1 .prev' ).on( 'click', () => this.highlightLayer( relation.members[ this.calcNewIndex( idx1, idx2, len, 'prev' ) ], item2 ) );
-            d3.select( 'td.feature1 .next' ).on( 'click', () => this.highlightLayer( relation.members[ this.calcNewIndex( idx1, idx2, len, 'next' ) ], item2 ) );
+            d3_select( 'td.feature1 .prev' ).on( 'click', () => this.highlightLayer( relation.members[ this.calcNewIndex( idx1, idx2, len, 'prev' ) ], item2 ) );
+            d3_select( 'td.feature1 .next' ).on( 'click', () => this.highlightLayer( relation.members[ this.calcNewIndex( idx1, idx2, len, 'next' ) ], item2 ) );
 
-            d3.select( 'td.feature2 .prev' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'prev' ) ] ) );
-            d3.select( 'td.feature2 .next' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'next' ) ] ) );
+            d3_select( 'td.feature2 .prev' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'prev' ) ] ) );
+            d3_select( 'td.feature2 .next' ).on( 'click', () => this.highlightLayer( item1, relation.members[ this.calcNewIndex( idx2, idx1, len, 'next' ) ] ) );
         }
 
         this.instance.info.updateMeta();
@@ -79,8 +83,8 @@ export default class Map {
      * Remove highlight class from previous nodes
      */
     unsetHighlight() {
-        d3.selectAll( '.review-feature1' ).classed( 'highlight review-feature1', false );
-        d3.selectAll( '.review-feature2' ).classed( 'highlight review-feature2', false );
+        d3_selectAll( '.review-feature1' ).classed( 'highlight review-feature1', false );
+        d3_selectAll( '.review-feature2' ).classed( 'highlight review-feature2', false );
     }
 
     /**
@@ -91,7 +95,7 @@ export default class Map {
         _forEach( this.data.currentFeatures, ( feature, key ) => {
             key = key + 1;
 
-            d3.selectAll( '.' + feature.id ).classed( `highlight review-feature${ key }`, true );
+            d3_selectAll( '.' + feature.id ).classed( `highlight review-feature${ key }`, true );
         } );
     }
 

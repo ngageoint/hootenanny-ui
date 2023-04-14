@@ -4,6 +4,9 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 4/16/18
  *******************************************************************************************************/
 
+import { select as d3_select } from 'd3-selection';
+import { tsvParseRows as d3_tsvParseRows } from 'd3-dsv';
+
 export default class LayerMetadata {
     constructor( context, form, layer ) {
         this.context  = context;
@@ -60,7 +63,7 @@ export default class LayerMetadata {
             bodyNode    = this.body.node();
 
         container.classed( 'expanded', !state );
-        d3.select( `[title="table-${ title }"` ).classed( 'hidden', state );
+        d3_select( `[title="table-${ title }"` ).classed( 'hidden', state );
 
         wrapperNode.style.height = bodyNode.scrollHeight + 'px';
     }
@@ -227,7 +230,7 @@ export default class LayerMetadata {
         }
 
         if (this.tags.hasOwnProperty('stats')) {
-            let stats = d3.tsvParseRows(this.tags.stats).reduce(function(stats, d) {
+            let stats = d3_tsvParseRows(this.tags.stats).reduce(function(stats, d) {
                 stats[d.shift()] = d;
                 return stats;
             }, {});

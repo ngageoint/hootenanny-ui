@@ -5,6 +5,8 @@
  *******************************************************************************************************/
 
 import { utilSetDimensions, utilGetDimensions } from '../util/dimensions';
+import { geoPath as d3_geoPath } from 'd3-geo';
+import { select as d3_select }     from 'd3-selection';
 
 export function rendererArrowLayer() {
     let projection,
@@ -61,7 +63,7 @@ export function rendererArrowLayer() {
             .selectAll( 'path.arrow.line' )
             .data( [ gj ] );
 
-        let path = d3.geoPath()
+        let path = d3_geoPath()
             .projection( projection );
 
         paths.enter()
@@ -72,9 +74,9 @@ export function rendererArrowLayer() {
         paths.attr( 'd', path );
 
         if ( Object.keys( gj ).length > 0 ) {
-            d3.select( '.arrow-background' ).raise();
+            d3_select( '.arrow-background' ).raise();
         } else {
-            d3.select( '.arrow-background' ).lower();
+            d3_select( '.arrow-background' ).lower();
         }
     }
 

@@ -2,7 +2,7 @@ import esbuild from 'esbuild';
 import fs from 'node:fs';
 import parse from 'minimist';
 import envs from './envs.mjs';
-import sharedConfig from './shared.confi.mjs';
+import sharedConfig from './shared.config.mjs';
 
 let args = parse(process.argv.slice(2), {boolean: true});
 delete args._;

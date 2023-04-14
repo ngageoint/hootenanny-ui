@@ -18,7 +18,7 @@ import { utilRebind } from '../util/rebind';
 let _imageryIndex = null;
 
 export function rendererBackground(context) {
-  const dispatch = d3_dispatch('change');
+  const dispatch = d3_dispatch('change', 'baseLayerChange');
   const baseLayer = rendererTileLayer(context).projection(context.projection);
   let _checkedBlocklists = [];
   let _isValid = true;

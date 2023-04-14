@@ -10,6 +10,7 @@ import { exportDataForm } from '../../config/domMetadata';
 import _flattenDeep   from 'lodash-es/flattenDeep';
 import _isEmpty       from 'lodash-es/isEmpty';
 import { formatSize } from '../../tools/utilities';
+import { select as d3_select } from 'd3-selection';
 
 export default class ExportData {
     constructor( translations, d, type ) {
@@ -108,7 +109,7 @@ export default class ExportData {
 
     validateFields( d, name ) {
         let id              = d.id,
-            target          = d3.select( `#${id}` ),
+            target          = d3_select( `#${id}` ),
             invalid         = !target.property( 'value' ).length;
 
         if ( id === name ) {
@@ -120,7 +121,7 @@ export default class ExportData {
 
     validateTextInput ( d, name ) {
         let id               = d.id,
-            target           = d3.select( `#${id}` ),
+            target           = d3_select( `#${id}` ),
             node             = target.node(),
             str              = node.value,
 
@@ -174,7 +175,7 @@ export default class ExportData {
 
         this.container.selectAll( 'input' )
             .each( function() {
-                d3.select( this ).node().disabled = true;
+                d3_select( this ).node().disabled = true;
             } );
     }
 

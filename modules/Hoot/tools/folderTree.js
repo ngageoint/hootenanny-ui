@@ -15,6 +15,9 @@ import { duration, formatSize } from './utilities';
 import EventEmitter from 'events';
 
 import { svgIcon } from '../../svg';
+import { hierarchy as d3_hierarchy, tree as d3_tree } from 'd3-hierarchy';
+import { select as d3_select } from 'd3-selection';
+import { scaleLinear as d3_scaleLinear } from 'd3-scale';
 
 /**
  * Class for creating, displaying and maintaining a folder tree hierarchy
@@ -135,15 +138,15 @@ export default class FolderTree extends EventEmitter {
         this.barHeight = 20;
         this.duration  = 0;
 
-        this.x = d3.scaleLinear()
+        this.x = d3_scaleLinear()
             .domain( [ 0, 0 ] )
             .range( [ 0, 0 ] );
 
-        this.y = d3.scaleLinear()
+        this.y = d3_scaleLinear()
             .domain( [ 0, 0 ] )
             .range( [ 20, 0 ] );
 
-        this.tree = d3.tree()
+        this.tree = d3_tree()
             .nodeSize( [ 0, 20 ] );
 
         this.svg = this.container.append( 'svg' )
@@ -153,7 +156,7 @@ export default class FolderTree extends EventEmitter {
             .attr( 'transform', `translate( ${this.margin.left}, ${this.margin.top} )` );
 
         if ( this.isDatasetTable ) {
-            this.expiringTooltip = d3.select( '#manage-datasets' )
+            this.expiringTooltip = d3_select( '#manage-datasets' )
                 .selectAll( '.tooltip-old-dataset' )
                 .data( [ 0 ]  )
                 .enter()
@@ -196,7 +199,7 @@ export default class FolderTree extends EventEmitter {
             };
         }
 
-        this.root    = d3.hierarchy( foldersTree );
+        this.root    = d3_hierarchy( foldersTree );
         this.root.x0 = 0;
         this.root.y0 = 0;
 
@@ -511,7 +514,7 @@ export default class FolderTree extends EventEmitter {
     }
 
     updateLastAccessed( node ) {
-        let row = d3.select( node.parentNode );
+        let row = d3_select( node.parentNode );
 
         row
             .classed( 'expiring', true )
@@ -740,8 +743,8 @@ export default class FolderTree extends EventEmitter {
 
         if (opts.length === 0) return;
 
-        let body = d3.select( 'body' )
-            .on( 'click', () => d3.selectAll( '.context-menu' ).style( 'display', 'none' ) );
+        let body = d3_select( 'body' )
+            .on( 'click', () => d3_selectAll( '.context-menu' ).style( 'display', 'none' ) );
 
         this.contextMenu = body
             .append( 'div' )
@@ -760,7 +763,7 @@ export default class FolderTree extends EventEmitter {
             .attr( 'class', item => (item._icon) ? `_icon ${ item._icon }` : null )
             .each( function(item) {
                 if (item.icon) {
-                    d3.select(this)
+                    d3_select(this)
                     .call(svgIcon(`#iD-icon-${ item.icon }`));
                 }
             })
@@ -880,7 +883,7 @@ export default class FolderTree extends EventEmitter {
                     // close folder
                     data.state = 'closed';
 
-                    d3.select( elem.parentNode )
+                    d3_select( elem.parentNode )
                         .select( 'i' )
                         .classed( 'folder', true )
                         .classed( 'open-folder', false );
@@ -894,7 +897,7 @@ export default class FolderTree extends EventEmitter {
                     // open folder
                     data.state = 'open';
 
-                    d3.select( elem.parentNode )
+                    d3_select( elem.parentNode )
                         .select( 'i' )
                         .classed( 'folder', false )
                         .classed( 'open-folder', true );

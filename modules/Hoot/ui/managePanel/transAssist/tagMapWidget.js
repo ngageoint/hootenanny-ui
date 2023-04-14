@@ -6,6 +6,8 @@
 
 import { d3combobox } from '../../d3.combobox';
 import { services } from '../../../../services';
+import { map as d3_map } from 'd3-array';
+import { select as d3_select } from 'd3-selection';
 
 export default class TagMapWidget {
     constructor( instance ) {
@@ -15,7 +17,7 @@ export default class TagMapWidget {
     createTagLookup() {
         let that = this;
 
-        this.schemaOption = d3.select('#tagSchema').node().value;
+        this.schemaOption = d3_select('#tagSchema').node().value;
 
         this.tagLookup = this.instance.tagMapContainer
             .insert( 'div', '.add-mapping-button' )
@@ -93,7 +95,7 @@ export default class TagMapWidget {
     }
 
     scroll( dir ) {
-        let resultList = d3.select( this.searchTag.node().parentNode ).node().nextSibling,
+        let resultList = d3_select( this.searchTag.node().parentNode ).node().nextSibling,
             results    = this.resultsList.selectAll( 'div' );
 
         if ( results.size() ) {
@@ -224,7 +226,7 @@ export default class TagMapWidget {
                 .append( 'div' )
                 .classed( 'translate-icon map-type-icon remove-map-tag inline thumbnail big _icon blank keyline-left', true )
                 .on( 'click', function () {
-                    let icon = d3.select( this );
+                    let icon = d3_select( this );
 
                     if ( icon.classed( 'remove-map-tag' ) ) {
                         icon.classed( 'remove-map-tag', false );
@@ -265,7 +267,7 @@ export default class TagMapWidget {
                             return { title: obj.replace( '_', ' ' ), value: obj };
                         } ) );
 
-                    d3.select( this ).call( combobox );
+                    d3_select( this ).call( combobox );
                 } );
 
             // list
@@ -298,13 +300,13 @@ export default class TagMapWidget {
                             return { title: obj.replace( '_', ' ' ), value: obj };
                         } ) );
 
-                    d3.select( this ).call( combobox );
+                    d3_select( this ).call( combobox );
                 } );
 
             let tagJson = this.instance.jsonMapping[ this.instance.layer ][ this.instance.currentAttribute.key ];
 
             if ( tagJson ) {
-                let mapping = d3.map( tagJson );
+                let mapping = d3_map( tagJson );
 
                 let isCustomized = mapping
                     .entries()
@@ -326,8 +328,8 @@ export default class TagMapWidget {
                             .classed( 'remove-map-tag', false )
                             .classed( 'map-tag', true );
 
-                        d3.map( entry.value ).entries().forEach( e => {
-                            d3.select( '#preset-input-' + this.hashCode( tagKey + e.key ) ).property( 'value', e.value );
+                        d3_map( entry.value ).entries().forEach( e => {
+                            d3_select( '#preset-input-' + this.hashCode( tagKey + e.key ) ).property( 'value', e.value );
                         } );
                     }
                 } );

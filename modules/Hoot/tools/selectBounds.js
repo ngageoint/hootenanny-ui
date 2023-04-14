@@ -13,6 +13,7 @@ import OverpassQueryPanel                  from './overpassQueryPanel';
 import { d3combobox }                      from '../ui/d3.combobox';
 import { geoExtent as GeoExtent }          from '../../geo';
 import { prefs } from '../../core';
+import { select as d3_select }             from 'd3-selection';
 
 export default class SelectBounds extends EventEmitter {
     constructor( context, predefinedData ) {
@@ -47,7 +48,7 @@ export default class SelectBounds extends EventEmitter {
         const formId = 'drawBoundsForm';
 
         this.form       = new FormFactory().generateForm( 'body', formId, metadata );
-        this.nextButton = d3.select( `#${metadata.button.id}` );
+        this.nextButton = d3_select( `#${metadata.button.id}` );
 
         this.nextButton.property( 'disabled', false );
 

@@ -11,6 +11,7 @@ import FormFactory from './formFactory';
 
 import { checkForUnallowedChar } from './utilities';
 import { d3combobox }            from '../ui/d3.combobox';
+import { select as d3_select }   from 'd3-selection';
 
 export default class ClipDataset {
     constructor( instance ) {
@@ -35,7 +36,7 @@ export default class ClipDataset {
         };
 
         this.form    = new FormFactory().generateForm( 'body', 'clipDataset', metadata );
-        this.submitButton = d3.select( '#clipSubmitBtn' );
+        this.submitButton = d3_select( '#clipSubmitBtn' );
 
         this.submitButton.property( 'disabled', false );
 
@@ -114,11 +115,11 @@ export default class ClipDataset {
                 .attr( 'placeholder', d => d.placeholder )
                 .select( function( d ) {
                     if ( d.name === 'datasetName' ) {
-                        d3.select( this )
+                        d3_select( this )
                             .attr( 'placeholder', layer.name )
                             .attr( 'readonly', false );
                     } else if ( d.name === 'doClip' ) {
-                        let parent = d3.select( this.parentElement );
+                        let parent = d3_select( this.parentElement );
 
                         parent
                             .selectAll( 'input' )
@@ -130,14 +131,14 @@ export default class ClipDataset {
                             .property( 'checked', true )
                             .attr( 'data-map-id', mapId );
                     } else if ( d.name === 'outputName' ) {
-                        that.createLayerNameField( d3.select( this ), layer );
+                        that.createLayerNameField( d3_select( this ), layer );
                     } else {
                         var folderId = Hoot.layers.findBy( 'id', layer.id ).folderId;
                         d.combobox = [ d.combobox.find( function( l ) { return l.id === folderId; } ) ]
                             .concat( d.combobox.filter( function( l ) { return l.id !== folderId; } ).sort() );
-                        that.createFolderListCombo( d3.select( this ), d );
-                        d3.select( this ).property( 'value', Hoot.folders.findBy( 'id', folderId).name );
-                        d3.select( this ).attr( '_value', Hoot.folders.findBy( 'id', folderId ).id );
+                        that.createFolderListCombo( d3_select( this ), d );
+                        d3_select( this ).property( 'value', Hoot.folders.findBy( 'id', folderId).name );
+                        d3_select( this ).attr( '_value', Hoot.folders.findBy( 'id', folderId ).id );
                     }
                 } );
         } );
@@ -153,10 +154,10 @@ export default class ClipDataset {
                 let resp = checkForUnallowedChar( this.value );
 
                 if ( resp !== true || !this.value.length ) {
-                    d3.select( this ).classed( 'invalid', true ).attr( 'title', resp );
+                    d3_select( this ).classed( 'invalid', true ).attr( 'title', resp );
                     that.submitButton.property( 'disabled', true );
                 } else {
-                    d3.select( this ).classed( 'invalid', false ).attr( 'title', null );
+                    d3_select( this ).classed( 'invalid', false ).attr( 'title', null );
                     that.submitButton.property( 'disabled', false );
                 }
             } );
@@ -187,14 +188,14 @@ export default class ClipDataset {
         let self = this;
 
         checkedRows.select( function() {
-            let checkbox = d3.select( this );
+            let checkbox = d3_select( this );
 
             if ( !checkbox.property( 'checked' ) ) return;
 
             let mapId  = checkbox.attr( 'data-map-id' ),
                 params = {};
 
-            let row         = d3.select( `#row-${ mapId }` ),
+            let row         = d3_select( `#row-${ mapId }` ),
                 datasetName = row.select( '.datasetName' ),
                 outputName  = row.select( '.outputName' ),
                 folderId    = row.select( '.outputPath').attr('_value');
@@ -277,7 +278,7 @@ export default class ClipDataset {
 
         this.form.selectAll( 'input' )
             .each( function() {
-                d3.select( this ).node().disabled = true;
+                d3_select( this ).node().disabled = true;
             } );
     }
 }

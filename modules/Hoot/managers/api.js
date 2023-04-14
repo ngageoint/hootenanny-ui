@@ -10,6 +10,7 @@ import axios         from 'axios/dist/axios';
 import { apiConfig } from '../config/apiConfig';
 import { saveAs }    from 'file-saver';
 import { utilDetect } from '../../util/detect';
+import { ascending as d3_ascending } from 'd3-array';
 
 /**
  * API calls to backend services
@@ -490,7 +491,7 @@ export default class API {
                         return ( a.default ) ? -1 : 1;
                     } else {
                         // We only get here if the default prop is equal
-                        return d3.ascending( a.name.toLowerCase(), b.name.toLowerCase() );
+                        return d3_ascending( a.name.toLowerCase(), b.name.toLowerCase() );
                     }
                 } ) );
     }

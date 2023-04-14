@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import EventEmitter from 'events';
+import { select as d3_select } from 'd3-selection';
 
 export default class Alert extends EventEmitter {
     constructor( { data, message, type, keepOpen } ) {
@@ -21,7 +22,7 @@ export default class Alert extends EventEmitter {
     }
 
     send() {
-        this.container = d3.select( '.alert-container' )
+        this.container = d3_select( '.alert-container' )
             .append( 'div' )
             .classed( `hoot-alert alert-${ this.type } show round`, true )
             .on( 'mouseover', () => this.handleMouseover() )

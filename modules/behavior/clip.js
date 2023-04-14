@@ -6,9 +6,15 @@
 
 import { utilRebind }           from '../util/rebind';
 import { geoEuclideanDistance } from '../geo';
+import { dispatch as d3_dispatch } from 'd3-dispatch';
+import { 
+    pointer as d3_pointer,
+    select as d3_select 
+} from 'd3-selection';
+
 
 export function clip( context, svg ) {
-    let dispatch       = d3.dispatch( 'move', 'click', 'cancel', 'finish', 'dblclick' ),
+    let dispatch       = d3_dispatch( 'move', 'click', 'cancel', 'finish', 'dblclick' ),
         closeTolerance = 4,
         tolerance      = 12,
         nodeId,
@@ -22,11 +28,11 @@ export function clip( context, svg ) {
             let p = element.node().parentNode;
 
             return touchId !== null
-                ? d3.touches( p ).filter( p => p.identifier === touchId )[ 0 ]
-                : d3.pointer( p );
+                ? d3_pointer( p ).filter( p => p.identifier === touchId )[ 0 ]
+                : d3_pointer( p );
         }
 
-        let element = d3.select( this ),
+        let element = d3_select( this ),
             touchId = d3_event.touches ? d3_event.changedTouches[ 0 ].identifier : null,
             time    = +new Date(),
             pos     = point();
@@ -34,14 +40,14 @@ export function clip( context, svg ) {
         element.on( 'dblclick', () => ret( element ) );
         element.on( 'mousemove.cliparea', null );
 
-        d3.select( window ).on( 'mouseup.cliparea', (d3_event) => {
+        d3_select( window ).on( 'mouseup.cliparea', (d3_event) => {
             element.on( 'mousemove.cliparea', mousemove );
             if ( geoEuclideanDistance( pos, point() ) < closeTolerance ||
                 (geoEuclideanDistance( pos, point() ) < tolerance &&
                     (+new Date() - time) < 500) ) {
 
                 // Prevent a quick second click
-                d3.select( window ).on( 'click.cliparea-block', (d3_event) => {
+                d3_select( window ).on( 'click.cliparea-block', (d3_event) => {
                     d3_event.stopPropagation();
                 }, true );
 
@@ -49,7 +55,7 @@ export function clip( context, svg ) {
 
                 window.setTimeout( () => {
                     context.map().dblclickEnable( true );
-                    d3.select( window ).on( 'click.cliparea-block', null );
+                    d3_select( window ).on( 'click.cliparea-block', null );
                 }, 500 );
 
                 click(d3_event);
@@ -105,7 +111,7 @@ export function clip( context, svg ) {
                 parseFloat( rect.attr( 'y' ) )
             ] );
 
-            d3.select( '#surface' ).on( 'dblclick', null );
+            d3_select( '#surface' ).on( 'dblclick', null );
 
             ret( d3_event, [ minCoords, maxCoords ] );
 
@@ -148,7 +154,7 @@ export function clip( context, svg ) {
             .on( 'mousedown.cliparea', null )
             .on( 'mousemove.cliparea', null );
 
-        d3.select( window )
+        d3_select( window )
             .on( 'mouseup.cliparea', null );
     };
 

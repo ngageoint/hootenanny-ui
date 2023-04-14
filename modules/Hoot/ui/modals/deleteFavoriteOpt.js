@@ -1,6 +1,7 @@
 import FormFactory        from '../../tools/formFactory';
 import AdvancedOpts  from '../sidebar/advancedOpts';
 import _find    from 'lodash-es/find';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -11,7 +12,7 @@ import _find    from 'lodash-es/find';
 export default class DeleteFavoriteOpt {
     constructor() {
         this.favorites = this.getAllFavorites();
-        this.optToDelete = d3.select('#conflateType').property('value');
+        this.optToDelete = d3_select('#conflateType').property('value');
     }
 
     getAllFavorites() {
@@ -54,7 +55,7 @@ export default class DeleteFavoriteOpt {
 
         let newCombo = new FormFactory();
 
-        let element = d3.select( '#conflateType' );
+        let element = d3_select( '#conflateType' );
 
         element.datum().data = input;
 
@@ -70,7 +71,7 @@ export default class DeleteFavoriteOpt {
             .then( () => Hoot.getAllUsers() )
             .then( async ()  => {
 
-                d3.select('#conflateType').property('value', 'Reference');
+                d3_select('#conflateType').property('value', 'Reference');
 
                 let getOpts = AdvancedOpts.getInstance();
                 let advOpts = getOpts.advancedOptions;
@@ -99,8 +100,8 @@ export default class DeleteFavoriteOpt {
                     type: 'success'
                 } );
 
-                d3.select('#updateFav').classed('hidden', true );
-                d3.select('#deleteFav').classed( 'hidden', true );
+                d3_select('#updateFav').classed('hidden', true );
+                d3_select('#deleteFav').classed( 'hidden', true );
 
             } );
     }

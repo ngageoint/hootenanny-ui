@@ -6,12 +6,13 @@
 
 import _reject       from 'lodash-es/reject';
 import LayerMetadata from './layerMetadata';
+import { select as d3_select } from 'd3-selection';
 
 class SidebarController {
     constructor( form, layer ) {
         this.context    = Hoot.context;
         this.form       = form;
-        this.wrapper    = d3.select( this.form.node().parentNode );
+        this.wrapper    = d3_select( this.form.node().parentNode );
         this.layerName  = layer.name;
         this.layerId    = layer.id;
         this.layerColor = layer.color;
@@ -128,12 +129,12 @@ class SidebarController {
             .attr( 'data-color', p => p.name )
             .style( 'background', p => p.hex )
             .on( 'click', function( d3_event, p ) {
-                d3.select( this.parentNode )
+                d3_select( this.parentNode )
                     .selectAll( 'a' )
 
                     .classed( 'active _icon check', false );
 
-                d3.select( this )
+                d3_select( this )
                     .classed( 'active _icon check', true );
 
                 self.form
@@ -260,14 +261,14 @@ class SidebarController {
     }
 
     hideInputs() {
-        d3.selectAll( '.add-controller' ).classed('hidden', true);
+        d3_selectAll( '.add-controller' ).classed('hidden', true);
     }
 
     restoreInputs() {
         // remove conflating layer
-        d3.selectAll( '.layer-loading' ).remove();
+        d3_selectAll( '.layer-loading' ).remove();
         // restore input layers
-        d3.selectAll( '.add-controller' ).classed('hidden', false);
+        d3_selectAll( '.add-controller' ).classed('hidden', false);
         // remove conflate button
         Hoot.ui.sidebar.forms.conflate.remove();
         // restore the conflate button
@@ -298,7 +299,7 @@ class SidebarController {
                 d3_event.preventDefault();
 
                 // create the div element that will hold the context menu
-                d3.selectAll( '.context-menu' )
+                d3_selectAll( '.context-menu' )
                     .data( [ 1 ] )
                     .enter()
                     .append( 'div' )
@@ -309,19 +310,19 @@ class SidebarController {
                     .on( 'click', () => {
                         this.context.extent( layer.extent );
 
-                        d3.select( '.context-menu' ).remove();
+                        d3_select( '.context-menu' ).remove();
                     } )
                     .text( 'Zoom to Layer' );
 
                 // show the context menu
-                d3.select( '.context-menu' )
+                d3_select( '.context-menu' )
                     .style( 'left', (d3_event.pageX - 2) + 'px' )
                     .style( 'top', (d3_event.pageY - 2) + 'px' )
                     .style( 'display', 'block' );
 
                 // close menu
-                d3.select( 'body' ).on( 'click.context-menu', () => {
-                    d3.select( '.context-menu' ).style( 'display', 'none' );
+                d3_select( 'body' ).on( 'click.context-menu', () => {
+                    d3_select( '.context-menu' ).style( 'display', 'none' );
                 } );
             } );
 

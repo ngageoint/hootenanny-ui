@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import { t } from '../core/localizer';
+import { json as d3_json } from 'd3-fetch';
 
 export default function() {
     var dg                = {},
@@ -108,7 +109,7 @@ export default function() {
             .replace( '{height}', size[ 1 ] )
             .replace( '{bbox}', extent.toParam() );
 
-        d3.json( url, callback );
+        d3_json( url, callback );
     }
 
     dg.evwhs = {

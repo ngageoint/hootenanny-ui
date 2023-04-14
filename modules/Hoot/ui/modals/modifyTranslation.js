@@ -2,6 +2,7 @@ import { translationViewForm } from '../../config/domMetadata';
 import FormFactory             from '../../tools/formFactory';
 import _get from 'lodash-es/get';
 import _find from 'lodash-es/find';
+import { select as d3_select } from 'd3-selection';
 
 export default class ModifyTranslation {
     constructor( instance, translation, templateText ) {
@@ -29,11 +30,11 @@ export default class ModifyTranslation {
 
         this.container = new FormFactory().generateForm( 'body', 'translations-add-form', metadata );
 
-        this.translationName  = d3.select( '#translationName' );
-        this.descriptionInput = d3.select( '#translationSaveDescription' );
-        this.pathNameInput    = d3.select( '#importPathName' );
-        this.templateInput    = d3.select( '#translationTemplate' );
-        this.submitButton     = d3.select( '#editTranslationBtn' );
+        this.translationName  = d3_select( '#translationName' );
+        this.descriptionInput = d3_select( '#translationSaveDescription' );
+        this.pathNameInput    = d3_select( '#importPathName' );
+        this.templateInput    = d3_select( '#translationTemplate' );
+        this.submitButton     = d3_select( '#editTranslationBtn' );
 
         this.translationName.property( 'value', this.translation.name );
         this.descriptionInput.property( 'value', this.translation.description );

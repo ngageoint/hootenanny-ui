@@ -19,6 +19,10 @@ import _remove         from 'lodash-es/remove';
 
 import { rgb as d3_rgb } from 'd3-color';
 import { geoBounds as d3_geoBounds } from 'd3-geo';
+import { 
+    select as d3_select, 
+    selectAll as d3_selectAll
+} from 'd3-selection';
 
 import { geoExtent as GeoExtent } from '../../geo/index';
 import { utilDetect }             from '../../util/detect';
@@ -397,8 +401,8 @@ export default class Layers {
         mergedLayer.color  = 'green';
         mergedLayer.refType = 'merged';
 
-        d3.selectAll( '.layer-loading' ).remove();
-        d3.selectAll( '.layer-add' ).remove();
+        d3_selectAll( '.layer-loading' ).remove();
+        d3_selectAll( '.layer-add' ).remove();
         Hoot.ui.sidebar.removeLayerAddForms();
 
         let params = {
@@ -538,7 +542,7 @@ export default class Layers {
         this.hoot.layers.loadedLayers[ id ].visible = false;
         this.hoot.layers.loadedLayers[ id ].active = false;
 
-        d3.select( '#map' ).selectAll( `[class*="_${ id }-"]` ).remove();
+        d3_select( '#map' ).selectAll( `[class*="_${ id }-"]` ).remove();
 
         this.hootOverlay.removeGeojson( id );
 
@@ -566,9 +570,9 @@ export default class Layers {
         }
 
         if (isVisible) {
-            d3.selectAll(selector).attr('display','');
+            d3_selectAll(selector).attr('display','');
         } else {
-            d3.selectAll(selector).attr('display','none');
+            d3_selectAll(selector).attr('display','none');
         }
     }
 

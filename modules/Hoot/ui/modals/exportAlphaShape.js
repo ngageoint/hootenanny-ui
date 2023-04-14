@@ -1,5 +1,6 @@
 import FormFactory           from '../../tools/formFactory';
 import { exportAlphaShape } from '../../config/domMetadata';
+import { select as d3_select } from 'd3-selection';
 
 export default class ExportAlphaShape {
     constructor( d ) {
@@ -22,7 +23,7 @@ export default class ExportAlphaShape {
 
         this.container = new FormFactory().generateForm( 'body', 'export-alpha-shape-form', metadata );
 
-        this.submitButton = d3.select( `#${ metadata.button.id }` );
+        this.submitButton = d3_select( `#${ metadata.button.id }` );
         this.submitButton.property( 'disabled', false );
 
         let container = this.container;
@@ -50,7 +51,7 @@ export default class ExportAlphaShape {
 
         this.container.selectAll( 'input' )
             .each( function() {
-                d3.select( this ).property('disabled', true);
+                d3_select( this ).property('disabled', true);
             } );
     }
 
@@ -68,7 +69,7 @@ export default class ExportAlphaShape {
 
         this.container.selectAll( 'input' )
             .each( function() {
-                d3.select( this ).property('disabled', false);
+                d3_select( this ).property('disabled', false);
             } );
     }
 
@@ -78,7 +79,7 @@ export default class ExportAlphaShape {
      * @param d - element data
      */
     validateTextInput( d ) {
-        let target           = d3.select( `#${ d.id }` ),
+        let target           = d3_select( `#${ d.id }` ),
             str              = target.property('value'),
             valid            = true;
 

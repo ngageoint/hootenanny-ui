@@ -1,4 +1,5 @@
 import FormFactory from '../../tools/formFactory';
+import { select as d3_select } from 'd3-selection';
 
 export default class GrailDatasetPicker {
     constructor( layer, parentId, params ) {
@@ -57,7 +58,7 @@ export default class GrailDatasetPicker {
         this.form  = this.formFactory.generateForm( 'body', formId, metadata );
 
         if (this.refDatasets.length) {
-            this.submitButton = d3.select( `#${ metadata.button.id }` );
+            this.submitButton = d3_select( `#${ metadata.button.id }` );
             this.updateSubmitButton();
         }
     }
@@ -81,13 +82,13 @@ export default class GrailDatasetPicker {
 
     updateSubmitButton() {
         this.submitButton.attr( 'disabled', function() {
-                var n = d3.select('#refDataset').property('value');
+                var n = d3_select('#refDataset').property('value');
                 return (n && n.length) ? null : true;
             });
     }
 
     handleSubmit() {
-        let target = d3.select('#refDataset'),
+        let target = d3_select('#refDataset'),
             refId  = parseInt(target.attr( '_value' ), 10);
 
         if ( isNaN(refId) ) {

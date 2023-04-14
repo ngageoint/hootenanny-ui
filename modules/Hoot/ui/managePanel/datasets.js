@@ -22,6 +22,7 @@ import ExportAlphaShape   from '../modals/exportAlphaShape';
 import ExportTaskGrid     from '../modals/exportTaskGrid';
 import { rateLimit }      from '../../config/apiConfig';
 import { prefs } from '../../../core';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -142,7 +143,7 @@ export default class Datasets extends Tab {
                         prefs( 'publicVisibilityDatasets', !publicVisibilityPref);
                         //Would be better to make this class render() method re-entrant
                         //but for now just surgically update icon
-                        d3.select('.dataset-buttons i.public-visibility').text(!publicVisibilityPref ? 'visibility' : 'visibility_off');
+                        d3_select('.dataset-buttons i.public-visibility').text(!publicVisibilityPref ? 'visibility' : 'visibility_off');
                         Hoot.events.emit( 'render-dataset-table' );
                         break;
                     }

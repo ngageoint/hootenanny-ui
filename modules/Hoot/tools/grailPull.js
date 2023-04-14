@@ -5,6 +5,7 @@ import _find                                         from 'lodash-es/find';
 import OverpassQueryPanel                            from './overpassQueryPanel';
 import _get                                          from 'lodash-es/get';
 import { prefs } from '../../core';
+import { select as d3_select } from 'd3-selection';
 
 export default class GrailPull {
     constructor( instance ) {
@@ -34,7 +35,7 @@ export default class GrailPull {
         let formId = 'grailPullTable';
 
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
-        this.submitButton = d3.select( `#${ metadata.button.id }` );
+        this.submitButton = d3_select( `#${ metadata.button.id }` );
 
         this.addBackButton( metadata.button.id );
         this.submitButton.property( 'disabled', false );
@@ -178,16 +179,16 @@ export default class GrailPull {
                 .select( function( ) {
                     const saveName = layer + '_' + uuid;
 
-                    d3.select( this ).property( 'value', saveName )
+                    d3_select( this ).property( 'value', saveName )
                         .on( 'input', function() {
                             let resp = checkForUnallowedChar( this.value );
                             let dupName = Hoot.layers.findBy( 'name', this.value );
 
                             if ( dupName || resp !== true || !this.value.length ) {
-                                d3.select( this ).classed( 'invalid', true ).attr( 'title', resp );
+                                d3_select( this ).classed( 'invalid', true ).attr( 'title', resp );
                                 self.submitButton.property( 'disabled', true );
                             } else {
-                                d3.select( this ).classed( 'invalid', false ).attr( 'title', null );
+                                d3_select( this ).classed( 'invalid', false ).attr( 'title', null );
                                 self.submitButton.property( 'disabled', false );
                             }
                         } );
@@ -266,8 +267,8 @@ export default class GrailPull {
 
         // Check to see which datasets to pull
         const jobsList = [],
-              referenceCheckbox = d3.select( '#row-0 input' ).property( 'checked' ),
-              secondaryCheckbox = d3.select( '#row-1 input' ).property( 'checked' );
+              referenceCheckbox = d3_select( '#row-0 input' ).property( 'checked' ),
+              secondaryCheckbox = d3_select( '#row-1 input' ).property( 'checked' );
         if ( referenceCheckbox ) {
             jobsList.push( Hoot.api.grailPullRailsPortToDb( railsParams, folderId, Hoot.config.referenceLabel ) );
         }

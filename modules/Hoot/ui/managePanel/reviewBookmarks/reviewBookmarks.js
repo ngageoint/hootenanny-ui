@@ -13,6 +13,7 @@ import _map       from 'lodash-es/map';
 import Tab  from '../tab';
 
 import { d3combobox } from '../../d3.combobox';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * Creates the review-bookmarks tab in the settings panel
@@ -71,8 +72,8 @@ export default class ReviewBookmarks extends Tab {
         this.createBookmarkTable();
         this.createPagination();
 
-        d3.select( '#sortBy' ).property( 'value', 'Created At' );
-        d3.select( '#itemsPerPage' ).property( 'value', this.perPageCount );
+        d3_select( '#sortBy' ).property( 'value', 'Created At' );
+        d3_select( '#itemsPerPage' ).property( 'value', this.perPageCount );
 
         this.loadBookmarks();
 
@@ -236,15 +237,15 @@ export default class ReviewBookmarks extends Tab {
     }
 
     getFilterParams() {
-        const sortVal = _camelCase( d3.select( '#sortBy' ).node().value );
+        const sortVal = _camelCase( d3_select( '#sortBy' ).node().value );
 
-        const creatorName = d3.select( '#creatorFilter' ).node().value;
+        const creatorName = d3_select( '#creatorFilter' ).node().value;
         const creatorId = creatorName === '' ? '' : _find( Hoot.config.users, { display_name: creatorName } ).id;
 
-        const layerName = d3.select( '#layerNameFilter' ).node().value;
+        const layerName = d3_select( '#layerNameFilter' ).node().value;
         const layerId = layerName === '' ? '' : Hoot.layers.findBy( 'name', layerName ).id;
 
-        const showTagged = d3.select( '#showTagged' ).property( 'checked' );
+        const showTagged = d3_select( '#showTagged' ).property( 'checked' );
 
         return {
             limit: this.perPageCount,
@@ -282,13 +283,13 @@ export default class ReviewBookmarks extends Tab {
                 } ) )
                 .on( 'accept', () => {
                     if ( d.name === 'itemsPerPage' ) {
-                        this.perPageCount = d3.select( '#' + d.name ).property( 'value' );
+                        this.perPageCount = d3_select( '#' + d.name ).property( 'value' );
                     }
 
                     this.loadBookmarks();
                 } );
 
-            d3.select( '#' + d.name )
+            d3_select( '#' + d.name )
                 .call( combobox );
         } );
     }
@@ -363,9 +364,9 @@ export default class ReviewBookmarks extends Tab {
     }
 
     clearFilter() {
-        d3.select( '#sortBy' ).property( 'value', 'Created At' );
-        d3.select( '#creatorFilter' ).property( 'value', '' );
-        d3.select( '#layerNameFilter' ).property( 'value', '' );
+        d3_select( '#sortBy' ).property( 'value', 'Created At' );
+        d3_select( '#creatorFilter' ).property( 'value', '' );
+        d3_select( '#layerNameFilter' ).property( 'value', '' );
 
         this.currentPageIdx = 0;
         this.loadBookmarks();

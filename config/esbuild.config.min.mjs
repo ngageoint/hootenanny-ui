@@ -1,6 +1,6 @@
 import esbuild from 'esbuild';
 import envs from './envs.mjs';
-import sharedConfig from './shared.confi.mjs';
+import sharedConfig from './shared.config.mjs';
 
 esbuild
   .build(Object.assign({

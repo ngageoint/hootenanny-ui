@@ -6,6 +6,10 @@
 
 import { behaviorDrawMeasureLine } from '../behavior';
 import { modeBrowse }              from './browse';
+import {
+    select as d3_select, 
+    selectAll as d3_selectAll
+} from 'd3-selection';
 
 export function modeAddMeasureLine( context ) {
     let addLine = {
@@ -13,24 +17,24 @@ export function modeAddMeasureLine( context ) {
         key: '6'
     };
 
-    let svg = d3.select( '.data-layer.measure' ).select( 'svg' );
+    let svg = d3_select( '.data-layer.measure' ).select( 'svg' );
 
     let behavior = behaviorDrawMeasureLine( context, svg )
         .on( 'cancel', addLine.cancel )
         .on( 'finish', finish );
 
     function finish( nodeId ) {
-        d3.selectAll( '.measure-line-' + nodeId ).remove();
+        d3_selectAll( '.measure-line-' + nodeId ).remove();
 
-        d3.selectAll( '[class*="measure-line"]')
+        d3_selectAll( '[class*="measure-line"]')
             .filter(function() {
-                return d3.select(this).attr('loc1') === d3.select(this).attr('loc2');
+                return d3_select(this).attr('loc1') === d3_select(this).attr('loc2');
             }).each(function() {
                 this.parentNode.remove();
             });
 
-        if ( d3.select( '.data-layer.measure' ).selectAll( 'g' ).size() ) {
-            d3.select( '.tools-toggle' ).text( 'Clear' );
+        if ( d3_select( '.data-layer.measure' ).selectAll( 'g' ).size() ) {
+            d3_select( '.tools-toggle' ).text( 'Clear' );
         }
 
         context.enter( modeBrowse( context ) );
@@ -41,7 +45,7 @@ export function modeAddMeasureLine( context ) {
     };
 
     addLine.enter = function() {
-        d3.select('.data-layer.measure').selectAll('g').remove();
+        d3_select('.data-layer.measure').selectAll('g').remove();
         context.install( behavior );
     };
 

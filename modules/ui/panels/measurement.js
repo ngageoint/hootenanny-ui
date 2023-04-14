@@ -12,7 +12,7 @@ import { services } from '../../services';
 import { utilDetect, utilGetAllNodes } from '../../util';
 
 export function uiPanelMeasurement(context) {
-    var locale = utilDetect().locale,
+    var locale = utilDetect().browserLocales[0],
         isImperial = (locale.toLowerCase() === 'en-us');
 
 

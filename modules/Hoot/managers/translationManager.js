@@ -12,6 +12,7 @@ import _some    from 'lodash-es/some';
 
 import { JXON } from '../../util/jxon';
 import { osmIsInterestingTag } from '../../osm/tags';
+import { select as d3_select } from 'd3-selection';
 
 import {
     presetPreset,
@@ -104,7 +105,7 @@ export default class TranslationManager {
             let message = 'Feature out of spec. Unable to translate',
                 type    = 'warn';
 
-            d3.select( '.tag-schema' )
+            d3_select( '.tag-schema' )
                 .select( 'input' )
                 .property( 'value', this.previousTranslation );
 

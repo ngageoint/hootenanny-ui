@@ -5,6 +5,10 @@
  *******************************************************************************************************/
 
 import About from './about';
+import { 
+    select as d3_select, 
+    selectAll as d3_selectAll 
+} from 'd3-selection';
 
 /**
  * Creates the navigation bar
@@ -14,7 +18,7 @@ import About from './about';
  */
 export default class Navbar {
     constructor( isLoggedIn, login ) {
-        this.container  = d3.select( 'body' );
+        this.container  = d3_select( 'body' );
         this.isLoggedIn = isLoggedIn;
         this.login = login;
     }
@@ -130,7 +134,7 @@ export default class Navbar {
                 // .attr( 'href', '#!' )
                 .text( 'Logout' );
 
-            d3.select('body').on('click.navbar', (d3_event) => {
+            d3_select('body').on('click.navbar', (d3_event) => {
                 if (d3_event && d3_event.target) {
                     if (!dropdownToggle.node().contains(d3_event.target) && dropdownContent.classed('visible')) {
                         showDropdown(dropdownContent);
@@ -153,7 +157,7 @@ export default class Navbar {
             vis         = managePanel.isOpen === true;
 
         //First time opening, render tabs and make datasets panel active
-        if (d3.selectAll( '.panel-body.active' ).size() === 0) {
+        if (d3_selectAll( '.panel-body.active' ).size() === 0) {
             Hoot.ui.managePanel.renderTabs()
                 .then(() =>
                     managePanel.datasets.toggle()
@@ -172,7 +176,7 @@ export default class Navbar {
         this.menuButton.classed( 'active', !vis );
         managePanel.container.classed( 'hidden', vis );
 
-        d3.selectAll( '.context-menu' ).remove();
+        d3_selectAll( '.context-menu' ).remove();
 
         managePanel.isOpen = !managePanel.isOpen;
     }
@@ -181,17 +185,17 @@ export default class Navbar {
         let that = this;
 
         // bind single click listener to open dropdown
-        d3.select( 'nav .dropdown-toggle' ).on( 'click', () => toggleDropdown() );
+        d3_select( 'nav .dropdown-toggle' ).on( 'click', () => toggleDropdown() );
 
         // toggle the dropdown
         function toggleDropdown( cb ) {
-            d3.select( 'nav .dropdown-content' ).slideToggle( 50, () => {
+            d3_select( 'nav .dropdown-content' ).slideToggle( 50, () => {
                 if ( cb ) {
                     cb();
                     return;
                 }
 
-                if ( !d3.select( 'nav .dropdown-content' ).is( ':visible' ) ) return;
+                if ( !d3_select( 'nav .dropdown-content' ).is( ':visible' ) ) return;
 
                 bindBodyClick();
             } );
@@ -199,7 +203,7 @@ export default class Navbar {
 
         // bind single click listener to body after dropdown is visible to close dropdown
         function bindBodyClick() {
-            d3.select( 'body' ).on( 'click.navbar', () => toggleDropdown( () => that.initDropdown() ) );
+            d3_select( 'body' ).on( 'click.navbar', () => toggleDropdown( () => that.initDropdown() ) );
         }
     }
 

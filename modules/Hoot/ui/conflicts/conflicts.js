@@ -16,12 +16,11 @@ import { conflictActions } from '../../config/domMetadata';
 import { utilKeybinding }  from '../../../util/keybinding';
 import { t }               from '../../../core/localizer';
 import { uiTooltip } from '../../../ui';
-
 import {
     getOS,
     tooltipHtml
 } from '../../tools/utilities';
-
+import { select as d3_select } from 'd3-selection';
 
 const privateMethods = {
     initData() {
@@ -162,7 +161,7 @@ export default class Conflicts {
             } );
         } );
 
-        d3.select( document )
+        d3_select( document )
             .call( keybinding );
     }
 

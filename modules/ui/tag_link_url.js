@@ -9,7 +9,7 @@ export function uiTagLinkUrl(tag) {
     var tagLinkUrl = {};
     var _button = d3_select(null);
     var _showing;
-    var _body = d3.select(null);
+    var _body = d3_select(null);
 
     function hide() {
         _body

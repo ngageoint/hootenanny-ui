@@ -14,6 +14,7 @@ import { getBrowserInfo, unallowableWordsExist } from '../../tools/utilities';
 import { importSingleForm } from '../../config/domMetadata';
 import _get from 'lodash-es/get';
 import axios from 'axios/dist/axios';
+import { select as d3_select } from 'd3-selection';
 
 
 /**
@@ -344,7 +345,7 @@ export default class ImportDataset {
      * @param d - node data
      */
     handleUrlChange( d ) {
-        let target           = d3.select( `#${ d.id }` ),
+        let target           = d3_select( `#${ d.id }` ),
             node             = target.node(),
             str              = node.value,
 
@@ -381,7 +382,7 @@ export default class ImportDataset {
      * @param d - node data
      */
     validateTextInput( d ) {
-        let target           = d3.select( `#${ d.id }` ),
+        let target           = d3_select( `#${ d.id }` ),
             node             = target.node(),
             str              = node.value,
 
@@ -607,7 +608,7 @@ export default class ImportDataset {
 
         this.container.selectAll( 'input' )
             .each( function() {
-                d3.select( this ).node().disabled = true;
+                d3_select( this ).node().disabled = true;
         } );
     }
 
@@ -620,7 +621,7 @@ export default class ImportDataset {
 
         this.container.selectAll( '.text-input' )
             .each( function() {
-                let classes = d3.select( this ).attr( 'class' ).split( ' ' );
+                let classes = d3_select( this ).attr( 'class' ).split( ' ' );
 
                 if ( classes.indexOf( 'invalid' ) > -1 || !importType.length ) {
                     self.formValid = false;
@@ -649,7 +650,7 @@ export default class ImportDataset {
      * @param typeVal - value of selected import-type
      */
     setMultipartForType( typeVal ) {
-        let uploader = d3.select( '#ingestFileUploader' );
+        let uploader = d3_select( '#ingestFileUploader' );
         const importMap = ImportDataset.importTypeMap();
         const allowMultiple = [ 'FILE', 'GPKG' ];
 

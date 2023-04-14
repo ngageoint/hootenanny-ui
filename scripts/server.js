@@ -33,10 +33,10 @@ function proxyToPath(proxyPath, req) {
     proxyPath += `?${params}`
   }
 
-  return proxyPath
+  return proxyPath;
 }
 
-app.use(serveStatic(path.resolve(dirname, 'dist'), {cacheControl: false}));
+app.use(serveStatic(dirname, {cacheControl: false}));
 app.use('/hoot-services', proxy(`http://${HOOT_SERVICES_HOST}:${HOOT_SERVICES_PORT}`, {
   proxyReqPathResolver: (req, res) => proxyToPath('/hoot-services', req)
 }));
@@ -51,6 +51,12 @@ app.use('/p2p', proxy(`http://${HOOT_SERVICES_HOST}:8096`));
 app.use('/tasks', proxy(`http://${HOOT_TM_HOST}:6543`));
 app.use('/tm4api', proxy(`http://${HOOT_TM_HOST}:5000`));
 
+const logins = ['login.min.js', 'login.min.css', 'login.js', 'login.css', 'login.html'];
+const static = ['data', 'locales'];
+
+static.forEach(staticPath => app.use(`/${staticPath}/:file`, (req, res) => res.sendFile(path.resolve('dist', staticPath, req.params.file))));
+logins.forEach(file => app.use(`/${file}`, (req, res) => res.sendFile(path.resolve('dist', file))));
+
 if (HOOT_FRONTEND_USE_HTTPS) {
   const cert_key = path.resolve(dirname, '../server.key');
   const cert_crt = path.resolve(dirname, '../server.crt');
@@ -58,7 +64,7 @@ if (HOOT_FRONTEND_USE_HTTPS) {
     key: fs.readFileSync(cert_key, 'utf-8'), 
     cert: fs.readFileSync(cert_crt, 'utf-8')
   }, app);
-} 
+}
 
 app.listen(HOOT_FRONTEND_PORT);
 console.log(chalk.yellow(`Listening on ${HOOT_FRONTEND_PORT}`));

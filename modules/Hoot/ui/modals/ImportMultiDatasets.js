@@ -13,6 +13,8 @@ import _get                from 'lodash-es/get';
 import _forEach            from 'lodash-es/forEach';
 import ImportDataset       from './importDataset';
 import { rateLimit }       from '../../config/apiConfig';
+import { select as d3_select } from 'd3-selection';
+
 export default class ImportMultiDatasets {
     constructor( translations, path ) {
         this.folderList     = Hoot.folders.folderPaths;
@@ -126,8 +128,8 @@ export default class ImportMultiDatasets {
     handleSingleLayerChange() {
         let toSingle = this.asSingleLayer.property('checked');
         this.asSingleLayerName.property('disabled', !toSingle);
-        d3.select('#importMultiAsSingleName').classed('invalid', function() {
-            return toSingle && d3.select(this).property('value').length === 0;
+        d3_select('#importMultiAsSingleName').classed('invalid', function() {
+            return toSingle && d3_select(this).property('value').length === 0;
         });
         this.updateButtonState();
     }
@@ -281,7 +283,7 @@ export default class ImportMultiDatasets {
      * @param d - node data
      */
     validateTextInput( d ) {
-        let target           = d3.select( `#${ d.id }` ),
+        let target           = d3_select( `#${ d.id }` ),
             node             = target.node(),
             str              = node.value,
 
@@ -309,7 +311,7 @@ export default class ImportMultiDatasets {
      * @param d - node data
      */
     deduplicateName( d ) {
-        let target = d3.select( `#${ d.id }` );
+        let target = d3_select( `#${ d.id }` );
         target.property('value', Hoot.layers.checkLayerName( target.property('value') ));
     }
 
@@ -536,7 +538,7 @@ export default class ImportMultiDatasets {
 
         this.container.selectAll( 'input' )
             .each( function() {
-                d3.select( this ).node().disabled = true;
+                d3_select( this ).node().disabled = true;
             } );
 
         this.progressContainer.classed( 'hidden', false );
@@ -561,7 +563,7 @@ export default class ImportMultiDatasets {
 
         this.container.selectAll( '.text-input' )
             .each( function() {
-                if ( d3.select( this ).classed('invalid')) {
+                if ( d3_select( this ).classed('invalid')) {
                     self.formValid = false;
                 }
             } );
@@ -588,7 +590,7 @@ export default class ImportMultiDatasets {
      * @param typeVal - value of selected import-type
      */
     setMultipartForType( typeVal ) {
-        let uploader = d3.select( '#ingestFileUploader' );
+        let uploader = d3_select( '#ingestFileUploader' );
 
         uploader
             .property( 'multiple', true )

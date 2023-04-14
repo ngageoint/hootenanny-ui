@@ -6,6 +6,7 @@
 
 import Navbar from './navbar';
 import EventEmitter from 'events';
+import { select as d3_select } from 'd3-selection';
 
 export default class Login extends EventEmitter {
     constructor() {
@@ -18,9 +19,9 @@ export default class Login extends EventEmitter {
 
         new Navbar( false ).render();
 
-        d3.select( 'body' ).style( 'background-color', '#f6f6f6' );
+        d3_select( 'body' ).style( 'background-color', '#f6f6f6' );
 
-        let wrapper = d3.select( '#id-sink' )
+        let wrapper = d3_select( '#id-sink' )
             .append( 'div' )
             .attr( 'id', 'login-page' );
 

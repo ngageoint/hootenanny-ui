@@ -328,7 +328,7 @@ export function uiSidebar(context) {
                 .classed('inspector-hidden', true);
             inspectorWrap
                 .classed('inspector-hidden', true);
-            d3.select( '.hoot-sidebar' )
+            d3_select( '.hoot-sidebar' )
                 .classed( 'hidden', true );
 
             if (_current) _current.remove();
@@ -344,7 +344,7 @@ export function uiSidebar(context) {
                 .classed('inspector-hidden', false);
             inspectorWrap
                 .classed('inspector-hidden', true);
-            d3.select( '.hoot-sidebar' )
+            d3_select( '.hoot-sidebar' )
                 .classed( 'hidden', false );
 
             if (_current) _current.remove();

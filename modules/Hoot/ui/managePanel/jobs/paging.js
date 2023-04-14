@@ -1,4 +1,5 @@
 import { d3combobox } from '../../d3.combobox';
+import { select as d3_select } from 'd3-selection';
 
 export default class Paging {
     constructor(container) {
@@ -54,11 +55,11 @@ export default class Paging {
             d3_event.preventDefault();
 
             function bindSingleBodyClick() {
-                d3.select( 'body' ).on( 'click', () => {
-                    d3.selectAll('div.limit-value').remove();
+                d3_select( 'body' ).on( 'click', () => {
+                    d3_selectAll('div.limit-value').remove();
                     //send updated filter to container
                     updateLimit();
-                    d3.select( 'body' ).on('click', null);
+                    d3_select( 'body' ).on('click', null);
                 });
             }
 
@@ -68,7 +69,7 @@ export default class Paging {
 
             bindSingleBodyClick();
 
-            let filter = d3.select('body')
+            let filter = d3_select('body')
                 .append('div')
                 .classed('limit-value', true)
                 .style('top', d3_event.pageY + 'px')

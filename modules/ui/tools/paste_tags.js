@@ -15,6 +15,7 @@ import { svgIcon }          from '../../svg';
 import { modeSelect }       from '../../modes';
 import { actionChangeTags } from '../../actions';
 import { uiCmd }            from '../cmd';
+import { select as d3_select }     from 'd3-selection';
 
 export function uiPasteTags( context ) {
     let commands = [ {
@@ -75,7 +76,14 @@ export function uiPasteTags( context ) {
         context.enter( modeSelect( context, selectedIDs ) );
     }
 
-    return function( selection ) {
+    var tool = {
+        id: 'paste_tags',
+        label: t.append('toolbar.paste_tags')
+    };
+
+
+
+    tool.render = function(selection) {
         let buttonTooltip = uiTooltip()
             .placement( 'bottom' )
             .title((d3_event, d) => selection => {
@@ -90,7 +98,7 @@ export function uiPasteTags( context ) {
             .call( buttonTooltip );
 
         buttons.each( function( d ) {
-            d3.select( this ).call( svgIcon( `#${ d.icon }` ) );
+            d3_select( this ).call( svgIcon( `#${ d.icon }` ) );
         } );
 
         let keybinding = utilKeybinding( 'paste_tags' )
@@ -103,7 +111,7 @@ export function uiPasteTags( context ) {
                 commands[ 1 ].action();
             } );
 
-        d3.select( document )
+        d3_select( document )
             .call( keybinding );
 
         context
@@ -118,7 +126,7 @@ export function uiPasteTags( context ) {
                 .property( 'disabled', disabled )
                 .classed( 'disabled', disabled )
                 .each( () => {
-                    let selection = d3.select( this );
+                    let selection = d3_select( this );
 
                     if ( selection.property( 'tooltipVisible' ) ) {
                         selection.call( tooltip.show );
@@ -126,4 +134,6 @@ export function uiPasteTags( context ) {
                 } );
         }
     };
+
+    return tool;
 }

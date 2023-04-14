@@ -1,6 +1,7 @@
 import FormFactory from '../../tools/formFactory';
 import { uiChangesetEditor } from '../../../ui/changeset_editor';
 import { prefs } from '../../../core';
+import { select as d3_select } from 'd3-selection';
 
 export default class ChangesetStats {
     constructor( job, data, viewOnly ) {
@@ -75,7 +76,7 @@ export default class ChangesetStats {
 
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
         if (!this.viewOnly) {
-            this.submitButton = d3.select( `#${ metadata.button.id }` );
+            this.submitButton = d3_select( `#${ metadata.button.id }` );
             this.createComment();
             this.updateSubmitButton();
         }
@@ -85,7 +86,7 @@ export default class ChangesetStats {
 
     updateSubmitButton() {
         this.submitButton.attr( 'disabled', function() {
-                var n = d3.select('#preset-input-comment').node();
+                var n = d3_select('#preset-input-comment').node();
                 return (n && n.value.length) ? null : true;
             });
     }

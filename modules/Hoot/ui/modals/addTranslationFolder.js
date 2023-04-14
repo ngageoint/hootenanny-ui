@@ -2,6 +2,7 @@ import FormFactory from '../../tools/formFactory';
 import { addTranslationFolderForm } from '../../config/domMetadata';
 import _get from 'lodash-es/get';
 import _find from 'lodash-es/find';
+import { select as d3_select } from 'd3-selection';
 
 export default class AddTranslationFolder {
     constructor( instance ) {
@@ -74,7 +75,7 @@ export default class AddTranslationFolder {
 
         this.container.selectAll( '.text-input' )
             .each( function() {
-                let classes = d3.select( this ).attr( 'class' ).split( ' ' );
+                let classes = d3_select( this ).attr( 'class' ).split( ' ' );
 
                 if ( classes.indexOf( 'invalid' ) > -1 || !folderName.length ) {
                     self.formValid = false;

@@ -6,6 +6,7 @@
 
 import FormFactory   from '../tools/formFactory';
 import { aboutForm } from '../config/domMetadata';
+import { select as d3_select } from 'd3-selection';
 
 export default class About {
     constructor() {
@@ -29,7 +30,7 @@ export default class About {
 
         this.container = new FormFactory().generateForm( 'body', 'about-hootenanny', metadata );
 
-        d3.select( '#downloadUserGuideBtn' ).property( 'disabled', false );
+        d3_select( '#downloadUserGuideBtn' ).property( 'disabled', false );
     }
 
     createTableFieldset( field ) {

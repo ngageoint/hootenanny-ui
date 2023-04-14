@@ -12,6 +12,8 @@ import {
 import { svgIcon }  from '../../svg';
 import selectBounds from '../../Hoot/tools/selectBounds';
 import { uiTooltip }  from '../../ui/tooltip';
+import { t } from '../../core/localizer';
+import { select as d3_select }     from 'd3-selection';
 
 export function uiTools( context ) {
     let menuItemMeta = [
@@ -68,7 +70,7 @@ export function uiTools( context ) {
             .call( svgIcon( '#iD-icon-tools', 'pre-text' ) )
             .on('click', function() {
                 renderMenu();
-                d3.select(this).on('click', null);
+                d3_select(this).on('click', null);
             });
 
         toolsToggle
@@ -124,7 +126,7 @@ export function uiTools( context ) {
             addGrailItems();
         }
 
-        toolsMenu = d3.select( '.hoot-tools' )
+        toolsMenu = d3_select( '.hoot-tools' )
             .append( 'ul' )
             .classed( 'tools-menu dropdown-content round', true );
 
@@ -157,7 +159,7 @@ export function uiTools( context ) {
     }
 
     function renderSubMenu( node, items ) {
-        let selected = d3.select( node );
+        let selected = d3_select( node );
 
         if ( !selected.select( '.sub-menu' ).empty() ) return;
 
@@ -165,7 +167,7 @@ export function uiTools( context ) {
 
         selected.classed( 'highlight', true );
 
-        subMenu = d3.select( node.parentNode )
+        subMenu = d3_select( node.parentNode )
             .append( 'ul' )
             .classed( 'sub-menu round', true )
             .style( 'left', () => {
@@ -207,7 +209,7 @@ export function uiTools( context ) {
             } );
 
         item.each( function( d ) {
-            d3.select( this )
+            d3_select( this )
                 .call( svgIcon( `#${ d.icon }`, 'pre-text' ) )
                 .call( uiTooltip().title( d.tooltip ) );
         } );
@@ -222,11 +224,11 @@ export function uiTools( context ) {
     }
 
     function initDropdown() {
-        let toolsToggle = d3.select( '.tools-toggle' );
+        let toolsToggle = d3_select( '.tools-toggle' );
 
         toolsToggle.on( 'click', () => {
             if ( toolsToggle.text() === 'Clear' ) {
-                d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
+                d3_select( '.data-layer.measure' ).selectAll( 'g' ).remove();
                 toolsToggle
                     .text( '' )
                     .call( svgIcon( '#iD-icon-tools', 'pre-text' ) )
@@ -242,10 +244,10 @@ export function uiTools( context ) {
     }
 
     function toggle( cb ) {
-        d3.select('.hoot-tools').selectAll('.tools-menu')
+        d3_select('.hoot-tools').selectAll('.tools-menu')
             .style('display', function(d) {
                 if ( cb ) cb();
-                if ( d3.select(this).style( 'display' ) === 'none' ) {
+                if ( d3_select(this).style( 'display' ) === 'none' ) {
                     setTimeout(bindSingleBodyClick, 100);
                     return 'block';
                 } else {
@@ -256,11 +258,18 @@ export function uiTools( context ) {
     }
 
     function bindSingleBodyClick() {
-        d3.select( 'body' ).on( 'click', () => {
+        d3_select( 'body' ).on( 'click', () => {
             toggle( () => initDropdown() );
-            d3.select( 'body' ).on('click', null);
+            d3_select( 'body' ).on('click', null);
         });
     }
 
-    return renderButton;
+    var tool = {
+        id: 'tools',
+        label: t.append('toolbar.tools')
+    }
+
+    tool.render = renderButton;
+
+    return tool;
 }

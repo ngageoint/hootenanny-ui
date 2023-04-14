@@ -6,13 +6,14 @@
 
 import { clip }       from '../behavior';
 import { modeBrowse } from './browse';
+import { select as d3_select }     from 'd3-selection';
 
 export function modeDrawBoundingBox( instance, context ) {
     let clipBbox = {
         id: 'clip-bounding-box'
     };
 
-    let svg = d3.select( '.data-layer.measure' ).select( 'svg' );
+    let svg = d3_select( '.data-layer.measure' ).select( 'svg' );
 
     let behavior = clip( context, svg )
         .on( 'finish', finish );
@@ -25,12 +26,12 @@ export function modeDrawBoundingBox( instance, context ) {
     }
 
     clipBbox.enter = function() {
-        d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
+        d3_select( '.data-layer.measure' ).selectAll( 'g' ).remove();
         context.install( behavior );
     };
 
     clipBbox.exit = function() {
-        d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
+        d3_select( '.data-layer.measure' ).selectAll( 'g' ).remove();
         context.uninstall( behavior );
     };
 

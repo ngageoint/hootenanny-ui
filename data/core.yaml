@@ -23,6 +23,8 @@ en:
     inspect: Inspect
     undo_redo: Undo / Redo
     recent: Recent
+    paste_tags: Paste Tags
+    tools: Tools
     favorites: Favorites
     add_feature: Add Feature
   title:
@@ -2077,10 +2079,12 @@ en:
         title: Use different levels
   #Added for EGD-plugin
   dgcarousel:
-   title: "Image Carousel"
-   zoom_warning: "Zoom in to display image metadata"
-   thumbnail_tooltip: "Click to add image layer, double-click to open image metadata"
-   popup_title: "Image Metadata"  
+    key: C
+    description: "Image Carousel"
+    zoom_warning: "Zoom in to display image metadata"
+    title: "Image Carousel"
+    thumbnail_tooltip: "Click to add image layer, double-click to open image metadata"
+    popup_title: "Image Metadata"  
   intro:
     done: done
     ok: OK

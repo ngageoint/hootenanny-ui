@@ -6,6 +6,7 @@
 
 import PublishBookmark from '../modals/publishBookmark';
 import EditBookmarkNote from '../modals/editBookmarkNote';
+import { selectAll as d3_selectAll } from 'd3-selection';
 
 /**
  * @class Resolve
@@ -33,7 +34,7 @@ export default class Resolve {
                 for ( let i = 0; i < currentRelation.members.length; i++ ) {
                     let key = i + 1;
 
-                    d3.selectAll( `.review-feature${ key }` )
+                    d3_selectAll( `.review-feature${ key }` )
                         .classed( `highlight review-feature${ key }`, false );
                 }
 
