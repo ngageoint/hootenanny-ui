@@ -13,15 +13,14 @@ import GraphSync           from './graphSync';
 import Merge               from './merge';
 import Resolve             from './resolve';
 import { conflictActions } from '../../config/domMetadata';
-import { utilKeybinding }    from '../../../util/keybinding';
-import { t }               from '../../../util/locale';
-import { tooltip }         from '../../../util/tooltip';
-
+import { utilKeybinding }  from '../../../util/keybinding';
+import { t }               from '../../../core/localizer';
+import { uiTooltip } from '../../../ui';
 import {
     getOS,
     tooltipHtml
 } from '../../tools/utilities';
-
+import { select as d3_select } from 'd3-selection';
 
 const privateMethods = {
     initData() {
@@ -119,10 +118,10 @@ export default class Conflicts {
             .classed( '_icon info light', true )
             .html( '<strong class="review-note">Initializing...</strong>' );
 
-        this.tooltip = tooltip()
-            .placement( 'top' )
-            .html( true )
-            .title( (d3_event, d) => tooltipHtml( t( `review.${ d.id }.description` ), d.cmd ) );
+        this.tooltip = uiTooltip()
+            .title((d3_event, d) => (selection) => selection.html(tooltipHtml(
+                t( `review.${ d.id }.description` ), d.cmd
+            )));
 
         // create buttons
         this.leftContainer.append( 'div' )
@@ -162,7 +161,7 @@ export default class Conflicts {
             } );
         } );
 
-        d3.select( document )
+        d3_select( document )
             .call( keybinding );
     }
 

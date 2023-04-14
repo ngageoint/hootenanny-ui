@@ -4,6 +4,9 @@
  * @author Matt Putipong on 2/27/18
  *******************************************************************************************************/
 
+import { selectAll as d3_selectAll } from 'd3-selection';
+
+
 /**
  * Base class that all other datasets in the settings panel extends from
  */
@@ -54,9 +57,9 @@ export default class Tab {
 
     toggle( keepSelected ) {
         if ( !keepSelected ) {
-            d3.selectAll( '.tab-header' ).classed( 'strong', false );
+            d3_selectAll( '.tab-header' ).classed( 'strong', false );
         }
-        d3.selectAll( '.panel-body' ).classed( 'active', false );
+        d3_selectAll( '.panel-body' ).classed( 'active', false );
         Hoot.ui.managePanel.tabs.forEach( tab => tab.deactivate() );
 
         this.tabHeader.classed( 'strong', true );

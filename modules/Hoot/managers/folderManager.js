@@ -13,6 +13,7 @@ import _isEmpty   from 'lodash-es/isEmpty';
 import _map       from 'lodash-es/map';
 import _remove    from 'lodash-es/remove';
 import _union     from 'lodash-es/union';
+import { prefs } from '../../core';
 
 /**
  * Retrieves and manages folders and datasets
@@ -83,7 +84,7 @@ export default class FolderManager {
     }
 
     filterVisible(f) {
-        return JSON.parse(Hoot.context.storage( 'publicVisibilityDatasets' )) || f.userId === Hoot.user().id;
+        return JSON.parse(prefs( 'publicVisibilityDatasets' )) || f.userId === Hoot.user().id;
     }
 
     get myFolders() {
@@ -312,7 +313,7 @@ export default class FolderManager {
     }
 
     filterTranslationVisible(f) {
-        return JSON.parse(Hoot.context.storage( 'publicVisibilityTranslations' )) || f.default || f.userId === Hoot.user().id;
+        return JSON.parse(prefs( 'publicVisibilityTranslations' )) || f.default || f.userId === Hoot.user().id;
     }
 
     /**

@@ -8,6 +8,7 @@ import Tab            from '../tab';
 import Upload         from './upload';
 import TagMapForm     from './tagMapForm';
 import AddTranslation from '../../modals/addTranslation';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * Creates the translations-assistant tab in the settings panel
@@ -44,6 +45,6 @@ export default class TransAssist extends Tab {
     }
 
     showTranslations() {
-        d3.select( '[data-id="#util-translations"]' ).node().click();
+        d3_select( '[data-id="#util-translations"]' ).node().click();
     }
 }

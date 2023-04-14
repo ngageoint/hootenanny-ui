@@ -9,6 +9,7 @@ import _forEach from 'lodash-es/forEach';
 
 import FormFactory from '../../tools/formFactory';
 import Note from '../managePanel/reviewBookmarks/note';
+import { select as d3_select } from 'd3-selection';
 
 export default class EditBookmarkNote {
     constructor( instance, type, noteData ) {
@@ -82,7 +83,7 @@ export default class EditBookmarkNote {
     }
 
     validateTextInput( d ) {
-        let target        = d3.select( `#${ d.id }` ),
+        let target        = d3_select( `#${ d.id }` ),
             node          = target.node(),
             str           = node.value,
 
@@ -107,7 +108,7 @@ export default class EditBookmarkNote {
 
         this.container.selectAll( '.text-input' )
             .each( function() {
-                let classes = d3.select( this ).attr( 'class' ).split( ' ' );
+                let classes = d3_select( this ).attr( 'class' ).split( ' ' );
 
                 if ( classes.indexOf( 'invalid' ) > -1 ) {
                     valid = false;
@@ -153,7 +154,7 @@ export default class EditBookmarkNote {
             user            = Hoot.user().id;
 
         const taggedUserIds = this.taggedUsers.selectAll( '.tagItem' ).nodes().map( data =>
-            Number( d3.select(data).attr( '_value' ) )
+            Number( d3_select(data).attr( '_value' ) )
         );
 
         if ( this.type === 'edit' ) {

@@ -355,13 +355,13 @@ export default {
 
             const head = d3_select('head');
 
-        // load mapillary-viewercss
+            // load mapillary-viewercss
             head.selectAll('#ideditor-mapillary-viewercss')
-            .data([0])
-            .enter()
-            .append('link')
+                .data([0])
+                .enter()
+                .append('link')
                 .attr('id', 'ideditor-mapillary-viewercss')
-            .attr('rel', 'stylesheet')
+                .attr('rel', 'stylesheet')
                 .attr('crossorigin', 'anonymous')
                 .attr('href', context.asset(viewercss))
                 .on('load.serviceMapillary', loaded)
@@ -369,11 +369,11 @@ export default {
                     reject();
                 });
 
-        // load mapillary-viewerjs
+            // load mapillary-viewerjs
             head.selectAll('#ideditor-mapillary-viewerjs')
-            .data([0])
-            .enter()
-            .append('script')
+                .data([0])
+                .enter()
+                .append('script')
                 .attr('id', 'ideditor-mapillary-viewerjs')
                 .attr('crossorigin', 'anonymous')
                 .attr('src', context.asset(viewerjs))
@@ -450,9 +450,9 @@ export default {
             filter.push(['>=', 'capturedAt', new Date(toDate).getTime()]);
         }
 
-            if (_mlyViewer) {
+        if (_mlyViewer) {
             _mlyViewer.setFilter(filter);
-            }
+        }
         _mlyViewerFilter = filter;
 
         return filter;

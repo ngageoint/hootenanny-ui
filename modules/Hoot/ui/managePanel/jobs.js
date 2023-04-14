@@ -7,6 +7,7 @@ import JobCommandInfo from '../modals/jobCommandInfo';
 import GrailDatasetPicker from '../modals/grailDatasetPicker';
 import { duration } from '../../tools/utilities';
 import { utilKeybinding }    from '../../../util/keybinding';
+import { select as d3_select } from 'd3-selection';
 
 const getJobTypeIcon = Symbol('getJobTypeIcon');
 
@@ -162,7 +163,7 @@ export default class Jobs extends Tab {
         this.keybinding
             .on('⌫', (d3_event) => this.deleteJobs(d3_event, that))
             .on('⌦', (d3_event) => this.deleteJobs(d3_event, that));
-        d3.select(document)
+        d3_select(document)
             .call(this.keybinding);
     }
 
@@ -172,7 +173,7 @@ export default class Jobs extends Tab {
         this.keybinding
             .off('⌫')
             .off('⌦');
-        d3.select(document)
+        d3_select(document)
             .call(this.keybinding);
     }
 
@@ -207,12 +208,12 @@ export default class Jobs extends Tab {
 
     async deleteJobs(d3_event, self) {
         function deleteJobs() {
-            d3.select('#util-jobs').classed('wait', true);
+            d3_select('#util-jobs').classed('wait', true);
             Promise.all( delIds.map( id => Hoot.api.deleteJobStatus(id)) )//rate limit?
                 .then( resp => self.loadJobs() )
                 .finally( () => {
                     self.selectNone();
-                    d3.select('#util-jobs').classed('wait', false);
+                    d3_select('#util-jobs').classed('wait', false);
                 });
         }
 
@@ -356,10 +357,10 @@ export default class Jobs extends Tab {
                             confirm = await Hoot.message.confirm( message );
 
                             if ( confirm ) {
-                                d3.select('#util-jobs').classed('wait', true);
+                                d3_select('#util-jobs').classed('wait', true);
                                 Hoot.api.cancelJob(d.jobId)
                                     .then( resp => this.loadJobs() )
-                                    .finally( () => d3.select('#util-jobs').classed('wait', false));
+                                    .finally( () => d3_select('#util-jobs').classed('wait', false));
                             }
                         }
                     });
@@ -502,7 +503,7 @@ export default class Jobs extends Tab {
 
         th.each(function(d) {
             if (that.columnFilters[d.column]) {
-                d3.select(this).append('i')
+                d3_select(this).append('i')
                     .classed( 'filter material-icons', true )
                     .text('menu_open')
                     .attr('title', 'filter')
@@ -545,7 +546,7 @@ export default class Jobs extends Tab {
             .append( 'tr' )
             .classed( 'jobs-item keyline-bottom', true )
             .on('click', function(d3_event, d, i) {
-                let r = d3.select(this);
+                let r = d3_select(this);
                 if (d3_event.ctrlKey || d3_event.metaKey) {
                     //Toggle current row
                     r.classed('selected', !r.classed('selected'));
@@ -560,7 +561,7 @@ export default class Jobs extends Tab {
                     tbody.selectAll('tr')
                         .each(function(r, k) {
                             if (min <= k && k <= max) {
-                                d3.select(this).classed('selected', true);
+                                d3_select(this).classed('selected', true);
                             }
                         });
                 } else {

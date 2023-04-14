@@ -10,6 +10,7 @@ import _get  from 'lodash-es/get';
 import FormFactory             from '../../tools/formFactory';
 import { modifyDatasetForm }   from '../../config/domMetadata';
 import { unallowableWordsExist } from '../../tools/utilities';
+import { select as d3_select } from 'd3-selection';
 
 export default class ModifyFolder {
     constructor( d ) {
@@ -84,7 +85,7 @@ export default class ModifyFolder {
     }
 
     validateTextInput( d ) {
-        let target           = d3.select( `#${ d.id }` ),
+        let target           = d3_select( `#${ d.id }` ),
             node             = target.node(),
             str              = node.value,
 

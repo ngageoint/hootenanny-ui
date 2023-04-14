@@ -3,6 +3,7 @@ import AdvancedOpts from '../ui/sidebar/advancedOpts';
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _isEmpty from 'lodash-es/isEmpty';
 import _isEqual from 'lodash-es/isEqual';
+import { select as d3_select } from 'd3-selection';
 
 export function layerConflateForm( data ) {
     return [
@@ -37,7 +38,7 @@ export function layerConflateForm( data ) {
             readonly: 'readonly',
             onChange: function() {
                 // update the renderd default value to match those in the conflation configs...
-                let type = d3.select( '#conflateType' ).property( 'value' );
+                let type = d3_select( '#conflateType' ).property( 'value' );
                 let advancedOpts = AdvancedOpts.getInstance();
                 let advOpts = _cloneDeep( advancedOpts.advancedOptions );
                 if ( !_isEmpty(advancedOpts.conflationOptions[type.toLowerCase()]) ) {
@@ -80,8 +81,8 @@ export function layerConflateForm( data ) {
                 else {
                     // disable & enable the attribute conflation group.
                     [ 'Attribute', 'Differential' ].forEach((conflationGroup) => {
-                        let confGroup = d3.select( `.advanced-opts-content #${conflationGroup}_group` ),
-                            isGroup = d3.select( '#conflateType' ).property( 'value' ).includes(conflationGroup);
+                        let confGroup = d3_select( `.advanced-opts-content #${conflationGroup}_group` ),
+                            isGroup = d3_select( '#conflateType' ).property( 'value' ).includes(conflationGroup);
 
                         confGroup.select( '.adv-opt-title' )
                             .classed( 'adv-opt-title-disabled', !isGroup );
@@ -100,16 +101,16 @@ export function layerConflateForm( data ) {
                 }
 
                 function favOptSelected() {
-                    d3.select('#deleteFav').classed('hidden', false);
-                    d3.select('#updateFav').classed('hidden', false);
-                    d3.select('#saveFav').classed('hidden', true);
+                    d3_select('#deleteFav').classed('hidden', false);
+                    d3_select('#updateFav').classed('hidden', false);
+                    d3_select('#saveFav').classed('hidden', true);
 
                 }
 
                 function defaultConfSelected() {
-                    d3.select('#deleteFav').classed('hidden', true);
-                    d3.select('#updateFav').classed('hidden', true);
-                    d3.select('#saveFav').classed('hidden', true);
+                    d3_select('#deleteFav').classed('hidden', true);
+                    d3_select('#updateFav').classed('hidden', true);
+                    d3_select('#saveFav').classed('hidden', true);
                 }
             }
         },
@@ -129,7 +130,7 @@ export function layerConflateForm( data ) {
             value: 'false',
             data: [ 'true', 'false' ],
             onchange: function() {
-                // var selVal = d3.selectAll( '.reset.isCollectStats' ).value();
+                // var selVal = d3_selectAll( '.reset.isCollectStats' ).value();
             },
             readonly: 'readonly'
         }
@@ -392,22 +393,22 @@ export function exportDataForm( zipOutput ) {
           that = this;
 
     function changeExport() {
-        const showFgdbTemplate = d3.select( `#${exportFormatId}` ).property( 'value' ) === 'File Geodatabase'
-                        && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('TDS') === 0;
+        const showFgdbTemplate = d3_select( `#${exportFormatId}` ).property( 'value' ) === 'File Geodatabase'
+                        && d3_select( `#${exportComboId}` ).property( 'value' ).indexOf('TDS') === 0;
 
-        d3.select( `#${exportFgdbId}_container` )
+        d3_select( `#${exportFgdbId}_container` )
             .classed( 'hidden', !showFgdbTemplate );
 
-        const showThematic = d3.select( `#${exportFormatId}` ).property( 'value' ).indexOf('OpenStreetMap') === -1
-                        && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('OSM') === -1;
+        const showThematic = d3_select( `#${exportFormatId}` ).property( 'value' ).indexOf('OpenStreetMap') === -1
+                        && d3_select( `#${exportComboId}` ).property( 'value' ).indexOf('OSM') === -1;
 
-        d3.select( `#${exportThematic}_container` )
+        d3_select( `#${exportThematic}_container` )
             .classed( 'hidden', !showThematic );
 
-        const showHootTags = d3.select( `#${exportFormatId}` ).property( 'value' ).indexOf('OpenStreetMap') === 0
-                        && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('OSM') === 0;
+        const showHootTags = d3_select( `#${exportFormatId}` ).property( 'value' ).indexOf('OpenStreetMap') === 0
+                        && d3_select( `#${exportComboId}` ).property( 'value' ).indexOf('OSM') === 0;
 
-        d3.select( `#${exportHootTags}_container` )
+        d3_select( `#${exportHootTags}_container` )
             .classed( 'hidden', !showHootTags );
 
         that.validate( exportComboId );

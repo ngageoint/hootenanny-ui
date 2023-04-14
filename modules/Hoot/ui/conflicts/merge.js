@@ -12,10 +12,12 @@ import _reduce  from 'lodash-es/reduce';
 import _uniq    from 'lodash-es/uniq';
 
 import { JXON }             from '../../../util/jxon';
-import { t }                from '../../../util/locale';
+import { t }                from '../../../core/localizer';
 import { operationDelete }  from '../../../operations/delete';
 import { actionChangeTags } from '../../../actions/index';
 import { uiFlash } from '../../../ui';
+import { geoCentroid as d3_geoCetroid } from 'd3-geo';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * @class Merge
@@ -253,7 +255,7 @@ export default class Merge {
      * @param hide - true | false
      */
     toggleMergeButton( hide ) {
-        d3.select( '.action-buttons .merge' ).classed( 'hidden', hide );
+        d3_select( '.action-buttons .merge' ).classed( 'hidden', hide );
     }
 
     /**
@@ -268,7 +270,7 @@ export default class Merge {
         this.mergeArrow.from = feature;
         this.mergeArrow.to   = againstFeature;
 
-        d3.select( '.action-buttons .merge' )
+        d3_select( '.action-buttons .merge' )
             .on( 'mouseenter', function(d3_event) {
                 this.focus();
 
@@ -278,7 +280,7 @@ export default class Merge {
                     that.updateMergeArrow();
                 }
 
-                d3.select( this )
+                d3_select( this )
                     .on( 'keydown', () => {
                         if ( d3_event.ctrlKey || d3_event.metaKey ) {
                             that.updateMergeArrow( 'reverse' );
@@ -303,8 +305,8 @@ export default class Merge {
             return;
         }
 
-        let pt1   = d3.geoCentroid( this.mergeArrow.from.asGeoJSON( Hoot.context.graph() ) ),
-            pt2   = d3.geoCentroid( this.mergeArrow.to.asGeoJSON( Hoot.context.graph() ) ),
+        let pt1   = d3_geoCentroid( this.mergeArrow.from.asGeoJSON( Hoot.context.graph() ) ),
+            pt2   = d3_geoCentroid( this.mergeArrow.to.asGeoJSON( Hoot.context.graph() ) ),
             coord = [ pt1, pt2 ];
 
 

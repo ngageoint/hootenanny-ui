@@ -15,6 +15,85 @@ describe('iD.actionReverse', function () {
         expect(graph.entity(way.id).tags).to.eql({'highway': 'residential'});
     });
 
+    describe('reverses directional tags on nodes', function () {
+        it('reverses relative directions', function () {
+            var node1 = iD.osmNode({ tags: { 'direction': 'forward' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'direction': 'backward' });
+        });
+
+        it('reverses relative directions for arbitrary direction tags', function () {
+            var node1 = iD.osmNode({ tags: { 'traffic_sign:direction': 'forward' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'traffic_sign:direction': 'backward' });
+        });
+
+        it('reverses absolute directions, cardinal compass points', function () {
+            var node1 = iD.osmNode({ tags: { 'direction': 'E' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'direction': 'W' });
+        });
+
+        it('reverses absolute directions, intercardinal compass points', function () {
+            var node1 = iD.osmNode({ tags: { 'direction': 'SE' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'direction': 'NW' });
+        });
+
+        it('reverses absolute directions, secondary intercardinal compass points', function () {
+            var node1 = iD.osmNode({ tags: { 'direction': 'NNE' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'direction': 'SSW' });
+        });
+
+        it('reverses absolute directions, 0 degrees', function () {
+            var node1 = iD.osmNode({ tags: { 'direction': '0' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'direction': '180' });
+        });
+
+        it('reverses absolute directions, positive degrees', function () {
+            var node1 = iD.osmNode({ tags: { 'direction': '85.5' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'direction': '265.5' });
+        });
+
+        it('reverses absolute directions, positive degrees > 360', function () {
+            var node1 = iD.osmNode({ tags: { 'direction': '385.5' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'direction': '205.5' });
+        });
+
+        it('reverses absolute directions, negative degrees', function () {
+            var node1 = iD.osmNode({ tags: { 'direction': '-85.5' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'direction': '94.5' });
+        });
+
+        it('reverses directions with multiple semicolon separated values', function () {
+            var node1 = iD.osmNode({ tags: { 'direction': 'N;90' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'direction': 'S;270' });
+        });
+
+        it('reverses directions with multiple semicolon separated values, preserves non-directional part', function () {
+            var node1 = iD.osmNode({ tags: { 'direction': '0;error' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'direction': '180;error' });
+        });
+
+        it('preserves non-directional tags', function () {
+            var node1 = iD.osmNode({ tags: { 'traffic_sign': 'maxspeed' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'traffic_sign': 'maxspeed' });
+        });
+
+        it('preserves non-reversible direction tags', function () {
+            var node1 = iD.osmNode({ tags: { 'direction': 'both' } });
+            var graph = iD.actionReverse(node1.id)(iD.coreGraph([node1]));
+            expect(graph.entity(node1.id).tags).to.eql({ 'direction': 'both' });
+        });
+    });
 
     describe('reverses oneway', function () {
         it('preserves oneway tags', function () {
@@ -101,6 +180,17 @@ describe('iD.actionReverse', function () {
 
             graph = iD.actionReverse(way.id)(graph);
             expect(graph.entity(way.id).tags).to.eql({'cycleway:right': 'lane'});
+        });
+
+        it('transforms *:right:*=* ⟺ *:left:*=*', function () {
+            var way = iD.osmWay({tags: {'cycleway:right:surface': 'paved'}});
+            var graph = iD.coreGraph([way]);
+
+            graph = iD.actionReverse(way.id)(graph);
+            expect(graph.entity(way.id).tags).to.eql({'cycleway:left:surface': 'paved'});
+
+            graph = iD.actionReverse(way.id)(graph);
+            expect(graph.entity(way.id).tags).to.eql({'cycleway:right:surface': 'paved'});
         });
 
         it('transforms *:forward=* ⟺ *:backward=*', function () {

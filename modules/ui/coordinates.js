@@ -1,7 +1,9 @@
+import { prefs } from "../core";
+
 export function uiCoordinates(context) {
     var projection = context.projection;
     var formats = ['DMS', 'DD', 'UTM', 'MGRS'];
-    var coordinateFormat = context.storage('coordinate-format') || 'DMS';
+    var coordinateFormat = prefs('coordinate-format') || 'DMS';
 
     function leadingZeros(num) {
         return ('0' + num.toString()).slice(-2);
@@ -204,7 +206,7 @@ export function uiCoordinates(context) {
             var currIndex = formats.indexOf(coordinateFormat);
             var newIndex = (currIndex < (formats.length - 1)) ? currIndex + 1 : 0;
             coordinateFormat = formats[newIndex];
-            context.storage('coordinate-format', coordinateFormat);
+            prefs('coordinate-format', coordinateFormat);
             var coords = projection.invert(context.map().mouse());
             update(selection, coords);
         });

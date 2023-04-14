@@ -1,5 +1,5 @@
 import { select as d3_select } from 'd3-selection';
-import { t } from '../util/locale';
+import { t } from '../core/localizer';
 
 import { geoScaleToZoom, geoVecLength } from '../geo';
 import { utilPrefixCSSProperty, utilTiler } from '../util';
@@ -120,7 +120,7 @@ export function rendererTileLayer(context) {
             });
         }
 
-        function load(d) {
+        function load(d3_event, d) {
             _cache[d[3]] = true;
             d3_select(this)
                 .on('error', null)
@@ -129,7 +129,7 @@ export function rendererTileLayer(context) {
             render(selection);
         }
 
-        function error(d) {
+        function error(d3_event, d) {
             _cache[d[3]] = false;
             d3_select(this)
                 .on('error', null)
@@ -197,6 +197,10 @@ export function rendererTileLayer(context) {
         image.enter()
           .append('img')
             .attr('class', 'tile')
+            .attr('alt', '')
+            .attr('draggable', 'false')
+            .style('width', _tileSize + 'px')
+            .style('height', _tileSize + 'px')
             .attr('src', function(d) { return d[3]; })
             .on('error', error)
             .on('load', load)
@@ -242,9 +246,14 @@ export function rendererTileLayer(context) {
                     var span = d3_select(this);
                     var center = context.projection.invert(tileCenter(d));
                     _source.getMetadata(center, d, function(err, result) {
-                        span.text((result && result.vintage && result.vintage.range) ||
-                            t('info_panels.background.vintage') + ': ' + t('info_panels.background.unknown')
-                        );
+                        if (result && result.vintage && result.vintage.range) {
+                          span.text(result.vintage.range);
+                        } else {
+                          span.text('');
+                          span.call(t.append('info_panels.background.vintage'));
+                          span.append('span').text(': ');
+                          span.call(t.append('info_panels.background.unknown'));
+                        }
                     });
                 });
         }
@@ -252,23 +261,23 @@ export function rendererTileLayer(context) {
     }
 
 
-    background.projection = function(_) {
+    background.projection = function(val) {
         if (!arguments.length) return _projection;
-        _projection = _;
+        _projection = val;
         return background;
     };
 
 
-    background.dimensions = function(_) {
+    background.dimensions = function(val) {
         if (!arguments.length) return tiler.size();
-        tiler.size(_);
+        tiler.size(val);
         return background;
     };
 
 
-    background.source = function(_) {
+    background.source = function(val) {
         if (!arguments.length) return _source;
-        _source = _;
+        _source = val;
         _tileSize = _source.tileSize;
         _cache = {};
         tiler.tileSize(_source.tileSize).zoomExtent(_source.zoomExtent);

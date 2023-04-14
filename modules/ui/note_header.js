@@ -1,5 +1,5 @@
-import { t } from '../util/locale';
-import { svgIcon } from '../svg';
+import { t } from '../core/localizer';
+import { svgIcon } from '../svg/icon';
 
 
 export function uiNoteHeader() {
@@ -31,27 +31,35 @@ export function uiNoteHeader() {
             .call(svgIcon('#iD-icon-note', 'note-fill'));
 
         iconEnter.each(function(d) {
-            var statusIcon = '#iD-icon-' + (d.id < 0 ? 'plus' : (d.status === 'open' ? 'close' : 'apply'));
+            var statusIcon;
+            if (d.id < 0) {
+                statusIcon = '#iD-icon-plus';
+            } else if (d.status === 'open') {
+                statusIcon = '#iD-icon-close';
+            } else {
+                statusIcon = '#iD-icon-apply';
+            }
             iconEnter
                 .append('div')
                 .attr('class', 'note-icon-annotation')
-                .call(svgIcon(statusIcon, 'note-annotation'));
+                .attr('title', t('icons.close'))
+                .call(svgIcon(statusIcon, 'icon-annotation'));
         });
 
         headerEnter
             .append('div')
             .attr('class', 'note-header-label')
-            .text(function(d) {
-                if (_note.isNew()) { return t('note.new'); }
-                return t('note.note') + ' ' + d.id + ' ' +
-                    (d.status === 'closed' ? t('note.closed') : '');
+            .html(function(d) {
+                if (_note.isNew()) { return t.html('note.new'); }
+                return t.html('note.note') + ' ' + d.id + ' ' +
+                    (d.status === 'closed' ? t.html('note.closed') : '');
             });
     }
 
 
-    noteHeader.note = function(_) {
+    noteHeader.note = function(val) {
         if (!arguments.length) return _note;
-        _note = _;
+        _note = val;
         return noteHeader;
     };
 

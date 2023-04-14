@@ -1,8 +1,6 @@
-import _clone from 'lodash-es/clone';
-import _groupBy from 'lodash-es/groupBy';
-import _omit from 'lodash-es/omit';
-
-import { osmJoinWays, osmWay } from '../osm';
+import { osmJoinWays } from '../osm/multipolygon';
+import { osmWay } from '../osm/way';
+import { utilArrayGroupBy, utilObjectOmit } from '../util';
 
 
 export function actionAddMember(relationId, member, memberIndex, insertPair) {
@@ -34,7 +32,7 @@ export function actionAddMember(relationId, member, memberIndex, insertPair) {
     // Add a way member into the relation "wherever it makes sense".
     // In this situation we were not supplied a memberIndex.
     function addWayMember(relation, graph) {
-        var groups, tempWay, item, i, j, k;
+        var groups, tempWay, insertPairIsReversed, item, i, j, k;
 
         // remove PTv2 stops and platforms before doing anything.
         var PTv2members = [];
@@ -64,12 +62,20 @@ export function actionAddMember(relationId, member, memberIndex, insertPair) {
             graph = graph.replace(tempWay);
             var tempMember = { id: tempWay.id, type: 'way', role: member.role };
             var tempRelation = relation.replaceMember({id: insertPair.originalID}, tempMember, true);
-            groups = _groupBy(tempRelation.members, function(m) { return m.type; });
+            groups = utilArrayGroupBy(tempRelation.members, 'type');
             groups.way = groups.way || [];
+
+            // Insert pair is reversed if the inserted way comes before the original one.
+            // (Except when they form a loop.)
+            var originalWay = graph.entity(insertPair.originalID);
+            var insertedWay = graph.entity(insertPair.insertedID);
+            insertPairIsReversed = originalWay.nodes.length > 0 && insertedWay.nodes.length > 0 &&
+                insertedWay.nodes[insertedWay.nodes.length - 1] === originalWay.nodes[0] &&
+                originalWay.nodes[originalWay.nodes.length - 1] !== insertedWay.nodes[0];
 
         } else {
             // Add the member anywhere, one time. Just push and let `osmJoinWays` decide where to put it.
-            groups = _groupBy(relation.members, function(m) { return m.type; });
+            groups = utilArrayGroupBy(relation.members, 'type');
             groups.way = groups.way || [];
             groups.way.push(member);
         }
@@ -98,15 +104,16 @@ export function actionAddMember(relationId, member, memberIndex, insertPair) {
 
                 // If this is a paired item, generate members in correct order and role
                 if (tempWay && item.id === tempWay.id) {
-                    if (nodes[0].id === insertPair.nodes[0]) {
-                        item.pair = [
-                            { id: insertPair.originalID, type: 'way', role: item.role },
-                            { id: insertPair.insertedID, type: 'way', role: item.role }
-                        ];
-                    } else {
+                    var reverse = nodes[0].id !== insertPair.nodes[0] ^ insertPairIsReversed;
+                    if (reverse) {
                         item.pair = [
                             { id: insertPair.insertedID, type: 'way', role: item.role },
                             { id: insertPair.originalID, type: 'way', role: item.role }
+                        ];
+                    } else {
+                        item.pair = [
+                            { id: insertPair.originalID, type: 'way', role: item.role },
+                            { id: insertPair.insertedID, type: 'way', role: item.role }
                         ];
                     }
                 }
@@ -136,7 +143,7 @@ export function actionAddMember(relationId, member, memberIndex, insertPair) {
                 wayMembers.push(item.pair[0]);
                 wayMembers.push(item.pair[1]);
             } else {
-                wayMembers.push(_omit(item, 'index'));
+                wayMembers.push(utilObjectOmit(item, ['index']));
             }
         }
 
@@ -145,7 +152,7 @@ export function actionAddMember(relationId, member, memberIndex, insertPair) {
         // see https://wiki.openstreetmap.org/wiki/Public_transport#Service_routes
         var newMembers = PTv2members.concat( (groups.node || []), wayMembers, (groups.relation || []) );
 
-        return graph.replace(relation.update({members: newMembers}));
+        return graph.replace(relation.update({ members: newMembers }));
 
 
         // `moveMember()` changes the `members` array in place by splicing
@@ -171,13 +178,14 @@ export function actionAddMember(relationId, member, memberIndex, insertPair) {
         // members       0 1 2 3 x 5 4 7 6 x 8 9    keep 6 in j+k
         //
         function moveMember(arr, findIndex, toIndex) {
-            for (var i = 0; i < arr.length; i++) {
+            var i;
+            for (i = 0; i < arr.length; i++) {
                 if (arr[i].index === findIndex) {
                     break;
                 }
             }
 
-            var item = _clone(arr[i]);
+            var item = Object.assign({}, arr[i]);   // shallow copy
             arr[i].index = -1;   // mark as dead
             item.index = toIndex;
             arr.splice(toIndex, 0, item);
@@ -189,7 +197,7 @@ export function actionAddMember(relationId, member, memberIndex, insertPair) {
         function withIndex(arr) {
             var result = new Array(arr.length);
             for (var i = 0; i < arr.length; i++) {
-                result[i] = arr[i];
+                result[i] = Object.assign({}, arr[i]);   // shallow copy
                 result[i].index = i;
             }
             return result;

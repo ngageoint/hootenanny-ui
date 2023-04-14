@@ -2,7 +2,7 @@ import FormFactory          from './formFactory';
 import GrailPull            from './grailPull';
 import selectBounds           from './selectBounds';
 import DifferentialChangeset   from './differentialChangeset';
-
+import { select as d3_select } from 'd3-selection';
 
 export default class OverpassQueryPanel {
     constructor( instance ) {
@@ -35,7 +35,7 @@ export default class OverpassQueryPanel {
         let formId = 'overpassTable';
 
         this.form         = new FormFactory().generateForm( 'body', formId, metadata );
-        this.submitButton = d3.select( `#${ metadata.button.id }` );
+        this.submitButton = d3_select( `#${ metadata.button.id }` );
 
         this.addBackButton( metadata.button.id );
         this.submitButton.property( 'disabled', false );

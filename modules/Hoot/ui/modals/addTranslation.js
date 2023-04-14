@@ -8,6 +8,7 @@ import FormFactory            from '../../tools/formFactory';
 import { translationAddForm } from '../../config/domMetadata';
 import _get from 'lodash-es/get';
 import _find from 'lodash-es/find';
+import { select as d3_select } from 'd3-selection';
 
 export default class AddTranslation {
     constructor( instance, templateText ) {
@@ -30,12 +31,12 @@ export default class AddTranslation {
 
         this.container = new FormFactory().generateForm( 'body', 'translations-add-form', metadata );
 
-        this.nameInput        = d3.select( '#translationSaveName' );
-        this.descriptionInput = d3.select( '#translationSaveDescription' );
-        this.pathNameInput    = d3.select( '#importPathName' );
-        this.templateInput    = d3.select( '#translationTemplate' );
-        this.submitButton     = d3.select( '#addTranslationBtn' );
-        this.mappingForm      = d3.select( '.ta-attribute-mapping' );
+        this.nameInput        = d3_select( '#translationSaveName' );
+        this.descriptionInput = d3_select( '#translationSaveDescription' );
+        this.pathNameInput    = d3_select( '#importPathName' );
+        this.templateInput    = d3_select( '#translationTemplate' );
+        this.submitButton     = d3_select( '#addTranslationBtn' );
+        this.mappingForm      = d3_select( '.ta-attribute-mapping' );
 
         this.pathNameInput.attr( 'readonly', 'true' );
     }

@@ -10,8 +10,10 @@ import FormFactory  from './formFactory';
 import { modeBrowse, modeDrawBoundingBox } from '../../modes';
 import ClipDataset                         from './clipDataset';
 import OverpassQueryPanel                  from './overpassQueryPanel';
-import { d3combobox }                      from '../../lib/hoot/d3.combobox';
+import { d3combobox }                      from '../ui/d3.combobox';
 import { geoExtent as GeoExtent }          from '../../geo';
+import { prefs } from '../../core';
+import { select as d3_select }             from 'd3-selection';
 
 export default class SelectBounds extends EventEmitter {
     constructor( context, predefinedData ) {
@@ -46,7 +48,7 @@ export default class SelectBounds extends EventEmitter {
         const formId = 'drawBoundsForm';
 
         this.form       = new FormFactory().generateForm( 'body', formId, metadata );
-        this.nextButton = d3.select( `#${metadata.button.id}` );
+        this.nextButton = d3_select( `#${metadata.button.id}` );
 
         this.nextButton.property( 'disabled', false );
 
@@ -152,7 +154,7 @@ export default class SelectBounds extends EventEmitter {
             .append( 'input' )
             .attr('placeholder', 'Select a bounds from...');
 
-        let { boundsHistory } = JSON.parse( Hoot.context.storage('bounds_history') );
+        let { boundsHistory } = JSON.parse( prefs('bounds_history') );
 
         const dropdownOptions = boundOptionsList.concat( boundsHistory );
         const historyOptions = dropdownOptions.map( option => { return { value: option }; } );

@@ -10,13 +10,13 @@ import _forEach from 'lodash-es/forEach';
 import LayerAdd      from './layerAdd';
 import LayerConflate from './layerConflate';
 import LayerReview   from './layerReview';
-import FormFactory   from '../../tools/formFactory';
 
 import {
     utilQsString,
     utilStringQs
 }                       from '../../../util';
-import { uiBackground } from '../../../ui';
+
+import { select as d3_select, selectAll as d3_selectAll } from 'd3-selection';
 
 /**
  * Create the sidebar
@@ -25,7 +25,7 @@ import { uiBackground } from '../../../ui';
  */
 export default class Sidebar {
     constructor() {
-        this.iDSidebar = d3.select( '#sidebar' );
+        this.iDSidebar = d3_select( '#sidebar-resizer' );
 
         this.forms = {};
 
@@ -101,14 +101,14 @@ export default class Sidebar {
         this.wrapper.selectAll('.layer-add')
             .data(this.addFormData).enter()
             .select(function (d) {
-                that.forms[d.id] = new LayerAdd(d3.select(this), d);
+                that.forms[d.id] = new LayerAdd(d3_select(this), d);
                 that.forms[d.id].render();
             });
 
         this.wrapper.selectAll('.layer-conflate')
             .data(this.conflateFormData).enter()
             .select(async function (d) {
-                const layerConflate = new LayerConflate(d3.select(this), d);
+                const layerConflate = new LayerConflate(d3_select(this), d);
                 await layerConflate.getData();
                 that.forms[d.id] = layerConflate;
             });
@@ -128,7 +128,7 @@ export default class Sidebar {
                             .selectAll( '.layer-review' )
                             .data( this.reviewFormData ).enter()
                             .select( function() {
-                                that.reviewLayer = new LayerReview( d3.select( this ), loadedLayer );
+                                that.reviewLayer = new LayerReview( d3_select( this ), loadedLayer );
                                 that.reviewLayer.render();
                             });
                     }
@@ -153,7 +153,7 @@ export default class Sidebar {
             .selectAll( '.layer-review' )
             .data( this.reviewFormData ).enter()
             .select( function() {
-                that.reviewLayer = new LayerReview( d3.select( this ), layer );
+                that.reviewLayer = new LayerReview( d3_select( this ), layer );
                 that.reviewLayer.render();
             } );
     }
@@ -178,7 +178,7 @@ export default class Sidebar {
 
     conflateCheck() {
         let loadedLayers   = Object.values( Hoot.layers.loadedLayers ),
-            addControllers = d3.selectAll( '.add-controller' );
+            addControllers = d3_selectAll( '.add-controller' );
 
         if ( loadedLayers.length === 2 ) {
             if ( !this.forms.conflate.exists ) {
@@ -202,7 +202,7 @@ export default class Sidebar {
 
     adjustSize() {
         let sidebarWidth = this.iDSidebar.node().getBoundingClientRect().width,
-            sidebarForm     = d3.selectAll( '.sidebar-form' );
+            sidebarForm     = d3_selectAll( '.sidebar-form' );
 
         if ( sidebarWidth < 291 ) { // small
             sidebarForm.classed( 'small', true );

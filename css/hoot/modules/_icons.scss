@@ -15,7 +15,7 @@
 }
 
 ._osm {
-    background-image: url(./img/mag_map.svg);
+    // background-image: url(./img/mag_map.svg);
     background-repeat: no-repeat;
     background-position: 0 0;
     background-size: contain;
@@ -181,7 +181,7 @@
 
     &._loading {
         &:before {
-            background: url(./img/loading-spin-dark.svg) no-repeat 0 0;
+            // background: url(./img/loading-spin-dark.svg) no-repeat 0 0;
             display: inline-block;
             width: 26px;
             height: 26px;
@@ -189,7 +189,7 @@
         }
 
         &.light:before {
-            background-image: url(./img/loading-spin.svg);
+            // background-image: url(./img/loading-spin.svg);
             background-repeat: no-repeat;
             background-position: 0 0;
             display: inline-block;
@@ -212,32 +212,32 @@
     }
 
     &.forward-arrow {
-        background: transparent url(./img/keyboard53.svg) no-repeat;
+        // background: transparent url(./img/keyboard53.svg) no-repeat;
     }
 
     &.back-arrow {
-        background: transparent url(./img/keyboard54.svg) no-repeat;
+        // background: transparent url(./img/keyboard54.svg) no-repeat;
     }
 }
 
 .search-icon {
-    background: transparent url(./img/magnify.svg) no-repeat 4px 4px;
+    // background: transparent url(./img/magnify.svg) no-repeat 4px 4px;
 }
 
 .link-tag {
-    background:transparent url(./img/squares41.svg) no-repeat 4px 5px;
+    // background:transparent url(./img/squares41.svg) no-repeat 4px 5px;
 }
 
 .map-tag {
-    background: transparent url(./img/squares36.svg) no-repeat 4px 4px;
+    // background: transparent url(./img/squares36.svg) no-repeat 4px 4px;
 }
 
 .remove-map-tag {
-    background:transparent url(./img/remove.svg) no-repeat 4px 4px;
+    // background:transparent url(./img/remove.svg) no-repeat 4px 4px;
 }
 
 .remove-tag {
-    background:transparent url(./img/prohibited1.svg) no-repeat 4px 4px;
+    // background:transparent url(./img/prohibited1.svg) no-repeat 4px 4px;
 }
 
 .translate-icon {
@@ -245,7 +245,7 @@
 }
 
 .grail-loading {
-    background: rgba(0, 0, 0, 0.5) url(./img/loading-spin.svg) no-repeat center;
+    // background: rgba(0, 0, 0, 0.5) url(./img/loading-spin.svg) no-repeat center;
     position: absolute;
     display: block;
     top: 0;

@@ -1,79 +1,112 @@
-import { t } from '../util/locale';
+import { prefs } from '../core/preferences';
+import { fileFetcher } from '../core/file_fetcher';
+import { t } from '../core/localizer';
+import { uiIntro } from './intro';
 import { uiModal } from './modal';
+import { uiSectionPrivacy } from './sections/privacy';
 
 
 export function uiSplash(context) {
+  return (selection) => {
+    // Exception - if there are restorable changes, skip this splash screen.
+    // This is because we currently only support one `uiModal` at a time
+    //  and we need to show them `uiRestore`` instead of this one.
+    if (context.history().hasRestorableChanges()) return;
 
-    return function(selection) {
-        if (context.storage('sawSplash'))
-             return;
+    // If user has not seen this version of the privacy policy, show the splash again.
+    let updateMessage = '';
+    const sawPrivacyVersion = prefs('sawPrivacyVersion');
+    let showSplash = !prefs('sawSplash');
+    if (sawPrivacyVersion !== context.privacyVersion) {
+      updateMessage = t('splash.privacy_update');
+      showSplash = true;
+    }
 
-        context.storage('sawSplash', true);
+    if (!showSplash) return;
 
-        var modalSelection = uiModal(selection);
+    prefs('sawSplash', true);
+    prefs('sawPrivacyVersion', context.privacyVersion);
 
-        modalSelection.select('.modal')
-            .attr('class', 'modal-splash modal col6');
+    // fetch intro graph data now, while user is looking at the splash screen
+    fileFetcher.get('intro_graph');
 
-        var introModal = modalSelection.select('.content')
-            .append('div')
-            .attr('class', 'fillL');
+    let modalSelection = uiModal(selection);
 
-        introModal
-            .append('div')
-            .attr('class','modal-section cf')
-            .append('h3').text(t('splash.welcome'));
+    modalSelection.select('.modal')
+      .attr('class', 'modal-splash modal');
 
-        introModal
-            .append('div')
-            .attr('class','modal-section')
-            .append('p')
-            .html(t('splash.text', {
-                version: context.version,
-                website: '<a href="http://ideditor.com/">ideditor.com</a>',
-                github: '<a href="https://github.com/openstreetmap/iD">github.com</a>'
-            }));
+    let introModal = modalSelection.select('.content')
+      .append('div')
+      .attr('class', 'fillL');
 
-        var buttonWrap = introModal
-            .append('div')
-            .attr('class', 'modal-actions cf');
-/*
-        var walkthrough = buttonWrap
-            .append('button')
-            .attr('class', 'walkthrough col6')
-            .on('click', function() {
-                context.container().call(uiIntro(context));
-                modalSelection.close();
-            });
+    introModal
+      .append('div')
+      .attr('class','modal-section')
+      .append('h3')
+      .call(t.append('splash.welcome'));
 
-        walkthrough
-            .append('svg')
-            .attr('class', 'logo logo-walkthrough')
-            .append('use')
-            .attr('xlink:href', '#iD-logo-walkthrough');
+    let modalSection = introModal
+      .append('div')
+      .attr('class','modal-section');
 
-        walkthrough
-            .append('div')
-            .text(t('splash.walkthrough'));
-*/
-        var startEditing = buttonWrap
-            .append('button')
-            .attr('class', 'start-editing col6')
-            .on('click', modalSelection.close);
+    modalSection
+      .append('p')
+      .html(t.html('splash.text', {
+        version: context.version,
+        website: { html: '<a target="_blank" href="https://github.com/openstreetmap/iD/blob/develop/CHANGELOG.md#whats-new">' + t.html('splash.changelog') + '</a>' },
+        github: { html: '<a target="_blank" href="https://github.com/openstreetmap/iD/issues">github.com</a>' }
+      }));
 
-        startEditing
-            .append('svg')
-            .attr('class', 'logo logo-features')
-            .append('use')
-            .attr('xlink:href', '#iD-logo-features');
+    modalSection
+      .append('p')
+      .html(t.html('splash.privacy', {
+        updateMessage: updateMessage,
+        privacyLink: { html: '<a target="_blank" href="https://github.com/openstreetmap/iD/blob/release/PRIVACY.md">' +
+          t('splash.privacy_policy') + '</a>' }
+      }));
 
-        startEditing
-            .append('div')
-            .text(t('splash.start'));
+    uiSectionPrivacy(context)
+      .label(() => t.append('splash.privacy_settings'))
+      .render(modalSection);
 
+    let buttonWrap = introModal
+      .append('div')
+      .attr('class', 'modal-actions');
 
-        modalSelection.select('button.close')
-            .attr('class','hide');
+    let walkthrough = buttonWrap
+      .append('button')
+      .attr('class', 'walkthrough')
+      .on('click', () => {
+        context.container().call(uiIntro(context));
+        modalSelection.close();
+      });
 
-    };
+    walkthrough
+      .append('svg')
+      .attr('class', 'logo logo-walkthrough')
+      .append('use')
+      .attr('xlink:href', '#iD-logo-walkthrough');
+
+    walkthrough
+      .append('div')
+      .call(t.append('splash.walkthrough'));
+
+    let startEditing = buttonWrap
+      .append('button')
+      .attr('class', 'start-editing')
+      .on('click', modalSelection.close);
+
+    startEditing
+      .append('svg')
+      .attr('class', 'logo logo-features')
+      .append('use')
+      .attr('xlink:href', '#iD-logo-features');
+
+    startEditing
+      .append('div')
+      .call(t.append('splash.start'));
+
+    modalSelection.select('button.close')
+      .attr('class','hide');
+  };
 }

@@ -4,11 +4,18 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/24/18
  *******************************************************************************************************/
 
-import { utilRebind }           from '../util/rebind';
-import { geoEuclideanDistance } from '../geo';
+import { utilRebind }            from '../util/rebind';
+import { pointer as d3_pointer } from 'd3-selection';
+import { geoEuclideanDistance }  from '../geo';
+import { dispatch as d3_dispatch } from 'd3-dispatch';
+import { 
+    geoArea as d3_geoArea,
+    geoDistance as d3_geoDistance
+} from 'd3-geo';
+import { select as d3_select }   from 'd3-selection';
 
 export function behaviorDrawMeasureArea( context, svg ) {
-    let dispatch        = d3.dispatch( 'move', 'click', 'undo', 'cancel', 'finish', 'dblclick' ),
+    let dispatch        = d3_dispatch( 'move', 'click', 'undo', 'cancel', 'finish', 'dblclick' ),
         closeTolerance  = 4,
         tolerance       = 12,
         rectMargin      = 30,
@@ -27,14 +34,10 @@ export function behaviorDrawMeasureArea( context, svg ) {
 
         function point() {
             let p = element.node().parentNode;
-
-            return touchId !== null
-                ? d3.touches( p ).filter( p => p.identifier === touchId )[ 0 ]
-                : d3.mouse( p );
+            return d3_pointer(d3_event, p);
         }
 
-        let element = d3.select( this ),
-            touchId = d3_event.touches ? d3_event.changedTouches[ 0 ].identifier : null,
+        let element = d3_select( this ),
             time    = +new Date(),
             pos     = point();
 
@@ -45,14 +48,14 @@ export function behaviorDrawMeasureArea( context, svg ) {
 
         element.on( 'mousemove.drawarea', null );
 
-        d3.select( window ).on( 'mouseup.drawarea', (d3_event) => {
+        d3_select( window ).on( 'mouseup.drawarea', (d3_event) => {
             element.on( 'mousemove.drawarea', mousemove );
             if ( geoEuclideanDistance( pos, point() ) < closeTolerance ||
                 (geoEuclideanDistance( pos, point() ) < tolerance &&
                     (+new Date() - time) < 500) ) {
 
                 // Prevent a quick second click
-                d3.select( window ).on( 'click.drawarea-block', () => {
+                d3_select( window ).on( 'click.drawarea-block', () => {
                     d3_event.stopPropagation();
                 }, true );
 
@@ -60,10 +63,10 @@ export function behaviorDrawMeasureArea( context, svg ) {
 
                 window.setTimeout( () => {
                     context.map().dblclickEnable( true );
-                    d3.select( window ).on( 'click.drawarea-block', null );
+                    d3_select( window ).on( 'click.drawarea-block', null );
                 }, 500 );
 
-                click();
+                click(d3_event);
             }
         } );
     }
@@ -83,13 +86,13 @@ export function behaviorDrawMeasureArea( context, svg ) {
             polygon.attr( 'points', points.concat( ' ' + c.toString() ) );
             polygon.attr( 'loc', loc.concat( ' ' + context.map().mouseCoordinates().toString() ) );
 
-            let distance = d3.geoDistance( lastPoint, context.map().mouseCoordinates() );
+            let distance = d3_geoDistance( lastPoint, context.map().mouseCoordinates() );
 
             distance    = radiansToMeters( distance );
             segmentDist = distance;
 
             if ( nodeId > 1 ) {
-                lastSegmentDist = radiansToMeters( d3.geoDistance( firstPoint, context.map().mouseCoordinates() ) );
+                lastSegmentDist = radiansToMeters( d3_geoDistance( firstPoint, context.map().mouseCoordinates() ) );
             } else {
                 lastSegmentDist = 0;
             }
@@ -176,11 +179,11 @@ export function behaviorDrawMeasureArea( context, svg ) {
         rectArr.push( firstPoint );
 
         let json = { type: 'Polygon', coordinates: [ rectArr ] },
-            area = d3.geoArea( json );
+            area = d3_geoArea( json );
 
         if ( area > 2 * Math.PI ) {
             json.coordinates[ 0 ] = json.coordinates[ 0 ].reverse();
-            area                  = d3.geoArea( json );
+            area                  = d3_geoArea( json );
         }
 
         area = steradiansToSqmeters( area );
@@ -345,7 +348,7 @@ export function behaviorDrawMeasureArea( context, svg ) {
             .on( 'mousedown.drawarea', null )
             .on( 'mousemove.drawarea', null );
 
-        d3.select( window )
+        d3_select( window )
             .on( 'mouseup.drawarea', null );
     };
 

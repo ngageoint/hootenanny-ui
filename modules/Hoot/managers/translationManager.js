@@ -11,6 +11,8 @@ import _reduce  from 'lodash-es/reduce';
 import _some    from 'lodash-es/some';
 
 import { JXON } from '../../util/jxon';
+import { osmIsInterestingTag } from '../../osm/tags';
+import { select as d3_select } from 'd3-selection';
 
 import {
     presetPreset,
@@ -103,7 +105,7 @@ export default class TranslationManager {
             let message = 'Feature out of spec. Unable to translate',
                 type    = 'warn';
 
-            d3.select( '.tag-schema' )
+            d3_select( '.tag-schema' )
                 .select( 'input' )
                 .property( 'value', this.previousTranslation );
 
@@ -282,4 +284,23 @@ export default class TranslationManager {
         return this.activeTranslation === 'MGCP' ? 'FCODE' : 'F_CODE';
     }
 
+    descriptiveTag(key) {
+        return ['area', 'height'].indexOf(key) === -1;
+    }
+
+    interestingTags( tags ) {
+        return Object.keys(tags).reduce((interestingTags, key) =>{
+            if (osmIsInterestingTag(key) && this.descriptiveTag(key)) {
+                interestingTags[key] = tags[key];
+            }
+            return interestingTags;
+        }, {}); 
+    }
+
+    needsFcode( tags ) { // if all tags are considered 'uninteresting', an FCODE, not a translation back to OSM is best...
+        var keys = Object.keys(tags);
+        return !keys.length || keys.filter(function (key) {
+            return !osmIsInterestingTag(key) || !descriptiveTag(key);
+        }).length === keys.length;
+    }
 }

@@ -12,6 +12,7 @@ import _forEach   from 'lodash-es/forEach';
 import _map       from 'lodash-es/map';
 import { modeSelect } from '../../../modes';
 import HootMap from './map';
+import { selectAll as d3_selectAll } from 'd3-selection';
 
 export default class ConflictMetadata {
     constructor( instance ) {
@@ -124,8 +125,8 @@ export default class ConflictMetadata {
         } );
 
         this.poiTable.selectAll( '.value-col' )
-            .on( 'mouseenter', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true ) )
-            .on( 'mouseleave', d => d3.selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
+            .on( 'mouseenter', d => d3_selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', true ) )
+            .on( 'mouseleave', d => d3_selectAll( `.review-feature${ d.k }` ).classed( 'extra-highlight', false ) );
     }
 
     selectEntity(entity) {

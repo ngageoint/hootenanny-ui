@@ -4,12 +4,12 @@ import {
     select as d3_select
 } from 'd3-selection';
 
-import { textDirection } from '../util/locale';
+import { localizer } from '../core/localizer';
 import { uiToggle } from './toggle';
 
 
 // Tooltips and svg mask used to highlight certain features
-export function uiCurtain() {
+export function uiCurtain(containerNode) {
 
     var surface = d3_select(null),
         tooltip = d3_select(null),
@@ -18,10 +18,7 @@ export function uiCurtain() {
     function curtain(selection) {
         surface = selection
             .append('svg')
-            .attr('id', 'curtain')
-            .style('z-index', 1000)
-            .style('pointer-events', 'none')
-            .style('position', 'absolute')
+            .attr('class', 'curtain')
             .style('top', 0)
             .style('left', 0);
 
@@ -33,24 +30,23 @@ export function uiCurtain() {
         d3_select(window).on('resize.curtain', resize);
 
         tooltip = selection.append('div')
-            .attr('class', 'tooltip')
-            .style('z-index', 1002);
+            .attr('class', 'tooltip');
 
         tooltip
             .append('div')
-            .attr('class', 'tooltip-arrow');
+            .attr('class', 'popover-arrow');
 
         tooltip
             .append('div')
-            .attr('class', 'tooltip-inner');
+            .attr('class', 'popover-inner');
 
         resize();
 
 
         function resize() {
             surface
-                .attr('width', window.innerWidth)
-                .attr('height', window.innerHeight);
+                .attr('width', containerNode.clientWidth)
+                .attr('height', containerNode.clientHeight);
             curtain.cut(darkness.datum());
         }
     }
@@ -67,17 +63,29 @@ export function uiCurtain() {
      * @param  {integer}   [options.duration]        transition time in milliseconds
      * @param  {string}    [options.buttonText]      if set, create a button with this text label
      * @param  {function}  [options.buttonCallback]  if set, the callback for the button
+     * @param  {function}  [options.padding]         extra margin in px to put around bbox
      * @param  {String|ClientRect} [options.tooltipBox]  box for tooltip position, if different from box for the curtain
      */
-    curtain.reveal = function(box, text, options) {
+    curtain.reveal = function(box, html, options) {
+        options = options || {};
+
         if (typeof box === 'string') {
             box = d3_select(box).node();
         }
         if (box && box.getBoundingClientRect) {
             box = copyBox(box.getBoundingClientRect());
+            var containerRect = containerNode.getBoundingClientRect();
+            box.top -= containerRect.top;
+            box.left -= containerRect.left;
         }
-
-        options = options || {};
+        if (box && options.padding) {
+            box.top -= options.padding;
+            box.left -= options.padding;
+            box.bottom += options.padding;
+            box.right += options.padding;
+            box.height += options.padding * 2;
+            box.width += options.padding * 2;
+        }
 
         var tooltipBox;
         if (options.tooltipBox) {
@@ -92,12 +100,16 @@ export function uiCurtain() {
             tooltipBox = box;
         }
 
-        if (tooltipBox && text) {
-            // pseudo markdown bold text for the instruction section..
-            var parts = text.split('**');
-            var html = parts[0] ? '<span>' + parts[0] + '</span>' : '';
-            if (parts[1]) {
-                html += '<span class="instruction">' + parts[1] + '</span>';
+        if (tooltipBox && html) {
+
+            if (html.indexOf('**') !== -1) {
+                if (html.indexOf('<span') === 0) {
+                    html = html.replace(/^(<span.*?>)(.+?)(\*\*)/, '$1<span>$2</span>$3');
+                } else {
+                    html = html.replace(/^(.+?)(\*\*)/, '<span>$1</span>$2');
+                }
+                // pseudo markdown bold text for the instruction section..
+                html = html.replace(/\*\*(.*?)\*\*/g, '<span class="instruction">$1</span>');
             }
 
             html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');   // emphasis
@@ -105,13 +117,13 @@ export function uiCurtain() {
 
             if (options.buttonText && options.buttonCallback) {
                 html += '<div class="button-section">' +
-                    '<button href="#" class="button action col8">' + options.buttonText + '</button></div>';
+                    '<button href="#" class="button action">' + options.buttonText + '</button></div>';
             }
 
-            var classes = 'curtain-tooltip tooltip in ' + (options.tooltipClass || '');
+            var classes = 'curtain-tooltip popover tooltip arrowed in ' + (options.tooltipClass || '');
             tooltip
                 .classed(classes, true)
-                .selectAll('.tooltip-inner')
+                .selectAll('.popover-inner')
                 .html(html);
 
             if (options.buttonText && options.buttonCallback) {
@@ -124,8 +136,8 @@ export function uiCurtain() {
             }
 
             var tip = copyBox(tooltip.node().getBoundingClientRect()),
-                w = window.innerWidth,
-                h = window.innerHeight,
+                w = containerNode.clientWidth,
+                h = containerNode.clientHeight,
                 tooltipWidth = 200,
                 tooltipArrow = 5,
                 side, pos;
@@ -137,7 +149,7 @@ export function uiCurtain() {
                 tip.height += 80;
             }
 
-            // trim box dimensions to just the portion that fits in the window..
+            // trim box dimensions to just the portion that fits in the container..
             if (tooltipBox.top + tooltipBox.height > h) {
                 tooltipBox.height -= (tooltipBox.top + tooltipBox.height - h);
             }
@@ -167,7 +179,7 @@ export function uiCurtain() {
                 // tooltip to the side of the tooltipBox..
                 var tipY = tooltipBox.top + tooltipBox.height / 2 - tip.height / 2;
 
-                if (textDirection === 'rtl') {
+                if (localizer.textDirection() === 'rtl') {
                     if (tooltipBox.left - tooltipWidth - tooltipArrow < 70) {
                         side = 'right';
                         pos = [tooltipBox.left + tooltipBox.width + tooltipArrow, tipY];
@@ -181,8 +193,7 @@ export function uiCurtain() {
                     if (tooltipBox.left + tooltipBox.width + tooltipArrow + tooltipWidth > w - 70) {
                         side = 'left';
                         pos = [tooltipBox.left - tooltipWidth - tooltipArrow, tipY];
-                    }
-                    else {
+                    } else {
                         side = 'right';
                         pos = [tooltipBox.left + tooltipBox.width + tooltipArrow, tipY];
                     }
@@ -199,18 +210,17 @@ export function uiCurtain() {
                 .attr('class', classes + ' ' + side);
 
 
-            // shift tooltip-inner if it is very close to the top or bottom edge
-            // (doesn't affect the placement of the tooltip-arrow)
+            // shift popover-inner if it is very close to the top or bottom edge
+            // (doesn't affect the placement of the popover-arrow)
             var shiftY = 0;
             if (side === 'left' || side === 'right') {
                 if (pos[1] < 60) {
                     shiftY = 60 - pos[1];
-                }
-                else if (pos[1] + tip.height > h - 100) {
+                } else if (pos[1] + tip.height > h - 100) {
                     shiftY = h - pos[1] - tip.height - 100;
                 }
             }
-            tooltip.selectAll('.tooltip-inner')
+            tooltip.selectAll('.popover-inner')
                 .style('top', shiftY + 'px');
 
         } else {
@@ -241,9 +251,11 @@ export function uiCurtain() {
 
         selection
             .attr('d', function(d) {
-                var string = 'M 0,0 L 0,' + window.innerHeight + ' L ' +
-                    window.innerWidth + ',' + window.innerHeight + 'L' +
-                    window.innerWidth + ',0 Z';
+                var containerWidth = containerNode.clientWidth;
+                var containerHeight = containerNode.clientHeight;
+                var string = 'M 0,0 L 0,' + containerHeight + ' L ' +
+                    containerWidth + ',' + containerHeight + 'L' +
+                    containerWidth + ',0 Z';
 
                 if (!d) return string;
                 return string + 'M' +

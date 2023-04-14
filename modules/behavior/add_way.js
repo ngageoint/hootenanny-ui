@@ -1,7 +1,7 @@
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import { behaviorDraw } from './draw';
-import { modeBrowse } from '../modes';
+import { modeBrowse } from '../modes/browse';
 import { utilRebind } from '../util/rebind';
 
 
@@ -17,7 +17,7 @@ export function behaviorAddWay(context) {
             .on('finish', behavior.cancel);
 
         context.map()
-            .dblclickEnable(false);
+            .dblclickZoomEnable(false);
 
         surface.call(draw);
     }
@@ -30,16 +30,10 @@ export function behaviorAddWay(context) {
 
     behavior.cancel = function() {
         window.setTimeout(function() {
-            context.map().dblclickEnable(true);
+            context.map().dblclickZoomEnable(true);
         }, 1000);
 
         context.enter(modeBrowse(context));
-    };
-
-
-    behavior.tail = function(text) {
-        draw.tail(text);
-        return behavior;
     };
 
 

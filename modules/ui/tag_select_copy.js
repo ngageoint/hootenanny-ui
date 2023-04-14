@@ -5,6 +5,10 @@
  *******************************************************************************************************/
 
 import { svgIcon } from '../svg';
+import { 
+    select as d3_select,
+    selectAll as d3_selectAll
+} from 'd3-selection';
 
 export function uiTagSelectCopy( context ) {
     function render( selection ) {
@@ -28,8 +32,8 @@ export function uiTagSelectCopy( context ) {
 
                 icon.classed( 'visible', !icon.classed( 'visible' ) );
 
-                var seltags = d3.selectAll('li.tag-row').filter(function() {
-                    return d3.select(this).selectAll('svg.icon.checked.visible').size() === 1;
+                var seltags = d3_selectAll('li.tag-row').filter(function() {
+                    return d3_select(this).selectAll('svg.icon.checked.visible').size() === 1;
                 }).data().reduce(function(m, d) {
                     m[d.key] = d.value;
                     return m;

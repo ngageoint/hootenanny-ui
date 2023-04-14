@@ -1,5 +1,5 @@
 
-import { t } from '../util/locale';
+import { t } from '../core/localizer';
 import nearestPointOnLine from '@turf/nearest-point-on-line';
 import { point as turfPoint, lineString as turfLineString } from '@turf/helpers';
 import {

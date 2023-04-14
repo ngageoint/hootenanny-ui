@@ -1,22 +1,14 @@
-import _groupBy from 'lodash-es/groupBy';
-import _filter from 'lodash-es/filter';
-import _flatten from 'lodash-es/flatten';
-import _forOwn from 'lodash-es/forOwn';
-import _map from 'lodash-es/map';
-
+import deepEqual from 'fast-deep-equal';
 import { range as d3_range } from 'd3-array';
 
 import {
-    svgMarkerSegments,
-    svgPath,
-    svgRelationMemberTags,
-    svgSegmentWay,
-    svgTagClasses
-} from './index';
+    svgMarkerSegments, svgPath, svgRelationMemberTags, svgSegmentWay
+} from './helpers';
+import { svgTagClasses } from './tag_classes';
 
-import { osmEntity, osmSimpleMultipolygonOuterMember } from '../osm';
+import { osmEntity, osmOldMultipolygonOuterMember } from '../osm';
+import { utilArrayFlatten, utilArrayGroupBy } from '../util';
 import { utilDetect } from '../util/detect';
-
 
 export function svgLines(projection, context) {
     var detected = utilDetect();
@@ -42,6 +34,7 @@ export function svgLines(projection, context) {
         var nopeClass = context.getDebug('target') ? 'red ' : 'nocolor ';
         var getPath = svgPath(projection).geojson;
         var activeID = context.activeID();
+        var base = context.history().base();
 
         // The targets and nopes will be MultiLineString sub-segments of the ways
         var data = { targets: [], nopes: [] };
@@ -63,13 +56,28 @@ export function svgLines(projection, context) {
         targets.exit()
             .remove();
 
+        var segmentWasEdited = function(d) {
+            var wayID = d.properties.entity.id;
+            // if the whole line was edited, don't draw segment changes
+            if (!base.entities[wayID] ||
+                !deepEqual(graph.entities[wayID].nodes, base.entities[wayID].nodes)) {
+                return false;
+            }
+            return d.properties.nodes.some(function(n) {
+                return !base.entities[n.id] ||
+                       !deepEqual(graph.entities[n.id].loc, base.entities[n.id].loc);
+            });
+        };
+
         // enter/update
         targets.enter()
             .append('path')
             .merge(targets)
             .attr('d', getPath)
-            .attr('class', d => `way line target target-allowed ${targetClass} ${d.id} tag-hoot-${d.mapId}`);
-
+            .attr('class', function(d) {
+                return 'way line target target-allowed ' + targetClass + d.id;
+            })
+            .classed('segment-edited', segmentWasEdited);
 
         // NOPE
         var nopeData = data.nopes.filter(getPath);
@@ -86,12 +94,15 @@ export function svgLines(projection, context) {
             .append('path')
             .merge(nopes)
             .attr('d', getPath)
-            .attr('class', function(d) { return 'way line target target-nope ' + nopeClass + d.id; });
+            .attr('class', function(d) {
+                return 'way line target target-nope ' + nopeClass + d.id;
+            })
+            .classed('segment-edited', segmentWasEdited);
     }
 
 
     function drawLines(selection, graph, entities, filter) {
-
+        var base = context.history().base();
 
         function waystack(a, b) {
             // if top layer set, make top layer lines last to render.
@@ -105,7 +116,6 @@ export function svgLines(projection, context) {
 
             if (a.tags.highway) { scoreA -= highway_stack[a.tags.highway]; }
             if (b.tags.highway) { scoreB -= highway_stack[b.tags.highway]; }
-
             return scoreA - scoreB;
         }
 
@@ -129,8 +139,41 @@ export function svgLines(projection, context) {
             lines.enter()
                 .append('path')
                 .attr('class', function(d) {
+
+                    var prefix = 'way line';
+
+                    // if this line isn't styled by its own tags
+                    if (!d.hasInterestingTags()) {
+
+                        var parentRelations = graph.parentRelations(d);
+                        var parentMultipolygons = parentRelations.filter(function(relation) {
+                            return relation.isMultipolygon();
+                        });
+
+                        // and if it's a member of at least one multipolygon relation
+                        if (parentMultipolygons.length > 0 &&
+                            // and only multipolygon relations
+                            parentRelations.length === parentMultipolygons.length) {
+                            // then fudge the classes to style this as an area edge
+                            prefix = 'relation area';
+                        }
+                    }
+
                     var oldMPClass = oldMultiPolygonOuters[d.id] ? 'old-multipolygon ' : '';
-                    return 'way line ' + klass + ' ' + selectedClass + oldMPClass + d.id;
+                    return prefix + ' ' + klass + ' ' + selectedClass + oldMPClass + d.id;
+                })
+                .classed('added', function(d) {
+                    return !base.entities[d.id];
+                })
+                .classed('geometry-edited', function(d) {
+                    return graph.entities[d.id] &&
+                        base.entities[d.id] &&
+                        !deepEqual(graph.entities[d.id].nodes, base.entities[d.id].nodes);
+                })
+                .classed('retagged', function(d) {
+                    return graph.entities[d.id] &&
+                        base.entities[d.id] &&
+                        !deepEqual(graph.entities[d.id].tags, base.entities[d.id].tags);
                 })
                 .call(svgTagClasses())
                 .merge(lines)
@@ -147,10 +190,11 @@ export function svgLines(projection, context) {
                 var layer = this.parentNode.__data__;
                 var data = pathdata[layer] || [];
                 return data.filter(function(d) {
-                    if (isSelected)
+                    if (isSelected) {
                         return context.selectedIDs().indexOf(d.id) !== -1;
-                    else
+                    } else {
                         return context.selectedIDs().indexOf(d.id) === -1;
+                    }
                 });
             };
         }
@@ -179,8 +223,8 @@ export function svgLines(projection, context) {
             markers = markers.enter()
                 .append('path')
                 .attr('class', pathclass)
-                .attr('marker-mid', marker)
                 .merge(markers)
+                .attr('marker-mid', marker)
                 .attr('d', function(d) { return d.d; });
 
             if (detected.ie) {
@@ -198,34 +242,41 @@ export function svgLines(projection, context) {
 
         for (var i = 0; i < entities.length; i++) {
             var entity = entities[i];
-            var outer = osmSimpleMultipolygonOuterMember(entity, graph);
+            var outer = osmOldMultipolygonOuterMember(entity, graph);
             if (outer) {
                 ways.push(entity.mergeTags(outer.tags));
                 oldMultiPolygonOuters[outer.id] = true;
-            } else if (entity.geometry(graph) === 'line') {
+            } else if (entity.geometry(graph) === 'line'
+                       // to render side-markers for coastlines (see
+                       // https://github.com/openstreetmap/iD/issues/9293)
+                    || entity.geometry(graph) === 'area' && entity.sidednessIdentifier
+                        && entity.sidednessIdentifier() === 'coastline') {
                 ways.push(entity);
             }
         }
 
         ways = ways.filter(getPath);
-        pathdata = _groupBy(ways, function(way) { return way.layer(); });
+        var pathdata = utilArrayGroupBy(ways, function(way) { return way.layer(); });
 
-        _forOwn(pathdata, function(v, k) {
-            var onewayArr = _filter(v, function(d) { return d.isOneWay(); });
+        Object.keys(pathdata).forEach(function(k) {
+            var v = pathdata[k];
+            var onewayArr = v.filter(function(d) { return d.isOneWay(); });
             var onewaySegments = svgMarkerSegments(
                 projection, graph, 35,
                 function shouldReverse(entity) { return entity.tags.oneway === '-1'; },
                 function bothDirections(entity) {
                     return entity.tags.oneway === 'reversible' || entity.tags.oneway === 'alternating';
-                });
-            onewaydata[k] = _flatten(_map(onewayArr, onewaySegments));
+                }
+            );
+            onewaydata[k] = utilArrayFlatten(onewayArr.map(onewaySegments));
 
-            var sidedArr = _filter(v, function(d) { return d.isSided(); });
+            var sidedArr = v.filter(function(d) { return d.isSided(); });
             var sidedSegments = svgMarkerSegments(
                 projection, graph, 30,
                 function shouldReverse() { return false; },
-                function bothDirections() { return false; });
-            sideddata[k] = _flatten(_map(sidedArr, sidedSegments));
+                function bothDirections() { return false; }
+            );
+            sideddata[k] = utilArrayFlatten(sidedArr.map(sidedSegments));
         });
 
 
@@ -266,12 +317,13 @@ export function svgLines(projection, context) {
             layergroup.selectAll('g.line-stroke-highlighted')
                 .call(drawLineGroup, 'stroke', true);
 
-            addMarkers(layergroup, 'oneway', 'onewaygroup', onewaydata, 'url(#oneway-marker)');
+            addMarkers(layergroup, 'oneway', 'onewaygroup', onewaydata, 'url(#ideditor-oneway-marker)');
             addMarkers(layergroup, 'sided', 'sidedgroup', sideddata,
-                       function marker(d) {
-                           var category = graph.entity(d.id).sidednessIdentifier();
-                           return 'url(#sided-marker-' + category + ')';
-                       });
+                function marker(d) {
+                    var category = graph.entity(d.id).sidednessIdentifier();
+                    return 'url(#ideditor-sided-marker-' + category + ')';
+                }
+            );
         });
 
         // Draw touch targets..

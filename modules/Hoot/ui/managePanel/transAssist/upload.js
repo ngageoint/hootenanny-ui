@@ -3,7 +3,8 @@
  * Project: hootenanny-ui
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/5/18
  *******************************************************************************************************/
-import { d3combobox } from '../../../../lib/hoot/d3.combobox';
+import { d3combobox } from '../../d3.combobox';
+import { select as d3_select } from 'd3-selection';
 
 export default class Upload {
     constructor( instance ) {
@@ -85,7 +86,7 @@ export default class Upload {
             .attr( 'type', 'button' )
             .classed( 'primary text-light big', true )
             .on( 'click', function() {
-                d3.select( this ).select( 'input' ).node().click();
+                d3_select( this ).select( 'input' ).node().click();
             } );
 
         buttons
@@ -99,7 +100,7 @@ export default class Upload {
             .classed( 'hidden', true )
             .on( 'click', (d3_event) => d3_event.stopPropagation() )
             .on( 'change', function( d ) {
-                that.processSchemaData( d3.select( this ).node(), d.uploadType );
+                that.processSchemaData( d3_select( this ).node(), d.uploadType );
             } );
 
         buttons
@@ -127,7 +128,7 @@ export default class Upload {
 
         return Hoot.api.uploadSchemaData( type, formData )
             .then( resp => {
-                this.loadingState(d3.select(input.parentElement), true);
+                this.loadingState(d3_select(input.parentElement), true);
 
                 this.jobId = resp.data.jobId;
 
@@ -166,7 +167,7 @@ export default class Upload {
                 return Promise.reject( { message, status, type } );
             } )
             .finally( () => {
-                this.loadingState(d3.select(input.parentElement), false);
+                this.loadingState(d3_select(input.parentElement), false);
             } );
     }
 

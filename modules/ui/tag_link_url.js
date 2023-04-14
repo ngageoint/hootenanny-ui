@@ -3,13 +3,13 @@ import {
     select as d3_select
 } from 'd3-selection';
 import { svgIcon } from '../svg';
-import { t } from '../util/locale';
+import { t } from '../core/localizer';
 
 export function uiTagLinkUrl(tag) {
     var tagLinkUrl = {};
     var _button = d3_select(null);
     var _showing;
-    var _body = d3.select(null);
+    var _body = d3_select(null);
 
     function hide() {
         _body

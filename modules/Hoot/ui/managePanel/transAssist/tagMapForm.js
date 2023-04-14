@@ -8,7 +8,8 @@ import _filter    from 'lodash-es/filter';
 import _findIndex from 'lodash-es/findIndex';
 import _reduce    from 'lodash-es/reduce';
 
-import { d3combobox } from '../../../../lib/hoot/d3.combobox';
+import { d3combobox } from '../../d3.combobox';
+import { select as d3_select } from 'd3-selection';
 
 import TagMapWidget from './tagMapWidget';
 
@@ -82,11 +83,11 @@ export default class TagMapForm {
                 } )
                 .on( 'keydown', function(d3_event) {
                     if ( d3_event.keyCode === 13 ) {
-                        d3.select( this ).dispatch( 'change' );
+                        d3_select( this ).dispatch( 'change' );
                     }
                 } )
                 .each( function( d ) {
-                    d3.select( this )
+                    d3_select( this )
                         .call( d3combobox()
                             .data( d.map( function( n ) {
                                 return {
@@ -236,7 +237,7 @@ export default class TagMapForm {
                 } );
             } );
 
-        d3.selectAll( '.tag-lookup' ).remove();
+        d3_selectAll( '.tag-lookup' ).remove();
         this.toggleNextButton();
 
         this.currentAttribute = currentAttribute;
@@ -248,7 +249,7 @@ export default class TagMapForm {
 
             Object.entries(mapping).forEach( ([key, value]) => {
                 let tagKey       = key,
-                    schemaOption = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
+                    schemaOption = d3_selectAll( '.schema-option:checked' ).attr( 'value' );
 
                 let values = Hoot.config.tagInfo[ schemaOption ]
                     .filter( val => val.key && val.key.toLowerCase() === tagKey.toLowerCase() );
@@ -268,8 +269,8 @@ export default class TagMapForm {
     buildAttributeMappingJson( originalKey ) {
         let json = {};
 
-        d3.selectAll( '.tag-lookup' ).each( function() {
-            let container = d3.select( this );
+        d3_selectAll( '.tag-lookup' ).each( function() {
+            let container = d3_select( this );
 
             if ( container.select( '.searchtag' ).empty() ) {
                 let tagKey = container.select( '.tag-key' ).text(),
@@ -280,7 +281,7 @@ export default class TagMapForm {
                     let values = {};
 
                     list.selectAll( 'li' ).each( function() {
-                        let row = d3.select( this ),
+                        let row = d3_select( this ),
                             k   = row.select( 'span' ).text();
 
                         values[ k ] = row.select( 'input' ).property( 'value' );
@@ -350,7 +351,7 @@ export default class TagMapForm {
     }
 
     toggleNextButton( enable ) {
-        enable = enable || Boolean( d3.select( '.tag-lookup' ).node() );
+        enable = enable || Boolean( d3_select( '.tag-lookup' ).node() );
 
         this.actionButtonContainer.select( '.next-button' ).property( 'disabled', !enable );
     }
@@ -406,7 +407,7 @@ export default class TagMapForm {
                         '    return translation_assistant.translateAttributes(attrs, layerName, attributeMapping, fcode, schema);\n' +
                         '};\n';
 
-                let schema = d3.selectAll( '.schema-option:checked' ).attr( 'value' );
+                let schema = d3_selectAll( '.schema-option:checked' ).attr( 'value' );
 
                 switch (schema) {
                     case 'OSM':

@@ -9,7 +9,7 @@ import _find    from 'lodash-es/find';
 import _forEach from 'lodash-es/forEach';
 import _map     from 'lodash-es/map';
 
-import { t }         from '../../../util/locale';
+import { t }         from '../../../core/localizer';
 import { osmEntity } from '../../../osm/index';
 
 /**

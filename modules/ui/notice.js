@@ -1,8 +1,6 @@
 import _debounce from 'lodash-es/debounce';
-
 import _isEmpty from 'lodash-es/isEmpty';
-
-import { t } from '../util/locale';
+import { t } from '../core/localizer';
 import { svgIcon } from '../svg/index';
 
 
@@ -16,6 +14,9 @@ export function uiNotice(context) {
         var button = div
             .append('button')
             .attr('class', 'zoom-to notice fillD')
+            .on('click', function() {
+                context.map().zoomEase(context.minEditableZoom());
+            })
             .on('wheel', function(d3_event) {   // let wheel events pass through #4482
                 var e2 = new WheelEvent(d3_event.type, d3_event);
                 context.surface().node().dispatchEvent(e2);
@@ -25,7 +26,7 @@ export function uiNotice(context) {
             .call(svgIcon('#iD-icon-plus', 'pre-text'))
             .append('span')
             .attr('class', 'label')
-            .text(t('zoom_in_edit'));
+            .call(t.append('zoom_in_edit'));
 
 
         function disableTooHigh() {

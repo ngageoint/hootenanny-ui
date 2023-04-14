@@ -8,6 +8,7 @@
  *******************************************************************************************************/
 
 import Alert from './alert';
+import { select as d3_select } from 'd3-selection';
 
 export default class MessageManager {
     constructor( hoot ) {
@@ -59,7 +60,7 @@ export default class MessageManager {
     createAlertContainer() {
         let parent;
 
-        parent = d3.select( 'body' );
+        parent = d3_select( 'body' );
 
         this.container = parent
             .append( 'div' )
@@ -68,7 +69,7 @@ export default class MessageManager {
 
     confirm( message ) {
         return new Promise( res => {
-            let overlay = d3.select( 'body' )
+            let overlay = d3_select( 'body' )
                 .append( 'div' )
                 .classed( 'hoot-confirm overlay confirm-overlay', true );
 
@@ -122,7 +123,7 @@ export default class MessageManager {
      */
     confirmEditor(message, mergedLayer) {
         return new Promise(res => {
-            let overlay = d3.select('body')
+            let overlay = d3_select('body')
                 .append('div')
                 .classed('hoot-confirm overlay confirm-overlay', true);
 

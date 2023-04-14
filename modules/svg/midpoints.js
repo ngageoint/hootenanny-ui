@@ -1,16 +1,6 @@
-import _values from 'lodash-es/values';
-
-import {
-    svgPointTransform,
-    svgTagClasses
-} from './index';
-
-import {
-    geoAngle,
-    geoLineIntersection,
-    geoVecInterp,
-    geoVecLength
-} from '../geo';
+import { svgPointTransform } from './helpers';
+import { svgTagClasses } from './tag_classes';
+import { geoAngle, geoLineIntersection, geoVecInterp, geoVecLength } from '../geo';
 
 
 export function svgMidpoints(projection, context) {
@@ -58,7 +48,7 @@ export function svgMidpoints(projection, context) {
         var touchLayer = selection.selectAll('.layer-touch.points');
 
         var mode = context.mode();
-        if (mode && mode.id !== 'select') {
+        if ((mode && mode.id !== 'select') || !context.map().withinEditableZoom()) {
             drawLayer.selectAll('.midpoint').remove();
             touchLayer.selectAll('.midpoint.target').remove();
             return;
@@ -93,8 +83,7 @@ export function svgMidpoints(projection, context) {
                             point = geoLineIntersection([a.loc, b.loc], [poly[k], poly[k + 1]]);
                             if (point &&
                                 geoVecLength(projection(a.loc), projection(point)) > 20 &&
-                                geoVecLength(projection(b.loc), projection(point)) > 20)
-                            {
+                                geoVecLength(projection(b.loc), projection(point)) > 20) {
                                 loc = point;
                                 break;
                             }
@@ -116,8 +105,7 @@ export function svgMidpoints(projection, context) {
 
 
         function midpointFilter(d) {
-            if (midpoints[d.id])
-                return true;
+            if (midpoints[d.id]) return true;
 
             for (var i = 0; i < d.parents.length; i++) {
                 if (filter(d.parents[i])) {
@@ -131,7 +119,7 @@ export function svgMidpoints(projection, context) {
 
         var groups = drawLayer.selectAll('.midpoint')
             .filter(midpointFilter)
-            .data(_values(midpoints), function(d) { return d.id; });
+            .data(Object.values(midpoints), function(d) { return d.id; });
 
         groups.exit()
             .remove();
@@ -170,7 +158,7 @@ export function svgMidpoints(projection, context) {
 
         // Draw touch targets..
         touchLayer
-            .call(drawTargets, graph, _values(midpoints), midpointFilter);
+            .call(drawTargets, graph, Object.values(midpoints), midpointFilter);
     }
 
     return drawMidpoints;

@@ -6,6 +6,7 @@
 
 import { behaviorDrawMeasureArea } from '../behavior';
 import { modeBrowse }              from './browse';
+import { select as d3_select }     from 'd3-selection';
 
 export function modeAddMeasureArea( context ) {
     let addArea = {
@@ -13,7 +14,7 @@ export function modeAddMeasureArea( context ) {
         key: '7'
     };
 
-    let svg = d3.select( '.data-layer.measure' ).select( 'svg' );
+    let svg = d3_select( '.data-layer.measure' ).select( 'svg' );
 
     let behavior = behaviorDrawMeasureArea( context, svg )
         .on( 'cancel', addArea.cancel )
@@ -21,11 +22,11 @@ export function modeAddMeasureArea( context ) {
 
     function finish( nodeId, ptArr ) {
         if ( ptArr.length < 3 ) {
-            d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
+            d3_select( '.data-layer.measure' ).selectAll( 'g' ).remove();
         }
 
-        if ( d3.select( '.data-layer.measure' ).selectAll( 'g' ).size() ) {
-            d3.select( '.tools-toggle' ).text( 'Clear' );
+        if ( d3_select( '.data-layer.measure' ).selectAll( 'g' ).size() ) {
+            d3_select( '.tools-toggle' ).text( 'Clear' );
         }
 
         context.enter( modeBrowse( context ) );
@@ -36,7 +37,7 @@ export function modeAddMeasureArea( context ) {
     };
 
     addArea.enter = function() {
-        d3.select( '.data-layer.measure' ).selectAll( 'g' ).remove();
+        d3_select( '.data-layer.measure' ).selectAll( 'g' ).remove();
         context.install( behavior );
     };
 

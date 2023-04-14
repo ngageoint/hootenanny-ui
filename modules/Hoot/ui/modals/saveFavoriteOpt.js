@@ -1,5 +1,6 @@
 import FormFactory        from '../../tools/formFactory';
 import { saveFavoriteOpt } from '../../config/domMetadata';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * Form that allows user to import datasets into hoot
@@ -35,7 +36,7 @@ export default class SaveFavoriteOpt {
     }
 
     validateTextInput( d ) {
-        let target           = d3.select( `#${ d.id }` ),
+        let target           = d3_select( `#${ d.id }` ),
             node             = target.node(),
             str              = node.value,
 
@@ -64,7 +65,7 @@ export default class SaveFavoriteOpt {
 
         this.container.selectAll( '.text-input' )
             .each( function() {
-                let classes = d3.select( this ).attr( 'class' ).split( ' ' );
+                let classes = d3_select( this ).attr( 'class' ).split( ' ' );
 
                 if ( classes.indexOf( 'invalid' ) > -1 || !folderName.length ) {
                     self.formValid = false;
@@ -97,7 +98,7 @@ export default class SaveFavoriteOpt {
 
         let newCombo = new FormFactory();
 
-        let element = d3.select( '#conflateType' );
+        let element = d3_select( '#conflateType' );
 
         element.datum().data = input;
 
@@ -106,7 +107,7 @@ export default class SaveFavoriteOpt {
 
     handleSubmit() {
         let favoriteName = this.folderNameInput.property( 'value' );
-        let confType = d3.select('#conflateType').property('value');
+        let confType = d3_select('#conflateType').property('value');
 
         let opts = {
             name: favoriteName,

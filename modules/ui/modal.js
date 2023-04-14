@@ -1,77 +1,113 @@
-import {
-    select as d3_select
-} from 'd3-selection';
+import { select as d3_select } from 'd3-selection';
 
-import { svgIcon } from '../svg';
+import { t } from './../core/localizer';
+import { svgIcon } from '../svg/icon';
 import { utilKeybinding } from '../util';
 
 
 export function uiModal(selection, blocking) {
-    var keybinding = utilKeybinding('modal');
-    var previous = selection.select('div.modal');
-    var animate = previous.empty();
+  let keybinding = utilKeybinding('modal');
+  let previous = selection.select('div.modal');
+  let animate = previous.empty();
 
-    previous.transition()
-        .duration(200)
-        .style('opacity', 0)
-        .remove();
+  previous.transition()
+    .duration(200)
+    .style('opacity', 0)
+    .remove();
 
-    var shaded = selection
-        .append('div')
-        .attr('class', 'shaded')
-        .style('opacity', 0);
+  let shaded = selection
+    .append('div')
+    .attr('class', 'shaded')
+    .style('opacity', 0);
 
-    shaded.close = function() {
-        shaded
-            .transition()
-            .duration(200)
-            .style('opacity',0)
-            .remove();
-
-        modal
-            .transition()
-            .duration(200)
-            .style('top','0px');
-
-        d3_select(document)
-            .call(keybinding.unbind);
-    };
-
-
-    var modal = shaded
-        .append('div')
-        .attr('class', 'modal fillL col6');
-
-    if (!blocking) {
-        shaded.on('click.remove-modal', function(d3_event) {
-            if (d3_event.target === this) {
-                shaded.close();
-            }
-        });
-
-        modal.append('button')
-            .attr('class', 'close')
-            .on('click', shaded.close)
-            .call(svgIcon('#iD-icon-close'));
-
-        keybinding
-            .on('⌫', shaded.close)
-            .on('⎋', shaded.close);
-
-        d3_select(document)
-            .call(keybinding);
-    }
+  shaded.close = () => {
+    shaded
+      .transition()
+      .duration(200)
+      .style('opacity',0)
+      .remove();
 
     modal
-        .append('div')
-        .attr('class', 'content');
+      .transition()
+      .duration(200)
+      .style('top','0px');
 
-    if (animate) {
-        shaded.transition().style('opacity', 1);
+    d3_select(document)
+      .call(keybinding.unbind);
+  };
+
+
+  let modal = shaded
+    .append('div')
+    .attr('class', 'modal fillL');
+
+  modal
+    .append('input')
+    .attr('class', 'keytrap keytrap-first')
+    .on('focus.keytrap', moveFocusToLast);
+
+  if (!blocking) {
+    shaded.on('click.remove-modal', (d3_event) => {
+      if (d3_event.target === this) {
+        shaded.close();
+      }
+    });
+
+    modal
+      .append('button')
+      .attr('class', 'close')
+      .attr('title', t('icons.close'))
+      .on('click', shaded.close)
+      .call(svgIcon('#iD-icon-close'));
+
+    keybinding
+      .on('⌫', shaded.close)
+      .on('⎋', shaded.close);
+
+    d3_select(document)
+      .call(keybinding);
+  }
+
+  modal
+    .append('div')
+    .attr('class', 'content');
+
+  modal
+    .append('input')
+    .attr('class', 'keytrap keytrap-last')
+    .on('focus.keytrap', moveFocusToFirst);
+
+  if (animate) {
+    shaded.transition().style('opacity', 1);
+  } else {
+    shaded.style('opacity', 1);
+  }
+
+  return shaded;
+
+
+  function moveFocusToFirst() {
+    let node = modal
+      // there are additional rules about what's focusable, but this suits our purposes
+      .select('a, button, input:not(.keytrap), select, textarea')
+      .node();
+
+    if (node) {
+      node.focus();
     } else {
-        shaded.style('opacity', 1);
+      d3_select(this).node().blur();
     }
+  }
 
+  function moveFocusToLast() {
+    let nodes = modal
+      .selectAll('a, button, input:not(.keytrap), select, textarea')
+      .nodes();
 
-    return shaded;
+    if (nodes.length) {
+      nodes[nodes.length - 1].focus();
+    } else {
+      d3_select(this).node().blur();
+    }
+  }
 }

@@ -4,12 +4,14 @@ import {
     select as d3_select
 } from 'd3-selection';
 
+import { utilArrayUniq } from './array';
+
 
 export function utilKeybinding(namespace) {
     var _keybindings = {};
 
 
-    function testBindings(isCapturing, d3_event) {
+    function testBindings(d3_event, isCapturing) {
         var didMatch = false;
         var bindings = Object.keys(_keybindings).map(function(id) { return _keybindings[id]; });
         var i, binding;
@@ -25,10 +27,15 @@ export function utilKeybinding(namespace) {
             if (!binding.event.modifiers.shiftKey) continue;  // no shift
             if (!!binding.capture !== isCapturing) continue;
             if (matches(d3_event, binding, true)) {
-                binding.callback();
+                binding.callback(d3_event);
                 didMatch = true;
+
+                // match a max of one binding per event
+                break;
             }
         }
+
+        if (didMatch) return;
 
         // then unshifted keybindings
         if (didMatch) return;
@@ -37,7 +44,8 @@ export function utilKeybinding(namespace) {
             if (binding.event.modifiers.shiftKey) continue;   // shift
             if (!!binding.capture !== isCapturing) continue;
             if (matches(d3_event, binding, false)) {
-                binding.callback();
+                binding.callback(d3_event);
+                break;
             }
         }
 
@@ -49,24 +57,28 @@ export function utilKeybinding(namespace) {
 
             // Prefer a match on `KeyboardEvent.key`
             if (event.key !== undefined) {
-                tryKeyCode = (event.key.charCodeAt(0) > 255);  // outside ISO-Latin-1
+                tryKeyCode = (event.key.charCodeAt(0) > 127);  // outside ISO-Latin-1
                 isMatch = true;
 
                 if (binding.event.key === undefined) {
                     isMatch = false;
                 } else if (Array.isArray(binding.event.key)) {
-                    if (binding.event.key.map(function(s) { return s.toLowerCase(); }).indexOf(event.key.toLowerCase()) === -1)
+                    if (binding.event.key.map(function(s) {
+                        return s.toLowerCase();
+                    }).indexOf(event.key.toLowerCase()) === -1) {
                         isMatch = false;
+                    }
                 } else {
-                    if (event.key.toLowerCase() !== binding.event.key.toLowerCase())
+                    if (event.key.toLowerCase() !== binding.event.key.toLowerCase()) {
                         isMatch = false;
+                    }
                 }
             }
 
             // Fallback match on `KeyboardEvent.keyCode`, can happen if:
-            // - browser doesn't support `KeyboardEvent.key`
-            // - `KeyboardEvent.key` is outside ISO-Latin-1 range (cyrillic?)
-            if (!isMatch && tryKeyCode) {
+            // - `KeyboardEvent.key` is outside ASCII range (e.g. cyrillic - #  )
+            // - alt/option/⌥ key is also requested (e.g. Spanish keyboard on MacOS - #8905)
+            if (!isMatch && (tryKeyCode || binding.event.modifiers.altKey)) {
                 isMatch = (event.keyCode === binding.event.keyCode);
             }
 
@@ -86,7 +98,7 @@ export function utilKeybinding(namespace) {
 
 
     function capture(d3_event) {
-        testBindings(true, d3_event);
+        testBindings(d3_event, true);
     }
 
 
@@ -95,7 +107,7 @@ export function utilKeybinding(namespace) {
         if (tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA') {
             return;
         }
-        testBindings(false, d3_event);
+        testBindings(d3_event, false);
     }
 
 
@@ -124,7 +136,7 @@ export function utilKeybinding(namespace) {
 
     // Remove one or more keycode bindings.
     keybinding.off = function(codes, capture) {
-        var arr = [].concat(codes);
+        var arr = utilArrayUniq([].concat(codes));
 
         for (var i = 0; i < arr.length; i++) {
             var id = arr[i] + (capture ? '-capture' : '-bubble');
@@ -136,11 +148,11 @@ export function utilKeybinding(namespace) {
 
     // Add one or more keycode bindings.
     keybinding.on = function(codes, callback, capture) {
-        if (!_isFunction(callback)) {
+        if (typeof callback !== 'function') {
             return keybinding.off(codes, capture);
         }
 
-        var arr = [].concat(codes);
+        var arr = utilArrayUniq([].concat(codes));
 
         for (var i = 0; i < arr.length; i++) {
             var id = arr[i] + (capture ? '-capture' : '-bubble');
@@ -161,7 +173,7 @@ export function utilKeybinding(namespace) {
             };
 
             if (_keybindings[id]) {
-                window.console.warn('warning: duplicate keybinding for "' + id + '"'); // eslint-disable-line no-console
+                console.warn('warning: duplicate keybinding for "' + id + '"'); // eslint-disable-line no-console
             }
 
             _keybindings[id] = binding;
@@ -213,13 +225,16 @@ utilKeybinding.modifierProperties = {
     91: 'metaKey'
 };
 
+utilKeybinding.plusKeys = ['plus', 'ffplus', '=', 'ffequals', '≠', '±'];
+utilKeybinding.minusKeys = ['_', '-', 'ffminus', 'dash', '–', '—'];
+
 utilKeybinding.keys = {
     // Backspace key, on Mac: ⌫ (Backspace)
     '⌫': 'Backspace', backspace: 'Backspace',
     // Tab Key, on Mac: ⇥ (Tab), on Windows ⇥⇥
     '⇥': 'Tab', '⇆': 'Tab', tab: 'Tab',
     // Return key, ↩
-    '↩': 'Enter', 'return': 'Enter', enter: 'Enter', '⌅': 'Enter',
+    '↩': 'Enter', '↵': 'Enter', '⏎': 'Enter', 'return': 'Enter', enter: 'Enter', '⌅': 'Enter',
     // Pause/Break key
     'pause': 'Pause', 'pause-break': 'Pause',
     // Caps Lock key, ⇪
@@ -320,7 +335,7 @@ utilKeybinding.keyCodes = {
     // Tab Key, on Mac: ⇥ (Tab), on Windows ⇥⇥
     '⇥': 9, '⇆': 9, tab: 9,
     // Return key, ↩
-    '↩': 13, 'return': 13, enter: 13, '⌅': 13,
+    '↩': 13, '↵': 13, '⏎': 13, 'return': 13, enter: 13, '⌅': 13,
     // Pause/Break key
     'pause': 19, 'pause-break': 19,
     // Caps Lock key, ⇪
@@ -358,6 +373,8 @@ utilKeybinding.keyCodes = {
     '+': 107, 'plus': 107,
     // Num-Subtract, or -
     '-': 109, subtract: 109,
+    // Vertical Bar / Pipe
+    '|': 124,
     // Firefox Plus
     'ffplus': 171,
     // Firefox Minus

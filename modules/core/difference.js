@@ -1,11 +1,11 @@
-import _difference from 'lodash-es/difference';
-import _each from 'lodash-es/each';
-import _isEqual from 'lodash-es/isEqual';
-import _values from 'lodash-es/values';
+import deepEqual from 'fast-deep-equal';
+
+import { geoVecEqual } from '../geo';
+import { utilArrayDifference, utilArrayUnion, utilArrayUniq } from '../util/array';
 
 
 /*
-    iD.Difference represents the difference between two graphs.
+    iD.coreDifference represents the difference between two graphs.
     It knows how to calculate the set of entities that were
     created, modified, or deleted, and also contains the logic
     for recursively extending a difference to the complete set
@@ -14,66 +14,63 @@ import _values from 'lodash-es/values';
  */
 export function coreDifference(base, head) {
     var _changes = {};
+    var _didChange = {};  // 'addition', 'deletion', 'geometry', 'properties'
     var _diff = {};
-    var _length = 0;
-    var i, k, h, b, keys;
 
-    function changed(h, b) {
-        if (h === b) return false;
-        if (!h || !b) return true;
+    function checkEntityID(id) {
+        var h = head.entities[id];
+        var b = base.entities[id];
 
-        if (h.loc || b.loc) {
-            if (!h.loc && b.loc || h.loc && !b.loc ||
-                h.loc[0] !== b.loc[0] || h.loc[1] !== b.loc[1]) return true;
+        if (h === b) return;
+        if (_changes[id]) return;
+
+        if (!h && b) {
+            _changes[id] = { base: b, head: h };
+            _didChange.deletion = true;
+            return;
         }
-        if (h.nodes || b.nodes) {
-            if (!_isEqual(h.nodes, b.nodes)) return true;
+        if (h && !b) {
+            _changes[id] = { base: b, head: h };
+            _didChange.addition = true;
+            return;
         }
-        if (h.members || b.members) {
-            if (!_isEqual(h.members, b.members)) return true;
-        }
-        return !_isEqual(h.tags, b.tags);
-    }
 
-
-    keys = Object.keys(head.entities);
-    for (i = 0; i < keys.length; i++) {
-        k = keys[i];
-        h = head.entities[k];
-        b = base.entities[k];
-        if (changed(h, b)) {
-            _changes[k] = {base: b, head: h};
-            _length++;
-        }
-    }
-
-    keys = Object.keys(base.entities);
-    for (i = 0; i < keys.length; i++) {
-        k = keys[i];
-        h = head.entities[k];
-        b = base.entities[k];
-        if (!_changes[k] && changed(h, b)) {
-            _changes[k] = {base: b, head: h};
-            _length++;
+        if (h && b) {
+            if (h.members && b.members && !deepEqual(h.members, b.members)) {
+                _changes[id] = { base: b, head: h };
+                _didChange.geometry = true;
+                _didChange.properties = true;
+                return;
+            }
+            if (h.loc && b.loc && !geoVecEqual(h.loc, b.loc)) {
+                _changes[id] = { base: b, head: h };
+                _didChange.geometry = true;
+            }
+            if (h.nodes && b.nodes && !deepEqual(h.nodes, b.nodes)) {
+                _changes[id] = { base: b, head: h };
+                _didChange.geometry = true;
+            }
+            if (h.tags && b.tags && !deepEqual(h.tags, b.tags)) {
+                _changes[id] = { base: b, head: h };
+                _didChange.properties = true;
+            }
         }
     }
 
-
-    function addParents(parents, result) {
-        for (var i = 0; i < parents.length; i++) {
-            var parent = parents[i];
-
-            if (parent.id in result)
-                continue;
-
-            result[parent.id] = parent;
-            addParents(head.parentRelations(parent), result);
+    function load() {
+        // HOT CODE: there can be many thousands of downloaded entities, so looping
+        // through them all can become a performance bottleneck. Optimize by
+        // resolving duplicates and using a basic `for` loop
+        var ids = utilArrayUniq(Object.keys(head.entities).concat(Object.keys(base.entities)));
+        for (var i = 0; i < ids.length; i++) {
+            checkEntityID(ids[i]);
         }
     }
+    load();
 
 
     _diff.length = function length() {
-        return _length;
+        return Object.keys(_changes).length;
     };
 
 
@@ -81,20 +78,42 @@ export function coreDifference(base, head) {
         return _changes;
     };
 
+    _diff.didChange = _didChange;
 
-    _diff.extantIDs = function extantIDs() {
-        var result = [];
-        _each(_changes, function(change, id) {
-            if (change.head) result.push(id);
+
+    // pass true to include affected relation members
+    _diff.extantIDs = function extantIDs(includeRelMembers) {
+        var result = new Set();
+        Object.keys(_changes).forEach(function(id) {
+            if (_changes[id].head) {
+                result.add(id);
+            }
+
+            var h = _changes[id].head;
+            var b = _changes[id].base;
+            var entity = h || b;
+
+            if (includeRelMembers && entity.type === 'relation') {
+                var mh = h ? h.members.map(function(m) { return m.id; }) : [];
+                var mb = b ? b.members.map(function(m) { return m.id; }) : [];
+                utilArrayUnion(mh, mb).forEach(function(memberID) {
+                    if (head.hasEntity(memberID)) {
+                        result.add(memberID);
+                    }
+                });
+            }
         });
-        return result;
+
+        return Array.from(result);
     };
 
 
     _diff.modified = function modified() {
         var result = [];
-        _each(_changes, function(change) {
-            if (change.base && change.head) result.push(change.head);
+        Object.values(_changes).forEach(function(change) {
+            if (change.base && change.head) {
+                result.push(change.head);
+            }
         });
         return result;
     };
@@ -102,8 +121,10 @@ export function coreDifference(base, head) {
 
     _diff.created = function created() {
         var result = [];
-        _each(_changes, function(change) {
-            if (!change.base && change.head) result.push(change.head);
+        Object.values(_changes).forEach(function(change) {
+            if (!change.base && change.head) {
+                result.push(change.head);
+            }
         });
         return result;
     };
@@ -111,8 +132,10 @@ export function coreDifference(base, head) {
 
     _diff.deleted = function deleted() {
         var result = [];
-        _each(_changes, function(change) {
-            if (change.base && !change.head) result.push(change.base);
+        Object.values(_changes).forEach(function(change) {
+            if (change.base && !change.head) {
+                result.push(change.base);
+            }
         });
         return result;
     };
@@ -120,22 +143,6 @@ export function coreDifference(base, head) {
 
     _diff.summary = function summary() {
         var relevant = {};
-
-        function addEntity(entity, graph, changeType) {
-            relevant[entity.id] = {
-                entity: entity,
-                graph: graph,
-                changeType: changeType
-            };
-        }
-
-        function addParents(entity) {
-            var parents = head.parentWays(entity);
-            for (var j = parents.length - 1; j >= 0; j--) {
-                var parent = parents[j];
-                if (!(parent.id in relevant)) addEntity(parent, head, 'modified');
-            }
-        }
 
         var keys = Object.keys(_changes);
         for (var i = 0; i < keys.length; i++) {
@@ -148,8 +155,8 @@ export function coreDifference(base, head) {
                 addEntity(change.base, base, 'deleted');
 
             } else if (change.base && change.head) { // modified vertex
-                var moved    = !_isEqual(change.base.loc,  change.head.loc);
-                var retagged = !_isEqual(change.base.tags, change.head.tags);
+                var moved    = !deepEqual(change.base.loc,  change.head.loc);
+                var retagged = !deepEqual(change.base.tags, change.head.tags);
 
                 if (moved) {
                     addParents(change.head);
@@ -167,10 +174,31 @@ export function coreDifference(base, head) {
             }
         }
 
-        return _values(relevant);
+        return Object.values(relevant);
+
+
+        function addEntity(entity, graph, changeType) {
+            relevant[entity.id] = {
+                entity: entity,
+                graph: graph,
+                changeType: changeType
+            };
+        }
+
+        function addParents(entity) {
+            var parents = head.parentWays(entity);
+            for (var j = parents.length - 1; j >= 0; j--) {
+                var parent = parents[j];
+                if (!(parent.id in relevant)) {
+                    addEntity(parent, head, 'modified');
+                }
+            }
+        }
     };
 
 
+    // returns complete set of entities that require a redraw
+    //  (optionally within given `extent`)
     _diff.complete = function complete(extent) {
         var result = {};
         var id, change;
@@ -181,27 +209,41 @@ export function coreDifference(base, head) {
             var h = change.head;
             var b = change.base;
             var entity = h || b;
+            var i;
 
             if (extent &&
                 (!h || !h.intersects(extent, head)) &&
-                (!b || !b.intersects(extent, base)))
+                (!b || !b.intersects(extent, base))) {
                 continue;
+            }
 
             result[id] = h;
 
             if (entity.type === 'way') {
                 var nh = h ? h.nodes : [];
                 var nb = b ? b.nodes : [];
-                var diff, i;
+                var diff;
 
-                diff = _difference(nh, nb);
+                diff = utilArrayDifference(nh, nb);
                 for (i = 0; i < diff.length; i++) {
                     result[diff[i]] = head.hasEntity(diff[i]);
                 }
 
-                diff = _difference(nb, nh);
+                diff = utilArrayDifference(nb, nh);
                 for (i = 0; i < diff.length; i++) {
                     result[diff[i]] = head.hasEntity(diff[i]);
+                }
+            }
+
+            if (entity.type === 'relation' && entity.isMultipolygon()) {
+                var mh = h ? h.members.map(function(m) { return m.id; }) : [];
+                var mb = b ? b.members.map(function(m) { return m.id; }) : [];
+                var ids = utilArrayUnion(mh, mb);
+                for (i = 0; i < ids.length; i++) {
+                    var member = head.hasEntity(ids[i]);
+                    if (!member) continue;   // not downloaded
+                    if (extent && !member.intersects(extent, head)) continue;   // not visible
+                    result[ids[i]] = member;
                 }
             }
 
@@ -210,6 +252,17 @@ export function coreDifference(base, head) {
         }
 
         return result;
+
+
+        function addParents(parents, result) {
+            for (var i = 0; i < parents.length; i++) {
+                var parent = parents[i];
+                if (parent.id in result) continue;
+
+                result[parent.id] = parent;
+                addParents(head.parentRelations(parent), result);
+            }
+        }
     };
 
 

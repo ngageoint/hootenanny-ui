@@ -1,3 +1,5 @@
+import { select as d3_select } from 'd3-selection';
+
 export default class Filtering {
     constructor(container) {
         this.container = container;
@@ -8,10 +10,10 @@ export default class Filtering {
         let that = this;
 
         function bindSingleBodyClick() {
-            d3.select( 'body' ).on( 'click', () => {
-                d3.selectAll('div.filter-column').remove();
+            d3_select( 'body' ).on( 'click', () => {
+                d3_selectAll('div.filter-column').remove();
                 //send updated filter to container
-                d3.select( 'body' ).on('click', null);
+                d3_select( 'body' ).on('click', null);
             });
         }
 
@@ -26,7 +28,7 @@ export default class Filtering {
 
         bindSingleBodyClick();
 
-        let filter = d3.select('body')
+        let filter = d3_select('body')
             .append('div')
             .classed('filter-column', true)
             .style('top', d3_event.pageY + 'px')

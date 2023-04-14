@@ -1,16 +1,8 @@
-import _extend from 'lodash-es/extend';
-import _map from 'lodash-es/map';
-import _reject from 'lodash-es/reject';
-
 import { geoArea as d3_geoArea } from 'd3-geo';
 
 import { osmEntity } from './entity';
 import { osmJoinWays } from './multipolygon';
-import {
-    geoExtent,
-    geoPolygonContainsPolygon,
-    geoPolygonIntersectsPolygon
-} from '../geo';
+import { geoExtent, geoPolygonContainsPolygon, geoPolygonIntersectsPolygon } from '../geo';
 
 
 export function osmRelation() {
@@ -36,7 +28,7 @@ osmRelation.creationOrder = function(a, b) {
 };
 
 
-_extend(osmRelation.prototype, {
+Object.assign(osmRelation.prototype, {
     type: 'relation',
     members: [],
 
@@ -47,7 +39,7 @@ _extend(osmRelation.prototype, {
         var copy = osmEntity.prototype.copy.call(this, resolver, copies);
 
         var members = this.members.map(function(member) {
-            return _extend({}, member, { id: resolver.entity(member.id).copy(resolver, copies).id });
+            return Object.assign({}, member, { id: resolver.entity(member.id).copy(resolver, copies).id });
         });
 
         copy = copy.update({members: members});
@@ -92,7 +84,7 @@ _extend(osmRelation.prototype, {
     indexedMembers: function() {
         var result = new Array(this.members.length);
         for (var i = 0; i < this.members.length; i++) {
-            result[i] = _extend({}, this.members[i], {index: i});
+            result[i] = Object.assign({}, this.members[i], {index: i});
         }
         return result;
     },
@@ -103,7 +95,7 @@ _extend(osmRelation.prototype, {
     memberByRole: function(role) {
         for (var i = 0; i < this.members.length; i++) {
             if (this.members[i].role === role) {
-                return _extend({}, this.members[i], {index: i});
+                return Object.assign({}, this.members[i], {index: i});
             }
         }
     },
@@ -113,7 +105,7 @@ _extend(osmRelation.prototype, {
         var result = [];
         for (var i = 0; i < this.members.length; i++) {
             if (this.members[i].role === role) {
-                result.push(_extend({}, this.members[i], {index: i}));
+                result.push(Object.assign({}, this.members[i], {index: i}));
             }
         }
         return result;
@@ -124,7 +116,7 @@ _extend(osmRelation.prototype, {
     memberById: function(id) {
         for (var i = 0; i < this.members.length; i++) {
             if (this.members[i].id === id) {
-                return _extend({}, this.members[i], {index: i});
+                return Object.assign({}, this.members[i], {index: i});
             }
         }
     },
@@ -135,7 +127,7 @@ _extend(osmRelation.prototype, {
     memberByIdAndRole: function(id, role) {
         for (var i = 0; i < this.members.length; i++) {
             if (this.members[i].id === id && this.members[i].role === role) {
-                return _extend({}, this.members[i], {index: i});
+                return Object.assign({}, this.members[i], {index: i});
             }
         }
     },
@@ -150,7 +142,7 @@ _extend(osmRelation.prototype, {
 
     updateMember: function(member, index) {
         var members = this.members.slice();
-        members.splice(index, 1, _extend({}, members[index], member));
+        members.splice(index, 1, Object.assign({}, members[index], member));
         return this.update({members: members});
     },
 
@@ -163,7 +155,13 @@ _extend(osmRelation.prototype, {
 
 
     removeMembersWithID: function(id) {
-        var members = _reject(this.members, function(m) { return m.id === id; });
+        var members = this.members.filter(function(m) { return m.id !== id; });
+        return this.update({members: members});
+    },
+
+    moveMember: function(fromIndex, toIndex) {
+        var members = this.members.slice();
+        members.splice(toIndex, 0, members.splice(fromIndex, 1)[0]);
         return this.update({members: members});
     },
 
@@ -173,8 +171,7 @@ _extend(osmRelation.prototype, {
     // By default, adding a duplicate member (by id and role) is prevented.
     // Return an updated relation.
     replaceMember: function(needle, replacement, keepDuplicates) {
-        if (!this.memberById(needle.id))
-            return this;
+        if (!this.memberById(needle.id)) return this;
 
         var members = [];
 
@@ -183,11 +180,11 @@ _extend(osmRelation.prototype, {
             if (member.id !== needle.id) {
                 members.push(member);
             } else if (keepDuplicates || !this.memberByIdAndRole(replacement.id, member.role)) {
-                members.push({id: replacement.id, type: replacement.type, role: member.role});
+                members.push({ id: replacement.id, type: replacement.type, role: member.role });
             }
         }
 
-        return this.update({members: members});
+        return this.update({ members: members });
     },
 
 
@@ -196,7 +193,7 @@ _extend(osmRelation.prototype, {
             relation: {
                 '@id': this.osmId(),
                 '@version': this.version || 0,
-                member: _map(this.members, function(member) {
+                member: this.members.map(function(member) {
                     return {
                         keyAttributes: {
                             type: member.type,
@@ -204,13 +201,15 @@ _extend(osmRelation.prototype, {
                             ref: osmEntity.id.toOSM(member.id)
                         }
                     };
-                }),
-                tag: _map(this.tags, function(v, k) {
-                    return { keyAttributes: { k: k, v: v } };
-                })
+                }, this),
+                tag: Object.keys(this.tags).map(function(k) {
+                    return { keyAttributes: { k: k, v: this.tags[k] } };
+                }, this)
             }
         };
-        if (changeset_id) r.relation['@changeset'] = changeset_id;
+        if (changeset_id) {
+            r.relation['@changeset'] = changeset_id;
+        }
         return r;
     },
 
@@ -227,7 +226,7 @@ _extend(osmRelation.prototype, {
                     type: 'FeatureCollection',
                     properties: this.tags,
                     features: this.members.map(function (member) {
-                        return _extend({role: member.role}, resolver.entity(member.id).asGeoJSON(resolver));
+                        return Object.assign({role: member.role}, resolver.entity(member.id).asGeoJSON(resolver));
                     })
                 };
             }
@@ -257,6 +256,15 @@ _extend(osmRelation.prototype, {
     },
 
 
+    hasFromViaTo: function() {
+        return (
+            this.members.some(function(m) { return m.role === 'from'; }) &&
+            this.members.some(function(m) { return m.role === 'via'; }) &&
+            this.members.some(function(m) { return m.role === 'to'; })
+        );
+    },
+
+
     isRestriction: function() {
         return !!(this.tags.type && this.tags.type.match(/^restriction:?/));
     },
@@ -281,6 +289,9 @@ _extend(osmRelation.prototype, {
         return true;
     },
 
+    isConnectivity: function() {
+        return !!(this.tags.type && this.tags.type.match(/^connectivity:?/));
+    },
 
     // Returns an array [A0, ... An], each Ai being an array of node arrays [Nds0, ... Ndsm],
     // where Nds0 is an outer ring and subsequent Ndsi's (if any i > 0) being inner rings.
@@ -299,8 +310,17 @@ _extend(osmRelation.prototype, {
         outers = osmJoinWays(outers, resolver);
         inners = osmJoinWays(inners, resolver);
 
-        outers = outers.map(function(outer) { return _map(outer.nodes, 'loc'); });
-        inners = inners.map(function(inner) { return _map(inner.nodes, 'loc'); });
+        var sequenceToLineString = function(sequence) {
+            if (sequence.nodes.length > 2 &&
+                sequence.nodes[0] !== sequence.nodes[sequence.nodes.length - 1]) {
+                // close unclosed parts to ensure correct area rendering - #2945
+                sequence.nodes.push(sequence.nodes[0]);
+            }
+            return sequence.nodes.map(function(node) { return node.loc; });
+        };
+
+        outers = outers.map(sequenceToLineString);
+        inners = inners.map(sequenceToLineString);
 
         var result = outers.map(function(o) {
             // Heuristic for detecting counterclockwise winding order. Assumes
@@ -313,14 +333,16 @@ _extend(osmRelation.prototype, {
 
             for (o = 0; o < outers.length; o++) {
                 outer = outers[o];
-                if (geoPolygonContainsPolygon(outer, inner))
+                if (geoPolygonContainsPolygon(outer, inner)) {
                     return o;
+                }
             }
 
             for (o = 0; o < outers.length; o++) {
                 outer = outers[o];
-                if (geoPolygonIntersectsPolygon(outer, inner, false))
+                if (geoPolygonIntersectsPolygon(outer, inner, false)) {
                     return o;
+                }
             }
         }
 
@@ -332,10 +354,11 @@ _extend(osmRelation.prototype, {
             }
 
             var o = findOuter(inners[i]);
-            if (o !== undefined)
+            if (o !== undefined) {
                 result[o].push(inners[i]);
-            else
+            } else {
                 result.push([inners[i]]); // Invalid geometry
+            }
         }
 
         return result;

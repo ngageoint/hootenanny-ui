@@ -21,6 +21,8 @@ import ExportData         from '../modals/exportData';
 import ExportAlphaShape   from '../modals/exportAlphaShape';
 import ExportTaskGrid     from '../modals/exportTaskGrid';
 import { rateLimit }      from '../../config/apiConfig';
+import { prefs } from '../../../core';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * Creates the datasets tab in the settings panel
@@ -59,7 +61,7 @@ export default class Datasets extends Tab {
             },
             {
                 title: 'Public Data',
-                icon: JSON.parse(Hoot.context.storage( 'publicVisibilityDatasets' )) ? 'visibility' : 'visibility_off',
+                icon: JSON.parse(prefs( 'publicVisibilityDatasets' )) ? 'visibility' : 'visibility_off',
                 iconClass: 'public-visibility',
                 onClick: 'toggle-public-visibility'
             }
@@ -137,11 +139,11 @@ export default class Datasets extends Tab {
                         break;
                     }
                     case 'toggle-public-visibility': {
-                        let publicVisibilityPref = JSON.parse(Hoot.context.storage( 'publicVisibilityDatasets' ));
-                        Hoot.context.storage( 'publicVisibilityDatasets', !publicVisibilityPref);
+                        let publicVisibilityPref = JSON.parse(prefs( 'publicVisibilityDatasets' ));
+                        prefs( 'publicVisibilityDatasets', !publicVisibilityPref);
                         //Would be better to make this class render() method re-entrant
                         //but for now just surgically update icon
-                        d3.select('.dataset-buttons i.public-visibility').text(!publicVisibilityPref ? 'visibility' : 'visibility_off');
+                        d3_select('.dataset-buttons i.public-visibility').text(!publicVisibilityPref ? 'visibility' : 'visibility_off');
                         Hoot.events.emit( 'render-dataset-table' );
                         break;
                     }

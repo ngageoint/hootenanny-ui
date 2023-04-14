@@ -4,11 +4,14 @@
  * @author Matt Putipong - matt.putipong@radiantsolutions.com on 7/23/18
  *******************************************************************************************************/
 
-import { utilRebind }           from '../util/rebind';
-import { geoEuclideanDistance } from '../geo';
+import { utilRebind }            from '../util/rebind';
+import { dispatch as d3_dispatch } from 'd3-dispatch';
+import { geoDistance as d3_geoDistance } from 'd3-geo';
+import { pointer as d3_pointer } from 'd3-selection';
+import { geoEuclideanDistance }  from '../geo';
 
 export function behaviorDrawMeasureLine( context, svg ) {
-    let dispatch       = d3.dispatch( 'move', 'click', 'undo', 'cancel', 'finish', 'dblclick' ),
+    let dispatch       = d3_dispatch( 'move', 'click', 'undo', 'cancel', 'finish', 'dblclick' ),
         closeTolerance = 4,
         tolerance      = 12,
         lastPoint      = null,
@@ -23,21 +26,17 @@ export function behaviorDrawMeasureLine( context, svg ) {
 
         function point() {
             let p = element.node().parentNode;
-
-            return touchId !== null
-                ? d3.touches( p ).filter( p => p.identifier === touchId )[ 0 ]
-                : d3.mouse( p );
+            return d3_pointer( d3_event, p );
         }
 
-        let element = d3.select( this ),
-            touchId = d3_event.touches ? d3_event.changedTouches[ 0 ].identifier : null,
+        let element = d3_select( this ),
             time    = +new Date(),
             pos     = point();
 
-        element.on( 'dblclick', () => ret( element ) );
+        element.on( 'dblclick', (d3_event) => ret( d3_event, element ) );
         element.on( 'mousemove.drawline', null );
 
-        d3.select( window ).on( 'mouseup.drawline', () => {
+        d3_select( window ).on( 'mouseup.drawline', (d3_event) => {
             element.on( 'mousemove.drawline', mousemove );
 
             if ( geoEuclideanDistance( pos, point() ) < closeTolerance ||
@@ -45,7 +44,7 @@ export function behaviorDrawMeasureLine( context, svg ) {
                     (+new Date() - time) < 500) ) {
 
                 // Prevent a quick second click
-                d3.select( window ).on( 'click.drawline-block', (d3_event) => {
+                d3_select( window ).on( 'click.drawline-block', (d3_event) => {
                     d3_event.stopPropagation();
                 }, true );
 
@@ -53,10 +52,10 @@ export function behaviorDrawMeasureLine( context, svg ) {
 
                 setTimeout( () => {
                     context.map().dblclickEnable( true );
-                    d3.select( window ).on( 'click.drawline-block', null );
+                    d3_select( window ).on( 'click.drawline-block', null );
                 }, 500 );
 
-                click();
+                click(d3_event);
             }
         } );
     }
@@ -70,7 +69,7 @@ export function behaviorDrawMeasureLine( context, svg ) {
                 .attr( 'y2', c[ 1 ] )
                 .attr( 'loc2', context.map().mouseCoordinates() );
 
-            let distance = d3.geoDistance( lastPoint, context.map().mouseCoordinates() );
+            let distance = d3_geoDistance( lastPoint, context.map().mouseCoordinates() );
 
             distance    = radiansToMeters( distance );
             segmentDist = distance;
@@ -84,7 +83,7 @@ export function behaviorDrawMeasureLine( context, svg ) {
         }
     }
 
-    function click() {
+    function click( ) {
         let c = context.projection( context.map().mouseCoordinates() );
 
         totDist     = totDist + segmentDist;
@@ -185,7 +184,7 @@ export function behaviorDrawMeasureLine( context, svg ) {
             .on( 'mousedown.drawline', null )
             .on( 'mousemove.drawline', null );
 
-        d3.select( window )
+        d3_select( window )
             .on( 'mouseup.drawline', null );
     };
 

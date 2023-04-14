@@ -2,14 +2,15 @@ import {
     select as d3_select
 } from 'd3-selection';
 
-import { t } from '../util/locale';
-import { modeBrowse } from '../modes';
+import { t } from '../core/localizer';
+import { modeBrowse } from '../modes/browse';
+
 
 export function uiSourceSwitch(context) {
     var keys;
 
 
-    async function click(d3_event) {
+    function click(d3_event) {
         d3_event.preventDefault();
 
         var osm = context.connection();
@@ -17,11 +18,8 @@ export function uiSourceSwitch(context) {
 
         if (context.inIntro()) return;
 
-        if (context.history().hasChanges() ) {
-            var confirmLoseChanges = await Hoot.message.confirm(t('source_switch.lose_changes'));
-
-            if (!confirmLoseChanges) return;
-        }
+        if (context.history().hasChanges() &&
+            !window.confirm(t('source_switch.lose_changes'))) return;
 
         var isLive = d3_select(this)
             .classed('live');
@@ -32,8 +30,9 @@ export function uiSourceSwitch(context) {
         context.flush();                         // remove stored data
 
         d3_select(this)
-            .text(isLive ? t('source_switch.live') : t('source_switch.dev'))
-            .classed('live', isLive);
+            .html(isLive ? t.html('source_switch.live') : t.html('source_switch.dev'))
+            .classed('live', isLive)
+            .classed('chip', isLive);
 
         osm.switch(isLive ? keys[0] : keys[1]);  // switch connection (warning: dispatches 'change' event)
     }
@@ -42,9 +41,8 @@ export function uiSourceSwitch(context) {
         selection
             .append('a')
             .attr('href', '#')
-            .text(t('source_switch.live'))
-            .classed('live', true)
-            .attr('tabindex', -1)
+            .call(t.append('source_switch.live'))
+            .attr('class', 'live chip')
             .on('click', click);
     };
 

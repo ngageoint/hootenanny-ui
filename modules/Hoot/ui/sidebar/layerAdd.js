@@ -10,7 +10,8 @@ import _reject from 'lodash-es/reject';
 import FolderTree  from '../../tools/folderTree';
 import SidebarForm from './sidebarForm';
 
-import { d3combobox }   from '../../../lib/hoot/d3.combobox';
+import { d3combobox } from '../d3.combobox';
+import { select as d3_select } from 'd3-selection';
 
 export default class LayerAdd extends SidebarForm {
     constructor( container, d ) {
@@ -58,7 +59,7 @@ export default class LayerAdd extends SidebarForm {
 
                 if ( selected ) {
                     let input = this.form.select( '.recently-used-input' ),
-                        gNode = d3.select( rect.node().parentNode );
+                        gNode = d3_select( rect.node().parentNode );
 
                     input.property( 'value', '' );
                     input.node().blur();
@@ -120,7 +121,7 @@ export default class LayerAdd extends SidebarForm {
             .enter()
             .append( 'a' )
             .attr( 'class', function( p ) {
-                let activeClass = d3.select( this.parentNode ).datum().color === p.name ? 'active _icon check' : '',
+                let activeClass = d3_select( this.parentNode ).datum().color === p.name ? 'active _icon check' : '',
                     osmClass    = p.name === 'osm' ? '_osm' : '';
 
                 return `block float-left keyline-right ${ activeClass } ${ osmClass }`;
@@ -129,11 +130,11 @@ export default class LayerAdd extends SidebarForm {
             .attr( 'data-color', p => p.name )
             .style( 'background', p => p.hex )
             .on( 'click', function() {
-                d3.select( this.parentNode )
+                d3_select( this.parentNode )
                     .selectAll( 'a' )
                     .classed( 'active _icon check', false );
 
-                d3.select( this )
+                d3_select( this )
                     .classed( 'active _icon check', true );
             } );
     }
@@ -182,7 +183,7 @@ export default class LayerAdd extends SidebarForm {
 
                 that.form.select( '.add-layer' ).property( 'disabled', false );
 
-                let name = d3.select( this ).property( 'value' ),
+                let name = d3_select( this ).property( 'value' ),
                     id   = Hoot.layers.findBy( 'name', name ).id;
 
                 that.selectedLayer.name = name;

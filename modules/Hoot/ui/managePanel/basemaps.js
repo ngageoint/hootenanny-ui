@@ -8,6 +8,7 @@ import AddBasemap                 from '../modals/addBasemap';
 import Tab                        from './tab';
 import { geoExtent as GeoExtent } from '../../../geo/index';
 import _filter                   from 'lodash-es/filter';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * Creates the basemaps tab in the settings panel
@@ -90,7 +91,7 @@ export default class Basemaps extends Tab {
             .append( 'button' )
             .classed( 'keyline-left _icon', true )
             .on( 'click', function( d3_event, d ) {
-                let button = d3.select( this );
+                let button = d3_select( this );
 
                 d3_event.stopPropagation();
                 d3_event.preventDefault();
@@ -118,7 +119,7 @@ export default class Basemaps extends Tab {
                 }
             } )
             .select( function( d ) {
-                let button = d3.select( this );
+                let button = d3_select( this );
 
                 if ( d.status === 'processing' ) {
                     button.classed( 'closedeye' , true );

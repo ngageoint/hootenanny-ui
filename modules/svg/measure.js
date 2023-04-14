@@ -10,6 +10,10 @@ import {
     utilGetDimensions,
     utilSetDimensions
 } from '../util/dimensions';
+import { 
+    select as d3_select,
+    selectAll as d3_selectAll
+} from 'd3-selection';
 
 export function svgMeasure( projection, context, dispatch ) {
     let gj     = {},
@@ -22,13 +26,13 @@ export function svgMeasure( projection, context, dispatch ) {
             .enter()
             .append( 'svg' );
 
-        let measureLines = d3.selectAll( '[class*=measure-line-]' ),
-            measureArea  = d3.selectAll( '.measure-area' ),
-            measureLabel = d3.select( '.measure-label-text' );
+        let measureLines = d3_selectAll( '[class*=measure-line-]' ),
+            measureArea  = d3_selectAll( '.measure-area' ),
+            measureLabel = d3_select( '.measure-label-text' );
 
         if ( !measureLines.empty() ) {
             measureLines.each( function() {
-                let line = d3.select( this ),
+                let line = d3_select( this ),
                     loc1 = line.attr( 'loc1' ).split( /,/ ).map( parseFloat ),
                     loc2 = line.attr( 'loc2' ).split( /,/ ).map( parseFloat ),
                     c1   = context.projection( loc1 ),
@@ -44,7 +48,7 @@ export function svgMeasure( projection, context, dispatch ) {
 
         if ( !measureArea.empty() ) {
             measureArea.each( function() {
-                let measArea = d3.select( this ),
+                let measArea = d3_select( this ),
                     newPts   = '';
 
                 if ( _isEmpty( measArea.attr( 'loc' ) ) ) return;
@@ -79,7 +83,7 @@ export function svgMeasure( projection, context, dispatch ) {
                 let diff = 0;
 
                 tspans.each( function() {
-                    d3.select( this )
+                    d3_select( this )
                         .attr( 'x', c[ 0 ] + 10 )
                         .attr( 'y', c[ 1 ] + diff );
                     diff += 25;

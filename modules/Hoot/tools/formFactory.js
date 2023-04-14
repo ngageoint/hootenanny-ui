@@ -6,7 +6,8 @@
 
 import _map from 'lodash-es/map';
 
-import { d3combobox } from '../../lib/hoot/d3.combobox';
+import { d3combobox } from '../ui/d3.combobox';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * Create a form contained within a modal
@@ -46,12 +47,12 @@ export default class FormFactory {
     createContainer( selector, formId ) {
 
         // Check if it already exists and delete it if it does
-        const formCheck = d3.select( `#${formId}` );
+        const formCheck = d3_select( `#${formId}` );
         if ( formCheck ) {
             formCheck.remove();
         }
 
-        let overlay = d3.select( selector )
+        let overlay = d3_select( selector )
             .append( 'div' )
             .attr( 'id', formId )
             .classed( 'overlay modal-overlay', true );
@@ -147,7 +148,7 @@ export default class FormFactory {
 
         fieldHeader.select( function( d ) {
             if ( d.id === 'conflateType' ) {
-                let header = d3.select( this )
+                let header = d3_select( this )
                     .classed( 'conflate-type-header', true );
 
                 let advOpts = header.append( 'a' )
@@ -164,7 +165,7 @@ export default class FormFactory {
         } );
 
         fieldContainer.select( function( d ) {
-            let field = d3.select( this )
+            let field = d3_select( this )
                 .classed( 'contain', true );
 
             switch ( d.inputType ) {
@@ -208,7 +209,7 @@ export default class FormFactory {
                         .attr('class', 'password-field-icon material-icons')
                         .text('visibility_off')
                         .on('click', () => {
-                            let icon = d3.select(this).select('i');
+                            let icon = d3_select(this).select('i');
                             let txt = icon.text();
                             if (txt === 'visibility_off') {
                                 icon.text('visibility');
@@ -340,7 +341,7 @@ export default class FormFactory {
 
                 // See if the item has already been tagged OR selected for potential tagging
                 const isSelected = tagsContainer.selectAll( 'li' ).filter( function() {
-                    return d3.select(this).attr( '_value' ) === _value;
+                    return d3_select(this).attr( '_value' ) === _value;
                 } );
 
                 if ( isSelected.size() === 0 ) {
@@ -398,7 +399,7 @@ export default class FormFactory {
                 } );
             }
 
-            d3.select( input.node() )
+            d3_select( input.node() )
                 .call( combobox );
         } );
     }
@@ -512,7 +513,7 @@ export default class FormFactory {
             .on( 'click', function() {
                 let evt = new MouseEvent( 'click' );
 
-                d3.select( this.parentNode )
+                d3_select( this.parentNode )
                     .select( '.multipart-icon-button' )
                     .select( 'input' ).node()
                     .dispatchEvent( evt );
@@ -523,7 +524,7 @@ export default class FormFactory {
             .on( 'click', function() {
                 let evt = new MouseEvent( 'click' );
 
-                d3.select( this )
+                d3_select( this )
                     .select( 'input' ).node()
                     .dispatchEvent( evt );
             } );
@@ -674,8 +675,8 @@ export default class FormFactory {
                 switch (d.input) {
                     case 'multiCombobox': {
                         const parent = container.select('#' + d.id).node().parentNode;
-                        inputValue = d3.select( parent ).selectAll( '.tagItem' ).nodes().map( data =>
-                            d3.select(data).attr('_value')
+                        inputValue = d3_select( parent ).selectAll( '.tagItem' ).nodes().map( data =>
+                            d3_select(data).attr('_value')
                         );
                         break;
                     }

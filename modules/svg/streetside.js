@@ -1,6 +1,6 @@
 import _throttle from 'lodash-es/throttle';
 import { select as d3_select } from 'd3-selection';
-import { svgPath, svgPointTransform } from './index';
+import { svgPath, svgPointTransform } from './helpers';
 import { services } from '../services';
 
 
@@ -12,7 +12,6 @@ export function svgStreetside(projection, context, dispatch) {
     var layer = d3_select(null);
     var _viewerYaw = 0;
     var _selectedSequence = null;
-    var _hoveredBubble = null;
     var _streetside;
 
     /**
@@ -31,8 +30,8 @@ export function svgStreetside(projection, context, dispatch) {
         if (services.streetside && !_streetside) {
             _streetside = services.streetside;
             _streetside.event
-                .on('viewerChanged', viewerChanged)
-                .on('loadedBubbles', throttledRedraw);
+                .on('viewerChanged.svgStreetside', viewerChanged)
+                .on('loadedImages.svgStreetside', throttledRedraw);
         } else if (!services.streetside && _streetside) {
             _streetside = null;
         }
@@ -47,7 +46,6 @@ export function svgStreetside(projection, context, dispatch) {
         var service = getService();
         if (!service) return;
 
-        service.loadViewer(context);
         editOn();
 
         layer
@@ -62,11 +60,6 @@ export function svgStreetside(projection, context, dispatch) {
      * hideLayer().
      */
     function hideLayer() {
-        var service = getService();
-        if (service) {
-            service.hideViewer();
-        }
-
         throttledRedraw.cancel();
 
         layer
@@ -94,7 +87,7 @@ export function svgStreetside(projection, context, dispatch) {
     /**
      * click() Handles 'bubble' point click event.
      */
-    function click(d) {
+    function click(d3_event, d) {
         var service = getService();
         if (!service) return;
 
@@ -105,13 +98,13 @@ export function svgStreetside(projection, context, dispatch) {
         _selectedSequence = d.sequenceKey;
 
         service
-            .selectImage(d)
-            .then(function(r) {
-                if (r.status === 'ok'){
-                    service.showViewer(_viewerYaw);
-                }
+            .ensureViewerLoaded(context)
+            .then(function() {
+                service
+                    .selectImage(context, d.key)
+                    .yaw(_viewerYaw)
+                    .showViewer(context);
             });
-
 
         context.map().centerEase(d.loc);
     }
@@ -119,10 +112,9 @@ export function svgStreetside(projection, context, dispatch) {
     /**
      * mouseover().
      */
-    function mouseover(d) {
+    function mouseover(d3_event, d) {
         var service = getService();
-        _hoveredBubble = d;
-        if (service) service.setStyles(d, true);
+        if (service) service.setStyles(context, d);
     }
 
     /**
@@ -130,8 +122,7 @@ export function svgStreetside(projection, context, dispatch) {
      */
     function mouseout() {
         var service = getService();
-        _hoveredBubble = null;
-        if (service) service.setStyles(null, true);
+        if (service) service.setStyles(context, null);
     }
 
     /**
@@ -161,24 +152,83 @@ export function svgStreetside(projection, context, dispatch) {
         // e.g. during drags or easing.
         if (context.map().isTransformed()) return;
 
-        layer.selectAll('.viewfield-group.selected')
+        layer.selectAll('.viewfield-group.currentView')
             .attr('transform', transform);
     }
 
+
+    function filterBubbles(bubbles) {
+        var fromDate = context.photos().fromDate();
+        var toDate = context.photos().toDate();
+        var usernames = context.photos().usernames();
+
+        if (fromDate) {
+            var fromTimestamp = new Date(fromDate).getTime();
+            bubbles = bubbles.filter(function(bubble) {
+                return new Date(bubble.captured_at).getTime() >= fromTimestamp;
+            });
+        }
+        if (toDate) {
+            var toTimestamp = new Date(toDate).getTime();
+            bubbles = bubbles.filter(function(bubble) {
+                return new Date(bubble.captured_at).getTime() <= toTimestamp;
+            });
+        }
+        if (usernames) {
+            bubbles = bubbles.filter(function(bubble) {
+                return usernames.indexOf(bubble.captured_by) !== -1;
+            });
+        }
+
+        return bubbles;
+    }
+
+    function filterSequences(sequences) {
+        var fromDate = context.photos().fromDate();
+        var toDate = context.photos().toDate();
+        var usernames = context.photos().usernames();
+
+        if (fromDate) {
+            var fromTimestamp = new Date(fromDate).getTime();
+            sequences = sequences.filter(function(sequences) {
+                return new Date(sequences.properties.captured_at).getTime() >= fromTimestamp;
+            });
+        }
+        if (toDate) {
+            var toTimestamp = new Date(toDate).getTime();
+            sequences = sequences.filter(function(sequences) {
+                return new Date(sequences.properties.captured_at).getTime() <= toTimestamp;
+            });
+        }
+        if (usernames) {
+            sequences = sequences.filter(function(sequences) {
+                return usernames.indexOf(sequences.properties.captured_by) !== -1;
+            });
+        }
+
+        return sequences;
+    }
 
     /**
      * update().
      */
     function update() {
-        var viewer = d3_select('#photoviewer');
+        var viewer = context.container().select('.photoviewer');
         var selected = viewer.empty() ? undefined : viewer.datum();
         var z = ~~context.map().zoom();
         var showMarkers = (z >= minMarkerZoom);
         var showViewfields = (z >= minViewfieldZoom);
         var service = getService();
 
-        var sequences = (service ? service.sequences(projection) : []);
-        var bubbles = (service && showMarkers ? service.bubbles(projection) : []);
+        var sequences = [];
+        var bubbles = [];
+
+        if (context.photos().showsPanoramic()) {
+            sequences = (service ? service.sequences(projection) : []);
+            bubbles = (service && showMarkers ? service.bubbles(projection) : []);
+            sequences = filterSequences(sequences);
+            bubbles = filterBubbles(bubbles);
+        }
 
         var traces = layer.selectAll('.sequences').selectAll('.sequence')
             .data(sequences, function(d) { return d.properties.key; });
@@ -209,8 +259,8 @@ export function svgStreetside(projection, context, dispatch) {
         var groupsEnter = groups.enter()
             .append('g')
             .attr('class', 'viewfield-group')
-            .on('mouseover', mouseover)
-            .on('mouseout', mouseout)
+            .on('mouseenter', mouseover)
+            .on('mouseleave', mouseout)
             .on('click', click);
 
         groupsEnter
@@ -251,12 +301,6 @@ export function svgStreetside(projection, context, dispatch) {
             .attr('transform', 'scale(1.5,1.5),translate(-8, -13)')
             .attr('d', viewfieldPath);
 
-
-        if (service) {
-            service.setStyles(_hoveredBubble, true);
-        }
-
-
         function viewfieldPath() {
             var d = this.parentNode.__data__;
             if (d.pano) {
@@ -270,7 +314,7 @@ export function svgStreetside(projection, context, dispatch) {
 
     /**
      * drawImages()
-     * drawImages is the method that is returned (and that runs) everytime 'svgStreetside()' is called.
+     * drawImages is the method that is returned (and that runs) every time 'svgStreetside()' is called.
      * 'svgStreetside()' is called from index.js
      */
     function drawImages(selection) {
@@ -319,8 +363,10 @@ export function svgStreetside(projection, context, dispatch) {
         svgStreetside.enabled = _;
         if (svgStreetside.enabled) {
             showLayer();
+            context.photos().on('change.streetside', update);
         } else {
             hideLayer();
+            context.photos().on('change.streetside', null);
         }
         dispatch.call('change');
         return this;

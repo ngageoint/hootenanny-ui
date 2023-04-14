@@ -1,8 +1,9 @@
 import Tab from './tab';
-import {d3combobox} from '../../../lib/hoot/d3.combobox';
+import { d3combobox } from '../d3.combobox';
 import FormFactory from '../../tools/formFactory';
 import OverpassQueryPanel from '../../tools/overpassQueryPanel';
 import { polyStringFromGeom } from '../../tools/utilities';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * Creates the tasking manager tab in the settings panel
@@ -574,7 +575,7 @@ export default class TaskingManagerPanel extends Tab {
                 break;
             }
 
-            const task = d3.select( container ).select( '.taskingManager-action-buttons' ).datum();
+            const task = d3_select( container ).select( '.taskingManager-action-buttons' ).datum();
 
             await this.setLockState( task, true );
             const response = await this.executeTask( task, this.timeoutTasks.includes( task.id ) );
@@ -606,7 +607,7 @@ export default class TaskingManagerPanel extends Tab {
                     } );
 
                     const unRunTasks = this.tasksTable.selectAll( '.taskingManager-item' ).filter( function() {
-                        const container = d3.select( this );
+                        const container = d3_select( this );
                         return selectedOptions.includes( container.attr( 'status' ) );
                     } );
 
@@ -617,7 +618,7 @@ export default class TaskingManagerPanel extends Tab {
         };
 
         const optionsForm = new FormFactory().generateForm( 'body', 'runAllTasksFilter', metadata );
-        this.submitButton = d3.select( `#${ metadata.button.id }` );
+        this.submitButton = d3_select( `#${ metadata.button.id }` );
 
         const container = optionsForm
             .select( '.wrapper div' )
@@ -665,7 +666,7 @@ export default class TaskingManagerPanel extends Tab {
             .on( 'click', function() {
                 tmPanel.cancelRunning = true;
 
-                d3.select( this ).property( 'disabled', true );
+                d3_select( this ).property( 'disabled', true );
             } );
     }
 

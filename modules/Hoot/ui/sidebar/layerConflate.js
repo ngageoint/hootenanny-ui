@@ -12,6 +12,7 @@ import AdvancedOpts               from './advancedOpts';
 import FormFactory                from '../../tools/formFactory';
 import { layerConflateForm }      from '../../config/domMetadata';
 import { unallowableWordsExist } from '../../tools/utilities';
+import { select as d3_select, selectAll as d3_selectAll } from 'd3-selection';
 
 class LayerConflate extends SidebarForm {
     constructor( container, d ) {
@@ -58,12 +59,12 @@ class LayerConflate extends SidebarForm {
         this.createAdvancedOptions();
         this.createButtons();
 
-        this.saveAsInput         = d3.select( '#conflateSaveAs' );
-        this.folderPathInput     = d3.select( '#conflateFolderPath' );
-        this.typeInput           = d3.select( '#conflateType' );
-        this.algorithmInput      = d3.select( '#conflateAlgorithm' );
-        this.refLayerInput       = d3.select( '#conflateRefLayer' );
-        this.collectStatsInput   = d3.select( '#conflateCollectStats' );
+        this.saveAsInput         = d3_select( '#conflateSaveAs' );
+        this.folderPathInput     = d3_select( '#conflateFolderPath' );
+        this.typeInput           = d3_select( '#conflateType' );
+        this.algorithmInput      = d3_select( '#conflateAlgorithm' );
+        this.refLayerInput       = d3_select( '#conflateRefLayer' );
+        this.collectStatsInput   = d3_select( '#conflateCollectStats' );
     }
 
     createFieldset() {
@@ -102,7 +103,7 @@ class LayerConflate extends SidebarForm {
 
         }
         else {
-            return d3.select('#conflateType').property('value');
+            return d3_select('#conflateType').property('value');
         }
     }
 
@@ -141,7 +142,7 @@ class LayerConflate extends SidebarForm {
         this.advancedOptions = AdvancedOpts.getInstance();
         await this.advancedOptions.init();
 
-        d3.select( '#advanced-opts-toggle' )
+        d3_select( '#advanced-opts-toggle' )
             .on( 'click', () => this.advancedOptions.toggle() );
     }
 
@@ -184,7 +185,7 @@ class LayerConflate extends SidebarForm {
     }
 
     validateTextInput( d ) {
-        let target           = d3.select( `#${ d.id }` ),
+        let target           = d3_select( `#${ d.id }` ),
             node             = target.node(),
             str              = node.value,
 
@@ -209,7 +210,7 @@ class LayerConflate extends SidebarForm {
 
         this.form.selectAll( '.text-input' )
             .each( function() {
-                let classes = d3.select( this ).attr( 'class' ).split( ' ' );
+                let classes = d3_select( this ).attr( 'class' ).split( ' ' );
 
                 if ( classes.indexOf( 'invalid' ) > -1 ) {
                     self.formValid = false;
@@ -355,7 +356,7 @@ class LayerConflate extends SidebarForm {
             .then( (resp) => {
                 if (resp.data && resp.data.status !== 'cancelled') {
                     // remove input layer controllers
-                    d3.selectAll( '.add-controller' ).remove();
+                    d3_selectAll( '.add-controller' ).remove();
 
                     this.postConflation( layerParams );
                 }

@@ -19,6 +19,7 @@ import UI                 from './ui/init';
 import buildInfo          from './config/buildInfo.json';
 import { duration }       from './tools/utilities';
 import { utilStringQs }   from '../util';
+import { prefs } from '../core';
 
 class Hoot {
     constructor() {
@@ -116,14 +117,14 @@ class Hoot {
         this.context = context;
         this.user = function () {
             if (!user) {
-                user = JSON.parse( context.storage( 'user' ) );
+                user = JSON.parse( prefs( 'user' ) );
             }
 
             return user;
         };
 
-        if (!this.context.storage('bounds_history')) {
-            this.context.storage('bounds_history', JSON.stringify({
+        if (!prefs('bounds_history')) {
+            prefs('bounds_history', JSON.stringify({
                 'boundsHistory':[]
             }));
         }

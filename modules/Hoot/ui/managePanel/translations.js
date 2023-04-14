@@ -6,6 +6,7 @@ import ModifyTranslationFolder  from '../modals/modifyTranslationFolder';
 import ModifyTranslation        from '../modals/modifyTranslation';
 import FolderTree               from '../../tools/folderTree';
 import _map                     from 'lodash-es/map';
+import { prefs } from '../../../core';
 
 /**
  * Creates the translations tab in the settings panel
@@ -49,7 +50,7 @@ export default class Translations extends Tab {
             },
             {
                 title: 'Public Data',
-                icon: JSON.parse(Hoot.context.storage( 'publicVisibilityTranslations' )) ? 'visibility' : 'visibility_off',
+                icon: JSON.parse(prefs( 'publicVisibilityTranslations' )) ? 'visibility' : 'visibility_off',
                 iconClass: 'public-visibility',
                 onClick: 'toggle-public-visibility'
             }
@@ -97,8 +98,8 @@ export default class Translations extends Tab {
                         break;
                     }
                     case 'toggle-public-visibility': {
-                        let publicVisibilityPref = JSON.parse(Hoot.context.storage( 'publicVisibilityTranslations' ));
-                        Hoot.context.storage( 'publicVisibilityTranslations', !publicVisibilityPref);
+                        let publicVisibilityPref = JSON.parse(prefs( 'publicVisibilityTranslations' ));
+                        prefs( 'publicVisibilityTranslations', !publicVisibilityPref);
                         this.buttonContainer.select('i.public-visibility').text(!publicVisibilityPref ? 'visibility' : 'visibility_off');
                         this.loadTranslations();
                         break;

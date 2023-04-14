@@ -1,4 +1,5 @@
 import FormFactory from '../../tools/formFactory';
+import { select as d3_select } from 'd3-selection';
 
 export default class deleteStaleMaps {
     constructor( months ) {
@@ -25,7 +26,7 @@ export default class deleteStaleMaps {
 
         let formId = 'deleteStaleMaps';
         this.form  = new FormFactory().generateForm( 'body', formId, metadata );
-        this.submitButton = d3.select( `#${ metadata.button.id }` );
+        this.submitButton = d3_select( `#${ metadata.button.id }` );
 
         this.loadSummary();
 

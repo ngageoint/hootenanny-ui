@@ -7,6 +7,7 @@
 import FormFactory from '../../tools/formFactory';
 import EditBookmarkNote from './editBookmarkNote';
 import { unallowableWordsExist } from '../../tools/utilities';
+import { select as d3_select } from 'd3-selection';
 
 export default class PublishBookmark {
     constructor() {
@@ -67,7 +68,7 @@ export default class PublishBookmark {
     }
 
     validateTextInput( d ) {
-        let target           = d3.select( `#${ d.id }` ),
+        let target           = d3_select( `#${ d.id }` ),
             node             = target.node(),
             str              = node.value,
 
@@ -98,7 +99,7 @@ export default class PublishBookmark {
 
         this.container.selectAll( '.text-input' )
             .each( function() {
-                let classes = d3.select( this ).attr( 'class' ).split( ' ' );
+                let classes = d3_select( this ).attr( 'class' ).split( ' ' );
 
                 if ( classes.indexOf( 'invalid' ) > -1 ) {
                     valid = false;
@@ -120,7 +121,7 @@ export default class PublishBookmark {
         let currentReviewItem = Hoot.ui.conflicts.data.currentReviewItem;
         let user = Hoot.user().id;
         const taggedUserIds = this.taggedUsers.selectAll( '.tagItem' ).nodes().map( data =>
-            Number( d3.select(data).attr( '_value' ) )
+            Number( d3_select(data).attr( '_value' ) )
         );
 
         let params = {

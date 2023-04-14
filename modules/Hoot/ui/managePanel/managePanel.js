@@ -15,6 +15,7 @@ import ReviewBookmarks     from './reviewBookmarks/reviewBookmarks';
 import ReviewBookmarkNotes from './reviewBookmarks/reviewBookmarkNotes';
 import AdminPanel          from './adminPanel';
 import TaskingManagerPanel from './TaskingManagerPanel';
+import { select as d3_select } from 'd3-selection';
 
 /**
  * Creates the settings panel
@@ -43,7 +44,7 @@ export default class ManagePanel {
      * Render base panel and all of its components
      */
     render() {
-        this.container = d3.select( 'body' )
+        this.container = d3_select( 'body' )
             .insert( 'div', '#id-container' )
             .attr( 'id', 'manage-panel' )
             .classed( 'hidden', true );

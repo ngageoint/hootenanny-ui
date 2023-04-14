@@ -8,7 +8,7 @@ import _map                        from 'lodash-es/map';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 
 import { utilRebind } from '../util';
-import { d3combobox } from '../lib/hoot/d3.combobox';
+import { d3combobox } from '../Hoot/ui/d3.combobox';
 
 export function uiSchemaSwitcher() {
     let dispatch = d3_dispatch( 'change' );

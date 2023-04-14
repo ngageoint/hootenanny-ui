@@ -7,6 +7,7 @@
 import FormFactory       from '../../tools/formFactory';
 import { addFolderForm } from '../../config/domMetadata';
 import {unallowableWordsExist} from '../../tools/utilities';
+import { select as d3_select } from 'd3-selection';
 
 export default class AddFolder {
     constructor(parentId = 0) {
@@ -36,7 +37,7 @@ export default class AddFolder {
     }
 
     validateTextInput( d ) {
-        let target           = d3.select( `#${ d.id }` ),
+        let target           = d3_select( `#${ d.id }` ),
             node             = target.node(),
             str              = node.value,
 
@@ -61,7 +62,7 @@ export default class AddFolder {
 
         this.container.selectAll( '.text-input' )
             .each( function() {
-                let classes = d3.select( this ).attr( 'class' ).split( ' ' );
+                let classes = d3_select( this ).attr( 'class' ).split( ' ' );
 
                 if ( classes.indexOf( 'invalid' ) > -1 || !folderName.length ) {
                     self.formValid = false;

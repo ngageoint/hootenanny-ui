@@ -3,20 +3,18 @@ import {
     select as d3_select
 } from 'd3-selection';
 
-import { t } from '../util/locale';
+import { t } from '../core/localizer';
 import { services } from '../services';
-import { modeBrowse } from '../modes';
-import { svgIcon } from '../svg';
+import { modeBrowse } from '../modes/browse';
+import { svgIcon } from '../svg/icon';
 
 // import { uiField } from './field';
 // import { uiFormFields } from './form_fields';
 
-import {
-    uiNoteComments,
-    uiNoteHeader,
-    uiNoteReport,
-    uiViewOnOSM,
-} from './index';
+import { uiNoteComments } from './note_comments';
+import { uiNoteHeader } from './note_header';
+import { uiNoteReport } from './note_report';
+import { uiViewOnOSM } from './view_on_osm';
 
 import {
     utilNoAuto,
@@ -26,16 +24,18 @@ import {
 
 export function uiNoteEditor(context) {
     var dispatch = d3_dispatch('change');
-    var noteComments = uiNoteComments();
+    var noteComments = uiNoteComments(context);
     var noteHeader = uiNoteHeader();
 
     // var formFields = uiFormFields(context);
 
     var _note;
+    var _newNote;
     // var _fieldsArr;
 
 
     function noteEditor(selection) {
+
         var header = selection.selectAll('.header')
             .data([0]);
 
@@ -45,15 +45,16 @@ export function uiNoteEditor(context) {
 
         headerEnter
             .append('button')
-            .attr('class', 'fr note-editor-close')
+            .attr('class', 'close')
+            .attr('title', t('icons.close'))
             .on('click', function() {
                 context.enter(modeBrowse(context));
             })
             .call(svgIcon('#iD-icon-close'));
 
         headerEnter
-            .append('h3')
-            .text(t('note.title'));
+            .append('h2')
+            .call(t.append('note.title'));
 
 
         var body = selection.selectAll('.body')
@@ -74,7 +75,6 @@ export function uiNoteEditor(context) {
             .call(noteHeader.note(_note))
             .call(noteComments.note(_note))
             .call(noteSaveSection);
-
 
         var footer = selection.selectAll('.footer')
             .data([0]);
@@ -113,7 +113,7 @@ export function uiNoteEditor(context) {
 
         // // if new note, show categories to pick from
         // if (_note.isNew()) {
-        //     var presets = context.presets();
+        //     var presets = presetManager;
 
         //     // NOTE: this key isn't a age and therefore there is no documentation (yet)
         //     _fieldsArr = [
@@ -148,13 +148,13 @@ export function uiNoteEditor(context) {
         noteSaveEnter
             .append('h4')
             .attr('class', '.note-save-header')
-            .text(function() {
-                return _note.isNew() ? t('note.newDescription') : t('note.newComment');
+            .html(function() {
+                return _note.isNew() ? t.html('note.newDescription') : t.html('note.newComment');
             });
 
-        noteSaveEnter
+        var commentTextarea = noteSaveEnter
             .append('textarea')
-            .attr('id', 'new-comment-input')
+            .attr('class', 'new-comment-input')
             .attr('placeholder', t('note.inputPlaceholder'))
             .attr('maxlength', 1000)
             .property('value', function(d) { return d.newComment; })
@@ -162,6 +162,11 @@ export function uiNoteEditor(context) {
             .on('keydown.note-input', keydown)
             .on('input.note-input', changeInput)
             .on('blur.note-input', changeInput);
+
+        if (!commentTextarea.empty() && _newNote) {
+            // autofocus the comment field for new notes
+            commentTextarea.node().focus();
+        }
 
         // update
         noteSave = noteSaveEnter
@@ -172,7 +177,8 @@ export function uiNoteEditor(context) {
 
         // fast submit if user presses cmd+enter
         function keydown(d3_event) {
-            if (!(d3_event.keyCode === 13 && d3_event.metaKey)) return;
+            if (!(d3_event.keyCode === 13 && // ↩ Return
+                d3_event.metaKey)) return;
 
             var osm = services.osm;
             if (!osm) return;
@@ -251,14 +257,14 @@ export function uiNoteEditor(context) {
 
         authEnter
             .append('span')
-            .text(t('note.login'));
+            .call(t.append('note.login'));
 
         authEnter
             .append('a')
             .attr('target', '_blank')
             .call(svgIcon('#iD-icon-out-link', 'inline'))
             .append('span')
-            .text(t('login'))
+            .call(t.append('login'))
             .on('click.note-login', function(d3_event) {
                 d3_event.preventDefault();
                 osm.authenticate();
@@ -279,7 +285,7 @@ export function uiNoteEditor(context) {
         prose = prose.enter()
             .append('p')
             .attr('class', 'note-save-prose')
-            .text(t('note.upload_explanation'))
+            .call(t.append('note.upload_explanation'))
             .merge(prose);
 
         osm.userDetails(function(err, user) {
@@ -303,7 +309,7 @@ export function uiNoteEditor(context) {
                 .attr('target', '_blank');
 
             prose
-                .html(t('note.upload_explanation_with_user', { user: userLink.html() }));
+                .html(t.html('note.upload_explanation_with_user', { user: { html: userLink.html() } }));
         });
     }
 
@@ -329,12 +335,12 @@ export function uiNoteEditor(context) {
             buttonEnter
                 .append('button')
                 .attr('class', 'button cancel-button secondary-action')
-                .text(t('confirm.cancel'));
+                .call(t.append('confirm.cancel'));
 
             buttonEnter
                 .append('button')
                 .attr('class', 'button save-button action')
-                .text(t('note.save'));
+                .call(t.append('note.save'));
 
         } else {
             buttonEnter
@@ -344,7 +350,7 @@ export function uiNoteEditor(context) {
             buttonEnter
                 .append('button')
                 .attr('class', 'button comment-button action')
-                .text(t('note.comment'));
+                .call(t.append('note.comment'));
         }
 
 
@@ -361,10 +367,10 @@ export function uiNoteEditor(context) {
 
         buttonSection.select('.status-button')   // select and propagate data
             .attr('disabled', (hasAuth ? null : true))
-            .text(function(d) {
+            .html(function(d) {
                 var action = (d.status === 'open' ? 'close' : 'open');
                 var andComment = (d.newComment ? '_comment' : '');
-                return t('note.' + action + andComment);
+                return t.html('note.' + action + andComment);
             })
             .on('click.status', clickStatus);
 
@@ -380,7 +386,7 @@ export function uiNoteEditor(context) {
 
 
 
-    function clickCancel(d) {
+    function clickCancel(d3_event, d) {
         this.blur();    // avoid keeping focus on the button - #4641
         var osm = services.osm;
         if (osm) {
@@ -391,7 +397,7 @@ export function uiNoteEditor(context) {
     }
 
 
-    function clickSave(d) {
+    function clickSave(d3_event, d) {
         this.blur();    // avoid keeping focus on the button - #4641
         var osm = services.osm;
         if (osm) {
@@ -402,7 +408,7 @@ export function uiNoteEditor(context) {
     }
 
 
-    function clickStatus(d) {
+    function clickStatus(d3_event, d) {
         this.blur();    // avoid keeping focus on the button - #4641
         var osm = services.osm;
         if (osm) {
@@ -413,7 +419,7 @@ export function uiNoteEditor(context) {
         }
     }
 
-    function clickComment(d) {
+    function clickComment(d3_event, d) {
         this.blur();    // avoid keeping focus on the button - #4641
         var osm = services.osm;
         if (osm) {
@@ -424,9 +430,15 @@ export function uiNoteEditor(context) {
     }
 
 
-    noteEditor.note = function(_) {
+    noteEditor.note = function(val) {
         if (!arguments.length) return _note;
-        _note = _;
+        _note = val;
+        return noteEditor;
+    };
+
+    noteEditor.newNote = function(val) {
+        if (!arguments.length) return _newNote;
+        _newNote = val;
         return noteEditor;
     };
 

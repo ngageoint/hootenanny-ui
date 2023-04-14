@@ -5,6 +5,7 @@
  *******************************************************************************************************/
 
 import { utilSetDimensions, utilGetDimensions } from '../util/dimensions';
+import { geoPath as d3_geoPath } from 'd3-geo';
 
 export function rendererFootprintLayer() {
     let projection,
@@ -33,7 +34,7 @@ export function rendererFootprintLayer() {
             .append( 'path' )
             .attr( 'class', 'carousel-footprint' );
 
-        let path = d3.geoPath()
+        let path = d3_geoPath()
             .projection( projection );
 
         paths.attr( 'd', path );

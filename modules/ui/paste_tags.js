@@ -8,13 +8,14 @@ import _forEach from 'lodash-es/forEach';
 import _omit    from 'lodash-es/omit';
 
 import { utilKeybinding }   from '../util/keybinding';
-import { t }                from '../util/locale';
-import { tooltip }          from '../util/tooltip';
+import { t }                from '../core/localizer';
+import { uiTooltip } from './tooltip';
 import { tooltipHtml }      from '../Hoot/tools/utilities';
 import { svgIcon }          from '../svg';
 import { modeSelect }       from '../modes';
 import { actionChangeTags } from '../actions';
 import { uiCmd }            from './cmd';
+import { select as d3_select }     from 'd3-selection';
 
 export function uiPasteTags( context ) {
     let commands = [ {
@@ -76,10 +77,11 @@ export function uiPasteTags( context ) {
     }
 
     return function( selection ) {
-        let buttonTooltip = tooltip()
+        let buttonTooltip = uiTooltip()
             .placement( 'bottom' )
-            .html( true )
-            .title( (d3_event, d) => tooltipHtml( t( d.id + '.tooltip' ), d.cmd ) );
+            .title((d3_event, d) => selection => {
+                selection.html(tooltipHtml( t( d.id + '.tooltip' ), d.cmd ))
+            });
 
         let buttons = selection.selectAll( 'button' )
             .data( commands )
@@ -89,7 +91,7 @@ export function uiPasteTags( context ) {
             .call( buttonTooltip );
 
         buttons.each( function( d ) {
-            d3.select( this ).call( svgIcon( `#${ d.icon }` ) );
+            d3_select( this ).call( svgIcon( `#${ d.icon }` ) );
         } );
 
         let keybinding = utilKeybinding( 'paste_tags' )
@@ -102,7 +104,7 @@ export function uiPasteTags( context ) {
                 commands[ 1 ].action();
             } );
 
-        d3.select( document )
+        d3_select( document )
             .call( keybinding );
 
         context
@@ -117,7 +119,7 @@ export function uiPasteTags( context ) {
                 .property( 'disabled', disabled )
                 .classed( 'disabled', disabled )
                 .each( () => {
-                    let selection = d3.select( this );
+                    let selection = d3_select( this );
 
                     if ( selection.property( 'tooltipVisible' ) ) {
                         selection.call( tooltip.show );

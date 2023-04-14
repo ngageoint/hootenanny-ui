@@ -1,20 +1,21 @@
-
 import { geoBounds as d3_geoBounds } from 'd3-geo';
 
 import {
     select as d3_select
 } from 'd3-selection';
 
-import {
-    behaviorBreathe,
-    behaviorHover,
-    behaviorLasso,
-    behaviorSelect
-} from '../behavior';
+import { behaviorBreathe } from '../behavior/breathe';
+import { behaviorHover } from '../behavior/hover';
+import { behaviorLasso } from '../behavior/lasso';
+import { behaviorSelect } from '../behavior/select';
+
+import { t } from '../core/localizer';
 
 import { geoExtent } from '../geo';
-import { modeBrowse, modeDragNode, modeDragNote } from '../modes';
-import { uiDataEditor } from '../ui';
+import { modeBrowse } from './browse';
+import { modeDragNode } from './drag_node';
+import { modeDragNote } from './drag_note';
+import { uiDataEditor } from '../ui/data_editor';
 import { utilKeybinding } from '../util';
 
 
@@ -45,7 +46,7 @@ export function modeSelectData(context, selectedDatum) {
             // Return to browse mode if selected DOM elements have
             // disappeared because the user moved them out of view..
             var source = d3_event && d3_event.type === 'zoom' && d3_event.sourceEvent;
-            if (drawn && source && (source.type === 'mousemove' || source.type === 'touchmove')) {
+            if (drawn && source && (source.type === 'pointermove' || source.type === 'mousemove' || source.type === 'touchmove')) {
                 context.enter(modeBrowse(context));
             }
         } else {
@@ -55,13 +56,23 @@ export function modeSelectData(context, selectedDatum) {
 
 
     function esc() {
+        if (context.container().select('.combobox').size()) return;
         context.enter(modeBrowse(context));
     }
 
 
+    mode.zoomToSelected = function() {
+        var extent = geoExtent(d3_geoBounds(selectedDatum));
+        context.map().centerZoomEase(extent.center(), context.map().trimmedExtentZoom(extent));
+    };
+
+
     mode.enter = function() {
         behaviors.forEach(context.install);
-        keybinding.on('⎋', esc, true);
+
+        keybinding
+            .on(t('inspector.zoom_to.key'), mode.zoomToSelected)
+            .on('⎋', esc, true);
 
         d3_select(document)
             .call(keybinding);

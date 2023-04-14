@@ -1,15 +1,64 @@
 import _map from 'lodash-es/map';
 
-import { t, textDirection } from './locale';
-import { utilDetect } from './detect';
 import { remove as removeDiacritics } from 'diacritics';
 import { fixRTLTextForSvg, rtlRegex } from './svg_paths_rtl_fix';
 
+import { presetManager } from '../presets';
+import { t, localizer } from '../core/localizer';
+import { utilArrayUnion } from './array';
+import { utilDetect } from './detect';
+import { geoExtent } from '../geo/extent';
+
 
 export function utilTagText(entity) {
-    return _map(entity.tags, function(v, k) {
-        return k + '=' + v;
-    }).join(', ');
+    var obj = (entity && entity.tags) || {};
+    return Object.keys(obj)
+        .map(function(k) { return k + '=' + obj[k]; })
+        .join(', ');
+}
+
+
+export function utilTotalExtent(array, graph) {
+    var extent = geoExtent();
+    var val, entity;
+    for (var i = 0; i < array.length; i++) {
+        val = array[i];
+        entity = typeof val === 'string' ? graph.hasEntity(val) : val;
+        if (entity) {
+            extent._extend(entity.extent(graph));
+        }
+    }
+    return extent;
+}
+
+
+export function utilTagDiff(oldTags, newTags) {
+    var tagDiff = [];
+    var keys = utilArrayUnion(Object.keys(oldTags), Object.keys(newTags)).sort();
+    keys.forEach(function(k) {
+        var oldVal = oldTags[k];
+        var newVal = newTags[k];
+
+        if ((oldVal || oldVal === '') && (newVal === undefined || newVal !== oldVal)) {
+            tagDiff.push({
+                type: '-',
+                key: k,
+                oldVal: oldVal,
+                newVal: newVal,
+                display: '- ' + k + '=' + oldVal
+            });
+        }
+        if ((newVal || newVal === '') && (oldVal === undefined || newVal !== oldVal)) {
+            tagDiff.push({
+                type: '+',
+                key: k,
+                oldVal: oldVal,
+                newVal: newVal,
+                display: '+ ' + k + '=' + newVal
+            });
+        }
+    });
+    return tagDiff;
 }
 
 
@@ -18,40 +67,77 @@ export function utilEntitySelector(ids) {
 }
 
 
+// returns an selector to select entity ids for:
+//  - entityIDs passed in
+//  - shallow descendant entityIDs for any of those entities that are relations
 export function utilEntityOrMemberSelector(ids, graph) {
-    var s = utilEntitySelector(ids);
+    var seen = new Set(ids);
+    ids.forEach(collectShallowDescendants);
+    return utilEntitySelector(Array.from(seen));
 
-    ids.forEach(function(id) {
+    function collectShallowDescendants(id) {
         var entity = graph.hasEntity(id);
-        if (entity && entity.type === 'relation') {
-            entity.members.forEach(function(member) {
-                s += ',.' + member.id;
-            });
-        }
-    });
+        if (!entity || entity.type !== 'relation') return;
 
-    return s;
+        entity.members
+            .map(function(member) { return member.id; })
+            .forEach(function(id) { seen.add(id); });
+    }
 }
 
 
+// returns an selector to select entity ids for:
+//  - entityIDs passed in
+//  - deep descendant entityIDs for any of those entities that are relations
 export function utilEntityOrDeepMemberSelector(ids, graph) {
-    var seen = {};
-    var allIDs = [];
-    function addEntityAndMembersIfNotYetSeen(id) {
-        // avoid infinite recursion for circular relations by skipping seen entities
-        if (seen[id]) return;
-        // mark the entity as seen
-        seen[id] = true;
-        // add the id;
-        allIDs.push(id);
-        if (graph.hasEntity(id)) {
-            var entity = graph.entity(id);
-            if (entity.type === 'relation' && entity.members) {
-                entity.members.forEach(function(member){
-                    addEntityAndMembersIfNotYetSeen(member.id);
-                });
-            }
+    return utilEntitySelector(utilEntityAndDeepMemberIDs(ids, graph));
+}
+
+
+// returns an selector to select entity ids for:
+//  - entityIDs passed in
+//  - deep descendant entityIDs for any of those entities that are relations
+export function utilEntityAndDeepMemberIDs(ids, graph) {
+    var seen = new Set();
+    ids.forEach(collectDeepDescendants);
+    return Array.from(seen);
+
+    function collectDeepDescendants(id) {
+        if (seen.has(id)) return;
+        seen.add(id);
+
+        var entity = graph.hasEntity(id);
+        if (!entity || entity.type !== 'relation') return;
+
+        entity.members
+            .map(function(member) { return member.id; })
+            .forEach(collectDeepDescendants);   // recurse
+    }
+}
+
+// returns an selector to select entity ids for:
+//  - deep descendant entityIDs for any of those entities that are relations
+export function utilDeepMemberSelector(ids, graph, skipMultipolgonMembers) {
+    var idsSet = new Set(ids);
+    var seen = new Set();
+    var returners = new Set();
+    ids.forEach(collectDeepDescendants);
+    return utilEntitySelector(Array.from(returners));
+
+    function collectDeepDescendants(id) {
+        if (seen.has(id)) return;
+        seen.add(id);
+
+        if (!idsSet.has(id)) {
+            returners.add(id);
         }
+
+        var entity = graph.hasEntity(id);
+        if (!entity || entity.type !== 'relation') return;
+        if (skipMultipolgonMembers && entity.isMultipolygon()) return;
+        entity.members
+            .map(function(member) { return member.id; })
+            .forEach(collectDeepDescendants);   // recurse
     }
     ids.forEach(function(id) {
         addEntityAndMembersIfNotYetSeen(id);
@@ -60,40 +146,82 @@ export function utilEntityOrDeepMemberSelector(ids, graph) {
 }
 
 
-export function utilGetAllNodes(ids, graph) {
-    var seen = {};
-    var nodes = [];
-    ids.forEach(getNodes);
-    return nodes;
+// Adds or removes highlight styling for the specified entities
+export function utilHighlightEntities(ids, highlighted, context) {
+    context.surface()
+        .selectAll(utilEntityOrDeepMemberSelector(ids, context.graph()))
+        .classed('highlighted', highlighted);
+}
 
-    function getNodes(id) {
-        if (seen[id]) return;
-        seen[id] = true;
+
+// returns an Array that is the union of:
+//  - nodes for any nodeIDs passed in
+//  - child nodes of any wayIDs passed in
+//  - descendant member and child nodes of relationIDs passed in
+export function utilGetAllNodes(ids, graph) {
+    var seen = new Set();
+    var nodes = new Set();
+
+    ids.forEach(collectNodes);
+    return Array.from(nodes);
+
+    function collectNodes(id) {
+        if (seen.has(id)) return;
+        seen.add(id);
 
         var entity = graph.hasEntity(id);
         if (!entity) return;
 
         if (entity.type === 'node') {
-            nodes.push(entity);
+            nodes.add(entity);
         } else if (entity.type === 'way') {
-            entity.nodes.forEach(getNodes);
+            entity.nodes.forEach(collectNodes);
         } else {
-            entity.members.map(function(member) { return member.id; }).forEach(getNodes);
+            entity.members
+                .map(function(member) { return member.id; })
+                .forEach(collectNodes);   // recurse
         }
     }
 }
 
 
 export function utilDisplayName(entity) {
-    var localizedNameKey = 'name:' + utilDetect().locale.toLowerCase().split('-')[0],
-        name = entity.tags[localizedNameKey] || entity.tags.name || '',
-        network = entity.tags.cycle_network || entity.tags.network;
+    var localizedNameKey = 'name:' + localizer.languageCode().toLowerCase();
+    var name = entity.tags[localizedNameKey] || entity.tags.name || '';
+    if (name) return name;
 
-    if (!name && entity.tags.ref) {
-        name = entity.tags.ref;
-        if (network) {
-            name = network + ' ' + name;
+    var tags = {
+        direction: entity.tags.direction,
+        from: entity.tags.from,
+        network: entity.tags.cycle_network || entity.tags.network,
+        ref: entity.tags.ref,
+        to: entity.tags.to,
+        via: entity.tags.via
+    };
+    var keyComponents = [];
+
+    if (tags.network) {
+        keyComponents.push('network');
+    }
+    if (tags.ref) {
+        keyComponents.push('ref');
+    }
+
+    // Routes may need more disambiguation based on direction or destination
+    if (entity.tags.route) {
+        if (tags.direction) {
+            keyComponents.push('direction');
+        } else if (tags.from && tags.to) {
+            keyComponents.push('from');
+            keyComponents.push('to');
+            if (tags.via) {
+                keyComponents.push('via');
+            }
         }
+    }
+
+    if (keyComponents.length) {
+        name = t('inspector.display_name.' + keyComponents.join('_'), tags);
     }
 
     return name;
@@ -103,8 +231,9 @@ export function utilDisplayName(entity) {
 export function utilDisplayNameForPath(entity) {
     var name = utilDisplayName(entity);
     var isFirefox = utilDetect().browser.toLowerCase().indexOf('firefox') > -1;
+    var isNewChromium = Number(utilDetect().version.split('.')[0]) >= 96.0;
 
-    if (!isFirefox && name && rtlRegex.test(name)) {
+    if (!isFirefox && !isNewChromium && name && rtlRegex.test(name)) {
         name = fixRTLTextForSvg(name);
     }
 
@@ -121,14 +250,137 @@ export function utilDisplayType(id) {
 }
 
 
+// `utilDisplayLabel`
+// Returns a string suitable for display
+// By default returns something like name/ref, fallback to preset type, fallback to OSM type
+//   "Main Street" or "Tertiary Road"
+// If `verbose=true`, include both preset name and feature name.
+//   "Tertiary Road Main Street"
+//
+export function utilDisplayLabel(entity, graphOrGeometry, verbose) {
+    var result;
+    var displayName = utilDisplayName(entity);
+    var preset = typeof graphOrGeometry === 'string' ?
+        presetManager.matchTags(entity.tags, graphOrGeometry) :
+        presetManager.match(entity, graphOrGeometry);
+    var presetName = preset && (preset.suggestion ? preset.subtitle() : preset.name());
+
+    if (verbose) {
+        result = [presetName, displayName].filter(Boolean).join(' ');
+    } else {
+        result = displayName || presetName;
+    }
+
+    // Fallback to the OSM type (node/way/relation)
+    return result || utilDisplayType(entity.id);
+}
+
+
+export function utilEntityRoot(entityType) {
+    return {
+        node: 'n',
+        way: 'w',
+        relation: 'r'
+    }[entityType];
+}
+
+
+// Returns a single object containing the tags of all the given entities.
+// Example:
+// {
+//   highway: 'service',
+//   service: 'parking_aisle'
+// }
+//           +
+// {
+//   highway: 'service',
+//   service: 'driveway',
+//   width: '3'
+// }
+//           =
+// {
+//   highway: 'service',
+//   service: [ 'driveway', 'parking_aisle' ],
+//   width: [ '3', undefined ]
+// }
+export function utilCombinedTags(entityIDs, graph) {
+
+    var tags = {};
+    var tagCounts = {};
+    var allKeys = new Set();
+
+    var entities = entityIDs.map(function(entityID) {
+        return graph.hasEntity(entityID);
+    }).filter(Boolean);
+
+    // gather the aggregate keys
+    entities.forEach(function(entity) {
+        var keys = Object.keys(entity.tags).filter(Boolean);
+        keys.forEach(function(key) {
+            allKeys.add(key);
+        });
+    });
+
+    entities.forEach(function(entity) {
+
+        allKeys.forEach(function(key) {
+
+            var value = entity.tags[key]; // purposely allow `undefined`
+
+            if (!tags.hasOwnProperty(key)) {
+                // first value, set as raw
+                tags[key] = value;
+            } else {
+                if (!Array.isArray(tags[key])) {
+                    if (tags[key] !== value) {
+                        // first alternate value, replace single value with array
+                        tags[key] = [tags[key], value];
+                    }
+                } else { // type is array
+                    if (tags[key].indexOf(value) === -1) {
+                        // subsequent alternate value, add to array
+                        tags[key].push(value);
+                    }
+                }
+            }
+
+            var tagHash = key + '=' + value;
+            if (!tagCounts[tagHash]) tagCounts[tagHash] = 0;
+            tagCounts[tagHash] += 1;
+        });
+    });
+
+    for (var key in tags) {
+        if (!Array.isArray(tags[key])) continue;
+
+        // sort values by frequency then alphabetically
+        tags[key] = tags[key].sort(function(val1, val2) {
+            var key = key; // capture
+            var count2 = tagCounts[key + '=' + val2];
+            var count1 = tagCounts[key + '=' + val1];
+            if (count2 !== count1) {
+                return count2 - count1;
+            }
+            if (val2 && val1) {
+                return val1.localeCompare(val2);
+            }
+            return val1 ? 1 : -1;
+        });
+    }
+
+    return tags;
+}
+
+
 export function utilStringQs(str) {
+    var i = 0;  // advance past any leading '?' or '#' characters
+    while (i < str.length && (str[i] === '?' || str[i] === '#')) i++;
+    str = str.slice(i);
+
     return str.split('&').reduce(function(obj, pair){
         var parts = pair.split('=');
         if (parts.length === 2) {
             obj[parts[0]] = (null === parts[1]) ? '' : decodeURIComponent(parts[1]);
-        }
-        if (parts[0] === 'mvt') {
-            obj[parts[0]] = (parts[2] !== undefined) ? (decodeURIComponent(parts[1]) + '=' + decodeURIComponent(parts[2])) : (decodeURIComponent(parts[1]));
         }
         return obj;
     }, {});
@@ -136,11 +388,12 @@ export function utilStringQs(str) {
 
 
 export function utilQsString(obj, noencode) {
+    // encode everything except special characters used in certain hash parameters:
+    // "/" in map states, ":", ",", {" and "}" in background
     function softEncode(s) {
-        // encode everything except special characters used in certain hash parameters:
-        // "/" in map states, ":", ",", {" and "}" in background
         return encodeURIComponent(s).replace(/(%2F|%3A|%2C|%7B|%7D)/g, decodeURIComponent);
     }
+
     return Object.keys(obj).sort().map(function(key) {
         return encodeURIComponent(key) + '=' + (
             noencode ? softEncode(obj[key]) : encodeURIComponent(obj[key]));
@@ -149,36 +402,40 @@ export function utilQsString(obj, noencode) {
 
 
 export function utilPrefixDOMProperty(property) {
-    var prefixes = ['webkit', 'ms', 'moz', 'o'],
-        i = -1,
-        n = prefixes.length,
-        s = document.body;
+    var prefixes = ['webkit', 'ms', 'moz', 'o'];
+    var i = -1;
+    var n = prefixes.length;
+    var s = document.body;
 
-    if (property in s)
-        return property;
+    if (property in s) return property;
 
-    property = property.substr(0, 1).toUpperCase() + property.substr(1);
+    property = property.slice(0, 1).toUpperCase() + property.slice(1);
 
-    while (++i < n)
-        if (prefixes[i] + property in s)
+    while (++i < n) {
+        if (prefixes[i] + property in s) {
             return prefixes[i] + property;
+        }
+    }
 
     return false;
 }
 
 
 export function utilPrefixCSSProperty(property) {
-    var prefixes = ['webkit', 'ms', 'Moz', 'O'],
-        i = -1,
-        n = prefixes.length,
-        s = document.body.style;
+    var prefixes = ['webkit', 'ms', 'Moz', 'O'];
+    var i = -1;
+    var n = prefixes.length;
+    var s = document.body.style;
 
-    if (property.toLowerCase() in s)
+    if (property.toLowerCase() in s) {
         return property.toLowerCase();
+    }
 
-    while (++i < n)
-        if (prefixes[i] + property in s)
+    while (++i < n) {
+        if (prefixes[i] + property in s) {
             return '-' + prefixes[i].toLowerCase() + property.replace(/([A-Z])/g, '-$1').toLowerCase();
+        }
+    }
 
     return false;
 }
@@ -186,10 +443,9 @@ export function utilPrefixCSSProperty(property) {
 
 var transformProperty;
 export function utilSetTransform(el, x, y, scale) {
-    var prop = transformProperty = transformProperty || utilPrefixCSSProperty('Transform'),
-        translate = utilDetect().opera ?
-            'translate('   + x + 'px,' + y + 'px)' :
-            'translate3d(' + x + 'px,' + y + 'px,0)';
+    var prop = transformProperty = transformProperty || utilPrefixCSSProperty('Transform');
+    var translate = utilDetect().opera ? 'translate('   + x + 'px,' + y + 'px)'
+        : 'translate3d(' + x + 'px,' + y + 'px,0)';
     return el.style(prop, translate + (scale ? ' scale(' + scale + ')' : ''));
 }
 
@@ -203,8 +459,9 @@ export function utilEditDistance(a, b) {
     if (a.length === 0) return b.length;
     if (b.length === 0) return a.length;
     var matrix = [];
-    for (var i = 0; i <= b.length; i++) { matrix[i] = [i]; }
-    for (var j = 0; j <= a.length; j++) { matrix[0][j] = j; }
+    var i, j;
+    for (i = 0; i <= b.length; i++) { matrix[i] = [i]; }
+    for (j = 0; j <= a.length; j++) { matrix[0][j] = j; }
     for (i = 1; i <= b.length; i++) {
         for (j = 1; j <= a.length; j++) {
             if (b.charAt(i-1) === a.charAt(j-1)) {
@@ -212,7 +469,7 @@ export function utilEditDistance(a, b) {
             } else {
                 matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, // substitution
                     Math.min(matrix[i][j-1] + 1, // insertion
-                        matrix[i-1][j] + 1)); // deletion
+                    matrix[i-1][j] + 1)); // deletion
             }
         }
     }
@@ -224,18 +481,16 @@ export function utilEditDistance(a, b) {
 // 1. Only works on HTML elements, not SVG
 // 2. Does not cause style recalculation
 export function utilFastMouse(container) {
-    var rect = container.getBoundingClientRect(),
-        rectLeft = rect.left,
-        rectTop = rect.top,
-        clientLeft = +container.clientLeft,
-        clientTop = +container.clientTop;
-    if (textDirection === 'rtl') {
-        rectLeft = 0;
-    }
+    var rect = container.getBoundingClientRect();
+    var rectLeft = rect.left;
+    var rectTop = rect.top;
+    var clientLeft = +container.clientLeft;
+    var clientTop = +container.clientTop;
     return function(e) {
         return [
             e.clientX - rectLeft - clientLeft,
-            e.clientY - rectTop - clientTop];
+            e.clientY - rectTop - clientTop
+        ];
     };
 }
 
@@ -246,9 +501,9 @@ export var utilGetPrototypeOf = Object.getPrototypeOf || function(obj) { return 
 
 
 export function utilAsyncMap(inputs, func, callback) {
-    var remaining = inputs.length,
-        results = [],
-        errors = [];
+    var remaining = inputs.length;
+    var results = [];
+    var errors = [];
 
     inputs.forEach(function(d, i) {
         func(d, function done(err, data) {
@@ -263,8 +518,9 @@ export function utilAsyncMap(inputs, func, callback) {
 
 // wraps an index to an interval [0..length-1]
 export function utilWrap(index, length) {
-    if (index < 0)
+    if (index < 0) {
         index += Math.ceil(-index/length)*length;
+    }
     return index % length;
 }
 
@@ -287,7 +543,8 @@ export function utilNoAuto(selection) {
     var isText = (selection.size() && selection.node().tagName.toLowerCase() === 'textarea');
 
     return selection
-        .attr('autocomplete', 'off')
+        // assign 'new-password' even for non-password fields to prevent browsers (Chrome) ignoring 'off'
+        .attr('autocomplete', 'new-password')
         .attr('autocorrect', 'off')
         .attr('autocapitalize', 'off')
         .attr('spellcheck', isText ? 'true' : 'false');
@@ -309,9 +566,96 @@ export function utilHashcode(str) {
     return hash;
 }
 
-// Adds or removes highlight styling for the specified entity's SVG elements in the map.
-export function utilHighlightEntity(id, highlighted, context) {
-    context.surface()
-        .selectAll(utilEntityOrDeepMemberSelector([id], context.graph()))
-        .classed('highlighted', highlighted);
+// Returns version of `str` with all runs of special characters replaced by `_`;
+// suitable for HTML ids, classes, selectors, etc.
+export function utilSafeClassName(str) {
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, '_');
 }
+
+// Returns string based on `val` that is highly unlikely to collide with an id
+// used previously or that's present elsewhere in the document. Useful for preventing
+// browser-provided autofills or when embedding iD on pages with unknown elements.
+export function utilUniqueDomId(val) {
+    return 'ideditor-' + utilSafeClassName(val.toString()) + '-' + new Date().getTime().toString();
+}
+
+// Returns the length of `str` in unicode characters. This can be less than
+// `String.length()` since a single unicode character can be composed of multiple
+// JavaScript UTF-16 code units.
+export function utilUnicodeCharsCount(str) {
+    // Native ES2015 implementations of `Array.from` split strings into unicode characters
+    return Array.from(str).length;
+}
+
+// Returns a new string representing `str` cut from its start to `limit` length
+// in unicode characters. Note that this runs the risk of splitting graphemes.
+export function utilUnicodeCharsTruncated(str, limit) {
+    return Array.from(str).slice(0, limit).join('');
+}
+
+function toNumericID(id) {
+    var match = id.match(/^[cnwr](-?\d+)$/);
+    if (match) {
+        return parseInt(match[1], 10);
+    }
+    return NaN;
+}
+
+function compareNumericIDs(left, right) {
+    if (isNaN(left) && isNaN(right)) return -1;
+    if (isNaN(left)) return 1;
+    if (isNaN(right)) return -1;
+    if (Math.sign(left) !== Math.sign(right)) return -Math.sign(left);
+    if (Math.sign(left) < 0) return Math.sign(right - left);
+    return Math.sign(left - right);
+}
+
+// Returns -1 if the first parameter ID is older than the second,
+// 1 if the second parameter is older, 0 if they are the same.
+// If both IDs are test IDs, the function returns -1.
+export function utilCompareIDs(left, right) {
+    return compareNumericIDs(toNumericID(left), toNumericID(right));
+}
+
+// Returns the chronologically oldest ID in the list.
+// Database IDs (with positive numbers) before editor ones (with negative numbers).
+// Among each category, the closest number to 0 is the oldest.
+// Test IDs (any string that does not conform to OSM's ID scheme) are taken last.
+export function utilOldestID(ids) {
+    if (ids.length === 0) {
+        return undefined;
+    }
+
+    var oldestIDIndex = 0;
+    var oldestID = toNumericID(ids[0]);
+
+    for (var i = 1; i < ids.length; i++) {
+        var num = toNumericID(ids[i]);
+
+        if (compareNumericIDs(oldestID, num) === 1) {
+            oldestIDIndex = i;
+            oldestID = num;
+        }
+    }
+
+    return ids[oldestIDIndex];
+}
+
+// returns a normalized and truncated string to `maxChars` utf-8 characters
+export function utilCleanOsmString(val, maxChars) {
+    // be lenient with input
+    if (val === undefined || val === null) {
+      val = '';
+    } else {
+      val = val.toString();
+    }
+
+    // remove whitespace
+    val = val.trim();
+
+    // use the canonical form of the string
+    if (val.normalize) val = val.normalize('NFC');
+
+    // trim to the number of allowed characters
+    return utilUnicodeCharsTruncated(val, maxChars);
+  }

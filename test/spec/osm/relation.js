@@ -185,6 +185,85 @@ describe('iD.osmRelation', function () {
         });
     });
 
+    describe('#hasFromViaTo', function () {
+        it('returns true if there is a from, via, and to', function () {
+            var r = iD.osmRelation({
+                id: 'r',
+                tags: { type: 'manoeuvre' },
+                members: [
+                    { role: 'from', id: 'f', type: 'way' },
+                    { role: 'via', id: 'v', type: 'node' },
+                    { role: 'to', id: 't', type: 'way' }
+                ]
+            });
+            expect(r.hasFromViaTo()).to.be.true;
+        });
+
+        it('returns true if there are extra froms, vias, tos', function () {
+            var r = iD.osmRelation({
+                id: 'r',
+                tags: { type: 'manoeuvre' },
+                members: [
+                    { role: 'from', id: 'f1', type: 'way' },
+                    { role: 'from', id: 'f2', type: 'way' },
+                    { role: 'via', id: 'v1', type: 'node' },
+                    { role: 'via', id: 'v2', type: 'node' },
+                    { role: 'to', id: 't1', type: 'way' },
+                    { role: 'to', id: 't2', type: 'way' }
+                ]
+            });
+            expect(r.hasFromViaTo()).to.be.true;
+        });
+
+        it('returns false if from missing', function () {
+            var r = iD.osmRelation({
+                id: 'r',
+                tags: { type: 'manoeuvre' },
+                members: [
+                    { role: 'via', id: 'v', type: 'node' },
+                    { role: 'to', id: 't', type: 'way' }
+                ]
+            });
+            expect(r.hasFromViaTo()).to.be.false;
+        });
+
+        it('returns false if via missing', function () {
+            var r = iD.osmRelation({
+                id: 'r',
+                tags: { type: 'manoeuvre' },
+                members: [
+                    { role: 'from', id: 'f', type: 'way' },
+                    { role: 'to', id: 't', type: 'way' }
+                ]
+            });
+            expect(r.hasFromViaTo()).to.be.false;
+        });
+
+        it('returns false if to missing', function () {
+            var r = iD.osmRelation({
+                id: 'r',
+                tags: { type: 'manoeuvre' },
+                members: [
+                    { role: 'from', id: 'f', type: 'way' },
+                    { role: 'via', id: 'v', type: 'node' }
+                ]
+            });
+            expect(r.hasFromViaTo()).to.be.false;
+        });
+
+        it('returns false if all missing', function () {
+            var r = iD.osmRelation({
+                id: 'r',
+                tags: { type: 'multipolygon' },
+                members: [
+                    { role: 'inner', id: 'i', type: 'way' },
+                    { role: 'outer', id: 'o', type: 'way' }
+                ]
+            });
+            expect(r.hasFromViaTo()).to.be.false;
+        });
+    });
+
     describe('#isRestriction', function () {
         it('returns true for \'restriction\' type', function () {
             expect(iD.osmRelation({tags: {type: 'restriction'}}).isRestriction()).to.be.true;
@@ -568,7 +647,7 @@ describe('iD.osmRelation', function () {
             var r = iD.osmRelation({members: [{id: w.id, type: 'way'}]});
             var g = iD.coreGraph([a, b, c, w, r]);
 
-            expect(r.multipolygon(g)).to.eql([[[a.loc, b.loc, c.loc]]]);
+            expect(r.multipolygon(g)).to.eql([[[a.loc, b.loc, c.loc, a.loc]]]);
         });
 
         specify('invalid geometry: unclosed ring consisting of multiple ways', function () {
@@ -580,7 +659,7 @@ describe('iD.osmRelation', function () {
             var r  = iD.osmRelation({members: [{id: w1.id, type: 'way'}, {id: w2.id, type: 'way'}]});
             var g  = iD.coreGraph([a, b, c, w1, w2, r]);
 
-            expect(r.multipolygon(g)).to.eql([[[a.loc, b.loc, c.loc]]]);
+            expect(r.multipolygon(g)).to.eql([[[a.loc, b.loc, c.loc, a.loc]]]);
         });
 
         specify('invalid geometry: unclosed ring consisting of multiple ways, alternate order', function () {
@@ -593,7 +672,7 @@ describe('iD.osmRelation', function () {
             var r  = iD.osmRelation({members: [{id: w1.id, type: 'way'}, {id: w2.id, type: 'way'}]});
             var g  = iD.coreGraph([a, b, c, d, w1, w2, r]);
 
-            expect(r.multipolygon(g)).to.eql([[[d.loc, c.loc, b.loc, a.loc]]]);
+            expect(r.multipolygon(g)).to.eql([[[d.loc, c.loc, b.loc, a.loc, d.loc]]]);
         });
 
         specify('invalid geometry: unclosed ring consisting of multiple ways, one needing reversal', function () {
@@ -606,7 +685,7 @@ describe('iD.osmRelation', function () {
             var r  = iD.osmRelation({members: [{id: w1.id, type: 'way'}, {id: w2.id, type: 'way'}]});
             var g  = iD.coreGraph([a, b, c, d, w1, w2, r]);
 
-            expect(r.multipolygon(g)).to.eql([[[d.loc, c.loc, b.loc, a.loc]]]);
+            expect(r.multipolygon(g)).to.eql([[[a.loc, d.loc, c.loc, b.loc, a.loc]]]);
         });
 
         specify('invalid geometry: unclosed ring consisting of multiple ways, one needing reversal, alternate order', function () {
@@ -619,7 +698,7 @@ describe('iD.osmRelation', function () {
             var r  = iD.osmRelation({members: [{id: w1.id, type: 'way'}, {id: w2.id, type: 'way'}]});
             var g  = iD.coreGraph([a, b, c, d, w1, w2, r]);
 
-            expect(r.multipolygon(g)).to.eql([[[d.loc, c.loc, b.loc, a.loc]]]);
+            expect(r.multipolygon(g)).to.eql([[[d.loc, c.loc, b.loc, a.loc, d.loc]]]);
         });
 
         specify('single polygon with single single-way inner', function () {
@@ -726,7 +805,7 @@ describe('iD.osmRelation', function () {
             var r  = iD.osmRelation({members: [{id: w2.id, type: 'way'}, {id: w1.id, type: 'way'}]});
             var g  = iD.coreGraph([a, b, c, w1, r]);
 
-            expect(r.multipolygon(g)).to.eql([[[a.loc, b.loc, c.loc]]]);
+            expect(r.multipolygon(g)).to.eql([[[a.loc, c.loc, b.loc, a.loc]]]);
         });
     });
 

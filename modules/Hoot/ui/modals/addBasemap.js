@@ -8,6 +8,7 @@ import _forEach from 'lodash-es/forEach';
 
 import FormFactory        from '../../tools/formFactory';
 import { basemapAddForm } from '../../config/domMetadata';
+import { select as d3_select } from 'd3-selection';
 
 export default class AddBasemap {
     constructor( instance ) {
@@ -28,10 +29,10 @@ export default class AddBasemap {
 
         this.container = new FormFactory().generateForm( 'body', 'basemaps-add-form', metadata );
 
-        this.fileInput    = d3.select( '#basemapFileImport' );
-        this.fileIngest   = d3.select( '#ingestFileUploader' );
-        this.nameInput    = d3.select( '#basemapName' );
-        this.submitButton = d3.select( '#basemapAddBtn' );
+        this.fileInput    = d3_select( '#basemapFileImport' );
+        this.fileIngest   = d3_select( '#ingestFileUploader' );
+        this.nameInput    = d3_select( '#basemapName' );
+        this.submitButton = d3_select( '#basemapAddBtn' );
     }
 
     handleMultipartChange() {
@@ -48,7 +49,7 @@ export default class AddBasemap {
     }
 
     validateTextInput( d ) {
-        let target     = d3.select( `#${ d.id }` ),
+        let target     = d3_select( `#${ d.id }` ),
             fieldValid = target.property( 'value' );
 
         target.classed( 'invalid', !fieldValid );
@@ -101,7 +102,7 @@ export default class AddBasemap {
 
         this.container.selectAll( 'input' )
             .each( function() {
-                d3.select( this ).node().disabled = true;
+                d3_select( this ).node().disabled = true;
             } );
     }
 }
