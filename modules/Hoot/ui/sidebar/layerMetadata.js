@@ -153,6 +153,7 @@ export default class LayerMetadata {
             .enter().append('td')
             .classed('metadata', true)
             .classed('metadata-key keyline-right', function (d, i) { return i === 0; })
+            .attr( 'style', 'word-break: normal;')
             .text(d => d);
     }
 
@@ -235,7 +236,7 @@ export default class LayerMetadata {
             //Ugly hack, but sometimes the first line of stats output doesn't get a hard return
             //causing it to munge with Nodes
             let statsNodes = stats.Nodes || stats['stats = (stat) OR (input map 1 stat) (input map 2 stat) (output map stat)Nodes'];
-
+            let noStats = this.tags.stats === '';
             const tableConfig = {
                 layercounts: {
                     count: {
@@ -244,19 +245,19 @@ export default class LayerMetadata {
                         3: 'relations'
                     },
                     [RefLayerName]: {
-                        nodes: statsNodes[0],
-                        ways: stats.Ways[0],
-                        relations: stats.Relations[0]
+                        nodes: noStats ? 'stats missing' : statsNodes[0],
+                        ways: noStats ? 'stats missing' : stats.Ways[0],
+                        relations: noStats ? 'stats missing' : stats.Relations[0]
                     },
                     [SecLayerName]: {
-                        nodes: statsNodes[1],
-                        ways: stats.Ways[1],
-                        relations: stats.Relations[1]
+                        nodes: noStats ? 'stats missing': statsNodes[1],
+                        ways: noStats ? 'stats missing' : stats.Ways[1],
+                        relations: noStats ? 'stats missing' : stats.Relations[1]
                     },
                     [ConflatedLayer]: {
-                        nodes: statsNodes[2],
-                        ways: stats.Ways[2],
-                        relations: stats.Relations[2]
+                        nodes: noStats ? 'stats missing' : statsNodes[2],
+                        ways: noStats ? 'stats missing' : stats.Ways[2],
+                        relations: noStats ? 'stats missing' : stats.Relations[2]
                     }
                 },
                 layerfeatures: {
