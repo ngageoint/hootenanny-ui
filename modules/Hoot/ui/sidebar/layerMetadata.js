@@ -231,10 +231,12 @@ export default class LayerMetadata {
                 stats[d.shift()] = d;
                 return stats;
             }, {});
+
             //Ugly hack, but sometimes the first line of stats output doesn't get a hard return
             //causing it to munge with Nodes
             let statsNodes = stats.Nodes || stats['stats = (stat) OR (input map 1 stat) (input map 2 stat) (output map stat)Nodes'];
             if (!statsNodes) return;
+
             const tableConfig = {
                 layercounts: {
                     count: {
@@ -248,7 +250,7 @@ export default class LayerMetadata {
                         relations: stats.Relations[0]
                     },
                     [SecLayerName]: {
-                        nodes: noStats ? 'stats missing': statsNodes[1],
+                        nodes: statsNodes[1],
                         ways: stats.Ways[1],
                         relations: stats.Relations[1]
                     },
