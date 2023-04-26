@@ -1038,16 +1038,10 @@ export default {
             if (!isNaN(_nodeCountCache.loaded[tile.id])) {
                 return total += _nodeCountCache.loaded[tile.id];
             } else {
-                return total;
+                return _maxNodeCount + 1; //force over max count if a tile node count is missing
             }
         }, 0);
         console.debug('total view tile nodes = ' + count);
-        //sometimes tiles are empty when app first opens and we don't want to treat as a zero node count
-        //but as over the max count
-        if (count === 0 && tiles.length === 0) {
-            console.debug('zero tiles');
-            return _maxNodeCount + 1;
-        }
         return count;
     },
 
