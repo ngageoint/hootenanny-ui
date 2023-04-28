@@ -235,6 +235,7 @@ export default class LayerMetadata {
             //Ugly hack, but sometimes the first line of stats output doesn't get a hard return
             //causing it to munge with Nodes
             let statsNodes = stats.Nodes || stats['stats = (stat) OR (input map 1 stat) (input map 2 stat) (output map stat)Nodes'];
+            if (!statsNodes) return;
 
             const tableConfig = {
                 layercounts: {
