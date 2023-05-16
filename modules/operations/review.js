@@ -9,7 +9,7 @@ import {
 
 export function operationReview(selectedIDs, context) {
     const entityId = selectedIDs[0];
-    const entityLoc = context.hasEntity(entityId).hasOwnProperty('nodes') ? getLocation(context.hasEntity(entityId)) : getLocation(context.hasEntity(context.hasEntity(entityId).members[0].id));
+    const entityLoc = members ?  getLocation(context.hasEntity(context.hasEntity(entityId).members[0].id)) : getLocation(context.hasEntity(entityId));
 
     function getLocation(entity) {
         if (entity.type === 'node') {
