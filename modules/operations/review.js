@@ -9,6 +9,7 @@ import {
 
 export function operationReview(selectedIDs, context) {
     const entityId = selectedIDs[0];
+    let members = context.hasEntity(entityId).members
     const entityLoc = members ?  getLocation(context.hasEntity(context.hasEntity(entityId).members[0].id)) : getLocation(context.hasEntity(entityId));
 
     function getLocation(entity) {
