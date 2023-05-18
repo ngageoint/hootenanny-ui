@@ -9,7 +9,7 @@ import {
 
 export function operationReview(selectedIDs, context) {
     const entityId = selectedIDs[0];
-    let member = getMemberNodes(context.hasEntity(entityId).members)
+    let member = getMemberNodes(context.hasEntity(entityId).members);
     const entityLoc = member ?  getLocation(context.hasEntity(member.id)) : getLocation(context.hasEntity(entityId));
 
     function getLocation(entity) {
@@ -27,9 +27,9 @@ export function operationReview(selectedIDs, context) {
         if (members && members.length > 0) {
             if (members[0].type === 'relation') {
                 let relationMembers = context.hasEntity(members[0].id).members;
-                return relationMembers[0]
+                return relationMembers[0];
             } else {
-                return members[0]
+                return members[0];
             }
         }
     }
