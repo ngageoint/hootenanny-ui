@@ -9,8 +9,8 @@ import {
 
 export function operationReview(selectedIDs, context) {
     const entityId = selectedIDs[0];
-    let members = context.hasEntity(entityId).members;
-    const entityLoc = members ?  getLocation(context.hasEntity(members[0].id)) : getLocation(context.hasEntity(entityId));
+    let member = getMemberNodes(context.hasEntity(entityId).members)
+    const entityLoc = member ?  getLocation(context.hasEntity(member.id)) : getLocation(context.hasEntity(entityId));
 
     function getLocation(entity) {
         if (entity.type === 'node') {
@@ -21,6 +21,17 @@ export function operationReview(selectedIDs, context) {
         const point = turfPoint(entity.extent(context.graph()).center());
 
         return nearestPointOnLine(line, point);
+    }
+
+    function getMemberNodes(members) {
+        if (members && members.length > 0) {
+            if (members[0].type === 'relation') {
+                let relationMembers = context.hasEntity(members[0].id).members;
+                return relationMembers[0]
+            } else {
+                return members[0]
+            }
+        }
     }
 
     function collectReviewLocations(mem, locations = []) {
