@@ -19,7 +19,7 @@ export function operationReview(selectedIDs, context) {
             entity = members.find(m => true);
         }
     }
-    const entityLoc = getLocation(entity)
+    const entityLoc = getLocation(entity);
 
     function getLocation(entity) {
         if (entity.type === 'node') {
