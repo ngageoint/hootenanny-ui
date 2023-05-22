@@ -9,8 +9,17 @@ import {
 
 export function operationReview(selectedIDs, context) {
     const entityId = selectedIDs[0];
-    let member = getMemberNodes(context.hasEntity(entityId).members);
-    const entityLoc = member ?  getLocation(context.hasEntity(member.id)) : getLocation(context.hasEntity(entityId));
+    let entity = context.hasEntity(entityId);
+    while (entity && entity.type === 'relation') {
+        let members = entity.members.map(m => context.hasEntity(m.id));
+        let nonRelationMember = members.find(e => e.type !== 'relation');
+        if (nonRelationMember) {
+            entity = nonRelationMember;
+        } else {
+            entity = members.find(m => true);
+        }
+    }
+    const entityLoc = getLocation(entity)
 
     function getLocation(entity) {
         if (entity.type === 'node') {
@@ -23,16 +32,6 @@ export function operationReview(selectedIDs, context) {
         return nearestPointOnLine(line, point);
     }
 
-    function getMemberNodes(members) {
-        if (members && members.length > 0) {
-            if (members[0].type === 'relation') {
-                let relationMembers = context.hasEntity(members[0].id).members;
-                return relationMembers[0];
-            } else {
-                return members[0];
-            }
-        }
-    }
 
     function collectReviewLocations(mem, locations = []) {
         if (mem.type === 'relation') {
