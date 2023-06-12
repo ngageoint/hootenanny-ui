@@ -1857,7 +1857,6 @@ img.tag-reference-wiki-image {
 .form-field-comment:not(.present) #preset-input-comment {
     border-color: rgb(230, 100, 100);
 }
-
 .form-field-comment:not(.present) .form-field-label {
     border-color: rgb(230, 100, 100);
     background: rgba(230, 100, 100, 0.2);
