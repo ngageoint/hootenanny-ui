@@ -815,7 +815,7 @@ export default class Jobs extends Tab {
                                 action: async () => {
                                     Hoot.api.changesetStats(d.jobId)
                                         .then( resp => {
-                                            this.changesetStats = new ChangesetStats( d, resp.data ).render();
+                                            this.changesetStats = new ChangesetStats( d, resp.data, resp.data.error ).render();
 
                                             Hoot.events.once( 'modal-closed', () => delete this.changesetStats );
                                         } )
