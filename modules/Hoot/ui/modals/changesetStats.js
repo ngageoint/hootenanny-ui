@@ -1,5 +1,6 @@
 import FormFactory from '../../tools/formFactory';
 import { uiChangesetEditor } from '../../../ui/changeset_editor';
+import { svgIcon } from '../../../svg';
 
 export default class ChangesetStats {
     constructor( job, data, viewOnly ) {
@@ -77,6 +78,8 @@ export default class ChangesetStats {
             this.submitButton = d3.select( `#${ metadata.button.id }` );
             this.createComment();
             this.updateSubmitButton();
+        } else if (this.changesetInfo.error) {
+            this.createError();
         }
         this.createTable();
 
@@ -89,9 +92,18 @@ export default class ChangesetStats {
             });
     }
 
-    createTable() {
-        const { hasTags } = this.changesetInfo;
+    createError() {
+        this.form
+            .select( '.wrapper div' )
+            .insert( 'div')
+            .attr('class', 'changeset-error')
+            .call(svgIcon('#iD-icon-alert', 'inline'))
+            .append('span')
+            .text(this.changesetInfo.error)
+            ;
+    }
 
+    createTable() {
         let table = this.form
             .select( '.wrapper div' )
             .insert( 'table', '.changeset-editor' )

@@ -39,6 +39,7 @@ import {
 } from '../util';
 
 import { baseUrl as hootBaseUrl, maxNodeCount } from '../Hoot/config/apiConfig';
+import { osmIsInterestingTag } from '../osm';
 
 var tiler = utilTiler();
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded', 'loadedNotes');
@@ -125,12 +126,27 @@ function getNodes(obj, mapId) {
 }
 
 
-function getTags(obj) {
+function getTags(obj, mapId) {
     var elems = obj.getElementsByTagName('tag');
     var tags = {};
     for (var i = 0, l = elems.length; i < l; i++) {
         var attrs = elems[i].attributes;
         tags[attrs.k.value] = decodeURIComponent(attrs.v.value);
+    }
+    //Check the first feature with interesting tag keys for FCODE/F_CODE
+    if (Object.keys(tags).some(osmIsInterestingTag)) {
+        if (mapId && Hoot.layers.loadedLayers[mapId] && Hoot.layers.loadedLayers[mapId].nonOsm === undefined) {
+            if (Object.keys(tags).some(k => ['FCODE', 'F_CODE'].includes(k))) {
+                Hoot.layers.loadedLayers[mapId].nonOsm = true;
+                let layerName = Hoot.layers.loadedLayers[mapId].name;
+                let message =  `non-OSM tags in "${layerName}", does it need to be translated to OSM?`;
+                let type = 'error';
+                let keepOpen = true;
+                Hoot.message.alert( {message, type, keepOpen} );
+            } else {
+                Hoot.layers.loadedLayers[mapId].nonOsm = false;
+            }
+        }
     }
 
     return tags;
@@ -215,7 +231,7 @@ var parsers = {
             user: attrs.user && attrs.user.value,
             uid: attrs.uid && attrs.uid.value,
             loc: getLoc(attrs),
-            tags: getTags(obj)
+            tags: getTags(obj, mapId)
         });
     },
 
@@ -230,7 +246,7 @@ var parsers = {
             timestamp: attrs.timestamp && attrs.timestamp.value,
             user: attrs.user && attrs.user.value,
             uid: attrs.uid && attrs.uid.value,
-            tags: getTags(obj),
+            tags: getTags(obj, mapId),
             nodes: getNodes(obj, mapId),
         });
     },
@@ -247,7 +263,7 @@ var parsers = {
             timestamp: attrs.timestamp && attrs.timestamp.value,
             user: attrs.user && attrs.user.value,
             uid: attrs.uid && attrs.uid.value,
-            tags: getTags(obj),
+            tags: getTags(obj, mapId),
             members: getMembers(obj, mapId)
         });
     },
