@@ -134,7 +134,7 @@ export default class FolderManager {
      */
     listFolders( folders ) {
         return _map( folders, folder => {
-            if ( folder.parentId === 0 ) {
+            if ( folder.parentId === 0 || folder.parentId === null) {
                 folder.folderPath = '/ ' + folder.name;
             } else {
                 //use links to get parent folder as far back as possible
