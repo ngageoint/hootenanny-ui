@@ -43,6 +43,21 @@ export default class GrailPull {
         this.createTable();
     }
 
+    clipSection() {
+        const grailClipExtent = this.form
+            .select( '.wrapper div' )
+            .insert( 'div', '.modal-footer' );
+        grailClipExtent
+            .append('input')
+            .attr( 'type', 'checkbox' )
+            .attr( 'id', 'clipExtent' )
+            .property( 'checked', false );
+        grailClipExtent
+            .append('label')
+            .attr( 'for', 'clipExtent' )
+            .text('Clip data to extent' );
+    }
+
     addBackButton( nextButtonId ) {
         const backButton = this.form.select( '.modal-footer' )
             .insert( 'button', `#${ nextButtonId }` )
@@ -117,6 +132,8 @@ export default class GrailPull {
         this.submitButton.node().disabled = false;
 
         this.layerNameTable();
+        this.clipSection();
+
     }
 
     layerNameTable() {
@@ -211,12 +228,14 @@ export default class GrailPull {
 
         const railsParams = {
             bounds   : bounds,
-            input1   : this.form.select( '.outputName-0' ).property( 'value' )
+            input1   : this.form.select( '.outputName-0' ).property( 'value' ),
+            clipExtent: this.form.select( '#clipExtent' ).property( 'checked' )
         };
 
         const overpassParams = {
             bounds   : bounds,
-            input1   : this.form.select( '.outputName-1' ).property( 'value' )
+            input1   : this.form.select( '.outputName-1' ).property( 'value' ),
+            clipExtent: this.form.select( '#clipExtent' ).property( 'checked' )
         };
 
         if ( this.extentType === 'customDataExtent' &&
