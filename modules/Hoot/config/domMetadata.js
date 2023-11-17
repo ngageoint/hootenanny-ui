@@ -393,7 +393,7 @@ export function exportDataForm( zipOutput ) {
 
     function changeExport() {
         const showFgdbTemplate = d3.select( `#${exportFormatId}` ).property( 'value' ) === 'File Geodatabase'
-                        && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('TDS') === 0;
+                        && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('OSM') === -1;
 
         d3.select( `#${exportFgdbId}_container` )
             .classed( 'hidden', !showFgdbTemplate );
