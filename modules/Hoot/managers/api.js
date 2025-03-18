@@ -2057,6 +2057,9 @@ export default class API {
             method: 'GET',
             headers: {
               'Authorization': authToken
+            },
+            params: {
+                hootenanny: true
             }
         };
 
