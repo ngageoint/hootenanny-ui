@@ -2057,6 +2057,9 @@ export default class API {
             method: 'GET',
             headers: {
               'Authorization': authToken
+            },
+            params: {
+                hootenanny: true
             }
         };
 
@@ -2087,6 +2090,9 @@ export default class API {
                 'Content-Type': 'application/json',
                 'Authorization': authToken,
                 'X-Requested-With': 'XMLHttpRequest'
+            },
+            params: {
+                hootenanny: true
             }
         };
 
