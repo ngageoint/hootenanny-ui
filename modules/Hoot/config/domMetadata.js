@@ -389,6 +389,7 @@ export function exportDataForm( zipOutput ) {
           exportFgdbId = 'exportAppendFgdb',
           exportThematic = 'exportThematic',
           exportHootTags = 'exportHootTags',
+          filterRelations = 'filterRelations',
           that = this;
 
     function changeExport() {
@@ -409,6 +410,12 @@ export function exportDataForm( zipOutput ) {
 
         d3.select( `#${exportHootTags}_container` )
             .classed( 'hidden', !showHootTags );
+
+        const showFilterRelations = d3.select( `#${exportFormatId}` ).property( 'value' ).indexOf('OpenStreetMap') === 0
+                        && d3.select( `#${exportComboId}` ).property( 'value' ).indexOf('OSM') === 0;
+
+        d3.select( `#${filterRelations}_container` )
+            .classed( 'hidden', showFilterRelations );
 
         that.validate( exportComboId );
         that.validate( exportFormatId );
@@ -452,6 +459,13 @@ export function exportDataForm( zipOutput ) {
             inputType: 'checkbox',
             checked: false,
             hidden: false
+        },
+        {
+            label: 'Filter relations?',
+            id: filterRelations,
+            inputType: 'checkbox',
+            checked: false,
+            hidden: true
         },
         // {
         //     label: 'Tag Overrides',

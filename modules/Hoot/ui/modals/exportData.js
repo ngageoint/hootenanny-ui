@@ -39,6 +39,7 @@ export default class ExportData {
         this.formFactory = new FormFactory();
         this.container = this.formFactory.generateForm( 'body', 'export-data-form', metadata );
         this.translationSchemaCombo = this.container.select( '#exportTranslationCombo' );
+        this.filterRelations = this.container.select( '#filterRelations' );
         this.exportFormatCombo = this.container.select( '#exportFormatCombo' );
         this.appendToFgdbCheckbox = this.container.select( '#exportAppendFgdb' );
         this.exportThematicGroups = this.container.select( '#exportThematic' );
@@ -221,6 +222,7 @@ export default class ExportData {
                 inputtype: self.getInputType(),
                 append: self.appendToFgdbCheckbox.property( 'checked' ),
                 thematic: self.exportThematicGroups.property( 'checked' ),
+                filterrelations: self.filterRelations.property( 'checked' ),
                 includehoottags: self.includeHootTagsCheckbox.property( 'checked' ),
                 outputname: self.getOutputName(),
                 outputtype: self.getOutputType(),
