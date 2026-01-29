@@ -19,7 +19,7 @@ export function uiSettingsCustomData(context) {
         };
         var _currSettings = _cloneDeep(_origSettings);
 
-        // var example = 'https://{switch:a,b,c}.tile.openstreetmap.org/{zoom}/{x}/{y}.png';
+        // var example = 'https://tile.openstreetmap.org/{zoom}/{x}/{y}.png';
         var modal = uiConfirm(selection).okButton();
 
         modal
