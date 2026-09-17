@@ -106,7 +106,7 @@
     "karma-firefox-launcher": "^2.1.2",
     "karma-mocha": "^2.0.1",
     "karma-remap-istanbul": "^0.6.0",
-    "karma-scss-preprocessor": "^4.0.0",
+    "karma-scss-preprocessor": "npm:@alasdair/karma-scss-preprocessor@5.0.0-3",
     "karma-spec-reporter": "0.0.32",
     "karma-webpack": "^5.0.0",
     "mapillary-js": "4.0.0",
